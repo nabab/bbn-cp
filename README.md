@@ -1,4 +1,4 @@
-# bbn-cp
+# bbn-wc
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://git.bbn.so/library/bbn-cp.git
+git remote add origin https://git.bbn.so/library/bbn-wc.git
 git branch -M master
 git push -uf origin master
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://git.bbn.so/library/bbn-cp/-/settings/integrations)
+- [ ] [Set up project integrations](https://git.bbn.so/library/bbn-wc/-/settings/integrations)
 
 ## Collaborate with your team
 

@@ -1,0 +1,115 @@
+<div :class="[componentClass, 'bbn-background', {
+      'bbn-overlay': scrollable,
+      'bbn-w-100': !scrollable,
+      'bbn-desktop': !isMobile
+     }]"
+     :style="{opacity: opacity}"
+     @focusin="isFocused = true"
+     @focusout="isFocused = false">
+  <slot name="before"/>
+  <div :class="{
+    'bbn-flex-height': scrollable,
+    'bbn-w-100': !scrollable
+  }"
+       bbn-if="ready">
+    <!-- HEADER -->
+    <component bbn-if="headerComponent"
+               ref="header"
+               class="appui-header"
+               :is="headerComponent"/>
+    <div bbn-elseif="header"
+         class="bbn-w-100 bbn-hspadding bbn-vpadding"
+         style="overflow: visible">
+      <div :class="[
+             'bbn-w-100',
+             'bbn-flex-width',
+             'bbn-unselectable',
+             'bbn-no-border',
+             {
+              'bbn-h-100': !isMobile,
+              'bbn-spadded': isMobile
+             }
+           ]">
+        <div class="bbn-h-100">
+          <slot name="headleft"/>
+        </div>
+        <div class="bbn-flex-fill bbn-hspadded bbn-middle bbn-h-100">
+          <slot name="head"/>
+        </div>
+        <div class="bbn-h-100">
+          <slot name="headright"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div :class="{
+      'bbn-flex-fill': scrollable,
+      'bbn-w-100': !scrollable
+    }">
+      <bbn-router :root="root"
+                  :source="source"
+                  :storage="!!nav"
+                  :observer="true"
+                  :disabled="disabled"
+                  :single="single"
+                  :autoload="autoload"
+                  :def="def"
+                  :post-base-url="!single"
+                  ref="router"
+                  :nav="nav"
+                  :splittable="splittable"
+                  :resizable="true"
+                  :collapsible="true"
+                  :master="true"
+                  :url="!!nav ? undefined : url"
+                  @beforeroute="onBeforeRoute"
+                  @route="onRoute"
+                  @load="onLoad"
+                  @change="$emit('change', $event)"
+                  @shortcut="addShortcut"
+                  :breadcrumb="isMobile"
+                  :scroll-content="scrollable"
+                  :component="component"
+                  :component-source="componentSource"
+                  :component-url="componentUrl"
+                  :url-navigation="urlNavigation">
+        <slot/>
+      </bbn-router>
+      <slot name="central"/>
+    </div>
+
+
+    <!-- FOOTER -->
+    <component bbn-if="footerComponent"
+               ref="footer"
+               class="appui-footer"
+               :is="footerComponent"/>
+    <!-- STATUS -->
+    <div bbn-if="status"
+         ref="foot"
+         class="bbn-header bbn-bordered-top appui-statusbar"
+         style="overflow: visible">
+      <div class="bbn-flex-width bbn-h-100">
+        <!-- LOADBAR -->
+        <div class="bbn-flex-fill bbn-xspadding">
+          <bbn-loadbar class="bbn-right-space"
+                       ref="loading"
+                       bbn-if="loadbar"
+                       :source="loaders"/>
+        </div>
+        <div class="bbn-vmiddle bbn-xspadding">
+          <slot name="status"/>
+        </div>
+      </div>
+    </div>
+  </div>
+  <slot name="after"/>
+  <!-- POPUPS -->
+  <bbn-popup v-if="!popup"
+            :source="popups"
+            ref="popup"
+            :z-index="13"/>
+
+</div>
+

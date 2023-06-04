@@ -1,0 +1,19 @@
+{
+    "of": "de",
+    "Total": "Total",
+    "items": "\u00e9l\u00e9ments",
+    "No item": "Aucun \u00e9l\u00e9ment",
+    "page": "page",
+    "Save current configuration": "Enregistrer la configuration courante",
+    "Reset to original configuration": "R\u00e9initialiser la configuration",
+    "Columns' picker": "S\u00e9lectionneur de colonnes",
+    "Multi Filter": "Multi-filtre",
+    "Refresh": "Rafra\u00edchir",
+    "Go to the first %s": "Aller \u00e0 la premi\u00e8re %s",
+    "Go to the previous %s": "Aller \u00e0 la %s pr\u00e9c\u00e9dente",
+    "Go to the next %s": "Aller \u00e0 la %s suivante",
+    "Go to the last %s": "Aller \u00e0 la derni\u00e8re %s",
+    "per": "pas",
+    "View SQL query:": "Afficher la requête SQL",
+    "records": "enregistrements"
+}

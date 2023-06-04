@@ -1,0 +1,30 @@
+bbn-big-search{
+  transition: width 0.5s;
+  display: inline-block;
+  box-sizing: border-box;
+  min-width: 4.2rem;
+  cursor: pointer;
+  input{
+    cursor: pointer;
+    width: 100%;
+    font-size: inherit;
+  }
+  button{
+    height: 100%;
+  }
+  div{
+    box-sizing: border-box;
+  }
+  .bbn-list {
+    ul {
+      li {
+        margin: var(--sspace) var(--space);
+        border-radius: var(--default-border-radius);
+      }
+      li:not(.bbn-state-hover):not(.bbn-state-selected) {
+        background-color: var(--default-background);
+        color: var(--default-text);
+      }
+    }
+  }
+}

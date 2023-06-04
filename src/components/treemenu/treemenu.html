@@ -1,0 +1,38 @@
+<div :class="[{'bbn-widget': true, 'bbn-h-100': true}, componentClass]">
+  <div class="bbn-flex-height">
+
+    <div class="bbn-block bbn-w-100 bbn-vpadded bbn-c" v-if="menus && menus.length">
+      <bbn-dropdown v-model="currentMenu"
+                    :source="menus"
+                    :storage="!!storageName"
+                    :storage-full-name="storageName"
+                    style="width: 80%"
+                    ref="dropdown"/>
+    </div>
+    <div class="bbn-block bbn-w-100 bbn-bottom-padded bbn-c" v-if="search">
+      <bbn-input name="search"
+                 v-model="searchExp"
+                 style="width: 80%"
+                 ref="search"
+                 autocomplete="off"
+                 :placeholder="placeholder"/>
+    </div>
+    <div class="bbn-w-100 bbn-flex-fill">
+      <div class="bbn-overlay">
+        <bbn-tree :source="source"
+                  :hybrid="true"
+                  :map="mapSrc"
+                  :data="getData"
+                  :autobind="false"
+                  :opened="true"
+                  ref="tree"
+                  @load="resizeScroll"
+                  :quick-filter="searchExp"
+                  :excluded-section-filter="true"
+                  @nodeclick="go"
+                  :menu="getMenu"
+                  @ready="readyTree"/>
+      </div>
+    </div>
+  </div>
+</div>
