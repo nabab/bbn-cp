@@ -19,28 +19,30 @@ return {
     bbn.cp.mixins.localStorage,
     bbn.cp.mixins.list
   ],
-  static() {
-    const NODE_PROPERTIES = [
-      'text',
-      'icon',
-      'num',
-      'numChildren',
-      'data',
-      'cls',
-      'selectedClass',
-      'activeClass',
-      'selection',
-      'selectable',
-      'multiple',
-      'filterable',
-      'sortable',
-      'selected',
-      'expanded',
-      'component',
-      'tooltip',
-      'path',
-      'visible'
-    ];
+  statics() {
+    return {
+      NODE_PROPERTIES: [
+        'text',
+        'icon',
+        'num',
+        'numChildren',
+        'data',
+        'cls',
+        'selectedClass',
+        'activeClass',
+        'selection',
+        'selectable',
+        'multiple',
+        'filterable',
+        'sortable',
+        'selected',
+        'expanded',
+        'component',
+        'tooltip',
+        'path',
+        'visible'
+      ]
+    };
   },
   props: {
     /**
@@ -1182,7 +1184,7 @@ return {
       this.expandPath(path, field, true);
     },
     initState(){
-      if ((this.node.isExpanded
+      if ((this.node?.isExpanded
           || this.isRoot
           || bbn.fn.count(Object.values(this.currentState), {expanded: true})
           || bbn.fn.count(Object.values(this.currentState), {selected: true}))

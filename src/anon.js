@@ -21,6 +21,10 @@ class bbnAnon extends bbnHTML
     return bbn.cp.attributeChangedCallback(this, name, oldValue, newValue);
   }
 
+  static bbnFn = bbnAnonCp;
+
+  static bbnCls = 'bbnAnon';
+
   static bbnTpl = ${JSON.stringify(tmp.res)};
 
   static bbnMap = ${JSON.stringify(tmp.map)};
@@ -46,5 +50,5 @@ bbn.cp.known.push('bbn-anon');
 // Assigning the public class to the component's tag
 customElements.define('bbn-anon', bbnAnon);
 `;
-  document.head.appendChild(sc);
+  window.document.head.appendChild(sc);
 })();

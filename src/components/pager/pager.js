@@ -15,8 +15,10 @@ return {
        * @props {bbnCp} element
        */
       element: {
-        type: bbnCp,
-        required: true
+        type: [Object, bbnCp],
+        default() {
+          return this.$parent;
+        }
       },
       /**
        * False if you wanto to see the arrows instead of the buttons
@@ -85,25 +87,43 @@ return {
     },
     data(){
       return {
-        numericTimeout: false,
-        currentNumericPage: this.element.currentPage,
-        numPages: this.element.numPages
+        numericTimeout: false
       }
     },
     computed: {
       currentPage: {
         get(){
-          return this.element.currentPage;
+          return this.element?.currentPage;
         },
         set(v) {
-          this.element.currentPage = v;
+          if (this.element) {
+            this.element.currentPage = v;
+          }
+        }
+      },
+      currentNumericPage: {
+        get(){
+          return this.element?.currentPage;
+        },
+        set(v) {
+          if (this.element) {
+            this.element.currentPage = parseInt(v);
+          }
+        }
+      },
+      numPages: {
+        get(){
+          return this.element?.numPages;
+        },
+        set(v) {
+          if (this.element) {
+            this.element.numPages = v;
+          }
         }
       }
     },
     methods: {
       updatePager() {
-        this.currentNumericPage = this.element.currentPage;
-        this.numPages = this.element.numPages;
       },
       /**
        * @method firstPage
@@ -167,7 +187,7 @@ return {
      * @event mounted
      */
     mounted(){
-      if (this.element){
+      if (this.element && (this.element instanceof bbnCp)) {
         if (this.element.ready && !this.ready){
           this.ready = true;
         }
@@ -181,9 +201,18 @@ return {
       }
     },
     beforeDestroy() {
-      this.element.$off('dataloaded');
+      if (this.element) {
+        this.element.$off('dataloaded', this.updatePager);
+      }
     },
     watch: {
+      element(v, oldV) {
+        bbn.fn.log(v, oldV);
+        alert("ELE");
+        if (v && (v instanceof bbnCp)) {
+          this.ready = true;
+        }
+      },
       currentPage(v) {
         if (this.currentNumericPage !== v) {
           this.currentNumericPage = v;

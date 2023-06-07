@@ -1,3 +1,8 @@
+(() => {
+  const sc = document.createElement('script');
+  sc.setAttribute('type', 'text/javascript');
+  sc.innerHTML = `
+
 class bbnCp {
 
   constructor(el) {
@@ -64,7 +69,6 @@ class bbnCp {
    * @returns {undefined}
    */
   $attributeChange(name, oldValue, newValue) {
-    //bbn.fn.log(`attributeChangedCallback on ${name} on ${this.constructor.name} (new: ${newValue} - old: ${oldValue}`);
     /*
     const realName = name.indexOf(':') === 0 ? name.substr(1) : name;
 
@@ -78,9 +82,6 @@ class bbnCp {
         this.bbn.$onUpdated();
         this.dispatchEvent(updated);
       }
-    }
-    else {
-      bbn.fn.log(`attributeChangedCallback disabled on ${name} on ${this.constructor.name} (new: ${newValue} - old: ${oldValue}`);
     }
     */
   }
@@ -116,22 +117,14 @@ class bbnCp {
       return;
     }
     if (this.$isInit) {
-      bbn.fn.log(`WTF ${this.constructor.name}?`)
-      throw new Error(`WTF ${this.constructor.name}?\nBooh, there is no parent!`);
+      bbn.fn.log("WTF " + this.constructor.name);
+      throw new Error("WTF " + this.constructor.name);
     }
 
     this.$init();
     // Adding itself to the global static #components
     bbn.cp.addComponent(this.$el);
 
-    // An anon component won't have props nor this method
-    /** @todo check if the above assertion is true (source?) */
-    this.$setUpProps();
-
-    // Sending beforeCreate event
-    const beforeCreate = new Event('hook:beforecreate');
-    this.$onBeforeCreate();
-    this.$el.dispatchEvent(beforeCreate);
     // Setting up $parent prop
     const parentNode = this.$el.parentNode;
     // host is for shadow DOM (not used)
@@ -228,6 +221,15 @@ class bbnCp {
       writable: true
     });
 
+    // An anon component won't have props nor this method
+    /** @todo check if the above assertion is true (source?) */
+    this.$setUpProps();
+
+    // Sending beforeCreate event
+    const beforeCreate = new Event('hook:beforecreate');
+    this.$onBeforeCreate();
+    this.$el.dispatchEvent(beforeCreate);
+
     // Setting up the config
     const cfg = this.$cfg;
     // Setting up the namespace for the methods
@@ -243,7 +245,11 @@ class bbnCp {
     if (this.$cfg.data) {
       //bbn.fn.log("during setup data")
       // Proper to the specific private class: sets all the datasource
-      this.$setDataSource(this.$cfg.data);
+      Object.defineProperty(this, '$dataSource', {
+        writable: false,
+        configurable: false,
+        value: this.$cfg.data
+      });
       // Setting up all the data properties
       this.$updateData();
     }
@@ -260,11 +266,7 @@ class bbnCp {
             throw new Error(bbn._("Impossible to create the template evaluator"));
           }
           // Setting in component's constructor
-          Object.defineProperty(this.$el.constructor, 'bbnEval', {
-            value: eval(stFn),
-            writable: false,
-            configurable: false
-          });
+          this.$el.constructor.prototype.bbnEval = stFn;
         }
       }
       // The template is a one-shot, bbnAnon
@@ -309,7 +311,6 @@ class bbnCp {
         this.$parent.$registerChild(this);
       }
 
-      //bbn.fn.log(`DOM CREATED for ${this.$options.name}`);
       // Sending beforeMount event
       const beforeMount = new Event('hook:beforemount');
       this.$onBeforeMount();
@@ -390,11 +391,11 @@ class bbnCp {
      * @todo Add the possibility to change the tag using Customized built-in elements 
      * See createElement
      */
-    else if (isComponent) {
+    if (isComponent) {
       if (this.$addUnknownComponent(tag)) {
         await this.$fetchComponents(tag);
       }
-      if (bbn.cp.statics[tag].tag) {
+      if (bbn.cp.statics[tag]?.tag) {
         originalTag = tag;
         tag = bbn.cp.statics[originalTag].tag;
       }
@@ -417,15 +418,12 @@ class bbnCp {
 
         /** @constant {HTMLElement} ele */
         const constructorArgs = [tag];
-        if (originalTag) {
+        if (originalTag !== tag) {
           constructorArgs.push({
             is: originalTag
           });
         }
         ele = document.createElement(...constructorArgs);
-        if (originalTag) {
-          ele.setAttribute("is", originalTag);
-        }
         if (tag === 'bbn-anon') {
           if (d.cfg){
             if (d.cfg.mixins && d.cfg.mixins.indexOf(bbn.cp.mixins.basic) === -1) {
@@ -671,6 +669,13 @@ class bbnCp {
       configurable: true
     });
 
+    // This will become true after the data functions are launched and the data is set
+    Object.defineProperty(this, '$isDataSet', {
+      value: false,
+      writable: false,
+      configurable: true
+    });
+
     // This will be true during the construction process (updateComponent)
     Object.defineProperty(this, '$isCreating', {
       value: false,
@@ -892,12 +897,6 @@ class bbnCp {
       configurable: false
     });
 
-    Object.defineProperty(this, '_self', {
-      get() {
-        return this;
-      }
-    });
-
     /**
      * Counts the number of times the component has been repainted through the method updateComponent
      */
@@ -915,37 +914,60 @@ class bbnCp {
      * Indexed by name, value being the bbnComponentObject if it's a component a HTMLElement otherwise
      * @return {Object}
      */
-    this.$refs = new Proxy(this.$refsElements, {
-      get(target, propName) {
-        let tmp = target[propName];
-        if (tmp) {
-          if (bbn.fn.isArray(tmp)) {
-            return tmp.filter(a => a.isConnected)
-                      .map(a => a.bbn || a);
+    Object.defineProperty(this, '$refs', {
+      configurable: false,
+      writable: false,
+      value: new Proxy(this.$refsElements, {
+        get(target, propName) {
+          let tmp = target[propName];
+          if (tmp) {
+            if (bbn.fn.isArray(tmp)) {
+              return tmp.filter(a => a.isConnected)
+                        .map(a => a.bbn || a);
+            }
+    
+            return tmp.isConnected ? (tmp.bbn || tmp) : null;
           }
-  
-          return tmp.isConnected ? (tmp.bbn || tmp) : null;
         }
-      }
+      })
     });
   
     // Setting up available props for HTML templates
-    this.$addNamespace('$props', 'data');
-    this.$addNamespace('$el', 'data');
-    this.$addNamespace('$root', 'data');
-    this.$addNamespace('$attr', 'data');
-    this.$addNamespace('$event', 'data');
-    this.$addNamespace('$parent', 'data');
-    this.$addNamespace('$options', 'data');
-    this.$addNamespace('$namespaces', 'computed');
-    this.$addNamespace('$children', 'computed');
-    this.$addNamespace('$refs', 'computed');
-    this.$addNamespace('$slots', 'computed');
-    this.$addNamespace('$isCreated', 'data');
-    this.$addNamespace('$isMounted', 'data');
+    this.$addNamespace('$props', 'internal');
+    this.$addNamespace('$el', 'internal');
+    this.$addNamespace('$root', 'internal');
+    this.$addNamespace('$attr', 'internal');
+    this.$addNamespace('$event', 'internal');
+    this.$addNamespace('$parent', 'internal');
+    this.$addNamespace('$options', 'internal');
+    this.$addNamespace('$namespaces', 'internal');
+    this.$addNamespace('$children', 'internal');
+    this.$addNamespace('$refs', 'internal');
+    this.$addNamespace('$slots', 'internal');
+    this.$addNamespace('$isCreated', 'internal');
+    this.$addNamespace('$isMounted', 'internal');
+    this.$addNamespace('_self', 'internal');
     this.$addNamespace('_', 'method');
-    this.$addNamespace('_self', 'data');
     this.$addNamespace('$emit', 'method');
+    this.$addNamespace('$is', 'method');
+    this.$addNamespace('$isComponent', 'method');
+    this.$addNamespace('$nextTick', 'method');
+    this.$addNamespace('$off', 'method');
+    this.$addNamespace('$on', 'method');
+    this.$addNamespace('$once', 'method');
+    this.$addNamespace('$retrieveComponent', 'method');
+    this.$addNamespace('$retrieveElement', 'method');
+    this.$addNamespace('ancestors', 'method');
+    this.$addNamespace('closest', 'method');
+    this.$addNamespace('extend', 'method');
+    this.$addNamespace('find', 'method');
+    this.$addNamespace('findAll', 'method');
+    this.$addNamespace('findAllByKey', 'method');
+    this.$addNamespace('findByKey', 'method');
+    this.$addNamespace('getChildByKey', 'method');
+    this.$addNamespace('getComponentName', 'method');
+    this.$addNamespace('getComponents', 'method');
+    this.$addNamespace('getRef', 'method');
     bbn.fn.iterate(bbnCp.prototype, (a, n) => {
       if (bbn.fn.isFunction(a)) {
         this.$addNamespace(n, 'method');
@@ -1034,7 +1056,6 @@ class bbnCp {
         }
       }
 
-      //bbn.fn.log(`Replacing in createElement ${ele.bbnId}`);
       this.$addToElements(ele);
     }
     else if (oldEle !== ele) {
@@ -1200,7 +1221,6 @@ class bbnCp {
       });
     }
     else if (this.$isUpdating) {
-      //bbn.fn.warning(`The component ${this.$options.name} is already updating`);
       this.$tick();
       return;
     }
@@ -1208,7 +1228,6 @@ class bbnCp {
       this.$isUpdating = true;
     }
 
-    //bbn.fn.warning(`Launching ${this.$options.name}`);
     // The HTML component's root in the DOM
     let root = this.$el;
     if (shadow) {
@@ -1236,7 +1255,6 @@ class bbnCp {
     //this.$updateAllComputed();
     const e = await this.$eval(this);
     const t2 = (new Date()).getTime();
-    //bbn.fn.warning(`Result length for ${this.$options.name}: ${t2 - t1}`);
     this.$numBuild++;
     if (this.$isCreating) {
       Object.defineProperty(this, '$isCreating', {
@@ -1496,11 +1514,6 @@ class bbnCp {
   }
 
 
-  $setDataSource(data) {
-    this.$dataSource = data;
-  }
-
-
   $setRef(ref, ele) {
     if (this.$refsElements[ref] && (this.$refsElements[ref] !== ele)) {
       if (!bbn.fn.isArray(this.$refsElements[ref])) {
@@ -1577,7 +1590,7 @@ class bbnCp {
     name = bbn.fn.camelize(name);
     const cfg = this.$cfg.props[name];
     if (!this.$el.constructor.bbnFn.$acceptedAttributes.includes(name) && (name.indexOf('bbn') !== 0)) {
-      bbn.fn.warning(`The attribute ${name} in ${this.$options.name} is not a property`);
+      bbn.fn.warning(bbn._("The attribute %s in %s is not a property", name, this.$options.name));
       return;
     }
 
@@ -1608,7 +1621,11 @@ class bbnCp {
       })
     }
 
-    this.$isDataSet = true;
+    Object.defineProperty(this, '$isDataSet', {
+      value: true,
+      writable: false,
+      configurable: false
+    });
   }
 
 
@@ -1836,7 +1853,7 @@ class bbnCp {
    */
   $addNamespace(name, type) {
     if (!type) {
-      throw new Error(bbn._(`Type must be defined for ${name}`));
+      throw new Error(bbn._("Type must be defined for %s", name));
     }
 
     if (this.$namespaces[name] && (this.$namespaces[name] !== type)) {
@@ -1845,7 +1862,7 @@ class bbnCp {
         "Prop name: " + this[name],
         this.$namespaces
       );
-      throw new Error(`The name ${name} in ${type} is already used by ${this.$namespaces[name]} in ${this.$options.name}`);
+      throw new Error("The name %s in %s is already used by %s in %s", name, type, this.$namespaces[name], this.$options.name);
     }
 
     this.$namespaces[name] = type;
@@ -1996,8 +2013,8 @@ class bbnCp {
    * @param {Function} handler 
    */
   $on(event, handler, remove, bound) {
-    bbn.fn.checkType(event, String, bbn._("Events must be strings"));
-    bbn.fn.checkType(handler, Function, bbn._("Events handlers must be functions"));
+    bbn.fn.checkType(event, String, bbn._("Events must be strings for \$on in %s", this.$options.name));
+    bbn.fn.checkType(handler, Function, bbn._("Events handlers must be functions for \$on in %s", this.$options.name));
     const hash = bbn.fn.md5(event + '-' + handler.toString());
     if (!this.$events[event]) {
       this.$events[event] = bbn.fn.createObject();
@@ -2026,8 +2043,8 @@ class bbnCp {
    * @param {Function} handler 
    */
   $off(event, handler) {
-    bbn.fn.checkType(event, String, bbn._("Events must be strings"));
-    bbn.fn.checkType(handler, Function, bbn._("Events handlers must be functions"));
+    bbn.fn.checkType(event, String, bbn._("Events must be strings for \$off / %s in %s", event, this.$options.name));
+    bbn.fn.checkType(handler, Function, bbn._("Events handlers must be functions for \$off / %s in %s", event, this.$options.name));
     const hash = bbn.fn.md5(event + '-' + handler.toString());
     if (this.$events[event]?.[hash]) {
       this.$el.removeEventListener(event, this.$events[event][hash]);
@@ -2266,3 +2283,6 @@ class bbnCp {
   }
 
 }
+`;
+window.document.head.appendChild(sc);
+})();

@@ -37,5 +37,5 @@ class bbnRowHTML extends HTMLTableRowElement
 }
 
 `;
-document.head.appendChild(sc);
+window.document.head.appendChild(sc);
 })();

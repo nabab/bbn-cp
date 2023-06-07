@@ -37,5 +37,5 @@ class bbnElementHTML extends HTMLLIElement
 }
 
 `;
-document.head.appendChild(sc);
+window.document.head.appendChild(sc);
 })();

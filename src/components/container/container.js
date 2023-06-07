@@ -38,7 +38,7 @@ return {
      * @mixin bbn.cp.mixins.resizer
      * @mixin bbn.cp.mixins.observer
      */
-    static() {
+    statics() {
       return {
         componentsList: []
       }

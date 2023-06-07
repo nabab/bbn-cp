@@ -365,7 +365,7 @@
                 #${this.validationID} .bbn-floater-arrow:after {
                   background-color: var(--red) !important;
                 }`;
-              document.head.appendChild(style)
+              window.document.head.appendChild(style)
               let cont = document.createElement('div');
               cont.id = this.validationID;
               cont.innerHTML = `

@@ -12,7 +12,7 @@ return {
       bbn.cp.mixins.basic, 
       bbn.cp.mixins.localStorage
     ],
-    static() {
+    statics() {
       let fields = ['host', 'user', 'pass'],
   
       filesRules = {

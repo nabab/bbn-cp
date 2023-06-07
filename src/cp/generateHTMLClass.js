@@ -34,7 +34,6 @@
     return bbn.cp.statics['${eleName}'].slots;
   }
   static get bbnFn() {
-    bbn.fn.log('name: ${name}')
     return ${name}Cp;
   }
 
@@ -42,7 +41,7 @@
     super();
   }
 };`;
-      document.head.appendChild(sc);
+      window.document.head.appendChild(sc);
     }
   })
 })();

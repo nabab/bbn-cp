@@ -10,7 +10,7 @@ return {
      * @mixin bbn.cp.mixins.basic
      */
     mixins: [bbn.cp.mixins.basic],
-    static() {
+    statics() {
       return {
         selector: "bbn-portal-target-" + bbn.fn.randomString(20, 30)
       };

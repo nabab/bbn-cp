@@ -13,7 +13,7 @@ class bbnCp {
   }
 };
 `;
-  document.head.appendChild(sc);
+  window.document.head.appendChild(sc);
   */
 
   bbnCp = function(cp) {
@@ -128,8 +128,6 @@ class bbnCp {
     },
 
     connectedCallback(cp) {
-      
-      bbn.fn.log("bbn.cp.connectedCallback", cp, cp.bbnId, cp.constructor.bbnCls)
       if (cp.bbnId && !cp.bbn) {
         cp.bbn = new (cp.bbnFn|| cp.constructor.bbnFn)(cp);
         cp.bbn.$connectedCallback();

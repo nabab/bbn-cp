@@ -6,7 +6,7 @@
  */
 return {
     name: 'bbn-router',
-    static: () => {
+    statics() {
       // IndexedDb access for storing thumbnails in visual mode
       let db = false;
       if (bbn.db && bbn.db.ok && window.html2canvas) {

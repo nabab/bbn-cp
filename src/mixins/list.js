@@ -398,6 +398,12 @@
            */
           currentTemplate: this.template,
           /**
+           * The current component of the component.
+           * @data {String|bbnCp|Object} [false] currentComponent
+           * @memberof listComponent
+           */
+          currentComponent: this.component || null,
+          /**
            * 
            * @data {Boolean} [false] currentIndex
            * @memberof listComponent

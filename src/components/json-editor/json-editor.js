@@ -27,7 +27,7 @@ return {
       bbn.cp.mixins.input, 
       bbn.cp.mixins.events
     ],
-    static() {
+    statics() {
       return {
         lang: {
           array: bbn._('Array'),

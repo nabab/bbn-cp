@@ -1,3 +1,8 @@
+(() => {
+  const sc = document.createElement('script');
+  sc.setAttribute('type', 'text/javascript');
+  sc.innerHTML = `
+
 class bbnAnonCp extends bbnCp {
   $options = {
     name: 'bbn-anon'
@@ -26,6 +31,7 @@ class bbnAnonCp extends bbnCp {
   }
 
   $connectedCallback() {
+    bbn.fn.log("ANON!!! ",this.$el.bbnSchema.props?.is);
     if (!this.$el.bbnTpl) {
       this.$el.bbnTpl = bbnAnon.bbnTpl;
       const tpl = this.$el.innerHTML.trim();
@@ -97,3 +103,6 @@ class bbnAnonCp extends bbnCp {
 
 }
 
+`;
+window.document.head.appendChild(sc);
+})();

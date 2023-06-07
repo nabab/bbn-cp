@@ -20,7 +20,7 @@ return {
       bbn.cp.mixins.basic, 
       bbn.cp.mixins.dataEditor
     ],
-    static() {
+    statics() {
       const get_operator_type = function(field){
         if ( typeof field === 'object' ){
           switch ( field.type ){

@@ -63,8 +63,6 @@
         {
           bbnId: '0',
           bbnCfg: cpCfg,
-          bbnFn: bbnAnonCp,
-          bbnCls: bbnAnon,
           bbnTpl: cpTpl,
           bbnModels: bbn.cp.retrieveModels(cpTpl),
           bbnSlots: slots,

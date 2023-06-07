@@ -21,8 +21,8 @@ return {
       bbn.cp.mixins.keynav, 
       bbn.cp.mixins.input
     ],
-    static() {
-      let isClicked = false;
+    statics() {
+      return {isClicked: false};
     },
     props: {
       //@todo not used.

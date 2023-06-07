@@ -82,29 +82,29 @@
          * @memberof resizerComponent
          */
         onResize(){
-          //bbn.fn.log("DEFAULT ONRESIZE FN FROM " + this.$options.name);
           return new Promise(resolve => {
             if (!this.isResizing) {
               this.isResizing = true;
-              this.$nextTick(() => {
-                if (this.$el.offsetHeight) {
+              this.$forceUpdate();
+              if (this.$el.offsetHeight) {
+                if (!this.ready) {
+                  setTimeout(() => {
+                    this.onResize();
+                  }, 100)
+                }
+                else {
                   // Setting initial dimensions
-                  let ms1 = this.setResizeMeasures();
                   let ms2 = this.setContainerMeasures();
+                  let ms1 = this.setResizeMeasures();
                   if (ms1 || ms2) {
-                    if (!this.ready) {
-                      setTimeout(() => {
-                        this.onResize();
-                      }, 100)
-                    }
-                    else {
-                      this.$emit('resize');
-                    }
+                    bbn.fn.log(["DEFAULT ONRESIZE FN FROM " + this.$options.name, ms1, ms2]);
+                    this.$forceUpdate();
+                    this.$emit('resize');
                   }
                 }
-                this.isResizing = false;
-                resolve();
-              })
+              }
+              this.isResizing = false;
+              resolve();
             }
             else {
               resolve();
@@ -159,6 +159,7 @@
             this.lastKnownCtWidth = ctW;
             resize = true;
           }
+          bbn.fn.log(["SET CONTAINER ONRESIZE MEASURES", this.$options.name, ctH, ctW, this.$parent]);
           return resize;
         },
         getParentResizer(){

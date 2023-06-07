@@ -19,7 +19,7 @@ return {
       bbn.cp.mixins.resizer, 
       bbn.cp.mixins.toggle
     ],
-    static() {
+    statics() {
       const orientations = {
         left: {
           shadow: '2px 0 20px 0',

@@ -672,9 +672,12 @@
         }
         else {
           x(c, sp, `let ${n} = _t["${n}"];`);
-          x(c, sp, `_bbnCurrentData["${n}"] = ${n};`);
+          if (n !== 'internal') {
+            x(c, sp, `_bbnCurrentData["${n}"] = ${n};`);
+          }
         }
       }
+
 
       for (let n in cp.$cfg.props) {
         x(c, sp, `let ${n} = _t["${n}"];`);
@@ -721,10 +724,10 @@
           for (let n in tpl[0].attr) {
             x(c, sp, `_props["${n}"] = `);
             if (tpl[0].attr[n].exp) {
-              x(c, sp, ` _sIr("${tpl[0].attr[n].hash}", ${tpl[0].attr[n].exp}, ${hashName}),`);
+              x(c, sp, `_sIr("${tpl[0].attr[n].hash}", ${tpl[0].attr[n].exp}, ${hashName}),`);
             }
             else {
-              x(c, sp, ` "${bbn.fn.escapeDquotes(tpl[0].attr[n].value)}",`);
+              x(c, sp, `"${bbn.fn.escapeDquotes(tpl[0].attr[n].value)}",`);
             }
           }
           //x(c, sp, `bbn.fn.log("PROPS", _props);`);
@@ -759,7 +762,7 @@
       sp -= 2;
       x(c, sp, `}`);
         
-      return c.text;
+      return eval(c.text);
   
     }
   });

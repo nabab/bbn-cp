@@ -21,29 +21,11 @@ return {
       bbn.cp.mixins.input,
       bbn.cp.mixins.events
     ],
-    static() {
+    statics() {
       const defaultParagraphSeparatorString = 'defaultParagraphSeparator';
       const formatBlock = 'formatBlock';
       const queryCommandState = command => document.queryCommandState(command);
       const queryCommandValue = command => document.queryCommandValue(command);
-      const setButtons = buttons => {
-        let res = [];
-        if (!buttons.length) {
-          buttons = Object.keys(defaultButtons);
-        }
-
-        bbn.fn.each(buttons, a => {
-          if (bbn.fn.isString(a) && defaultButtons[a]) {
-            res.push(bbn.fn.extend({code: a}, defaultButtons[a]));
-          }
-          else {
-            res.push(a);
-          }
-        });
-
-        return res;
-      };
-      const exec = (command, value = null) => document.execCommand(command, false, value);
       const defaultButtons = {
         blockStyle: {
           text: bbn._('Style'),
@@ -94,15 +76,19 @@ return {
                 currentStyle: ''
               }
             },
+            computed: {
+              rte() {
+                this.closest('bbn-floater').opener
+              }
+            },
             methods: {
               setStyle(style){
                 exec(formatBlock, style);
               }
             },
             mounted(){
-              let rte = this.closest('bbn-rte')
-              rte.styleComponent = this;
-              rte.setStyle();
+              this.rte.styleComponent = this;
+              this.rte.setStyle();
             }
           }
         },
@@ -147,15 +133,19 @@ return {
                 currentSize: ''
               }
             },
+            computed: {
+              rte() {
+                this.closest('bbn-floater').opener
+              }
+            },
             methods: {
               setSize(style){
                 exec('fontSize', style);
               }
             },
             mounted(){
-              let rte = this.closest('bbn-rte');
-              rte.fontsizeComponent = this;
-              rte.setFontsize();
+              this.rte.fontsizeComponent = this;
+              this.rte.setFontsize();
             }
           }
         },
@@ -516,18 +506,36 @@ return {
           }
         }
       };
+      const setButtons = buttons => {
+        let res = [];
+        if (!buttons.length) {
+          buttons = Object.keys(this.defaultButtons);
+        }
+
+        bbn.fn.each(buttons, a => {
+          if (bbn.fn.isString(a) && this.defaultButtons[a]) {
+            res.push(bbn.fn.extend({code: a}, this.defaultButtons[a]));
+          }
+          else {
+            res.push(a);
+          }
+        });
+
+        return res;
+      };
+      const exec = (command, value = null) => document.execCommand(command, false, value);
       const defaultStates = {
         bold: {
-          active: () => queryCommandState('bold'),
+          active: () => this.queryCommandState('bold'),
         },
         italic: {
-          active: () => queryCommandState('italic'),
+          active: () => this.queryCommandState('italic'),
         },
         underline: {
-          active: () => queryCommandState('underline'),
+          active: () => this.queryCommandState('underline'),
         },
         strikethrough: {
-          active: () => queryCommandState('strikeThrough'),
+          active: () => this.queryCommandState('strikeThrough'),
         },
       };
 
@@ -628,7 +636,7 @@ return {
        */
       cfg: {
         type: Object,
-        default: function(){
+        default(){
           return {
             pinned: true,
             top: null,
@@ -940,6 +948,7 @@ return {
       };
   
       this.content = this.getRef('element');
+      bbn.fn.log("CONTENT", this);
       this.content.innerHTML = this.currentValue;
   
       /*

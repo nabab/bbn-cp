@@ -38,5 +38,5 @@ class bbnHTML extends HTMLElement
 
 
 `;
-  document.head.appendChild(sc);
+  window.document.head.appendChild(sc);
 })();

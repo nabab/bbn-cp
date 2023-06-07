@@ -10,7 +10,7 @@ return {
      * @mixin bbn.cp.mixins.basic
      */
     mixins: [bbn.cp.mixins.basic],
-    static() {
+    statics() {
       let titleTemplates = {
         h1: `<h1 v-text="source.content"></h1>`,
         h2: `<h2 v-text="source.content"></h2>`,

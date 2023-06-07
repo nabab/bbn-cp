@@ -8,7 +8,7 @@
     configurable: false,
     writable: false,
     value: {
-      static(iface) {
+      statics(iface) {
         if (!iface.config || !iface.config.name || !iface.config.props || !iface.config.data) {
           throw new Error(bbn._("The component must have a configName and a configSource returned by its interface function"));
         }

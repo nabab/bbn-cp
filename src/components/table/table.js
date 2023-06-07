@@ -32,6 +32,7 @@ return {
       bbn.cp.mixins.resizer,
       bbn.cp.mixins.editableList,
       bbn.cp.mixins.list,
+      bbn.cp.mixins.config,
       bbn.cp.mixins.dataEditor,
       bbn.cp.mixins.localStorage,
       bbn.cp.mixins.observer,
@@ -642,6 +643,8 @@ return {
     },
     data() {
       return {
+        initialConfig: null,
+        isTable: null,
         /**
          * @data {Boolean} [false] _observerReceived
          */

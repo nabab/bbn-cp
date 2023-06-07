@@ -5,6 +5,7 @@
      * and add them to their respective namespaces
      */
     normalizeComponent(cfg, clsName) {
+      bbn.fn.warning("NORMALIZE " + clsName);
       if (!bbn.fn.isObject(cfg)) {
         bbn.fn.log(cfg, clsName);
         throw new Error("Components definition must be objects");
@@ -19,19 +20,18 @@
         components: bbn.fn.createObject(),
         componentNames: bbn.fn.createObject(),
         extension: null,
-        static: [],
+        statics: [],
         _bbnComponent: true
       };
 
       if (cfg.mixins) {
         //bbn.fn.log("MIXINS", cfg);
-        bbn.fn.checkType(cfg.mixins, 'array');
+        bbn.fn.checkType(cfg.mixins, 'array', bbn._("The mixins property must be an array in %s", clsName));
         cfg.mixins.forEach(mixin => {
-          bbn.fn.log("MIXIN", mixin);
-          bbn.fn.checkType(mixin, 'object');
+          bbn.fn.checkType(mixin, 'object', bbn._("A mixin should be an object in %s", clsName));
           let cp = bbn.cp.normalizeComponent(mixin);
           bbn.fn.each(Object.keys(cp).sort(), name => {
-            if (bbn.fn.isArray(cp[name]) && ['data', 'static', ...bbn.cp.hooks].includes(name)) {
+            if (bbn.fn.isArray(cp[name]) && ['data', 'statics', ...bbn.cp.hooks].includes(name)) {
               if (!res[name]) {
                 res[name] = [];
               }
@@ -63,7 +63,7 @@
               })
             }
 
-            bbn.fn.checkType(props, 'object');
+            bbn.fn.checkType(props, 'object', bbn._("The props property must be an object in %s", clsName));
             for (let propName in props) {
               // If it's just an array or a constructor it's the type
               if (bbn.fn.isArray(props[propName]) || bbn.fn.isFunction(props[propName])) {
@@ -90,7 +90,7 @@
             }
             bbn.fn.each(cfg[name], (cf, i) => {
               if (!bbn.fn.isFunction(cf)) {
-                bbn.fn.checkType(cf, 'object');
+                bbn.fn.checkType(cf, 'object', bbn._("The data must be an object or a function in %s", clsName));
                 let tmp = cf;
                 cf = function() {
                   return tmp;
@@ -103,7 +103,7 @@
             break;
 
           case 'computed':
-            bbn.fn.checkType(cfg.computed, 'object');
+            bbn.fn.checkType(cfg.computed, 'object', bbn._("The computed must be an object in %s", clsName));
             for (let computedName in cfg.computed) {
               if ((typeof(cfg.computed[computedName]) !== 'function') && !cfg.computed[computedName]?.get) {
                 throw new Error(bbn._("The computed must be a single function or an object with at least a get function (check %s in %s)", computedName, clsName));
@@ -118,7 +118,7 @@
             break;
 
           case 'methods':
-            bbn.fn.checkType(cfg[name], 'object');
+            bbn.fn.checkType(cfg[name], 'object', bbn._("The methods must be an object in %s", clsName));
             for (let methName in cfg[name]) {
               bbn.fn.checkType(cfg[name][methName], 'function', bbn._("Methods must be functions, check %s in %s", methName, clsName));
               res[name][methName] = cfg[name][methName];
@@ -127,7 +127,7 @@
             break;
 
           case 'watch':
-            bbn.fn.checkType(cfg.watch, 'object');
+            bbn.fn.checkType(cfg.watch, 'object', bbn._("The watch must be an object in %s", clsName));
             for (let watchName in cfg.watch) {
               const tmp = cfg.watch[watchName];
               bbn.fn.checkType(tmp?.handler || tmp, 'function', bbn._("Watchers must be functions, see %s in %s", watchName, clsName));
@@ -137,7 +137,7 @@
             break;
 
           case 'components':
-            bbn.fn.checkType(cfg.components, 'object');
+            bbn.fn.checkType(cfg.components, 'object', bbn._("The components must be an object in %s", clsName));
             for (let componentName in cfg.components) {
               let indexName = bbn.fn.camelToCss(componentName);
               bbn.fn.checkType(cfg.components[componentName], 'object', bbn._("Components definitions must be objects (check %s in %s)", componentName, clsName));
@@ -169,15 +169,15 @@
             res.template = cfg.template;
             break;
 
-          case 'static':
-            if (cfg.static) {
-              if (!bbn.fn.isArray(cfg.static)) {
-                cfg.static = [cfg.static];
+          case 'statics':
+            if (cfg.statics) {
+              if (!bbn.fn.isArray(cfg.statics)) {
+                cfg.statics = [cfg.statics];
               }
 
-              bbn.fn.each(cfg.static, fn => {
-                bbn.fn.checkType(fn, ['object', 'function'], bbn._("The static property must be an object or a function in %s", clsName));
-                res.static.push(fn);
+              bbn.fn.each(cfg.statics, fn => {
+                bbn.fn.checkType(fn, ['object', 'function'], bbn._("The statics property must be an object or a function in %s", clsName));
+                res.statics.push(fn);
               });
             }
             break;
@@ -212,7 +212,7 @@
               });
             }
             else if (!["mixins", "componentNames", "name", "_bbnComponent"].includes(name)) {
-              throw new Error(`Unrecognize index ${name} in the config object`)
+              throw new Error(bbn._("Unrecognize index %s in the config object for %s", name, clsName));
             }
 
         }

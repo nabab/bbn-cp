@@ -24,7 +24,7 @@ return {
       bbn.cp.mixins.serviceWorker,
       bbn.cp.mixins.browserNotification
     ],
-    static() {
+    statics() {
       return {
         registeredComponents: bbn.fn.createObject()
       };

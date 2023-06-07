@@ -170,7 +170,7 @@
           if (!referer && bbn.env.path) {
             referer = bbn.env.path;
           }
-          cfg.obj = bbn.fn.extend({}, cfg.obj || {}, { _bbn_referer: referer, _bbn_key: bbn.fn.getRequestId(cfg.url, cfg.obj, 'json') });
+          cfg.obj = bbn.fn.extend(bbn.fn.clone(cfg.obj || {}), { _bbn_referer: referer, _bbn_key: bbn.fn.getRequestId(cfg.url, cfg.obj, 'json') });
           return bbn.fn.post(cfg);
         },
         /**

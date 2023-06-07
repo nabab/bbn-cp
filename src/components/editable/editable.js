@@ -17,7 +17,7 @@ return {
       bbn.cp.mixins.input,
       bbn.cp.mixins.componentInside
     ],
-    static() {
+    statics() {
       const titleTemplates = {
         h1: `<h1 v-text="currentValue"></h1>`,
         h2: `<h2 v-text="currentValue"></h2>`,

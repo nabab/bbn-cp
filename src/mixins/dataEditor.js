@@ -8,7 +8,7 @@
     configurable: false,
     writable: false,
     value: {
-      static() {
+      statics() {
         const editorOperators = {
           string: {
             contains: bbn._('Contains'),

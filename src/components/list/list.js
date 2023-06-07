@@ -28,8 +28,8 @@ return {
       bbn.cp.mixins.events,
       bbn.cp.mixins.componentInside
     ],
-    static() {
-      let isClicked = false;
+    statics() {
+      return {isClicked: false};
     },
     props: {
       /**

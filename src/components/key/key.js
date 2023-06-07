@@ -16,7 +16,7 @@ return {
     mixins: [
       bbn.cp.mixins.basic,
     ],
-    static() {
+    statics() {
       const DIRECTIONS = ['left', 'right', 'up', 'down'];
     },
     props: {

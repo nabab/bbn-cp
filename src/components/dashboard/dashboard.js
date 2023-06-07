@@ -23,7 +23,7 @@ return {
       bbn.cp.mixins.resizer, 
       bbn.cp.mixins.localStorage
     ],
-    static() {
+    statics() {
       return {
         limits: [5, 10, 15, 20, 25, 30, 40, 50]
       };

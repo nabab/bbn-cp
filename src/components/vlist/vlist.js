@@ -19,8 +19,8 @@ return {
       bbn.cp.mixins.basic,
       bbn.cp.mixins.position
     ],
-    static() {
-      let isClicked = false;
+    statics() {
+      return {isClicked: false};
     },
     props: {
       /**

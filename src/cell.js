@@ -37,5 +37,5 @@ class bbnCellHTML extends HTMLTableCellElement
 }
 
 `;
-document.head.appendChild(sc);
+window.document.head.appendChild(sc);
 })();

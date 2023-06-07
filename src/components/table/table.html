@@ -35,10 +35,10 @@
         <span class="bbn-xl bbn-b bbn-left-sspace"
               v-text="_('Loading') + '...'"/>
       </div>
-      <bbn-scroll :scrollable="scrollable"
+      <bbn-scroll v-else-if="currentColumns.length"
+                  :scrollable="scrollable"
                   class="bbn-w-100"
                   ref="scroll"
-                  v-if="currentColumns.length"
                   :offset-y="$refs.thead ? [$refs.thead.getBoundingClientRect().height, 0] : [0,0]"
                   @resize="resizeWidth">
         <table :style="{width: totalWidth}"
@@ -459,7 +459,6 @@
     <!-- Footer -->
     <bbn-pager class="bbn-table-footer bbn-no-border-right bbn-no-border-left bbn-no-border-bottom"
                v-if="hasPager"
-               :element="_self"
                :item-name="itemName"
                :page-name="pageName"
                :buttons="footerButtons"/>

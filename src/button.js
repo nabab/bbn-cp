@@ -37,5 +37,5 @@ class bbnButtonHTML extends HTMLButtonElement
 }
 
 `;
-document.head.appendChild(sc);
+window.document.head.appendChild(sc);
 })();

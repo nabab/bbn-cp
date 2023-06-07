@@ -19,7 +19,7 @@ return {
      * @mixin bbn.cp.mixins.basic
      */
     mixins: [bbn.cp.mixins.basic],
-    static() {
+    statics() {
       const VALUES = [{
         name: 'year',
         title: bbn._('year'),

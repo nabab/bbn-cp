@@ -23,7 +23,7 @@ return {
       bbn.cp.mixins.input, 
       bbn.cp.mixins.events
     ],
-    static() {
+    statics() {
       const toolbar = [
         {
           name: "bold",

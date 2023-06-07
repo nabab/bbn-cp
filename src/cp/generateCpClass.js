@@ -39,8 +39,16 @@ class ${proto} extends bbnCp {
     });
   }
 
-  \$init(el) {`;
-      code += `
+  \$init(el) {
+    /**
+     * Counts the number of times the component has been repainted through the method updateComponent
+     */
+    Object.defineProperty(this, '_self', {
+      confifurable: false,
+      writable: false,
+      value: this
+    });
+
     bbnCp.prototype.\$init.apply(this, [el]);
     const data = [`;
       if (obj.data?.length) {
@@ -164,35 +172,52 @@ class ${proto} extends bbnCp {
       code += `
   static \$acceptedAttributes = ${JSON.stringify(acceptedAttr)};`;
 
-      if (obj.static.length) {
-        bbn.fn.log(obj.static, publicClass);
-        bbn.fn.each(obj.static, fn => {
-          const s = bbn.fn.isFunction(fn) ? fn() : fn;
-          if (bbn.fn.isObject(s)) {
-            bbn.fn.iterate(s, (v, n) => {
-              if (bbn.fn.isFunction(v)) {
-                let func = v.toString().trim().substr(v.toString().trim().indexOf('('));
-                let arrowPos = func.indexOf('=>');
-                let hasArrow = arrowPos > -1;
-                if (hasArrow && (func.indexOf('{') > arrowPos)) {
-                  func = func.substr(0, arrowPos) + func.substr(arrowPos + 2);
-                }
-                code += `
-  static ${n + func}`;
-              }
-              else {
-                code += `
-  static ${n} = ${v && (typeof v === 'object') ? JSON.stringify(v) : (bbn.fn.isString(v) ? '"' + bbn.fn.escapeDquotes(v) + '"' : v.toString())};`;
-              }
-            });
+      bbn.fn.log(["NO IFACE?", obj])
+      if (obj.statics.length) {
+        let iface = '""';
+        if (obj.iface) {
+          if (bbn.fn.isObject(obj.iface)) {
+            iface = JSON.stringify(obj.iface, null, 2);
+          }
+          else if (bbn.fn.isFunction(obj.iface)) {
+            let fn = bbn.fn.analyzeFunction(obj.iface);
+            iface = '(function(){' + fn.body + '})()';
           }
           else {
-            bbn.fn.log(fn);
-            throw new Error(bbn._("The static property must be an object or a function"));
+            throw new Error(bbn._("The interface property must be an object or a function"));
           }
-        });
+        }
+        code += `
+  static {
+    let res;
+    let iface = ${iface};`;
+        bbn.fn.each(obj.statics, f => {
+          let fn = bbn.fn.analyzeFunction(f);
+
+
+          let stFn = fn.toString().trim();
+          stFn = bbn.fn.substr(stFn, stFn.indexOf('('));
+          code += `
+    res = ((${fn.argString}) => ` + fn.body + `)(iface);
+    if (res) {
+      if (!bbn.fn.isObject(res)) {
+        throw new Error(bbn._("If the static method returns it must be an object"));
       }
-      code += `
+      bbn.fn.iterate(res, (v, n) => {
+        if (Object[n] === undefined) {
+          this[n] = v;
+        }
+        else {
+          throw new Error(bbn._("The static method cannot override an existing property"));
+        }
+      });
+    }`;
+        });
+        code += `
+  }
+`;
+      }
+        code += `
 }
 `;
 
@@ -224,8 +249,8 @@ class ${proto} extends bbnCp {
       }
       code += `;`;
 
-      if (obj.static.length) {
-        bbn.fn.each(obj.static, fn => {
+      if (obj.statics.length) {
+        bbn.fn.each(obj.statics, fn => {
           code += `
     bbn.fn.iterate(`;
           if (bbn.fn.isObject(fn)) {
@@ -243,7 +268,7 @@ class ${proto} extends bbnCp {
           }
           else {
             bbn.fn.log(fn);
-            throw new Error(bbn._("The static property must be an object or a function"));
+            throw new Error(bbn._("The statics property must be an object or a function"));
           }
 
           code += `, (v, n) => {
@@ -264,7 +289,7 @@ catch (e) {
 */
 
       sc.innerHTML = code;
-      document.head.appendChild(sc);
+      window.document.head.appendChild(sc);
       bbn.fn.log("ENDING GENERATE CP CLASS", proto);
       return code;
     }

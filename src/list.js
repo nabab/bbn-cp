@@ -37,5 +37,5 @@ class bbnListHTML extends HTMLUListElement
 }
 
 `;
-document.head.appendChild(sc);
+window.document.head.appendChild(sc);
 })();
