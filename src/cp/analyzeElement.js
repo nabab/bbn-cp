@@ -21,13 +21,13 @@
         inlineTemplates = bbn.fn.createObject();
       }
 
-      let res = {
+      let res = bbn.fn.createObject({
         id: idx,
         tag: ele.tagName.toLowerCase(),
         attr: bbn.fn.createObject(),
         events: bbn.fn.createObject(),
         items: []
-      };
+      });
 
       if ((res.tag === 'component') && (attr.indexOf(':is') > -1)) {
         let is = ele.getAttribute(':is').trim();
@@ -296,11 +296,11 @@
           if (txt) {
             let isDynamic = txt.indexOf('${') > -1;
             let hash = bbn.fn.hash(txt);
-            const item = {
+            const item = bbn.fn.createObject({
               id: idx + '-' + num,
               text: txt,
               hash: hash
-            };
+            });
             if (isDynamic) {
               item.exp = txt;
             }
@@ -336,6 +336,9 @@
           isIf = false;
         }
       });
+      if (res.condition) {
+        res.conditionId = bbn.fn.randomString(32);
+      }
 
       map[idx] = bbn.fn.clone(res);
       delete map[idx].items;

@@ -2036,18 +2036,6 @@ return {
         }
       },
       /**
-       * Retuns the popup object.
-       * @method getPopup
-       * @returns {bbnCp}
-       */
-      getPopup() {
-        if (this.popup) {
-          return arguments.length ? this.popup.open(...arguments) : this.popup;
-        }
-
-        return bbn.cp.mixins.basic.getPopup.apply(this, arguments);
-      },
-      /**
        * Returns the options for the bind of the table filter.
        *
        * @method getFilterOptions
@@ -2376,7 +2364,6 @@ return {
             this.setStorage(this.currentConfig);
           }
 
-          this.$forceUpdate();
         }
       },
       /**
@@ -3527,6 +3514,9 @@ return {
         }
       })
     },
+    beforeDestroy() {
+      bbn.fn.log("DESTROYING TABLE");
+    },
     /**
      * After the initialization of the component sets the property ready on true.
      * @event mounted
@@ -3534,6 +3524,7 @@ return {
      * @fires updateData
      */
     mounted() {
+      bbn.fn.log("TABLE MOUNTED");
       this.container = this.getRef('container');
       this.marginStyleSheet = document.createElement('style');
       document.body.appendChild(this.marginStyleSheet);

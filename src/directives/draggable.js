@@ -298,22 +298,22 @@
 
   const inserted = (el, binding) => {
     if (el.bbnDirectives === undefined) {
-      el.bbnDirectives = {};
+      el.bbnDirectives = bbn.fn.createObject();
     }
     if (el.bbnDirectives.draggable === undefined) {
-      el.bbnDirectives.draggable = {};
+      el.bbnDirectives.draggable = bbn.fn.createObject();
     }
     if ((binding.value !== false)
       && !el.classList.contains('bbn-undraggable')
     ) {
       el.dataset.bbn_draggable = true;
-      el.bbnDirectives.draggable = {
+      el.bbnDirectives.draggable = bbn.fn.createObject({
         active: true
-      };
+      });
       if (!el.classList.contains('bbn-draggable')) {
         el.classList.add('bbn-draggable');
       }
-      let options = {},
+      let options = bbn.fn.createObject(),
           asArg = !!binding.arg && binding.arg.length,
           asMods = bbn.fn.isArray(binding.modifiers) && !!binding.modifiers.length,
           asComponentFromMods = asMods && binding.modifiers.includes('component'),
@@ -324,7 +324,7 @@
           component = false,
           container = false,
           mode = 'clone',
-          data = {},
+          data = bbn.fn.createObject(),
           helper = false;
 
       if (asArg) {
@@ -451,13 +451,13 @@
     }
     else {
       el.dataset.bbn_draggable = false;
-      el.bbnDirectives.draggable = {
+      el.bbnDirectives.draggable = bbn.fn.createObject({
         active: false
-      };
+      });
     }
   };
 
-  bbn.cp.directives['bbn-draggable'] = {
+  bbn.cp.directives['bbn-draggable'] = bbn.fn.createObject({
     inserted: inserted,
     update: (el, binding) => {
       if ((binding.value !== false)
@@ -476,10 +476,10 @@
       else {
         el.dataset.bbn_draggable = false;
         if (el.bbnDirectives === undefined) {
-          el.bbnDirectives = {};
+          el.bbnDirectives = bbn.fn.createObject();
         }
         if (el.bbnDirectives.draggable === undefined) {
-          el.bbnDirectives.draggable = {};
+          el.bbnDirectives.draggable = bbn.fn.createObject();
         }
         if (!!el.bbnDirectives.draggable.active) {
           if (bbn.fn.isFunction(el.bbnDirectives.draggable.onmousedown)) {
@@ -489,13 +489,13 @@
             el.removeEventListener('mouseup', el.bbnDirectives.draggable.onmouseup);
           }
         }
-        el.bbnDirectives.draggable = {
+        el.bbnDirectives.draggable = bbn.fn.createObject({
           active: false
-        };
+        });
         if (el.classList.contains('bbn-draggable')) {
           el.classList.remove('bbn-draggable');
         }
       }
     }
-  };
+  });
 })();

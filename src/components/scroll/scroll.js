@@ -321,8 +321,8 @@ return {
         };
 
         if (this.isMeasuring) {
-          cfg.width = '100%';
-          cfg.height = '100%';
+          cfg.width = cfg.maxWidth || '100%';
+          cfg.height = cfg.maxHeight || '100%';
           cfg.visibility = 'hidden';
         }
 
@@ -769,8 +769,8 @@ return {
        */
       getNaturalDimensions() {
         this.isMeasuring = true;
-        return new Promise((resolve, reject) => {
-          this.$nextTick(() => {
+        return new Promise(resolve => {
+          this.$forceUpdate().then(() => {
             let sc = this.find('bbn-scroll');
             //bbn.fn.log(sc ? "THERE IS A SCROLL" : "THERE IS NO SCROLL");
             if (this.scrollable) {
@@ -783,6 +783,7 @@ return {
                   })
                 }
                 else{
+                  bbn.fn.log(d);
                   this.naturalWidth = this.$el.offsetWidth;
                   this.naturalHeight = this.$el.offsetHeight;
                 }
@@ -833,25 +834,17 @@ return {
        * @returns Promise
        */
       onResize(force) {
-        // Only executed when the component is ready
-        if ( !this.ready ){
-          return new Promise(resolve => {
-            setTimeout(() => {
-              resolve();
-            }, 1);
-          });
-        }
         // Prevent too many executions
         return this.keepCool(() => {
           // If the container measures have changed
-          if (this.scrollable && (this.setContainerMeasures() || force)) {
+          if (this.setContainerMeasures() || force) {
             // Setting up the element's measures
             this.setResizeMeasures();
             // getting current measures of element and scrollable container
             let container = this.$el;
             let content = this.getRef('scrollContent');
             let ct = this.getRef('scrollContainer');
-            if (!content || !container.clientWidth || !container.clientHeight) {
+            if (!this.scrollable || !content || !container.clientWidth || !container.clientHeight) {
               return;
             }
             let x = ct.scrollLeft;
@@ -931,17 +924,8 @@ return {
 
             }
             this.$emit('resize');
-            if (sendResizeContent) {
-              let e = new Event('resizecontent', {
-                cancelable: true
-              });
-              this.$emit('resizecontent', e, {
-                width: content.clientWidth,
-                height: content.clientHeight
-              });
-            }
           }
-        }, 'onResize', 20);
+        }, 'onResize', 10);
       },
       /**
        * Creates a delay to set the scroll as ready
@@ -1005,8 +989,19 @@ return {
     mounted(){
       this.initSize();
       this.scrollReady = true;
+      const config = { attributes: false, childList: true, subtree: true };
+      const ele = this.getRef('scrollContent');
+      const cp = this;
+      const callback = (mutationsList) => {
+        bbn.fn.log("mutationsList", mutationsList);
+        cp.$emit('resizecontent');
+      };
+      this.observer = new MutationObserver(callback);
+      this.observer.observe(ele, config);
+      cp.$emit('resizecontent');
     },
-    beforeDestroy(){
+    beforeDestroy() {
+      this.observer.disconnect();
       if (this.interval) {
         clearInterval(this.interval);
       }

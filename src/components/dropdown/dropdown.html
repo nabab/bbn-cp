@@ -74,15 +74,15 @@
          v-model="value"
          ref="element"
          :name="name">
-  <component :is="!!portalSelector && !isInsideFloater ? 'bbn-portal' : 'div'"
-             :selector="portalSelector"
-             v-if="!popup
-             && filteredData.length
-             && !isDisabled
-             && !readonly
-             && ready
-             && !native
-             && (isOpened || preload)">
+  <bbn-portal :disabled="!portalSelector || isInsideFloater"
+              :selector="portalSelector"
+              v-if="!popup
+              && filteredData.length
+              && !isDisabled
+              && !readonly
+              && ready
+              && !native
+              && (isOpened || preload)">
     <bbn-floater :element="asMobile ? undefined : $el"
                 :max-height="asMobile ? undefined : maxHeight"
                 :min-width="$el.clientWidth"

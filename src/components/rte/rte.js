@@ -78,7 +78,7 @@ return {
             },
             computed: {
               rte() {
-                this.closest('bbn-floater').opener
+                return this.closest('bbn-floater').opener;
               }
             },
             methods: {
@@ -135,7 +135,7 @@ return {
             },
             computed: {
               rte() {
-                this.closest('bbn-floater').opener
+                return this.closest('bbn-floater').opener;
               }
             },
             methods: {
@@ -158,15 +158,17 @@ return {
                           :notext="true"
                           @click="onClick"/>
             `,
+            computed: {
+              rte() {
+                return this.closest('bbn-floater').opener;
+              }
+            },
             methods: {
               onClick(){
                 let current = parseInt(bbnRteCp.queryCommandValue('fontSize'));
                 if (current < 7) {
                   exec('fontSize', current + 1);
-                  let rte = this.closest('bbn-rte');
-                  if (rte) {
-                    rte.setFontsize();
-                  }
+                  this.rte.setFontsize();
                 }
               }
             }
@@ -182,15 +184,17 @@ return {
                           :notext="true"
                           @click="onClick"/>
             `,
+            computed: {
+              rte() {
+                return this.closest('bbn-floater').opener;
+              }
+            },
             methods: {
               onClick(){
                 let current = parseInt(bbnRteCp.queryCommandValue('fontSize'));
                 if (current > 1) {
                   exec('fontSize', current - 1);
-                  let rte = this.closest('bbn-rte');
-                  if (rte) {
-                    rte.setFontsize();
-                  }
+                  this.rte.setFontsize();
                 }
               }
             }
@@ -264,18 +268,22 @@ return {
                 isReadOnly: false
               }
             },
+            computed: {
+              rte() {
+                return this.closest('bbn-floater').opener;
+              }
+            },
             methods: {
               setAlign(align){
                 exec(align);
               }
             },
             mounted(){
-              const rte = this.closest('bbn-rte');
-              rte.alignComponent = this;
-              this.isDisabled = !!rte.disabled;
-              this.isReadOnly = !!rte.readonly;
-              this.disWatch = rte.$watch('disabled', val => this.isDisabled = !!val);
-              this.readWatch = rte.$watch('readonly', val => this.isDisabled = !!val);
+              this.rte.alignComponent = this;
+              this.isDisabled = !!this.rte.disabled;
+              this.isReadOnly = !!this.rte.readonly;
+              this.disWatch = this.rte.$watch('disabled', val => this.isDisabled = !!val);
+              this.readWatch = this.rte.$watch('readonly', val => this.isDisabled = !!val);
             },
             beforeDestroy(){
               this.disWatch();
@@ -308,18 +316,22 @@ return {
                 isReadOnly: false
               }
             },
+            computed: {
+              rte() {
+                return this.closest('bbn-floater').opener;
+              }
+            },
             methods: {
               setColor(color){
                 exec('foreColor', color);
               }
             },
             mounted(){
-              const rte = this.closest('bbn-rte');
-              rte.fontColorComponent = this;
-              this.isDisabled = !!rte.disabled;
-              this.isReadOnly = !!rte.readonly;
-              this.disWatch = rte.$watch('disabled', val => this.isDisabled = !!val);
-              this.readWatch = rte.$watch('readonly', val => this.isDisabled = !!val);
+              this.rte.fontColorComponent = this;
+              this.isDisabled = !!this.rte.disabled;
+              this.isReadOnly = !!this.rte.readonly;
+              this.disWatch = this.rte.$watch('disabled', val => this.isDisabled = !!val);
+              this.readWatch = this.rte.$watch('readonly', val => this.isDisabled = !!val);
             },
             beforeDestroy(){
               this.disWatch();
@@ -352,18 +364,22 @@ return {
                 isReadOnly: false
               }
             },
+            computed: {
+              rte() {
+                return this.closest('bbn-floater').opener;
+              }
+            },
             methods: {
               setColor(color){
                 exec('hiliteColor', color);
               }
             },
             mounted(){
-              const rte = this.closest('bbn-rte');
-              rte.fontBgColorComponent = this;
-              this.isDisabled = !!rte.disabled;
-              this.isReadOnly = !!rte.readonly;
-              this.disWatch = rte.$watch('disabled', val => this.isDisabled = !!val);
-              this.readWatch = rte.$watch('readonly', val => this.isDisabled = !!val);
+              this.rte.fontBgColorComponent = this;
+              this.isDisabled = !!this.rte.disabled;
+              this.isReadOnly = !!this.beforeDestroy, this.rte.readonly;
+              this.disWatch = this.rte.$watch('disabled', val => this.isDisabled = !!val);
+              this.readWatch = this.rte.$watch('readonly', val => this.isDisabled = !!val);
             },
             beforeDestroy(){
               this.disWatch();
@@ -483,13 +499,10 @@ return {
                           @click="onClick"/>
             `,
             methods: {
-              onClick(){
-                let rte = this.closest('bbn-rte');
-                if (rte) {
-                  let fileInput = rte.getRef('fileInput');
-                  if (fileInput) {
-                    fileInput.click();
-                  }
+              onClick() {
+                let fileInput = this.rte.getRef('fileInput');
+                if (fileInput) {
+                  fileInput.click();
                 }
               }
             }
@@ -920,6 +933,7 @@ return {
         this.currentValue = this.$slots.default[0].text;
       }
       this.setButtons();
+      bbn.fn.log("RTE!!", this);
       this.defaultParagraphSeparator = bbnRteCp.defaultParagraphSeparatorString || 'div'
     },
     /**

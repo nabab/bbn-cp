@@ -187,6 +187,7 @@ return {
      * @event mounted
      */
     mounted(){
+      bbn.fn.log("PAGER MOUNTED");
       if (this.element && (this.element instanceof bbnCp)) {
         if (this.element.ready && !this.ready){
           this.ready = true;
@@ -201,6 +202,7 @@ return {
       }
     },
     beforeDestroy() {
+      bbn.fn.log("PAGER DESTROYED", this.element);
       if (this.element) {
         this.element.$off('dataloaded', this.updatePager);
       }

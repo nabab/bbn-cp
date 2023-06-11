@@ -365,7 +365,6 @@
         },
         attachList() {
           let list = this.getRef('list');
-          bbn.fn.log("attahc", list);
           if (list) {
             this.list = list;
           }

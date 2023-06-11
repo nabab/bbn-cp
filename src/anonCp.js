@@ -4,9 +4,9 @@
   sc.innerHTML = `
 
 class bbnAnonCp extends bbnCp {
-  $options = {
+  $options = bbn.fn.createObject({
     name: 'bbn-anon'
-  };
+  });
 
   constructor(ele) {
     super(ele);
@@ -31,7 +31,7 @@ class bbnAnonCp extends bbnCp {
   }
 
   $connectedCallback() {
-    bbn.fn.log("ANON!!! ",this.$el.bbnSchema.props?.is);
+    //bbn.fn.log("ANON!!! ",this.$el.bbnSchema.props?.is);
     if (!this.$el.bbnTpl) {
       this.$el.bbnTpl = bbnAnon.bbnTpl;
       const tpl = this.$el.innerHTML.trim();
@@ -77,23 +77,21 @@ class bbnAnonCp extends bbnCp {
       });
     }
 
-    bbn.fn.log("CONNCTRED CALLED IN ANON", this.$el);
+    //bbn.fn.log("CONNCTRED CALLED IN ANON", this.$el);
     bbnCp.prototype.$connectedCallback.apply(this);
   }
 
   $setUpProps() {
-    if (!this.$cfg.props) {
-      this.$cfg.props = bbn.fn.createObject();
-    }
-
     bbn.fn.each(this.$cfg.props, (prop, name) => {
       this.$setUpProp(name, prop);
     });
+
     if (!this.$cfg.props.source) {
-      this.$cfg.props.source = {
+      this.$cfg.props.source = bbn.fn.createObject({
         type: [String, Object, Array],
-      };
+      });
     }
+
     this.$setUpProp("source", {
       type: [String, Object, Array],
     });

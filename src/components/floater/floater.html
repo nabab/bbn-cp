@@ -84,7 +84,8 @@
                     :max-height="isMaximized ? '100%' : scrollMaxHeight || null"
                     :min-width="currentMinWidth || null"
                     :min-height="currentMinHeight > outHeight ? currentMinHeight - outHeight : null"
-                    @resizecontent="scrollResize">
+                    @resizecontent="realResize"
+                    @hook:mounted="realResize">
           <component v-if="component"
                     ref="component"
                     :is="component"
@@ -154,15 +155,11 @@
     <footer v-else-if="currentButtons.length"
             class="bbn-w-100 bbn-button-group"
             ref="buttons">
-      <bbn-button v-for="(b, i) in currentButtons"
+      <bbn-button v-for="(b, i) in shownButtons"
                   :key="i"
                   :ref="'button' + i"
                   @ready="t => focusable = t"
-                  v-bind="b"
-                  :class="['bbn-no-radius', {
-                    'bbn-primary': b.preset === 'submit',
-                    'bbn-no-border-right': !currentButtons[i + 1]
-                  }, b.cls || '']"/>
+                  v-bind="b"/>
     </footer>
   </div>
 </div>

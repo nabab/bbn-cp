@@ -10,20 +10,19 @@
 				 class="bbn-rte-element"
 				 ref="element"/>
 		<bbn-portal>
-			<div v-show="isEditing">
-				<bbn-floater :scrollable="false"
-									  v-if="isEditing"
-										ref="floater"
-										@focusin="isEditing = true"
-										:element="$el"
-										:opener="_self"
-										position="topLeft"
-										:title="false">
-					<bbn-toolbar :source="currentButtons"
-											class="bbn-rte-toolbar bbn-header bbn-radius-top bbn-no-border"
-											:button-space="false"/>
-				</bbn-floater>
-			</div>
+			<bbn-floater :scrollable="false"
+									ref="floater"
+									:disatance="50"
+									:visible="isEditing"
+									@focusin="isEditing = true"
+									:element="$el"
+									:opener="_self"
+									position="topLeft"
+									:title="false">
+				<bbn-toolbar :source="currentButtons"
+										class="bbn-rte-toolbar bbn-header bbn-radius-top bbn-no-border"
+										:button-space="false"/>
+			</bbn-floater>
 		</bbn-portal>
 
 	</div>

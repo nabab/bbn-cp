@@ -57,7 +57,6 @@
         slots.default = [];
       }
 
-      bbn.fn.log("CREATING ANON");
       const cp = Object.assign(
         document.createElement("bbn-anon"),
         {

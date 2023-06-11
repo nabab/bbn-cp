@@ -157,6 +157,15 @@
         ellipsis: {
           type: Boolean,
           default: false
+        },
+        autocapitalize: {
+          type: [Boolean, String]
+        },
+        autocorrect: {
+          type: [Boolean, String]
+        },
+        spellcheck: {
+          type: [Boolean, String]
         }
       },
       data(){

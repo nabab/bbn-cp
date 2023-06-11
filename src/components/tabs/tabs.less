@@ -25,123 +25,123 @@ bbn-tabs {
       }
     }
   }
-  > .bbn-tabs-container{
-    width:100%;
-    ul.bbn-tabs-tabs:first-child{
-      height: 100%;
+  ul.bbn-tabs-tabs:first-child{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    > li {
+      height: 2.4rem;
+      list-style-type: none;
+      text-decoration: none;
       margin: 0;
-      padding: 0;
+      vertical-align: middle;
       position: relative;
-      border-top-width: 0px;
-      border-left-width: 0px;
-      border-right-width: 0px;
-      > li {
-        height: 2.4rem;
-        list-style-type: none;
-        text-decoration: none;
-        margin: 0;
+      &.top {
+        border-bottom: 0;
+      }
+      &.bottom {
+        border-top: 0;
+      }
+      i:focus, span:focus{
+        animation: bbn-anim-blinker 1s linear infinite;
+      }
+      .bbn-tabs-badge-container{
+        position: absolute;
+        top: 0;
+        left: 1px;
+        bottom: 0px;
+      }
+      .bbn-tabs-tab-loader {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        position: absolute;
+        top: 0.4rem;
+        left: 2px;
+      }
+      .bbn-tabs-tab-loader:after {
+        content: " ";
+        display: block;
+        width: 8px;
+        height: 8px;
+        margin: 1px;
+        border-radius: 50%;
+        border-style: solid;
+        border-width: 2px;
+        border-right-color: transparent !important;
+        border-left-color: transparent !important;
+        animation: bbn-tabs-tab-loader 1.2s linear infinite;
+      }
+      .bbn-tabs-tab{
+        cursor: pointer;
+        color: inherit;
+        padding: 0.3rem 1.15rem 0.4rem 1.15rem;
+        line-height: 1.7rem;
         vertical-align: middle;
-        position: relative;
-        &.top {
-          border-bottom: 0;
+        > .bbn-router-tab-text{
+          font-size: 1.1rem;
         }
-        &.bottom {
-          border-top: 0;
+        > .bbn-tabs-main-icon {
+          line-height: 100%;
         }
-        i:focus, span:focus{
-          animation: bbn-anim-blinker 1s linear infinite;
-        }
-        .bbn-tabs-badge-container{
-          position: absolute;
-          top: 0;
-          left: 1px;
-          bottom: 0px;
-        }
-        .bbn-tabs-tab-loader {
-          display: inline-block;
-          width: 12px;
-          height: 12px;
-          position: absolute;
-          top: 0.4rem;
-          left: 2px;
-        }
-        .bbn-tabs-tab-loader:after {
+        &::after, &::before {
+          font-family: monospace;
           content: " ";
+          white-space: pre;
+        }
+        &.bbn-tabs-dirty::after {
+          content: "*";
+        }
+      }
+      .bbn-tabs-icon{
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+        > i{
           display: block;
-          width: 8px;
-          height: 8px;
-          margin: 1px;
-          border-radius: 50%;
-          border-style: solid;
-          border-width: 2px;
-          border-right-color: transparent !important;
-          border-left-color: transparent !important;
-          animation: bbn-tabs-tab-loader 1.2s linear infinite;
-        }
-        .bbn-tabs-tab{
-          cursor: pointer;
-          color: inherit;
-          padding: 0.3rem 1.15rem 0.4rem 1.15rem;
-          line-height: 1.7rem;
-          vertical-align: middle;
-          > .bbn-router-tab-text{
-            font-size: 1.1rem;
-          }
-          > .bbn-tabs-main-icon {
-            line-height: 100%;
-          }
-          &::after, &::before {
-            font-family: monospace;
-            content: " ";
-            white-space: pre;
-          }
-          &.bbn-tabs-dirty::after {
-            content: "*";
-          }
-        }
-        .bbn-tabs-icon{
           position: absolute;
           right: 0px;
-          top: 0px;
-          bottom: 0px;
-          > i{
-            display: block;
-            position: absolute;
-            right: 0px;
-            padding: 2px;
-            padding-right: 2px;
-            font-size: 1rem;
-            cursor: pointer;
-            margin: 0;
-            &.bbn-router-tab-close{
-              top: 0px;
-            }
-            &.bbn-router-tab-menu{
-              bottom: -2px;
-            }
+          padding: 2px;
+          padding-right: 2px;
+          font-size: 1rem;
+          cursor: pointer;
+          margin: 0;
+          &.bbn-router-tab-close{
+            top: 0px;
           }
-        }
-        .bbn-tabs-selected {
-          display: none;
-          position: absolute;
-          bottom: 1px;
-          left: 1.15rem;
-          right: 1.15rem;
-          height: 3px;
-        }
-        &.bbn-tabs-static .bbn-tabs-icons i.bbn-router-tab-close {
-          display: none
-        }
-        &.bbn-tabs-active {
-          .bbn-tabs-icons i.bbn-router-tab-menu {
-            display: block
-          }
-          .bbn-tabs-selected {
-            display: block;
+          &.bbn-router-tab-menu{
+            bottom: -2px;
           }
         }
       }
+      .bbn-tabs-selected {
+        display: none;
+        position: absolute;
+        bottom: 1px;
+        left: 1.15rem;
+        right: 1.15rem;
+        height: 3px;
+      }
+      &.bbn-tabs-static .bbn-tabs-icons i.bbn-router-tab-close {
+        display: none
+      }
+      &.bbn-tabs-active {
+        .bbn-tabs-icons i.bbn-router-tab-menu {
+          display: block
+        }
+        .bbn-tabs-selected {
+          display: block;
+        }
+      }
     }
+  }
+  > .bbn-tabs-container{
+    width:100%;
     > .bbn-loader {
       align-items: center;
       justify-content: center;
@@ -244,18 +244,18 @@ bbn-tabs {
       }
     }
   }
-  .bbn-tabs{
+  bbn-tabs{
     margin-top: 0.5rem;
     height: calc(100% - 0.5rem);
-    .bbn-tabs {
+    bbn-tabs {
       margin-top: 0!important;
     }
   }
   
-  .bbn-pane .bbn-tabs{
+  .bbn-pane bbn-tabs{
     margin-top: 0;
   }
-  .bbn-pane .bbn-tabs .bbn-tabs{
+  .bbn-pane bbn-tabs bbn-tabs {
     margin-top: 0.5rem;
   }
 }

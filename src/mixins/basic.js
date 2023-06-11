@@ -36,14 +36,62 @@
            * @data {Boolean} isTablet
            * @memberof basicComponent
            */
-          isTablet: bbn.fn.isTabletDevice()
+          isTablet: bbn.fn.isTabletDevice(),
+          _currentPoup: null
         };
         if (this.$options.name && bbn.cp.defaults[this.$options.name.slice(4)]) {
           bbn.fn.extend(o, bbn.cp.defaults[this.$options.name.slice(4)]);
         }
         return o;
       },
+      computed: {
+        currentPopup(){
+          if ( !this._currentPopup ){
+            let e = this._retrievePopup(this);
+            if ( e ){
+              this._currentPopup = e;
+            }
+            else{
+              let vm = this;
+              while (vm = vm.$parent) {
+                if ( vm._currentPopup ){
+                  this._currentPopup = vm._currentPopup;
+                  break;
+                }
+                else if ( vm ){
+                  e = this._retrievePopup(vm);
+                  if ( e ){
+                    this._currentPopup = e;
+                    break;
+                  }
+                }
+                if (vm === this.$root) {
+                  break;
+                }
+              }
+            }
+          }
+          if ( this._currentPopup ){
+            return this._currentPopup;
+          }
+          return null;
+        }
+      },
       methods: {
+        /**
+         * Retrieves the closest popup component in the Vue tree
+         * @param vm Vue
+         * @returns Vue|false
+         */
+        _retrievePopup(vm){
+          if ( vm.$options && vm.$options._componentTag === 'bbn-popup' ){
+            return vm;
+          }
+          else if ( vm.getRef('popup') ){
+            return vm.getRef('popup');
+          }
+          return vm.$parent ? this._retrievePopup(vm.$parent) : false;
+        },
         /**
          * Creates a HTML string for recreating the component.
          * @method exportComponent
@@ -83,8 +131,7 @@
         * @return {Object}
         */
         getPopup() {
-          return;
-          let popup = bbn.cp.getPopup(this);
+          let popup = this.currentPopup;
           if (arguments.length && popup) {
             let cfg = arguments[0];
             let args = [];
@@ -170,7 +217,7 @@
           if (!referer && bbn.env.path) {
             referer = bbn.env.path;
           }
-          cfg.obj = bbn.fn.extend(bbn.fn.clone(cfg.obj || {}), { _bbn_referer: referer, _bbn_key: bbn.fn.getRequestId(cfg.url, cfg.obj, 'json') });
+          cfg.obj = bbn.fn.extend({}, cfg.obj || {}, { _bbn_referer: referer, _bbn_key: bbn.fn.getRequestId(cfg.url, cfg.obj, 'json') });
           return bbn.fn.post(cfg);
         },
         /**

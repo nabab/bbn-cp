@@ -40,15 +40,6 @@ class ${proto} extends bbnCp {
   }
 
   \$init(el) {
-    /**
-     * Counts the number of times the component has been repainted through the method updateComponent
-     */
-    Object.defineProperty(this, '_self', {
-      confifurable: false,
-      writable: false,
-      value: this
-    });
-
     bbnCp.prototype.\$init.apply(this, [el]);
     const data = [`;
       if (obj.data?.length) {
@@ -92,16 +83,9 @@ class ${proto} extends bbnCp {
 
           if (cfg.default !== undefined) {
             if (bbn.fn.isFunction(cfg.default)) {
-              let parenthesisPos = cfg.default.toString().indexOf('{');
-              if (parenthesisPos > -1) {
-                let fn = cfg.default.toString().substr(parenthesisPos);
+              const fn = bbn.fn.analyzeFunction(cfg.default);
                 code += `
-      default: () => ` + fn + `,`
-              }
-              else {
-                code += `
-      default: ` + cfg.validator.toString() + `,`
-              }
+      default: () => ` + fn.body + `,`
             }
             else {
               code += `
@@ -172,7 +156,7 @@ class ${proto} extends bbnCp {
       code += `
   static \$acceptedAttributes = ${JSON.stringify(acceptedAttr)};`;
 
-      bbn.fn.log(["NO IFACE?", obj])
+      //bbn.fn.log(["NO IFACE?", obj])
       if (obj.statics.length) {
         let iface = '""';
         if (obj.iface) {
@@ -290,7 +274,7 @@ catch (e) {
 
       sc.innerHTML = code;
       window.document.head.appendChild(sc);
-      bbn.fn.log("ENDING GENERATE CP CLASS", proto);
+      //bbn.fn.log("ENDING GENERATE CP CLASS", proto);
       return code;
     }
   })

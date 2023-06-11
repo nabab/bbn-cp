@@ -30,10 +30,9 @@
          v-text="prefix"/>
     <input :value="currentValue"
           :type="currentType"
-          v-focused.selected="focused"
           :name="name"
           ref="element"
-          :readonly="readonly"
+          :readonly="readonly ? 'readonly' : false"
           :disabled="isDisabled"
           :placeholder="placeholder"
           :maxlength="maxlength"

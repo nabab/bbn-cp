@@ -1,5 +1,5 @@
 (() => {
-  bbn.cp.directives['bbn-focused'] = {
+  bbn.cp.directives['bbn-focused'] = bbn.fn.createObject({
     inserted(el, binding) {
       if (binding.value === false) {
         return;
@@ -13,5 +13,5 @@
         }
       }, 250);
     }
-  };
+  });
 })();

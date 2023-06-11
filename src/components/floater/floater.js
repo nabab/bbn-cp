@@ -70,7 +70,7 @@
        * @prop {Element} element
        */
       element: {
-        type: Element
+        type: HTMLElement
       },
       /**
        * If set to true the minimum width will be equal to the element width
@@ -341,6 +341,9 @@
       closeIcon: {
         type: String,
         default: 'nf nf-fa-times'
+      },
+      index: {
+        type: Number
       }
     },
     data() {
@@ -416,10 +419,6 @@
          */
         outHeight: 0,
         /**
-         * @data {Array} [[]] currentButtons
-         */
-        currentButtons: this.buttons.slice(),
-        /**
          * @data {Boolean} [false] isOver
          */
         isOver: false,
@@ -438,6 +437,7 @@
         /**
          * @data {Boolean} [false] isInit
          */
+        currentButtons: this.buttons.splice(),
         isInit: false,
         definedWidth: null,
         definedHeight: null,
@@ -451,6 +451,24 @@
       };
     },
     computed: {
+      /**
+       * @data {Array} [[]] currentButtons
+       */
+      shownButtons() {
+        const res = [];
+        bbn.fn.each(this.currentButtons, (b, i) => {
+          const o = bbn.fn.createObject(b);
+          o.class = ['bbn-no-radius', {
+            'bbn-primary': b.preset === 'submit' || b.primary,
+            'bbn-no-border-right': i === this.currentButtons.length - 1
+          }, b.cls || ''];
+          if (b.cls) {
+            delete o.cls;
+          }
+          res.push(o);
+        });
+        return res;
+      },
       /**
        * Normalizes the property 'left'.
        * @computed formattedLeft
@@ -837,24 +855,22 @@
                 resolve(0);
                 return;
               }
-
+              
               let naturalWidth;
               let naturalHeight;
-              /*if (!this.isResized) {*/
-                scroll.$el.style.width = this.formatSize(this.currentMaxWidth || '100%');
-                scroll.$el.style.height = this.formatSize(this.currentMinHeight || '0px');
-                let containerEle = scroll.getRef('scrollContainer');
-                let contentEle = scroll.getRef('scrollContent');
-                naturalHeight = contentEle.scrollHeight;
-                bbn.fn.log("RESIZINF FLOTARE", naturalHeight)
+              let w = scroll.$el.clientWidth;
+              scroll.getNaturalDimensions().then((d) => {
+                naturalWidth = scroll.naturalWidth;
+                naturalHeight = scroll.naturalHeight;
                 if (!naturalHeight) {
                   this.isResizing = false;
                   resolve();
                   return;
                 }
 
-                let w = scroll.$el.clientWidth;
-                naturalWidth = contentEle && contentEle.children[0] ? contentEle.children[0].clientWidth : 0;
+                let containerEle = scroll.getRef('scrollContent');
+
+                bbn.fn.log("NATURAL", naturalHeight, naturalWidth);
                 if (!naturalWidth || (naturalWidth >= w)) {
                   let step = Math.ceil(w/10);
                   let num = 1;
@@ -889,59 +905,58 @@
                     }
                   }
                 }
-                scroll.$el.style.width = null;
-                scroll.$el.style.height = null;
               /*}
               else {
                 let contentEle = scroll.getRef('scrollContent');
                 naturalWidth = contentEle.scrollWidth;
                 naturalHeight = contentEle.scrollHeight;
               }*/
-              let dimensions = {
-                w: naturalWidth,
-                h: naturalHeight
-              };
-              let scrollChange = false;
-              if (this.scrollWidth !== dimensions.w) {
-                scrollChange = true;
-                this.scrollWidth = dimensions.w;
-              }
+                let dimensions = {
+                  w: naturalWidth,
+                  h: naturalHeight
+                };
+                let scrollChange = false;
+                if (this.scrollWidth !== dimensions.w) {
+                  scrollChange = true;
+                  this.scrollWidth = dimensions.w;
+                }
 
-              if (this.scrollHeight !== dimensions.h) {
-                scrollChange = true;
-                this.scrollHeight = dimensions.h;
-              }
+                if (this.scrollHeight !== dimensions.h) {
+                  scrollChange = true;
+                  this.scrollHeight = dimensions.h;
+                }
 
-              let currentHeight = this.definedHeight || 0;
-              let currentWidth = this.definedWidth || 0;
-              if ( !currentHeight ){
-                currentHeight = this.scrollHeight + this.outHeight;
-              }
-              if ( currentHeight > this.currentMaxHeight ){
-                currentHeight = this.currentMaxHeight;
-              }
-              if ( !currentWidth ){
-                currentWidth = this.scrollWidth;
-              }
-              if ( currentWidth > this.currentMaxWidth ){
-                currentWidth = this.currentMaxWidth;
-              }
-              if ( currentHeight < this.currentMinHeight ){
-                currentHeight = this.currentMinHeight;
-              }
-              if ( currentWidth < this.currentMinWidth ){
-                currentWidth = this.currentMinWidth;
-              }
-              let isChanged = 0;
-              if (!this.realWidth || (Math.abs(this.realWidth - currentWidth) > 2)) {
-                isChanged = 1;
-                this.realWidth = currentWidth;
-              }
-              if (!this.realHeight || (Math.abs(this.realHeight - currentHeight) > 2)) {
-                isChanged = 1;
-                this.realHeight = currentHeight;
-              }
-              resolve(isChanged);
+                let currentHeight = this.definedHeight || 0;
+                let currentWidth = this.definedWidth || 0;
+                if ( !currentHeight ){
+                  currentHeight = this.scrollHeight + this.outHeight;
+                }
+                if ( currentHeight > this.currentMaxHeight ){
+                  currentHeight = this.currentMaxHeight;
+                }
+                if ( !currentWidth ){
+                  currentWidth = this.scrollWidth;
+                }
+                if ( currentWidth > this.currentMaxWidth ){
+                  currentWidth = this.currentMaxWidth;
+                }
+                if ( currentHeight < this.currentMinHeight ){
+                  currentHeight = this.currentMinHeight;
+                }
+                if ( currentWidth < this.currentMinWidth ){
+                  currentWidth = this.currentMinWidth;
+                }
+                let isChanged = 0;
+                if (!this.realWidth || (Math.abs(this.realWidth - currentWidth) > 2)) {
+                  isChanged = 1;
+                  this.realWidth = currentWidth;
+                }
+                if (!this.realHeight || (Math.abs(this.realHeight - currentHeight) > 2)) {
+                  isChanged = 1;
+                  this.realHeight = currentHeight;
+                }
+                resolve(isChanged);
+              });
             }
           }
           else {
@@ -961,7 +976,7 @@
             if (!this.isResized) {
               this.isResized = true;
             }
-            bbn.fn.log("AFTER PROMISE ++++++++++++++", this.isResized = true)
+            bbn.fn.log("AFTER PROMISE ++++++++++++++", this.isResized)
 
             this.$emit('resize');
             if (!wasInit) {
@@ -1220,9 +1235,6 @@
           this.scrollResized = true;
         }
         e.preventDefault();
-        if ((dimensions.width !== this.scrollWidth) || (dimensions.height !== this.scrollHeight)) {
-          this.onResize(true);
-        }
       },
       /**
        * @method addClose
@@ -1320,19 +1332,19 @@
           }
         }
 
-        let popup = this.$parent && bbn.fn.isDom(this.$parent.$el) && (this.$parent.$el.className.indexOf('bbn-popup') > -1) ? this.$parent : null;
+        let popup = this.$parent?.bbnSchema?.tag === 'bbn-popup' ? this.$parent : null;
         if (this.forms.length && !confirm) {
-          //bbn.fn.log("The form should have closed the floater");
+          bbn.fn.log("The form should have closed the floater");
           this.forms[0].closePopup(force);
         }
         else if (popup && this.uid) {
-          //bbn.fn.log("The popup should have closed the floater");
+          bbn.fn.log("The popup should have closed the floater");
           let idx = popup.getIndexByUID(this.uid);
           popup.close(idx, true);
           this.$destroy();
         }
         else {
-          //bbn.fn.log("The floater should have closed itself");
+          bbn.fn.log("The floater should have closed itself");
           this.hide();
           this.$emit('close');
         }
@@ -1431,9 +1443,6 @@
     mounted() {
       if (this.isVisible) {
         this.ready = true;
-        setTimeout(() => {
-          this.onResize(true);
-        }, 300)
       }
 
       let ancestors = this.ancestors('bbn-floater');
@@ -1463,7 +1472,6 @@
       */
     },
     watch: {
-      /*
       lastKnownCtWidth() {
         if (this.ready && !this.isResizing) {
           this.keepCool(() => {

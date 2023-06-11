@@ -73,8 +73,12 @@
          * @emit click
          * @memberof eventsComponent
          */
-        click(e){
-          this.$emit('click', e)
+        click(e) {
+          if (bbn.fn.isEvent(e)) {
+            e.stopImmediatePropagation();
+          }
+
+          this.$emit('click', e);
         },
         /**
          * Emits the blur event.
@@ -83,9 +87,13 @@
          * @emit blur
          * @memberof eventsComponent
          */
-        blur(e){
+        blur(e) {
           this.isFocused = false;
-          this.$emit('blur', e)
+          if (bbn.fn.isEvent(e)) {
+            e.stopImmediatePropagation();
+          }
+
+          this.$emit('blur', e);
         },
         /**
          * Emits the event focus
@@ -94,12 +102,17 @@
          * @return {Function}
          * @memberof basicComponent
          */
-        focus(e){
+        focus(e) {
           let ele = this.getRef('element');
           if ( ele && !this.isFocused ){
             ele.focus();
             this.isFocused = true;
           }
+
+          if (bbn.fn.isEvent(e)) {
+            e.stopImmediatePropagation();
+          }
+
           this.$emit('focus', e);
         },
         /**
@@ -109,8 +122,12 @@
          * @memberof eventsComponent
          * @emit keyup
          */
-        keyup(e){
-          this.$emit('keyup', e)
+        keyup(e) {
+          if (bbn.fn.isEvent(e)) {
+            e.stopImmediatePropagation();
+          }
+
+          this.$emit('keyup', e);
         },
         /**
          * Emits the keydown event.
@@ -119,7 +136,11 @@
          * @memberof eventsComponent
          * @emit keydown
          */
-        keydown(e){
+        keydown(e) {
+          if (bbn.fn.isEvent(e)) {
+            e.stopImmediatePropagation();
+          }
+
           this.$emit('keydown', e)
         },
         /**
@@ -129,7 +150,7 @@
          * @memberof eventsComponent
          * @emit over
          */
-        over(e){
+        over(e) {
           this.$emit('over', e);
           setTimeout(() => {
             this.$emit('hover', true, e);
@@ -143,7 +164,7 @@
          * @memberof eventsComponent
          * @emit over
          */
-        out(e){
+        out(e) {
           this.$emit('out', e);
           setTimeout(() => {
             this.$emit('hover', false, e);
@@ -154,7 +175,7 @@
          * @method touchstart
          * @memberof eventsComponent
          */
-        touchstart(ev){
+        touchstart(ev) {
           this.$emit('touchstart', ev, this);
           if (!ev.defaultPrevented) {
             this.isTouched = true;

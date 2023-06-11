@@ -1,26 +1,26 @@
 (() => {
   const inserted = (el, binding) => {
     if (el.bbnDirectives === undefined) {
-      el.bbnDirectives = {};
+      el.bbnDirectives = bbn.fn.createObject();
     }
     if (el.bbnDirectives.droppable === undefined) {
-      el.bbnDirectives.droppable = {};
+      el.bbnDirectives.droppable = bbn.fn.createObject();
     }
     if ((binding.value !== false)
       && !el.classList.contains('bbn-undroppable')
     ) {
       el.dataset.bbn_droppable = true;
-      el.bbnDirectives.droppable = {
+      el.bbnDirectives.droppable = bbn.fn.createObject({
         active: true
-      };
+      });
       if (!el.classList.contains('bbn-droppable')) {
         el.classList.add('bbn-droppable');
       }
-      let options = {},
+      let options = bbn.fn.createObject(),
           asArg = !!binding.arg && binding.arg.length,
           asMods = bbn.fn.isArray(binding.modifiers) && !!binding.modifiers.length,
           asDataFromMods = asMods && binding.modifiers.includes('data'),
-          data = {},
+          data = bbn.fn.createObject(),
           dragOver = false,
           mouseOver = false;
       if (asArg) {
@@ -73,10 +73,10 @@
           && !dragOver
           && !!mouseOver
         ) {
-          dragOver = {
+          dragOver = bbn.fn.createObject({
             from: e.detail,
             to: options
-          };
+          });
           let ev = new CustomEvent('dragover', {
             cancelable: true,
             bubbles: true,
@@ -127,13 +127,13 @@
     }
     else {
       el.dataset.bbn_droppable = false;
-      el.bbnDirectives.droppable = {
+      el.bbnDirectives.droppable = bbn.fn.createObject({
         active: false
-      };
+      });
     }
   };
 
-  bbn.cp.directives['bbn-droppable'] = {
+  bbn.cp.directives['bbn-droppable'] = bbn.fn.createObject({
     inserted: inserted,
     update: (el, binding) => {
       if ((binding.value !== false)
@@ -152,10 +152,10 @@
       else {
         el.dataset.bbn_droppable = false;
         if (el.bbnDirectives === undefined) {
-          el.bbnDirectives = {};
+          el.bbnDirectives = bbn.fn.createObject();
         }
         if (el.bbnDirectives.droppable === undefined) {
-          el.bbnDirectives.droppable = {};
+          el.bbnDirectives.droppable = bbn.fn.createObject();
         }
         if (!!el.bbnDirectives.droppable.active) {
           if (bbn.fn.isFunction(el.bbnDirectives.droppable.onmouseenter)) {
@@ -171,13 +171,13 @@
             el.removeEventListener('beforedrop', el.bbnDirectives.droppable.onbeforedrop);
           }
         }
-        el.bbnDirectives.droppable = {
+        el.bbnDirectives.droppable = bbn.fn.createObject({
           active: false
-        };
+        });
         if (el.classList.contains('bbn-droppable')) {
           el.classList.remove('bbn-droppable');
         }
       }
     }
-  };
+  });
 })();

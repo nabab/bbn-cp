@@ -106,12 +106,12 @@
         ele.style.position = 'absolute';
       }
       if ((!!modes.left || !!modes.right) && (width !== rectEle.width)) {
-        let detail = {
+        let detail = bbn.fn.createObject({
               from: !!modes.left ? 'left' : 'right',
               movement: xMovement,
               size: width,
               oldSize: rectEle.width
-            },
+            }),
             ev = new CustomEvent('resize', {
               cancelable: true,
               bubbles: true,
@@ -135,12 +135,12 @@
         }
       }
       if ((!!modes.top || !!modes.bottom) && (height !== rectEle.height)) {
-        let detail = {
+        let detail = bbn.fn.createObject({
               from: !!modes.top ? 'top' : 'bottom',
               movement: yMovement,
               size: height,
               oldSize: rectEle.height
-            },
+            }),
             ev = new CustomEvent('userresize', {
               cancelable: true,
               bubbles: true,
@@ -193,31 +193,31 @@
 
   const inserted = (el, binding) => {
     if (el.bbnDirectives === undefined) {
-      el.bbnDirectives = {};
+      el.bbnDirectives = bbn.fn.createObject();
     }
     if (el.bbnDirectives.resizable === undefined) {
-      el.bbnDirectives.resizable = {};
+      el.bbnDirectives.resizable = bbn.fn.createObject();
     }
     if ((binding.value !== false)
       && !el.classList.contains('bbn-unresizable')
     ) {
-      let options = {},
+      let options = bbn.fn.createObject(),
           asMods = bbn.fn.isArray(binding.modifiers) && !!binding.modifiers.length,
           asContainerFromMods = asMods && binding.modifiers.includes('container'),
           asArg = !!binding.arg && binding.arg.length,
-          modes = {
+          modes = bbn.fn.createObject({
             top: !asMods || binding.modifiers.includes('top'),
             right: !asMods || binding.modifiers.includes('right'),
             bottom: !asMods || binding.modifiers.includes('bottom'),
             left: !asMods || binding.modifiers.includes('left')
-          },
+          }),
           container = false;
       el.dataset.bbn_resizable = true;
-      el.bbnDirectives.resizable = {
+      el.bbnDirectives.resizable = bbn.fn.createObject({
         active: true,
         resizing: false,
         enabledModes: modes
-      };
+      });
       if (!el.classList.contains('bbn-resizable')) {
         el.classList.add('bbn-resizable');
       }
@@ -250,7 +250,7 @@
           && !el.bbnDirectives.resizable.resizing
         ) {
           let rect = el.getBoundingClientRect(),
-              m = {};
+              m = bbn.fn.createObject();
           if (modes.left
             && (ev.x >= (rect.left - 2))
             && (ev.x <= (rect.left + 2))
@@ -330,13 +330,13 @@
     }
     else {
       el.dataset.resizable = false;
-      el.bbnDirectives.resizable = {
+      el.bbnDirectives.resizable = bbn.fn.createObject({
         active: false
-      };
+      });
     }
   };
 
-  bbn.cp.directives['bbn-resizable'] = {
+  bbn.cp.directives['bbn-resizable'] = bbn.fn.createObject({
     inserted: inserted,
     update: (el, binding) => {
       if ((binding.value !== false)
@@ -355,13 +355,13 @@
       else {
         el.dataset.bbn_resizable = false;
         if (el.bbnDirectives === undefined) {
-          el.bbnDirectives = {};
+          el.bbnDirectives = bbn.fn.createObject();
         }
         if (el.bbnDirectives === undefined) {
-          el.bbnDirectives = {};
+          el.bbnDirectives = bbn.fn.createObject();
         }
         if (el.bbnDirectives.resizable === undefined) {
-          el.bbnDirectives.resizable = {};
+          el.bbnDirectives.resizable = bbn.fn.createObject();
         }
         if (!!el.bbnDirectives.resizable.active) {
           if (bbn.fn.isFunction(el.bbnDirectives.resizable.onmousedown)) {
@@ -374,13 +374,13 @@
             el.removeEventListener('mousemove', el.bbnDirectives.resizable.onmousemove);
           }
         }
-        el.bbnDirectives.resizable = {
+        el.bbnDirectives.resizable = bbn.fn.createObject({
           active: false
-        };
+        });
         if (el.classList.contains('bbn-resizable')) {
           el.classList.remove('bbn-resizable');
         }
       }
     }
-  };
+  });
 })();

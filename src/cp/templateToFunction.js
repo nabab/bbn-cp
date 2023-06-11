@@ -29,6 +29,7 @@
     const c = x();
     let tmp = arr.filter(a => (a.conditionId === node.conditionId));
     if (!tmp.length || !node.conditionId) {
+      bbn.fn.log("FINISHING HERE ",node.conditionId, node.condition);
       return c.text;
     }
 
@@ -69,7 +70,7 @@
         x(c, sp, `    if (_e && !bbn.fn.isComment(_e)) {`);
         //x(c, sp, `      bbn.fn.log("REMOVING ${cond.id} from node2fn")`);
         x(c, sp, `      let _cp = bbn.cp.getComponent(_e.bbnComponentId)?.bbn || _t;`);
-        x(c, sp, `      bbn.fn.log("this is my moment", _e.tagName);`);
+        x(c, sp, `      bbn.fn.log("this is my moment", _e.tagName, _t.$options.name);`);
         x(c, sp, `      _t.\$removeDOM(_e);`);
         x(c, sp, `      _e = false;`);
         x(c, sp, `    }`);
@@ -99,7 +100,7 @@
    * @param {Array} done 
    * @returns 
    */
-  const getLoop = (cp, node, hashName) => {
+  const treatLoop = (cp, node, hashName) => {
     const clone = bbn.fn.clone(node);
     delete clone.loop;
     const c = x();
@@ -142,13 +143,11 @@
     sp -= 2;
     // Ending the loop
     x(c, sp, `}`);
-    /*
     x(c, sp, `Array.from(${parentName}.childNodes).forEach((a) => {`);
     x(c, sp, `  if ((a.bbnId === "${node.id}") && (${listName}.indexOf(a.bbnHash) === -1)) {`);
     x(c, sp, `    _t.\$removeDOM(a);`);
     x(c, sp, `  }`);
     x(c, sp, `});`);
-    */
     return c.text;
   };
 
@@ -309,11 +308,11 @@
               x(c, sp, `  else {`);
               x(c, sp, `    _t["${modelVarRoot}"] = _bbnEventValue;`);
               x(c, sp, `  }`);
-              x(c, sp, `  bbn.fn.log("FROM MODEL", _bbnEventValue, "${modelVarRoot}", Object.hasOwn(_t.\$cfg.props, "${modelVarRoot}"));`);
+              x(c, sp, `  bbn.fn.log("FROM MODEL ${name}", _bbnEventValue, "${modelVarRoot}", Object.hasOwn(_t.\$cfg.props, "${modelVarRoot}"));`);
             }
             x(c, sp, `    ${modelVarName} = _bbnEventValue;`);
-            x(c, sp, `    bbn.fn.log("VALUE ${modelVarName} CHANGED THROUGH MODEL TO " + _bbnEventValue);`);
             x(c, sp, `    \$event.target.bbnSchema.model["${name}"].value = _bbnEventValue;`);
+            x(c, sp, `    if (\$event.target?.bbn) {\$event.target?.bbn.\$tick();}`);
             x(c, sp, `    _t.\$tick();`);
             x(c, sp, `  }`);
             x(c, sp, `});`);
@@ -501,7 +500,7 @@
       x(c, sp, '');
       x(c, sp, '// Taking care of the node ' + node.id);
       if (node.loop?.exp) {
-        c.text += getLoop(cp, node, hashName);
+        c.text += treatLoop(cp, node, hashName);
         return;
       }
 
@@ -694,7 +693,13 @@
       x(c, sp, `};`);
       x(c, sp, `// _getInternalValue`);
       x(c, sp, `const _gIv = (_name, _hash) => {`);
-      x(c, sp, `  return _t.\$_getInternalValue(_r, _name, _hash);`);
+      x(c, sp, `  let val = undefined;`);
+      x(c, sp, `  try {`);
+      x(c, sp, `    val = _t.\$_getInternalValue(_r, _name, _hash);`);
+      x(c, sp, `  } catch (e) {`);
+      x(c, sp, `    bbn.fn.log("THERE SHOULD BE AN ERROR", _name, _t);`);
+      x(c, sp, `  }`);
+      x(c, sp, `  return val;`);
       x(c, sp, `};`);
       x(c, sp, `const _eles = bbn.fn.createObject({"-": _t.\$el});`);
       x(c, sp, `let _isCondTrue = false;`);

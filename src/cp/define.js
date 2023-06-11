@@ -65,11 +65,11 @@
         }
       }
       // Generating a basic HTML class based on the component config
-      bbn.fn.log('generateHTMLClass', publicName, cls, '-------');
+      //bbn.fn.log('generateHTMLClass', publicName, cls, '-------');
       bbn.cp.generateHTMLClass(publicName, cls);
       // Generating the code for the private class based on the component config
       //const privateClassCode = makePrivateClass(privateName, cpCfg);
-      bbn.fn.log('generateCpClass', publicName);
+      //bbn.fn.log('generateCpClass', publicName);
       bbn.cp.generateCpClass(publicName, cpCfg);
       //bbn.fn.log("fnCode", fnCode);
       //bbn.fn.log(makePrivateFunction(privateName, cpCfg));
@@ -77,7 +77,7 @@
       // Retrieving the class object
 
       // Getting the class object from the Window (seems impossible otherwise)
-      bbn.fn.log(publicName);
+      //bbn.fn.log(publicName);
       const args = [name, eval(publicName)];
       if (cpCfg.tag) {
         args.push({extends: cpCfg.tag});

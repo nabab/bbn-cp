@@ -86,21 +86,14 @@
             if (!this.isResizing) {
               this.isResizing = true;
               this.$forceUpdate();
-              if (this.$el.offsetHeight) {
-                if (!this.ready) {
-                  setTimeout(() => {
-                    this.onResize();
-                  }, 100)
-                }
-                else {
-                  // Setting initial dimensions
-                  let ms2 = this.setContainerMeasures();
-                  let ms1 = this.setResizeMeasures();
-                  if (ms1 || ms2) {
-                    bbn.fn.log(["DEFAULT ONRESIZE FN FROM " + this.$options.name, ms1, ms2]);
-                    this.$forceUpdate();
-                    this.$emit('resize');
-                  }
+              if (this.$el.style.display !== 'none') {
+                // Setting initial dimensions
+                let ms2 = this.setContainerMeasures();
+                let ms1 = this.setResizeMeasures();
+                if (ms1 || ms2) {
+                  bbn.fn.log(["DEFAULT ONRESIZE FN FROM " + this.$options.name, ms1, ms2]);
+                  this.$forceUpdate();
+                  this.$emit('resize');
                 }
               }
               this.isResizing = false;
@@ -131,6 +124,7 @@
             this.lastKnownWidth = w;
             resize = true;
           }
+
           return resize;
         },
         setContainerMeasures() {
@@ -139,7 +133,7 @@
           let offsetParent = this.$el.offsetParent;
           let ctH;
           let ctW;
-          if (this.parentResizer) {
+          if (this.parentResizer && this.parentResizer.lastKnownHeight) {
             ctH = this.parentResizer.lastKnownHeight;
             ctW = this.parentResizer.lastKnownWidth;
           }

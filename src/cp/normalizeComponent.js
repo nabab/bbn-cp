@@ -5,13 +5,13 @@
      * and add them to their respective namespaces
      */
     normalizeComponent(cfg, clsName) {
-      bbn.fn.warning("NORMALIZE " + clsName);
+      //bbn.fn.warning("NORMALIZE " + clsName);
       if (!bbn.fn.isObject(cfg)) {
         bbn.fn.log(cfg, clsName);
         throw new Error("Components definition must be objects");
       }
 
-      const res = {
+      const res = bbn.fn.createObject({
         props: bbn.fn.createObject(),
         data: [],
         computed: bbn.fn.createObject(),
@@ -22,7 +22,7 @@
         extension: null,
         statics: [],
         _bbnComponent: true
-      };
+      });
 
       if (cfg.mixins) {
         //bbn.fn.log("MIXINS", cfg);
@@ -68,9 +68,9 @@
               // If it's just an array or a constructor it's the type
               if (bbn.fn.isArray(props[propName]) || bbn.fn.isFunction(props[propName])) {
                 // We transform it into an object
-                props[propName] = {
+                props[propName] = bbn.fn.createObject({
                   type: props[propName]
-                };
+                });
               }
               // Now the prop should be an object
               bbn.fn.checkType(props[propName], 'object', `The prop ${propName} for ${clsName} is a ${typeof props[propName]}`);
@@ -109,10 +109,10 @@
                 throw new Error(bbn._("The computed must be a single function or an object with at least a get function (check %s in %s)", computedName, clsName));
               }
 
-              res.computed[computedName] = {
+              res.computed[computedName] = bbn.fn.createObject({
                 get: cfg.computed[computedName].get || cfg.computed[computedName],
                 set: cfg.computed[computedName].set || null
-              };
+              });
             }
 
             break;

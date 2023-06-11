@@ -1,7 +1,10 @@
 <div :class="[componentClass, {'bbn-tabs-scrollable': scrollable, 'bbn-tabs-vertical': isVertical}]">
-  <div class="bbn-tabs-container">
-    <div class="bbn-tabs-ul-container">
-      <div :class="{'bbn-flex-width': !isVertical, 'bbn-flex-height': isVertical}">
+  <div class="bbn-tabs-container"
+       bbn-forget="!scrollable">
+    <div class="bbn-tabs-ul-container"
+         bbn-forget="!scrollable">
+      <div :class="{'bbn-flex-width': !isVertical, 'bbn-flex-height': isVertical}"
+           bbn-forget="!scrollable">
         <div v-if="scrollable"
             class="bbn-tabs-button bbn-tabs-button-prev bbn-p">
           <div class="bbn-100 bbn-middle"
@@ -11,12 +14,15 @@
             </div>
           </div>
         </div>
-        <div class="bbn-flex-fill">
-          <component :is="scrollable ? 'bbn-scroll' : 'div'"
-                     ref="horizontal-scroll"
-                     v-bind="scrollCfg"
-                     style="height: 100%"
-                     @ready="onScrollReady">
+        <div :class="{
+          'bbn-flex-fill': scrollable,
+          'bbn-w-100': !scrollable
+        }">
+          <bbn-scroll bbn-forget="!scrollable"
+                      ref="horizontal-scroll"
+                      v-bind="scrollCfg"
+                      style="height: 100%"
+                      @ready="onScrollReady">
             <ul ref="tabgroup"
                 :class="['bbn-alt', 'bbn-tabs-tabs', 'bbn-bordered-bottom', 'bbn-flex-fill', {
                   'bbn-flex-width': fill
@@ -72,7 +78,7 @@
                              tabindex="0">
                   <span v-if="tab.icon"
                         :title="tab.title"
-                        :class="'bbn-tabs-main-icon bbn-iblock' + (tab.notext ? ' bbn-lg' : ' bbn-m')">
+                        :class="'bbn-tabs-main-icon bbn-iblock bbn-right-smargin ' + (tab.notext ? 'bbn-lg' : 'bbn-m')">
                     <i :class="tab.icon"/>
                   </span>
                   <span v-if="!tab.notext && tab.title"
@@ -106,7 +112,7 @@
                 </bbn-context>
               </li>
             </ul>
-          </component>
+          </bbn-scroll>
         </div>
         <div v-if="scrollable"
             class="bbn-tabs-button bbn-tabs-button-next bbn-p">

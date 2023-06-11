@@ -185,17 +185,6 @@ class bbnCp {
     },
   
     /**
-     * Updates the outer schema (with props and slots) of the component and ticks
-     * @param {Array} newSchema 
-     */
-    bbnUpdate(cp, newSchema) {
-      cp.bbnSchema = newSchema;
-      if (cp.bbn && cp.bbn.$isMounted && (!cp.bbnSchema.changes || cp.bbnSchema.changes.length)) {
-        bbn.fn.log("FROM BBN UPDATE")
-        cp.bbn.$tick();
-      }
-    },
-    /**
      * Inserts the given directives to the target element
      * @param {Object} directives
      * @param {HTMLElement} target
