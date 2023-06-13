@@ -144,7 +144,8 @@ return {
       }
     },
     data(){
-    return {
+      return {
+        isInit: false,
         /**
          * @data {String} currentMode
          */
@@ -307,7 +308,7 @@ return {
       this.$nextTick(() => {
         setTimeout(() => {
           if (this.$el && this.$el.style) {
-            this.$el.style.opacity = '1';
+            this.isInit = true;
             bbn.fn.each(this.$el.querySelectorAll("input"), (element, i) => {
               if ( (element.style.visibility === 'visible') ){
                 element.focus();

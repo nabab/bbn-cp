@@ -335,10 +335,38 @@ class bbnCp {
         configurable: false
       });
 
-      setInterval(() => {
-        this.$launchQueue();
-      }, bbn.cp.tickDelay);
+      this.$start();
 
+    });
+  }
+
+
+  $start() {
+    if (this.$interval) {
+      throw new Error(bbn._("The component %s is already started", this.$options.name));
+    }
+
+    Object.defineProperty(this, '$interval', {
+      value: setInterval(
+        () => this.$launchQueue(),
+        bbn.cp.tickDelay
+      ),
+      writable: false,
+      configurable: true
+    });
+  }
+
+
+  $stop() {
+    if (!this.$interval) {
+      throw new Error(bbn._("The component %s is not started", this.$options.name));
+    }
+
+    clearInterval(this.$interval);
+    Object.defineProperty(this, '$interval', {
+      value: null,
+      writable: false,
+      configurable: true
     });
   }
 
@@ -1580,7 +1608,7 @@ class bbnCp {
         },
         set(target, key, value) {
           if (target[key] !== value) {
-            console.log(['Setting', key, value, target, cp.$options.name]);
+            //bbn.fn.log(['Setting', key, value, target, cp.$options.name]);
             target[key] = value;
             cp.$updateAllComputed();
             cp.$tick();
@@ -2018,11 +2046,16 @@ class bbnCp {
    * @returns 
    */
   $set(obj, prop, value, writable = true, configurable = true) {
-    Object.defineProperty(obj, prop, {
-      value,
-      writable,
-      configurable
-    });
+    if (Object.hasOwn(obj, prop)) {
+      obj[prop] = this.$makeReactive(value);
+    }
+    else {
+      Object.defineProperty(obj, prop, {
+        value: this.$makeReactive(value),
+        writable,
+        configurable
+      });
+    }
     return this;
   }
 

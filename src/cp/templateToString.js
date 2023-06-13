@@ -17,7 +17,7 @@
       // Each element
       bbn.fn.each(tpl, ele => {
         if (ele.text) {
-          res += ele.text.trim();
+          res += ele.text;
         }
         else if (ele.tag) {
           if (ele.props['bbn-for']) {

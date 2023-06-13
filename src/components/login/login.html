@@ -1,5 +1,5 @@
 <div :class="['bbn-overlay', 'bbn-middle', componentClass]"
-     :style="'background-color:' + bgColor + '; transition: opacity 3s'">
+     :style="'background-color:' + bgColor + '; transition: opacity 3s; opacity: ' + (isInit ? 1 : 0).toString()">
   <bbn-popup ref="popup"
              v-if="!popup"
             :top="0"

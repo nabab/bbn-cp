@@ -584,6 +584,7 @@
     mounted() {
       this.onResize();
       bbn.fn.each(this.popups, a => this.open(a));
+      this.ready = true;
     },
     watch: {
       /**

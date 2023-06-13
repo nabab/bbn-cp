@@ -169,7 +169,7 @@ return {
         currentAutocomplete = this.autocomplete;
       }
 
-      let currentValue = this.value;
+      let currentValue = this.value || '';
       if (this.prefix && (this.value.indexOf(this.prefix) === 0)) {
         currentValue = bbn.fn.substr(currentValue, this.prefix.length);
       }
@@ -178,7 +178,7 @@ return {
         /**
          * @todo not used
          */
-        currentValue: currentValue,
+        currentValue,
         /**
          * The property 'autocomplete' normalized.
          * @data {String} [''] currentAutocomplete

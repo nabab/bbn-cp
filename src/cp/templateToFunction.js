@@ -198,7 +198,7 @@
           }
           
           if (node.attr[n].exp) {
-            x(c, sp, `_props['${n}'] = _sIr('${node.attr[n].hash}', ${node.attr[n].exp}, ${hashName});`);
+            x(c, sp, `_props['${n}'] = _sIr('${node.attr[n].hash}', ${node.attr[n].exp} || undefined, ${hashName});`);
             if (n === 'class') {
               x(c, sp, `_props['${n}'] = bbn.cp.convertClasses(_props['${n}']);`);
             }
@@ -294,7 +294,11 @@
           for (let name in node.model) {
             let m = node.model[name];
             const modelVarName = m.exp;
-            const modelVarRoot = modelVarName.split(/[\.\[]+/)[0];
+            const modelVarBits = modelVarName
+                    .replace(/\[([^\[\]]*)\]/g, '.$1.')
+                    .split('.')
+                    .filter(t => t !== '');
+            const modelVarRoot = modelVarBits[0];
             const eventName = m.modifiers.includes('lazy') ? 'change' : 'input';
             x(c, sp, `_t.\$dataModels["${m.hash}"]["${node.id}"]["${name}"][${hashName} || "_root"] = _eles["${node.id}"];`);
             x(c, sp, `_eles['${node.id}'].addEventListener("${eventName}", _bbnEventObject => {`);
@@ -310,7 +314,32 @@
               x(c, sp, `  }`);
               x(c, sp, `  bbn.fn.log("FROM MODEL ${name}", _bbnEventValue, "${modelVarRoot}", Object.hasOwn(_t.\$cfg.props, "${modelVarRoot}"));`);
             }
-            x(c, sp, `    ${modelVarName} = _bbnEventValue;`);
+            else {
+              let st = '_t';
+              let prop;
+              let isQuoted = false;
+              bbn.fn.each(modelVarBits, (bit, i) => {
+                if (i === modelVarBits.length - 1) {
+                  prop = bit;
+                  if (['"', "'", "`"].includes(bit.substr(0, 1))) {
+                    isQuoted = true;
+                  }
+
+                  return false;
+                }
+                else {
+                  if (['"', "'", "`"].includes(bit.substr(0, 1))) {
+                    st += `[${bit}]`;
+                  }
+                  else {
+                    st += `.${bit}`;
+                  }
+                }
+              });
+
+              x(c, sp, `  _t.$set(${st}, ${isQuoted ? prop : "'" + prop + "'"}, _bbnEventValue);`);
+            }
+            //x(c, sp, `    ${modelVarName} = _bbnEventValue;`);
             x(c, sp, `    \$event.target.bbnSchema.model["${name}"].value = _bbnEventValue;`);
             x(c, sp, `    if (\$event.target?.bbn) {\$event.target?.bbn.\$tick();}`);
             x(c, sp, `    _t.\$tick();`);

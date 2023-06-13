@@ -488,7 +488,7 @@ return {
          * Shows if the navigation mode is set to breacrumb.
          * @data {Boolean} isBreadcrumb
          */
-        isBreadcrumb: this.breadcrumb,
+        isBreadcrumb: !!this.breadcrumb,
         /**
          * itsMaster.isBreadcrumb watcher.
          * @data {Boolean} breadcrumbWatcher
@@ -1371,13 +1371,16 @@ return {
        * @param {String} baseURL
        * @returns {String}
        */
-       formatBaseURL(baseURL){
-        while ( bbn.fn.substr(baseURL, -1) === '/' ){
-          baseURL = bbn.fn.substr(baseURL, 0, baseURL.length-1);
+       formatBaseURL(baseURL) {
+        if (baseURL) {
+          while ( bbn.fn.substr(baseURL, -1) === '/' ){
+            baseURL = bbn.fn.substr(baseURL, 0, baseURL.length-1);
+          }
+          while ( bbn.fn.substr(baseURL, 0, 1) === '/' ){
+            baseURL = bbn.fn.substr(baseURL, 1);
+          }
         }
-        while ( bbn.fn.substr(baseURL, 0, 1) === '/' ){
-          baseURL = bbn.fn.substr(baseURL, 1);
-        }
+
         return baseURL ? baseURL + '/' : '';
       },
       /**

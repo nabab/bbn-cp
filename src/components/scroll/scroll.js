@@ -822,6 +822,20 @@ return {
        */
       initSize() {
         return this.onResize(true).then(() => {
+          const resizeObserver = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+              if (entry.contentBoxSize) {
+                bbn.fn.log("RESIZEOBS", entry.contentBoxSize, this.Cid);
+                this.$emit('resizecontent');
+                const contentBoxSize = entry.contentBoxSize[0];
+                bbn.fn.log("RESIZEOBS", contentBoxSize, this.Cid);
+              }
+            }
+          
+            console.log("Size changed");
+          });
+          
+          resizeObserver.observe(this.getRef('scrollContent'));
           this.ready = true;
         });
       },

@@ -774,27 +774,14 @@
           };
         }
       },
-      /**
-       * Shows the floater.
-       * @method show
-       */
-      show() {
-        this.currentVisible = true;
-      },
-      /**
-       * Hides the floater.
-       * @method hide
-       */
-      hide() {
-        this.currentVisible = false;
-      },
       onResize(force) {
-        if (this.isVisible
-            && this.$el
-            && (this.setContainerMeasures() || !this.isInit || force)
-        ) {
-          return this.realResize();
-        }
+        return bbn.cp.mixins.resizer.methods.onResize.apply(this, [force]).then(() => {
+          if (this.isVisible && this.$el) {
+            bbn.fn.log("NORMAL RESIZE", this.lastKnownCtHeight, this.lastKnownCtWidth);
+            
+            //return this.realResize();
+          }
+        });
 
         return new Promise(resolve => {
           setTimeout(() => {resolve();}, 0);
@@ -991,6 +978,18 @@
             this.isResizing = false;
           }
         });
+      },
+      /**
+       * Handles the resize of the scroller.
+       * @method scrollResize
+       * @fires onResize
+       * @fires updateComponents
+       */
+      scrollResize(e, dimensions) {
+        if (!this.scrollResized) {
+          this.scrollResized = true;
+        }
+        e.preventDefault();
       },
       /**
        * Returns an object of numbers as width and height based on whatever unit given.
@@ -1225,18 +1224,6 @@
 
       },
       /**
-       * Handles the resize of the scroller.
-       * @method scrollResize
-       * @fires onResize
-       * @fires updateComponents
-       */
-      scrollResize(e, dimensions) {
-        if (!this.scrollResized) {
-          this.scrollResized = true;
-        }
-        e.preventDefault();
-      },
-      /**
        * @method addClose
        */
       addClose(fn){
@@ -1433,7 +1420,7 @@
      */
     created(){
       this.componentClass.push('bbn-resize-emitter');
-      this.isResizing = true;
+      this.setContainerMeasures();
     },
     /**
      * @event mounted
@@ -1479,7 +1466,7 @@
             this._setMinMax();
             this.onResize();
             this.updatePosition();
-          }, 'changeDimension', 50)
+          }, 'changeDimension', 20)
         }
       },
       lastKnownCtHeight() {
@@ -1489,7 +1476,7 @@
             this._setMinMax();
             this.onResize();
             this.updatePosition();
-          }, 'changeDimension', 50)
+          }, 'changeDimension', 20)
         }
       },
       /**
