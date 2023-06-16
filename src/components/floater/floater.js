@@ -775,11 +775,11 @@
         }
       },
       onResize(force) {
-        return bbn.cp.mixins.resizer.methods.onResize.apply(this, [force]).then(() => {
-          if (this.isVisible && this.$el) {
+        return bbn.cp.mixins.resizer.methods.onResize.apply(this, [force]).then((res) => {
+          if (this.isVisible && this.$el && (res || force)) {
             bbn.fn.log("NORMAL RESIZE", this.lastKnownCtHeight, this.lastKnownCtWidth);
             
-            //return this.realResize();
+            return this.realResize();
           }
         });
 
@@ -791,6 +791,9 @@
         this.isResized = false;
         this.realResize();
       },
+      realResize() {
+        return this.onResize(true);
+      },
       /**
        * Handles the resize of the component.
        * @method onResize
@@ -801,11 +804,12 @@
        * @fires keepCool
        * @fires setResizeMeasures
        */
-      realResize() {
+      resizeAfterScroll() {
         let go = this.isVisible
             && bbn.fn.isDom(this.$el)
             && this.isActiveResizer()
             && (!this.isResizing || !this.isResized);
+        bbn.fn.log("FLOATER GO", go);
         if (go) {
           this.isResizing = true;
           this._setMinMax();
@@ -837,113 +841,62 @@
             }
             else {
               let scroll = this.getRef('scroll');
-              if (!scroll || !scroll.ready){
+              if (!scroll || !scroll.naturalWidth) {
                 // We do nothing and wait that the scroll does the resize
                 resolve(0);
                 return;
               }
-              
-              let naturalWidth;
-              let naturalHeight;
+              bbn.fn.warning("FLOATER RESIZE");
+              let naturalWidth = scroll.naturalWidth;
+              let naturalHeight = scroll.naturalHeight;
               let w = scroll.$el.clientWidth;
-              scroll.getNaturalDimensions().then((d) => {
-                naturalWidth = scroll.naturalWidth;
-                naturalHeight = scroll.naturalHeight;
-                if (!naturalHeight) {
-                  this.isResizing = false;
-                  resolve();
-                  return;
-                }
+              let h = scroll.$el.clientHeight;
+              bbn.fn.log("NATURAL", naturalHeight, naturalWidth);
+              let dimensions = {
+                w: naturalWidth,
+                h: naturalHeight
+              };
+              let scrollChange = false;
+              if (this.scrollWidth !== dimensions.w) {
+                scrollChange = true;
+                this.scrollWidth = dimensions.w;
+              }
 
-                let containerEle = scroll.getRef('scrollContent');
+              if (this.scrollHeight !== dimensions.h) {
+                scrollChange = true;
+                this.scrollHeight = dimensions.h;
+              }
 
-                bbn.fn.log("NATURAL", naturalHeight, naturalWidth);
-                if (!naturalWidth || (naturalWidth >= w)) {
-                  let step = Math.ceil(w/10);
-                  let num = 1;
-                  scroll.$el.style.height = this.formatSize(naturalHeight);
-                  let testWidth = w;
-                  naturalWidth = w;
-                  while (
-                    (testWidth > 0)
-                    && (naturalHeight === containerEle.scrollHeight)
-                    && (containerEle.scrollWidth === containerEle.clientWidth)
-                  ) {
-                    naturalWidth = testWidth;
-                    testWidth = w - (num * step);
-                    scroll.$el.style.width = this.formatSize(testWidth);
-                    num++;
-                  }
-                  if (step >= 40) {
-                    scroll.$el.style.width = this.formatSize(naturalWidth);
-                    num = 1;
-                    w = naturalWidth;
-                    testWidth = naturalWidth;
-                    step = 20;
-                    while (
-                      (testWidth > 0)
-                      && (naturalHeight === containerEle.scrollHeight)
-                      && (containerEle.scrollWidth === containerEle.clientWidth)
-                    ) {
-                      naturalWidth = testWidth;
-                      testWidth = w - (num * step);
-                      scroll.$el.style.width = this.formatSize(testWidth);
-                      num++;
-                    }
-                  }
-                }
-              /*}
-              else {
-                let contentEle = scroll.getRef('scrollContent');
-                naturalWidth = contentEle.scrollWidth;
-                naturalHeight = contentEle.scrollHeight;
-              }*/
-                let dimensions = {
-                  w: naturalWidth,
-                  h: naturalHeight
-                };
-                let scrollChange = false;
-                if (this.scrollWidth !== dimensions.w) {
-                  scrollChange = true;
-                  this.scrollWidth = dimensions.w;
-                }
-
-                if (this.scrollHeight !== dimensions.h) {
-                  scrollChange = true;
-                  this.scrollHeight = dimensions.h;
-                }
-
-                let currentHeight = this.definedHeight || 0;
-                let currentWidth = this.definedWidth || 0;
-                if ( !currentHeight ){
-                  currentHeight = this.scrollHeight + this.outHeight;
-                }
-                if ( currentHeight > this.currentMaxHeight ){
-                  currentHeight = this.currentMaxHeight;
-                }
-                if ( !currentWidth ){
-                  currentWidth = this.scrollWidth;
-                }
-                if ( currentWidth > this.currentMaxWidth ){
-                  currentWidth = this.currentMaxWidth;
-                }
-                if ( currentHeight < this.currentMinHeight ){
-                  currentHeight = this.currentMinHeight;
-                }
-                if ( currentWidth < this.currentMinWidth ){
-                  currentWidth = this.currentMinWidth;
-                }
-                let isChanged = 0;
-                if (!this.realWidth || (Math.abs(this.realWidth - currentWidth) > 2)) {
-                  isChanged = 1;
-                  this.realWidth = currentWidth;
-                }
-                if (!this.realHeight || (Math.abs(this.realHeight - currentHeight) > 2)) {
-                  isChanged = 1;
-                  this.realHeight = currentHeight;
-                }
-                resolve(isChanged);
-              });
+              let currentHeight = this.definedHeight || 0;
+              let currentWidth = this.definedWidth || 0;
+              if ( !currentHeight ){
+                currentHeight = this.scrollHeight + this.outHeight;
+              }
+              if ( currentHeight > this.currentMaxHeight ){
+                currentHeight = this.currentMaxHeight;
+              }
+              if ( !currentWidth ){
+                currentWidth = this.scrollWidth;
+              }
+              if ( currentWidth > this.currentMaxWidth ){
+                currentWidth = this.currentMaxWidth;
+              }
+              if ( currentHeight < this.currentMinHeight ){
+                currentHeight = this.currentMinHeight;
+              }
+              if ( currentWidth < this.currentMinWidth ){
+                currentWidth = this.currentMinWidth;
+              }
+              let isChanged = 0;
+              if (!this.realWidth || (Math.abs(this.realWidth - currentWidth) > 2)) {
+                isChanged = 1;
+                this.realWidth = currentWidth;
+              }
+              if (!this.realHeight || (Math.abs(this.realHeight - currentHeight) > 2)) {
+                isChanged = 1;
+                this.realHeight = currentHeight;
+              }
+              resolve(isChanged);
             }
           }
           else {
@@ -974,7 +927,7 @@
             }
           }
           else if (go && this.isInit) {
-            this.updatePosition();
+            //this.updatePosition();
             this.isResizing = false;
           }
         });
@@ -1420,7 +1373,6 @@
      */
     created(){
       this.componentClass.push('bbn-resize-emitter');
-      this.setContainerMeasures();
     },
     /**
      * @event mounted
@@ -1430,8 +1382,10 @@
     mounted() {
       if (this.isVisible) {
         this.ready = true;
+        this._setMinMax();
       }
-
+      
+      /* Useful ?
       let ancestors = this.ancestors('bbn-floater');
       if (this.element) {
         let ct = ancestors.length ? ancestors[ancestors.length-1] : this;
@@ -1443,6 +1397,7 @@
           this.realResize();
         }
       }
+      */
     },
     beforeDestroy(){
       if (this.onClose) {

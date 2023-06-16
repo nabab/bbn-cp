@@ -288,12 +288,13 @@
         }
         // No text nodes in the slots
         else if (node.textContent) {
-          const txt = bbn.fn.removeExtraSpaces(node.textContent)
+          const checkEmpty = bbn.fn.removeExtraSpaces(node.textContent);
+          const txt = node.textContent
                       // escaping dollars
                       //.replace(/\$/g, (_, g) => '\\$')
                       // replacing double curly braces by dollar and single
-                      .replace(/{{(.+?)}}/g, (_, g1) => '${' + g1 + '}');
-          if (txt) {
+                      .replace(/{{(.+?)}}/gs, (_, g1) => '${' + g1 + '}');
+          if (checkEmpty) {
             let isDynamic = txt.indexOf('${') > -1;
             let hash = bbn.fn.hash(txt);
             const item = bbn.fn.createObject({

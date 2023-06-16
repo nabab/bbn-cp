@@ -125,8 +125,7 @@
                       container: tree.getRef('helperContainer'),
                       data: {node: _self}
                     } : false"
-                    bbn-droppable:data="tree.selfDrop ? {node: _self} : false"
-              >
+                    bbn-droppable:data="tree.selfDrop ? {node: _self} : false">
                 <!-- The item component if given -->
                 <bbn-anon bbn-if="tree.itemComponent"
                             :is="tree.itemComponent"
@@ -134,10 +133,9 @@
                 <!-- Or the default template -->
                 <template bbn-else>
                   <span bbn-if="tree.icons"
-                        class="bbn-tree-node-block-icon"
-                  >
+                        class="bbn-tree-node-block-icon">
                     <!-- If icon is specifically false we leave the white space -->
-                    <span bbn-if="data.icon === false"></span>
+                    <span bbn-if="data.icon === false"/>
                     <!-- or if it's an image -->
                     <img bbn-elseif="data.icon && (data.icon.indexOf('data:image') === 0)"
                          :src="data.icon"
@@ -153,7 +151,7 @@
                   </span>
                   <!-- The node's text -->
                   <span class="bbn-tree-node-block-title">
-                    <span bbn-html="data.text"></span>
+                    <span bbn-html="data.text"/>
                   </span>
                 </template>
               </span>

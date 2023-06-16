@@ -275,7 +275,6 @@ return {
         isDragging: false,
         isFocused: false,
         previousTouch: {x: null, y: null},
-        interval: null,
         scrollReady: false,
         touchX: false,
         touchY: false,
@@ -287,13 +286,16 @@ return {
       };
     },
     computed: {
+      resizerObserved() {
+        return this.scrollable ? this.getRef('scrollContent') : this.$el;
+      },
       /**
        * Based on the prop fixedFooter and fullScreen, a string is returned containing the classes for the form template.
        *
        * @computed currentClass
        * @return {String}
        */
-      elementClass(){
+      elementClass() {
         let st = this.componentClass.join(' ');
         if ( !this.ready ){
           st += ' bbn-invisible';
@@ -314,8 +316,8 @@ return {
        */
       elementStyle(){
         let cfg = {
-          maxWidth: this.maxWidth ? bbn.fn.formatSize(this.maxWidth) : '',
-          maxHeight: this.maxHeight ? bbn.fn.formatSize(this.maxHeight) : '',
+          maxWidth: this.maxWidth ? bbn.fn.formatSize(this.maxWidth) : '100%',
+          maxHeight: this.maxHeight ? bbn.fn.formatSize(this.maxHeight) : '100%',
           minWidth: this.minWidth ? bbn.fn.formatSize(this.minWidth) : '',
           minHeight: this.minHeight ? bbn.fn.formatSize(this.minHeight) : '',
         };
@@ -324,6 +326,9 @@ return {
           cfg.width = cfg.maxWidth || '100%';
           cfg.height = cfg.maxHeight || '100%';
           cfg.visibility = 'hidden';
+        }
+        else {
+          cfg.visibility = 'visible';
         }
 
         if (this.currentWidth) {
@@ -773,6 +778,10 @@ return {
           this.$forceUpdate().then(() => {
             let sc = this.find('bbn-scroll');
             //bbn.fn.log(sc ? "THERE IS A SCROLL" : "THERE IS NO SCROLL");
+            const old = {
+              width: this.naturalWidth,
+              height: this.naturalHeight
+            }
             if (this.scrollable) {
               let d = {width: this.getRef('scrollContent').offsetWidth, height: this.getRef('scrollContent').offsetHeight};
               if ( !d.width || !d.height ){
@@ -783,7 +792,7 @@ return {
                   })
                 }
                 else{
-                  bbn.fn.log(d);
+                  bbn.fn.log("NAT DIM", d);
                   this.naturalWidth = this.$el.offsetWidth;
                   this.naturalHeight = this.$el.offsetHeight;
                 }
@@ -805,6 +814,14 @@ return {
             }
 
             this.isMeasuring = false;
+            this.$forceUpdate();
+            if ((old.width !== this.naturalWidth) || (old.height !== this.naturalHeight)) {
+              this.$emit('resizecontent');
+              bbn.fn.warning("EMITTING RESIZECONTENT");
+            }
+
+            bbn.fn.warning("NATURAL");
+            bbn.fn.log({w: this.naturalWidth, h: this.naturalHeight});
             resolve({w: this.naturalWidth, h: this.naturalHeight});
           });
         });
@@ -820,24 +837,17 @@ return {
        * @fires getNaturalDimensions
        * @fires onResize
        */
-      initSize() {
-        return this.onResize(true).then(() => {
-          const resizeObserver = new ResizeObserver((entries) => {
-            for (const entry of entries) {
-              if (entry.contentBoxSize) {
-                bbn.fn.log("RESIZEOBS", entry.contentBoxSize, this.Cid);
-                this.$emit('resizecontent');
-                const contentBoxSize = entry.contentBoxSize[0];
-                bbn.fn.log("RESIZEOBS", contentBoxSize, this.Cid);
-              }
-            }
-          
-            console.log("Size changed");
-          });
-          
-          resizeObserver.observe(this.getRef('scrollContent'));
-          this.ready = true;
-        });
+      async initSize() {
+        this.scrollReady = true;
+        await this.$forceUpdate();
+        if (this.maxHeight || this.maxWidth) {
+          //bbn.fn.log(natDim);
+          //throw new Error("BOOOOOO");
+          await this.getNaturalDimensions();
+        }
+        await this.onResize(true);
+        this.ready = true;
+        return this.$forceUpdate();
       },
       /**
        * Handles the resize of the scroll
@@ -848,12 +858,10 @@ return {
        * @returns Promise
        */
       onResize(force) {
-        // Prevent too many executions
-        return this.keepCool(() => {
+        return bbn.cp.mixins.resizer.methods.onResize.apply(this, [force]).then((res) => {
           // If the container measures have changed
-          if (this.setContainerMeasures() || force) {
+          if (res || force) {
             // Setting up the element's measures
-            this.setResizeMeasures();
             // getting current measures of element and scrollable container
             let container = this.$el;
             let content = this.getRef('scrollContent');
@@ -948,14 +956,32 @@ return {
        * @fires onResize
        */
       waitReady(ev) {
-        if (!this.ready) {
-          this.initSize();
+        if (this.readyTimeout) {
+          clearTimeout(this.readyTimeout);
+          bbn.fn.log("CLEARING TIMEOUT")
         }
-        else if (ev?.detail?.cp?.$options?.name !== 'bbn-floater') {
-          this.onResize();
+        this.readyTimeout = setTimeout(() => {
+          this.initSize();
+        }, 10)
+      },
+      setObserver() {
+        this.scrollObserver = new MutationObserver(mutations_list => {
+          mutations_list.forEach(mutation => {
+            bbn.fn.log("MUTATION", mutation);
+            if (mutation.addedNodes) {
+              this.waitReady();
+            }
+          });
+        });
+        this.scrollObserver.observe(this.getRef('scrollContent'), { subtree: true, childList: true });
+      },
+      unsetObserver() {
+        if (this.scrollObserver) {
+          this.scrollObserver.disconnect();
         }
       },
       preResize() {
+        /*
         if (this.scrollable && this.$el.offsetParent && this.isActiveResizer()) {
           let container = this.getRef('scrollContent');
           let contentWidth = Math.max(container.scrollWidth, container.clientWidth);
@@ -991,6 +1017,7 @@ return {
             }
           }
         }
+        */
       }
     },
     created(){
@@ -1000,25 +1027,23 @@ return {
      * @event mounted
      * @fires waitReady
      */
-    mounted(){
-      this.initSize();
-      this.scrollReady = true;
-      const config = { attributes: false, childList: true, subtree: true };
-      const ele = this.getRef('scrollContent');
-      const cp = this;
-      const callback = (mutationsList) => {
-        bbn.fn.log("mutationsList", mutationsList);
-        cp.$emit('resizecontent');
-      };
-      this.observer = new MutationObserver(callback);
-      this.observer.observe(ele, config);
-      cp.$emit('resizecontent');
+    mounted() {
+      this.setObserver();
+      this.waitReady();
+      /*
+      this.ready = true;
+      this.initSize().then(() => {
+        this.scrollReady = true;
+        bbn.fn.log("PARENT", this.$parent);
+        if ((typeof bbnFloaterCp === 'function') && (this.$parent instanceof bbnFloaterCp)) {
+          throw new Error("BOOOOOO");
+        }
+      });
+      //cp.$emit('resizecontent');
+      */
     },
     beforeDestroy() {
-      this.observer.disconnect();
-      if (this.interval) {
-        clearInterval(this.interval);
-      }
+      this.unsetObserver();
     },
     watch: {
       /**

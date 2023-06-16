@@ -187,10 +187,6 @@ return {
          */
         currentSlots: [],
         /**
-         * @data {Boolean} [false] resizeTimeout
-         */
-        resizeTimeout: false,
-        /**
          * @data {Number} [1] numCols
          */
         numCols: 1

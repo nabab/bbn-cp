@@ -1370,7 +1370,7 @@ return {
      */
     node: {
       tag: 'li',
-       props: {
+      props: {
         /**
          * @prop {String} filterString
          * @memberof bbn-tree-node

@@ -1,6 +1,5 @@
 <div :class="['bbn-overlay', componentClass]"
      v-show="showPopup"
-     @subready.stop
      :style="{zIndex: zIndex}">
   <bbn-floater v-for="(popup, i) in popups"
                :key="popup.uid"

@@ -81,6 +81,7 @@
       const args = [name, eval(publicName)];
       if (cpCfg.tag) {
         args.push({extends: cpCfg.tag});
+        bbn.fn.log(["NEW TAG: ", args ])
       }
 
       // Adding the newly defined component to the known array

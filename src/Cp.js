@@ -453,6 +453,9 @@ class bbnCp {
           });
         }
         ele = document.createElement(...constructorArgs);
+        if (originalTag !== tag) {
+          ele.setAttribute('is', originalTag);
+        }
         if (tag === 'bbn-anon') {
           if (d.cfg){
             if (d.cfg.mixins && d.cfg.mixins.indexOf(bbn.cp.mixins.basic) === -1) {
@@ -886,21 +889,6 @@ class bbnCp {
       configurable: false
     });
 
-    /*
-    if (this.$el.bbnSchema?.props) {
-      bbn.fn.iterate(this.$el.bbnSchema.props, (prop, n) => {
-        if (n === 'bbn-bind') {
-          bbn.fn.iterate(prop, (p2, n2) => {
-            this.$setProp(n2, p2);
-          });
-        }
-        else {
-          this.$setProp(n, prop);
-        }
-      })
-    }
-    */
-
     Object.defineProperty(this, '$events', {
       value: bbn.fn.createObject(),
       writable: false,
@@ -1291,6 +1279,8 @@ class bbnCp {
           this.$el[n] = p;
         }
       }
+
+      bbn.fn.log("SET PROP", n, p);
       this.$setProp(n, p);
     });
     const t1 = (new Date()).getTime();
@@ -1582,7 +1572,7 @@ class bbnCp {
 
   $makeReactive(obj) {
     const cp = this;
-    if (obj && (typeof obj === 'object') && !obj.__bbnIsProxy && !bbn.cp.isComponent(obj) && !bbn.fn.isDom(obj) && !bbn.fn.isFunction(obj) && !(obj instanceof Promise)) {
+    if (obj && (typeof obj === 'object') && !obj.__bbnIsProxy && [undefined, Object, Array].includes(obj.constructor)) {
       const handler = {
         get(target, key) {
           if (key == '__bbnIsProxy') {
@@ -1600,7 +1590,7 @@ class bbnCp {
           }
       
           // set value as proxy if object
-          if (prop && (typeof prop === 'object') && !prop.__bbnIsProxy && !bbn.cp.isComponent(prop) && !bbn.fn.isDom(prop) && !bbn.fn.isFunction(prop) && !(prop instanceof Promise)) {
+          if (prop && (typeof prop === 'object') && !prop.__bbnIsProxy && [undefined, Object, Array].includes(prop.constructor)) {
             target[key] = new Proxy(prop, handler);
           }
       
@@ -1665,11 +1655,22 @@ class bbnCp {
   }
 
   $setUpProp(name, cfg) {
-    const value = this.$checkPropValue(name, cfg);
-    const isDefined = value !== undefined;
-    this.$addNamespace(name, 'props');
-    if (isDefined) {
+    if (Object.hasOwn(this.$cfg.props, name)) {
+      Object.defineProperty(this, name, {
+        value: undefined,
+        writable: true,
+        configurable: true
+      });
+      Object.defineProperty(this.$props, name, {
+        value: undefined,
+        writable: true,
+        configurable: true
+      });
+      const value = this.$checkPropValue(name, cfg);
+      const isDefined = value !== undefined;
+      this.$addNamespace(name, 'props');
       this.$realSetProp(name, value);
+      bbn.fn.warning(bbn._("Setting up prop %s in %s", name, this.$options.name));
     }
   }
 
@@ -1686,6 +1687,7 @@ class bbnCp {
     }
 
     if (!Object.hasOwn(this.$props, name)) {
+      bbn.fn.warning(bbn._("The attribute %s in %s is not defined", name, this.$options.name));
       return;
     }
 
@@ -1991,8 +1993,9 @@ class bbnCp {
 
   $checkPropValue(name, cfg, value) {
     if (!cfg) {
-      cfg = this.$cfg.props[name];
+      throw new Error(bbn._("The property %s is not defined in component %s", name, this.$options.name));
     }
+
     let isDefined = Object.hasOwn(this.$options.propsData, name);
     let v = undefined;
     if (value !== undefined) {

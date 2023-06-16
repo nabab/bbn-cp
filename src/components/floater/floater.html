@@ -13,7 +13,6 @@
       @mouseleave="isOver = false"
       @mouseenter="isOver = true"
       @keydown.esc.prevent.stop="close()"
-      @subready.stop
       :style="currentStyle"
       v-resizable:container.left.right.bottom="ready && resizable ? $el.parentElement : false">
   <div v-if="arrow"
@@ -77,15 +76,15 @@
       <div :class="{'bbn-100': !ready || !pageable, 'bbn-flex-fill': pageable}">
         <bbn-scroll :latency="latency"
                     ref="scroll"
+                    v-if="currentMaxWidth"
+                    @resizecontent="resizeAfterScroll"
                     :class="{'bbn-flex-fill': pageable}"
                     :scrollable="scrollable"
                     :axis="axis"
                     :max-width="isMaximized ? '100%' : currentMaxWidth || null"
                     :max-height="isMaximized ? '100%' : scrollMaxHeight || null"
                     :min-width="currentMinWidth || null"
-                    :min-height="currentMinHeight > outHeight ? currentMinHeight - outHeight : null"
-                    @resizecontent="realResize"
-                    @hook:mounted="realResize">
+                    :min-height="currentMinHeight > outHeight ? currentMinHeight - outHeight : null">
           <component v-if="component"
                     ref="component"
                     :is="component"

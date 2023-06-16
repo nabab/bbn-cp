@@ -198,7 +198,7 @@
           }
           
           if (node.attr[n].exp) {
-            x(c, sp, `_props['${n}'] = _sIr('${node.attr[n].hash}', ${node.attr[n].exp} || undefined, ${hashName});`);
+            x(c, sp, `_props['${n}'] = _sIr('${node.attr[n].hash}', (${node.attr[n].exp}) || undefined, ${hashName});`);
             if (n === 'class') {
               x(c, sp, `_props['${n}'] = bbn.cp.convertClasses(_props['${n}']);`);
             }

@@ -60,7 +60,7 @@ class ${proto} extends bbnCp {
         for (let n in obj.props) {
           const cfg = obj.props[n];
           code += `
-    this.$setUpProp("` + bbn.fn.escapeDquotes(n) + `", {`;
+    this.$setUpProp("${bbn.fn.escapeDquotes(n)}", {`;
           if (cfg.required) {
             code += `
       required: true,`;
