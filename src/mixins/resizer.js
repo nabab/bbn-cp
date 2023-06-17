@@ -140,6 +140,7 @@
           return resize;
         },
 
+
         setContainerMeasures() {
           let resize = false;
           let isAbsolute = this.computedStyle ? ['absolute', 'fixed'].includes(this.computedStyle.position) : false;
@@ -166,9 +167,15 @@
             this.lastKnownCtWidth = ctW;
             resize = true;
           }
-          bbn.fn.log(["SET CONTAINER ONRESIZE MEASURES", this.$options.name, ctH, ctW, this.$parent]);
+
+          if (resize) {
+            bbn.fn.log(["SET CONTAINER ONRESIZE MEASURES", this.$options.name, ctH, ctW, this.$parent]);
+          }
+
           return resize;
         },
+
+
         getParentResizer(){
           let parentResizer = this.closest(".bbn-resize-emitter");
           // In case we have 2 comnponents in one
@@ -177,6 +184,8 @@
           }
           return parentResizer?.onResize !== undefined ? parentResizer : false;
         },
+
+
         /**
          * Defines the resize emitter and launches process when it resizes.
          * @method setResizeEvent

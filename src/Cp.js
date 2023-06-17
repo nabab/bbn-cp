@@ -1136,7 +1136,7 @@ class bbnCp {
    * @param {Boolean} force If true and the queue is empty, it will be filled with an empty array
    * @returns {undefined}
    */
-  $launchQueue(force) {
+  async $launchQueue(force) {
     if (force && !this.$queue.length) {
       this.$queue.push([]);
     }
@@ -1149,6 +1149,12 @@ class bbnCp {
         last.forEach(fn => fn.bind(this)());
       });
     }
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 0);
+    });
   }
 
 
@@ -1275,12 +1281,8 @@ class bbnCp {
           if (attr !== p) {
             this.$el.setAttribute(n, p);
           }
-
-          this.$el[n] = p;
         }
       }
-
-      bbn.fn.log("SET PROP", n, p);
       this.$setProp(n, p);
     });
     const t1 = (new Date()).getTime();
@@ -1425,7 +1427,6 @@ class bbnCp {
               }
               else {
                 ele.setAttribute(name, value);
-                ele[propName] = value;
               }
             }
           }
@@ -1655,22 +1656,11 @@ class bbnCp {
   }
 
   $setUpProp(name, cfg) {
-    if (Object.hasOwn(this.$cfg.props, name)) {
-      Object.defineProperty(this, name, {
-        value: undefined,
-        writable: true,
-        configurable: true
-      });
-      Object.defineProperty(this.$props, name, {
-        value: undefined,
-        writable: true,
-        configurable: true
-      });
-      const value = this.$checkPropValue(name, cfg);
-      const isDefined = value !== undefined;
-      this.$addNamespace(name, 'props');
+    const value = this.$checkPropValue(name, cfg);
+    const isDefined = value !== undefined;
+    this.$addNamespace(name, 'props');
+    if (isDefined) {
       this.$realSetProp(name, value);
-      bbn.fn.warning(bbn._("Setting up prop %s in %s", name, this.$options.name));
     }
   }
 
@@ -1681,13 +1671,17 @@ class bbnCp {
   $setProp(name, value) {
     name = bbn.fn.camelize(name);
     const cfg = this.$cfg.props[name];
+    if (bbn.cp.possibleAttributes.includes(name)) {
+      return;
+    }
+
     if (!this.$el.constructor.bbnFn.$acceptedAttributes.includes(name) && (name.indexOf('bbn') !== 0)) {
       bbn.fn.warning(bbn._("The attribute %s in %s is not a property", name, this.$options.name));
       return;
     }
 
     if (!Object.hasOwn(this.$props, name)) {
-      bbn.fn.warning(bbn._("The attribute %s in %s is not defined", name, this.$options.name));
+      //bbn.fn.warning(bbn._("The attribute %s in %s is not defined", name, this.$options.name));
       return;
     }
 
@@ -1743,7 +1737,7 @@ class bbnCp {
           });
         }
       }
-      if (!this.$isUpdating && this.$isCreated) {
+      if (!this.$isUpdating && this.$isMounted) {
         this.$tick()
       }
       return true;
@@ -1968,12 +1962,8 @@ class bbnCp {
     }
 
     if (!bbn.fn.isSame(original, value)) {
+      //this.$props[name] = value;
       Object.defineProperty(this, name, {
-        value: value,
-        writable: true,
-        configurable: true
-      });
-      Object.defineProperty(this.$props, name, {
         value: value,
         writable: true,
         configurable: true

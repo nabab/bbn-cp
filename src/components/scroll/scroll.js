@@ -816,12 +816,13 @@ return {
             this.isMeasuring = false;
             this.$forceUpdate();
             if ((old.width !== this.naturalWidth) || (old.height !== this.naturalHeight)) {
-              this.$emit('resizecontent');
-              bbn.fn.warning("EMITTING RESIZECONTENT");
+              if (old.width || old.height) {
+                this.$emit('resizecontent');
+                bbn.fn.warning("EMITTING RESIZECONTENT");
+                bbn.fn.log({w: this.naturalWidth, h: this.naturalHeight});
+              }
             }
 
-            bbn.fn.warning("NATURAL");
-            bbn.fn.log({w: this.naturalWidth, h: this.naturalHeight});
             resolve({w: this.naturalWidth, h: this.naturalHeight});
           });
         });
@@ -967,7 +968,6 @@ return {
       setObserver() {
         this.scrollObserver = new MutationObserver(mutations_list => {
           mutations_list.forEach(mutation => {
-            bbn.fn.log("MUTATION", mutation);
             if (mutation.addedNodes) {
               this.waitReady();
             }

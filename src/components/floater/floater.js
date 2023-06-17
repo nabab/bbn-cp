@@ -792,6 +792,7 @@
         this.realResize();
       },
       realResize() {
+
         return this.onResize(true);
       },
       /**
@@ -811,7 +812,6 @@
             && (!this.isResizing || !this.isResized);
         bbn.fn.log("FLOATER GO", go);
         if (go) {
-          this.isResizing = true;
           this._setMinMax();
         }
         return new Promise(resolve => {
@@ -1414,6 +1414,7 @@
       */
     },
     watch: {
+      /*
       lastKnownCtWidth() {
         if (this.ready && !this.isResizing) {
           this.keepCool(() => {
