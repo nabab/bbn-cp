@@ -1656,6 +1656,17 @@ class bbnCp {
   }
 
   $setUpProp(name, cfg) {
+    name = bbn.fn.camelize(name);
+    if (Object.hasOwn(this.$cfg.props, name)) {
+      if (!Object.hasOwn(this.$props, name)) {
+        Object.defineProperty(this.$props, name, {
+          value: undefined,
+          writable: false,
+          configurable: true
+        });
+      }
+    }
+
     const value = this.$checkPropValue(name, cfg);
     const isDefined = value !== undefined;
     this.$addNamespace(name, 'props');
@@ -1671,9 +1682,11 @@ class bbnCp {
   $setProp(name, value) {
     name = bbn.fn.camelize(name);
     const cfg = this.$cfg.props[name];
+    /*
     if (bbn.cp.possibleAttributes.includes(name)) {
       return;
     }
+    */
 
     if (!this.$el.constructor.bbnFn.$acceptedAttributes.includes(name) && (name.indexOf('bbn') !== 0)) {
       bbn.fn.warning(bbn._("The attribute %s in %s is not a property", name, this.$options.name));
@@ -1687,6 +1700,76 @@ class bbnCp {
 
     let v = this.$checkPropValue(name, cfg, value);
     this.$realSetProp(name, v);
+  }
+
+
+  $realSetProp(name, value) {
+    name = bbn.fn.camelize(name);
+    const original = this.$props[name];
+    if (value?.__bbnTarget) {
+      value = value.__bbnTarget;
+    }
+
+    if (!bbn.fn.isSame(original, value)) {
+      Object.defineProperty(this.$props, name, {
+        value: value,
+        writable: false,
+        configurable: true
+      });
+      Object.defineProperty(this, name, {
+        value: value,
+        writable: false,
+        configurable: true
+      });
+
+      if (this.$isInit && this.$cfg?.watch?.[name]) {
+        this.$watcher[name].handler.apply(this, [value, original]);
+      }
+
+      if (this.$isMounted) {
+        this.$emit('propchange', name, value, original);
+        this.$tick();
+      }
+    }
+  }
+
+
+  $checkPropValue(name, cfg, value) {
+    if (!cfg) {
+      throw new Error(bbn._("The property %s is not defined in component %s", name, this.$options.name));
+    }
+
+    let isDefined = Object.hasOwn(this.$options.propsData, name);
+    let v = undefined;
+    if (value !== undefined) {
+      v = value;
+      isDefined = true;
+    }
+    else if (isDefined) {
+      v = this.$options.propsData[name];
+    }
+    if (!isDefined && (cfg.default !== undefined)) {
+      if (bbn.fn.isObject(cfg.default) || bbn.fn.isArray(cfg.default)) {
+        throw new Error(bbn._("A function must be used to return object default values in %s", name));
+      }
+
+      v = bbn.fn.isFunction(cfg.default) ? cfg.default() : cfg.default;
+      isDefined = true;
+    }
+
+    if (cfg.required && (!isDefined || [null, undefined, ''].includes(v))) {
+      throw new Error(bbn._("The property %s is required in component %s", name, this.$options.name));
+    }
+
+    if (cfg.type && isDefined && ![null, undefined, ''].includes(v)) {
+      bbn.fn.checkType(v, cfg.type, bbn._("Wrong type for %s in component %s", name, this.$options.name));
+    }
+
+    if (isDefined && bbn.fn.isFunction(cfg.validator) && !cfg.validator(v)) {
+      throw new Error(bbn._("The property %s is invalid", name));
+    }
+
+    return v;
   }
 
 
@@ -1952,71 +2035,6 @@ class bbnCp {
     }
 
     this.$namespaces[name] = type;
-  }
-
-
-  $realSetProp(name, value) {
-    const original = this.$props[name];
-    if (value?.__bbnTarget) {
-      value = value.__bbnTarget;
-    }
-
-    if (!bbn.fn.isSame(original, value)) {
-      //this.$props[name] = value;
-      Object.defineProperty(this, name, {
-        value: value,
-        writable: true,
-        configurable: true
-      });
-
-      if (this.$isInit && this.$cfg?.watch?.[name]) {
-        this.$watcher[name].handler.apply(this, [value, original]);
-      }
-
-      if (this.$isMounted) {
-        this.$emit('propchange', name, value, original);
-        this.$tick();
-      }
-    }
-  }
-
-
-  $checkPropValue(name, cfg, value) {
-    if (!cfg) {
-      throw new Error(bbn._("The property %s is not defined in component %s", name, this.$options.name));
-    }
-
-    let isDefined = Object.hasOwn(this.$options.propsData, name);
-    let v = undefined;
-    if (value !== undefined) {
-      v = value;
-      isDefined = true;
-    }
-    else if (isDefined) {
-      v = this.$options.propsData[name];
-    }
-    if (!isDefined && (cfg.default !== undefined)) {
-      if (bbn.fn.isObject(cfg.default) || bbn.fn.isArray(cfg.default)) {
-        throw new Error(bbn._("A function must be used to return object default values in %s", name));
-      }
-
-      v = bbn.fn.isFunction(cfg.default) ? cfg.default() : cfg.default;
-      isDefined = true;
-    }
-
-    if (cfg.required && (!isDefined || [null, undefined, ''].includes(v))) {
-      throw new Error(bbn._("The property %s is required in component %s", name, this.$options.name));
-    }
-
-    if (cfg.type && isDefined && ![null, undefined, ''].includes(v)) {
-      bbn.fn.checkType(v, cfg.type, bbn._("Wrong type for %s in component %s", name, this.$options.name));
-    }
-
-    if (isDefined && bbn.fn.isFunction(cfg.validator) && !cfg.validator(v)) {
-      throw new Error(bbn._("The property %s is invalid", name));
-    }
-
-    return v;
   }
 
 
