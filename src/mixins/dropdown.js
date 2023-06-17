@@ -352,12 +352,12 @@
          */
         select(item, idx, dataIndex, e) {
           if (item && (!e || !e.defaultPrevented)) {
-            bbn.fn.log("SELECT", item);
             if (this.sourceAction && item[this.sourceAction] && bbn.fn.isFunction(item[this.sourceAction])) {
               item[this.sourceAction](item);
             }
             else if (item[this.uid || this.sourceValue] !== undefined) {
               this.emitInput(item[this.uid || this.sourceValue]);
+              bbn.fn.log("EMITTING INPUT FRPOM SELECTED", item[this.uid || this.sourceValue]);
               this.$emit('change', item[this.uid || this.sourceValue], idx, dataIndex, e);
             }
           }

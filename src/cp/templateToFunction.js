@@ -261,6 +261,7 @@
       if (node.model) {
         for (let n in node.model) {
           x(c, sp, `_tmp.model['${n}'].value = _tmp.props['${n}'] = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
+          x(c, sp, `bbn.fn.log("CHANGE MODEL IN " + _t.$options.name, _gIv(_node.model['${n}'].hash, ${hashName}));`);
         }
       }
       
@@ -304,15 +305,15 @@
             x(c, sp, `_eles['${node.id}'].addEventListener("${eventName}", _bbnEventObject => {`);
             x(c, sp, `  let \$event = _bbnEventObject;`);
             x(c, sp, `  let _bbnEventValue = \$event.detail?.args ? \$event.detail.args[0] : \$event.target?.value;`);
-            x(c, sp, `  if (${modelVarName} !== _bbnEventValue) {`);
+            x(c, sp, `  if (_sIr("${m.hash}", ${modelVarName}, ${hashName}) !== _bbnEventValue) {`);
             if (modelVarRoot === modelVarName) {
-              x(c, sp, `  if (Object.hasOwn(_t.\$cfg.props, "${modelVarRoot}")) {`);
-              x(c, sp, `    _t.\$setProp("${modelVarRoot}", _bbnEventValue);`);
-              x(c, sp, `  }`);
-              x(c, sp, `  else {`);
-              x(c, sp, `    _t["${modelVarRoot}"] = _bbnEventValue;`);
-              x(c, sp, `  }`);
-              x(c, sp, `  bbn.fn.log("FROM MODEL ${name}", _bbnEventValue, "${modelVarRoot}", Object.hasOwn(_t.\$cfg.props, "${modelVarRoot}"));`);
+              x(c, sp, `    if (Object.hasOwn(_t.\$cfg.props, "${modelVarRoot}")) {`);
+              x(c, sp, `      _t.\$setProp("${modelVarRoot}", _bbnEventValue);`);
+              x(c, sp, `    }`);
+              x(c, sp, `    else {`);
+              x(c, sp, `      _t["${modelVarRoot}"] = _bbnEventValue;`);
+              x(c, sp, `    }`);
+              x(c, sp, `    bbn.fn.log("FROM MODEL ${name}", _bbnEventValue, "${modelVarRoot}", Object.hasOwn(_t.\$cfg.props, "${modelVarRoot}"));`);
             }
             else {
               let st = '_t';
@@ -337,7 +338,7 @@
                 }
               });
 
-              x(c, sp, `  _t.$set(${st}, ${isQuoted ? prop : "'" + prop + "'"}, _bbnEventValue);`);
+              x(c, sp, `    _t.$set(${st}, ${isQuoted ? prop : "'" + prop + "'"}, _bbnEventValue);`);
             }
             //x(c, sp, `    ${modelVarName} = _bbnEventValue;`);
             x(c, sp, `    \$event.target.bbnSchema.model["${name}"].value = _bbnEventValue;`);

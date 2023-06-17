@@ -2,16 +2,16 @@
   "use strict";
 return {
     /**
-     * @mixin bbn.vue.basicComponent
-     * @mixin bbn.vue.listComponent
-     * @mixin bbn.vue.keepCoolComponent
-     * @mixin bbn.vue.resizerComponent
+     * @mixin bbn.cp.mixins.basic
+     * @mixin bbn.cp.mixins.list
+     * @mixin bbn.cp.mixins.keepCool
+     * @mixin bbn.cp.mixins.resizer
      */
     mixins: [
-      bbn.vue.basicComponent,
-      bbn.vue.listComponent,
-      bbn.vue.keepCoolComponent,
-      bbn.vue.resizerComponent
+      bbn.cp.mixins.basic,
+      bbn.cp.mixins.list,
+      bbn.cp.mixins.keepCool,
+      bbn.cp.mixins.resizer
     ],
     props: {
       /**

@@ -82,18 +82,14 @@ class bbnAnonCp extends bbnCp {
   }
 
   $setUpProps() {
-    bbn.fn.each(this.$cfg.props, (prop, name) => {
-      this.$setUpProp(name, prop);
-    });
-
     if (!this.$cfg.props.source) {
       this.$cfg.props.source = bbn.fn.createObject({
         type: [String, Object, Array],
       });
     }
 
-    this.$setUpProp("source", {
-      type: [String, Object, Array],
+    bbn.fn.each(this.$cfg.props, (prop, name) => {
+      this.$setUpProp(name, prop);
     });
   }
 

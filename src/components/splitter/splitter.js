@@ -722,8 +722,8 @@ return {
           document.body.addEventListener("touchcancel", this.resizeEnd);
           document.body.addEventListener("mouseup", this.resizeEnd);
           document.body.addEventListener("mouseleave", this.resizeEnd);
-          let vue1 = bbn.vue.find(this, 'bbn-pane', rs.pane1),
-              vue2 = bbn.vue.find(this, 'bbn-pane', rs.pane2),
+          let vue1 = this.find('bbn-pane', rs.pane1),
+              vue2 = this.find('bbn-pane', rs.pane2),
               pos = e.target.getBoundingClientRect(),
               pos1 = vue1.$el.getBoundingClientRect(),
               pos2 = vue2.$el.getBoundingClientRect();

@@ -1601,7 +1601,6 @@ class bbnCp {
           if (target[key] !== value) {
             //bbn.fn.log(['Setting', key, value, target, cp.$options.name]);
             target[key] = value;
-            cp.$updateAllComputed();
             cp.$tick();
           }
 
@@ -1665,11 +1664,12 @@ class bbnCp {
           configurable: true
         });
       }
+
+      this.$addNamespace(name, 'props');
     }
 
     const value = this.$checkPropValue(name, cfg);
     const isDefined = value !== undefined;
-    this.$addNamespace(name, 'props');
     if (isDefined) {
       this.$realSetProp(name, value);
     }

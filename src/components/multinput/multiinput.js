@@ -15,15 +15,15 @@
    */
   Vue.component("bbn-input", {
     /**
-     * @mixin bbn.vue.basicComponent
-     * @mixin bbn.vue.eventsComponent
-     * @mixin bbn.vue.inputComponent
+     * @mixin bbn.cp.mixins.basic
+     * @mixin bbn.cp.mixins.events
+     * @mixin bbn.cp.mixins.input
      */
     mixins: 
     [
-      bbn.vue.basicComponent, 
-      bbn.vue.eventsComponent,
-      bbn.vue.inputComponent
+      bbn.cp.mixins.basic, 
+      bbn.cp.mixins.events,
+      bbn.cp.mixins.input
     ],
     props: {
       /**

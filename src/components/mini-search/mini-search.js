@@ -17,25 +17,25 @@
 
   return {
       /**
-       * @mixin bbn.vue.basicComponent
-       * @mixin bbn.vue.eventsComponent
-       * @mixin bbn.vue.inputComponent
-       * @mixin bbn.vue.resizerComponent
-       * @mixin bbn.vue.listComponent
-       * @mixin bbn.vue.keynavComponent
-       * @mixin bbn.vue.urlComponent
-       * @mixin bbn.vue.dropdownComponent
+       * @mixin bbn.cp.mixins.basic
+       * @mixin bbn.cp.mixins.events
+       * @mixin bbn.cp.mixins.input
+       * @mixin bbn.cp.mixins.resizer
+       * @mixin bbn.cp.mixins.list
+       * @mixin bbn.cp.mixins.keynav
+       * @mixin bbn.cp.mixins.url
+       * @mixin bbn.cp.mixins.dropdown
         */
       mixins:
       [
-        bbn.vue.basicComponent,
-        bbn.vue.eventsComponent,
-        bbn.vue.inputComponent,
-        bbn.vue.resizerComponent,
-        bbn.vue.listComponent,
-        bbn.vue.keynavComponent,
-        bbn.vue.urlComponent,
-        bbn.vue.dropdownComponent
+        bbn.cp.mixins.basic,
+        bbn.cp.mixins.events,
+        bbn.cp.mixins.input,
+        bbn.cp.mixins.resizer,
+        bbn.cp.mixins.list,
+        bbn.cp.mixins.keynav,
+        bbn.cp.mixins.url,
+        bbn.cp.mixins.dropdown
       ],
       props: {
         /**

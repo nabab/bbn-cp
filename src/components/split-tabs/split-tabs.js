@@ -31,8 +31,8 @@
    */
   Vue.component("bbn-split-tabs", {
     /**
-     * @mixin bbn.vue.basicComponent
-     * @mixin bbn.vue.localStorageComponent
+     * @mixin bbn.cp.mixins.basic
+     * @mixin bbn.cp.mixins.localStorage
      */
     mixins: 
     [

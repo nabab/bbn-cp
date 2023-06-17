@@ -291,7 +291,7 @@ class bbnCp {
      * Sets default object for a component, accessible through bbn.vue.defaults[cpName].
      * 
      * @method initDefaults
-     * @memberof bbn.vue
+     * @memberof bbn.cp
      * @param Object defaults 
      * @param String cpName 
      */
@@ -304,7 +304,7 @@ class bbnCp {
 
     /**
      * @method setDefaults
-     * @memberof bbn.vue
+     * @memberof bbn.cp
      * @param {Object} defaults 
      * @param {String} cpName
      */
