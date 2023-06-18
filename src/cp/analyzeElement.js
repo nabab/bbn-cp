@@ -1,4 +1,5 @@
 (() => {
+  const eventInstrcutions = ['stop', 'prevent'];
   const parser = new DOMParser();
 
   bbn.fn.autoExtend('cp', {
@@ -45,7 +46,7 @@
         const main = attrName.indexOf(':') > 0 ? attrName.split(':') : [attrName];
         const modifiers = main[0].split('.');
         const modelValue = main.length > 1 ? main[1] : 'value';
-        let a = modifiers.splice(0, 1)[0];
+        let a = bbn.fn.camelToCss(modifiers.splice(0, 1)[0]);
         // replaces v- by bbn-
         if (a.indexOf('v-') === 0) {
           a = 'bbn-' + a.substr(2);
@@ -62,9 +63,14 @@
 
         // Events
         if (a.indexOf('@') === 0) {
-          let o = bbn.fn.createObject();
+          let o = bbn.fn.createObject({modifiers: []});
           bbn.fn.each(modifiers, modifier => {
-            o[modifier] = true;
+            if (eventInstrcutions.includes(modifier)) {
+              o[modifier] = true;
+            }
+            else {
+              o.modifiers.push(modifier);
+            }
           });
           o.action = value;
           let eventName = a.substr(1);

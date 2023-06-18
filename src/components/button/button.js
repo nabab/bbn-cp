@@ -213,14 +213,15 @@
        * @emit click
        */
       click(e){
-        if ( this.url ){
+        if (this.url) {
           bbn.fn.link(this.url);
+          e.preventDefault();
+          e.stopPropagation();
         }
-        else{
-          this.$emit('click', e, this);
-          if ( !e.defaultPrevented && this.action ){
-            this.action(e, this);
-          }
+        else if (!e.defaultPrevented && this.action && bbn.fn.isFunction(this.action)) {
+          this.action(e, this);
+          e.preventDefault();
+          e.stopPropagation();
         }
       }
     },

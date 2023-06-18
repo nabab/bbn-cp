@@ -120,6 +120,9 @@ return {
       strict: {
         type: Boolean,
         default: false
+      },
+      component: {
+        type: [Object, String, Function]
       }
     },
     model: {

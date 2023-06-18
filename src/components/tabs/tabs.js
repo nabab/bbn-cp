@@ -153,6 +153,7 @@ return {
       },
       getMenuFn(idx) {
         if (this.router) {
+          bbn.fn.log("GET MENU FN", idx, this.router.getMenuFn(idx));
           return this.router.getMenuFn(idx);
         }
       },

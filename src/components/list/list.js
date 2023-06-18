@@ -479,14 +479,7 @@ return {
        * @param {Number} idx
        * @emits select
        */
-      select(idx){
-        if ( this.tmpDisabled === idx ){
-          return;
-        }
-        this.tmpDisabled = idx;
-        setTimeout(() => {
-          this.tmpDisabled = false;
-        }, 1000);
+      select(idx) {
         let item = this.filteredData[idx] || null;
         if ( item && item.data && !item.data.disabled ) {
           let ev = new Event('select', {cancelable: true});
@@ -497,6 +490,8 @@ return {
           else{
             let v = item.data[this.sourceValue];
             this.$emit(this.isSelected(idx) ? "unselect" : "select", item.data, idx, item.index, ev);
+            bbn.fn.log("SELECT " + idx, ev.defaultPrevented, this.mode, item.data, idx, item.index, this.isSelected(idx));
+
             if (!ev.defaultPrevented) {
               if ( (this.mode === 'selection') && !item.selected ){
                 let prev = bbn.fn.getRow(this.filteredData, "selected", true);

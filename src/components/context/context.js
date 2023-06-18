@@ -148,7 +148,11 @@ return {
         currentLeft: null,
         currentTop: null,
         currentRight: null,
-        currentBottom: null
+        currentBottom: null,
+        currentMinWidth: this.minWidth || 0,
+        currentMaxWidth: this.maxWidth || bbn.env.width,
+        currentMinHeight: this.minHeight || 0,
+        currentMaxHeight: this.maxHeight || bbn.env.height
       };
     },
     methods: {
@@ -159,6 +163,7 @@ return {
        * @fires updateData
        */
       clickItem(e){
+        bbn.fn.log("CLICK ITEM", e.target, this.currentData);
         if (
           !this.disabled
           && (
@@ -223,16 +228,18 @@ return {
           this.showFloater = !this.showFloater;
         }
       },
-      onMouseDown(e){
-        let event = new CustomEvent('mousedown', {
-          cancelable: true,
-          detail: e
-        });
-        this.$emit('mousedown', event);
-        if (!event.defaultPrevented) {
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
+      onMouseDown(e) {
+        if (!(e instanceof CustomEvent)) {
+          let event = new CustomEvent('mousedown', {
+            cancelable: true,
+            detail: e
+          });
+          this.$emit('mousedown', event);
+          if (!event.defaultPrevented) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+          }
         }
       }
     },

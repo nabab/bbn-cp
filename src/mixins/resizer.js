@@ -98,7 +98,6 @@
                 if (ms1 || ms2) {
                   bbn.fn.log(["DEFAULT ONRESIZE FN FROM " + this.$options.name, ms1, ms2]);
                   this.$forceUpdate();
-                  this.$emit('resize');
                 }
               }
 
@@ -197,9 +196,7 @@
             this.resizerObserver = new ResizeObserver((entries) => {
               for (const entry of entries) {
                 if (entry.contentBoxSize?.[0]) {
-                  this.setContainerMeasures();
-                  this.setResizeMeasures();
-                  this.$emit('resize');
+                  this.onResize();
                   bbn.fn.log(bbn._("RESIZEOBS from %s", this.$options.name), entry.contentBoxSize, this.Cid);
                 }
               }

@@ -7,11 +7,7 @@
                   componentClass
                 ]"
         :aria-label="text"
-        @click.stop="click($event)"
-        @focus="focus($event)"
-        @blur="blur($event)"
-        @keydown="keydown($event)"
-        @keyup="keyup($event)"
+        @click="click($event)"
         @mouseenter="over($event)"
         @mouseleave="out($event)"
         :type="type"

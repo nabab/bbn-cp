@@ -19,6 +19,10 @@
         watch: bbn.fn.createObject(),
         components: bbn.fn.createObject(),
         componentNames: bbn.fn.createObject(),
+        model: bbn.fn.createObject({
+          prop: "value",
+          event: "input"
+        }),
         extension: null,
         statics: [],
         _bbnComponent: true
@@ -152,11 +156,23 @@
 
             break;
 
+          case 'model':
+            if (cfg.model) {
+              bbn.fn.checkType(cfg.model, 'object', bbn._("Model configuration must be objects, check %s", clsName));
+              if (!['input', 'change'].includes(cfg.model.event) || !bbn.fn.isString(cfg.model.prop)) {
+                throw new Error(bbn._("The model configuration must have an event (input or change) and a prop (check %s)", cfg.model, clsName));
+              }
+              res.model = cfg.model;
+            }
+
+            break;
+
           case 'extension':
             if (cfg.extension) {
               bbn.fn.checkType(cfg.extension, 'object', bbn._("Extensions must be objects, check %s", clsName));
               res.extension = cfg.extension;
             }
+
             break;
 
           case 'render':
@@ -180,6 +196,7 @@
                 res.statics.push(fn);
               });
             }
+
             break;
 
           case 'iface':
@@ -187,6 +204,7 @@
               bbn.fn.checkType(cfg.iface, ['object', 'function'], bbn._("The ifaceace property must be an object or a function in %s", clsName));
               res.iface = cfg.iface;
             }
+
             break;
 
           /** 
@@ -198,6 +216,7 @@
               bbn.fn.checkType(cfg.tag, 'string', bbn._("Tags must be strings (check %s)", clsName));
               res.tag = cfg.tag;
             }
+
             break;
 
           default:

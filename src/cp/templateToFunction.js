@@ -361,6 +361,11 @@
             x(c, sp, `_eles['${node.id}'].addEventListener("${n}", _bbnEventObject => {`);
             //x(c, sp, `  bbn.fn.log("EXECUTING EVENT ${n} ${ev.action} ON ${node.tag}", _bbnEventObject.detail);`);
             x(c, sp, `  let \$event = _bbnEventObject;`);
+            if (ev.modifiers.length) {
+              x(c, sp, `  if (_bbnEventObject.key && !${JSON.stringify(ev.modifiers)}.includes(_bbnEventObject.key.toLowerCase())) {`);
+              x(c, sp, `    return;`);
+              x(c, sp, `  }`);
+            }
 
             if (ev.prevent) {
               x(c, sp, `  $event.preventDefault();`);
@@ -377,6 +382,7 @@
               if ((ev.action.indexOf(';') === -1) && (ev.action.indexOf('=') === -1) && (ev.action.indexOf('++') === -1) && (ev.action.indexOf('--') === -1) && (ev.action[ev.action.length-1] !== ')')) {
                 act += '(...args)';
               }
+
               act += `;`;
               x(c, sp, act);
               x(c, sp, `  bbn.fn.iterate(_bbnCurrentData, (_bbnCurrentDataValue, _bbnCurrentDataIndex) => {`);
@@ -772,6 +778,55 @@
           }
           //x(c, sp, `bbn.fn.log("PROPS", _props);`);
           x(c, sp, `_t.\$updateFromSchema(_props);`);
+          if (tpl[0].events) {
+            x(c, sp, `if (_r._num === 1) {`);
+            sp += 2;
+            for (let n in tpl[0].events) {
+              let ev = tpl[0].events[n];
+              //x(c, sp, `bbn.fn.log("SETTING EVENT ${n} ON " + _t.\$options.name, _ele, ${isAnew});`);
+              x(c, sp, `_eles['-'].addEventListener("${n}", _bbnEventObject => {`);
+              //x(c, sp, `  bbn.fn.log("EXECUTING EVENT ${n} ${ev.action} ON ${node.tag}", _bbnEventObject.detail);`);
+              if (ev.modifiers.length) {
+                x(c, sp, `  if (_bbnEventObject.key && !${JSON.stringify(ev.modifiers)}.includes(_bbnEventObject.key.toLowerCase())) {`);
+                x(c, sp, `    return;`);
+                x(c, sp, `  }`);
+              }
+
+              x(c, sp, `  let \$event = _bbnEventObject;`);
+
+              if (ev.prevent) {
+                x(c, sp, `  $event.preventDefault();`);
+              }
+
+              if (ev.stop) {
+                x(c, sp, `  $event.stopImmediatePropagation();`);
+              }
+
+              if (ev.action) {
+                x(c, sp, `  const args = _bbnEventObject.detail?.args || [];`);
+                x(c, sp, `  args.push(_bbnEventObject);`);
+                let act = `  ${ev.action}`
+                if ((ev.action.indexOf(';') === -1) && (ev.action.indexOf('=') === -1) && (ev.action.indexOf('++') === -1) && (ev.action.indexOf('--') === -1) && (ev.action[ev.action.length-1] !== ')')) {
+                  act += '(...args)';
+                }
+                act += `;`;
+                x(c, sp, act);
+                x(c, sp, `  bbn.fn.iterate(_bbnCurrentData, (_bbnCurrentDataValue, _bbnCurrentDataIndex) => {`);
+                x(c, sp, `    //bbn.fn.log('_bbnCurrentDataValue, _bbnCurrentDataIndex', _bbnCurrentDataValue, _bbnCurrentDataIndex, eval(_bbnCurrentDataIndex), _t[_bbnCurrentDataIndex], '++++');`);
+                x(c, sp, `    if (_bbnCurrentDataValue !== eval(_bbnCurrentDataIndex)) {`);
+                x(c, sp, `      if (_t[_bbnCurrentDataIndex] !== undefined) {`);
+                x(c, sp, `        _t[_bbnCurrentDataIndex] = eval(_bbnCurrentDataIndex);`);
+                x(c, sp, `      }`);
+                x(c, sp, `      _bbnCurrentData[_bbnCurrentDataIndex] = _t[_bbnCurrentDataIndex];`);
+                x(c, sp, `    }`);
+                x(c, sp, `  });`);
+              }
+              //x(c, sp, `  _t.\$tick();`);
+              x(c, sp, `});`);
+            }
+            sp -= 2;
+            x(c, sp, `}`);
+          }
         }
         else {
           x(c, sp, `_t.\$updateFromSchema();`);

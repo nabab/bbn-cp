@@ -779,7 +779,7 @@
           if (this.isVisible && this.$el && (res || force)) {
             bbn.fn.log("NORMAL RESIZE", this.lastKnownCtHeight, this.lastKnownCtWidth);
             
-            return this.realResize();
+            //return this.realResize();
           }
         });
 
@@ -809,7 +809,7 @@
         let go = this.isVisible
             && bbn.fn.isDom(this.$el)
             && this.isActiveResizer()
-            && (!this.isResizing || !this.isResized);
+            && !this.isResized;
         bbn.fn.log("FLOATER GO", go);
         if (go) {
           this._setMinMax();
@@ -1383,6 +1383,9 @@
       if (this.isVisible) {
         this.ready = true;
         this._setMinMax();
+        if (!this.scrollable || this.definedHeight) {
+          this.resizeAfterScroll();
+        }
       }
       
       /* Useful ?

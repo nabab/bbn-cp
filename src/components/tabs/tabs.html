@@ -61,7 +61,7 @@
                 <bbn-context :context="true"
                              @keydown.space.enter.prevent.stop="tabIndex !== selected ? emitInput(tabIndex) : false"
                              @keydown.right.down.prevent.stop="getRef('menu-' + tabIndex) ? getRef('menu-' + tabIndex).$el.focus() : (getRef('closer-' + tabIndex) ? getRef('closer-' + tabIndex).focus() : null)"
-                             :source="getMenuFn"
+                             :source="() => getMenuFn(tabIndex)"
                              :source-index="tabIndex"
                              :autobind="false"
                              tag="div"
@@ -104,7 +104,7 @@
                              tabindex="-1"
                              min-width="10rem"
                              tag="span"
-                             :source="getMenuFn"
+                             :source="() => getMenuFn(tabIndex)"
                              :autobind="false"
                              :source-index="tab.idx"
                              :ref="'menu-' + tab.idx">

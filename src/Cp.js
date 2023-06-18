@@ -530,8 +530,18 @@ class bbnCp {
       }
       if (isComponent) {
         // Outer schema of the component, with the slots
-        Object.defineProperty(ele, 'bbnSlots', {
+        Object.defineProperty(ele, 'bbnRealSlots', {
           value: tag === 'bbn-anon' ? bbn.cp.retrieveSlots(ele.bbnTpl || d.items) : bbn.fn.clone(ele.constructor.bbnSlots),
+          writable: false,
+          configurable: false
+        });
+        // Outer schema of the component, with the slots
+        Object.defineProperty(ele, 'bbnSlots', {
+          value: bbn.fn.makeReactive(ele.bbnRealSlots, () => {
+            if (ele.bbn) {
+              ele.bbn.$tick();
+            }
+          }),
           writable: false,
           configurable: false
         });
@@ -1573,46 +1583,7 @@ class bbnCp {
 
   $makeReactive(obj) {
     const cp = this;
-    if (obj && (typeof obj === 'object') && !obj.__bbnIsProxy && [undefined, Object, Array].includes(obj.constructor)) {
-      const handler = {
-        get(target, key) {
-          if (key == '__bbnIsProxy') {
-            return true;
-          }
-          if (key === '__bbnTarget') {
-            return target
-          }
-      
-          const prop = target[key];
-      
-          // return if property not found
-          if (typeof prop == 'undefined') {
-            return;
-          }
-      
-          // set value as proxy if object
-          if (prop && (typeof prop === 'object') && !prop.__bbnIsProxy && [undefined, Object, Array].includes(prop.constructor)) {
-            target[key] = new Proxy(prop, handler);
-          }
-      
-          return target[key];
-        },
-        set(target, key, value) {
-          if (target[key] !== value) {
-            //bbn.fn.log(['Setting', key, value, target, cp.$options.name]);
-            target[key] = value;
-            cp.$tick();
-          }
-
-          return true;
-        }
-      };
-
-      return (new Proxy(obj, handler));
-    }
-
-    return obj;
-    
+    return bbn.fn.makeReactive(obj, () => cp.$tick());
   }
 
 
@@ -2107,8 +2078,33 @@ class bbnCp {
    * Emits a new event with variable arguments
    */
   $emit(eventName, ...args) {
+    bbn.fn.checkType(eventName, String);
+
+    /*
+    if ((args.length === 1) && (args[0] instanceof Event) && (args[0].type === eventName)) {
+      
+      this.$el.dispatchEvent(args[0]);
+      return;
+    }
+    */
+
+    let ok = true;
+    bbn.fn.each(args, a => {
+      if (!bbn.fn.isPrimitive(a)) {
+        if ((a instanceof CustomEvent) && a.detail && a.detail.__bbnEvent) {
+          ok = false;
+          return false;
+        }
+      }
+    });
+
+    if (!ok) {
+      return;
+    }
+
     const option = bbn.fn.createObject({
       detail: {
+        __bbnEvent: true,
         args: args
       }
     });
@@ -2127,15 +2123,15 @@ class bbnCp {
   $on(event, handler, remove, bound) {
     bbn.fn.checkType(event, String, bbn._("Events must be strings for \$on in %s", this.$options.name));
     bbn.fn.checkType(handler, Function, bbn._("Events handlers must be functions for \$on in %s", this.$options.name));
-    const hash = bbn.fn.md5(event + '-' + handler.toString());
     const fn = bbn.fn.analyzeFunction(handler);
+    const hash = bbn.fn.md5((bound || this).$cid + '-' + event + '-' + handler.toString());
     if (!this.$events[event]) {
       this.$events[event] = bbn.fn.createObject();
     }
-    if (this.$events[event][fn.hash]) {
+    if (this.$events[event][hash]) {
       throw new Error(bbn._("The event %s is already set in %s", event, this.$options.name));
     }
-    this.$events[event][fn.hash] = (ev) => {
+    this.$events[event][hash] = (ev) => {
       const args = [];
       if (ev.detail?.args) {
         args.push(...ev.detail.args);
@@ -2150,7 +2146,7 @@ class bbnCp {
       }
     }
 
-    this.$el.addEventListener(event, this.$events[event][fn.hash]);
+    this.$el.addEventListener(event, this.$events[event][hash]);
   }
 
 
@@ -2159,13 +2155,14 @@ class bbnCp {
    * @param {String} event 
    * @param {Function} handler 
    */
-  $off(event, handler) {
+  $off(event, handler, bound) {
     bbn.fn.checkType(event, String, bbn._("Events must be strings for \$off / %s in %s", event, this.$options.name));
     bbn.fn.checkType(handler, Function, bbn._("Events handlers must be functions for \$off / %s in %s", event, this.$options.name));
     const fn = bbn.fn.analyzeFunction(handler);
-    if (this.$events[event]?.[fn.hash]) {
-      this.$el.removeEventListener(event, this.$events[event][fn.hash]);
-      delete this.$events[event][fn.hash];
+    const hash = bbn.fn.md5((bound || this).$cid + '-' + event + '-' + handler.toString());
+    if (this.$events[event]?.[hash]) {
+      this.$el.removeEventListener(event, this.$events[event][hash]);
+      delete this.$events[event][hash];
     }
   }
 
@@ -2176,6 +2173,7 @@ class bbnCp {
    * @param {Function} handler 
    */
   $once(event, handler) {
+    this.$off(event, handler);
     this.$on(event, handler, true);
   }
 
@@ -2263,13 +2261,10 @@ class bbnCp {
   */
   ancestors(selector, checkEle) {
     let res = [];
-    let ele = checkEle ? this : this.parentNode;
+    let ele = this.closest(selector, checkEle);
     while (ele) {
-      if (!selector || ele.matches(selector)) {
-        res.push(ele);
-      }
-
-      ele = ele.parentNode || null;
+      res.push(ele);
+      ele = ele.closest(selector);
     }
 
     return res;

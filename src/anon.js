@@ -35,7 +35,8 @@ class bbnAnon extends bbnHTML
       is: {
         type: [String, Object],
         default: 'div'
-      }
+      },
+      source: {}
     }
   }, 'bbnAnonSub' + this.bbnCid);
 

@@ -1101,11 +1101,21 @@ return {
             }
             // Otherwise if it's an object we assume it is a component
             else if (res && (typeof(res) === 'object')) {
-              res.props = {
-                source: {
+              if (!res.props) {
+                res.props = bbn.fn.createObject();
+              }
+              if (!res.props.source) {
+                res.props.source = {
                   type: Object
-                }
-              };
+                };
+              }
+              if (!res.mixins) {
+                res.mixins = [];
+              }
+              if (!res.mixins.includes(bbn.cp.mixins.basic)) {
+                res.mixins.push(bbn.cp.mixins.basic);
+              }
+
               this.componentDefinition = bbn.cp.normalizeComponent(res, 'bbn-container-' + this.getFullURL());
               bbn.fn.log("YUUUU", res, this.componentDefinition, this.currentContent)
               this.componentDefinition.template = this.currentContent;
@@ -1116,13 +1126,13 @@ return {
             this.isComponent = false;
           }
 
-          if ( this.isComponent ){
+          if (this.isComponent) {
             // We create a local component with a random name,
             // the content as template
             // and the object returned as component definition
             // Adding also a few funciton to interact with the tab
             let cont = this;
-            this.$el.bbnCfg = bbn.cp.normalizeComponent(bbn.fn.extend(true, res ? res : {}, {
+            const definition = bbn.fn.extend(true, res ? res : {}, {
               template: '<div class="' + (this.router.scrollContent ? '' : 'bbn-w-100') + '">' + this.currentView.content + '</div>',
               methods: {
                 getContainer(){
@@ -1146,7 +1156,23 @@ return {
                   type: Object
                 }
               }
-            }), 'bbn-container-' + this.getFullURL());
+            });
+            if (!definition.props) {
+              definition.props = bbn.fn.createObject();
+            }
+            if (!definition.props.source) {
+              definition.props.source = {
+                type: Object
+              };
+            }
+
+            if (!definition.mixins) {
+              definition.mixins = [];
+            }
+            if (!definition.mixins.includes(bbn.cp.mixins.basic)) {
+              definition.mixins.push(bbn.cp.mixins.basic);
+            }
+            this.$el.bbnCfg = bbn.cp.normalizeComponent(definition, 'bbn-container-' + this.getFullURL());
             // The local anon component gets defined
             this.$options.components[this.componentName] = this.$el.bbnCfg;
           }
@@ -1358,14 +1384,19 @@ return {
         throw new Error(bbn._("bbn-container cannot be rendered without a bbn-router"));
       }
 
-      if ( !this.router.ready ){
+      if (!this.router.ready) {
+        bbn.fn.warning("ROUTER NOT READY");
         this.router.$on('ready', () => {
+          bbn.fn.warning("ROUTER INITING");
           this.init();
         });
       }
       else{
+        bbn.fn.warning("ROUTER REGISTERING");
         this.router.register(this);
-        this.init();
+        this.$nextTick(() => {
+          this.init();
+        })
       }
       this.$el.title = '';
       //
@@ -1667,18 +1698,8 @@ return {
        */
       content(newVal, oldVal){
         if ( newVal ){
+          this.currentView.content = newVal;
           bbn.fn.log("GT CONTENT")
-          this.isComponentActive = false;
-          const cp = this.getRef('component')
-          if (cp) {
-            bbn.fn.log("COUND CP{");
-            tmp = bbn.cp.stringToTemplate(newVal, true);
-            Object.assign(cp.$el, {
-              bbnTpl: tmp.tpl,
-              bbnMap: tmp.map,
-              bbnInlineTemplates: tmp.inlineTemplates
-            });
-          }
     
           /*
           setTimeout(() => {

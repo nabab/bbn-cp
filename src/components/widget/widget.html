@@ -1,7 +1,4 @@
 <div :class="[componentClass, 'bbn-bordered', 'bbn-radius', 'bbn-alt-background', full ? 'full' : '']"
-     @mouseenter="$emit('mouseenter', $event)"
-     @dragover="$emit('dragover', $event)"
-     @drop="$emit('drop', $event)"
      v-droppable.data="!!sortable ? {data: {widget: _self}} : false">
   <!-- HEADER -->
   <div class="bbn-header bbn-no-border bbn-bordered-bottom bbn-unselectable"
