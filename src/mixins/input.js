@@ -235,8 +235,10 @@
          * @param {Number|String} val 
          * @memberof inputComponent
          */
-        emitInput(val){
-          this.$emit('input', val);
+        emitInput(val, name) {
+          let eventName = 'input' + (name ? ':' + name : '');
+          bbn.fn.log(`Emitting ${eventName} from ${this.$options.name}`);
+          this.$emit(eventName, val);
         },
         /**
          * Emits the event change.
@@ -364,6 +366,7 @@
               && !!elem
               && bbn.fn.isDom(elem.$el)
             ) {
+              /*
               let style = document.createElement('style');
               style.id = this.validationID + '_style';
               style.innerHTML = `
@@ -404,6 +407,7 @@
                   }
                 }
               })
+              */
             }
           }
           this.$once('blur', () => {

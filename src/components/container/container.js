@@ -1117,7 +1117,7 @@ return {
               }
 
               this.componentDefinition = bbn.cp.normalizeComponent(res, 'bbn-container-' + this.getFullURL());
-              bbn.fn.log("YUUUU", res, this.componentDefinition, this.currentContent)
+              //bbn.fn.log("YUUUU", res, this.componentDefinition, this.currentContent)
               this.componentDefinition.template = this.currentContent;
               this.isComponent = true;
             }
@@ -1379,7 +1379,7 @@ return {
      * @fires router.register
      */
     mounted() {
-      bbn.fn.log("MOUNTED CONTAINER " + this.url);
+      //bbn.fn.log("MOUNTED CONTAINER " + this.url);
       if ( !this.router ){
         throw new Error(bbn._("bbn-container cannot be rendered without a bbn-router"));
       }
@@ -1392,7 +1392,7 @@ return {
         });
       }
       else{
-        bbn.fn.warning("ROUTER REGISTERING");
+        //bbn.fn.warning("ROUTER REGISTERING");
         this.router.register(this);
         this.$nextTick(() => {
           this.init();

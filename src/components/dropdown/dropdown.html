@@ -74,7 +74,7 @@
          v-model="value"
          ref="element"
          :name="name">
-  <bbn-portal :disabled="!portalSelector || isInsideFloater"
+  <bbn-portal bbn-forget="!portalSelector || isInsideFloater"
               :selector="portalSelector"
               v-if="!popup
               && filteredData.length
@@ -83,22 +83,30 @@
               && ready
               && !native
               && (isOpened || preload)">
-    <bbn-floater :element="asMobile ? undefined : $el"
+    <bbn-floater v-if="filteredData.length
+                      && !isDisabled
+                      && !readonly
+                      && ready
+                      && !native
+                      && (isOpened || preload)"
+                :visible="isOpened"
+                :element="asMobile ? undefined : $el"
                 :max-height="asMobile ? undefined : maxHeight"
                 :min-width="$el.clientWidth"
                 :width="asMobile ? '100%' : undefined"
                 :height="asMobile ? '100%' : undefined"
                 ref="list"
+                @mouseover="isOverDropdown = true"
+                @mouseenter="isOverDropdown = true"
+                @mouseleave="isOverDropdown = false"
                 :uid="sourceValue"
                 :item-component="realComponent"
                 @ready="attachList"
                 @select="select"
                 :children="null"
                 :suggest="true"
-                @mouseenter="isOverDropdown = true"
-                @mouseleave="isOverDropdown = false"
                 :selected="value ? [value] : []"
-                @close="isOpened = false"
+                @hide="isOpened = false"
                 :source="filteredData"
                 :source-text="sourceText"
                 :source-value="sourceValue"
@@ -110,5 +118,5 @@
                 :source-group="sourceGroup"
                 :group-component="groupComponent"
                 :group-style="groupStyle"/>
-  </component>
+  </bbn-portal>
 </div>

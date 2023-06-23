@@ -1251,7 +1251,7 @@ return {
        */
       register(cp, fake) {
         if ( fake ){
-          bbn.fn.log("ADDING FAKE", cp);
+          //bbn.fn.log("ADDING FAKE", cp);
           this.add(cp);
           return;
         }
@@ -1260,7 +1260,7 @@ return {
           bbn.fn.log(cp);
           throw Error(bbn._('The component bbn-container must have a URL defined'));
         }
-        bbn.fn.log("REGISRTE", cp.$el.bbnId, cp.url, this.urls[cp.url] ? this.urls[cp.url].$el.bbnId : "NO")
+        //bbn.fn.log("REGISRTE", cp.$el.bbnId, cp.url, this.urls[cp.url] ? this.urls[cp.url].$el.bbnId : "NO")
         if (this.urls[cp.url]) {
           bbn.fn.log("It exists", this.urls[cp.url].$numBuild, this.numRegistered, this.views[0].real);
           if (cp !== this.urls[cp.url]) {
@@ -2355,7 +2355,7 @@ return {
                 this.$nextTick(() => {
                   let o = bbn.fn.extend(view || bbn.fn.createObject(), d, {loading: false, load: true, real: view?.real || false, loaded: true});
                   let searchIndex = this.search(o.url);
-                  bbn.fn.log("Looking for " + o.url);
+                  //bbn.fn.log("Looking for " + o.url);
                   if (searchIndex !== false) {
                     //this.remove(searchIndex);
                     bbn.fn.warning("FOUND AND NOT REMOVED " + searchIndex);
@@ -2415,7 +2415,7 @@ return {
         }
       },
       realInit(url) {
-        bbn.fn.log("REAL INIT", url, this.urls, this.views)
+        //bbn.fn.log("REAL INIT", url, this.urls, this.views)
         if (this.urls[url]) {
           this.urls[url].setLoaded(true);
           // Otherwise the changes we just did on the props wont be taken into account at container level
@@ -3739,7 +3739,8 @@ return {
         if (url && url.indexOf(a.url) === 0) {
           a.current = url;
         }
-        bbn.fn.log("ADDING ON MOUNT");
+
+        //bbn.fn.log("ADDING ON MOUNT");
         this.add(a);
       });
 

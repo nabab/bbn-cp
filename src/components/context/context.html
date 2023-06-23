@@ -4,9 +4,9 @@
       @contextmenu="clickItem"
       @keydown.space.enter="clickItem"
       @mousedown.stop.prevent="onMouseDown"
-      @touchstart="touchstart"
-      @touchmove="touchmove"
-      @touchend="touchend">
+      @touchstart.passive="touchstart"
+      @touchmove.passive="touchmove"
+      @touchend.passive="touchend">
   <slot></slot>
   <bbn-portal bbn-forget="!portal"
               :selector="portal"

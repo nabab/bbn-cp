@@ -154,7 +154,6 @@
         * @method confirm
         */
         confirm() {
-          return;
           let popup = this.getPopup();
           if (arguments.length && popup) {
             let cfg = arguments[0];
@@ -180,8 +179,6 @@
         * @method alert
         */
         alert() {
-          alert(...arguments);
-          return;
           let popup = this.getPopup();
           if (arguments.length && popup) {
             let cfg = arguments[0];

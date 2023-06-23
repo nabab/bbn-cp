@@ -166,11 +166,9 @@ class bbnCp {
                 this.$updateComputed(name, getter.bind(this)());
               }
             });
-            this.$computed[name].update();
           }
-          else if (this.$computed[name].num < this.$numBuild) {
-            this.$computed[name].update();
-          }
+
+          this.$computed[name].update();
 
           return this.$computed[name].val;
         }

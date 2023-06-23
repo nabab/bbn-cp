@@ -783,7 +783,13 @@ return {
               height: this.naturalHeight
             }
             if (this.scrollable) {
-              let d = {width: this.getRef('scrollContent').offsetWidth, height: this.getRef('scrollContent').offsetHeight};
+              const content = this.getRef('scrollContent');
+              if (!content) {
+                this.isMeasuring = false;
+                return resolve(false);
+              }
+
+              let d = {width: content.offsetWidth, height: content.offsetHeight};
               if ( !d.width || !d.height ){
                 if (sc && (sc.$el.clientWidth === this.$el.clientWidth) && (sc.$el.clientHeight === this.$el.clientHeight)) {
                   sc.getNaturalDimensions().then(d => {
@@ -959,11 +965,11 @@ return {
       waitReady(ev) {
         if (this.readyTimeout) {
           clearTimeout(this.readyTimeout);
-          bbn.fn.log("CLEARING TIMEOUT")
+          //bbn.fn.log("CLEARING TIMEOUT")
         }
         this.readyTimeout = setTimeout(() => {
           this.initSize();
-        }, 10)
+        }, 25)
       },
       setObserver() {
         this.scrollObserver = new MutationObserver(mutations_list => {

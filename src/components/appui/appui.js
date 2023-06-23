@@ -837,6 +837,7 @@ return {
         this.componentClass.push('bbn-resize-emitter', 'bbn-observer');
         this.cool = true;
 
+        /*
         bbn.fn.each(this.plugins, (path, name) => {
           bbn.cp.addPrefix(
             name,
@@ -874,8 +875,8 @@ return {
             )
           );
         }
+        */
 
-        /*
         let preloaded = [
           'container',
           'router',
@@ -945,8 +946,8 @@ return {
             'clipboard'
           );
         }
-        bbn.cp.preloadBBN(preloaded);
-        */
+
+        bbn.cp.fetchComponents(preloaded.map(c => 'bbn-' + c));
 
         this.$on('focusin', () => this.isFocused = true);
         this.$on('focusout', () => this.isFocused = false);

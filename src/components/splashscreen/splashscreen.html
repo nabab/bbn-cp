@@ -1,7 +1,7 @@
 <div :class="[componentClass, currentSwipeClass, 'bbn-overlay']"
-     @touchstart="touchstart"
-     @touchmove="touchmove"
-     @touchend="touchend">
+     @touchstart.passive="touchstart"
+     @touchmove.passive="touchmove"
+     @touchend.passive="touchend">
   <div class="bbn-splashscreen-main">
     <template v-for="item in filteredData">
       <img v-if="item.data.image"

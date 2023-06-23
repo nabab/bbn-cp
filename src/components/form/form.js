@@ -546,6 +546,7 @@ return {
         if (this.realButtons.length) {
           this.realButtons.splice(0, this.realButtons.length);
         }
+
         if (this.window && bbn.fn.isArray(this.window.currentButtons) && (this.currentMode === 'big')) {
           this.window.currentButtons.splice(0, this.window.currentButtons.length);
         }
@@ -684,6 +685,7 @@ return {
        * @emits submit
        */
       submit(force){
+        alert("WHY?")
         if (!this.isValid(force)) {
           return;
         }
@@ -818,7 +820,6 @@ return {
         }
       },
       focusLast(){
-        bbn.fn.log("focusLast");
         this.focusFirst(true);
       },
         /**
@@ -839,15 +840,15 @@ return {
               this.window.addClose(this.closePopup);
             }
           }
-          this.updateButtons();
           if ( !this.tab ){
             this.tab = this.closest("bbn-container");
           }
+          this.canSubmit = this._canSubmit();
+          this.updateButtons();
+          this.isInit = true;
           if (this.autofocus) {
             this.focusFirst();
           }
-          this.canSubmit = this._canSubmit();
-          this.isInit = true;
         });
       },
       /**

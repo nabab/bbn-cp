@@ -8,17 +8,17 @@
      * @param {Array} mixins
      */
     addPrefix(prefix, handler, mixins){
-      if ( typeof prefix !== 'string' ){
-        throw new Error("Prefix must be a string!");
-        return;
+      bbn.fn.checkType(prefix, String, bbn._("Prefix must be a string"));
+      if (handler) {
+        bbn.fn.checkType(handler, Function, bbn._("The addPrefix handler must be a function"));
       }
-      if ( typeof handler !== 'function' ){
-        throw new Error("Handler must be a function!");
-        return;
-      }
-      if ( bbn.fn.substr(prefix, -1) !== '-' ){
+
+      if (bbn.fn.substr(prefix, -1) !== '-') {
         prefix += '-';
       }
+
+      //bbn.fn.log("ADD PREFIX", prefix, mixins);
+
       bbn.cp.knownPrefixes.push({
         prefix: prefix,
         handler: handler,
@@ -29,6 +29,7 @@
         if (a.prefix.length > b.prefix.length) {
           return -1;
         }
+
         if (a.prefix.length < b.prefix.length) {
           return 1;
         }

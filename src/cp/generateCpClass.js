@@ -119,6 +119,17 @@ class ${proto} extends bbnCp {
   }`;
       }
 
+      if (obj.props) {
+        for (let n in obj.props) {
+          const cfg = obj.props[n];
+          code += `
+  get ${n}() {
+    return this.$props["${n}"];
+  }
+`;
+        }
+      }
+
       if (obj.methods) {
         for (let n in obj.methods) {
           let stFn = obj.methods[n].toString().trim();
@@ -135,17 +146,42 @@ class ${proto} extends bbnCp {
         }
       }
 
-    if (obj.computed) {
-        for (let n in obj.computed) {
-          let getFn = obj.computed[n].get.toString().trim();
+      if (obj.computed) {
+        for (let name in obj.computed) {
+          const getter = bbn.fn.analyzeFunction(obj.computed[name].get);
           code += `
-  get ${n}() {` + bbn.fn.substr(getFn, getFn.indexOf('{') + 1, -1) + `}`;
-          if (obj.computed[n].set) {
-            let setFn = obj.computed[n].set.toString();
+  get ${name}() {
+    if (!this.$isDataSet) {
+      return undefined;
+    }
+
+    if (!Object.hasOwn(this.$computed, "${name}")) {
+      this.$computed["${name}"] = bbn.fn.createObject({
+        old: undefined,
+        val: undefined,
+        hash: undefined,
+        num: 0,
+        update: () => {
+          this.$updateComputed(
+            "${name}",
+            (function () ${getter.body}).bind(this)()
+          );
+        }
+      });
+    }
+
+    this.$computed["${name}"].update();
+    return this.$computed["${name}"].val;
+  }
+`;
+
+          const setter = obj.computed[name].set ? bbn.fn.analyzeFunction(obj.computed[name].set) : null;
+          if (setter) {
             code += `
-  set ${n}` + setFn.substr(setFn.indexOf('('));
+  set ${name}(${setter.argString}) ${setter.body}
+
+`
           }
-          code += `\n`;
         }
       }
 

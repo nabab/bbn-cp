@@ -449,7 +449,7 @@
           */
           this.open(bbn.fn.extend(o, {
             maximizable: false,
-            scrollable: false,
+            scrollable: true,
             resizable: false
           }));
         }
@@ -545,7 +545,7 @@
           this.open(bbn.fn.extend(o, options, {
             resizable: false,
             maximizable: false,
-            scrollable: false
+            scrollable: true
           }));
         }
       },

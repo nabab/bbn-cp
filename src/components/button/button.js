@@ -170,13 +170,15 @@
        * @return {String}
        */
       titleString(){
+        if (this.title) {
+          return this.title;
+        }
+
         let st = '';
-        if ( this.notext && this.text ){
+        if (this.notext && this.text) {
           st += this.text;
         }
-        if ( this.title ){
-          st += (st === '' ? '' : ' - ') + this.title;
-        }
+
         return st;
       },
       /**

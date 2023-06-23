@@ -1,65 +1,104 @@
 (() => {
   bbn.fn.autoExtend('cp', {
     async fetchComponents(toDefine) {
-      bbn.fn.checkType(toDefine, Array);
+      bbn.fn.checkType(toDefine, Array, bbn._("fetchComponents must be called with an array of component names to fetch"));
       // Returning a promise allows the loading for new components definition
       // No component definitions needed no wait
       if (!toDefine.length) {
         return;
       }
-      // Fetching definitions
-      if (toDefine[0].indexOf('bbn-') === 0) {
-        const urlPrefix = cdnUrl + 'dev/bbn-cp/master/src/components/?components=';
-        const prefix = 'bbn-';
-        const url = urlPrefix + toDefine.map(a => a.indexOf(prefix) === 0 ? a.substr(prefix.length) : a).join(',') + '&v=3280&test=1&lang=fr';
-        // Request
-        const d = await bbn.fn.ajax(url, 'text');
-        let res;
-        try {
-          res = await eval(d.data);
-        }
-        catch (e) {
-          throw new Error(e);
-        }
-        bbn.fn.each(res, obj => {
-          if (!bbn.fn.isArray(obj.html)) {
-            throw new Error("No template for " + obj.name)
-          }
 
-          const template = obj.html[0].content;
-          const name = prefix + obj.name;
-          const finalFn = eval(obj.script);
-          bbn.fn.checkType(finalFn, 'function');
-          const cpDef = finalFn();
-          bbn.cp.define(name, cpDef, template, obj.css);
-        });
-      }
-      else {
-        const urlPrefix = 'components/';
-        const url = urlPrefix + toDefine.join('/') + '?v=3280&test=1&lang=fr';
-        // Request
-        const d = await bbn.fn.ajax(url, 'text');
-        let res;
-        try {
-          if (bbn.fn.isString(d.data)) {
-            res = eval('(() => {return ' + d.data + '})()');
+      const groups = bbn.fn.createObject();
+      bbn.fn.each(toDefine, tag => {
+        bbn.fn.checkType(tag, String);
+        let idx = -1;
+        let handlerIdx = -1;
+        let mixins = [];
+        bbn.fn.each(bbn.cp.knownPrefixes, (a, i) => {
+          if (a.prefix && (tag.indexOf(a.prefix) === 0)) {
+            // Taking the longest (most precise) prefix's rule
+            if (a.mixins) {
+              bbn.fn.each(a.mixins, m => {
+                if (mixins.indexOf(m) === -1) {
+                  mixins.push(m);
+                }
+              })
+            }
+
+            if (idx > -1) {
+              if (a.prefix.length > bbn.cp.knownPrefixes[idx].prefix.length) {
+                if (bbn.fn.isFunction(a.handler)) {
+                  handlerIdx = i;
+                }
+
+                idx = i;
+              }
+              else if ((handlerIdx === -1) && bbn.fn.isFunction(a.handler)) {
+                handlerIdx = i;
+              }
+            }
+            else {
+              if (bbn.fn.isFunction(a.handler)) {
+                handlerIdx = i;
+              }
+
+              idx = i;
+            }
           }
+        });
+
+        if (handlerIdx === -1) {
+          throw new Error("Impossible to find a handler for " + tag);
         }
-        catch (e) {
-          throw new Error(e);
+
+        if (!groups[bbn.cp.knownPrefixes[idx].prefix]) {
+          groups[bbn.cp.knownPrefixes[idx].prefix] = bbn.fn.createObject({
+            components: [],
+            prefix: bbn.cp.knownPrefixes[idx].prefix
+          });
+          groups[bbn.cp.knownPrefixes[idx].prefix].handler = bbn.cp.knownPrefixes[handlerIdx].handler;
+          groups[bbn.cp.knownPrefixes[idx].prefix].mixins = mixins;
         }
-        if (res.components) {
+
+        if (mixins) {
+          bbn.fn.each(mixins, m => {
+            if (groups[bbn.cp.knownPrefixes[idx].prefix].mixins.indexOf(m) === -1) {
+              groups[bbn.cp.knownPrefixes[idx].prefix].mixins.push(m);
+            }
+          });
+        }
+
+        groups[bbn.cp.knownPrefixes[idx].prefix].components.push(tag);
+      });
+
+      //bbn.fn.log("GROUPS", groups);
+      for (prefix in groups) {
+        const rule = groups[prefix];
+        let res = await rule.handler(rule.components);
+        //bbn.fn.log("RES", res);
+        if (bbn.fn.isArray(res.components)) {
           bbn.fn.each(res.components, obj => {
-            const template = obj.content;
-            const name = obj.name;
-            //const finalFn = eval(obj.script);
-            //bbn.fn.checkType(finalFn, 'function');
-            const cpDef = eval(obj.script);
-            cpDef.template = template;
-            bbn.cp.define(name, cpDef, template, obj.css);
+            if (!obj.definition || !obj.name) {
+              throw new Error(bbn._("Impossible to find a definition or a name in %s", rule.prefix));
+            }
+
+            if (rule.mixins) {
+              if (!bbn.fn.isArray(obj.definition.mixins)) {
+                obj.definition.mixins = [];
+              }
+
+              bbn.fn.each(rule.mixins, m => {
+                if (obj.definition.mixins.indexOf(m) === -1) {
+                  obj.definition.mixins.push(m);
+                }
+              });
+            }
+
+            //bbn.fn.log(obj.name, obj);
+            bbn.cp.define(obj.name, obj.definition, obj.template, obj.css);
           });
         }
       }
     }
-  })
+  });
 })();

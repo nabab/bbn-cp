@@ -333,7 +333,20 @@
          */
         click(){
           if (!this.disabled && !this.readonly && !this.native && this.filteredData.length && bbn.fn.isDom(this.$el)) {
-            this.isOpened = !this.isOpened;
+            const popup = this.getRef('list');
+            if (popup) {
+              if (popup.isVisible) {
+                popup.hide();
+              }
+              else {
+                popup.show();
+              }
+            }
+            else {
+              this.isOpened = !this.isOpened;
+            }
+
+            this.$forceUpdate();
             if (this.writable) {
               this.$el.querySelector('input:not([type=hidden])').focus();
             }
@@ -357,8 +370,8 @@
             }
             else if (item[this.uid || this.sourceValue] !== undefined) {
               this.emitInput(item[this.uid || this.sourceValue]);
-              bbn.fn.log("EMITTING INPUT FRPOM SELECTED", item[this.uid || this.sourceValue]);
               this.$emit('change', item[this.uid || this.sourceValue], idx, dataIndex, e);
+              this.$nextTick(() => bbn.fn.log(this.$el.bbnSchema));
             }
           }
           this.isOpened = false;
@@ -508,7 +521,7 @@
          * @watch value
          * @memberof dropdownComponent
          */
-        value(){
+        value() {
           this.$nextTick(() => {
             this.currentText = this.currentTextValue;
           });
@@ -520,6 +533,7 @@
          * @memberof dropdownComponent
          */
         isOverDropdown(v) {
+          bbn.fn.log("IS OVER DROPDOWN : " + (v ? "YES" : "NO"));
           if (v) {
             clearTimeout(this.closeTimeout);
           }

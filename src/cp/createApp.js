@@ -4,6 +4,74 @@
     * Init anon component
     */
     createApp(ele, obj) {
+      bbn.cp.addPrefix('bbn-', async components => {
+        const urlPrefix = cdnUrl + 'dev/bbn-cp/master/src/components/?components=';
+        const prefix = 'bbn-';
+        const url = urlPrefix + components.map(a => a.indexOf(prefix) === 0 ? a.substr(prefix.length) : a).join(',') + '&v=3280&test=1&lang=fr';
+        // Request
+        const d = await bbn.fn.ajax(url, 'text');
+        let tmp;
+        try {
+          tmp = await eval(d.data);
+        }
+        catch (e) {
+          throw new Error(e);
+        }
+        const res = bbn.fn.createObject({
+          components: []
+        });
+        bbn.fn.each(tmp, obj => {
+          if (!bbn.fn.isArray(obj.html)) {
+            throw new Error("No template for " + obj.name)
+          }
+          const finalFn = eval(obj.script);
+          bbn.fn.checkType(finalFn, 'function');
+          res.components.push(bbn.fn.createObject({
+            name: prefix + obj.name,
+            definition: finalFn(),
+            template: obj.html?.[0].content,
+            css: obj.css?.[0] || null
+          }));
+        });
+    
+        return res;
+      });
+
+
+      bbn.cp.addPrefix('appui-', async components => {
+        const urlPrefix = 'components/';
+        const url = urlPrefix + components.join('/') + '?v=3280&test=1&lang=fr';
+        // Request
+        const d = await bbn.fn.ajax(url, 'text');
+        let tmp;
+        try {
+          if (bbn.fn.isString(d.data)) {
+            tmp = eval('(() => {return ' + d.data + '})()');
+          }
+        }
+        catch (e) {
+          throw new Error(e);
+        }
+    
+        const res = bbn.fn.createObject({
+          components: []
+        });
+    
+        if (tmp.components) {
+          bbn.fn.each(tmp.components, obj => {
+            res.components.push(bbn.fn.createObject({
+              name: obj.name,
+              definition: eval(obj.script),
+              template: obj.content,
+              css: obj.css || null
+            }));
+          });
+        }
+    
+        return res;
+      });
+
+
       if (bbn.fn.isString(ele)) {
         ele = document.body.querySelector(ele);
       }

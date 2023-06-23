@@ -891,7 +891,7 @@ return {
                   case 'delete':
                     res.push({
                       text: bbn._("Delete"),
-                      action: 'delete',
+                      action: 'remove',
                       icon: 'nf nf-fa-times'
                     });
                     break;
@@ -1541,9 +1541,8 @@ return {
        * @returns {Array}
        */
       currentColumns(){
-        let r = [],
-            cols = bbn.fn.extend(true, [], this.groupCols);
-        bbn.fn.each(cols, (a, i) => {
+        let r = [];
+        bbn.fn.each([].concat(this.groupCols), (a, i) => {
           bbn.fn.each(a.cols, b => {
             r.push(bbn.fn.extend(true, {}, b, {
               fixed: i !== 1,
@@ -1734,7 +1733,7 @@ return {
                   title: bbn._('Row copy')
                 }, index);
               case 'delete':
-                return this.delete(index);
+                return this.remove(index);
             }
           }
         }

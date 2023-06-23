@@ -10,7 +10,7 @@
       ]"
       v-show="isVisible"
       @resize.stop="onResize"
-      @mouseleave="isOver = false"
+      @mouseleave="onFloaterLeave"
       @mouseenter="isOver = true"
       @keydown.esc.prevent.stop="close()"
       :style="currentStyle"

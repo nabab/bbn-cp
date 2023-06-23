@@ -1,5 +1,5 @@
 (() => {
-  const eventInstrcutions = ['stop', 'prevent'];
+  const eventInstructions = ['stop', 'prevent', 'passive'];
   const parser = new DOMParser();
 
   bbn.fn.autoExtend('cp', {
@@ -65,7 +65,7 @@
         if (a.indexOf('@') === 0) {
           let o = bbn.fn.createObject({modifiers: []});
           bbn.fn.each(modifiers, modifier => {
-            if (eventInstrcutions.includes(modifier)) {
+            if (eventInstructions.includes(modifier)) {
               o[modifier] = true;
             }
             else {
@@ -235,6 +235,10 @@
           delete res.attr.inlineTemplate;
         }
         childNodes = [];
+      }
+      else if (res.tag === 'svg') {
+        childNodes = [];
+        res.content = ele.innerHTML;
       }
       else if (res.pre) {
         childNodes = [];

@@ -96,8 +96,8 @@
                 let ms2 = this.setContainerMeasures();
                 let ms1 = this.setResizeMeasures();
                 if (ms1 || ms2) {
-                  bbn.fn.log(["DEFAULT ONRESIZE FN FROM " + this.$options.name, ms1, ms2]);
-                  this.$forceUpdate();
+                  //bbn.fn.log(["DEFAULT ONRESIZE FN FROM " + this.$options.name, ms1, ms2]);
+                  this.$tick();
                 }
               }
 
@@ -167,9 +167,11 @@
             resize = true;
           }
 
+          /*
           if (resize) {
             bbn.fn.log(["SET CONTAINER ONRESIZE MEASURES", this.$options.name, ctH, ctW, this.$parent]);
           }
+          */
 
           return resize;
         },
@@ -197,7 +199,7 @@
               for (const entry of entries) {
                 if (entry.contentBoxSize?.[0]) {
                   this.onResize();
-                  bbn.fn.log(bbn._("RESIZEOBS from %s", this.$options.name), entry.contentBoxSize, this.Cid);
+                  //bbn.fn.log(bbn._("RESIZEOBS from %s", this.$options.name), entry.contentBoxSize, this.Cid);
                 }
               }
             });

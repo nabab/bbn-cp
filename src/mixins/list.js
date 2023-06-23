@@ -1253,11 +1253,18 @@
          */
         remove(where) {
           let idx;
-          while ((idx = bbn.fn.search(this.filteredData, a => {
-            return bbn.fn.compareConditions(a.data, where);
-          })) > -1) {
+          if (bbn.fn.isNumber(where)) {
+            idx = where;
             this.realDelete(this.filteredData[idx].index, 1);
           }
+          else {
+            while ((idx = bbn.fn.search(this.filteredData, a => {
+              return bbn.fn.compareConditions(a.data, where);
+            })) > -1) {
+              this.realDelete(this.filteredData[idx].index, 1);
+            }
+          }
+
           this.$forceUpdate();
         },
         listOnBeforeMount(){

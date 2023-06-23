@@ -81,6 +81,10 @@ class bbnAnonCp extends bbnCp {
     bbnCp.prototype.$connectedCallback.apply(this);
   }
 
+  get source() {
+    return this.$props['source'];
+  }
+
   $setUpProps() {
     if (!this.$cfg.props.source) {
       this.$cfg.props.source = bbn.fn.createObject({

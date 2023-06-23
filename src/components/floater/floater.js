@@ -251,7 +251,7 @@
       /**
        * Whatever will be given as arguments to the function action.
        */
-       actionArguments: {
+      actionArguments: {
         type: Array
       },
       modal: {
@@ -437,7 +437,7 @@
         /**
          * @data {Boolean} [false] isInit
          */
-        currentButtons: this.buttons.splice(),
+        currentButtons: this.buttons.slice(),
         isInit: false,
         definedWidth: null,
         definedHeight: null,
@@ -810,7 +810,6 @@
             && bbn.fn.isDom(this.$el)
             && this.isActiveResizer()
             && !this.isResized;
-        bbn.fn.log("FLOATER GO", go);
         if (go) {
           this._setMinMax();
         }
@@ -1232,6 +1231,10 @@
             break;
         }
       },
+      onFloaterLeave() {
+        bbn.fn.log("ON FLOATER LEAVE")
+        this.isOver = false;
+      },
       /**
        * Closes the floater by hiding it.
        * @method close
@@ -1383,9 +1386,21 @@
       if (this.isVisible) {
         this.ready = true;
         this._setMinMax();
-        if (!this.scrollable || this.definedHeight) {
-          this.resizeAfterScroll();
-        }
+        this.$forceUpdate().then(() => {
+          if (!this.scrollable || this.definedHeight) {
+            this.resizeAfterScroll();
+          }
+          else if (this.content) {
+
+            const sc = this.getRef('scroll');
+            if (sc) {
+              sc.initSize();
+              this.$nextTick(() => {
+                this.resizeAfterScroll();
+              })
+            }
+          }
+        })
       }
       
       /* Useful ?
@@ -1505,8 +1520,10 @@
        */
       visible(v) {
         this.currentVisible = v;
+        bbn.fn.log("CHANGING VISIBle")
       },
       isVisible(v) {
+        bbn.fn.log("CHANGING VISIBILITY")
         if (v) {
           if (!this.ready) {
             this.ready = true;
@@ -1543,7 +1560,7 @@
        * @watch isOver
        */
       isOver(v) {
-        this.$emit(v ? 'mouseenter' : 'mouseleave');
+        this.$emit(v ? 'over' : 'out');
         if (this.autoHide && this.isResized && this.ready && !this.isResizing) {
           if (v && this.mouseLeaveTimeout) {
             clearTimeout(this.mouseLeaveTimeout);

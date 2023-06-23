@@ -24,7 +24,7 @@ class bbnCp {
    * @returns {undefined}
    */
   $addToElements(ele) {
-    bbn.fn.checkType(ele, [HTMLElement, Text, Comment], "Elements should be HTML elements or text nodes");
+    bbn.fn.checkType(ele, [HTMLElement, Text, Comment, SVGElement], "Elements should be HTML elements or text nodes");
     bbn.fn.checkType(ele.bbnId, ['string', 'symbol'], "In addToElements the ID should be a symbol");
     const id = ele.bbnId;
     const hash = ele.bbnHash;
@@ -434,6 +434,10 @@ class bbnCp {
       if (d.comment) {
         ele = document.createComment(" ***_BBN_*** ");
       }
+      else if (tag === 'svg') {
+        ele = document.createElementNS("http://www.w3.org/2000/svg", tag);
+        ele.innerHTML = d.content;
+      }
       else {
         /** 
          * @todo Add the possibility to change the tag using Customized built-in elements 
@@ -537,13 +541,9 @@ class bbnCp {
         });
         // Outer schema of the component, with the slots
         Object.defineProperty(ele, 'bbnSlots', {
-          value: bbn.fn.makeReactive(ele.bbnRealSlots, () => {
-            if (ele.bbn) {
-              ele.bbn.$tick();
-            }
-          }),
-          writable: false,
-          configurable: false
+          get() {
+            return this.bbnRealSlots;
+          }
         });
 
         // Outer schema of the component, with the slots
@@ -844,6 +844,14 @@ class bbnCp {
     Object.defineProperty(this, '$computed', {
       value: bbn.fn.createObject()
     });
+
+    // Setting $eval with the retrived/generated function
+    Object.defineProperty(this, '$oldValues', {
+      value: bbn.fn.createObject(),
+      writable: false,
+      configurable: false
+    });
+
 
     Object.defineProperty(this, '$watcher', {
       value: bbn.fn.createObject(),
@@ -1151,6 +1159,12 @@ class bbnCp {
       this.$queue.push([]);
     }
 
+
+    bbn.fn.each(this.$namespaces, (a, n) => {
+      if (a === 'props') {
+        this.$getProp(n);
+      }
+    });
     const time = bbn.fn.timestamp();
     if (this.$queue.length && (force || (time - this.$lastLaunch > bbn.cp.tickDelay))) {
       this.$lastLaunch = time;
@@ -1173,7 +1187,7 @@ class bbnCp {
    * @param {HTMLElement} ele
    */
   $removeDOM(ele) {
-    //bbn.fn.log("REMOVING " +ele.bbnId);
+    //bbn.fn.log("REMOVING " + ele.bbnId);
     const id = ele.bbnId;
     const hash = ele.bbnHash;
     const cpSource = ele.bbnComponentId && (ele.bbnComponentId !== this.$cid) ? bbn.cp.getComponent(ele.bbnComponentId).bbn : this;
@@ -1189,7 +1203,7 @@ class bbnCp {
         });
       }
 
-      if (ele.childNodes && !ele.bbnSchema?.props?.['bbn-text'] && !ele.bbnSchema?.props?.['bbn-html']) {
+      if (ele.childNodes && !ele.bbnSchema?.props?.['bbn-text'] && !ele.bbnSchema?.props?.['bbn-html'] && (ele.bbnSchema?.tag !== 'svg')) {
         bbn.fn.each(Array.from(ele.childNodes), (node, i) => {
           let cp = ele.bbnComponentId !== this.$cid ? bbn.cp.getComponent(ele.bbnComponentId).bbn : this;
           cp.$removeDOM(node);
@@ -1257,6 +1271,10 @@ class bbnCp {
    * @returns {Promise}
    */
   async $updateComponent(shadow) {
+    if (!this.$isCreated) {
+      return;
+    }
+
     if (this.$isUpdating === null) {
       Object.defineProperty(this, '$isCreating', {
         writable: false,
@@ -1265,7 +1283,6 @@ class bbnCp {
       });
     }
     else if (this.$isUpdating) {
-      this.$tick();
       return;
     }
     else {
@@ -1280,20 +1297,29 @@ class bbnCp {
 
     // Biggest part of the job: updating the schema
     bbn.fn.iterate(this.$el.bbnSchema.props, (p, n) => {
-      if (bbn.fn.isString(p)) {
+      let isProp = Object.hasOwn(this.$props, n);
+      if (bbn.fn.isPrimitive(p)) {
         if (['class', 'style'].includes(n)) {
           return;
         }
 
-        const isAttr = this.$el[n] !== undefined;
-        if (isAttr && !Object.hasOwn(this.$props, n)) {
+        const isAttr = this.$el[n] !== undefined && bbn.fn.isPrimitive(this.$el[n]);
+        if (isAttr) {
           const attr = this.$el[n];
           if (attr !== p) {
-            this.$el.setAttribute(n, p);
+            if (p) {
+              this.$el.setAttribute(n, bbn.fn.isString(p) ? p : p.toString());
+            }
+            else if (this.$el.getAttribute(n)) {
+              this.$el.removeAttribute(n);
+            }
           }
         }
       }
-      this.$setProp(n, p);
+
+      if (isProp) {
+        this.$setProp(n, p);
+      }
     });
     const t1 = (new Date()).getTime();
     //this.$updateAllComputed();
@@ -1349,14 +1375,14 @@ class bbnCp {
           cpSource.$setRef(props.ref, ele);
           break;
         case 'class':
-          if (ele !== this.$el) {
+          if (!isComponent && (ele !== this.$el)) {
             if (ele.className !== props['class']) {
               ele.className = props['class'];
             }
           }
           break;
         case 'style':
-          if (ele !== this.$el) {
+          if (!isComponent && (ele !== this.$el)) {
             if (props.style !== ele.style.cssText) {
               ele.style.cssText = bbn.cp.convertStyles(props.style);
             }
@@ -1428,7 +1454,7 @@ class bbnCp {
             propName = bbn.cp.badCaseAttributes[name];
           }
 
-          const isAttr = ele[propName] !== undefined;
+          const isAttr = (ele[propName] !== undefined) && bbn.fn.isPrimitive(this.$el[propName]);
           if (isAttr) {
             const attr = ele[propName];
             if (attr !== value) {
@@ -1506,7 +1532,7 @@ class bbnCp {
             this.$setProp(n, props[n]);
           }
           else if (this.$el[n] !== undefined) {
-            this.$el[n] = props[n];
+            this.$el[n] = bbn.fn.isString(props[n]) ? props[n] : props[n]?.toString() || '';
           }
         }
       }
@@ -1582,8 +1608,9 @@ class bbnCp {
   }
 
   $makeReactive(obj) {
-    const cp = this;
-    return bbn.fn.makeReactive(obj, () => cp.$tick());
+    return obj;
+    //const cp = this;
+    //return bbn.fn.makeReactive(obj, () => cp.$tick(), cp);
   }
 
 
@@ -1592,16 +1619,23 @@ class bbnCp {
   */
   $setData(name, value) {
     const cfg = this.$cfg;
-    this.$dataValues[name] = this.$makeReactive(value);
+    this.$dataValues[name] = value;
     if (!Object.hasOwn(this, name)) {
+      this.$oldValues[name] = '';
       const def = {
         get() {
           return this.$dataValues[name];
         },
         set(v) {
           let oldV = this.$dataValues[name];
-          if (oldV !== v) {
-            this.$dataValues[name] = this.$makeReactive(v);;
+          let hash = v;
+          if (v && (typeof v === 'object') && [Array, Object, undefined].includes(v.constructor)) {
+            hash = bbn.fn.hash(v);
+          }
+
+          if (this.$oldValues[name] !== hash) {
+            this.$dataValues[name] = v;
+            this.$oldValues[name] = hash;
             if (this.$isInit) {
               if (this.$watcher?.[name]?.handler) {
                 if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
@@ -1635,6 +1669,9 @@ class bbnCp {
           configurable: true
         });
       }
+      if (!Object.hasOwn(this.$oldValues, name)) {
+        this.$oldValues[name] = '';
+      }
 
       this.$addNamespace(name, 'props');
     }
@@ -1644,6 +1681,31 @@ class bbnCp {
     if (isDefined) {
       this.$realSetProp(name, value);
     }
+  }
+
+
+  $getProp(name) {
+    let v = this.$props[name];
+    if (!bbn.fn.isPrimitive(v) && (typeof v === 'object') && [Array, Object, undefined].includes(v.constructor)) {
+      const hash = bbn.fn.hash(v);
+      if (this.$oldValues[name] !== hash) {
+        if (this.$isInit) {
+          if (this.$watcher?.[name]?.handler) {
+            if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
+              throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
+            }
+            this.$watcher[name].value = v;
+            const oldV = bbn.fn.isPrimitive(v) ? hash : v;
+            this.$watcher[name].handler.apply(this, [v, oldV]);
+          }
+
+          this.$oldValues[name] = hash;
+          this.$tick();
+        }
+      }
+    }
+
+    return v;
   }
 
 
@@ -1677,29 +1739,32 @@ class bbnCp {
   $realSetProp(name, value) {
     name = bbn.fn.camelize(name);
     const original = this.$props[name];
-    if (value?.__bbnTarget) {
-      value = value.__bbnTarget;
+    let oldHash = this.$oldValues[name];
+    let hash = value;
+    if (value && (typeof value === 'object') && [Array, Object, undefined].includes(value.constructor)) {
+      hash = bbn.fn.hash(value);
     }
 
-    if (!bbn.fn.isSame(original, value)) {
+    if (oldHash !== hash) {
+      if (this.$options.name === 'bbn-loadbar') {
+        bbn.fn.log(["FROM LOADBAR", name, this.$oldValues[name], hash, this.$isInit]);
+      }
+  
+      this.$oldValues[name] = hash;
       Object.defineProperty(this.$props, name, {
         value: value,
         writable: false,
         configurable: true
       });
-      Object.defineProperty(this, name, {
-        value: value,
-        writable: false,
-        configurable: true
-      });
 
-      if (this.$isInit && this.$cfg?.watch?.[name]) {
+      if (this.$isInit && this.$watcher?.[name]) {
         this.$watcher[name].handler.apply(this, [value, original]);
       }
 
       if (this.$isMounted) {
         this.$emit('propchange', name, value, original);
-        this.$tick();
+        bbn.fn.log(["EMITTING PROPCHANGE", this.$options.name, this.$cid, name, value, original, hash, oldHash, JSON.stringify(value)]);
+        this.$getProp(name);
       }
     }
   }
@@ -1710,7 +1775,7 @@ class bbnCp {
       throw new Error(bbn._("The property %s is not defined in component %s", name, this.$options.name));
     }
 
-    let isDefined = Object.hasOwn(this.$options.propsData, name);
+    let isDefined = Object.hasOwn(this.$options.propsData, name) && (this.$options.propsData[name] !== undefined);
     let v = undefined;
     if (value !== undefined) {
       v = value;
@@ -1719,7 +1784,7 @@ class bbnCp {
     else if (isDefined) {
       v = this.$options.propsData[name];
     }
-    if (!isDefined && (cfg.default !== undefined)) {
+    if (!this.$numBuild && !isDefined && (cfg.default !== undefined)) {
       if (bbn.fn.isObject(cfg.default) || bbn.fn.isArray(cfg.default)) {
         throw new Error(bbn._("A function must be used to return object default values in %s", name));
       }
@@ -1779,7 +1844,7 @@ class bbnCp {
       this.$computed[name].num = this.$numBuild;
       this.$computed[name].val = val;
       if (this.$watcher?.[name]) {
-        if (this.$watcher[name].handler && !bbn.fn.isSame(val, oldValue)) {
+        if (this.$watcher[name].handler) {
           //bbn.fn.log(bbn._("Launching watcher for computed %s", name), val, oldValue);
           this.$watcher[name].handler.call(this, val, oldValue);
         }
@@ -1791,11 +1856,11 @@ class bbnCp {
           });
         }
       }
-      if (!this.$isUpdating && this.$isMounted) {
-        this.$tick()
-      }
+
+      this.$tick();
       return true;
     }
+
     return false;
   }
 
@@ -2000,9 +2065,11 @@ class bbnCp {
       bbn.fn.log(
         "Component name: " + this.$options.name,
         "Prop name: " + this[name],
-        this.$namespaces
+        this.$namespaces,
+        name
       );
-      throw new Error("The name %s in %s is already used by %s in %s", name, type, this.$namespaces[name], this.$options.name);
+      return;
+      throw new Error(bbn._("The name %s in %s is already used by %s in %s", name, type, this.$namespaces[name], this.$options.name));
     }
 
     this.$namespaces[name] = type;
@@ -2028,16 +2095,14 @@ class bbnCp {
    * @returns 
    */
   $set(obj, prop, value, writable = true, configurable = true) {
-    if (Object.hasOwn(obj, prop)) {
-      obj[prop] = this.$makeReactive(value);
-    }
-    else {
+    if (obj[prop] !== value) {
       Object.defineProperty(obj, prop, {
         value: this.$makeReactive(value),
         writable,
         configurable
       });
     }
+
     return this;
   }
 
@@ -2080,6 +2145,9 @@ class bbnCp {
   $emit(eventName, ...args) {
     bbn.fn.checkType(eventName, String);
 
+    if (bbn.env.loggingLevel > 5) {
+      bbn.fn.log(bbn._("Event %s emitted by %s", eventName, this.$options.name));
+    }
     /*
     if ((args.length === 1) && (args[0] instanceof Event) && (args[0].type === eventName)) {
       
@@ -2110,9 +2178,6 @@ class bbnCp {
     });
     const ev = new CustomEvent(eventName, option);
     this.$el.dispatchEvent(ev);
-    if (bbn.env.loggingLevel > 5) {
-      bbn.fn.log(bbn._("Event %s emitted by %s", eventName, this.$options.name));
-    }
   }
 
   /**
@@ -2128,9 +2193,11 @@ class bbnCp {
     if (!this.$events[event]) {
       this.$events[event] = bbn.fn.createObject();
     }
-    if (this.$events[event][hash]) {
+
+    if (!remove && this.$events[event][hash]) {
       throw new Error(bbn._("The event %s is already set in %s", event, this.$options.name));
     }
+
     this.$events[event][hash] = (ev) => {
       const args = [];
       if (ev.detail?.args) {
@@ -2141,12 +2208,14 @@ class bbnCp {
       }
 
       handler.bind(bound || this)(...args);
-      if (remove) {
-        this.$off(event, handler);
-      }
     }
 
-    this.$el.addEventListener(event, this.$events[event][hash]);
+    const opt = {};
+    if (remove) {
+      opt.once = true;
+    }
+
+    this.$el.addEventListener(event, this.$events[event][hash], opt);
   }
 
 

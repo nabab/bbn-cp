@@ -1,8 +1,8 @@
 <div :class="[componentClass, 'bbn-floater-list']"
-     @touchstart="touchstart"
      @mouseleave="mouseleave"
-     @touchmove="touchmove"
-     @touchend="touchend"
+     @touchstart.passive="touchstart"
+     @touchmove.passive="touchmove"
+     @touchend.passive="touchend"
      :style="currentStyle">
   <div class="bbn-hidden"
        v-if="$slots.default"
