@@ -258,7 +258,11 @@ return {
         poller: false,
         debug: false,
         isOverDebug: false,
-        app: false,
+        app: {
+          user: {
+            isAdmin: true
+          }
+        },
         cool: false,
         searchString: '',
         observerTimeout: false,
@@ -525,6 +529,7 @@ return {
         if (notification) {
           return notification.show(obj, type, timeout);
         }
+        bbn.fn.log("NOTIFICATION: " + type, obj);
       },
 
       error(obj, timeout){

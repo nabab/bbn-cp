@@ -120,7 +120,7 @@ return {
         this.widget = new cm.view.EditorView({
           state: this.state,
           parent: this.getRef('element'),
-          dispatch: this.onChange
+          dispatch: t => this.onChange(t)
         });
       },
       onKeyDown(event) {

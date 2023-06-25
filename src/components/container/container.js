@@ -1422,8 +1422,8 @@ return {
     watch: {
       currentView: {
         deep: true,
-        handler(v) {
-          bbn.fn.log("DEEP HANDLER ON VIEW");
+        handler(v, ov) {
+          bbn.fn.log("DEEP HANDLER ON VIEW", v, ov);
           this.$tick();
         }
         /*

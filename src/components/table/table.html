@@ -87,7 +87,8 @@
               </th>
             </tr>
             <!-- Titles -->
-            <tr v-for="(groupCol, groupIndex) in groupCols">
+            <tr v-for="(groupCol, groupIndex) in groupCols"
+                v-if="groupCol.cols.length">
               <th v-for="(col, i) in groupCol.cols"
                   scope="col"
                   v-show="!col.hidden"

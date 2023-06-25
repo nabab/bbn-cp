@@ -82,7 +82,7 @@ class bbnAnonCp extends bbnCp {
   }
 
   get source() {
-    return this.$props['source'];
+    return this.$getProp('source');
   }
 
   $setUpProps() {

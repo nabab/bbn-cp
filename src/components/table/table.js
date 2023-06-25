@@ -2588,6 +2588,10 @@ return {
        * @param {Object} obj
        */
       addColumn(obj) {
+        if (!obj) {
+          return;
+        }
+
         let def = this.defaultObject();
         if (obj.aggregate && !Array.isArray(obj.aggregate)) {
           obj.aggregate = [obj.aggregate];

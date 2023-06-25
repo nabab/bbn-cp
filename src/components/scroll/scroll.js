@@ -824,7 +824,6 @@ return {
             if ((old.width !== this.naturalWidth) || (old.height !== this.naturalHeight)) {
               if (old.width || old.height) {
                 this.$emit('resizecontent');
-                bbn.fn.warning("EMITTING RESIZECONTENT");
                 bbn.fn.log({w: this.naturalWidth, h: this.naturalHeight});
               }
             }

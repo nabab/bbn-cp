@@ -208,14 +208,10 @@ return {
       source: {
         deep: true,
         handler(v) {
-          bbn.fn.warning("WATCHER!!!!")
-          bbn.fn.log(["CURRENT SOURCE", v])
           this.$tick();
         }
       },
       currentItem(v) {
-        bbn.fn.warning("WATCHER!!!!")
-        bbn.fn.log(["CURRENT ITEM", v])
         this.$tick();
       },
       info(v) {

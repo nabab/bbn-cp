@@ -1,15 +1,14 @@
 <div :class="componentClass"
      tabindex="0"
-     @keydown.up.down.left.right.enter.space.page-down.page-up.end.home.prevent.stop="keyNav"
->
+     @keydown.up.down.left.right.enter.space.page-down.page-up.end.home.prevent.stop="keyNav">
   <!-- A loader -->
   <div bbn-if="loading" class="loader">
     <bbn-loadicon></bbn-loadicon> <span bbn-text="_('Loading')"></span>...
   </div>
   <!-- The container: a scroll if root and scrollable, a div otherwise -->
-  <component bbn-else-if="isInit && isLoaded"
-             :is="isRoot && !!scrollable ? 'bbn-scroll' : 'div'"
-             ref="scroll">
+  <bbn-scroll bbn-else-if="isInit && isLoaded"
+              bbn-forget="!isRoot || !scrollable"
+              ref="scroll">
     <div class="bbn-tree-helper-container"
          bbn-if="(draggable || sortable) && isRoot"
          ref="helperContainer">
@@ -23,7 +22,8 @@
         :class="{
           'bbn-tree-child': !!level,
           'bbn-tree-root': isRoot
-        }">
+        }"
+        ref="list">
       <!-- Tree node component -->
       <node inline-template
             bbn-for="(it, i) in filteredData"

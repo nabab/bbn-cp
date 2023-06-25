@@ -566,32 +566,33 @@ return {
           this.node.isExpanded = true;
         }
 
-        let cp = this.isRoot && this.scrollable ? this.getRef('scroll') : this;
-        if (cp.$children) {
-          let idx = bbn.fn.search(
-            bbn.fn.arrayFromProp(
-              cp.$children.filter(a => a.$options && (a.$options._componentTag === 'bbn-tree-node')),
-              'data'
-            ),
-            props
-          );
-          if (idx > -1) {
-            ret = cp.$children[idx];
-          }
-          else {
-            bbn.fn.each(cp.$children, node => {
-              let tree = node.getRef('tree');
-              if (tree) {
-                ret = tree.findNode(props, expand);
-                if (ret) {
-                  return false;
+        let lst = this.getRef('list');
+        if (lst) {
+          const eles = lst.querySelectAll('bbn-tree-node');
+          if (eles.length) {
+            const data = [];
+            eles.forEach(a => {
+              data.push(a.bbn.data);
+            });
+            let idx = bbn.fn.search(data, props);
+            if (idx > -1) {
+              ret = eles[idx].bbn;
+            }
+            else {
+              bbn.fn.each(eles, node => {
+                let tree = node.bbn.getRef('tree');
+                if (tree) {
+                  ret = tree.findNode(props, expand);
+                  if (ret) {
+                    return false;
+                  }
                 }
-              }
-            })
-
+              })
+            }
           }
         }
       }
+
       return ret;
     },
     /**
@@ -1334,7 +1335,7 @@ return {
       if ( newVal && this.isRoot ){
         let scroll = this.getRef('scroll');
         if ( scroll ){
-          //scroll.scrollTo(0, newVal.$el);
+          scroll.scrollTo(0, newVal.$el);
         }
       }
     },
@@ -1342,7 +1343,7 @@ return {
       if ( newVal && this.isRoot ){
         let scroll = this.getRef('scroll');
         if ( scroll ){
-          //scroll.scrollTo(0, newVal.$el);
+          scroll.scrollTo(0, newVal.$el);
         }
       }
     },
@@ -2195,11 +2196,11 @@ return {
         /**
          * Double click on the node
          * @method dblClickOnNode
-         * @emits nodeDblclick
+         * @emits nodedoubleclick
          * @memberof bbn-tree-node
          */
         dblClickOnNode(ev){
-          this.tree.$emit('nodeDblclick', this, ev);
+          this.tree.$emit('nodedoubleclick', this, ev);
         },
         getIcon(){
           return this.source.icon || (!!this.numChildren ? (this.isExpanded ? 'nf nf-fa-folder_open' : 'nf nf-fa-folder') : 'nf nf-fa-file');

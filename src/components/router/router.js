@@ -2352,11 +2352,11 @@ return {
                   d.current = d.url;
                 }
 
-                this.$nextTick(() => {
+                this.$forceUpdate().then(() => {
                   let o = bbn.fn.extend(view || bbn.fn.createObject(), d, {loading: false, load: true, real: view?.real || false, loaded: true});
                   let searchIndex = this.search(o.url);
                   //bbn.fn.log("Looking for " + o.url);
-                  if (searchIndex !== false) {
+                  if ((searchIndex !== false) && this.urls[this.views[searchIndex].url]) {
                     //this.remove(searchIndex);
                     bbn.fn.warning("FOUND AND NOT REMOVED " + searchIndex);
                     this.urls[this.views[searchIndex].url].isLoaded = true;
@@ -3645,6 +3645,8 @@ return {
 
       let tmp = [];
 
+      bbn.fn.warning("BEFORE MOUNT ROUTER")
+
       //Get config from the storage
       let storage = !this.single && this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
       if ( storage ){
@@ -3730,6 +3732,8 @@ return {
 
 
       // Adding to the views
+      bbn.fn.warning("ROUTER BEFORE MOUNT");
+      bbn.fn.log(tmp, this.source);
       bbn.fn.each(tmp, a => {
         if (!bbn.fn.isString(a.url)) {
           throw new Error(bbn._("The container must have a valid URL"));
@@ -3740,7 +3744,7 @@ return {
           a.current = url;
         }
 
-        //bbn.fn.log("ADDING ON MOUNT");
+        bbn.fn.warning(bbn._("ADDING %s ON MOUNT", a.url));
         this.add(a);
       });
 
@@ -3979,6 +3983,24 @@ return {
             this.onResize();
           }
         })
+      },
+      source(v, ov) {
+        bbn.fn.log("ROUTER SOURCE WATCHER", v, ov);
+        if (!this.views.length) {
+          bbn.fn.each(v, a => {
+            if (!bbn.fn.isString(a.url)) {
+              throw new Error(bbn._("The container must have a valid URL"));
+            }
+    
+            // Setting current if URL starts with default URL
+            if (url && url.indexOf(a.url) === 0) {
+              a.current = url;
+            }
+    
+            bbn.fn.warning(bbn._("ADDING %s ON MOUNT", a.url));
+            this.add(a);
+          });
+        }
       }
     },
     components: {

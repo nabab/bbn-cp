@@ -232,10 +232,10 @@ return {
                 if ( a.addedSize && (a.addedSize === 'auto') ){
                   sz += 'auto';
                 }
-                else if ( a.size ){
+                else if ( a.value ){
                   if ( a.addedSize || diff ){
                     sz += 'calc( ';
-                    sz += a.size + (a.isNumber ? 'px' : '');
+                    sz += a.value + (a.isNumber ? 'px' : '');
                     if ( diff ){
                       sz += ' + ' + diff + 'px';
                     }
@@ -244,8 +244,8 @@ return {
                     }
                     sz += ')';
                   }
-                  else if ( a.size ){
-                    sz += a.size + (a.isNumber ? 'px' : '');
+                  else if ( a.value ){
+                    sz += a.value + (a.isNumber ? 'px' : '');
                   }
                 }
                 else {

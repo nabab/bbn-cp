@@ -1148,6 +1148,15 @@ class bbnCp {
   }
 
 
+  $updateProps() {
+    bbn.fn.each(this.$namespaces, (a, n) => {
+      if (a === 'props') {
+        this.$getProp(n);
+      }
+    });
+  }
+
+
   /**
    * Launches the updateComponent function and triggers the queue's functions.
    * 
@@ -1160,11 +1169,6 @@ class bbnCp {
     }
 
 
-    bbn.fn.each(this.$namespaces, (a, n) => {
-      if (a === 'props') {
-        this.$getProp(n);
-      }
-    });
     const time = bbn.fn.timestamp();
     if (this.$queue.length && (force || (time - this.$lastLaunch > bbn.cp.tickDelay))) {
       this.$lastLaunch = time;
@@ -1172,6 +1176,9 @@ class bbnCp {
       return this.$updateComponent().then(() => {
         last.forEach(fn => fn.bind(this)());
       });
+    }
+    else if (time - this.$lastLaunch > bbn.cp.tickDelay * 10) {
+      this.$updateProps();
     }
 
     return new Promise((resolve) => {
@@ -1196,7 +1203,7 @@ class bbnCp {
       if (ele.bbnSlots) {
         bbn.fn.iterate(ele.bbnSlots, slot => {
           bbn.fn.each(slot, o => {
-            bbn.fn.log("REMOVE FROM SLOT", o);
+            //bbn.fn.log("REMOVE FROM SLOT", o);
             let cp = o.bbnComponentId !== this.$cid ? bbn.cp.getComponent(o.bbnComponentId).bbn : this;
             cp.$removeDOM(o);
           });
@@ -1746,9 +1753,6 @@ class bbnCp {
     }
 
     if (oldHash !== hash) {
-      if (this.$options.name === 'bbn-loadbar') {
-        bbn.fn.log(["FROM LOADBAR", name, this.$oldValues[name], hash, this.$isInit]);
-      }
   
       this.$oldValues[name] = hash;
       Object.defineProperty(this.$props, name, {
@@ -1763,7 +1767,7 @@ class bbnCp {
 
       if (this.$isMounted) {
         this.$emit('propchange', name, value, original);
-        bbn.fn.log(["EMITTING PROPCHANGE", this.$options.name, this.$cid, name, value, original, hash, oldHash, JSON.stringify(value)]);
+        //bbn.fn.log(["EMITTING PROPCHANGE", this.$options.name, this.$cid, name, value, original, hash, oldHash, JSON.stringify(value)]);
         this.$getProp(name);
       }
     }
@@ -2095,9 +2099,22 @@ class bbnCp {
    * @returns 
    */
   $set(obj, prop, value, writable = true, configurable = true) {
-    if (obj[prop] !== value) {
+    if (obj === this) {
+      if (!this.$namespaces[prop]) {
+        this.$setData(prop, value);
+      }
+      else if (obj[prop] !== value) {
+        if (this.$namespaces[prop] === 'props') {
+          this.$setProp(prop, value);
+        }
+        else {
+          this.$setData(prop, value);
+        }
+      }
+    }
+    else {
       Object.defineProperty(obj, prop, {
-        value: this.$makeReactive(value),
+        value,
         writable,
         configurable
       });
@@ -2251,6 +2268,7 @@ class bbnCp {
    * Forcing executing tick (updateComponent) function by setting this.$tickLast to 0
    */
   $forceUpdate() {
+    this.$updateProps();
     return this.$launchQueue(true);
   }
 
