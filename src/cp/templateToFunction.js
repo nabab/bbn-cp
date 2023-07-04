@@ -868,6 +868,9 @@
         x(c, sp, `_t.$updateFromSchema();`);
         c.text += nodesToFunction(cp, tpl, hashName);
       }
+      if (cp.$options.name === 'bbn-portal') {
+        x(c, sp, `bbn.fn.log("FOR PORTAL", $_final);`);
+      }
       x(c, sp, `bbn.fn.each($_final, a => {`);
       x(c, sp, `  if (_t.$el.childNodes[a.position]) {`);
       x(c, sp, `    _t.$insertElement(a.ele, _t.$el, _t.$el.childNodes[a.position]);`);

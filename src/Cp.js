@@ -211,6 +211,11 @@ class bbnData {
         return true;
       },
       defineProperty(target, key, description) {
+        if (['__bbnData', '__bbnNoData'].includes(key)) {
+          Object.defineProperty(target, key, description);
+          return true;
+        }
+
         const targetObj = bbnData.getObject(target);
         const oldValue = target[key];
         const oldObj = bbnData.getObject(oldValue);
@@ -558,7 +563,11 @@ class bbnCp {
     const origin = ele.bbnComponentId;
     let cp = this;
     if (origin !== this.$cid) {
-      cp = bbn.cp.getComponent(origin).bbn;
+      cp = bbn.cp.getComponent(origin)?.bbn;
+    }
+
+    if (!cp) {
+      throw new Error(bbn._("Impossible to find the component with CID %s", origin));
     }
 
     if (hash) {
@@ -935,6 +944,9 @@ class bbnCp {
     const todo = [];
     /** @constant {bbnComponentFunction} cpSource */
     const cpSource = node.componentId ? bbn.cp.getComponent(node.componentId)?.bbn : this;
+    if (!cpSource) {
+      throw new Error("cpSource is not defined");
+    }
     const oldEle = cpSource.$retrieveElement(d.id, d.loopHash);
     let replace = false;
     let ele;
@@ -1925,8 +1937,8 @@ class bbnCp {
     }
 
     const t1 = (new Date()).getTime();
-    this.$updateProps();
-    this.$updateAllComputed();
+    //this.$updateProps();
+    //this.$updateAllComputed();
     const e = await this.$eval(this);
     const t2 = (new Date()).getTime();
     this.$numBuild++;

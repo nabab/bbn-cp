@@ -344,6 +344,11 @@
             }
             else {
               this.isOpened = !this.isOpened;
+              if (this.isOpened) {
+                this.$nextTick(() => {
+                  this.isOverDropdown = true;
+                });
+              }
             }
 
             this.$forceUpdate();

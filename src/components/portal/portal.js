@@ -102,20 +102,24 @@ return {
     },
     methods: {
       mount() {
-        //bbn.fn.log("mount portal")
-        //bbn.fn.log("on Mount", this.element)
-        if (this.element) {
-          this.$el.bbnSlots.default.forEach(node => {
-            this.element.appendChild(node);
-            node.bbnPortal = this.$el;
-          });
-        }
+        this.$nextTick(() => {
+          //bbn.fn.log("mount portal")
+          //bbn.fn.log("on Mount", this.element)
+          if (this.element) {
+            this.$el.bbnSlots.default.forEach(node => {
+              this.element.appendChild(node);
+              node.bbnPortal = this.$el;
+            });
+          }
+        })
       },
       unmount() {
-        //bbn.fn.log("unmount portal")
-        this.$el.bbnSlots.default.forEach(node => {
-          this.$el.appendChild(node);
-          delete node.bbnPortal;
+        this.$nextTick(() => {
+          //bbn.fn.log("unmount portal")
+          this.$el.bbnSlots.default.forEach(node => {
+            this.$el.appendChild(node);
+            delete node.bbnPortal;
+          });
         });
       },
       onRegisterChild(child) {
@@ -125,16 +129,12 @@ return {
       }
     },
     mounted() {
-
-      this.$nextTick(() => {
-        this.$forceUpdate();
-        if (!this.disabled) {
-          this.mount();
-        }
-        else {
-          this.unmount();
-        }
-      })
+      if (!this.disabled) {
+        this.mount();
+      }
+      else {
+        this.unmount();
+      }
       /*
       bbn.fn.log("on beforeMount");
       const observer = new MutationObserver(mutations_list => {
