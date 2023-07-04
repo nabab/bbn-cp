@@ -1117,6 +1117,7 @@ return {
               }
 
               this.componentDefinition = bbn.cp.normalizeComponent(res, 'bbn-container-' + this.getFullURL());
+
               //bbn.fn.log("YUUUU", res, this.componentDefinition, this.currentContent)
               this.componentDefinition.template = this.currentContent;
               this.isComponent = true;

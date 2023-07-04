@@ -124,7 +124,7 @@ class ${proto} extends bbnCp {
           const cfg = obj.props[n];
           code += `
   get ${n}() {
-    return this.$getProp("${n}");
+    return this.$props["${n}"];
   }
 `;
         }
@@ -171,7 +171,7 @@ class ${proto} extends bbnCp {
     }
 
     this.$computed["${name}"].update();
-    return this.$computed["${name}"].val;
+    return bbnData.getValue(this.$computed["${name}"].val);
   }
 `;
 

@@ -777,7 +777,7 @@
       onResize(force) {
         return bbn.cp.mixins.resizer.methods.onResize.apply(this, [force]).then((res) => {
           if (this.isVisible && this.$el && (res || force)) {
-            bbn.fn.log("NORMAL RESIZE", this.lastKnownCtHeight, this.lastKnownCtWidth);
+            //bbn.fn.log("NORMAL RESIZE", this.lastKnownCtHeight, this.lastKnownCtWidth);
             
             //return this.realResize();
           }
@@ -806,6 +806,7 @@
        * @fires setResizeMeasures
        */
       resizeAfterScroll() {
+        //bbn.fn.log("RESIZEAFTERSCROLL");
         let go = this.isVisible
             && bbn.fn.isDom(this.$el)
             && this.isActiveResizer()
@@ -845,12 +846,12 @@
                 resolve(0);
                 return;
               }
-              bbn.fn.warning("FLOATER RESIZE");
+              //bbn.fn.warning("FLOATER RESIZE");
               let naturalWidth = scroll.naturalWidth;
               let naturalHeight = scroll.naturalHeight;
               let w = scroll.$el.clientWidth;
               let h = scroll.$el.clientHeight;
-              bbn.fn.log("NATURAL", naturalHeight, naturalWidth);
+              //bbn.fn.log("NATURAL", naturalHeight, naturalWidth);
               let dimensions = {
                 w: naturalWidth,
                 h: naturalHeight
@@ -915,7 +916,7 @@
             if (!this.isResized) {
               this.isResized = true;
             }
-            bbn.fn.log("AFTER PROMISE ++++++++++++++", this.isResized)
+            //bbn.fn.log("AFTER PROMISE ++++++++++++++", this.isResized)
 
             this.$emit('resize');
             if (!wasInit) {
@@ -1232,7 +1233,7 @@
         }
       },
       onFloaterLeave() {
-        bbn.fn.log("ON FLOATER LEAVE")
+        //bbn.fn.log("ON FLOATER LEAVE")
         this.isOver = false;
       },
       /**
@@ -1277,17 +1278,17 @@
 
         let popup = this.$parent?.bbnSchema?.tag === 'bbn-popup' ? this.$parent : null;
         if (this.forms.length && !confirm) {
-          bbn.fn.log("The form should have closed the floater");
+          //bbn.fn.log("The form should have closed the floater");
           this.forms[0].closePopup(force);
         }
         else if (popup && this.uid) {
-          bbn.fn.log("The popup should have closed the floater");
+          //bbn.fn.log("The popup should have closed the floater");
           let idx = popup.getIndexByUID(this.uid);
           popup.close(idx, true);
           this.$destroy();
         }
         else {
-          bbn.fn.log("The floater should have closed itself");
+          //bbn.fn.log("The floater should have closed itself");
           this.hide();
           this.$emit('close');
         }
@@ -1520,10 +1521,10 @@
        */
       visible(v) {
         this.currentVisible = v;
-        bbn.fn.log("CHANGING VISIBle")
+        //bbn.fn.log("CHANGING VISIBle")
       },
       isVisible(v) {
-        bbn.fn.log("CHANGING VISIBILITY")
+        //bbn.fn.log("CHANGING VISIBILITY")
         if (v) {
           if (!this.ready) {
             this.ready = true;

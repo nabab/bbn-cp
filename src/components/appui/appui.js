@@ -373,15 +373,6 @@ return {
     },
     methods: {
       fdate: bbn.fn.fdate,
-      updatePostIts() {
-        if (this.plugins['appui-note'] && this.app?.user) {
-          bbn.fn.post(this.plugins['appui-note'] + '/data/postits', {pinned: 1}, d => {
-            if (d && d.data) {
-              this.postits = d.data;
-            }
-          })
-        }
-      },
       registerSearch() {
         this.getRef('search').registerFunction(this.getRef('router').searchForString);
       },
@@ -1071,7 +1062,6 @@ return {
         this._postMessage({
           type: 'initCompleted'
         });
-        this.updatePostIts();
         if (!this.single) {
           this.registerChannel('appui', true);
           if (this.plugins['appui-chat']){
@@ -1092,7 +1082,6 @@ return {
             this._postMessage({
               type: 'initCompleted'
             });
-            this.updatePostIts();
             this.registerChannel('appui', true);
             if (this.plugins['appui-chat']){
               this.registerChannel('appui-chat');
@@ -1107,7 +1096,7 @@ return {
         }, this.app?.header ? 1000 : 10);
       }
     },
-    beforeDestroy(){
+    beforeDestroy() {
       this.$off('appui-chat');
       this.$off('appui-core');
       this.$off('appui-notification');

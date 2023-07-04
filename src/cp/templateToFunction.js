@@ -50,12 +50,16 @@
         x(c, sp, `  _sIr("${cond.condition.hash}", false, ${hashName});`);
         x(c, sp, `}`);
       }
+      if ((node.id.indexOf('0-2') === 0) && (cp.$options.name === 'bbn-dropdown')) {
+        x(c, sp, `bbn.fn.warning("STARTING");`);
+        x(c, sp, `bbn.fn.log("${node.id}", "${node.tag || 'no tag'}", _gIs("${cond.condition.hash}", ${hashName}), _isCondTrue, _t.$retrieveElement("${node.id}", ${hashName}));`)
+      }
       x(c, sp, `if (_gIs("${cond.condition.hash}", ${hashName}) !== "OK") {`)
       x(c, sp, `  $_go['${cond.id}'] = true;`);
       x(c, sp, `  let _tmp = _gIv("${cond.condition.hash}", ${hashName});`);
       x(c, sp, `  let _e;`);
       x(c, sp, `  if (!_tmp) {`);
-      if (['template', 'transtion', 'slot'].includes(cond.tag)) {
+      if (['template', 'transition', 'slot'].includes(cond.tag)) {
         if (cond.items) {
           bbn.fn.each(cond.items, it => {
             x(c, sp, `    _e = _t.$retrieveElement("${it.id}", ${hashName});`);
@@ -67,6 +71,10 @@
       }
       else {
         x(c, sp, `    _e = _t.$retrieveElement("${cond.id}", ${hashName});`);
+        if ((node.id.indexOf('0-2') === 0) && (cp.$options.name === 'bbn-dropdown')) {
+          x(c, sp, `bbn.fn.warning("GOING ON");`);
+          x(c, sp, `bbn.fn.log("${node.id} E?", !!_e, _e);`)
+        }
         x(c, sp, `    if (_e && !bbn.fn.isComment(_e)) {`);
         //x(c, sp, `      bbn.fn.log("REMOVING ${cond.id} from node2fn")`);
         x(c, sp, `      let _cp = bbn.cp.getComponent(_e.bbnComponentId)?.bbn || _t;`);
@@ -83,6 +91,9 @@
         x(c, sp, `        comment: true`);
         x(c, sp, `      }, _parents.at(-1));`);
         x(c, sp, `    }`);
+        if ((node.id.indexOf('0-2') === 0) && (cp.$options.name === 'bbn-dropdown')) {
+          x(c, sp, `bbn.fn.log(_eles['${node.id}']);`)
+        }
       }
 
       x(c, sp, `  }`);
@@ -284,7 +295,6 @@
       x(c, sp, `  _t.$updateElementFromProps(_tmp, _eles['${node.id}']);`);
       x(c, sp, `}`);
 
-
       let hasEvents = Object.keys(node.events || {}).length > 0;
 
       if (node.model || hasEvents) {
@@ -444,7 +454,7 @@
       x(c, sp, `if (_t.$el.bbnSlots?.[${slot}]?.length) {`);
       // Iterating the elements going in the slot
       x(c, sp, `  bbn.fn.each(_t.$el.bbnSlots[${slot}], a => {`);
-      x(c, sp, `    //bbn.fn.log("This is a slot element", a)`);
+      //x(c, sp, `    bbn.fn.log("This is a slot element", a)`);
       x(c, sp, `    let search = {bbnId: a.bbnId};`);
       x(c, sp, `    if (a.bbnHash) {`);
       x(c, sp, `      search.bbnHash = a.bbnHash;`);
@@ -621,6 +631,7 @@
         x(c, sp, `  $_go['${node.id}'] = true;`);
         x(c, sp, `}`);
       }
+      //x(c, sp, `bbn.fn.log(["nodesToFunction", "${node.tag || 'no'}", $_go['${node.id}']]);`);
 
       if (node.text) {
         c.text += treatText(node, hashName);

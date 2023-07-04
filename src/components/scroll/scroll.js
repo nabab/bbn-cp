@@ -821,6 +821,7 @@ return {
 
             this.isMeasuring = false;
             this.$forceUpdate();
+            bbn.fn.log(["NAT DIM", this.naturalWidth, this.naturalHeight, old.width, old.height]);
             if ((old.width !== this.naturalWidth) || (old.height !== this.naturalHeight)) {
               if (old.width || old.height) {
                 this.$emit('resizecontent');

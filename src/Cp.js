@@ -2,6 +2,533 @@
   const sc = document.createElement('script');
   sc.setAttribute('type', 'text/javascript');
   sc.innerHTML = `
+class bbnData {
+
+  static hash(v) {
+    let hash = v;
+    if (v && (typeof v === 'object') && [Array, Object, undefined].includes(v.constructor)) {
+      hash = bbn.fn.hash(v);
+    }
+
+    return hash;
+  }
+
+  static immunizeValue(value) {
+    if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor)) {
+      Object.defineProperty(value, '__bbnNoData', {
+        value: true,
+        enumerable: false,
+        configurable: false,
+        writable: false
+      });
+    }
+
+    return value;
+  }
+
+  static getValue(obj, original) {
+    if (obj && (typeof obj === 'object') && (obj instanceof bbnData)) {
+      return obj[original ? 'data' : 'value'];
+    }
+
+    return obj;
+  }
+
+  static getObject(value) {
+    if (value && (typeof value === 'object') && value.__bbnData) {
+      return bbn.cp.dataInventory.get(value.__bbnData);
+    }
+
+    return null;
+  }
+
+  static treatValue(value, component, path, parent) {
+    if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor) && !value.__bbnNoData) {
+      if (value.__bbnData) {
+        if (!bbn.cp.dataInventory.has(value.__bbnData)) {
+          throw new Error(bbn._("The data inventory does not contain the data object"));
+        }
+
+        const dataObj = bbn.cp.dataInventory.get(value.__bbnData);
+        dataObj.addComponent(component, path);
+        return dataObj.value;
+      }
+
+      const dataObj = new bbnData(value, component, path, parent);
+      return dataObj.value;
+    }
+
+    return value;
+  }
+
+  static proxyPop(target, component, path) {
+    return () => {
+      const targetObj = bbnData.getObject(target);
+      const len = target.length;
+      if (len) {
+        const subObj = bbnData.getObject(target[len - 1]);
+        if (subObj) {
+          subObj.unset();
+        }
+      }
+      const res = target.pop();
+      targetObj.update(path);
+      return res;
+    };
+  }
+
+  static proxyShift(target, component, path) {
+    return () => {
+      const targetObj = bbnData.getObject(target);
+      if (target.length) {
+        const subObj = bbnData.getObject(target[0]);
+        if (subObj) {
+          subObj.unset();
+        }
+      }
+      const res = target.shift();
+      targetObj.update(path);
+      return res;
+    };
+  }
+
+  static proxyPush(target, component, path) {
+    const targetObj = bbnData.getObject(target);
+    return (...args) => {
+      let newArgs = [];
+      bbn.fn.each(args, (a, i) => {
+        const idx = target.length + i;
+        const newVal = bbnData.treatValue(a, component, idx, targetObj);
+        newArgs.push(newVal);
+      });
+      const res = target.push(...newArgs);
+      targetObj.update(path);
+      return res;
+    };
+  }
+
+  static proxyUnshift(target, component, path) {
+    const targetObj = bbnData.getObject(target);
+    return (...args) => {
+      let newArgs = [];
+      bbn.fn.each(args, (a, i) => {
+        const idx = target.length + i;
+        const newVal = bbnData.treatValue(a, component, idx, targetObj);
+        newArgs.push(newVal);
+      });
+      const res = target.unshift(...newArgs);
+      const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
+      dataObj.update(path);
+      return res;
+    };
+  }
+
+  static proxyReverse(target, component, path) {
+    return (...args) => {
+      const res = target.reverse(...args);
+      const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
+      dataObj.update(path);
+      return res;
+    };
+
+  }
+
+  static proxySort(target, component, path) {
+    return (...args) => {
+      const res = target.sort(...args);
+      const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
+      dataObj.update();
+      return res;
+    };
+  }
+
+  static proxySplice(target, component, path) {
+    return (index, numDelete, ...args) => {
+      const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
+      let newArgs = [];
+      bbn.fn.each(args, (a, i) => {
+        const idx = target.length + i;
+        const newVal = bbnData.treatValue(a, component, idx, dataObj);
+        newArgs.push(newVal);
+      });
+
+      for (let i = index; i < index + numDelete; i++) {
+        let subObj = bbnData.getObject(target[i]);
+        if (subObj) {
+          subObj.unset();
+        }
+      }
+
+      const res = target.splice(index, numDelete, ...newArgs);
+      dataObj.update(path);
+      return res;
+    };
+  }
+
+
+  static getProxyHandler(component, path, targetObj) {
+    return {
+      get(target, key) {
+        const realValue = target[key];
+        if (key === '__bbnData') {
+          return realValue;
+        }
+
+        if (bbn.fn.isFunction(realValue)) {
+          if (targetObj && targetObj.isArray && bbn.fn.isString(key)) {
+            const fnName = bbn.fn.camelize('proxy-' + key);
+            if (bbn.fn.isFunction(bbnData[fnName])) {
+              return bbnData[fnName](target, component, path);
+            }
+
+            return target[key];
+          }
+        }
+        else if (realValue) {
+          const val = bbnData.treatValue(realValue, component, key, targetObj);
+          return val;
+        }
+
+        return realValue;
+      },
+      set(target, key, value) {
+        if (!bbn.fn.isSame(target[key], value)) {
+          const oldValue = target[key];
+          const oldObj = bbnData.getObject(oldValue);
+          if (oldObj) {
+            oldObj.unset();
+          }
+          const newVal = bbnData.treatValue(value, component, key, targetObj);
+          target[key] = newVal;
+          const dataObj = bbnData.getObject(newVal);
+          targetObj.update();
+          // bbn.fn.log("SET", target, key, value, oldValue, targetObj, dataObj, '------');
+          if (dataObj) {
+            dataObj.update();
+          }
+        }
+
+        return true;
+      },
+      defineProperty(target, key, description) {
+        const targetObj = bbnData.getObject(target);
+        const oldValue = target[key];
+        const oldObj = bbnData.getObject(oldValue);
+        if (oldObj) {
+          oldObj.unset();
+        }
+        if (description.value) {
+          description.value = bbnData.treatValue(description.value, component, key, targetObj);
+        }
+        Object.defineProperty(target, key, description);
+        targetObj.update();
+        return true;
+      },
+      deleteProperty(target, key) {
+        const dataObj = bbnData.getObject(target[key]);
+        if (dataObj) {
+          dataObj.unset();
+        }
+
+        delete target[key];
+        targetObj.update();
+        return true;
+      }
+    }
+  }
+
+  constructor(data, component, path, parent) {
+    if (data instanceof bbnData) {
+      throw new Error("bbnData cannot be initialized with a bbnData");
+    }
+
+    if (!(component instanceof bbnCp)) {
+      throw new Error("bbnData must be initialized with a bbn component");
+    }
+
+    if (!data || (typeof data !== 'object') || ![undefined, Object, Array].includes(data.constructor)) {
+      bbn.fn.log(data);
+      throw new Error("The object given is not compatible with bbnData");
+    }
+
+    if (data?.__bbnData) {
+      throw new Error("bbnData cannot be initialized with a bbnData");
+    }
+
+    if (parent && !(parent instanceof bbnData)) {
+      throw new Error("parent must be a bbnData");
+    }
+
+    Object.defineProperty(this, 'id', {
+      writable: false,
+      configurable: false,
+      value: Symbol()
+    });
+
+    Object.defineProperty(this, 'path', {
+      writable: false,
+      configurable: false,
+      value: path
+    });
+
+    Object.defineProperty(this, 'root', {
+      value: component,
+      writable: false,
+      configurable: false
+    });
+
+    Object.defineProperty(this, 'parent', {
+      value: parent || null,
+      writable: true,
+      configurable: true
+    });
+
+    Object.defineProperty(this, 'children', {
+      value: [],
+      writable: false,
+      configurable: false
+    });
+
+    Object.defineProperty(this, 'root', {
+      value: component,
+      writable: false,
+      configurable: false
+    });
+
+    Object.defineProperty(data, '__bbnData', {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: this.id
+    });
+
+    Object.defineProperty(this, 'data', {
+      value: data,
+      writable: false,
+      configurable: true
+    });
+
+    Object.defineProperty(this, 'value', {
+      value: new Proxy(this.data, bbnData.getProxyHandler(component, path, this)),
+      writable: false,
+      configurable: false
+    });
+
+    Object.defineProperty(this, 'isArray', {
+      value: data instanceof Array,
+      writable: false,
+      configurable: true
+    });
+
+    Object.defineProperty(this, 'old', {
+      value: bbn.fn.hash(data),
+      writable: true,
+      configurable: true
+    });
+
+    Object.defineProperty(this, 'components', {
+      value: this.parent ? null : bbn.fn.createObject({
+        [component.$cid]: [path]
+      }),
+      writable: false,
+      configurable: false
+    });
+
+    if (this.parent) {
+      this.parent.children.push(this);
+    }
+    else {
+      component.$values.push(this.id);
+    }
+
+    bbn.cp.dataInventory.set(this.id, this);
+  }
+
+  rootData() {
+    let obj = this;
+    while (obj.parent) {
+      obj = obj.parent;
+    }
+    return obj;
+  }
+
+  unset() {
+    const dataObj = this;
+    if (dataObj) {
+      bbn.fn.each(dataObj.children, subObj => {
+        subObj.unset();
+      });
+      const id = dataObj.id;
+      const rootData = dataObj.rootData();
+      if (!dataObj.parent) {
+        bbn.fn.iterate(rootData.components, (paths, cid) => {
+          const cp = bbn.cp.getComponent(cid)?.bbn;
+          if (cp) {
+            if (cp === dataObj.root) {
+              return;
+            }
+
+            let idx = cp.$values.indexOf(id);
+            if (idx > -1) {
+              cp.$values.splice(idx, 1);
+            }
+            else {
+              throw new Error(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
+            }
+
+            cp.$tick();
+          }
+          else {
+            throw new Error(bbn._("Impossible to find the component %s", cid));
+          }
+          delete dataObj.rootData().components[cid];
+        });
+
+        let idx = dataObj.root.$values.indexOf(id);
+        if (idx > -1) {
+          dataObj.root.$values.splice(idx, 1);
+        }
+        else {
+          bbn.fn.log(dataObj);
+          throw new Error(bbn._("Impossible to find the data object in the values of the component %s", dataObj.root.$options.name));
+        }
+        
+      }
+
+      bbn.cp.dataInventory.delete(id);
+      delete dataObj.data.__bbnData;
+      dataObj.root.$tick();
+    }
+  }
+
+  addComponent(component) {
+    if (!(component instanceof bbnCp)) {
+      throw new Error(bbn._("bbnData hasComponent must be called with a bbn component"));
+    }
+
+    const rootData = this.rootData();
+
+    if (!rootData.components[component.$cid]) {
+      rootData.components[component.$cid] = component;
+    }
+
+    if (!component.$values.includes(rootData.id)) {
+      component.$values.push(rootData.id);
+    }
+    
+    return false;
+  }
+
+  hasComponent(component) {
+    if (!(component instanceof bbnCp)) {
+      throw new Error("bbnData hasComponent must be called with a bbn component");
+    }
+
+    const rootData = this.rootData();
+    return rootData.components[component.$cid] !== undefined;
+  }
+
+  removeComponent(component) {
+    if (!(component instanceof bbnCp)) {
+      throw new Error("bbnData hasComponent must be called with a bbn component");
+    }
+
+    const rootData = this.rootData();
+    if (!rootData.components[component.$cid]) {
+      throw new Error("The component is not in the list of components");
+    }
+
+    if (component === rootData.root) {
+      this.unset();
+    }
+    else {
+      let idx = component.$values.indexOf(this.id);
+      if (idx > -1) {
+        component.$values.splice(idx, 1);
+      }
+      delete rootData.components[component.$cid];
+    }
+
+    component.$tick();
+  }
+
+  updateComponents(deep) {
+    const rootData = this.rootData();
+    bbn.fn.iterate(rootData.components, (component, cid) => {
+      if (!component) {
+        throw new Error(bbn._("Impossible to find the component %s", cid));
+      }
+
+      if (component.$isInit) {
+        const subpathDone = [];
+        const paths = [this.path];
+        let data = this;
+        while (data.parent) {
+          paths.unshift(data.path);
+          data = data.parent;
+        }
+        let name = paths.join(".");
+        if (component.$watcher?.[name]?.handler) {
+          if (component.$watcher[name] && (!deep || component.$watcher[name].deep)) {
+            if (!bbn.fn.isFunction(component.$watcher[name].handler)) {
+              throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
+            }
+            let oldV = component.$watcher[name].value;
+            let v = bbn.fn.getProperty(this, name);
+            component.$watcher[name].value = v;
+            component.$watcher[name].handler.apply(this, [v, oldV]);
+          }
+        }
+
+        paths.pop();
+        name = paths.join(".");
+        if (name && (subpathDone.indexOf(name) === -1)) {
+          subpathDone.push(name);
+          const prop = bbn.fn.getProperty(this.root, name);
+          const dataObj = bbnData.getObject(prop);
+          if (dataObj) {
+            dataObj.updateComponents(true);
+          }
+        }
+
+        component.$tick()
+      }
+    });
+  }
+
+
+  update() {
+    const hash = bbn.fn.hash(this.data);
+    if (hash !== this.old) {
+      this.old = hash;
+    }
+    this.updateComponents(); 
+    /*
+    if (this.$isInit) {
+      if (this.$watcher?.[name]?.handler) {
+        if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
+          throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
+        }
+        this.$watcher[name].value = v;
+        this.$watcher[name].handler.apply(this, [v, oldV]);
+      }
+
+      this.$tick();
+    }
+
+    this.root.$tick();
+    bbn.fn.iterate(this.rootData().components, (cp, cid) => {
+      if (!cp) {
+        throw new Error(bbn._("Impossible to find the component %s", cid));
+      }
+
+      cp.$tick()
+    });
+    */
+  }
+
+}
+
 
 class bbnCp {
 
@@ -150,6 +677,19 @@ class bbnCp {
       configurable: false
     });
     
+    /*
+    Object.defineProperty(this, '$queue', {
+      value: this.$root === this ? [] : this.$root.$queue,
+      writable: false,
+      configurable: false
+    });
+    */
+    Object.defineProperty(this, '$queue', {
+      value: [],
+      writable: false,
+      configurable: false
+    });
+
     if (this === this.$root) {
       this.$fetchTimeout = null;
       Object.defineProperty(this, '$unknownComponents', {
@@ -342,6 +882,12 @@ class bbnCp {
 
 
   $start() {
+    /*
+    if (this !== this.$root) {
+      return;
+    }
+    */
+
     if (this.$interval) {
       throw new Error(bbn._("The component %s is already started", this.$options.name));
     }
@@ -358,6 +904,10 @@ class bbnCp {
 
 
   $stop() {
+    if (this !== this.$root) {
+      return;
+    }
+
     if (!this.$interval) {
       throw new Error(bbn._("The component %s is not started", this.$options.name));
     }
@@ -657,7 +1207,7 @@ class bbnCp {
   $disconnectedCallback() {
     //bbn.fn.log("Before disconnected callback from " + this.$el.tagName + ' / ' + this.$el.bbnSchema.id);
     if (!this.$el.isConnected) {
-      //bbn.fn.log("Disconnected callback from " + this.$el.tagName);
+      bbn.fn.log("Disconnected callback from " + this.$el.tagName);
       // Sending beforeDestroy event
       const beforeDestroy = new Event('beforedestroy');
       this.$onBeforeDestroy();
@@ -670,6 +1220,17 @@ class bbnCp {
         this.$el.dispatchEvent(destroyed);
       });
       // Deleting from elements prop
+      while (this.$values.length) {
+        let id = this.$values[this.$values.length -1];
+        const data = bbn.cp.dataInventory.get(id);
+        if (!data) {
+          throw new Error(bbn._("Impossible to find a piece of data in %s", this.$options.name));
+        }
+        else {
+          //bbn.fn.log('Removing data for ' + this.$cid + ' in ' + this.$options.name + ' / path: ' + data.path[0]);
+          data.removeComponent(this);
+        }
+      }
       bbn.cp.removeComponent(this.$el.bbnCid);
       this.$el.childNodes.forEach(node => {
         this.$removeDOM(node);
@@ -709,6 +1270,13 @@ class bbnCp {
       value: this.$el.bbn
     });
 
+
+    // This will hold all the reactive data
+    Object.defineProperty(this, '$values', {
+      value: [],
+      writable: false,
+      configurable: false
+    });
 
     // This will become true after all is mounted
     Object.defineProperty(this, '$isInit', {
@@ -818,12 +1386,21 @@ class bbnCp {
     });
 
     /**
-     * Object of all available slots nodes in the template.
-     * Indexed by name with id as value
+     * Is true if is creating or updating
      */
     Object.defineProperty(this, '$isBusy', {
       get() {
         return this.$isCreating || this.$isUpdating;
+      }
+    });
+
+    /**
+     * Object of all available slots nodes in the template.
+     * Indexed by name with id as value
+     */
+    Object.defineProperty(this, '$hash', {
+      get() {
+        return this.$el?.bbnHash || '';
       }
     });
 
@@ -931,12 +1508,6 @@ class bbnCp {
       configurable: false
     });
 
-    Object.defineProperty(this, '$queue', {
-      value: [],
-      writable: false,
-      configurable: false
-    });
-
     /** @var {Object} $dataValues The content of the data */
     Object.defineProperty(this, '$dataValues', {
       value: bbn.fn.createObject(),
@@ -1036,6 +1607,9 @@ class bbnCp {
    * @returns 
    */
   $insertElement(ele, target, before, oldEle) {
+    if ((ele.tagName === 'BBN-PORTAL') && (ele.bbnId === '0-2')) {
+      bbn.fn.log(["INSERTING", ele, target, before, oldEle]);
+    }
     bbn.fn.checkType(target, HTMLElement, "The $insert function should have an HTMLElement as target");
 
     const d = ele.bbnSchema;
@@ -1163,6 +1737,55 @@ class bbnCp {
    * @param {Boolean} force If true and the queue is empty, it will be filled with an empty array
    * @returns {undefined}
    */
+  /*
+  async $launchQueue(force) {
+    let row = bbn.fn.getRow(this.$queue, {cp: this});
+    if (force && !row) {
+      row = {cp: this, fns: [], force};
+      this.$queue.push(row);
+    }
+    else if (force && row && !row.force) {
+      row.force = true;
+    }
+
+    if (this !== this.$root) {
+      const res = await this.$root.$launchQueue();
+      return res;
+    }
+
+    const time = bbn.fn.timestamp();
+    if (this.$queue.length) {
+      //bbn.fn.log(bbn._("LAUNCHING QUEUE WITH %d items in %s", this.$queue.length, this.$queue.map(a => a.cp.$options.name).join(", ")));
+      this.$lastLaunch = time;
+      const queue = this.$queue.splice(0, this.$queue.length);
+      let isTime;
+      for (let i = 0; i < queue.length; i++) {
+        if (!queue[i].cp.$isMounted) {
+          continue;
+        }
+
+        if (queue[i].force || (time - queue[i].cp.$lastLaunch > bbn.cp.tickDelay)) {
+          await queue[i].cp.$updateComponent();
+          queue[i].fns.forEach(fn => {
+            bbn.fn.log([queue[i].cp, queue[i].force]);
+            return fn.bind(queue[i].cp)()
+          });
+        }
+        else {
+          //this.$queue.push(queue[i]);
+        }
+      }
+    }
+    else {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, bbn.cp.tickDelay);
+      });
+    }
+
+  }
+  */
   async $launchQueue(force) {
     if (force && !this.$queue.length) {
       this.$queue.push([]);
@@ -1170,22 +1793,21 @@ class bbnCp {
 
 
     const time = bbn.fn.timestamp();
-    if (this.$queue.length && (force || (time - this.$lastLaunch > bbn.cp.tickDelay))) {
+    if (this.$queue.length && (force || (time - this.$lastLaunch >= bbn.cp.tickDelay))) {
       this.$lastLaunch = time;
       const last = this.$queue.shift();
       return this.$updateComponent().then(() => {
         last.forEach(fn => fn.bind(this)());
       });
     }
-    else if (time - this.$lastLaunch > bbn.cp.tickDelay * 10) {
-      this.$updateProps();
-    }
 
+    /*
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve();
       }, 0);
     });
+    */
   }
 
 
@@ -1302,34 +1924,9 @@ class bbnCp {
       root = this.$el.attachShadow({ mode: "open" });
     }
 
-    // Biggest part of the job: updating the schema
-    bbn.fn.iterate(this.$el.bbnSchema.props, (p, n) => {
-      let isProp = Object.hasOwn(this.$props, n);
-      if (bbn.fn.isPrimitive(p)) {
-        if (['class', 'style'].includes(n)) {
-          return;
-        }
-
-        const isAttr = this.$el[n] !== undefined && bbn.fn.isPrimitive(this.$el[n]);
-        if (isAttr) {
-          const attr = this.$el[n];
-          if (attr !== p) {
-            if (p) {
-              this.$el.setAttribute(n, bbn.fn.isString(p) ? p : p.toString());
-            }
-            else if (this.$el.getAttribute(n)) {
-              this.$el.removeAttribute(n);
-            }
-          }
-        }
-      }
-
-      if (isProp) {
-        this.$setProp(n, p);
-      }
-    });
     const t1 = (new Date()).getTime();
-    //this.$updateAllComputed();
+    this.$updateProps();
+    this.$updateAllComputed();
     const e = await this.$eval(this);
     const t2 = (new Date()).getTime();
     this.$numBuild++;
@@ -1343,6 +1940,14 @@ class bbnCp {
     }
 
     this.$isUpdating = false;
+  }
+
+  $isComponent(node) {
+    if (node.tag && this.$cfg.componentNames[node.tag]) {
+      return true;
+    }
+
+    return bbn.cp.isComponent(node);
   }
 
 
@@ -1363,7 +1968,7 @@ class bbnCp {
     /** @constant {Object} props */
     const props = node.props || bbn.fn.createObject();
     /** @constant {Boolean} isComponent */
-    const isComponent = bbn.cp.isComponent(node);
+    const isComponent = this.$isComponent(node);
     /** @constant {bbnComponentObject} cpSource */
     const cpSource = this;//node.componentId ? bbn.cp.getComponent(node.componentId)?.bbn : this;
     if (!cpSource) {
@@ -1477,6 +2082,10 @@ class bbnCp {
       }
       else if (ele.bbnSchema.props[name] !== value) {
         ele.bbnSchema.props[name] = value;
+        if (ele.bbn?.$isInit) {
+          ele.bbn.$setProp(name, value);
+        }
+
         isChanged = true;
       }
     });
@@ -1621,46 +2230,65 @@ class bbnCp {
   }
 
 
-  /**
-  * Set the data properties of the object
-  */
-  $setData(name, value) {
-    const cfg = this.$cfg;
-    this.$dataValues[name] = value;
+  $setUpData(name, value) {
     if (!Object.hasOwn(this, name)) {
-      this.$oldValues[name] = '';
+      this.$dataValues[name] = bbnData.treatValue(value, this, name);
       const def = {
         get() {
           return this.$dataValues[name];
         },
         set(v) {
-          let oldV = this.$dataValues[name];
-          let hash = v;
-          if (v && (typeof v === 'object') && [Array, Object, undefined].includes(v.constructor)) {
-            hash = bbn.fn.hash(v);
-          }
-
-          if (this.$oldValues[name] !== hash) {
-            this.$dataValues[name] = v;
-            this.$oldValues[name] = hash;
-            if (this.$isInit) {
-              if (this.$watcher?.[name]?.handler) {
-                if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
-                  throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
-                }
-                this.$watcher[name].value = v;
-                this.$watcher[name].handler.apply(this, [v, oldV]);
+          if (this.$dataValues[name] !== v) {
+            let isMod = true;
+            const oldV = this.$dataValues[name];
+            //bbn.fn.log("SETTING " + name + " in " + this.$options.name, oldV, v);
+            let oldDataObj = bbnData.getObject(this.$dataValues[name]);
+            if (oldDataObj) {
+              if (bbn.fn.isSame(oldV, v)) {
+                isMod = false;
               }
+              else {
+                bbn.fn.log(["REMOVING COMPONENT", this, oldV, v]);
+                oldDataObj.removeComponent(this);
+              }
+            }
 
-              this.$tick();
+            if (isMod) {
+              const newVal = bbnData.treatValue(v, this, name);
+              const dataObj = bbnData.getObject(newVal);
+              this.$dataValues[name] = newVal;
+              if (this.$isInit) {
+                if (this.$watcher?.[name]?.handler) {
+                  if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
+                    throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
+                  }
+                  this.$watcher[name].value = v;
+                  this.$watcher[name].handler.apply(this, [v, oldV]);
+                }
+
+                //bbn.fn.log("TICKING FOR", name);
+                this.$tick();
+              }
             }
           }
         }
       };
       Object.defineProperty(this, name, def);
       this.$addNamespace(name, 'data');
+      if (this.$isMounted) {
+        this.$tick();
+      }
     }
+  }
 
+
+  /**
+  * Set the data properties of the object
+  */
+  $setData(name, value) {
+    if (!Object.hasOwn(this, name)) {
+      return this.$setUpData(name, value);
+    }
     if (this[name] !== value) {
       this[name] = value;
     }
@@ -1676,9 +2304,6 @@ class bbnCp {
           configurable: true
         });
       }
-      if (!Object.hasOwn(this.$oldValues, name)) {
-        this.$oldValues[name] = '';
-      }
 
       this.$addNamespace(name, 'props');
     }
@@ -1692,7 +2317,11 @@ class bbnCp {
 
 
   $getProp(name) {
-    let v = this.$props[name];
+    if (Object.hasOwn(this.$el.bbnSchema.props || {}, name) && (this.$el.bbnSchema.props[name] !== this.$props[name])) {
+      this.$setProp(name, this.$el.bbnSchema.props[name]);
+    }
+    let v = bbnData.getValue(this.$props[name]);
+    /*
     if (!bbn.fn.isPrimitive(v) && (typeof v === 'object') && [Array, Object, undefined].includes(v.constructor)) {
       const hash = bbn.fn.hash(v);
       if (this.$oldValues[name] !== hash) {
@@ -1711,6 +2340,7 @@ class bbnCp {
         }
       }
     }
+    */
 
     return v;
   }
@@ -1738,7 +2368,11 @@ class bbnCp {
       return;
     }
 
+
     let v = this.$checkPropValue(name, cfg, value);
+    if (v === this[name]) {
+      return;
+    }
     this.$realSetProp(name, v);
   }
 
@@ -1746,30 +2380,31 @@ class bbnCp {
   $realSetProp(name, value) {
     name = bbn.fn.camelize(name);
     const original = this.$props[name];
-    let oldHash = this.$oldValues[name];
-    let hash = value;
-    if (value && (typeof value === 'object') && [Array, Object, undefined].includes(value.constructor)) {
-      hash = bbn.fn.hash(value);
+    if (!bbn.fn.isSame(value, original)) {
+      const oldObj = bbnData.getObject(original);
+      if (oldObj) {
+        oldObj.unset();
+      }
+    }
+    else {
+      return;
     }
 
-    if (oldHash !== hash) {
-  
-      this.$oldValues[name] = hash;
-      Object.defineProperty(this.$props, name, {
-        value: value,
-        writable: false,
-        configurable: true
-      });
+    const newValue = bbnData.treatValue(value, this, name);
+    const dataObj = bbnData.getObject(newValue);
+    Object.defineProperty(this.$props, name, {
+      value: newValue,
+      writable: false,
+      configurable: true
+    });
 
-      if (this.$isInit && this.$watcher?.[name]) {
-        this.$watcher[name].handler.apply(this, [value, original]);
-      }
+    if (this.$isInit && this.$watcher?.[name]) {
+      this.$watcher[name].handler.apply(this, [newValue, original]);
+    }
 
-      if (this.$isMounted) {
-        this.$emit('propchange', name, value, original);
-        //bbn.fn.log(["EMITTING PROPCHANGE", this.$options.name, this.$cid, name, value, original, hash, oldHash, JSON.stringify(value)]);
-        this.$getProp(name);
-      }
+    if (this.$isMounted) {
+      this.$emit('propchange', name, newValue, original);
+      //bbn.fn.log(["EMITTING PROPCHANGE", this.$options.name, this.$cid, name, newValue, original, hash, oldHash, JSON.stringify(value)]);
     }
   }
 
@@ -1837,15 +2472,14 @@ class bbnCp {
     });
   }
 
-
-
   $updateComputed(name, val) {
-    const hash = bbn.fn.hash(val);
+    const hash = bbnData.hash(val);
     if (hash !== this.$computed[name].hash) {
       const oldValue = this.$computed[name].val;
       this.$computed[name].old = oldValue;
       this.$computed[name].hash = hash;
       this.$computed[name].num = this.$numBuild;
+      //val = bbnData.treatValue(val, this, name);
       this.$computed[name].val = val;
       if (this.$watcher?.[name]) {
         if (this.$watcher[name].handler) {
@@ -1926,7 +2560,7 @@ class bbnCp {
         value: _res,
         elements: []
       });
-      _r[_name][_hash].old = bbn.fn.hash(_r[_name][_hash].value);
+      _r[_name][_hash].old = bbnData.hash(_r[_name][_hash].value);
     }
     else if (_r[_name][_hash].state === 'DEL') {
       _r[_name][_hash].value = _res;
@@ -1935,7 +2569,7 @@ class bbnCp {
     // If it's a temporary value, we set it
     else if (_r[_name][_hash].state === 'TMP') {
       _r[_name][_hash].value = _res;
-      const _o = bbn.fn.hash(_r[_name][_hash].value);
+      const _o = bbnData.hash(_r[_name][_hash].value);
       if (_r[_name][_hash].old !== _o) {
         _r[_name][_hash].state = 'MOD';
       }
@@ -1981,7 +2615,9 @@ class bbnCp {
    */
   $onBeforeCreate() {
     if (this.$cfg.beforeCreate) {
-      bbn.fn.each(this.$cfg.beforeCreate, fn => fn.apply(this));
+      bbn.fn.each(this.$cfg.beforeCreate, fn => {
+        fn.bind(this)();
+      });
     }
   }
 
@@ -2043,6 +2679,19 @@ class bbnCp {
   /**
    * Add delay before another function call
    */
+  /*
+  $tick() {
+    return new Promise(resolve => {
+      let row = bbn.fn.getRow(this.$queue, {cp: this});
+      if (!row) {
+        row = {cp: this, fns: []};
+        this.$queue.push(row);
+      }
+
+      row.fns.push(resolve);
+    });
+  }
+  */
   $tick() {
     return new Promise(resolve => {
       if (!this.$queue.length) {
@@ -2099,16 +2748,19 @@ class bbnCp {
    * @returns 
    */
   $set(obj, prop, value, writable = true, configurable = true) {
-    if (obj === this) {
-      if (!this.$namespaces[prop]) {
-        this.$setData(prop, value);
+    if (bbn.cp.isComponent(obj)) {
+      if (!obj.$namespaces[prop]) {
+        obj.$setUpData(prop, value);
       }
-      else if (obj[prop] !== value) {
-        if (this.$namespaces[prop] === 'props') {
-          this.$setProp(prop, value);
-        }
-        else {
-          this.$setData(prop, value);
+      else {
+        const dataObj = bbnData.treatValue(value, obj, prop);
+        if (!bbn.fn.isSame(dataObj, obj[prop])) {
+          if (obj.$namespaces[prop] === 'props') {
+            obj.$setProp(prop, value);
+          }
+          else {
+            obj[prop] = value;
+          }
         }
       }
     }
@@ -2146,6 +2798,19 @@ class bbnCp {
   }
 
 
+  /*
+  $nextTick(fn) {
+    return new Promise((resolve) => {
+      let row = bbn.fn.getRow(this.$queue, {cp: this});
+      if (!row) {
+        row = {cp: this, fns: []};
+        this.$queue.push(row);
+      }
+
+      row.fns.push(fn || resolve);
+    });
+  }
+  */
   $nextTick(fn) {
     return new Promise((resolve) => {
       if (!this.$queue.length) {
@@ -2268,8 +2933,8 @@ class bbnCp {
    * Forcing executing tick (updateComponent) function by setting this.$tickLast to 0
    */
   $forceUpdate() {
-    this.$updateProps();
     return this.$launchQueue(true);
+    //return this.$updateComponent();
   }
 
 

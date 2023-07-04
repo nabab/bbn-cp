@@ -1103,7 +1103,10 @@ return {
               }
             }
             let obj2 = bbn.fn.extend(true, {}, obj.$options.propsData),
-                props = obj.$props;
+                props = {};
+            bbn.fn.each(Object.keys(obj.$namespaces).filter(e => obj.$namespaces[e] === 'prop'), prop => {
+              props[prop] = obj[prop];
+            });
             bbn.fn.iterate(props, (v, i) => {
               if (!(i in obj2) && ('default' in v)) {
                 obj2[i] = v.default;
@@ -3733,7 +3736,6 @@ return {
 
       // Adding to the views
       bbn.fn.warning("ROUTER BEFORE MOUNT");
-      bbn.fn.log(tmp, this.source);
       bbn.fn.each(tmp, a => {
         if (!bbn.fn.isString(a.url)) {
           throw new Error(bbn._("The container must have a valid URL"));
@@ -3744,7 +3746,6 @@ return {
           a.current = url;
         }
 
-        bbn.fn.warning(bbn._("ADDING %s ON MOUNT", a.url));
         this.add(a);
       });
 
@@ -3870,6 +3871,7 @@ return {
 
           this.views[idx].last = bbn.fn.timestamp();
           if (this.currentURL !== this.views[idx].current) {
+            bbn.fn.log("CHANGING URL TO " + this.views[idx].current);
             this.route(this.views[idx].current);
           }
         }
@@ -3917,7 +3919,8 @@ return {
        * @fires route
        */
       url(newVal){
-        if (this.ready) {
+        if (this.ready && newVal && (newVal !== this.currentURL)) {
+          bbn.fn.log("URL CHANGED FROM WATCHER TO " + newVal);
           this.route(newVal);
         }
       },
@@ -3986,21 +3989,19 @@ return {
       },
       source(v, ov) {
         bbn.fn.log("ROUTER SOURCE WATCHER", v, ov);
-        if (!this.views.length) {
-          bbn.fn.each(v, a => {
-            if (!bbn.fn.isString(a.url)) {
-              throw new Error(bbn._("The container must have a valid URL"));
-            }
-    
-            // Setting current if URL starts with default URL
-            if (url && url.indexOf(a.url) === 0) {
-              a.current = url;
-            }
-    
-            bbn.fn.warning(bbn._("ADDING %s ON MOUNT", a.url));
-            this.add(a);
-          });
-        }
+        bbn.fn.each(v, a => {
+          if (!bbn.fn.isString(a.url)) {
+            throw new Error(bbn._("The container must have a valid URL"));
+          }
+  
+          // Setting current if URL starts with default URL
+          if (url && url.indexOf(a.url) === 0) {
+            a.current = url;
+          }
+  
+          bbn.fn.warning(bbn._("ADDING %s ON WATCH", a.url));
+          this.add(a);
+        });
       }
     },
     components: {

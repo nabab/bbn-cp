@@ -143,9 +143,10 @@
           case 'components':
             bbn.fn.checkType(cfg.components, 'object', bbn._("The components must be an object in %s", clsName));
             for (let componentName in cfg.components) {
+              componentName = bbn.fn.camelize(componentName);
               let indexName = bbn.fn.camelToCss(componentName);
               bbn.fn.checkType(cfg.components[componentName], 'object', bbn._("Components definitions must be objects (check %s in %s)", componentName, clsName));
-              res.components[indexName] = bbn.cp.normalizeComponent(cfg.components[componentName], clsName);
+              res.components[componentName] = bbn.cp.normalizeComponent(cfg.components[componentName], clsName);
               let subName = (clsName || 'bbnsub-' + bbn.fn.randomString(10, 20, 'nl')) + bbn.fn.substr(componentName, 0, 1).toUpperCase() + bbn.fn.camelize(bbn.fn.substr(componentName, 1));
               let subTag = bbn.fn.camelToCss(subName);
               res.componentNames[indexName] = subTag;
@@ -241,6 +242,8 @@
       if (!bbn.fn.numProperties(res.props)) {
         res.props.source = bbn.fn.createObject();
       }
+
+      bbnData.immunizeValue(res);
 
       return res;
     }

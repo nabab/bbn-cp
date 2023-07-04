@@ -15,8 +15,7 @@
            * @data {Number} [0] coolTimer
            * @memberof keepCoolComponent
            */
-          coolTimers: {
-          },
+          coolTimers: bbnData.immunizeValue({}),
           /**
            * The interval.
            * @data {Number} [40] coolInterval

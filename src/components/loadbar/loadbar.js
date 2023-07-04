@@ -208,7 +208,8 @@ return {
       source: {
         deep: true,
         handler(v) {
-          this.$tick();
+          bbn.fn.log("LOADBAR: SOURCE", v)
+          this.$updateAllComputed();
         }
       },
       currentItem(v) {
