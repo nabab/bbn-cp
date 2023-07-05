@@ -83,7 +83,7 @@
         x(c, sp, `      _e = false;`);
         x(c, sp, `    }`);
         x(c, sp, `    if (!_e) {`);
-        x(c, sp, `      _eles['${node.id}'] = await _t.$createElement({`);
+        x(c, sp, `      _eles['${cond.id}'] = await _t.$createElement({`);
         x(c, sp, `        id: "${cond.id}",`);
         x(c, sp, `        hash: "${cond.condition.hash}",`);
         x(c, sp, `        loopHash: ${hashName},`);
@@ -92,7 +92,7 @@
         x(c, sp, `      }, _parents.at(-1));`);
         x(c, sp, `    }`);
         if ((node.id.indexOf('0-2') === 0) && (cp.$options.name === 'bbn-dropdown')) {
-          x(c, sp, `bbn.fn.log(_eles['${node.id}']);`)
+          x(c, sp, `bbn.fn.log("0-2???", _eles['${cond.id}']);`)
         }
       }
 

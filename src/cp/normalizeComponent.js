@@ -142,16 +142,21 @@
 
           case 'components':
             bbn.fn.checkType(cfg.components, 'object', bbn._("The components must be an object in %s", clsName));
-            for (let componentName in cfg.components) {
-              componentName = bbn.fn.camelize(componentName);
+            for (let originalName in cfg.components) {
+              let componentName = bbn.fn.camelize(originalName);
               let indexName = bbn.fn.camelToCss(componentName);
-              bbn.fn.checkType(cfg.components[componentName], 'object', bbn._("Components definitions must be objects (check %s in %s)", componentName, clsName));
-              res.components[componentName] = bbn.cp.normalizeComponent(cfg.components[componentName], clsName);
+              bbn.fn.log(cfg.components);
+              bbn.fn.checkType(cfg.components[originalName], 'object', bbn._("Components definitions must be objects (check %s in %s)", componentName, clsName));
+              res.components[componentName] = bbn.cp.normalizeComponent(cfg.components[originalName], clsName);
               let subName = (clsName || 'bbnsub-' + bbn.fn.randomString(10, 20, 'nl')) + bbn.fn.substr(componentName, 0, 1).toUpperCase() + bbn.fn.camelize(bbn.fn.substr(componentName, 1));
               let subTag = bbn.fn.camelToCss(subName);
               res.componentNames[indexName] = subTag;
               if (indexName !== componentName) {
                 res.componentNames[componentName] = subTag;
+              }
+
+              if (![indexName, componentName].includes(originalName)) {
+                res.componentNames[originalName] = subTag;
               }
             }
 

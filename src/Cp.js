@@ -211,7 +211,6 @@ class bbnData {
         return true;
       },
       defineProperty(target, key, description) {
-        const targetObj = bbnData.getObject(target);
         const oldValue = target[key];
         const oldObj = bbnData.getObject(oldValue);
         if (oldObj) {
@@ -221,7 +220,13 @@ class bbnData {
           description.value = bbnData.treatValue(description.value, component, key, targetObj);
         }
         Object.defineProperty(target, key, description);
-        targetObj.update();
+        if (targetObj) {
+          targetObj.update();
+        }
+        else {
+          bbn.fn.log(target, key, description);
+          bbn.fn.warning("Impossible to get the target object");
+        }
         return true;
       },
       deleteProperty(target, key) {
@@ -1824,7 +1829,7 @@ class bbnCp {
     if (id) {
       if (ele.bbnSlots) {
         bbn.fn.iterate(ele.bbnSlots, slot => {
-          bbn.fn.each(slot, o => {
+          bbn.fn.each(slot.splice(0, slot.length), o => {
             //bbn.fn.log("REMOVE FROM SLOT", o);
             let cp = o.bbnComponentId !== this.$cid ? bbn.cp.getComponent(o.bbnComponentId).bbn : this;
             cp.$removeDOM(o);
@@ -1849,7 +1854,7 @@ class bbnCp {
       ele.parentNode.removeChild(ele);
     }
     else {
-      //bbn.fn.log("Can't find ", ele)
+      bbn.fn.log("Can't find ", ele)
     }
   }
 
@@ -2248,7 +2253,7 @@ class bbnCp {
                 isMod = false;
               }
               else {
-                bbn.fn.log(["REMOVING COMPONENT", this, oldV, v]);
+                //bbn.fn.log(["REMOVING COMPONENT FROM DATA", this, oldV, v]);
                 oldDataObj.removeComponent(this);
               }
             }

@@ -112,7 +112,7 @@ return {
         }
       },
       unmount() {
-        //bbn.fn.log("unmount portal")
+        bbn.fn.log("unmount portal")
         this.$el.bbnSlots.default.forEach(node => {
           this.$el.appendChild(node);
           delete node.bbnPortal;
@@ -160,7 +160,7 @@ return {
     },
     beforeDestroy() {
       bbn.fn.log("PORTAL: beforeDestroy");
-      this.unmount()
+      //this.unmount()
     },
     watch: {
       disabled(v) {
