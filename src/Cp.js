@@ -72,7 +72,12 @@ class bbnData {
         }
       }
       const res = target.pop();
-      targetObj.update(path);
+      if (targetObj) {
+        targetObj.update(path);
+      }
+      else {
+        bbn.fn.log(["Impossible to find the data object in pop", target]);
+      }
       return res;
     };
   }
@@ -87,7 +92,13 @@ class bbnData {
         }
       }
       const res = target.shift();
-      targetObj.update(path);
+      if (targetObj) {
+        targetObj.update(path);
+      }
+      else {
+        bbn.fn.log(["Impossible to find the data object in shift", target]);
+      }
+
       return res;
     };
   }
@@ -102,7 +113,13 @@ class bbnData {
         newArgs.push(newVal);
       });
       const res = target.push(...newArgs);
-      targetObj.update(path);
+      if (targetObj) {
+        targetObj.update(path);
+      }
+      else {
+        bbn.fn.log(["Impossible to find the data object in push", target]);
+      }
+
       return res;
     };
   }
@@ -118,7 +135,13 @@ class bbnData {
       });
       const res = target.unshift(...newArgs);
       const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
-      dataObj.update(path);
+      if (dataObj) {
+        dataObj.update(path);
+      }
+      else {
+        bbn.fn.log(["Impossible to find the data object in unshift", target]);
+      }
+
       return res;
     };
   }
@@ -127,7 +150,13 @@ class bbnData {
     return (...args) => {
       const res = target.reverse(...args);
       const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
-      dataObj.update(path);
+      if (dataObj) {
+        dataObj.update(path);
+      }
+      else {
+        bbn.fn.log(["Impossible to find the data object in reverse", target]);
+      }
+
       return res;
     };
 
@@ -137,7 +166,13 @@ class bbnData {
     return (...args) => {
       const res = target.sort(...args);
       const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
-      dataObj.update();
+      if (dataObj) {
+        dataObj.update();
+      }
+      else {
+        bbn.fn.log(["Impossible to find the data object in sort", target]);
+      }
+
       return res;
     };
   }
@@ -160,7 +195,13 @@ class bbnData {
       }
 
       const res = target.splice(index, numDelete, ...newArgs);
-      dataObj.update(path);
+      if (dataObj) {
+        dataObj.update(path);
+      }
+      else {
+        bbn.fn.log(["Impossible to find the data object in splice", target]);
+      }
+
       return res;
     };
   }
@@ -333,7 +374,10 @@ class bbnData {
 
     Object.defineProperty(this, 'components', {
       value: this.parent ? null : bbn.fn.createObject({
-        [component.$cid]: [path]
+        [component.$cid]: {
+          component,
+          path
+        }
       }),
       writable: false,
       configurable: false
@@ -366,8 +410,8 @@ class bbnData {
       const id = dataObj.id;
       const rootData = dataObj.rootData();
       if (!dataObj.parent) {
-        bbn.fn.iterate(rootData.components, (paths, cid) => {
-          const cp = bbn.cp.getComponent(cid)?.bbn;
+        bbn.fn.iterate(rootData.components, (it, cid) => {
+          const cp = it.component;
           if (cp) {
             if (cp === dataObj.root) {
               return;
@@ -400,13 +444,14 @@ class bbnData {
         
       }
 
-      bbn.cp.dataInventory.delete(id);
+
       delete dataObj.data.__bbnData;
+      bbn.cp.dataInventory.delete(id);
       dataObj.root.$tick();
     }
   }
 
-  addComponent(component) {
+  addComponent(component, path) {
     if (!(component instanceof bbnCp)) {
       throw new Error(bbn._("bbnData hasComponent must be called with a bbn component"));
     }
@@ -414,7 +459,10 @@ class bbnData {
     const rootData = this.rootData();
 
     if (!rootData.components[component.$cid]) {
-      rootData.components[component.$cid] = component;
+      rootData.components[component.$cid] = {
+        component,
+        path
+      };
     }
 
     if (!component.$values.includes(rootData.id)) {
@@ -444,6 +492,7 @@ class bbnData {
     }
 
     if (component === rootData.root) {
+      //bbn.fn.log("UNSETTING");
       this.unset();
     }
     else {
@@ -451,6 +500,7 @@ class bbnData {
       if (idx > -1) {
         component.$values.splice(idx, 1);
       }
+
       delete rootData.components[component.$cid];
     }
 
@@ -459,79 +509,78 @@ class bbnData {
 
   updateComponents(deep) {
     const rootData = this.rootData();
-    bbn.fn.iterate(rootData.components, (component, cid) => {
-      if (!component) {
+    bbn.fn.iterate(rootData.components, (it, cid) => {
+      if (!it?.component) {
         throw new Error(bbn._("Impossible to find the component %s", cid));
       }
 
-      if (component.$isInit) {
+      if (it.component.$isInit) {
         const subpathDone = [];
-        const paths = [this.path];
+        const paths = [];
         let data = this;
         while (data.parent) {
-          paths.unshift(data.path);
-          data = data.parent;
-        }
-        let name = paths.join(".");
-        if (component.$watcher?.[name]?.handler) {
-          if (component.$watcher[name] && (!deep || component.$watcher[name].deep)) {
-            if (!bbn.fn.isFunction(component.$watcher[name].handler)) {
-              throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
-            }
-            let oldV = component.$watcher[name].value;
-            let v = bbn.fn.getProperty(this, name);
-            component.$watcher[name].value = v;
-            component.$watcher[name].handler.apply(this, [v, oldV]);
+          if (data === rootData) {
+            break;
+          }
+          else {
+            paths.unshift(data.path);
+            data = data.parent;
           }
         }
+        paths.unshift(it.path);
+        let deep = null;
+        while (paths.length) {
+          let name = paths.join(".");
 
-        paths.pop();
+          if (it.component.$watcher?.[name]?.handler) {
+            let oldV = it.component.$watcher[name].value;
+            let v = bbn.fn.getProperty(it.component, name);
+            if (it.component.$isMounted && (!deep || it.component.$watcher[name].deep) ) {
+              //bbn.fn.log(["WATCHER: " + name, paths, this, it.component, it.component.$watcher[name], it.component.$watcher[name].value, bbn.fn.getProperty(it.component, name), '---']);
+              if (bbnData.hash(v) !== it.component.$watcher[name].hash) {
+                if (!bbn.fn.isFunction(it.component.$watcher[name].handler)) {
+                  throw new Error(bbn._("Watchers must be function, wrong parameter for %s", name));
+                }
+                it.component.$watcher[name].hash = bbnData.hash(v);
+                it.component.$watcher[name].value = v;
+                it.component.$watcher[name].num++;
+                it.component.$watcher[name].handler.apply(this, [v, oldV]);
+              }
+
+              break;
+            }
+            else {
+              it.component.$watcher[name].hash = bbnData.hash(v);
+              it.component.$watcher[name].value = v;
+            }
+          }
+          if (deep === null) {
+            deep = true;
+          }
+
+          paths.pop();
+        }
+
+        /*
         name = paths.join(".");
         if (name && (subpathDone.indexOf(name) === -1)) {
           subpathDone.push(name);
           const prop = bbn.fn.getProperty(this.root, name);
           const dataObj = bbnData.getObject(prop);
           if (dataObj) {
-            dataObj.updateComponents(true);
+            //dataObj.updateComponents(true);
           }
         }
+        */
 
-        component.$tick()
+        it.component.$tick()
       }
     });
   }
 
 
   update() {
-    /*
-    const hash = bbn.fn.hash(this.data);
-    if (hash !== this.old) {
-      this.old = hash;
-    }
-    */
     this.updateComponents(); 
-    /*
-    if (this.$isInit) {
-      if (this.$watcher?.[name]?.handler) {
-        if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
-          throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
-        }
-        this.$watcher[name].value = v;
-        this.$watcher[name].handler.apply(this, [v, oldV]);
-      }
-
-      this.$tick();
-    }
-
-    this.root.$tick();
-    bbn.fn.iterate(this.rootData().components, (cp, cid) => {
-      if (!cp) {
-        throw new Error(bbn._("Impossible to find the component %s", cid));
-      }
-
-      cp.$tick()
-    });
-    */
   }
 
 }
@@ -574,7 +623,6 @@ class bbnCp {
       }
 
       if (cp.$elements[id][hash] && (cp.$elements[id][hash] !== ele)) {
-        bbn.fn.log("JJJJ");
         cp.$removeDOM(cp.$elements[id][hash]);
         cp.$elements[id][hash] = ele;
       }
@@ -584,7 +632,7 @@ class bbnCp {
     }
     else {
       if (cp.$elements[id] && (cp.$elements[id] !== ele)) {
-        bbn.fn.log("HHHH", this, "OLD", cp.$elements[id], "NEW", ele);
+        //bbn.fn.log("HHHH", this, "OLD", cp.$elements[id], "NEW", ele);
         cp.$removeDOM(cp.$elements[id]);
         cp.$elements[id] = ele;
       }
@@ -946,9 +994,6 @@ class bbnCp {
     const oldEle = cpSource.$retrieveElement(d.id, d.loopHash);
     let replace = false;
     let ele;
-    if (node.id === '0-1-2-1-0') {
-      bbn.fn.log(["CREATING " + d.id, d, oldEle, ele]);
-    }
     if (oldEle) {
       const isComment = bbn.fn.isComment(oldEle);
       if (
@@ -962,7 +1007,7 @@ class bbnCp {
           )
         )
       ) {
-        bbn.fn.log("REPLACING " + d.id, isComment, d, oldEle);
+        //bbn.fn.log("REPLACING " + d.id, isComment, d, oldEle);
         replace = true;
       }
       else {
@@ -1247,7 +1292,6 @@ class bbnCp {
       }
       bbn.cp.removeComponent(this.$el.bbnCid);
       this.$el.childNodes.forEach(node => {
-        bbn.fn.log("KKKK");
         this.$removeDOM(node);
       });
       this.$removeFromElements(this.$el.bbnId, this.$el.bbnHash);
@@ -1622,9 +1666,6 @@ class bbnCp {
    * @returns 
    */
   $insertElement(ele, target, before, oldEle) {
-    if ((ele.tagName === 'BBN-PORTAL') && (ele.bbnId === '0-2')) {
-      bbn.fn.log(["INSERTING", ele, target, before, oldEle]);
-    }
     bbn.fn.checkType(target, HTMLElement, "The $insert function should have an HTMLElement as target");
 
     const d = ele.bbnSchema;
@@ -1777,11 +1818,9 @@ class bbnCp {
         }
         else if (this.$queue[i].cp.$isMounted) {
           if (this.$queue[i].force || (time - this.$queue[i].cp.$lastLaunch > bbn.cp.tickDelay)) {
-            bbn.fn.log("QUEEUE LENGTH BEFORE: " + this.$queue.length + " - " + this.$queue[i].cp.$options.name);
             const queueElement = this.$queue.splice(i, 1)[0];
-            bbn.fn.log("QUEEUE LENGTH AFTER: " + this.$queue.length);
             await queueElement.cp.$updateComponent();
-            bbn.fn.log("CALLING FN", queueElement.cp.$options.name);
+            //bbn.fn.log("CALLING FN", queueElement.cp.$options.name);
             queueElement.fns.forEach(fn => {
               if (fn.toString() === 'function () { [native code] }') {
                 fn();
@@ -1834,7 +1873,7 @@ class bbnCp {
    * @param {HTMLElement} ele
    */
   $removeDOM(ele) {
-    bbn.fn.log(this, "REMOVING " + (ele.bbn ? ele.bbn.$options.name + ' ': '') + ele.bbnId);
+    //bbn.fn.log(this, "REMOVING " + (ele.bbn ? ele.bbn.$options.name + ' ': '') + ele.bbnId);
     const id = ele.bbnId;
     const hash = ele.bbnHash;
     const cpSource = ele.bbnComponentId && (ele.bbnComponentId !== this.$cid) ? bbn.cp.getComponent(ele.bbnComponentId).bbn : this;
@@ -1947,7 +1986,7 @@ class bbnCp {
     const t2 = (new Date()).getTime();
     this.$numBuild++;
     this.$lastLaunch = t2;
-    bbn.fn.warning("UPDATE COMPONENT " + this.$options.name + ' - ' + this.$cid + ' - ' + this.$id + ' - time: ' + (this.$lastLaunch/1000) + '(' + this.$numBuild + ')');
+    //bbn.fn.warning("UPDATE COMPONENT " + this.$options.name + ' - ' + this.$cid + ' - ' + this.$id + ' - time: ' + (this.$lastLaunch/1000) + '(' + this.$numBuild + ')');
     if (this.$isCreating) {
       Object.defineProperty(this, '$isCreating', {
         writable: false,
@@ -2182,6 +2221,7 @@ class bbnCp {
    */
   $watch(name, a) {
     if (this.$watcher) {
+      const cp = this;
       const bits = name.split('.');
       const realName = bits.shift();
       const tmp = this.$watcher[realName] || bbn.fn.createObject();
@@ -2197,6 +2237,8 @@ class bbnCp {
             tmp.props[n].immediate = a.immediate || false;
             tmp.props[n].deep = a.deep || false;
             tmp.props[n].value = undefined;
+            tmp.props[n].hash = undefined;
+            tmp.num = 0;
           }
           else {
             tmp = tmp.props[n];
@@ -2208,6 +2250,7 @@ class bbnCp {
         tmp.immediate = a.immediate || false;
         tmp.deep = a.deep || false;
         tmp.value = undefined;
+        tmp.num = 0;
       }
 
       if (!this.$watcher[name]) {
@@ -2216,7 +2259,7 @@ class bbnCp {
 
       // Returns a function to cancel the watcher
       return () => {
-        delete this.$watcher[name];
+        delete cp.$watcher[name];
       }
     }
   }
@@ -2258,11 +2301,11 @@ class bbnCp {
         set(v) {
           if (this.$dataValues[name] !== v) {
             let isMod = true;
-            const oldV = this.$dataValues[name];
+            const oldV = bbnData.getValue(this.$dataValues[name]);
             //bbn.fn.log("SETTING " + name + " in " + this.$options.name, oldV, v);
-            let oldDataObj = bbnData.getObject(this.$dataValues[name]);
+            let oldDataObj = bbnData.getObject(oldV);
             if (oldDataObj) {
-              if (bbn.fn.isSame(oldV, v)) {
+              if (bbn.fn.isSame(oldDataObj.old, bbnData.hash(v))) {
                 isMod = false;
               }
               else {
@@ -2280,12 +2323,16 @@ class bbnCp {
                   if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
                     throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
                   }
+                  this.$watcher[name].hash = bbnData.hash(v);
                   this.$watcher[name].value = v;
-                  this.$watcher[name].handler.apply(this, [v, oldV]);
+                  this.$watcher[name].handler.apply(this, [v, oldDataObj ? v : oldV]);
                 }
 
                 //bbn.fn.log("TICKING FOR", name);
                 this.$tick();
+              }
+              else if (this.$watcher?.[name]?.handler) {
+                this.$watcher[name].value = bbnData.hash(v);
               }
             }
           }
@@ -2348,8 +2395,8 @@ class bbnCp {
             if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
               throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
             }
+            const oldV = this.$watcher[name].value;
             this.$watcher[name].value = v;
-            const oldV = bbn.fn.isPrimitive(v) ? hash : v;
             this.$watcher[name].handler.apply(this, [v, oldV]);
           }
 

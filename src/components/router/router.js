@@ -3818,10 +3818,8 @@ return {
             if (item.bbnSchema.tag === 'bbn-container') {
               let el = this.$refsElements['ct-' + item.bbnSchema.props.url];
               if (el) {
-                bbn.fn.log("REPLACIIIIII");
                 el.parentNode.replaceChild(item, el);
               }
-              bbn.fn.log("NBOOOOOO REPLACIIIIII");
             }
           }
         }

@@ -133,8 +133,11 @@ class ${proto} extends bbnCp {
       if (obj.methods) {
         for (let n in obj.methods) {
           let fn = bbn.fn.analyzeFunction(obj.methods[n]);
+          // for debug
+          //let body = fn.body.replace('{', '{bbn.fn.log("' + n + '");');
+          let body = fn.body;
           code += `
-  ` + (fn.isAsync ? 'async ' : '') + fn.name + '(' + fn.argString + ') ' + fn.body.replace('{', '{bbn.fn.log("' + n + '");');
+  ` + (fn.isAsync ? 'async ' : '') + fn.name + '(' + fn.argString + ') ' + body;
         }
       }
 

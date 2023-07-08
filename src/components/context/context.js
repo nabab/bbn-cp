@@ -171,7 +171,7 @@ return {
             ((e.type === 'click') && !this.context)
           )
         ){
-          bbn.fn.log("CLICK ITEM", e.target, this.currentData);
+          //bbn.fn.log("CLICK ITEM", e.target, this.currentData);
           if (e.preventDefault) {
             e.preventDefault();
             e.stopPropagation();

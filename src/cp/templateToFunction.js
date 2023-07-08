@@ -83,9 +83,6 @@
         x(c, sp, `        comment: true`);
         x(c, sp, `      }, _parents.at(-1));`);
         x(c, sp, `    }`);
-        if ((node.id.indexOf('0-2') === 0) && (cp.$options.name === 'bbn-dropdown')) {
-          x(c, sp, `bbn.fn.log("0-2???", _eles['${cond.id}']);`)
-        }
       }
 
       x(c, sp, `  }`);
@@ -865,7 +862,7 @@
         x(c, sp, `_t.$updateFromSchema();`);
         c.text += nodesToFunction(cp, tpl, hashName);
       }
-      x(c, sp, `bbn.fn.warning("KKKKK"); bbn.fn.log($_final);`);
+      //x(c, sp, `bbn.fn.warning("KKKKK"); bbn.fn.log($_final);`);
       x(c, sp, `bbn.fn.each($_final, a => {`);
       x(c, sp, `  if (_t.$el.childNodes[a.position]) {`);
       x(c, sp, `    _t.$insertElement(a.ele, _t.$el, _t.$el.childNodes[a.position]);`);

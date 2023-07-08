@@ -166,7 +166,6 @@ return {
           if (fl) {
             let lst = fl.getRef('list');
             if (lst) {
-              bbn.fn.log("TEOUVE");
               lst.overByString(v);
             }
           }

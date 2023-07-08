@@ -312,7 +312,7 @@ return {
         /**
          * @data currentSource
          */
-        currentSource: this.source,
+        currentSource: this.source?.length ? this.source : [],
         /**
          * @data {Array} [[]] realButtonsRight
          */

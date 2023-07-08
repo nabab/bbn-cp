@@ -346,10 +346,10 @@ class bbnCp {
                   });
                   idx = bbn.fn.search(bbn.cp.queue, {cp: queueElement.cp});
                   if (idx > -1) {
-                    bbn.cp.queue.splice(idx, 1);
+                    bbn.fn.log(["INFINITE LOOP", bbn.cp.queue.splice(idx, 1)]);
                   }
                 }
-                bbn.fn.log("CALLING FN", queueElement.cp.$options.name);
+                //bbn.fn.log("CALLING FN", queueElement.cp.$options.name);
                 queueElement.fns.forEach(fn => {
                   fn.bind(queueElement.cp)();
                 });

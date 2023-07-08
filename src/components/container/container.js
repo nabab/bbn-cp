@@ -1425,7 +1425,7 @@ return {
         deep: true,
         handler(v, ov) {
           if (v || ov) {
-            bbn.fn.log("DEEP HANDLER ON VIEW", v, ov);
+            //bbn.fn.log("DEEP HANDLER ON VIEW", v, ov);
             this.$tick();
           }
         }

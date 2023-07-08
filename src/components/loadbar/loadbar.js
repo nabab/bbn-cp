@@ -207,8 +207,11 @@ return {
     watch: {
       source: {
         deep: true,
-        handler(v) {
-          bbn.fn.log("LOADBAR: SOURCE", v)
+        handler(v, ov) {
+          this.$computed.loadingItems.update();
+          this.$computed.loadedItems.update();
+          this.$computed.currentItem.update();
+          this.$forceUpdate();
         }
       },
       currentItem(v) {
