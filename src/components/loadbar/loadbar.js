@@ -209,13 +209,16 @@ return {
         deep: true,
         handler(v) {
           bbn.fn.log("LOADBAR: SOURCE", v)
-          this.$updateAllComputed();
         }
       },
       currentItem(v) {
         this.$tick();
       },
       info(v) {
+        if (this.interval) {
+          clearInterval(this.interval);
+        }
+
         if (v) {
           this.timeNow = bbn.fn.timestamp();
           this.interval = setInterval(() => {
@@ -223,9 +226,6 @@ return {
               this.timeNow = bbn.fn.timestamp();
             }
           }, 1000);
-        }
-        else {
-          clearInterval(this.interval);
         }
       }
     },

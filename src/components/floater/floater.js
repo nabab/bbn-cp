@@ -777,7 +777,7 @@
       onResize(force) {
         return bbn.cp.mixins.resizer.methods.onResize.apply(this, [force]).then((res) => {
           if (this.isVisible && this.$el && (res || force)) {
-            //bbn.fn.log("NORMAL RESIZE", this.lastKnownCtHeight, this.lastKnownCtWidth);
+            bbn.fn.log("NORMAL RESIZE", this.lastKnownCtHeight, this.lastKnownCtWidth);
             
             //return this.realResize();
           }
@@ -1530,7 +1530,7 @@
             this.ready = true;
           }
           else {
-            this.onResize(true);
+            //this.onResize(true);
           }
           if (this.onOpen) {
             this.onOpen(this);
@@ -1589,7 +1589,7 @@
       },
       filteredTotal(){
         if (this.isVisible) {
-          this.onResize(true);
+          //this.onResize(true);
         }
       }
     }

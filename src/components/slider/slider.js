@@ -191,16 +191,16 @@ return {
        */
       _setEvents(add){
         if ( add ){
-          document.addEventListener('mouseup', this.checkClick);
-          document.addEventListener('touchstart', this._touchStart);
-          document.addEventListener('touchmove', this._touchMove);
-          document.addEventListener('touchend', this._touchEnd);
+          document.addEventListener('mouseup', this.checkClick.bind(this));
+          document.addEventListener('touchstart', this._touchStart.bind(this));
+          document.addEventListener('touchmove', this._touchMove.bind(this));
+          document.addEventListener('touchend', this._touchEnd.bind(this));
         }
         else{
-          document.removeEventListener('mouseup', this.checkClick);
-          document.removeEventListener('touchstart', this._touchStart);
-          document.removeEventListener('touchmove', this._touchMove);
-          document.removeEventListener('touchend', this._touchEnd);
+          document.removeEventListener('mouseup', this.checkClick.bind(this));
+          document.removeEventListener('touchstart', this._touchStart.bind(this));
+          document.removeEventListener('touchmove', this._touchMove.bind(this));
+          document.removeEventListener('touchend', this._touchEnd.bind(this));
         }
       },
       /**

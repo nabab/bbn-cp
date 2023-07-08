@@ -37,7 +37,7 @@
            * @memberof basicComponent
            */
           isTablet: bbn.fn.isTabletDevice(),
-          _currentPoup: null
+          _currentPopup: null
         };
         if (this.$options.name && bbn.cp.defaults[this.$options.name.slice(4)]) {
           bbn.fn.extend(o, bbn.cp.defaults[this.$options.name.slice(4)]);
@@ -46,34 +46,20 @@
       },
       computed: {
         currentPopup(){
-          if ( !this._currentPopup ){
+          if (this._currentPopup === null) {
             let e = this._retrievePopup(this);
             if ( e ){
               this._currentPopup = e;
             }
-            else{
-              let vm = this;
-              while (vm = vm.$parent) {
-                if ( vm._currentPopup ){
-                  this._currentPopup = vm._currentPopup;
-                  break;
-                }
-                else if ( vm ){
-                  e = this._retrievePopup(vm);
-                  if ( e ){
-                    this._currentPopup = e;
-                    break;
-                  }
-                }
-                if (vm === this.$root) {
-                  break;
-                }
-              }
+            else {
+              this._currentPopup = false;
             }
           }
-          if ( this._currentPopup ){
+
+          if (this._currentPopup) {
             return this._currentPopup;
           }
+
           return null;
         }
       },
@@ -83,14 +69,17 @@
          * @param vm Vue
          * @returns Vue|false
          */
-        _retrievePopup(vm){
-          if ( vm.$options && vm.$options._componentTag === 'bbn-popup' ){
+        _retrievePopup(vm) {
+          return false;
+          vm = vm || this;
+          if (vm.$options && (vm.$options.name === 'bbn-popup')) {
             return vm;
           }
           else if ( vm.getRef('popup') ){
             return vm.getRef('popup');
           }
-          return vm.$parent ? this._retrievePopup(vm.$parent) : false;
+
+          return vm.$parent ? (vm.$parent._retrievePopup ? vm.$parent : this)._retrievePopup(vm.$parent) : false;
         },
         /**
          * Creates a HTML string for recreating the component.

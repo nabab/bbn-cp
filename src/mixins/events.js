@@ -152,9 +152,7 @@
          */
         over(e) {
           this.$emit('over', e);
-          setTimeout(() => {
-            this.$emit('hover', true, e);
-          }, 0)
+          this.$emit('hover', true, e);
         },
         /**
          * Emits the out event.
@@ -166,9 +164,7 @@
          */
         out(e) {
           this.$emit('out', e);
-          setTimeout(() => {
-            this.$emit('hover', false, e);
-          }, 0)
+          this.$emit('hover', false, e);
         },
         /**
          * Sets the prop isTouched to true

@@ -132,17 +132,9 @@ class ${proto} extends bbnCp {
 
       if (obj.methods) {
         for (let n in obj.methods) {
-          let stFn = obj.methods[n].toString().trim();
-          let decl = bbn.fn.removeEmpty(bbn.fn.substr(stFn, 0, stFn.indexOf('(')).trim().split(' '));
-          stFn = bbn.fn.substr(stFn, stFn.indexOf('('));
-          if (decl.indexOf('function') > -1) {
-            decl.splice(decl.indexOf('function'), 1);
-          }
-          if (decl.indexOf(n) === -1) {
-            decl.push(n);
-          }
+          let fn = bbn.fn.analyzeFunction(obj.methods[n]);
           code += `
-  ` + decl.join(' ') + stFn + `\n`;
+  ` + (fn.isAsync ? 'async ' : '') + fn.name + '(' + fn.argString + ') ' + fn.body.replace('{', '{bbn.fn.log("' + n + '");');
         }
       }
 
@@ -170,7 +162,10 @@ class ${proto} extends bbnCp {
       });
     }
 
-    this.$computed["${name}"].update();
+    if (this.$computed["${name}"].num <= this.$numBuild) {
+      this.$computed["${name}"].update();
+    }
+
     return bbnData.getValue(this.$computed["${name}"].val);
   }
 `;

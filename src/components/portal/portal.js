@@ -102,7 +102,7 @@ return {
     },
     methods: {
       mount() {
-        //bbn.fn.log("mount portal")
+        bbn.fn.log("mount portal")
         //bbn.fn.log("on Mount", this.element)
         if (this.element) {
           this.$el.bbnSlots.default.forEach(node => {

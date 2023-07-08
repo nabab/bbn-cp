@@ -1424,8 +1424,10 @@ return {
       currentView: {
         deep: true,
         handler(v, ov) {
-          bbn.fn.log("DEEP HANDLER ON VIEW", v, ov);
-          this.$tick();
+          if (v || ov) {
+            bbn.fn.log("DEEP HANDLER ON VIEW", v, ov);
+            this.$tick();
+          }
         }
         /*
         bbn.fn.iterate(v, (a, n) => {

@@ -50,10 +50,6 @@
         x(c, sp, `  _sIr("${cond.condition.hash}", false, ${hashName});`);
         x(c, sp, `}`);
       }
-      if ((node.id.indexOf('0-2') === 0) && (cp.$options.name === 'bbn-dropdown')) {
-        x(c, sp, `bbn.fn.warning("STARTING");`);
-        x(c, sp, `bbn.fn.log("${node.id}", "${node.tag || 'no tag'}", _gIs("${cond.condition.hash}", ${hashName}), _isCondTrue, _t.$retrieveElement("${node.id}", ${hashName}));`)
-      }
       x(c, sp, `if (_gIs("${cond.condition.hash}", ${hashName}) !== "OK") {`)
       x(c, sp, `  $_go['${cond.id}'] = true;`);
       x(c, sp, `  let _tmp = _gIv("${cond.condition.hash}", ${hashName});`);
@@ -71,10 +67,6 @@
       }
       else {
         x(c, sp, `    _e = _t.$retrieveElement("${cond.id}", ${hashName});`);
-        if ((node.id.indexOf('0-2') === 0) && (cp.$options.name === 'bbn-dropdown')) {
-          x(c, sp, `bbn.fn.warning("GOING ON");`);
-          x(c, sp, `bbn.fn.log("${node.id} E?", !!_e, _e);`)
-        }
         x(c, sp, `    if (_e && !bbn.fn.isComment(_e)) {`);
         //x(c, sp, `      bbn.fn.log("REMOVING ${cond.id} from node2fn")`);
         x(c, sp, `      let _cp = bbn.cp.getComponent(_e.bbnComponentId)?.bbn || _t;`);
@@ -294,6 +286,9 @@
       x(c, sp, `else {`);
       x(c, sp, `  _t.$updateElementFromProps(_tmp, _eles['${node.id}']);`);
       x(c, sp, `}`);
+      x(c, sp, `if (_parents.at(-1) === _t.$el) {`);
+      x(c, sp, `  $_num++;`);
+      x(c, sp, `}`);
 
       let hasEvents = Object.keys(node.events || {}).length > 0;
 
@@ -471,7 +466,6 @@
       x(c, sp, `    else if (!a.parentNode) {`);
       x(c, sp, `      if (_parents.at(-1) === _t.$el) {`);
       x(c, sp, `        $_final.push({ele: a, position: $_num});`);
-      x(c, sp, `        $_num++;`);
       x(c, sp, `      }`);
       x(c, sp, `      else {`);
       x(c, sp, `        let idx = bbn.fn.search(_parents.at(-1).childNodes, search);`);
@@ -482,6 +476,9 @@
       x(c, sp, `          _parents.at(-1).appendChild(a);`);
       x(c, sp, `        }`);
       x(c, sp, `      }`);
+      x(c, sp, `    }`);
+      x(c, sp, `    if (_parents.at(-1) === _t.$el) {`);
+      x(c, sp, `      $_num++;`);
       x(c, sp, `    }`);
       x(c, sp, `  });`);
       x(c, sp, `}`);
@@ -868,6 +865,7 @@
         x(c, sp, `_t.$updateFromSchema();`);
         c.text += nodesToFunction(cp, tpl, hashName);
       }
+      x(c, sp, `bbn.fn.warning("KKKKK"); bbn.fn.log($_final);`);
       x(c, sp, `bbn.fn.each($_final, a => {`);
       x(c, sp, `  if (_t.$el.childNodes[a.position]) {`);
       x(c, sp, `    _t.$insertElement(a.ele, _t.$el, _t.$el.childNodes[a.position]);`);

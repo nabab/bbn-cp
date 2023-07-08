@@ -9,7 +9,6 @@
         componentClass
       ]"
       v-show="isVisible"
-      @resize.stop="onResize"
       @mouseleave="onFloaterLeave"
       @mouseenter="isOver = true"
       @keydown.esc.prevent.stop="close()"
@@ -76,7 +75,6 @@
       <div :class="{'bbn-100': !ready || !pageable, 'bbn-flex-fill': pageable}">
         <bbn-scroll :latency="latency"
                     ref="scroll"
-                    v-if="currentMaxWidth"
                     @resizecontent="resizeAfterScroll"
                     :class="{'bbn-flex-fill': pageable}"
                     :scrollable="scrollable"

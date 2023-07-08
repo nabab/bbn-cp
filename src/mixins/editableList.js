@@ -105,7 +105,7 @@
           let res = [];
           if (this.isBatch) {
             bbn.fn.each(this.currentData, (d, i) => {
-              if (JSON.stringify(d.data) !== JSON.stringify(this.originalData[i])) {
+              if (!bbn.fn.isSame(d.data, this.originalData[i])) {
                 res.push(d);
               }
             })

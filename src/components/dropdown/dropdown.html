@@ -89,7 +89,7 @@
                       && ready
                       && !native
                       && (isOpened || preload)"
-                :visible="isOpened"
+                      v-show="isOpened"
                 :element="asMobile ? undefined : $el"
                 :max-height="asMobile ? undefined : maxHeight"
                 :min-width="$el.clientWidth"

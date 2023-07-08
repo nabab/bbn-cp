@@ -664,9 +664,10 @@ return {
        * @return {Vue|Boolean}
        */
       activeRealContainer(){
-        if ( bbn.fn.isNumber(this.selected) ){
+        if ( bbn.fn.isNumber(this.selected) ) {
           return this.getRealVue(this.selected);
         }
+
         return false;
       },
       /**
@@ -1086,7 +1087,7 @@ return {
         let index;
         //obj must be an object with property url
         if (bbn.fn.isObject(obj) && bbn.fn.isString(obj.url)) {
-          obj.url = bbn.fn.replaceAll('//', '/', obj.url);
+          //obj.url = bbn.fn.replaceAll('//', '/', obj.url);
           // This is a component
           if (obj.$options) {
             if (!obj.current && !obj.currentURL) {

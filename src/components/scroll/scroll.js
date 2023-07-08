@@ -821,7 +821,6 @@ return {
 
             this.isMeasuring = false;
             this.$forceUpdate();
-            bbn.fn.log(["NAT DIM", this.naturalWidth, this.naturalHeight, old.width, old.height]);
             if ((old.width !== this.naturalWidth) || (old.height !== this.naturalHeight)) {
               if (old.width || old.height) {
                 this.$emit('resizecontent');
@@ -845,15 +844,16 @@ return {
        * @fires onResize
        */
       async initSize() {
-        this.scrollReady = true;
         await this.$forceUpdate();
         if (this.maxHeight || this.maxWidth) {
-          //bbn.fn.log(natDim);
           //throw new Error("BOOOOOO");
           await this.getNaturalDimensions();
         }
+        bbn.fn.log("INIT SIZE");
+        this.scrollReady = true;
         await this.onResize(true);
         this.ready = true;
+        this.$emit('resizecontent');
         return this.$forceUpdate();
       },
       /**
@@ -969,7 +969,7 @@ return {
         }
         this.readyTimeout = setTimeout(() => {
           this.initSize();
-        }, 25)
+        }, this.latency)
       },
       setObserver() {
         this.scrollObserver = new MutationObserver(mutations_list => {
@@ -1035,9 +1035,9 @@ return {
      */
     mounted() {
       this.setObserver();
+      this.ready = true;
       this.waitReady();
       /*
-      this.ready = true;
       this.initSize().then(() => {
         this.scrollReady = true;
         bbn.fn.log("PARENT", this.$parent);

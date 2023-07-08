@@ -11,6 +11,13 @@
     value: {
       props: {
         /**
+         * @prop {Boolean} [true] writable
+         * */
+        writable: {
+          type: Boolean,
+          default: false
+        },
+        /**
          * The text corresponding to the value of the component.
          * @memberof dropdownComponent
          * @prop {String} [''] textValue
@@ -503,7 +510,7 @@
         updateButtons(){
           this.realButtons.splice(0, this.realButtons.length, ...this.getRealButtons());
         },
-        onFocusOut(){
+        onFocusOut() {
           this.isActive = false;
           if (this.native) {
             this.isOpened = false;
@@ -562,9 +569,11 @@
          */
         source(){
           this.updateData().then(() => {
+            /*
             if ( this.filteredData.length ) {
               this.onResize();
             }
+            */
           });
         },
         /**

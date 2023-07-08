@@ -163,7 +163,6 @@ return {
        * @fires updateData
        */
       clickItem(e){
-        bbn.fn.log("CLICK ITEM", e.target, this.currentData);
         if (
           !this.disabled
           && (
@@ -172,6 +171,7 @@ return {
             ((e.type === 'click') && !this.context)
           )
         ){
+          bbn.fn.log("CLICK ITEM", e.target, this.currentData);
           if (e.preventDefault) {
             e.preventDefault();
             e.stopPropagation();
@@ -229,6 +229,7 @@ return {
         }
       },
       onMouseDown(e) {
+        /*
         if (!(e instanceof CustomEvent)) {
           let event = new CustomEvent('mousedown', {
             cancelable: true,
@@ -241,6 +242,7 @@ return {
             return false;
           }
         }
+        */
       }
     },
     /**

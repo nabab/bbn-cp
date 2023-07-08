@@ -130,13 +130,6 @@
           type: [String, Number]
         },
         /**
-         * @prop {Boolean} [true] writable
-         * */
-        writable: {
-          type: Boolean,
-          default: true
-        },
-        /**
          * Defines the input mode of this elemenet
          * @prop {String} inputmode
          */
@@ -147,7 +140,7 @@
          * If true the element will focus on insert
          * @prop {Boolean} autofocus
          */
-        focused: {
+        autofocus: {
           type: Boolean,
           default: false
         },
@@ -410,12 +403,14 @@
               */
             }
           }
+          /*
           this.$once('blur', () => {
             this.$emit('removevalidation');
             if (elem && elem.$el) {
               elem.$el.focus();
             }
           });
+          */
         }
       },
       /**

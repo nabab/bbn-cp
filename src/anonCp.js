@@ -30,7 +30,7 @@ class bbnAnonCp extends bbnCp {
     this.$init();
   }
 
-  $connectedCallback() {
+  async $connectedCallback() {
     //bbn.fn.log("ANON!!! ",this.$el.bbnSchema.props?.is);
     if (!this.$el.bbnTpl) {
       this.$el.bbnTpl = bbnAnon.bbnTpl;
@@ -78,7 +78,7 @@ class bbnAnonCp extends bbnCp {
     }
 
     //bbn.fn.log("CONNCTRED CALLED IN ANON", this.$el);
-    bbnCp.prototype.$connectedCallback.apply(this);
+    await bbnCp.prototype.$connectedCallback.apply(this);
   }
 
   get source() {

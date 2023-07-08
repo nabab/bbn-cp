@@ -503,10 +503,12 @@ class bbnData {
 
 
   update() {
+    /*
     const hash = bbn.fn.hash(this.data);
     if (hash !== this.old) {
       this.old = hash;
     }
+    */
     this.updateComponents(); 
     /*
     if (this.$isInit) {
@@ -572,6 +574,7 @@ class bbnCp {
       }
 
       if (cp.$elements[id][hash] && (cp.$elements[id][hash] !== ele)) {
+        bbn.fn.log("JJJJ");
         cp.$removeDOM(cp.$elements[id][hash]);
         cp.$elements[id][hash] = ele;
       }
@@ -581,6 +584,7 @@ class bbnCp {
     }
     else {
       if (cp.$elements[id] && (cp.$elements[id] !== ele)) {
+        bbn.fn.log("HHHH", this, "OLD", cp.$elements[id], "NEW", ele);
         cp.$removeDOM(cp.$elements[id]);
         cp.$elements[id] = ele;
       }
@@ -640,7 +644,7 @@ class bbnCp {
    * 
    * @returns {undefined}
    */
-  $connectedCallback() {
+  async $connectedCallback() {
     // Check we are in the DOm
     //bbn.fn.warning("CALLBACK ON " + this.$options.name + " / " + this.$el.bbnSchema.id + " INIT: " + this.$isInit + " MOUNTED: " + this.$isMounted);
     if (!this.$el.isConnected || bbn.cp.getComponent(this.$el.bbnCid)) {
@@ -682,18 +686,18 @@ class bbnCp {
       configurable: false
     });
     
-    /*
     Object.defineProperty(this, '$queue', {
       value: this.$root === this ? [] : this.$root.$queue,
       writable: false,
       configurable: false
     });
-    */
+    /*
     Object.defineProperty(this, '$queue', {
       value: [],
       writable: false,
       configurable: false
     });
+    */
 
     if (this === this.$root) {
       this.$fetchTimeout = null;
@@ -847,7 +851,7 @@ class bbnCp {
     });
 
     // Sets the current template schema and creates the DOM
-    this.$updateComponent().then(() => {
+    await this.$updateComponent().then(() => {
       // Not going on if the element disappeared
       if (!this.$el.isConnected) {
         return;
@@ -887,11 +891,10 @@ class bbnCp {
 
 
   $start() {
-    /*
+    return;
     if (this !== this.$root) {
       return;
     }
-    */
 
     if (this.$interval) {
       throw new Error(bbn._("The component %s is already started", this.$options.name));
@@ -943,6 +946,9 @@ class bbnCp {
     const oldEle = cpSource.$retrieveElement(d.id, d.loopHash);
     let replace = false;
     let ele;
+    if (node.id === '0-1-2-1-0') {
+      bbn.fn.log(["CREATING " + d.id, d, oldEle, ele]);
+    }
     if (oldEle) {
       const isComment = bbn.fn.isComment(oldEle);
       if (
@@ -956,7 +962,7 @@ class bbnCp {
           )
         )
       ) {
-        //bbn.fn.log("REPLACING " + d.id, isComment, d, oldEle);
+        bbn.fn.log("REPLACING " + d.id, isComment, d, oldEle);
         replace = true;
       }
       else {
@@ -1196,6 +1202,9 @@ class bbnCp {
 
     if (bbn.cp.isComponent(target)) {
       target.bbnSlots.default.push(ele);
+      if (target.bbn && target.bbn.$isMounted) {
+        target.bbn.$tick();
+      }
     }
     else if (target !== this.$el) {
       target.appendChild(ele);
@@ -1238,6 +1247,7 @@ class bbnCp {
       }
       bbn.cp.removeComponent(this.$el.bbnCid);
       this.$el.childNodes.forEach(node => {
+        bbn.fn.log("KKKK");
         this.$removeDOM(node);
       });
       this.$removeFromElements(this.$el.bbnId, this.$el.bbnHash);
@@ -1663,13 +1673,16 @@ class bbnCp {
             */
 
             target.bbnSlots[slot].splice(idx, 1, ele);
+            if (target.bbn && target.bbn.$isMounted) {
+              target.bbn.$tick();
+            }
           }
         }
       }
       else {
         if (oldEle.parentNode) {
           try {
-            target.replaceChild(ele, oldEle);
+            oldEle.parentNode.replaceChild(ele, oldEle);
           }
           catch (e) {
             bbn.fn.log("ERROR IN REPLACE", e, ele, oldEle);
@@ -1742,55 +1755,54 @@ class bbnCp {
    * @param {Boolean} force If true and the queue is empty, it will be filled with an empty array
    * @returns {undefined}
    */
-  /*
-  async $launchQueue(force) {
-    let row = bbn.fn.getRow(this.$queue, {cp: this});
-    if (force && !row) {
-      row = {cp: this, fns: [], force};
-      this.$queue.push(row);
-    }
-    else if (force && row && !row.force) {
-      row.force = true;
-    }
-
+  async $launchQueue(cp) {
+    throw new Error("Not implemented");
     if (this !== this.$root) {
-      const res = await this.$root.$launchQueue();
+      const res = await this.$root.$launchQueue(this);
       return res;
     }
 
-    const time = bbn.fn.timestamp();
     if (this.$queue.length) {
+      const time = bbn.fn.timestamp();
       //bbn.fn.log(bbn._("LAUNCHING QUEUE WITH %d items in %s", this.$queue.length, this.$queue.map(a => a.cp.$options.name).join(", ")));
-      this.$lastLaunch = time;
-      const queue = this.$queue.splice(0, this.$queue.length);
       let isTime;
-      for (let i = 0; i < queue.length; i++) {
-        if (!queue[i].cp.$isMounted) {
-          continue;
+      let i = 0;
+      let ok = true;
+      while (ok) {
+        if (i >= this.$queue.length) {
+          ok = false;
         }
-
-        if (queue[i].force || (time - queue[i].cp.$lastLaunch > bbn.cp.tickDelay)) {
-          await queue[i].cp.$updateComponent();
-          queue[i].fns.forEach(fn => {
-            bbn.fn.log([queue[i].cp, queue[i].force]);
-            return fn.bind(queue[i].cp)()
-          });
+        else if (cp && bbn.cp.isComponent(cp) && (this.$queue[i].cp !== cp)) {
+          i++;
+        }
+        else if (this.$queue[i].cp.$isMounted) {
+          if (this.$queue[i].force || (time - this.$queue[i].cp.$lastLaunch > bbn.cp.tickDelay)) {
+            bbn.fn.log("QUEEUE LENGTH BEFORE: " + this.$queue.length + " - " + this.$queue[i].cp.$options.name);
+            const queueElement = this.$queue.splice(i, 1)[0];
+            bbn.fn.log("QUEEUE LENGTH AFTER: " + this.$queue.length);
+            await queueElement.cp.$updateComponent();
+            bbn.fn.log("CALLING FN", queueElement.cp.$options.name);
+            queueElement.fns.forEach(fn => {
+              if (fn.toString() === 'function () { [native code] }') {
+                fn();
+              }
+              else {
+                fn.bind(queueElement.cp)();
+              }
+            });
+          }
+          else {
+            i++;
+          }
         }
         else {
-          //this.$queue.push(queue[i]);
+          i++;
         }
       }
     }
-    else {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, bbn.cp.tickDelay);
-      });
-    }
-
   }
-  */
+
+  /*
   async $launchQueue(force) {
     if (force && !this.$queue.length) {
       this.$queue.push([]);
@@ -1812,8 +1824,9 @@ class bbnCp {
         resolve();
       }, 0);
     });
-    */
+    
   }
+  */
 
 
   /**
@@ -1821,7 +1834,7 @@ class bbnCp {
    * @param {HTMLElement} ele
    */
   $removeDOM(ele) {
-    //bbn.fn.log("REMOVING " + ele.bbnId);
+    bbn.fn.log(this, "REMOVING " + (ele.bbn ? ele.bbn.$options.name + ' ': '') + ele.bbnId);
     const id = ele.bbnId;
     const hash = ele.bbnHash;
     const cpSource = ele.bbnComponentId && (ele.bbnComponentId !== this.$cid) ? bbn.cp.getComponent(ele.bbnComponentId).bbn : this;
@@ -1852,9 +1865,6 @@ class bbnCp {
 
     if (ele.parentNode) {
       ele.parentNode.removeChild(ele);
-    }
-    else {
-      bbn.fn.log("Can't find ", ele)
     }
   }
 
@@ -1916,7 +1926,7 @@ class bbnCp {
         value: true
       });
     }
-    else if (this.$isUpdating) {
+    else if (this.$isBusy) {
       return;
     }
     else {
@@ -1930,11 +1940,14 @@ class bbnCp {
     }
 
     const t1 = (new Date()).getTime();
+    this.$lastLaunch = t1;
     this.$updateProps();
     this.$updateAllComputed();
     const e = await this.$eval(this);
     const t2 = (new Date()).getTime();
     this.$numBuild++;
+    this.$lastLaunch = t2;
+    bbn.fn.warning("UPDATE COMPONENT " + this.$options.name + ' - ' + this.$cid + ' - ' + this.$id + ' - time: ' + (this.$lastLaunch/1000) + '(' + this.$numBuild + ')');
     if (this.$isCreating) {
       Object.defineProperty(this, '$isCreating', {
         writable: false,
@@ -2098,7 +2111,7 @@ class bbnCp {
 
     if (isChanged) {
       if (isComponent && ele.bbn?.$isMounted) {
-        ele.bbn.$forceUpdate();
+        ele.bbn.$tick();
       }
     }
   }
@@ -2479,12 +2492,12 @@ class bbnCp {
 
   $updateComputed(name, val) {
     const hash = bbnData.hash(val);
-    if (hash !== this.$computed[name].hash) {
+    if (!bbn.fn.isSame(hash, this.$computed[name].hash)) {
       const oldValue = this.$computed[name].val;
       this.$computed[name].old = oldValue;
       this.$computed[name].hash = hash;
       this.$computed[name].num = this.$numBuild;
-      //val = bbnData.treatValue(val, this, name);
+      val = bbnData.treatValue(val, this, name);
       this.$computed[name].val = val;
       if (this.$watcher?.[name]) {
         if (this.$watcher[name].handler) {
@@ -2684,28 +2697,24 @@ class bbnCp {
   /**
    * Add delay before another function call
    */
+  $tick() {
+    let row = bbn.fn.getRow(bbn.cp.queue, {cp: this});
+    if (!row) {
+      row = {cp: this, fns: []};
+      bbn.cp.queue.push(row);
+    }
+  }
   /*
   $tick() {
     return new Promise(resolve => {
-      let row = bbn.fn.getRow(this.$queue, {cp: this});
-      if (!row) {
-        row = {cp: this, fns: []};
-        this.$queue.push(row);
-      }
-
-      row.fns.push(resolve);
-    });
-  }
-  */
-  $tick() {
-    return new Promise(resolve => {
-      if (!this.$queue.length) {
-        this.$queue.push([]);
+      if (!bbn.cp.$queue.length) {
+        bbn.cp.$queue.push([]);
       }
 
       this.$queue[0].push(resolve);
     });
   }
+  */
 
 
   /**
@@ -2720,12 +2729,13 @@ class bbnCp {
     }
 
     if (this.$namespaces[name] && (this.$namespaces[name] !== type)) {
-      bbn.fn.log(
+      bbn.fn.log([
+        "The namespace already exists",
         "Component name: " + this.$options.name,
-        "Prop name: " + this[name],
+        "Prop name: " + name,
         this.$namespaces,
         name
-      );
+      ]);
       return;
       throw new Error(bbn._("The name %s in %s is already used by %s in %s", name, type, this.$namespaces[name], this.$options.name));
     }
@@ -2803,19 +2813,19 @@ class bbnCp {
   }
 
 
-  /*
   $nextTick(fn) {
+    const cp = this;
     return new Promise((resolve) => {
-      let row = bbn.fn.getRow(this.$queue, {cp: this});
-      if (!row) {
-        row = {cp: this, fns: []};
-        this.$queue.push(row);
-      }
+      setTimeout(() => {
+        if (fn) {
+          fn.bind(cp)();
+        }
 
-      row.fns.push(fn || resolve);
+        resolve();
+      }, bbn.cp.tickDelay);
     });
   }
-  */
+  /*
   $nextTick(fn) {
     return new Promise((resolve) => {
       if (!this.$queue.length) {
@@ -2825,6 +2835,7 @@ class bbnCp {
       this.$queue[0].push(fn || resolve);
     });
   }
+  */
 
   /**
    * Emits a new event with variable arguments
@@ -2873,6 +2884,9 @@ class bbnCp {
    * @param {Function} handler 
    */
   $on(event, handler, remove, bound) {
+    if (!bound) {
+      bound = this;
+    }
     bbn.fn.checkType(event, String, bbn._("Events must be strings for \$on in %s", this.$options.name));
     bbn.fn.checkType(handler, Function, bbn._("Events handlers must be functions for \$on in %s", this.$options.name));
     const fn = bbn.fn.analyzeFunction(handler);
@@ -2894,7 +2908,7 @@ class bbnCp {
         args.push(ev);
       }
 
-      handler.bind(bound || this)(...args);
+      handler.bind(bound)(...args);
     }
 
     const opt = {};
@@ -2937,9 +2951,25 @@ class bbnCp {
   /**
    * Forcing executing tick (updateComponent) function by setting this.$tickLast to 0
    */
-  $forceUpdate() {
-    return this.$launchQueue(true);
-    //return this.$updateComponent();
+  async $forceUpdate() {
+    if (!this.$isBusy) {
+      return await this.$updateComponent();
+    }
+    /*
+    return new Promise((resolve) => {
+      let row = bbn.fn.getRow(bbn.cp.queue, {cp: this});
+      if (!row) {
+        bbn.cp.queue.push({
+          cp: this,
+          fns: [resolve],
+          force: true
+        });
+      }
+      else if (!row.force) {
+        row.force = true;
+      }
+    });
+    */
   }
 
 

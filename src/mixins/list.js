@@ -1029,6 +1029,10 @@
                   });
                 });
               }
+              if (!prom) {
+                return;
+              }
+
               prom.then(d => {
                 if (this.isAjax) {
                   if (!this.loadingRequestID || (this.loadingRequestID !== loadingRequestID)) {

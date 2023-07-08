@@ -4,6 +4,7 @@
     * Init anon component
     */
     createApp(ele, obj) {
+      bbn.cp.startTick();
       bbn.cp.addPrefix('bbn-', async components => {
         const urlPrefix = cdnUrl + 'dev/bbn-cp/master/src/components/?components=';
         const prefix = 'bbn-';
