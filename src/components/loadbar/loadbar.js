@@ -208,10 +208,10 @@ return {
       source: {
         deep: true,
         handler(v, ov) {
-          this.$computed.loadingItems.update();
-          this.$computed.loadedItems.update();
-          this.$computed.currentItem.update();
-          this.$forceUpdate();
+          this.$nextTick(() => {
+            this.loadingItems.length;
+            this.$forceUpdate();
+          })
         }
       },
       currentItem(v) {

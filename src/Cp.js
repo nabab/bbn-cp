@@ -1166,7 +1166,7 @@ class bbnCp {
       if (!bbn.fn.isSame(ele.bbnSchema.props,  d.props)) {
         ele.bbnSchema = d;
         if (isComponent && ele.bbn && ele.bbn.$isMounted) {
-          ele.bbn.$tick();
+          ele.bbn.$forceUpdate();
         }
       }
     }
