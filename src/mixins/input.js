@@ -330,7 +330,7 @@
             }
           };
           let getLastElement = elem => {
-            if ( bbn.fn.isVue(elem) && elem.$refs && elem.$refs.element ){
+            if ( bbn.cp.isComponent(elem) && elem.$refs && elem.$refs.element ){
               return getLastElement(elem.$refs.element);
             }
             return elem;

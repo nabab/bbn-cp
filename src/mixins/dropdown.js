@@ -416,7 +416,7 @@
             return true;
           }
 
-          if ((e.key.length >= 2) && (e.key[0] === 'F')) {
+          if ((e.key?.length >= 2) && (e.key[0] === 'F')) {
             return true;
           }
 

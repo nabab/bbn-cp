@@ -723,7 +723,7 @@ return {
         return style;
       },
       currentHeight(){
-        if (!!this.height) {
+        if (this.height) {
           return bbn.fn.isNumber(this.height) && (this.height > 0) ? this.height + 'px' : this.height;
         }
         return '';

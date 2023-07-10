@@ -208,14 +208,13 @@ return {
       source: {
         deep: true,
         handler(v, ov) {
-          this.$nextTick(() => {
-            this.loadingItems.length;
-            this.$forceUpdate();
-          })
+          setTimeout(() => {
+            this.$tick();
+          }, 500)
         }
       },
       currentItem(v) {
-        this.$tick();
+        this.$forceUpdate();
       },
       info(v) {
         if (this.interval) {

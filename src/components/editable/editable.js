@@ -417,12 +417,6 @@ return {
         default: ''
       },
       /**
-       * @prop {} [true] value
-       */
-      value: {
-        required: true
-      },
-      /**
        * @prop {String} [] novalue
        */
       novalue: {
@@ -494,7 +488,12 @@ return {
        * @return {(Object|null)}
        */
       parent(){
-        return this.ready ? this.closest('bbn-container').getComponent() : null;
+        const ct = this.closest('bbn-container');
+        if (this.ready && ct) {
+          return ct.getComponent();
+        }
+
+        return null;
       }
     },
     /**
@@ -680,9 +679,9 @@ return {
             value: {},
             source: {},
           },
-          template: this.isEditing ? templates[type]['edit'] : templates[type]['view'],
+          template: this.isEditing ? bbnEditableCp.templates[type]['edit'] : bbnEditableCp.templates[type]['view'],
           data(){
-            let tmp = Object.keys(titleTemplates).map((a)=>{return a = {text:a, value:a}});
+            let tmp = Object.keys(bbnEditableCp.titleTemplates).map((a)=>{return a = {text:a, value:a}});
             return {
               //cp video
               muted: true,
@@ -691,7 +690,7 @@ return {
               tags: tmp,
               image: [],
               tinyNumbers: [{text: '1', value: 1}, {text: '2', value: 2},{text: '3', value: 3},{text: '4', value: 4}],
-              borderStyle: borderStyle,
+              borderStyle: bbnEditableCp.borderStyle,
               ref: (new Date()).getTime(),
               show: true,
               currentCarouselIdx: 0
@@ -902,7 +901,7 @@ return {
             cpHTML(tag, type){
               return {
                 props: ['source'],
-                template: (type === 'title') ? titleTemplates[tag] : htmlTemplates[tag],
+                template: (type === 'title') ? bbnEditableCp.titleTemplates[tag] : bbnEditableCp.htmlTemplates[tag],
               }
             },
             /** @todo Seriously these arguments names??  */
@@ -1097,7 +1096,10 @@ return {
      * @event beforeMount
      * @fires getComponentObject
      */
-    beforeMount() {
+    beforeCreate() {
+      this.componentObject = {};
+    },
+    created() {
       this.componentObject = this.getComponentObject(this.type);
     },
     /**

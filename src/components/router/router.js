@@ -1752,7 +1752,7 @@ return {
         }
         if (this.urlNavigation) {
           if (this.parentContainer) {
-            this.parentContainer.currentTitle = title + ' < ' + this.parentContainer.title;
+            //this.parentContainer.currentTitle = title + ' < ' + this.parentContainer.title;
             if (!this.parentContainer.isPane) {
               this.parent.changeURL(this.baseURL + url, this.parentContainer.currentTitle, replace);
             }

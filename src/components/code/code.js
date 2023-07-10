@@ -170,22 +170,7 @@ return {
     },
     mounted() {
       // load script with codemirror6 and all extensions
-      if (!window.codemirror6) {
-        let cmScript = document.createElement('script');
-        cmScript.src = '/cm.js';
-        cmScript.onload = () => {
-          // Both ESLint and CodeMirror scripts have been loaded
-          this.init();
-        };
-        document.getElementsByTagName('head')[0].appendChild(cmScript);
-      }
       this.init();
-
-      if (!window.beautifier && (this.mode === 'css' || this.mode === 'less' || this.mode === 'html' || this.mode === 'js' || this.mode === 'javascript')) {
-        let beautifierScript = document.createElement('script');
-        beautifierScript.src = "https://beautifier.io/js/lib/beautifier.min.js";
-        document.getElementsByTagName('head')[0].appendChild(beautifierScript);
-      }
     },
     watch: {}
   }

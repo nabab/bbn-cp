@@ -23,7 +23,9 @@
       <span v-else
             v-html="item.data.text"/>
       <span v-if="item.data[children]"
-            class="nf nf-fa-chevron_down"/>
+            class="bbn-menu-icon">
+        <i class="nf nf-fa-chevron_down"/>
+      </span>
     </li>
   </ul>
   <bbn-floater v-if="ready && filteredData?.[overIdx]?.data?.[children]"

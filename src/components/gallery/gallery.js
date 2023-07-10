@@ -367,10 +367,10 @@ return {
       isObject: bbn.fn.isObject,
       /**
        * Alias of bbn.cp.isComponent.
-       * @method isVue
+       * @method isComponent
        * @return {Boolean}
       */
-      isVue: bbn.cp.isComponent,
+      isComponent: bbn.cp.isComponent,
       /**
          * Alias of bbn.fn.correctCase.
          * @method correctCase

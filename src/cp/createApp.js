@@ -6,7 +6,7 @@
     createApp(ele, obj) {
       bbn.cp.startTick();
       bbn.cp.addPrefix('bbn-', async components => {
-        const urlPrefix = cdnUrl + 'dev/bbn-cp/master/src/components/?components=';
+        const urlPrefix = bbn.env.cdn + 'dev/bbn-cp/master/src/components/?components=';
         const prefix = 'bbn-';
         const url = urlPrefix + components.map(a => a.indexOf(prefix) === 0 ? a.substr(prefix.length) : a).join(',') + '&v=3280&test=1&lang=fr';
         // Request
@@ -79,7 +79,7 @@
 
       /*
       bbn.cp.addPrefix('bbn', async tag => {
-        const pUrl = cdnUrl + 'lib/bbn-vue/master/src/components/?components=';
+        const pUrl = bbn.env.cdn + 'lib/bbn-vue/master/src/components/?components=';
         const url = pUrl + tag.substr(4) + '&v=3280&test=1&lang=fr';
         // Request
         const d = await bbn.fn.ajax(url, 'text').then(r => r);

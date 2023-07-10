@@ -7,6 +7,6 @@
   "license": "MIT",
   "dependencies": {
     "tern": ">=0.21.0",
-    "codemirror": ">=5.40.0"
+    "codemirror6": ">=6.0.0"
   }
 }

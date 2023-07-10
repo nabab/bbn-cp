@@ -1,7 +1,7 @@
 <div :class="[componentClass, {'bbn-flex-height': scrollable, 'bbn-gallery-sorting': isSorting}]">
   <div v-if="toolbar"
        class="bbn-l bbn-widget bbn-gallery-toolbar bbn-spadded bbn-vmiddle">
-    <component v-if="isObject(toolbar) || isVue(toolbar)"
+    <component v-if="isObject(toolbar) || isComponent(toolbar)"
                :is="toolbar"/>
     <template v-else>
       <div class="bbn-flex-width bbn-vmiddle">

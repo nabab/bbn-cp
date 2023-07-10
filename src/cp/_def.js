@@ -1,8 +1,4 @@
 (() => {
-  window.cdnUrl = window.location.hostname.indexOf('local.bbn.io') > 0 ? 
-  "https://cdn-dev-local.bbn.io/"
-  : "https://cdn.bbn.io/";
-
   /*
   const sc = document.createElement('script');
   sc.setAttribute('type', 'text/javascript');
@@ -346,7 +342,11 @@ class bbnCp {
                   });
                   idx = bbn.fn.search(bbn.cp.queue, {cp: queueElement.cp});
                   if (idx > -1) {
-                    bbn.fn.log(["INFINITE LOOP", bbn.cp.queue.splice(idx, 1)]);
+                    const queueElement3 = bbn.cp.queue.splice(idx, 1)[0];
+                    queueElement3.fns.forEach(fn => {
+                      fn.bind(queueElement.cp)();
+                    });
+                    bbn.fn.log(["INFINITE LOOP", queueElement3.cp]);
                   }
                 }
                 //bbn.fn.log("CALLING FN", queueElement.cp.$options.name);

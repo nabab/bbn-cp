@@ -1879,6 +1879,10 @@ class bbnCp {
     const cpSource = ele.bbnComponentId && (ele.bbnComponentId !== this.$cid) ? bbn.cp.getComponent(ele.bbnComponentId).bbn : this;
     // It won't have an ID if it's a bbn-text or bbn-html
     if (id) {
+      if (ele.clientHeight && ele.style) {
+        ele.style.display = 'none';
+      }
+
       if (ele.bbnSlots) {
         bbn.fn.iterate(ele.bbnSlots, slot => {
           bbn.fn.each(slot.splice(0, slot.length), o => {
@@ -1954,7 +1958,7 @@ class bbnCp {
    * @returns {Promise}
    */
   async $updateComponent(shadow) {
-    if (!this.$isCreated) {
+    if (!this.$isCreated || !this.$el.isConnected) {
       return;
     }
 
@@ -1981,7 +1985,7 @@ class bbnCp {
     const t1 = (new Date()).getTime();
     this.$lastLaunch = t1;
     this.$updateProps();
-    this.$updateAllComputed();
+    //this.$updateAllComputed();
     const e = await this.$eval(this);
     const t2 = (new Date()).getTime();
     this.$numBuild++;
@@ -3024,7 +3028,7 @@ class bbnCp {
    * @todo!
    */
   $destroy() {
-
+    this.$root.$removeDOM(this.$el);
   }
 
 

@@ -797,6 +797,9 @@ return {
 
             i--;
           }
+          if (appui.loadbar) {
+            appui.$forceUpdate();
+          }
         }
       };
 
@@ -819,6 +822,9 @@ return {
             else{
               loader.loading = false;
             }
+          }
+          if (appui.loadbar) {
+            appui.$forceUpdate();
           }
           //appui.$refs.loading.end(url, id, data, res);
         }

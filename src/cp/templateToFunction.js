@@ -383,15 +383,17 @@
             }
 
             if (ev.action) {
-              x(c, sp, `  const args = _bbnEventObject.detail?.args || [];`);
-              x(c, sp, `  args.push(_bbnEventObject);`);
-              let act = `  ${ev.action}`
-              if (bbn.fn.isValidName(ev.action)) {
-                act += '(...args)';
+              if ((ev.action.indexOf(';') > -1) || (ev.action.indexOf('if') === 0)){
+                x(c, sp, `  ${ev.action};`);
               }
-
-              act += `;`;
-              x(c, sp, act);
+              else {
+                x(c, sp, `  let $_action = (${ev.action});`);
+                x(c, sp, `  if (bbn.fn.isFunction($_action)) {`);
+                x(c, sp, `    const args = _bbnEventObject.detail?.args || [];`);
+                x(c, sp, `    args.push(_bbnEventObject);`);
+                x(c, sp, `    $_action(...args);`);
+                x(c, sp, `  }`);
+              }
               x(c, sp, `  bbn.fn.iterate(_bbnCurrentData, (_bbnCurrentDataValue, _bbnCurrentDataIndex) => {`);
               x(c, sp, `    //bbn.fn.log('_bbnCurrentDataValue, _bbnCurrentDataIndex', _bbnCurrentDataValue, _bbnCurrentDataIndex, eval(_bbnCurrentDataIndex), _t[_bbnCurrentDataIndex], '++++');`);
               x(c, sp, `    if (_bbnCurrentDataValue !== eval(_bbnCurrentDataIndex)) {`);
@@ -741,11 +743,18 @@
         }
       }
 
-
       for (let n in cp.$cfg.props) {
         x(c, sp, `let ${n} = _t["${n}"];`);
         x(c, sp, `_bbnCurrentData["${n}"] = ${n};`);
       }
+      x(c, sp, `let ownProps = Object.getOwnPropertyNames(_t);`);
+      x(c, sp, `let n;`);
+      x(c, sp, `for (let i = 0; n = ownProps[i]; i++) {`);
+      x(c, sp, `  if ((n.indexOf('$') !== 0) && !_t.$namespaces[n]) {`);
+      //x(c, sp, `    bbn.fn.warning('var ' + n + ' = _t["' + n + '"];');`);
+      x(c, sp, `    eval('var ' + n + ' = _t["' + n + '"];');`);
+      x(c, sp, `  }`);
+      x(c, sp, `}`);
       
       x(c, sp, `// _setInternalResult`);
       x(c, sp, `const _sIr = (_name, _exp, _hash) => {`);
@@ -826,15 +835,18 @@
               }
 
               if (ev.action) {
-                let act = `  ${ev.action}`
-                if (bbn.fn.isValidName(ev.action)) {
-                  x(c, sp, `  const args = _bbnEventObject.detail?.args || [];`);
-                  x(c, sp, `  args.push(_bbnEventObject);`);
-                  act += '(...args)';
+                if ((ev.action.indexOf(';') > -1) || (ev.action.indexOf('if') === 0)){
+                  x(c, sp, `  ${ev.action};`);
+                }
+                else {
+                  x(c, sp, `  let $_action = (${ev.action});`);
+                  x(c, sp, `  if (bbn.fn.isFunction($_action)) {`);
+                  x(c, sp, `    const args = _bbnEventObject.detail?.args || [];`);
+                  x(c, sp, `    args.push(_bbnEventObject);`);
+                  x(c, sp, `    $_action(...args);`);
+                  x(c, sp, `  }`);
                 }
 
-                act += `;`;
-                x(c, sp, act);
                 x(c, sp, `  bbn.fn.iterate(_bbnCurrentData, (_bbnCurrentDataValue, _bbnCurrentDataIndex) => {`);
                 x(c, sp, `    //bbn.fn.log('_bbnCurrentDataValue, _bbnCurrentDataIndex', _bbnCurrentDataValue, _bbnCurrentDataIndex, eval(_bbnCurrentDataIndex), _t[_bbnCurrentDataIndex], '++++');`);
                 x(c, sp, `    if (_bbnCurrentDataValue !== eval(_bbnCurrentDataIndex)) {`);
