@@ -308,8 +308,12 @@ return {
         }
       },
       update(){
-        this.hasPrev = this.router.views[this.router.selected-1] !== undefined;
-        this.hasNext = this.router.views[this.router.selected+1] !== undefined;
+        this.$nextTick(() => {
+          if (this.router) {
+            this.hasPrev = this.router.views[this.router.selected-1] !== undefined;
+            this.hasNext = this.router.views[this.router.selected+1] !== undefined;
+          }
+        })
       },
       onRoute(){
         this.update();

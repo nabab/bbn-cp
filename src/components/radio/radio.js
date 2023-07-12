@@ -114,6 +114,7 @@ return {
        * @emits change
        */
 			changed(val, d, e){
+        bbn.fn.log("CHANGED", val, d, e);
 				this.$emit('input', val);
         this.$emit('change', val, d, e);
       },

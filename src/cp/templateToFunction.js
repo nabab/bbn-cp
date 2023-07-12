@@ -257,14 +257,6 @@
         x(c, sp, `}`);
       }
 
-      if (node.model) {
-        for (let n in node.model) {
-          x(c, sp, `_tmp.model['${n}'].value = _tmp.props['${n}'] = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
-          //x(c, sp, `bbn.fn.log("CHANGE MODEL IN " + _t.$options.name, _gIv(_node.model['${n}'].hash, ${hashName}));`);
-        }
-      }
-      
-
       x(c, sp, `isAnew = false;`);
       x(c, sp, `if ((_eles['${node.id}'] !== _t.$el) && !_forgotten['${node.id}']?.[${hashName} || '_root'] && (`);
       x(c, sp, `    !_eles['${node.id}']`);
@@ -275,12 +267,33 @@
       x(c, sp, `  isAnew = true;`);
       x(c, sp, `}`);
       x(c, sp, `if (isAnew) {`);
+      if (node.model) {
+        for (let n in node.model) {
+          x(c, sp, `  _tmp.model['${n}'].value = _tmp.props['${n}'] = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
+        }
+      }
       x(c, sp, `  _eles['${node.id}'] = await _t.$createElement(_tmp, _parents.at(-1));`);
       x(c, sp, `  if (_parents.at(-1) === _t.$el) {`);
       x(c, sp, `    $_final.push({ele: _eles['${node.id}'], position: $_num});`);
       x(c, sp, `  }`);
       x(c, sp, `}`);
       x(c, sp, `else {`);
+      if (node.model) {
+        x(c, sp, `  _tmp.model = _eles['${node.id}'].bbnSchema.model;`);
+        for (let n in node.model) {
+          if (n === '_default_') {
+            x(c, sp, `  if (_t.$isComponent(_eles['${node.id}'])) {`)
+            x(c, sp, `    _tmp.model[_eles['${node.id}'].bbnCfg?.model?.prop || _eles['${node.id}'].constructor?.bbnCfg?.model?.prop].value = _tmp.props[_eles['${node.id}'].bbnCfg?.model?.prop || _eles['${node.id}'].constructor?.bbnCfg?.model?.prop] = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
+            x(c, sp, `  }`);
+            x(c, sp, `  else {`);
+            x(c, sp, `    _tmp.model.value.value = _tmp.props.value = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
+            x(c, sp, `  }`);
+          }
+          else {
+            x(c, sp, `  _tmp.model['${n}'].value = _tmp.props['${n}'] = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
+          }
+        }
+      }
       x(c, sp, `  _t.$updateElementFromProps(_tmp, _eles['${node.id}']);`);
       x(c, sp, `}`);
       x(c, sp, `if (_parents.at(-1) === _t.$el) {`);
@@ -292,6 +305,7 @@
       if (node.model || hasEvents) {
         x(c, sp, `if (isAnew) {`);
         sp += 2;
+        x(c, sp, `let _bbnCurrentElement = _eles['${node.id}'];`);
         if (node.model) {
           for (let name in node.model) {
             let m = node.model[name];
@@ -302,23 +316,34 @@
                     .filter(t => t !== ''));
             const modelVarRoot = modelVarBits[0];
             const eventName = m.modifiers.includes('lazy') ? 'change' : 'input';
-            x(c, sp, `_t.$dataModels["${m.hash}"]["${node.id}"]["${name}"][${hashName} || "_root"] = _eles["${node.id}"];`);
-            x(c, sp, `_eles['${node.id}'].addEventListener("${eventName}", _bbnEventObject => {`);
+            x(c, sp, `let _bbnEventName = '${eventName}';`);
+            x(c, sp, `let _bbnRealName = '${name}';`);
+            if (name === '_default_') {
+              x(c, sp, `let _bbnModelCfg = _t.$isComponent(_eles['${node.id}']) ? _eles['${node.id}'].bbnCfg?.model || _eles['${node.id}'].constructor?.bbnCfg?.model : {prop: 'value', event: _bbnEventName};`);
+              x(c, sp, `_bbnRealName = _bbnModelCfg.prop;`);
+              x(c, sp, `_bbnEventName = _bbnModelCfg.event;`);
+              x(c, sp, `_bbnCurrentElement.bbnSchema.model[_bbnRealName] = _bbnCurrentElement.bbnSchema.model._default_;`);
+              x(c, sp, `delete _bbnCurrentElement.bbnSchema.model._default_;`);
+              if (node.tag === 'bbn-checkbox') {
+                x(c, sp, `bbn.fn.warning(_bbnRealName)`);
+              }
+            }
+            x(c, sp, `_bbnCurrentElement.addEventListener(_bbnEventName, _bbnEventObject => {`);
             x(c, sp, `  let $event = _bbnEventObject;`);
             x(c, sp, `  let _bbnEventValue = $event.detail?.args ? $event.detail.args[0] : $event.target?.value;`);
             x(c, sp, `  let oldValue = bbn.fn.isPrimitive(${modelVarName}) ? _sIr("${m.hash}", ${modelVarName}, ${hashName}) : ${modelVarName};`);
-            x(c, sp, `  bbn.fn.log(["ON MODEL CHANGE", "${eventName}", oldValue, "${modelVarRoot}", _bbnEventValue, _t.$options.name]);`);
+            x(c, sp, `  bbn.fn.log(["ON MODEL CHANGE", _bbnEventName, oldValue, "${modelVarRoot}", _bbnEventValue, _t.$options.name]);`);
             x(c, sp, `  if (oldValue !== _bbnEventValue) {`);
             if (modelVarRoot === modelVarName) {
               x(c, sp, `    if (Object.hasOwn(_t.$props, "${modelVarRoot}")) {`);
-              x(c, sp, `      bbn.fn.log("IS A PROP ${name}", _t.$options.name, "${modelVarRoot}", _bbnEventValue);`);
+              x(c, sp, `      bbn.fn.log("IS A PROP " + _bbnRealName, _t.$options.name, "${modelVarRoot}", _bbnEventValue);`);
               x(c, sp, `      _t.$setProp("${modelVarRoot}", _bbnEventValue);`);
               x(c, sp, `    }`);
               x(c, sp, `    else {`);
               x(c, sp, `      _t["${modelVarRoot}"] = _bbnEventValue;`);
               x(c, sp, `    }`);
               x(c, sp, `    ${modelVarRoot} = _bbnEventValue;`);
-              x(c, sp, `    bbn.fn.log("FROM MODEL ${name}", _t.$options.name, _t.$cfg.props, _bbnEventValue, ${modelVarRoot}, "${modelVarRoot}", Object.hasOwn(_t.$cfg.props, "${modelVarRoot}"));`);
+              x(c, sp, `    bbn.fn.log("FROM MODEL " + _bbnRealName, _t.$options.name, _t.$cfg.props, _bbnEventValue, ${modelVarRoot}, "${modelVarRoot}", Object.hasOwn(_t.$cfg.props, "${modelVarRoot}"));`);
             }
             else {
               /*
@@ -350,11 +375,12 @@
               x(c, sp, `    ${modelVarName} = _bbnEventValue;`);
             }
             //x(c, sp, `    ${modelVarName} = _bbnEventValue;`);
-            x(c, sp, `    $event.target.bbnSchema.model["${name}"].value = _bbnEventValue;`);
-            x(c, sp, `    $event.target.bbnSchema.props["${name}"] = _bbnEventValue;`);
-            x(c, sp, `    if ($event.target?.bbn) {`);
-            x(c, sp, `      $event.target?.bbn.$forceUpdate();`);
+            x(c, sp, `    _bbnCurrentElement.bbnSchema.model[_bbnRealName].value = _bbnEventValue;`);
+            x(c, sp, `    _bbnCurrentElement.bbnSchema.props[_bbnRealName] = _bbnEventValue;`);
+            x(c, sp, `    if (_bbnCurrentElement?.bbn) {`);
+            x(c, sp, `      _bbnCurrentElement?.bbn.$forceUpdate();`);
             x(c, sp, `    }`);
+            x(c, sp, `    _t.$forceUpdate();`);
             x(c, sp, `    _t.$forceUpdate();`);
             x(c, sp, `  }`);
             x(c, sp, `});`);
@@ -794,6 +820,7 @@
           && tpl[0].items
           && !tpl[0].attr?.['bbn-if']
           && !tpl[0].attr?.['bbn-for']
+          && !tpl[0].attr?.['bbn-model']
           && !tpl[0].attr?.['bbn-forget']
           && !bbn.cp.isComponent(tpl[0])
           && !['slot', 'template', 'component'].includes(tpl[0].tag)

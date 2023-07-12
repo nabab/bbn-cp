@@ -233,8 +233,16 @@ return {
        */
        checkClick(e){
         if (this.currentVisible) {
-          if (!e.target.closest(".bbn-appui-menu-button")) {
-            this.hide();
+          const target = e.target;
+          const ev = new CustomEvent('checkclick', {cancelable: true});
+          bbn.fn.log("CHECK CLICK", target, ev);
+          this.$emit('checkclick', target, ev);
+          if (!ev.defaultPrevented) {
+            const cp = e.target.closest(".bbn-component")?.bbn;
+            if (!cp || (cp.closest("bbn-slider") !== this)) {
+              this.hide();
+            }
+            bbn.fn.log("CHECK CLICK", target, ev, cp);
           }
         }
       },

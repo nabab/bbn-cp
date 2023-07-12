@@ -8,7 +8,7 @@
          :disabled="isDisabled"
          :readonly="readonly"
          @change="toggle"
-         :checked="state"
+         :checked="state ? 'checked' : ''"
          ref="element"
 				 tabindex="0">
   <label class="bbn-checkbox-label bbn-iflex bbn-vmiddle"

@@ -91,6 +91,7 @@
     <bbn-button v-for="(button, i) in realButtons"
                 :class="[{'bbn-primary': button.preset === 'submit'}, button.cls || '']"
                 :key="i"
+                ref="butt"
                 v-bind="button"/>
   </div>
   <div class="bbn-overlay bbn-modal"

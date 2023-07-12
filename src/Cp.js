@@ -759,7 +759,8 @@ class bbnCp {
       value: async function() {
         if (this.$root.$unknownComponents.length) {
           let unknown = this.$root.$unknownComponents.splice(0, this.$root.$unknownComponents.length);
-          return await bbn.cp.fetchComponents(unknown);
+          const res = await bbn.cp.fetchComponents(unknown);
+          return res;
         }
 
         return false;
@@ -772,14 +773,6 @@ class bbnCp {
         if ((name.indexOf('-') > 0) && !bbn.cp.known.includes(name) && !this.$root.$unknownComponents.includes(name)) {
           this.$root.$unknownComponents.push(name);
           return true;
-          /*
-          if (this.$root.$fetchTimeout) {
-            clearTimeout(this.$root.$fetchTimeout);
-          }
-          this.$root.$fetchTimeout = setTimeout(() => {
-            this.$root.$fetchComponents();
-          }, 25);
-          */
         }
         return false;
       },
@@ -1152,13 +1145,6 @@ class bbnCp {
           }
         });
 
-        // Outer schema of the component, with the slots
-        Object.defineProperty(ele, 'bbnModels', {
-          value: tag === 'bbn-anon' ? bbn.cp.retrieveModels(ele.bbnTpl || d.items) : bbn.fn.clone(ele.constructor.bbnModels),
-          writable: false,
-          configurable: false
-        });
-
       }
     }
     else {
@@ -1463,15 +1449,6 @@ class bbnCp {
       }
     });
 
-    /**
-     * Object of all elements with bbn-model prop.
-     * Indexed by element's id with bbn-model's value as value
-     */
-    Object.defineProperty(this, '$dataModels', {
-      get() {
-        return this.$el.bbnModels || this.$el.constructor.bbnModels;
-      }
-    });
 
     /**
      * Object of all elements with bbn-model prop.
@@ -2092,21 +2069,6 @@ class bbnCp {
           isC = true;
           ele[n] = node.model[n].value;
         }
-        /*
-        if (isC) {
-          bbn.fn.iterate(this.$dataModels, (id, exp) => {
-            if (exp === node.model[n].exp) {
-              if (node.id === id) {
-                return false;
-              }
-              const twinModelEle = this.$retrieveElenment(id, node.loopHash);
-              if (twinModelEle) {
-                twinModelEle[n] = node.model[n].value;
-              }
-            }
-          })
-        }
-        */
       }
     }
     else if (Object.hasOwn(props, 'bbn-html') && (ele.innerHTML !== props['bbn-html'])) {
@@ -2194,6 +2156,7 @@ class bbnCp {
       if (props?.style) {
         stl.push(props.style);
       }
+     
 
       if ((props?.['bbn-show'] !== undefined)) {
         stl.push({display: props['bbn-show'] ? 'block' : 'none'});

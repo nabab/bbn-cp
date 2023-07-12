@@ -134,7 +134,8 @@ return {
         /**
          * @data valueToSet
          */
-        valueToSet: this.value
+        valueToSet: this.value,
+        currentChecked: this.checked
       }
     },
     computed: {
@@ -145,10 +146,10 @@ return {
        * @return {Boolean}
        */
       state(){
-        if ( this.checked && (this.modelValue === undefined) ){
+        if ( this.currentChecked && (this.modelValue === undefined) ){
           return true;
         }
-        if ( this.checked &&
+        if ( this.currentChecked &&
           (
             ( !this.strict && (this.modelValue != this.valueToSet) ) ||
             ( this.strict && (this.modelValue !== this.valueToSet) )
@@ -162,7 +163,7 @@ return {
         ){
           return true;
         }
-        return this.checked;
+        return this.currentChecked;
       },
     },
     methods: {
@@ -175,6 +176,7 @@ return {
        */
       toggle(){
         if ( !this.isDisabled && !this.readonly ){
+          this.currentChecked = !this.currentChecked;
           let emitVal = !this.state ? this.valueToSet : this.novalue;
           this.$emit('input', emitVal);
           this.$emit('change', emitVal, this);
@@ -190,9 +192,9 @@ return {
           ev.preventDefault();
         }
         else {
-          this.$emit('beforechange', ev, this.checked);
+          this.$emit('beforechange', ev, this.currentChecked);
           if (!ev.defaultPrevented) {
-            this.click(ev);
+            this.toggle();
           }
         }
       },
@@ -218,8 +220,8 @@ return {
        * @fires toggle
        */
       checked(newValue){
-        if ( newValue !== this.state ){
-          this.toggle();
+        if ( newValue !== this.currentChecked ){
+          this.currentChecked = newValue;
         }
       }
     },
@@ -232,10 +234,10 @@ return {
      * @emits input
      */
     mounted(){
-      if ( this.checked && !this.state ){
+      if ( this.currentChecked && !this.state ){
         this.toggle();
       }
-      if ( !this.checked && !this.state ){
+      if ( !this.currentChecked && !this.state ){
         //this.$emit('input', this.novalue);
       }
     }

@@ -40,8 +40,6 @@ class bbnAnonCp extends bbnCp {
       }
     }
 
-    //this.$el.bbnSlots = bbn.cp.retrieveSlots(bbnAnon.bbnTpl);
-    //this.$el.bbnModels = bbn.cp.retrieveModels(this.$el.bbnTpl);
     const cfg = this.$cfg;
     if (cfg.components) {
       for (let n in cfg.components) {

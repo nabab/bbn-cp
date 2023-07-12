@@ -13,11 +13,15 @@
       if (!name) {
         bbn.fn.warning("BOO");
         bbn.fn.log(obj);
-        return;
+        throw new Error("The name of the component is mandatory");
       }
 
       // Template string becomes a DOM array
       let tmp = bbn.cp.stringToTemplate(tpl, true);
+      if (name === 'bbn-checkbox') {
+        bbn.fn.warning("CHECKBOX");
+        bbn.fn.log(obj.model);
+      }
       // Name of the class based on the tag name
       const publicName = bbn.fn.camelize(name);
       // The component config (= Vue-like object) that we freeze

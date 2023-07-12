@@ -27,9 +27,6 @@
   static get bbnTag() {
     return bbn.cp.statics['${eleName}'].tag;
   }
-  static get bbnModels() {
-    return bbn.cp.statics['${eleName}'].models;
-  }
   static get bbnSlots() {
     return bbn.cp.statics['${eleName}'].slots;
   }

@@ -132,7 +132,6 @@
           bbnId: '0',
           bbnCfg: cpCfg,
           bbnTpl: cpTpl,
-          bbnModels: bbn.cp.retrieveModels(cpTpl),
           bbnSlots: slots,
           bbnMap: cpMap,
           bbnSchema: schema

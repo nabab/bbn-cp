@@ -24,6 +24,7 @@
          * @method getPopup
          * @returns {bbnCp}
          */
+        /*
         getPopup(cfg){
           let popup = this.popup || bbn.cp.getPopup(this);
           // If no config we return the popup object
@@ -38,6 +39,7 @@
           }
 
         },
+        */
         
       }
     }

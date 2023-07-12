@@ -45,7 +45,11 @@
       attr.forEach(attrName => {
         const main = attrName.indexOf(':') > 0 ? attrName.split(':') : [attrName];
         const modifiers = main[0].split('.');
-        const modelValue = main.length > 1 ? main[1] : 'value';
+        const modelValue = main.length > 1 ? main[1] : '_default_';
+        if (main[1] === '_default_') {
+          throw new Error("The name '_default_' is reserved for the default value of the model");
+        }
+
         let a = bbn.fn.camelToCss(modifiers.splice(0, 1)[0]);
         // replaces v- by bbn-
         if (a.indexOf('v-') === 0) {

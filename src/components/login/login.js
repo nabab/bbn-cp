@@ -144,6 +144,23 @@ return {
       }
     },
     data(){
+      const formData = {
+        login: {
+          [this.saltName]: this.salt,
+          user: '',
+          pass: ''
+        },
+        lost: {
+          email: ''
+        },
+        change: {
+          [this.actionName]: 'init_password',
+          id: this.secureId,
+          key: this.secureKey,
+          pass1: '',
+          pass2: ''
+        }
+      };
       return {
         isInit: false,
         /**
@@ -153,7 +170,8 @@ return {
         /**
          * @data {Object} [{}] formData
          */
-        formData: {},
+        formData,
+        currentFormData: bbn.fn.clone(formData[this.mode]),
         /**
          * @data {Boolean} [false] passwordVisible
          */
@@ -175,13 +193,6 @@ return {
        */
       isLogoTag(){
         return this.logo && (this.logo.trim().substr(0, 1) === '<');
-      },
-      /**
-       * @computed currentFormData
-       * @return {Object}
-       */
-      currentFormData(){
-        return this.formData[this.currentMode] || {};
       },
       /**
        * @computed currentUrl
@@ -251,23 +262,7 @@ return {
        * @fires $set
        */
       resetForm(){
-        this.$set(this, 'formData', {
-          login: {
-            [this.saltName]: this.salt,
-            user: '',
-            pass: ''
-          },
-          lost: {
-            email: ''
-          },
-          change: {
-            [this.actionName]: 'init_password',
-            id: this.secureId,
-            key: this.secureKey,
-            pass1: '',
-            pass2: ''
-          }
-        });
+        this.currentFormData = bbn.fn.clone(this.formData[this.currentMode]);
       },
       /**
        * @method validation

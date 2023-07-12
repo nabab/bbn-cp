@@ -544,9 +544,22 @@ return {
           return;
         }
         if (this.realButtons.length) {
-          this.realButtons.splice(0, this.realButtons.length);
+          bbn.fn.each(this.getRealButtons(), (b, i) => {
+            let change = false;
+            for (let n in b) {
+              if (!bbn.fn.isFunction(b[n]) && !bbn.fn.isSame(b[n], this.realButtons[i][n])) {
+                bbn.fn.warning(n);
+                bbn.fn.log(b[n]);
+                change = true;
+                this.realButtons[i][n] = b[n];
+              }
+            }
+            if (change && this.$refs.butt?.[i]) {
+              this.$refs.butt[i].$forceUpdate()
+            }
+          });
+          return;
         }
-
         if (this.window && bbn.fn.isArray(this.window.currentButtons) && (this.currentMode === 'big')) {
           this.window.currentButtons.splice(0, this.window.currentButtons.length);
         }
@@ -685,7 +698,6 @@ return {
        * @emits submit
        */
       submit(force){
-        alert("WHY?")
         if (!this.isValid(force)) {
           return;
         }
@@ -856,6 +868,7 @@ return {
        * @fires $el.checkValidity
        */
       checkValidity(){
+        bbn.fn.warning("checkValidity is deprecated, use isValid instead");
         return this.$el.checkValidity();
       },
       /**
@@ -863,9 +876,11 @@ return {
        * @fires $el.reportValidity
        */
       reportValidity() {
+        bbn.fn.warning("reportValidity is deprecated, use isValid instead");
         return this.$el.reportValidity();
       },
       update() {
+        bbn.fn.warning("update");
         this.canSubmit = this._canSubmit();
         this.$forceUpdate();
       }
@@ -886,6 +901,7 @@ return {
         container.forms.push(this);
       }
 
+      
       if (this.storage){
         let data = this.getStorage();
         if (data) {

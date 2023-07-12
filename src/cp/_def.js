@@ -46,6 +46,7 @@ class bbnCp {
       readonly: 'readOnly',
       contenteditable: 'contentEditable',
       crossorigin: 'crossOrigin',
+      for: 'htmlFor',
     },
     hooks: [
       'beforeCreate',

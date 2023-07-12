@@ -49,8 +49,7 @@
                 @success="onAfterSubmit"
                 key="form"
                 :validation="validation"
-                v-else
-      >
+                v-else>
         <div v-if="currentMode === 'login'"
              class="bbn-w-100">
           <div class="bbn-w-100 bbn-c bbn-vsmargin">
@@ -89,8 +88,7 @@
                        class="bbn-w-100"
                        required="required"
                        :placeholder="_('Enter your e-mail address')"
-                       v-model="currentFormData.email"
-            ></bbn-input>
+                       v-model="currentFormData.email"/>
           </div>
           <div class="bbn-c bbn-w-100">
             <bbn-button type="button"
