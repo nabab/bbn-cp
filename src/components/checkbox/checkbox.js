@@ -174,9 +174,14 @@ return {
        * @emits input
        * @emits change
        */
-      toggle(){
+      toggle(force) {
         if ( !this.isDisabled && !this.readonly ){
-          this.currentChecked = !this.currentChecked;
+          if ( force !== undefined ){
+            this.currentChecked = !!force;
+          }
+          else {
+            this.currentChecked = !this.currentChecked;
+          }
           let emitVal = !this.state ? this.valueToSet : this.novalue;
           this.$emit('input', emitVal);
           this.$emit('change', emitVal, this);
@@ -209,19 +214,6 @@ return {
         }
         else {
           this.keydown(ev);
-        }
-      }
-    },
-    watch: {
-      /**
-       *
-       * @watch checked
-       * @param {Boolean} newValue
-       * @fires toggle
-       */
-      checked(newValue){
-        if ( newValue !== this.currentChecked ){
-          this.currentChecked = newValue;
         }
       }
     },

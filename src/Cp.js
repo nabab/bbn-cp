@@ -1252,7 +1252,7 @@ class bbnCp {
   $disconnectedCallback() {
     //bbn.fn.log("Before disconnected callback from " + this.$el.tagName + ' / ' + this.$el.bbnSchema.id);
     if (!this.$el.isConnected) {
-      bbn.fn.log("Disconnected callback from " + this.$el.tagName);
+      //bbn.fn.log("Disconnected callback from " + this.$el.tagName);
       // Sending beforeDestroy event
       const beforeDestroy = new Event('beforedestroy');
       this.$onBeforeDestroy();
@@ -2827,7 +2827,7 @@ class bbnCp {
   }
 
 
-  $nextTick(fn) {
+  async $nextTick(fn) {
     const cp = this;
     return new Promise((resolve) => {
       setTimeout(() => {
