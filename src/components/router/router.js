@@ -3813,7 +3813,7 @@ return {
       this.$forceUpdate();
 
       this.$nextTick(() => {
-        if ( this.$slots.default ){
+        if (this.$slots.default) {
           for ( let item of this.$slots.default ){
             if (item.bbnSchema.tag === 'bbn-container') {
               let el = this.$refsElements['ct-' + item.bbnSchema.props.url];
@@ -3822,6 +3822,7 @@ return {
               }
             }
           }
+          alert(this.$slots.default.length + "SLOTS");
         }
 
         if (!this.views.length) {

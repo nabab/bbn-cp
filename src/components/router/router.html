@@ -159,9 +159,9 @@
                           bbn-forget="!splittable"
                           :ref="'portal-' + (isVisual ? a.view.url : a.url)"
                           :selector="getPortalSelector(a)">
-                <div v-if="isVisual ? a.view.real : a.real"
-                     class="bbn-router-container-fake"
-                     :ref="'ct-' + (isVisual ? a.view.url : a.url)"/>
+                <slot v-if="(isVisual && a.view.real) || a.real"
+                      class="bbn-router-container-fake"
+                      :ref="'ct-' + (isVisual ? a.view.url : a.url)"/>
                 <bbn-container v-else-if="!component && !a.pane"
                               :visual="isVisual"
                               v-bind="isVisual ? a.view : a"/>
@@ -224,17 +224,14 @@
     </bbn-pane>
   </bbn-splitter>
   <bbn-floater v-if="!single && showRouterCfg"
-               :modal="true"
-               :title="false"
-               width="100%"
-               :closable="false"
-               ref="cfgwindow"
-               height="100%">
+               :title="_('Router configuration')"
+               :closable="true"
+               ref="cfgwindow">
     <div class="bbn-overlay bbn-middle"
          @click="showRouterCfg = false">
       <div class="bbn-block bbn-background"
            @click.stop>
-        <bbn-router-config :router="this"
+        <bbn-router-config :router="_self"
                            :visual="!parent"/>
       </div>
     </div>

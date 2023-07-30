@@ -61,6 +61,7 @@ return {
 </svg>
 
 `;
+      return {img};
     },
     props: {
       router: {
