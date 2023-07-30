@@ -6,10 +6,8 @@
   <bbn-splitter :resizable="resizable"
                 :collapsible="collapsible"
                 :full-size="scrollContent"
-                bbn-forget="!splittable"
                 ref="topSplitter">
-    <bbn-pane :scrollable="false"
-              bbn-forget="!splittable">
+    <bbn-pane :scrollable="false">
       <div :class="{
                   'bbn-overlay': scrollContent,
                   'bbn-flex-height': scrollContent && !hasVerticalTabs,
@@ -113,7 +111,7 @@
         </div>
         <!-- END OF BREADCRUMB -->
         <!-- START OF LEFT|TOP TABS -->
-        <bbn-tabs v-else-if="nav && !isBreadcrumb && !isVisual && !['right', 'bottom'].includes(orientation)"
+        <bbn-tabs v-else-if="nav && !isBreadcrumb && !isVisual && ((orientation !== 'right') && (orientation !== 'bottom'))"
                   ref="tabs"
                   v-model="selectedTab"
                   @close="closeTab"
@@ -127,20 +125,20 @@
             :class="{
                     'bbn-router-scroller': isVisual,
                     'bbn-flex-fill': scrollContent,
+                    'bbn-w-100': !scrollContent,
                     }"
             :scrollable="visualShowAll"
             :style="{
               overflow: 'auto',
               height: visualShowAll ? '100%' : 'auto'
             }"
-            bbn-forget="!scrollContent">
+            ref="visualListContainer">
           <div :class="{
                       'bbn-overlay': scrollContent && !visualShowAll,
                       'bbn-w-100': isVisual && !scrollContent || visualShowAll,
                       'bbn-router-visual': isVisual
                     }"
               :style="isVisual ? visualStyle : {}"
-              v-if="ready"
               ref="visualRouter"
               @keydown.esc="onEscape"
               :tabindex="isVisual && visualShowAll ? 0 : -1">
@@ -153,30 +151,28 @@
                 </div>
               </div>
             </div>
-            <template v-for="a in (isVisual ? visualList : views)"
-                      :key="isVisual ? a.view.uid : a.uid">
-              <bbn-portal :disabled="!routed || !getPane(a)"
-                          bbn-forget="!splittable"
-                          :ref="'portal-' + (isVisual ? a.view.url : a.url)"
-                          :selector="getPortalSelector(a)">
-                <div v-if="isVisual ? a.view.real : a.real"
-                     class="bbn-router-container-fake"
-                     :ref="'ct-' + (isVisual ? a.view.url : a.url)"/>
-                <bbn-container v-else-if="!component && !a.pane"
-                              :visual="isVisual"
-                              v-bind="isVisual ? a.view : a"/>
-                <bbn-container v-else-if="component"
-                              :source="componentSource"
-                              :visual="isVisual"
-                              :component="component"
-                              :url="a.view?.url || a.url || componentSource[componentUrl]"/>
-              </bbn-portal>
-            </template>
+            <slot></slot>
+            <bbn-portal v-for="a in isVisual ? visualList : views"
+                        :key="isVisual ? a.view.uid : (component && componentSource && componentUrl ? componentSource[componentUrl] : a.uid)"
+                        :disabled="!routed || !getPane(a)"
+                        :selector="getPane(a) ? '#' + getPane(a) + slashToHyphen(isVisual ? a.view.url : a.url) : null">
+              <bbn-container v-if="(isVisual ? !a.view.real : !a.real) && !component && (!a.pane || routed)"
+                            :key="isVisual ? a.view.uid : a.uid"
+                            :visual="isVisual"
+                            v-bind="isVisual ? a.view : a"/>
+              <bbn-container v-else-if="component && componentSource && componentUrl"
+                            :source="componentSource"
+                            :visual="isVisual"
+                            :component="component"
+                            :key="componentSource[componentUrl]"
+                            :url="componentSource[componentUrl]"/>
+            </bbn-portal>
           </div>
         </bbn-scroll>
         <!-- END OF CONTENT -->
+        <bbn-loader v-else/>
         <!-- START OF RIGHT|BOTTOM TABS -->
-        <bbn-tabs v-if="nav && !isBreadcrumb && !isVisual && ['right', 'bottom'].includes(orientation)"
+        <bbn-tabs v-else-if="nav && !isBreadcrumb && !isVisual && ((orientation === 'right') || (orientation === 'bottom'))"
                   ref="tabs"
                   v-model="selectedTab"
                   @close="closeTab"
@@ -239,5 +235,4 @@
       </div>
     </div>
   </bbn-floater>
-  <bbn-loader v-if="!ready"/>
 </div>
