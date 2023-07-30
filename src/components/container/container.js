@@ -1370,8 +1370,6 @@ return {
     },
     beforeMount() {
       // The router is needed
-      this.updateScreenshot()
-      this._screenshotInterval = false;
       this.router = this.closest('bbn-router');
       //const cp = this.getRef('component');
     },
@@ -1385,6 +1383,8 @@ return {
         throw new Error(bbn._("bbn-container cannot be rendered without a bbn-router"));
       }
 
+      this.updateScreenshot()
+      this._screenshotInterval = false;
       if (!this.router.ready) {
         bbn.fn.warning("ROUTER NOT READY");
         this.router.$on('ready', () => {

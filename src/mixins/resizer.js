@@ -120,12 +120,13 @@
           let h = 0;
           const ele = this.resizerObserved;
           if (ele) {
-            let h = Math.round(ele.clientHeight);
-            let w = Math.round(ele.clientWidth);
+            h = Math.round(ele.clientHeight);
+            w = Math.round(ele.clientWidth);
             if (h && w) {
               this.setComputedStyle();
             }
           }
+          bbn.fn.log(ele, h, Math.round(ele.clientHeight), ele.clientHeight, '----');
 
           if (this.lastKnownHeight !== h) {
             this.lastKnownHeight = h;

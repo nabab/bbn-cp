@@ -3822,7 +3822,6 @@ return {
               }
             }
           }
-          alert(this.$slots.default.length + "SLOTS");
         }
 
         if (!this.views.length) {
