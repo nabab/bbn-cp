@@ -409,6 +409,7 @@ return {
        * @method updateButtons
        */
       updateButtons(){
+        bbn.fn.log("UPDATE BUTTONS");
         this.realButtonsLeft = bbn.fn.isFunction(this.buttonsLeft) ? this.buttonsLeft() : this.buttonsLeft;
         this.realButtonsRight = bbn.fn.isFunction(this.buttonsRight) ? this.buttonsRight() : this.buttonsRight;
       },
@@ -417,6 +418,7 @@ return {
        * @emits close
        */
       close(){
+        bbn.fn.log("CLOSE", this.uid);
         this.$emit("close", this.uid, this);
       },
       /**
@@ -429,6 +431,7 @@ return {
        * @fires load
        */
       reload(){
+        bbn.fn.log("RELOAD");
         this.currentItems = [];
         this.$nextTick(() => {
           this.load();
@@ -453,6 +456,7 @@ return {
           };
           this.isLoading = true;
           this.$forceUpdate();
+          bbn.fn.log("LOADING", this.url, this.data);
           if ( this.limit && this.pageable ){
             params.limit = this.limit;
             params.start = this.currentStart;
@@ -625,6 +629,7 @@ return {
        * @fires load
        */
       limit(){
+        bbn.fn.log("LIMIT", this.limit)
         this.load();
       },
       /**
@@ -633,6 +638,7 @@ return {
       * @fires load
       */
       observerDirty(newVal){
+        bbn.fn.log("observerDirty", newVal)
         if ( newVal && !this.editedRow ){
           this.observerDirty = false;
           this.load();
@@ -645,6 +651,7 @@ return {
       source: {
         deep: true,
         handler(newVal){
+          bbn.fn.log("SOURCE", newVal)
           this.currentSource = newVal
         }
       },
@@ -654,6 +661,7 @@ return {
        * @fires reload
        */
       url(newVal){
+        bbn.fn.log("URL", newVal)
         this.reload();
       }
     }

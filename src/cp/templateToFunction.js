@@ -226,7 +226,8 @@
     const c = x();
     if (node.tag) {
       if (node.model) {
-        bbn.fn.iterate(node.model, m => {
+        bbn.fn.iterate(node.model, (m, prop) => {
+          x(c, sp, `_sIr('${m.hash}', ${m.exp}, ${hashName});`);
           x(c, sp, `if (!$_go['${node.id}'] && (_gIs('${m.hash}', ${hashName}) !== "OK")) {`);
           x(c, sp, `  $_go['${node.id}'] = true;`);
           x(c, sp, `}`);
@@ -278,12 +279,15 @@
       x(c, sp, `  }`);
       x(c, sp, `}`);
       x(c, sp, `else {`);
+
+
       if (node.model) {
         x(c, sp, `  _tmp.model = _eles['${node.id}'].bbnSchema.model;`);
         for (let n in node.model) {
           if (n === '_default_') {
             x(c, sp, `  if (_t.$isComponent(_eles['${node.id}'])) {`)
-            x(c, sp, `    _tmp.model[_eles['${node.id}'].bbnCfg?.model?.prop || _eles['${node.id}'].constructor?.bbnCfg?.model?.prop].value = _tmp.props[_eles['${node.id}'].bbnCfg?.model?.prop || _eles['${node.id}'].constructor?.bbnCfg?.model?.prop] = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
+            x(c, sp, `    let modelProp = _eles['${node.id}'].bbnCfg?.model?.prop || _eles['${node.id}'].constructor?.bbnCfg?.model?.prop || 'value';`);
+            x(c, sp, `    _tmp.model[modelProp].value = _tmp.props[modelProp] = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
             x(c, sp, `  }`);
             x(c, sp, `  else {`);
             x(c, sp, `    _tmp.model.value.value = _tmp.props.value = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);

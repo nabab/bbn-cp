@@ -983,7 +983,7 @@ class bbnCp {
     /** @constant {Array} todo A list of function to apply once the element will ne created */
     const todo = [];
     /** @constant {bbnComponentFunction} cpSource */
-    const cpSource = node.componentId ? bbn.cp.getComponent(node.componentId)?.bbn : this;
+    const cpSource = d.componentId ? bbn.cp.getComponent(d.componentId)?.bbn : this;
     const oldEle = cpSource.$retrieveElement(d.id, d.loopHash);
     let replace = false;
     let ele;
@@ -1026,6 +1026,27 @@ class bbnCp {
       if (bbn.cp.statics[tag]?.tag) {
         originalTag = tag;
         tag = bbn.cp.statics[originalTag].tag;
+      }
+    }
+
+    
+    if (d.model) {
+      for (let n in d.model) {
+        if (n === '_default_') {
+          if (isComponent) {
+            let modelProp = bbn.cp.statics[tag]?.models?.prop || 'value';
+            d.props[modelProp] = d.props._default_;
+            delete d.props._default_;
+            d.model[modelProp] = d.model._default_;
+            //delete d.model._default_;
+          }
+          else {
+            d.model.value = d.model._default_;
+            //delete d.model._default_;
+            d.props.value = d.props._default_;
+            delete d.props._default_;
+          }
+        }
       }
     }
 
@@ -1168,7 +1189,7 @@ class bbnCp {
 
     if (oldEle && !replace) {
       if (!d.comment && d.directives) {
-        bbn.cp.updateDirectives(d.directives, ele);
+        bbn.cp.updateDirectives(d.directives, oldEle);
       }
       return oldEle;
     }
@@ -2056,6 +2077,9 @@ class bbnCp {
 
     if (node.model) {
       for (let n in node.model) {
+        if (n === '_default_') {
+          continue;
+        }
         let isC = false;
         if (isComponent) {
           if (Object.hasOwn(ele.bbnSchema.props || {}, n) && (ele.bbnSchema.props?.[n] !== node.model[n].value)) {
@@ -2064,7 +2088,7 @@ class bbnCp {
             isC = true;
           }
         }
-        else if ((ele[n] !== undefined) && (ele[n] !== node.model[n].value)) {
+        else if ((ele[n] !== undefined) && (ele[n] !== (bbn.fn.isString(node.model[n].value) ? node.model[n].value : (node.model[n].value?.toString ? node.model[n].value.toString() : '')))) {
           isChanged = true;
           isC = true;
           ele[n] = node.model[n].value;
@@ -2333,6 +2357,7 @@ class bbnCp {
         Object.defineProperty(this.$props, name, {
           value: undefined,
           writable: false,
+          enumerable: true,
           configurable: true
         });
       }

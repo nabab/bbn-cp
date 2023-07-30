@@ -124,6 +124,7 @@ return {
     },
     methods: {
       updatePager() {
+        bbn.fn.log("UPDATE PAGER");
       },
       /**
        * @method firstPage
@@ -216,11 +217,13 @@ return {
         }
       },
       currentPage(v) {
+        bbn.fn.log("CURRENT PAGE", v);
         if (this.currentNumericPage !== v) {
           this.currentNumericPage = v;
         }
       },
       currentNumericPage(v){
+        bbn.fn.log("CURRENT NUM PAGE", v);
         if (this.numericTimeout) {
           clearTimeout(this.numericTimeout);
         }

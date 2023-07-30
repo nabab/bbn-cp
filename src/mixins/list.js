@@ -543,6 +543,7 @@
            * @data {String} [''] searchValue
            */
           searchValue: '',
+          filteredData: [],
         };
       },
       computed: {
@@ -552,11 +553,12 @@
          * @memberof listComponent
          */
         currentLimits(){
-          if (!this.pageable){
+          if (!this.pageable) {
             return [];
           }
+
           let pass = false;
-          return bbn.fn.filter(this.limits.sort(), a => {
+          return bbn.fn.filter(this.limits.slice().sort(), a => {
             if ( a > this.total ){
               if ( !pass ){
                 pass = true;
@@ -623,20 +625,6 @@
               this.start = val > 1 ? (val - 1) * this.currentLimit : 0;
               this.updateData(!this.serverPaging);
             }
-          }
-        },
-        filteredData(){
-          if (this.currentData.length && this.currentFilters &&
-                                this.currentFilters.conditions &&
-                                this.currentFilters.conditions.length &&
-                                (!this.serverFiltering || !this.isAjax)
-          ) {
-            return bbn.fn.filter(this.currentData, a => {
-              return this._checkConditionsOnItem(this.currentFilters, a.data);
-            });
-          }
-          else{
-            return this.currentData;
           }
         },
         filteredTotal(){
@@ -1077,6 +1065,20 @@
                       dir: (d.dir || '').toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
                     });
                   }
+
+                  if (this.currentData.length && this.currentFilters &&
+                    this.currentFilters.conditions &&
+                    this.currentFilters.conditions.length &&
+                    (!this.serverFiltering || !this.isAjax)
+                  ) {
+                    this.filteredData = bbn.fn.filter(this.currentData, a => {
+                      return this._checkConditionsOnItem(this.currentFilters, a.data);
+                    });
+                  }
+                  else{
+                    this.filteredData = this.currentData;
+                  }
+      
                   this.total = d.total || this.filteredData.length;
                   /** @todo Observer part to dissociate */
                   if (d.observer && bbn.fn.isFunction(this.observerCheck) && this.observerCheck()) {
@@ -1294,9 +1296,8 @@
       },
       watch: {
         filters: {
-          deep: true,
-          handler() {
-            this.currentFilters = bbn.fn.clone(this.filters)
+          handler(v) {
+            this.$set(this, 'currentFilters', v);
           }
         },
         /**

@@ -220,6 +220,7 @@ return {
        * @fires setStorage
        */
       setConfig(uid, config){
+        bbn.fn.log("SET CONFIG", uid, config);
         this.setStorage({
           order: config.order
         }, uid);
@@ -295,6 +296,7 @@ return {
        * @fires resizeScroll
        */
       onResize(){
+        bbn.fn.log("RESIZE DASH");
         let ele = this.getRef('container');
         if (ele) {
           let actualWidth = parseInt(window.getComputedStyle(ele).width),
@@ -363,6 +365,7 @@ return {
               }
             });
           }
+          bbn.fn.log("EMIT SORT");
           this.$emit('sort', this.currentOrder);
           return true;
         }
@@ -379,6 +382,7 @@ return {
        * @emits sort
        */
       updateMenu(){
+        bbn.fn.log("UPDATE MENU");
         let tab = this.closest("bbn-container");
         if ( tab ){
           if ( this.selectable && this.menu && this.menu.length ){
@@ -442,6 +446,7 @@ return {
                 action:() => {
                   this.currentOrder.splice(0, this.currentOrder.length);
                   this.initWidgets();
+                  bbn.fn.log("EMIT SORT 2");
                   this.$emit('sort', this.currentOrder);
                 }
               }));
@@ -472,6 +477,7 @@ return {
       * @fires post
       */
       updateWidget(key, cfg){
+        bbn.fn.log("UPDATE WIDGET");
         let idx = bbn.fn.search(this.widgets || [], 'key', key),
             params = {
               id: key,
@@ -574,6 +580,7 @@ return {
        * @returns {Object}
        */
       normalize(obj_orig){
+        bbn.fn.log("NORMALIZE");
         let obj = obj_orig || {};
         obj.hidden = !!obj.hidden;
         if ( !obj.key ){
@@ -600,6 +607,7 @@ return {
        * @returns {Object}
        */
       add(obj, idx){
+        bbn.fn.log("ADD WIDGET");
         let checkIdx = bbn.fn.search(this.widgets, {key: obj.key});
         if ( checkIdx > -1 ){
           return this.widgets[checkIdx];
@@ -634,6 +642,7 @@ return {
        * @fires getRef
        */
       resizeScroll(){
+        bbn.fn.log("RESIZE SCROLL");
         if ( this.scrollable && this.$refs.scroll ){
           this.getRef('scroll').onResize();
         }
@@ -671,6 +680,7 @@ return {
        * @fires add
        */
       initWidgets(){
+        bbn.fn.log("INIT WIDGETS");
         this.widgets = [];
         bbn.fn.each(this.currentOrder, id => {
           let w = bbn.fn.getRow(this.originalSource, {key: id});
@@ -689,7 +699,8 @@ return {
        * @method setCurrentSlots
        * @return {Boolean | Array}
        */
-      setCurrentSlots(){
+      setCurrentSlots() {
+        bbn.fn.log("SET CURRENT SLOTS");
         this.currentSlots = this.$el.bbnSlots.default ? this.$el.bbnSlots.default.filter(node => {
           return !!node.tag;
         }) : [];
@@ -788,7 +799,14 @@ return {
       source: {
         deep: true,
         handler(){
+          bbn.fn.log("SOURCE CHANGED");
           this.init();
+        }
+      },
+      widgets: {
+        deep: true,
+        handler(){
+          bbn.fn.log("widgets CHANGED");
         }
       }
     }
