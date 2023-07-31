@@ -3054,6 +3054,38 @@ class bbnCp {
   }
 
 
+  getPopup() {
+    let popup = this.currentPopup;
+    if (!popup) {
+      let vm = this.$parent;
+      while (vm && !popup) {
+        if (vm.currentPopup) {
+          popup = vm.currentPopup;
+        }
+        else {
+          vm = vm.$parent;
+        }
+      }
+    }
+
+    if (arguments.length && popup) {
+      let cfg = arguments[0];
+      let args = [];
+      if (bbn.fn.isObject(cfg)) {
+        cfg.opener = this;
+      }
+
+      args.push(cfg);
+      for (let i = 1; i < arguments.length; i++) {
+        args.push(arguments[i]);
+      }
+
+      return popup.open.apply(popup, args);
+    }
+
+    return popup;
+  }
+
   /**
   * Returns the closest component matching the given selector
   * @method closest
