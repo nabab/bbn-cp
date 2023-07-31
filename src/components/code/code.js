@@ -55,7 +55,7 @@ return {
         if (!this.mode || !this.theme) {
           throw new Error("You earmust provide a language and a theme");
         }
-        if (!cm.languageExtensions[this.mode]) {
+        if (!cm.languageExtensions[this.mode] && this.mode !== "js" && this.mode !== "less") {
           throw new Error("Unknown language");
         }
         if (!cm.theme[this.theme]) {
@@ -64,7 +64,16 @@ return {
         let extensions = [];
 
         // push current language extension and current theme extension
-        extensions.push(cm.languageExtensions[this.mode]);
+        if (this.mode !== "js" && this.mode !== "less") {
+            extensions.push(cm.languageExtensions[this.mode]);
+        } else {
+          if (this.mode === "js") {
+            extensions.push(cm.javascript.javascript());
+          }
+          if (this.mode === "less") {
+            extensions.push(cm.css.css());
+          }
+        }
         extensions.push(cm.theme[this.theme]);
         switch (this.currentMode) {
           case "javascript":
@@ -100,7 +109,7 @@ return {
             extensions.push(cm.markdown.markdown());
             break;
         }
-        return extensions;
+        return bbnData.immunizeValue(this.extensions || extensions);
       },
       onChange(tr) {
         this.widget.update([tr]);
@@ -109,9 +118,23 @@ return {
           this.emitInput(value);
         }
       },
+      initUntilExtensionsLoaded(max) {
+        if (!max) {
+          this.init();
+          return;
+        }
+        if (this.extensions.length)
+          this.init();
+        else {
+          setTimeout(() => {
+            this.initUntilExtensionsLoaded(max - 1);
+          }, 100);
+        }
+      },
       init() {
         let cm = window.codemirror6;
-        let extensions = this.extensions ? this.extensions : this.getExtensions();
+        let extensions = this.getExtensions();
+        bbn.fn.log("extensions", extensions, this.extensions);
         let editorStateCfg = {
           doc: this.value,
           extensions: extensions,
@@ -169,8 +192,7 @@ return {
       },
     },
     mounted() {
-      // load script with codemirror6 and all extensions
-      this.init();
+      this.initUntilExtensionsLoaded(100);
     },
     watch: {}
   }
