@@ -567,7 +567,7 @@ return {
         }
 
         let lst = this.getRef('list');
-        if (lst) {
+        if (lst && lst.querySelectAll) {
           const eles = lst.querySelectAll('bbn-tree-node');
           if (eles.length) {
             const data = [];
