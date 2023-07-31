@@ -106,7 +106,7 @@
                           style="cursor: unset">
               <span :class="['bbn-tree-node-block-selectable', {'bbn-p': !!selectable}]"
                     @dblclick="dblClickOnNode"
-                    @click="clickOnNode"
+                    @click="isSelected = true"
                     @dragstart="startDrag"
                     @dragover="drag"
                     @dragleave="leaveDrag"
