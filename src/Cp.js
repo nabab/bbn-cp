@@ -2118,10 +2118,10 @@ class bbnCp {
             const attr = ele[propName];
             if (attr !== value) {
               if (!value) {
-                ele.removeAttribute(name);
+                ele[name] = '';
               }
               else {
-                ele.setAttribute(name, value);
+                ele[name] = value;
               }
             }
           }
