@@ -126,8 +126,8 @@
               this.setComputedStyle();
             }
           }
-          bbn.fn.log(ele, h, Math.round(ele.clientHeight), ele.clientHeight, '----');
-
+          
+          //bbn.fn.log(ele, h, Math.round(ele.clientHeight), ele.clientHeight, '----');
           if (this.lastKnownHeight !== h) {
             this.lastKnownHeight = h;
             resize = true;
