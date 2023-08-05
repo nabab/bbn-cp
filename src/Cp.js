@@ -335,12 +335,6 @@ class bbnData {
       configurable: false
     });
 
-    Object.defineProperty(this, 'root', {
-      value: component,
-      writable: false,
-      configurable: false
-    });
-
     Object.defineProperty(data, '__bbnData', {
       enumerable: false,
       configurable: true,
@@ -2118,10 +2112,18 @@ class bbnCp {
             const attr = ele[propName];
             if (attr !== value) {
               if (!value) {
-                ele[name] = '';
+                ele.removeAttribute(name);
+                // for SVG
+                if ({}.toString.apply(ele[propName]).substr(0, 7) !== '[object') {
+                  ele[propName] = '';
+                }
               }
               else {
-                ele[name] = value;
+                ele.setAttribute(name, value);
+                // for SVG
+                if ({}.toString.apply(ele[propName]).substr(0, 7) !== '[object') {
+                  ele[propName] = value;
+                }
               }
             }
           }
@@ -2775,7 +2777,6 @@ class bbnCp {
         this.$namespaces,
         name
       ]);
-      return;
       throw new Error(bbn._("The name %s in %s is already used by %s in %s", name, type, this.$namespaces[name], this.$options.name));
     }
 
@@ -2803,10 +2804,7 @@ class bbnCp {
    */
   $set(obj, prop, value, writable = true, configurable = true) {
     if (bbn.cp.isComponent(obj)) {
-      if (!obj.$namespaces[prop]) {
-        obj.$setUpData(prop, value);
-      }
-      else {
+      if (obj.$namespaces[prop]) {
         const dataObj = bbnData.treatValue(value, obj, prop);
         if (!bbn.fn.isSame(dataObj, obj[prop])) {
           if (obj.$namespaces[prop] === 'props') {
@@ -2816,6 +2814,9 @@ class bbnCp {
             obj[prop] = value;
           }
         }
+      }
+      else {
+        obj[prop] = value;
       }
     }
     else {

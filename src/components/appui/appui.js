@@ -228,8 +228,7 @@ return {
       let isMobile = bbn.fn.isMobile();
       let isTablet = bbn.fn.isTabletDevice();
 
-      
-      return {
+      let d = {
         isFocused: false,
         intervalBugChrome: null,
         mode: bbn.env.mode,
@@ -281,7 +280,9 @@ return {
         isDesktop: !isTablet && !isMobile,
         showBookmarks: false,
         bookmarksLoaded: false
-      }
+      };
+      bbn.fn.log("APPUI DAATA", d);
+      return d;
     },
     computed: {
       isDev() {

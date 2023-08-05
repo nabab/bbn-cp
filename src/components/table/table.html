@@ -54,104 +54,103 @@
             </template>
           </colgroup>
           <thead v-if="titles" ref="thead">
-            <tr v-if="titleGroups"
-                v-for="(groupCol, groupIndex) in groupCols">
-              <th v-for="(col, i) in titleGroupsCells(groupIndex)"
-                  :colspan="col.colspan"
-                  scope="colgroup"
-                  :style="{
-                    zIndex: (col.left !== undefined) || (col.right !== undefined) ? 4 : 3,
-                    top: '0px',
-                    left: col.left !== undefined ? (col.left + 'px') : '',
-                    right: col.right !== undefined ? (col.right + 'px') : '',
-                    width: col.width + 'px'
-                  }"
-                  :class="['bbn-table-fixed-cell', {
-                    'bbn-table-fixed-cell-left': groupIndex === 0,
-                    'bbn-table-fixed-cell-left-last': (groupIndex === 0) && !titleGroupsCells(groupIndex)[i+1],
-                    'bbn-table-fixed-cell-right': groupIndex === 2,
-                    'bbn-table-cell-first': (groupIndex === 1)
-                      && titleGroupsCells(groupIndex).length
-                      && (i === 0)
-                  }]"
-                  :title="col.text">
-                <bbn-anon v-if="col.component"
-                          :is="col.component"
-                          :source="col"/>
-                <div class="bbn-100 bbn-table-title-group" v-else>
-                  <div :class="[col.cls, 'bbn-ellipsis']"
-                      :style="col.style"
-                      v-html="col.text"
-                  ></div>
-                </div>
-              </th>
+            <tr v-if="titleGroups">
+              <template v-for="(groupCol, groupIndex) in groupCols">
+                <th v-for="(col, i) in titleGroupsCells(groupIndex)"
+                    :colspan="col.colspan"
+                    scope="colgroup"
+                    :style="{
+                      zIndex: (col.left !== undefined) || (col.right !== undefined) ? 4 : 3,
+                      top: '0px',
+                      left: col.left !== undefined ? (col.left + 'px') : '',
+                      right: col.right !== undefined ? (col.right + 'px') : '',
+                      width: col.width + 'px'
+                    }"
+                    :class="['bbn-table-fixed-cell', {
+                      'bbn-table-fixed-cell-left': groupIndex === 0,
+                      'bbn-table-fixed-cell-left-last': (groupIndex === 0) && !titleGroupsCells(groupIndex)[i+1],
+                      'bbn-table-fixed-cell-right': groupIndex === 2,
+                      'bbn-table-cell-first': (groupIndex === 1)
+                        && titleGroupsCells(groupIndex).length
+                        && (i === 0)
+                    }]"
+                    :title="col.text">
+                  <bbn-anon v-if="col.component"
+                            :is="col.component"
+                            :source="col"/>
+                  <div class="bbn-100 bbn-table-title-group" v-else>
+                    <div :class="[col.cls, 'bbn-ellipsis']"
+                        :style="col.style"
+                        v-html="col.text"
+                    ></div>
+                  </div>
+                </th>
+              </template>
             </tr>
             <!-- Titles -->
-            <tr v-for="(groupCol, groupIndex) in groupCols"
-                v-if="groupCol.cols.length">
-              <th v-for="(col, i) in groupCol.cols"
-                  scope="col"
-                  v-show="!col.hidden"
-                  :style="{
-                    left: col.left !== undefined ? (col.left + 'px') : '',
-                    right: col.right !== undefined ? (col.right + 'px') : '',
-                    width: col.realWidth + 'px',
-                    zIndex: (col.left !== undefined) || (col.right !== undefined) ? 4 : 3,
-                    top: titleGroups ? '39px' : '0px'
-                  }"
-                  :class="['bbn-table-fixed-cell', {
-                    'bbn-table-fixed-cell-left': groupIndex === 0,
-                    'bbn-table-fixed-cell-left-last': (groupIndex === 0) && !groupCol.cols[i+1],
-                    'bbn-table-fixed-cell-right': groupIndex === 2,
-                    'bbn-table-cell-first': (groupIndex === 1)
-                      && groupCols[0].cols.length
-                      && (i === 0)
-                  }]"
-                  :title="col.ftitle || col.title || col.field || ' '"
-                  v-resizable.right="resizable && col.resizable && !!groupCol.cols[i+1] ? {data: {column: col, columnIndex: i, groupColIndex: groupIndex}} : false"
-                  @resize="onUserResize">
-                <i :class="{
-                    nf: true,
-                    'nf nf-mdi-filter_variant': true,
-                    'bbn-p': true,
-                    'bbn-red': hasFilter(col)
-                  }"
-                  v-if="showFilterOnColumn(col)"
-                  @click="showFilter(col, $event)"/>
-                <div v-if="col.isSelection" :title="_('Check all')">
-                  <bbn-checkbox v-model="allRowsChecked"/>
-                </div>
-                <div v-else-if="col.isExpander" :title="_('Expand all')">
-                  <!-- @todo an icon for expanding all/none -->
-                </div>
-                <component v-else-if="col.tcomponent"
-                           :is="col.tcomponent"
-                           :source="col"/>
-                <span class="bbn-p"
-                      v-else-if="sortable && (col.sortable !== false) && !col.buttons"
-                      @click="sort(col)">
-                  <span v-if="col.encoded"
-                        v-text="col.title || col.field || ' '"
-                        :title="col.ftitle || col.title || col.field"/>
-                  <span v-else
-                        v-html="col.title || col.field || ' '"
-                        :title="col.ftitle || col.title || col.field || ' '"/>
-                </span>
-                <span v-else>
-                  <span v-if="col.encoded"
-                        v-text="col.title || col.field || ' '"
-                        :title="col.ftitle || col.title || col.field || ' '"/>
-                  <span v-else
-                        v-html="col.title || col.field || ' '"
-                        :title="col.ftitle || col.title || col.field || ' '"/>
-                </span>
-                <i v-if="isSorted(col)"
-                  :class="{
-                    'bbn-table-sortable-icon': true,
-                    'nf nf-fa-caret_up': isSorted(col).dir === 'ASC',
-                    'nf nf-fa-caret_down': isSorted(col).dir === 'DESC',
-                }"/>
-              </th>
+            <tr>
+              <template v-for="(groupCol, groupIndex) in groupCols">
+                <th v-for="(col, i) in groupCol.cols"
+                    v-show="!col.hidden"
+                    :style="{
+                      left: col.left !== undefined ? (col.left + 'px') : '',
+                      right: col.right !== undefined ? (col.right + 'px') : '',
+                      width: col.realWidth + 'px',
+                      zIndex: (col.left !== undefined) || (col.right !== undefined) ? 4 : 3,
+                      top: titleGroups ? '39px' : '0px'
+                    }"
+                    :class="['bbn-table-fixed-cell', {
+                      'bbn-table-fixed-cell-left': groupIndex === 0,
+                      'bbn-table-fixed-cell-left-last': (groupIndex === 0) && !groupCol.cols[i+1],
+                      'bbn-table-fixed-cell-right': groupIndex === 2,
+                      'bbn-table-cell-first': (groupIndex === 1)
+                        && groupCols[0].cols.length
+                        && (i === 0)
+                    }]"
+                    :title="col.ftitle || col.title || col.field || ' '">
+                  <i :class="{
+                      nf: true,
+                      'nf nf-mdi-filter_variant': true,
+                      'bbn-p': true,
+                      'bbn-red': hasFilter(col)
+                    }"
+                    v-if="showFilterOnColumn(col)"
+                    @click="showFilter(col, $event)"/>
+                  <div v-if="col.isSelection" :title="_('Check all')">
+                    <bbn-checkbox v-model="allRowsChecked"/>
+                  </div>
+                  <div v-else-if="col.isExpander" :title="_('Expand all')">
+                    <!-- @todo an icon for expanding all/none -->
+                  </div>
+                  <component v-else-if="col.tcomponent"
+                            :is="col.tcomponent"
+                            :source="col"/>
+                  <span class="bbn-p"
+                        v-else-if="sortable && (col.sortable !== false) && !col.buttons"
+                        @click="sort(col)">
+                    <span v-if="col.encoded"
+                          v-text="col.title || col.field || ' '"
+                          :title="col.ftitle || col.title || col.field"/>
+                    <span v-else
+                          v-html="col.title || col.field || ' '"
+                          :title="col.ftitle || col.title || col.field || ' '"/>
+                  </span>
+                  <span v-else>
+                    <span v-if="col.encoded"
+                          v-text="col.title || col.field || ' '"
+                          :title="col.ftitle || col.title || col.field || ' '"/>
+                    <span v-else
+                          v-html="col.title || col.field || ' '"
+                          :title="col.ftitle || col.title || col.field || ' '"/>
+                  </span>
+                  <i v-if="isSorted(col)"
+                    :class="{
+                      'bbn-table-sortable-icon': true,
+                      'nf nf-fa-caret_up': isSorted(col).dir === 'ASC',
+                      'nf nf-fa-caret_down': isSorted(col).dir === 'DESC',
+                  }"/>
+                </th>
+              </template>
             </tr>
           </thead>
           <tbody ref="tbody"

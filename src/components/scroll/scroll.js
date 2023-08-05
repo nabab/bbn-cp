@@ -849,7 +849,7 @@ return {
           //throw new Error("BOOOOOO");
           await this.getNaturalDimensions();
         }
-        bbn.fn.log(bbn._("Init size from %s with ID %s", this.$options.name, this.$cid));
+        //bbn.fn.log(bbn._("Init size from %s with ID %s", this.$options.name, this.$cid));
         this.scrollReady = true;
         await this.onResize(true);
         this.ready = true;

@@ -470,7 +470,10 @@ return {
           let isResizable = bbn.fn.count(tmp, {isResizable: true}) >= 2;
           let hasPanes = tmp.length > 1;
           // We will populate resizers
-          this.resizers.splice(0, this.resizers.length);
+          if (this.resizers.length) {
+            this.resizers.splice(0, this.resizers.length);
+          }
+
           tmp.forEach((pane, idx) => {
             let prev, next, prevc, nextc;
             if ( hasPanes && isResizable && pane.isResizable ){
@@ -480,7 +483,7 @@ return {
               nextc = this.getNextCollapsible(idx, tmp);
               // First collapsible
               if ( (prev !== false) || (prevc !== false) ){
-                //bbn.fn.log("------ case 2", idx + ' position ' + currentPosition);
+                bbn.fn.log("------ case 2", idx + ' position ' + currentPosition);
                 let o = {
                   position: currentPosition,
                   panec1: false,

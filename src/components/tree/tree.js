@@ -345,12 +345,34 @@ return {
   },
   computed: {
     /**
+     * The selected node.
+     * @computed selectedNode
+     * @return {bbnCp|Boolean}
+     */
+    selectedNode(){
+      return this.tree && this.tree.currentSelected.length ? this.tree.currentSelected[this.tree.currentSelected.length-1] : false;
+    },
+    /**
+     * Array of droppables trees.
+     * @computed droppableTrees
+     * @return {Array}
+     */
+    droppableTrees(){
+      let r = this.selfDrop ? [this] : [];
+      if (this.droppables.length) {
+        r.push(...this.droppables);
+      }
+      return r;
+    }
+  },
+  methods: {
+    /**
      * The current data of the tree.
      * @computed filteredData
      * @fires _checkConditionsOnItem
      * @return {Array}
      */
-    filteredData(){
+    _setFilteredData() {
       let ret = [];
       if (
         this.currentData.length &&
@@ -378,30 +400,8 @@ return {
           return v;
         });
       }
-      return ret;
+      this.filteredData = ret;
     },
-    /**
-     * The selected node.
-     * @computed selectedNode
-     * @return {bbnCp|Boolean}
-     */
-    selectedNode(){
-      return this.tree && this.tree.currentSelected.length ? this.tree.currentSelected[this.tree.currentSelected.length-1] : false;
-    },
-    /**
-     * Array of droppables trees.
-     * @computed droppableTrees
-     * @return {Array}
-     */
-    droppableTrees(){
-      let r = this.selfDrop ? [this] : [];
-      if (this.droppables.length) {
-        r.push(...this.droppables);
-      }
-      return r;
-    }
-  },
-  methods: {
     /**
      * Normalizes the list of items basing on it's type.
      * @method _objectMapper

@@ -742,6 +742,20 @@
           }
           return [];
         },
+        _setFilteredData() {
+          if (this.currentData.length && this.currentFilters &&
+            this.currentFilters.conditions &&
+            this.currentFilters.conditions.length &&
+            (!this.serverFiltering || !this.isAjax)
+          ) {
+            this.filteredData = bbn.fn.filter(this.currentData, a => {
+              return this._checkConditionsOnItem(this.currentFilters, a.data);
+            });
+          }
+          else{
+            this.filteredData = this.currentData;
+          }
+        },
         /**
          * Compares the values of the given row basing on the where operator and value.
          *  
@@ -1066,19 +1080,7 @@
                     });
                   }
 
-                  if (this.currentData.length && this.currentFilters &&
-                    this.currentFilters.conditions &&
-                    this.currentFilters.conditions.length &&
-                    (!this.serverFiltering || !this.isAjax)
-                  ) {
-                    this.filteredData = bbn.fn.filter(this.currentData, a => {
-                      return this._checkConditionsOnItem(this.currentFilters, a.data);
-                    });
-                  }
-                  else{
-                    this.filteredData = this.currentData;
-                  }
-      
+                  this._setFilteredData();
                   this.total = d.total || this.filteredData.length;
                   /** @todo Observer part to dissociate */
                   if (d.observer && bbn.fn.isFunction(this.observerCheck) && this.observerCheck()) {

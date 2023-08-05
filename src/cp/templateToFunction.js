@@ -104,13 +104,14 @@
     const clone = bbn.fn.clone(node);
     delete clone.loop;
     const c = x();
-    const hash = 'bbnLoopHash_' + bbn.fn.randomString(15);
-    const isNumber = 'bbnLoopIsNumber_' + bbn.fn.randomString(15);
-    const isArray = 'bbnLoopIsArray_' + bbn.fn.randomString(15);
-    const varName = 'bbnLoopName_' + bbn.fn.randomString(15);
-    const listName = 'bbnLoopList_' + bbn.fn.randomString(15);
-    const parentName = 'bbnLoopParent_' + bbn.fn.randomString(15);
-    const indexName = node.loop.index || ('bbnLoopIndex_' + bbn.fn.randomString(15));
+    const md5 = bbn.fn.md5(node.id);
+    const hash = 'bbnLoopHash_' + md5
+    const isNumber = 'bbnLoopIsNumber_' + md5;
+    const isArray = 'bbnLoopIsArray_' + md5;
+    const varName = 'bbnLoopName_' + md5;
+    const listName = 'bbnLoopList_' + md5;
+    const parentName = 'bbnLoopParent_' + md5;
+    const indexName = node.loop.index || ('bbnLoopIndex_' + md5);
     // Starting the loop
 
     x(c, sp, `let ${varName} = _sIr('${node.loop.hash}', ${node.loop.exp}, ${hashName});`);
@@ -142,8 +143,8 @@
     sp -= 2;
     // Ending the loop
     x(c, sp, `}`);
-    x(c, sp, `Array.from(${parentName}.childNodes).forEach((a) => {`);
-    x(c, sp, `  if ((a.bbnId === "${node.id}") && (${listName}.indexOf(a.bbnHash) === -1)) {`);
+    x(c, sp, `Array.from(${parentName}.childNodes).forEach(a => {`);
+    x(c, sp, `  if ((!a.bbnHash || (a.bbnHash.indexOf(${hashName}) === 0)) && (a.bbnId === "${node.id}") && (${listName}.indexOf(a.bbnHash) === -1)) {`);
     x(c, sp, `    _t.$removeDOM(a);`);
     x(c, sp, `  }`);
     x(c, sp, `});`);
@@ -594,7 +595,7 @@
     let conditionId = null;
     bbn.fn.each(arr, (node, i) => {
       x(c, sp, '');
-      x(c, sp, '// Taking care of the node ' + node.id);
+      x(c, sp, `// Taking care of the node ${node.tag || 'with no tag'} ${node.id}`);
       if (node.loop?.exp) {
         c.text += treatLoop(cp, node, hashName);
         return;

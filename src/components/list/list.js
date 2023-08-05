@@ -340,11 +340,23 @@ return {
         return s;
       },
       /**
-       * @computed filteredData
+       * The parent list in a hierarchical system
+       * @computed parentList
+       * @fires closest
+       * @returns {bbnCp|Boolean}
+       */
+      parentList(){
+        let list = this.closest('bbn-list');
+        return list ? (list.level < this.level ? list : false) : false;
+      }
+    },
+    methods: {
+      /**
+       * @method _setFilteredData
        * @fires _checkConditionsOnItem
        * @returns {Array}
        */
-      filteredData(){
+      _setFilteredData() {
         let data = this.currentData;
         if (this.currentData.length
           && this.currentFilters
@@ -374,20 +386,8 @@ return {
           bbn.fn.each(Object.values(grouped), g => data.push(...g));
           data.push(...ungrouped);
         }
-        return data;
+        this.filteredData = data;
       },
-      /**
-       * The parent list in a hierarchical system
-       * @computed parentList
-       * @fires closest
-       * @returns {bbnCp|Boolean}
-       */
-      parentList(){
-        let list = this.closest('bbn-list');
-        return list ? (list.level < this.level ? list : false) : false;
-      }
-    },
-    methods: {
       /**
        * Manages the icon of the items.
        * @method _updateIconSituation
