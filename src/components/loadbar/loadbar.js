@@ -213,8 +213,8 @@ return {
           }, 500)
         }
       },
-      currentItem(v) {
-        this.$forceUpdate();
+      async currentItem(v) {
+        await this.$forceUpdate();
       },
       info(v) {
         if (this.interval) {

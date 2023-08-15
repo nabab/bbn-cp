@@ -221,10 +221,12 @@
           e.stopPropagation();
         }
         else if (!e.defaultPrevented && this.action && bbn.fn.isFunction(this.action)) {
-          this.action(e, this);
+          bbn.fn.log(['click button', this.action]);
+          this.action.bind(this.$origin)(e, this);
           e.preventDefault();
           e.stopPropagation();
         }
+        
       }
     },
     beforeMount(){

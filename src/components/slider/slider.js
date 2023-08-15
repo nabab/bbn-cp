@@ -193,7 +193,7 @@ return {
         if ( add ){
           document.addEventListener('mouseup', this.checkClick.bind(this));
           document.addEventListener('touchstart', this._touchStart.bind(this));
-          document.addEventListener('touchmove', this._touchMove.bind(this));
+          document.addEventListener('touchmove', this._touchMove.bind(this), {passive: true});
           document.addEventListener('touchend', this._touchEnd.bind(this));
         }
         else{

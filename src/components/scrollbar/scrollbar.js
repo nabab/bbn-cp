@@ -363,11 +363,11 @@ return {
        * @method adjustFromContainer
        * @param {bbnCp} container 
        */
-      adjustFromContainer(container){
+      adjustFromContainer(container) {
         if (this.shouldBother && !this.dragging) {
           let prop = this.isVertical ? 'scrollTop' : 'scrollLeft';
           let ok = false;
-          if (!container) {
+          if (!container || !bbn.fn.isDom(container)) {
             container = this.realContainer;
             if (this.realScroller) {
               this.containerPos = this.realScroller['current' + (this.isVertical ? 'Y' : 'X')];
@@ -563,9 +563,7 @@ return {
           }
           else{
             this.realContainer.addEventListener("mousemove", this.overContent);
-            this.realContainer.addEventListener('scroll', () => {
-              this.adjustFromContainer();
-            });
+            this.realContainer.addEventListener('scroll', this.adjustFromContainer, {passive: true});
           }
           bbn.fn.each(this.scrollableElements(), a => {
             a.addEventListener('scroll', () => {
@@ -814,8 +812,8 @@ return {
      */
     mounted() {
       this.initContainer();
-      document.addEventListener("mousemove", this.onDrag);
-      document.addEventListener("touchmove", this.onDrag);
+      document.addEventListener("mousemove", this.onDrag, {passive: true});
+      document.addEventListener("touchmove", this.onDrag, {passive: true});
       document.addEventListener("mouseup", this.stopDrag);
       document.addEventListener("touchend", this.stopDrag);
       this.onResize();

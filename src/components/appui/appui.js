@@ -787,7 +787,7 @@ return {
         c.alert.apply(c, arguments);
       };
 
-      bbn.fn.defaultStartLoadingFunction = (url, id, data) => {
+      bbn.fn.defaultStartLoadingFunction = async (url, id, data) => {
         if ( window.appui && appui.status ){
           appui.loaders.unshift(bbn.env.loadersHistory[0]);
           let i = appui.loaders.length - 1;
@@ -799,12 +799,12 @@ return {
             i--;
           }
           if (appui.loadbar) {
-            appui.$forceUpdate();
+            await appui.$forceUpdate();
           }
         }
       };
 
-      bbn.fn.defaultEndLoadingFunction = (url, timestamp, data, res) => {
+      bbn.fn.defaultEndLoadingFunction = async (url, timestamp, data, res) => {
         if (res && res.data && res.data.disconnected) {
           window.location.reload();
           return;
@@ -825,7 +825,7 @@ return {
             }
           }
           if (appui.loadbar) {
-            appui.$forceUpdate();
+            await appui.$forceUpdate();
           }
           //appui.$refs.loading.end(url, id, data, res);
         }
@@ -1116,6 +1116,13 @@ return {
             this.longPress(v);
             this.pressedKey = false;
           }, 500)
+        }
+      },
+      loaders:{
+        deep: true,
+        handler() {
+
+          bbn.fn.log("LOADERS", this.loaders.length);
         }
       },
       observers: {

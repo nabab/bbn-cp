@@ -70,7 +70,6 @@
          * @returns Vue|false
          */
         _retrievePopup(vm) {
-          return false;
           vm = vm || this;
           if (vm.$options && (vm.$options.name === 'bbn-popup')) {
             return vm;

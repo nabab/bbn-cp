@@ -864,10 +864,10 @@ return {
       };
     },
     computed: {
-      realButtons(){
+      realButtons() {
         if (this.cols.length && this.cols[this.colButtons] && this.cols[this.colButtons].buttons) {
           if (bbn.fn.isFunction(this.cols[this.colButtons].buttons)) {
-            return this.cols[this.colButtons].buttons;
+            return this.cols[this.colButtons].buttons.bind(this.$origin);
           }
           else if (bbn.fn.isArray(this.cols[this.colButtons].buttons)) {
             let res = [];
@@ -898,6 +898,10 @@ return {
                 }
               }
               else {
+                if (bbn.fn.isFunction(a.action)) {
+                  a.action = a.action.bind(this.$origin);
+                }
+
                 res.push(a)
               }
             });
@@ -911,6 +915,7 @@ return {
             return res;
           }
         }
+
         return [];
       },
       /**
@@ -2247,6 +2252,7 @@ return {
                   }
                 });
                 this.$forceUpdate();
+                bbn.fn.log('forceupdate3');
               }
             },
             watch: {
@@ -2441,6 +2447,7 @@ return {
         this.editedRow = false;
         this.editedIndex = false;
         this.$forceUpdate();
+        bbn.fn.log('forceupdate4');
         return bbn.cp.mixins.list.methods.updateData.apply(this, [withoutOriginal]).then(() => {
           if (this.currentData.length && this.selection && this.currentSelected.length && !this.uid) {
             this.currentSelected = [];
@@ -3125,6 +3132,7 @@ return {
             this.initStarted = false;
           }
           this.$forceUpdate();
+          bbn.fn.log('forceupdate5');
         },
       /**
        * Prevents default if enter or tab keys are pressed.
@@ -3162,6 +3170,7 @@ return {
           }
         });
         this.$forceUpdate();
+        bbn.fn.log('forceupdate1');
         this.setConfig(true);
         this.init(true);
       },
@@ -3629,6 +3638,7 @@ return {
           if (this.ready) {
             this.setConfig(true);
             this.$forceUpdate();
+            bbn.fn.log('forceupdate2');
           }
         }
       },

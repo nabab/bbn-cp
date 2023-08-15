@@ -658,7 +658,6 @@ return {
           }
           this.panes[this.resizeCfg.resizer.pane1].currentDiff = diff;
           this.panes[this.resizeCfg.resizer.pane2].currentDiff = - diff;
-          this.$updateComponent();
         }
       },
       /**
@@ -719,8 +718,8 @@ return {
            && !this.panes[rs.pane2].collapsed
         ){
           this.isResizing = true;
-          document.body.addEventListener("touchmove", this.resizeDrag);
-          document.body.addEventListener("mousemove", this.resizeDrag);
+          document.body.addEventListener("touchmove", this.resizeDrag, {passive: true});
+          document.body.addEventListener("mousemove", this.resizeDrag, {passive: true});
           document.body.addEventListener("touchend", this.resizeEnd);
           document.body.addEventListener("touchcancel", this.resizeEnd);
           document.body.addEventListener("mouseup", this.resizeEnd);

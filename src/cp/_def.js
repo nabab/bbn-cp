@@ -25,7 +25,7 @@ class bbnCp {
     return;
   }
   bbn.fn.autoExtend('cp', {
-    tickDelay: 25,
+    tickDelay: 10,
     uid: 0,
     mixins: bbn.fn.createObject(),
     defaults: bbn.fn.createObject(),
@@ -327,38 +327,59 @@ class bbnCp {
   
       bbn.cp.interval = setInterval(
         async function() {
+          if (bbn.cp.isRunning) {
+            return;
+          }
+
           if (bbn.cp.queue.length) {
+            bbn.cp.isRunning = true;
+            const queue = bbn.cp.queue.splice(0, bbn.cp.queue.length);
             let i = 0;
             let time = bbn.fn.timestamp();
-            while (bbn.cp.queue[i]) {
-              if (bbn.cp.queue[i].force || (!bbn.cp.queue[i].cp.$isBusy && bbn.cp.queue[i].cp.$isMounted && (time - bbn.cp.queue[i].cp.$lastLaunch > bbn.cp.tickDelay))) {
-                const queueElement = bbn.cp.queue.splice(i, 1)[0];
+            while (queue[i]) {
+              if (queue[i].force || (!queue[i].cp.$isBusy && (time - queue[i].cp.$lastLaunch > bbn.cp.tickDelay))) {
+                bbn.fn.log("UPDATING COMPONENT", queue[i].cp);
+                const queueElement = queue.splice(i, 1)[0];
                 await queueElement.cp.$updateComponent();
+                queueElement.fns.forEach(fn => {
+                  if (fn) {
+                    fn.bind(queueElement.cp)();
+                  }
+                });
                 let idx = bbn.fn.search(bbn.cp.queue, {cp: queueElement.cp});
                 if (idx > -1) {
                   const queueElement2 = bbn.cp.queue.splice(idx, 1)[0];
                   await queueElement2.cp.$updateComponent();
                   queueElement2.fns.forEach(fn => {
-                    fn.bind(queueElement.cp)();
+                    if (fn) {
+                      fn.bind(queueElement.cp)();
+                    }
                   });
                   idx = bbn.fn.search(bbn.cp.queue, {cp: queueElement.cp});
                   if (idx > -1) {
+                    bbn.fn.log(["INFINITE LOOP", i, queueElement.cp, bbn.fn.filter(bbn.cp.queue, {cp: queueElement.cp}), JSON.stringify(queue[idx])]);
                     const queueElement3 = bbn.cp.queue.splice(idx, 1)[0];
                     queueElement3.fns.forEach(fn => {
-                      fn.bind(queueElement.cp)();
+                      if (fn) {
+                        fn.bind(queueElement.cp)();
+                      }
                     });
-                    bbn.fn.log(["INFINITE LOOP", queueElement3.cp]);
                   }
                 }
-                //bbn.fn.log("CALLING FN", queueElement.cp.$options.name);
-                queueElement.fns.forEach(fn => {
-                  fn.bind(queueElement.cp)();
-                });
               }
               else {
+                const queueElement = bbn.fn.getRow(bbn.cp.queue, {cp: queue[i].cp});
+                if (queueElement) {
+                  queueElement.fns.push(...queue[i].fns);
+                }
+                else {
+                  bbn.cp.queue.push(queue[i]);
+                }
+                bbn.fn.log(["I++", i, queue[i].cp.$isBusy, queue[i].cp, queue[i].cp.$cid]);
                 i++;
               }
             }
+            bbn.cp.isRunning = false;
           }
         },
         bbn.cp.tickDelay

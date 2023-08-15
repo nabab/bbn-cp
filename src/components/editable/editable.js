@@ -531,11 +531,11 @@ return {
       /**
        * @method onCancel
        */
-      onCancel() {
+      async onCancel() {
         bbn.fn.log("CANCEL");
         this.currentValue = this.value ? bbn.fn.clone(this.value) : (this.source.nullable ? null : '');
         this.isEditing = false;
-        this.$forceUpdate();
+        await this.$forceUpdate();
       },
       /**
        * @method mouseleave

@@ -420,9 +420,9 @@
               else {
                 x(c, sp, `  let $_action = (${ev.action});`);
                 x(c, sp, `  if (bbn.fn.isFunction($_action)) {`);
-                x(c, sp, `    const args = _bbnEventObject.detail?.args || [];`);
+                x(c, sp, `    const args = _bbnEventObject.detail?.args || [$event];`);
                 x(c, sp, `    args.push(_bbnEventObject);`);
-                x(c, sp, `    $_action(...args);`);
+                x(c, sp, `    $_action.bind(_t.$origin)(...args);`);
                 x(c, sp, `  }`);
               }
               x(c, sp, `  bbn.fn.iterate(_bbnCurrentData, (_bbnCurrentDataValue, _bbnCurrentDataIndex) => {`);
@@ -437,20 +437,26 @@
             }
 
             x(c, sp, `  _t.$tick();`);
-            x(c, sp, `}, {`);
-            if (ev.once) {
-              x(c, sp, `  once: true,`);
+            let eventEnd = '}';
+            if (ev.once || ev.passive || ev.capture) {
+              eventEnd += ', {';
+              if (ev.once) {
+                eventEnd += `once: true,`;
+              }
+
+              if (ev.passive) {
+                eventEnd += `passive: true,`;
+              }
+
+              if (ev.capture) {
+                eventEnd += `capture: true,`;
+              }
+
+              eventEnd += '}';
             }
 
-            if (ev.passive) {
-              x(c, sp, `  passive: true,`);
-            }
-
-            if (ev.capture) {
-              x(c, sp, `  capture: true,`);
-            }
-
-            x(c, sp, `});`);
+            eventEnd += ');';
+            x(c, sp, eventEnd);
           }
         }
 
@@ -873,9 +879,9 @@
                 else {
                   x(c, sp, `  let $_action = (${ev.action});`);
                   x(c, sp, `  if (bbn.fn.isFunction($_action)) {`);
-                  x(c, sp, `    const args = _bbnEventObject.detail?.args || [];`);
+                  x(c, sp, `    const args = _bbnEventObject.detail?.args || [$event];`);
                   x(c, sp, `    args.push(_bbnEventObject);`);
-                  x(c, sp, `    $_action(...args);`);
+                  x(c, sp, `    $_action.bind(_t.$origin)(...args);`);
                   x(c, sp, `  }`);
                 }
 
@@ -891,7 +897,26 @@
               }
 
               x(c, sp, `  _t.$forceUpdate();`);
-              x(c, sp, `});`);
+              let eventEnd = '}';
+              if (ev.once || ev.passive || ev.capture) {
+                eventEnd += ', {';
+                if (ev.once) {
+                  eventEnd += `once: true,`;
+                }
+  
+                if (ev.passive) {
+                  eventEnd += `passive: true,`;
+                }
+  
+                if (ev.capture) {
+                  eventEnd += `capture: true,`;
+                }
+  
+                eventEnd += '}';
+              }
+  
+              eventEnd += ');';
+              x(c, sp, eventEnd);
             }
             sp -= 2;
             x(c, sp, `}`);

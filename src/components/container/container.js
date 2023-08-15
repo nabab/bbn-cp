@@ -1689,9 +1689,6 @@ return {
               this.init();
             }); 
           }
-          else {
-            this.$updateComponent();
-          }
         }
       },
       /**

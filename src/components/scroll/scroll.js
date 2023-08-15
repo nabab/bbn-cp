@@ -287,7 +287,7 @@ return {
     },
     computed: {
       resizerObserved() {
-        return this.scrollable ? this.getRef('scrollContent') : this.$el;
+        return this.scrollable ? this.getRef('scrollContainer') : this.$el;
       },
       /**
        * Based on the prop fixedFooter and fullScreen, a string is returned containing the classes for the form template.
@@ -969,10 +969,11 @@ return {
         }
         this.readyTimeout = setTimeout(() => {
           this.initSize();
-        }, this.latency)
+        }, 5)
       },
       setObserver() {
         this.scrollObserver = new MutationObserver(mutations_list => {
+          let mutated = false;
           mutations_list.forEach(mutation => {
             if (mutation.addedNodes) {
               this.waitReady();
