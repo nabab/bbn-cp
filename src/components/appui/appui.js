@@ -281,7 +281,6 @@ return {
         showBookmarks: false,
         bookmarksLoaded: false
       };
-      bbn.fn.log("APPUI DAATA", d);
       return d;
     },
     computed: {
@@ -787,55 +786,53 @@ return {
         c.alert.apply(c, arguments);
       };
 
-      bbn.fn.defaultStartLoadingFunction = async (url, id, data) => {
-        if ( window.appui && appui.status ){
-          appui.loaders.unshift(bbn.env.loadersHistory[0]);
-          let i = appui.loaders.length - 1;
-          while ( (i > 0) && (appui.loaders.length > bbn.env.maxLoadersHistory) ){
-            if (!appui.loaders[i].loading) {
-              appui.loaders.splice(i, 1);
-            }
+      bbn.fn.defaultStartLoadingFunction = (url, start, data, key) => {
+        if (window.appui?.status) {
+          const loader = bbn.fn.getLoader(key);
+          if (loader) {
+            appui.loaders.unshift(loader);
+            let i = appui.loaders.length - 1;
+            while ((i > 0) && (appui.loaders.length > bbn.env.maxLoadersHistory)) {
+              if (!appui.loaders[i].loading) {
+                appui.loaders.splice(i, 1);
+              }
 
-            i--;
-          }
-          if (appui.loadbar) {
-            await appui.$forceUpdate();
+              i--;
+            }
           }
         }
       };
 
-      bbn.fn.defaultEndLoadingFunction = async (url, timestamp, data, res) => {
+      bbn.fn.defaultEndLoadingFunction = (url, timestamp, data, res) => {
         if (res && res.data && res.data.disconnected) {
           window.location.reload();
           return;
         }
-        if ( window.appui && appui.status ){
+
+        if (window.appui?.status ){
           let history = bbn.fn.getRow(bbn.env.loadersHistory, {url: url, start: timestamp});
           let loader = bbn.fn.getRow(appui.loaders, {url: url, start: timestamp});
-          if ( loader ){
-            if (  history ){
+          if (loader) {
+            if (history) {
               bbn.fn.iterate(history, (val, prop) => {
-                if ( loader[prop] !== val ){
+                if (loader[prop] !== val) {
                   loader[prop] = val;
                 }
               });
             }
             else{
               loader.loading = false;
+              loader.duration = (new Date()).getTime() - loader.start;
             }
           }
-          if (appui.loadbar) {
-            await appui.$forceUpdate();
-          }
-          //appui.$refs.loading.end(url, id, data, res);
         }
       };
     },
     created(){
-      if ( window.appui ){
+      if (window.appui) {
         throw new Error("Impossible to have 2 bbn-appui components on a same page. bbn-appui is meant to hold a whole web app");
       }
-      else{
+      else {
         window.appui = this;
         this.componentClass.push('bbn-resize-emitter', 'bbn-observer');
         this.cool = true;
@@ -1116,13 +1113,6 @@ return {
             this.longPress(v);
             this.pressedKey = false;
           }, 500)
-        }
-      },
-      loaders:{
-        deep: true,
-        handler() {
-
-          bbn.fn.log("LOADERS", this.loaders.length);
         }
       },
       observers: {

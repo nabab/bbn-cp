@@ -25,7 +25,7 @@ class bbnCp {
     return;
   }
   bbn.fn.autoExtend('cp', {
-    tickDelay: 10,
+    tickDelay: 5,
     uid: 0,
     mixins: bbn.fn.createObject(),
     defaults: bbn.fn.createObject(),
@@ -320,6 +320,29 @@ class bbnCp {
     },
     addToQueue(cp, fn, args, priority) {
     },
+    async repeatTick(cp, num) {
+      if (!num) {
+        num = 0;
+      }
+
+      let idx = bbn.fn.search(bbn.cp.queue, {cp});
+      if (idx > -1) {
+        const queueElement = bbn.cp.queue.splice(idx, 1)[0];
+        await cp.$updateComponent();
+        queueElement.fns.forEach(fn => {
+          if (fn) {
+            fn.bind(cp)();
+          }
+        });
+        if (num < 3) {
+          await bbn.cp.repeatTick(cp, num + 1);
+        }
+        else {
+          bbn.fn.log(["INFINITE LOOP", cp, bbn.fn.filter(bbn.cp.queue, {cp: queueElement.cp})]);
+          throw new Error(bbn._("Infinite loop detected"));
+        }
+      }
+    },
     startTick() {
       if (bbn.cp.interval) {
         throw new Error(bbn._("The tick is already started"));
@@ -337,8 +360,8 @@ class bbnCp {
             let i = 0;
             let time = bbn.fn.timestamp();
             while (queue[i]) {
-              if (queue[i].force || (!queue[i].cp.$isBusy && (time - queue[i].cp.$lastLaunch > bbn.cp.tickDelay))) {
-                bbn.fn.log("UPDATING COMPONENT", queue[i].cp);
+              if (!queue[i].cp.$isBusy && (queue[i].force || (time - queue[i].cp.$lastLaunch > bbn.cp.tickDelay))) {
+                //bbn.fn.log("UPDATING")
                 const queueElement = queue.splice(i, 1)[0];
                 await queueElement.cp.$updateComponent();
                 queueElement.fns.forEach(fn => {
@@ -346,26 +369,7 @@ class bbnCp {
                     fn.bind(queueElement.cp)();
                   }
                 });
-                let idx = bbn.fn.search(bbn.cp.queue, {cp: queueElement.cp});
-                if (idx > -1) {
-                  const queueElement2 = bbn.cp.queue.splice(idx, 1)[0];
-                  await queueElement2.cp.$updateComponent();
-                  queueElement2.fns.forEach(fn => {
-                    if (fn) {
-                      fn.bind(queueElement.cp)();
-                    }
-                  });
-                  idx = bbn.fn.search(bbn.cp.queue, {cp: queueElement.cp});
-                  if (idx > -1) {
-                    bbn.fn.log(["INFINITE LOOP", i, queueElement.cp, bbn.fn.filter(bbn.cp.queue, {cp: queueElement.cp}), JSON.stringify(queue[idx])]);
-                    const queueElement3 = bbn.cp.queue.splice(idx, 1)[0];
-                    queueElement3.fns.forEach(fn => {
-                      if (fn) {
-                        fn.bind(queueElement.cp)();
-                      }
-                    });
-                  }
-                }
+                await bbn.cp.repeatTick(queueElement.cp);
               }
               else {
                 const queueElement = bbn.fn.getRow(bbn.cp.queue, {cp: queue[i].cp});
@@ -373,9 +377,9 @@ class bbnCp {
                   queueElement.fns.push(...queue[i].fns);
                 }
                 else {
-                  bbn.cp.queue.push(queue[i]);
+                  bbn.cp.queue.unshift(queue[i]);
                 }
-                bbn.fn.log(["I++", i, queue[i].cp.$isBusy, queue[i].cp, queue[i].cp.$cid]);
+                //bbn.fn.log(["I++", i, queue[i].cp.$isBusy, queueElement, queue[i].cp]);
                 i++;
               }
             }

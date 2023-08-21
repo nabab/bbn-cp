@@ -3673,7 +3673,7 @@ return {
       if ( this.$slots.default ){
         for ( let item of this.$slots.default ){
           let node = item.bbnSchema;
-          bbn.fn.log("ROUTER SLOT", node, '-------------');
+          //bbn.fn.log("ROUTER SLOT", node, '-------------');
           
           if (['bbn-container', 'bbns-container'].includes(node?.tag)) {
             if (node.props.url === undefined) {
@@ -3987,7 +3987,7 @@ return {
         })
       },
       source(v, ov) {
-        bbn.fn.log("ROUTER SOURCE WATCHER", v, ov);
+        //bbn.fn.log("ROUTER SOURCE WATCHER", v, ov);
         bbn.fn.each(v, a => {
           if (!bbn.fn.isString(a.url)) {
             throw new Error(bbn._("The container must have a valid URL"));

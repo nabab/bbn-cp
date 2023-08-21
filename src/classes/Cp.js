@@ -831,24 +831,30 @@ class bbnCp {
       writable: false,
       configurable: false
     });
-
+    
     /**
      * Template array
-     */
-    Object.defineProperty(this, '$tpl', {
-      value: this.$el.bbnTpl || this.$el.constructor.bbnTpl,
-      writable: false,
-      configurable: false
+    */
+   Object.defineProperty(this, '$tpl', {
+     value: this.$el.bbnTpl || this.$el.constructor.bbnTpl,
+     writable: false,
+     configurable: false
     });
-
+    
     const _t = this;
-
+    
     Object.defineProperty(this.$options, 'propsData', {
       get() {
         return _t.$el.bbnSchema?.props || {};
       }
     });
 
+    Object.defineProperty(this.$options, 'components', {
+      get() {
+        return _t.$cfg.components || {};
+      }
+    });
+    
     Object.defineProperty(this, '$props', {
       value: bbn.fn.createObject(),
       writable: false,
@@ -1633,49 +1639,14 @@ class bbnCp {
 
   $setUpData(name, value) {
     if (!Object.hasOwn(this, name)) {
+      // The data will remain the same if not simple Obj/Array
       this.$dataValues[name] = bbnData.treatValue(value, this, name);
       const def = {
         get() {
           return this.$dataValues[name];
         },
         set(v) {
-          if (this.$dataValues[name] !== v) {
-            let isMod = true;
-            const oldV = bbnData.getValue(this.$dataValues[name]);
-            //bbn.fn.log("SETTING " + name + " in " + this.$options.name, oldV, v);
-            let oldDataObj = bbnData.getObject(oldV);
-            if (oldDataObj) {
-              if (bbn.fn.isSame(oldDataObj.old, bbnData.hash(v))) {
-                isMod = false;
-              }
-              else {
-                //bbn.fn.log(["REMOVING COMPONENT FROM DATA", this, oldV, v]);
-                oldDataObj.removeComponent(this);
-              }
-            }
-
-            if (isMod) {
-              const newVal = bbnData.treatValue(v, this, name);
-              const dataObj = bbnData.getObject(newVal);
-              this.$dataValues[name] = newVal;
-              if (this.$isInit) {
-                if (this.$watcher?.[name]?.handler) {
-                  if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
-                    throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
-                  }
-                  this.$watcher[name].hash = bbnData.hash(v);
-                  this.$watcher[name].value = v;
-                  this.$watcher[name].handler.apply(this, [v, oldDataObj ? v : oldV]);
-                }
-
-                //bbn.fn.log("TICKING FOR", name);
-                this.$tick();
-              }
-              else if (this.$watcher?.[name]?.handler) {
-                this.$watcher[name].value = bbnData.hash(v);
-              }
-            }
-          }
+          return this.$setData(name, v);
         }
       };
       Object.defineProperty(this, name, def);
@@ -1690,12 +1661,49 @@ class bbnCp {
   /**
   * Set the data properties of the object
   */
-  $setData(name, value) {
+  $setData(name, v) {
+    //bbn.fn.log(["SET DATA", this, name, v]);
+    // In the case the function is called litterally it creates 
     if (!Object.hasOwn(this, name)) {
-      return this.$setUpData(name, value);
+      return this.$setUpData(name, v);
     }
-    if (this[name] !== value) {
-      this[name] = value;
+    if (this.$dataValues[name] !== v) {
+      let isMod = true;
+      // Will remain the same if not simple Obj/Array
+      const oldV = bbnData.getValue(this.$dataValues[name]);
+      //bbn.fn.log("SETTING " + name + " in " + this.$options.name, oldV, v);
+      // Getting the bbnData object
+      let oldDataObj = bbnData.getObject(oldV);
+      if (oldDataObj) {
+        if (bbn.fn.isSame(oldDataObj.old, bbnData.hash(v))) {
+          isMod = false;
+        }
+        else {
+          //bbn.fn.log(["REMOVING COMPONENT FROM DATA", this, oldV, v]);
+          oldDataObj.removeComponent(this);
+        }
+      }
+
+      if (isMod) {
+        const newVal = bbnData.treatValue(v, this, name);
+        this.$dataValues[name] = newVal;
+        if (this.$isInit) {
+          if (this.$watcher?.[name]?.handler) {
+            if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
+              throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
+            }
+            this.$watcher[name].hash = bbnData.hash(v);
+            this.$watcher[name].value = v;
+            this.$watcher[name].handler.apply(this, [v, oldDataObj ? v : oldV]);
+          }
+
+          //bbn.fn.log("TICKING FOR", name);
+          this.$tick();
+        }
+        else if (this.$watcher?.[name]?.handler) {
+          this.$watcher[name].value = bbnData.hash(v);
+        }
+      }
     }
   }
 
@@ -1867,7 +1875,7 @@ class bbnCp {
         bbn.fn.extend(bbn.fn.createObject(), ...this.$dataSource.map(a => a.apply(this)))
       );
       bbn.fn.each(tmp, (v, n) => {
-        this.$setData(n, v);
+        this.$setUpData(n, v);
       })
     }
 
@@ -1882,9 +1890,12 @@ class bbnCp {
     const hash = bbnData.hash(val);
     if (!bbn.fn.isSame(hash, this.$computed[name].hash)) {
       const oldValue = this.$computed[name].val;
+      if (name === 'realButtons') {
+        bbn.fn.log(["UPDATING COMPUTED " + name, val, hash, bbn.fn.isFunction(hash), this.$computed[name].hash, oldValue]);
+      }
       this.$computed[name].old = oldValue;
       this.$computed[name].hash = hash;
-      this.$computed[name].num = this.$numBuild;
+      this.$computed[name].num = this.$computed[name].num < this.$numBuild ? this.$numBuild + 1 : this.$computed[name].num + 1;
       val = bbnData.treatValue(val, this, name);
       this.$computed[name].val = val;
       if (this.$watcher?.[name]) {
@@ -2093,6 +2104,9 @@ class bbnCp {
         bbn.cp.queue.push(row);
       }
       row.fns.push(resolve);
+      //bbn.fn.warning("TICK");
+      //console.trace();
+      //bbn.fn.log(this, '--------------------')
     });
 
   }
@@ -2167,7 +2181,7 @@ class bbnCp {
         }
       }
       else {
-        obj[prop] = value;
+        obj.$setUpData(prop, value);
       }
     }
     else {

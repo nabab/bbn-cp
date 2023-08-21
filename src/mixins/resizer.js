@@ -90,7 +90,7 @@
           return new Promise(resolve => {
             if (!this.isResizing) {
               this.isResizing = true;
-              this.$forceUpdate();
+              //this.$forceUpdate();
               if (this.$el.style.display !== 'none') {
                 // Setting initial dimensions
                 let ms2 = this.setContainerMeasures();

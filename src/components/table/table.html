@@ -377,7 +377,7 @@
                                     :notext="true"
                                     @focusin.stop
                                     @click.prevent.stop="cancel"
-                                    style="margin: 0 .1rem"/>
+                                    style="margin: 0 0.1rem"/>
                       </div>
                       <bbn-anon v-else-if="(editMode === 'inline') && isValidField(col.field) && (col.editable !== false)"
                                   v-bind="getEditableOptions(col, d.data)"
@@ -440,7 +440,8 @@
                     </template>
                     <div v-else
                           v-html="render(d.data, col, i)"></div>
-                    <table-dots :source="{
+                    <table-dots v-if="col.dots"
+                                :source="{
                                       column: col,
                                       index: index,
                                       dataIndex: d.index,

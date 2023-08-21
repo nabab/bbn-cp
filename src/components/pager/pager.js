@@ -188,7 +188,6 @@ return {
      * @event mounted
      */
     mounted(){
-      bbn.fn.log("PAGER MOUNTED");
       if (this.element && (this.element instanceof bbnCp)) {
         if (this.element.ready && !this.ready){
           this.ready = true;
@@ -203,7 +202,6 @@ return {
       }
     },
     beforeDestroy() {
-      bbn.fn.log("PAGER DESTROYED", this.element);
       if (this.element) {
         this.element.$off('dataloaded', this.updatePager);
       }
@@ -217,13 +215,13 @@ return {
         }
       },
       currentPage(v) {
-        bbn.fn.log("CURRENT PAGE", v);
+        //bbn.fn.log("CURRENT PAGE", v);
         if (this.currentNumericPage !== v) {
           this.currentNumericPage = v;
         }
       },
       currentNumericPage(v){
-        bbn.fn.log("CURRENT NUM PAGE", v);
+        //bbn.fn.log("CURRENT NUM PAGE", v);
         if (this.numericTimeout) {
           clearTimeout(this.numericTimeout);
         }

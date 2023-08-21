@@ -743,6 +743,7 @@
           return [];
         },
         _setFilteredData() {
+          //bbn.fn.warning("FILTERING DATA")
           if (this.currentData.length && this.currentFilters &&
             this.currentFilters.conditions &&
             this.currentFilters.conditions.length &&

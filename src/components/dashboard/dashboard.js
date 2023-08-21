@@ -700,7 +700,7 @@ return {
        * @return {Boolean | Array}
        */
       setCurrentSlots() {
-        bbn.fn.log("SET CURRENT SLOTS");
+        //bbn.fn.log("SET CURRENT SLOTS");
         this.currentSlots = this.$el.bbnSlots.default ? this.$el.bbnSlots.default.filter(node => {
           return !!node.tag;
         }) : [];

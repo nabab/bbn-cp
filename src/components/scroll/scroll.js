@@ -820,7 +820,7 @@ return {
             }
 
             this.isMeasuring = false;
-            this.$forceUpdate();
+            //this.$forceUpdate();
             if ((old.width !== this.naturalWidth) || (old.height !== this.naturalHeight)) {
               if (old.width || old.height) {
                 this.$emit('resizecontent');
@@ -844,7 +844,7 @@ return {
        * @fires onResize
        */
       async initSize() {
-        await this.$forceUpdate();
+        //await this.$forceUpdate();
         if (this.maxHeight || this.maxWidth) {
           //throw new Error("BOOOOOO");
           await this.getNaturalDimensions();
@@ -969,17 +969,19 @@ return {
         }
         this.readyTimeout = setTimeout(() => {
           this.initSize();
-        }, 5)
+        }, this.latency)
       },
       setObserver() {
-        this.scrollObserver = new MutationObserver(mutations_list => {
-          let mutated = false;
-          mutations_list.forEach(mutation => {
-            if (mutation.addedNodes) {
-              this.waitReady();
-            }
+        if (!this.scrollObserver) {
+          this.scrollObserver = new MutationObserver(mutations_list => {
+            let mutated = false;
+            mutations_list.forEach(mutation => {
+              if (mutation.addedNodes) {
+                this.waitReady();
+              }
+            });
           });
-        });
+        }
         this.scrollObserver.observe(this.getRef('scrollContent'), { subtree: true, childList: true });
       },
       unsetObserver() {

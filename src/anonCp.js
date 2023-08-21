@@ -41,13 +41,14 @@ class bbnAnonCp extends bbnCp {
     }
 
     const cfg = this.$cfg;
+    /*
     if (cfg.components) {
       for (let n in cfg.components) {
         //bbn.fn.log("DEFINING COMPONENT", n, cfg.components[n], cfg.components[n].template);
         bbn.cp.define(cfg.componentNames[n], cfg.components[n], cfg.components[n].template);
-        this.$options.components[n] = cfg.components[n];
       }
     }
+    */
 
     if (cfg && cfg.computed) {
       bbn.fn.iterate(cfg.computed, (computed, name) => {

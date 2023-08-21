@@ -2252,7 +2252,7 @@ return {
                   }
                 });
                 this.$forceUpdate();
-                bbn.fn.log('forceupdate3');
+                //bbn.fn.log('forceupdate3');
               }
             },
             watch: {
@@ -2447,7 +2447,7 @@ return {
         this.editedRow = false;
         this.editedIndex = false;
         this.$forceUpdate();
-        bbn.fn.log('forceupdate4');
+        //bbn.fn.log('forceupdate4');
         return bbn.cp.mixins.list.methods.updateData.apply(this, [withoutOriginal]).then(() => {
           if (this.currentData.length && this.selection && this.currentSelected.length && !this.uid) {
             this.currentSelected = [];
@@ -3132,7 +3132,7 @@ return {
             this.initStarted = false;
           }
           this.$forceUpdate();
-          bbn.fn.log('forceupdate5');
+          //bbn.fn.log('forceupdate5');
         },
       /**
        * Prevents default if enter or tab keys are pressed.
@@ -3170,7 +3170,7 @@ return {
           }
         });
         this.$forceUpdate();
-        bbn.fn.log('forceupdate1');
+        //bbn.fn.log('forceupdate1');
         this.setConfig(true);
         this.init(true);
       },
@@ -3480,7 +3480,7 @@ return {
       this.componentClass.push('bbn-resize-emitter');
       // Adding bbns-column from the slot
       if (this.$slots.default) {
-        bbn.fn.log("SLOTS TABLE CREATED", this.$slots, this.$el.bbnSlots);
+        //bbn.fn.log("SLOTS TABLE CREATED", this.$slots, this.$el.bbnSlots);
         for (let node of this.$slots.default) {
           if (node.bbnSchema.tag === 'tr') {
             this.hasTrSlot = true;
@@ -3638,7 +3638,7 @@ return {
           if (this.ready) {
             this.setConfig(true);
             this.$forceUpdate();
-            bbn.fn.log('forceupdate2');
+            //bbn.fn.log('forceupdate2');
           }
         }
       },
