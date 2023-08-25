@@ -156,6 +156,7 @@
         },
         /**
          * @prop {Boolean} [false] groupable
+         * @memberof dropdownComponent
          */
          groupable: {
           type: Boolean,
@@ -163,6 +164,7 @@
         },
         /**
          * @prop {String} ['group'] sourceGroup
+         * @memberof dropdownComponent
          */
         sourceGroup: {
           type: String,
@@ -170,23 +172,34 @@
         },
         /**
          * @prop {(String|Object|bbnCp)} groupComponent
+         * @memberof dropdownComponent
          */
         groupComponent: {
           type: [String, Object, bbnCp]
         },
         /**
          * @prop {String} groupStyle
+         * @memberof dropdownComponent
          */
         groupStyle: {
           type: String
         },
         /**
          * @prop {Number} closeDelay The time it will take for the floater/menu to close when the mouse leaves
+         * @memberof dropdownComponent
          * This  allows to cancel if the mouse comes back
          */
         closeDelay: {
           type: Number,
           default: 1000
+        },
+        /**
+         * @prop {String} ['disabled'] sourceDisabled
+         * @memberof dropdownComponent
+         */
+        sourceDisabled: {
+          type: String,
+          default: 'disabled'
         }
       },
       data(){

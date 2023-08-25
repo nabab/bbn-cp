@@ -61,7 +61,8 @@
                 :selected="!value"/>
         <option v-for="d in filteredData"
                 :value="d.data[sourceValue]"
-                v-html="d.data[sourceText]"/>
+                v-html="d.data[sourceText]"
+                :disabled="!!d.data[sourceDisabled]"/>
       </select>
       <bbn-button :icon="currentIcon"
                   tabindex="-1"
