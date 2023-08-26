@@ -77,7 +77,10 @@ class bbnData {
         }
 
         const dataObj = bbn.cp.dataInventory.get(value.__bbnData);
-        dataObj.addComponent(component, path);
+        if (!parent) {
+          dataObj.addComponent(component, path);
+        }
+
         return dataObj.value;
       }
       if (value._bbnComponent) {
@@ -111,7 +114,7 @@ class bbnData {
       }
       const res = target.pop();
       if (targetObj) {
-        bbn.fn.log("POP");
+        //bbn.fn.log("POP");
         targetObj.update();
       }
       else {
@@ -140,7 +143,7 @@ class bbnData {
       }
       const res = target.shift();
       if (targetObj) {
-        bbn.fn.log("SHIFT");
+        //bbn.fn.log("SHIFT");
         targetObj.update();
       }
       else {
@@ -168,7 +171,7 @@ class bbnData {
         const newVal = bbnData.treatValue(a, component, idx, targetObj);
         newArgs.push(newVal);
       });
-      const res = target.push(...newArgs);
+      const res = targetObj.data.push(...newArgs);
       if (targetObj) {
         //bbn.fn.log("PUSH");
         targetObj.update();
@@ -198,10 +201,10 @@ class bbnData {
         const newVal = bbnData.treatValue(a, component, idx, targetObj);
         newArgs.push(newVal);
       });
-      const res = target.unshift(...newArgs);
+      const res = targetObj.data.unshift(...newArgs);
       const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
       if (dataObj) {
-        bbn.fn.log("UNSHIFT");
+        //bbn.fn.log("UNSHIFT");
         dataObj.update();
       }
       else {
@@ -247,7 +250,7 @@ class bbnData {
       const res = target.sort(...args);
       const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
       if (dataObj) {
-        bbn.fn.log("SORT");
+        //bbn.fn.log("SORT");
         dataObj.update();
       }
       else {
@@ -284,7 +287,7 @@ class bbnData {
 
       const res = target.splice(index, numDelete, ...newArgs);
       if (dataObj) {
-        bbn.fn.log("SPLICE");
+        //bbn.fn.log("SPLICE");
         dataObj.update();
       }
       else {
@@ -313,6 +316,9 @@ class bbnData {
         if (key === '__bbnData') {
           return realValue;
         }
+        if (key === '__bbnProxy') {
+          return true;
+        }
 
         if (bbn.fn.isFunction(realValue)) {
           if (targetObj && targetObj.isArray && bbn.fn.isString(key)) {
@@ -332,13 +338,19 @@ class bbnData {
         return realValue;
       },
       set(target, key, value) {
-        if (!bbn.fn.isSame(target[key], value)) {
-          const diff = bbn.fn.diffObj(target[key], value);
-          const oldValue = target[key];
-          const oldObj = bbnData.getObject(oldValue);
-          if (oldObj) {
-            oldObj.unset();
-          }
+        const oldValue = target[key];
+        const oldObj = bbnData.getObject(oldValue);
+        let mod = false;
+        if (oldObj && !oldObj.isSame(value)) {
+          bbn.fn.log(["UNSET", oldValue, value]);
+          oldObj.unset();
+          mod = true;
+        }
+        else if (!oldObj && !bbn.fn.isSame(oldValue, value)) {
+          mod = true;
+        }
+
+        if (mod) {
           const newVal = bbnData.treatValue(value, component, key, targetObj);
           target[key] = newVal;
           const dataObj = bbnData.getObject(newVal);
@@ -441,7 +453,7 @@ class bbnData {
     Object.defineProperty(this, 'root', {
       writable: false,
       configurable: false,
-      value: parent ? null : component
+      value: parent?.root || component
     });
 
     /**
@@ -516,7 +528,7 @@ class bbnData {
       writable: false,
       configurable: false
     });
-    if (!this.parent?.components?.[component.$cid]) {
+    if (!this.parent || !this.parent.hasComponent(component)) {
       this.components[component.$cid] = {
         component,
         path
@@ -541,7 +553,7 @@ class bbnData {
 
     let dataObj = this;
     const paths = [];
-    if (this.root === component) {
+    if (!this.parent && (this.root === component)) {
       return this.path;
     }
     while (dataObj) {
@@ -571,10 +583,27 @@ class bbnData {
     return obj;
   }
 
+  isSame(obj) {
+    if (obj?.__bbnProxy) {
+      return obj === this.value;
+    }
+    else if (obj?.__bbnData) {
+      return bbn.fn.isSame(obj, this.data);
+    }
+
+    return false;
+  }
+
+
   /**
    * Deletes all references to the data object and its children
    */
   unset(noParent) {
+    if (this.path == 3) {
+      bbn.fn.log("UNSET", this);
+      console.trace();
+      alert("KKK");
+    }
     const id = this.id;
     // Unsetting the children
     bbn.fn.each(this.children, subObj => {
@@ -585,7 +614,7 @@ class bbnData {
       const cp = it.component;
       if (cp) {
         // Root will be taken care of later
-        if (cp === this.root) {
+        if (!this.parent && (cp === this.root)) {
           return;
         }
         
@@ -593,7 +622,8 @@ class bbnData {
         if (idx > -1) {
           cp.$values.splice(idx, 1);
         }
-        else {
+        else if (cp.$isInit) {
+          bbn.fn.log(this, it);
           throw new Error(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
         }
         
@@ -605,7 +635,7 @@ class bbnData {
     });
     
     // Unsetting the data in the root component
-    if (this.root) {
+    if (!this.parent && this.root) {
       let idx = this.root.$values.indexOf(id);
       if (idx > -1) {
         this.root.$values.splice(idx, 1);
@@ -614,7 +644,13 @@ class bbnData {
         bbn.fn.log(this);
         throw new Error(bbn._("Impossible to find the data object in the values of the component %s", dataObj.root.$options.name));
       }
-      //this.root.$tick();
+      this.root.$tick();
+    }
+    if (this.parent) {
+      let idx = this.parent.children.indexOf(this);
+      if (idx > -1) {
+        this.parent.children.splice(idx, 1);
+      }
     }
     // Ticking the parent components (only for the original unset call)
     if (!noParent && this.parent) {
@@ -678,6 +714,7 @@ class bbnData {
 
       obj = obj.parent;
     }
+
     return false;
   }
 
@@ -749,7 +786,7 @@ class bbnData {
               let oldV = it.component.$watcher[name].value;
               let v = bbn.fn.getProperty(it.component, name);
               if (it.component.$isMounted && (!lev || it.component.$watcher[name].deep) ) {
-                bbn.fn.log(["WATCHER: " + name, oldV, v, it.component, '---']);
+                //bbn.fn.log(["WATCHER: " + name, oldV, v, it.component, '---']);
                 if (bbnData.hash(v) !== it.component.$watcher[name].hash) {
                   if (!bbn.fn.isFunction(it.component.$watcher[name].handler)) {
                     throw new Error(bbn._("Watchers must be function, wrong parameter for %s", name));

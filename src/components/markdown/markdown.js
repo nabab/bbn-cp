@@ -135,6 +135,7 @@ return {
           title: bbn._("Markdown Guide")
         },
       ];
+      return {toolbar};
     },
     props: {
       /**
@@ -236,9 +237,8 @@ return {
       this.widget = new EasyMDE(bbn.fn.extend({
         element: this.$refs.element,
         value: this.value,
-      }, this.$data, {
-        bbnMarkdownCp.toolbar
-      }));
+      }, this.$data, toolbar
+      ));
       this.widget.codemirror.on("change", () => {
         this.emitInput(this.widget.value());
       });

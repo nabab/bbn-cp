@@ -542,8 +542,7 @@
           /**
            * @data {String} [''] searchValue
            */
-          searchValue: '',
-          filteredData: [],
+          searchValue: ''
         };
       },
       computed: {
@@ -719,7 +718,22 @@
           }
   
           return '';
-        }
+        },
+        filteredData() {
+          //bbn.fn.warning("FILTERING DATA")
+          if (this.currentData.length && this.currentFilters &&
+            this.currentFilters.conditions &&
+            this.currentFilters.conditions.length &&
+            (!this.serverFiltering || !this.isAjax)
+          ) {
+            return bbn.fn.filter(this.currentData, a => {
+              return this._checkConditionsOnItem(this.currentFilters, a.data);
+            });
+          }
+          else{
+            return this.currentData;
+          }
+        },
       },
       methods: {
         /**
@@ -741,21 +755,6 @@
             return (this.map ? data.map(this.map) : data).slice();
           }
           return [];
-        },
-        _setFilteredData() {
-          //bbn.fn.warning("FILTERING DATA")
-          if (this.currentData.length && this.currentFilters &&
-            this.currentFilters.conditions &&
-            this.currentFilters.conditions.length &&
-            (!this.serverFiltering || !this.isAjax)
-          ) {
-            this.filteredData = bbn.fn.filter(this.currentData, a => {
-              return this._checkConditionsOnItem(this.currentFilters, a.data);
-            });
-          }
-          else{
-            this.filteredData = this.currentData;
-          }
         },
         /**
          * Compares the values of the given row basing on the where operator and value.
@@ -1081,7 +1080,6 @@
                     });
                   }
 
-                  this._setFilteredData();
                   this.total = d.total || this.filteredData.length;
                   /** @todo Observer part to dissociate */
                   if (d.observer && bbn.fn.isFunction(this.observerCheck) && this.observerCheck()) {

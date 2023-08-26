@@ -95,7 +95,7 @@ return {
        * @method clear
        * @fires emitInput
        */
-      clear: function(){
+      clear(){
         this.emitInput('');
       }
     },

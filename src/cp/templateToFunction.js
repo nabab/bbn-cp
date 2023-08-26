@@ -176,6 +176,9 @@
 
         x(c, sp, `for (let n in _tmp) {`);
         x(c, sp, `  let val = _tmp[n];`);
+        x(c, sp, `  if (val === undefined) {`);
+        x(c, sp, `    continue;`);
+        x(c, sp, `  }`);
         x(c, sp, `  if (n === 'class') {`);
         x(c, sp, `    _props[n] = bbn.cp.convertClasses(val);`);
         x(c, sp, `  }`);
@@ -198,13 +201,18 @@
           }
           
           if (node.attr[n].exp) {
-            x(c, sp, `_props['${n}'] = _sIr('${node.attr[n].hash}', ${node.attr[n].exp}, ${hashName});`);
+            x(c, sp, `_tmp = _sIr('${node.attr[n].hash}', ${node.attr[n].exp}, ${hashName});`);
+            x(c, sp, `if (_tmp !== undefined) {`);
             if (n === 'class') {
-              x(c, sp, `_props['${n}'] = bbn.cp.convertClasses(_props['${n}']);`);
+              x(c, sp, `  _props['${n}'] = bbn.cp.convertClasses(_tmp);`);
             }
             else if (n === 'style') {
-              x(c, sp, `_props['${n}'] = bbn.cp.convertStyles(_props['${n}']);`);
+              x(c, sp, `  _props['${n}'] = bbn.cp.convertStyles(_tmp);`);
             }
+            else {
+              x(c, sp, `  _props['${n}'] = _tmp;`);
+            }
+            x(c, sp, `}`);
             x(c, sp, `if (!$_go['${node.id}'] && _node.attr['${n}'] && !Object.hasOwn(_node.attr['${n}'], 'value') && _node.attr['${n}'].hash && (_gIs(_node.attr['${n}'].hash, ${hashName}) !== "OK")) {`);
             x(c, sp, `  $_go['${node.id}'] = true;`);
             x(c, sp, `}`);

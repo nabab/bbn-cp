@@ -1570,7 +1570,7 @@ class bbnCp {
       const cp = this;
       const bits = name.split('.');
       const realName = bits.shift();
-      const tmp = this.$watcher[realName] || bbn.fn.createObject();
+      let tmp = this.$watcher[realName] || bbn.fn.createObject();
       if (bits.length) {
         while (bits.length) {
           let n = bits.shift();
@@ -1668,14 +1668,17 @@ class bbnCp {
       return this.$setUpData(name, v);
     }
     if (this.$dataValues[name] !== v) {
+      
       let isMod = true;
       // Will remain the same if not simple Obj/Array
       const oldV = bbnData.getValue(this.$dataValues[name]);
-      //bbn.fn.log("SETTING " + name + " in " + this.$options.name, oldV, v);
+      if (name === 'currentItems') {
+        bbn.fn.log(["SETTING " + name + " in " + this.$options.name, oldV, v, oldV.length, v.length]);
+      }
       // Getting the bbnData object
       let oldDataObj = bbnData.getObject(oldV);
       if (oldDataObj) {
-        if (bbn.fn.isSame(oldDataObj.old, bbnData.hash(v))) {
+        if (oldDataObj.isSame(v)) {
           isMod = false;
         }
         else {
@@ -1890,9 +1893,7 @@ class bbnCp {
     const hash = bbnData.hash(val);
     if (!bbn.fn.isSame(hash, this.$computed[name].hash)) {
       const oldValue = this.$computed[name].val;
-      if (name === 'realButtons') {
-        bbn.fn.log(["UPDATING COMPUTED " + name, val, hash, bbn.fn.isFunction(hash), this.$computed[name].hash, oldValue]);
-      }
+      //bbn.fn.log(["UPDATING COMPUTED " + name, val, hash, bbn.fn.isFunction(hash), this.$computed[name].hash, oldValue]);
       this.$computed[name].old = oldValue;
       this.$computed[name].hash = hash;
       this.$computed[name].num = this.$computed[name].num < this.$numBuild ? this.$numBuild + 1 : this.$computed[name].num + 1;
@@ -2295,7 +2296,7 @@ class bbnCp {
     bbn.fn.checkType(event, String, bbn._("Events must be strings for \$on in %s", this.$options.name));
     bbn.fn.checkType(handler, Function, bbn._("Events handlers must be functions for \$on in %s", this.$options.name));
     const fn = bbn.fn.analyzeFunction(handler);
-    const hash = bbn.fn.md5((bound || this).$cid + '-' + event + '-' + handler.toString());
+    const hash = bbn.fn.md5((bound || this).$cid + '-' + fn.hash);
     if (!this.$events[event]) {
       this.$events[event] = bbn.fn.createObject();
     }

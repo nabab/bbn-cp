@@ -4,7 +4,6 @@
   'bbn-w-100': !router?.scrollContent && !router?.visualShowAll
 }]"
      @subready.stop
-     :style="visual ? visualStyle : {}"
      v-show="(!router?.isVisual && isVisible) || isVisualVisible || isPane">
   <div :class="{
     'bbn-overlay': true,
