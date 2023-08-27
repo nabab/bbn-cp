@@ -754,6 +754,11 @@ class bbnData {
    * @param {Boolean} deep 
    */
   update(noParent) {
+    if (this.updater) {
+      clearTimeout(this.updater);
+    }
+
+    this.updater = setTimeout(() => {
       let data = this;
       let lev = 0;
       /*
@@ -830,7 +835,7 @@ class bbnData {
         data = data.parent;
         lev++;
       }
-
+    }, 1)
   }
 
   updateChildren() {

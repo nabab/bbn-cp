@@ -758,6 +758,11 @@ class bbnData {
    * @param {Boolean} deep 
    */
   update(noParent) {
+    if (this.updater) {
+      clearTimeout(this.updater);
+    }
+
+    this.updater = setTimeout(() => {
       let data = this;
       let lev = 0;
       /*
@@ -834,7 +839,7 @@ class bbnData {
         data = data.parent;
         lev++;
       }
-
+    }, 1)
   }
 
   updateChildren() {
@@ -2522,9 +2527,6 @@ class bbnCp {
       let isMod = true;
       // Will remain the same if not simple Obj/Array
       const oldV = bbnData.getValue(this.$dataValues[name]);
-      if (name === 'currentItems') {
-        bbn.fn.log(["SETTING " + name + " in " + this.$options.name, oldV, v, oldV.length, v.length]);
-      }
       // Getting the bbnData object
       let oldDataObj = bbnData.getObject(oldV);
       if (oldDataObj) {

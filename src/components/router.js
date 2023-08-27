@@ -1529,7 +1529,7 @@
           //bbn.fn.log("REAL ROUTING GOING ON FOR " + url);
           if (!this.urls[st].isPane && (url !== this.currentURL)) {
             //bbn.fn.log("THE URL IS DIFFERENT FROM THE ORIGINAL " + this.currentURL);
-            this.currentURL = url;
+            this.changeURL(url);
           }
           // First routing, triggered only once
           if (this.urls[st].currentView.pane) {
@@ -2232,7 +2232,7 @@
 
           if (!this.views[idx].pane) {
             this.selected = idx;
-            this.currentURL = this.parseURL(url);
+            this.changeURL(this.parseURL(url));
           }
 
           this.$forceUpdate();

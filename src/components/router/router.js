@@ -1811,7 +1811,7 @@ return {
           if (this.parentContainer) {
             this.parentContainer.currentTitle = title + ' < ' + this.parentContainer.title;
             if (!this.parentContainer.isPane) {
-              this.parent.changeURL(this.baseURL + url, this.parentContainer.currentTitle, replace);
+              this.parent.currentURL = this.baseURL + url;
             }
             else {
               this.parentContainer.currentView.current = this.baseURL + url;
@@ -2329,7 +2329,6 @@ return {
           }
 
           if (!this.views[idx].pane) {
-            this.selected = idx;
             this.currentURL = this.parseURL(url);
           }
 
@@ -3917,25 +3916,23 @@ return {
        * @emit route
        */
       currentURL(newVal, oldVal){
-        if ( this.ready ){
-          this.$nextTick(() => {
-            let idx = this.search(newVal);
-            if (idx !== false) {
-              let v = this.views[idx];
-              let ct = this.urls[v.url];
-              if (!v.pane) {
-                this.selected = idx;
-                if (ct) {
-                  this.changeURL(newVal, ct.title);
-                }
-                else if (this.isLoading) {
-                  this.changeURL(newVal, bbn._("Loading"));
-                }
+        if (this.ready) {
+          let idx = this.search(newVal);
+          if (idx !== false) {
+            let v = this.views[idx];
+            let ct = this.urls[v.url];
+            if (!v.pane) {
+              this.selected = idx;
+              if (ct) {
+                this.changeURL(newVal, ct.title);
+              }
+              else if (this.isLoading) {
+                this.changeURL(newVal, bbn._("Loading"));
               }
             }
+          }
 
-            this.$emit('change', newVal);
-          });
+          this.$emit('change', newVal);
           this.$emit('route', newVal);
         }
       },
