@@ -171,7 +171,7 @@ class bbnData {
         const newVal = bbnData.treatValue(a, component, idx, targetObj);
         newArgs.push(newVal);
       });
-      const res = targetObj.data.push(...newArgs);
+      const res = target.push(...newArgs);
       if (targetObj) {
         //bbn.fn.log("PUSH");
         targetObj.update();
@@ -201,10 +201,11 @@ class bbnData {
         const newVal = bbnData.treatValue(a, component, idx, targetObj);
         newArgs.push(newVal);
       });
-      const res = targetObj.data.unshift(...newArgs);
+      const res = target.unshift(...newArgs);
       const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
       if (dataObj) {
-        //bbn.fn.log("UNSHIFT");
+        bbn.fn.log([dataObj.path, path]);
+        bbn.fn.warning("UNSHIFT");
         dataObj.update();
       }
       else {
@@ -250,7 +251,7 @@ class bbnData {
       const res = target.sort(...args);
       const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
       if (dataObj) {
-        //bbn.fn.log("SORT");
+        bbn.fn.warning("SORT");
         dataObj.update();
       }
       else {
@@ -342,7 +343,8 @@ class bbnData {
         const oldObj = bbnData.getObject(oldValue);
         let mod = false;
         if (oldObj && !oldObj.isSame(value)) {
-          bbn.fn.log(["UNSET", oldValue, value]);
+          const newObj = bbnData.getObject(value);
+          //bbn.fn.log(["UNSET", key, oldValue, value, oldObj.path, newObj?.path, oldObj.parent?.value?.length, newObj?.parent?.value?.length]);
           oldObj.unset();
           mod = true;
         }
@@ -543,6 +545,13 @@ class bbnData {
 
     // The object is added to the data inventory
     bbn.cp.dataInventory.set(id, this);
+
+    /*
+    bbn.fn.each(this.value, (v, i) => {
+      bbnData.treatValue(v, component, i, this);
+    })
+    */
+
   }
 
   // Returns the full path of a data object in a component
@@ -599,11 +608,6 @@ class bbnData {
    * Deletes all references to the data object and its children
    */
   unset(noParent) {
-    if (this.path == 3) {
-      bbn.fn.log("UNSET", this);
-      console.trace();
-      alert("KKK");
-    }
     const id = this.id;
     // Unsetting the children
     bbn.fn.each(this.children, subObj => {
@@ -750,11 +754,6 @@ class bbnData {
    * @param {Boolean} deep 
    */
   update(noParent) {
-    if (this.updater) {
-      clearTimeout(this.updater);
-    }
-
-    this.updater = setTimeout(() => {
       let data = this;
       let lev = 0;
       /*
@@ -831,7 +830,6 @@ class bbnData {
         data = data.parent;
         lev++;
       }
-    }, 1)
 
   }
 
