@@ -100,7 +100,7 @@
           @click="zoom"/>
     </div>
     <!-- NAVIGATION IN LIST -->
-    <div v-if="currentPage"
+    <div v-if="currentPage && pageable"
           class="nav bbn-unselectable bbn-bottom-spadding">
       <i class="nf nf-md-chevron_double_left bbn-p bbn-reactive-text"
           @click="nav('first')"

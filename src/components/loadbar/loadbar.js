@@ -208,15 +208,17 @@ return {
       source: {
         deep: true,
         handler(v, ov) {
-          setTimeout(() => {
-            this.$tick();
-          }, 500)
+          bbn.fn.log("DEEP WATCH ON SOURCE", JSON.stringify(v[0]));
+          this.$tick();
         }
       },
+      /*
       async currentItem(v) {
         await this.$forceUpdate();
       },
+      */
       info(v) {
+        /*
         if (this.interval) {
           clearInterval(this.interval);
         }
@@ -229,6 +231,7 @@ return {
             }
           }, 1000);
         }
+        */
       }
     },
     /**

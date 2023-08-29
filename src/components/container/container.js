@@ -1662,7 +1662,7 @@ return {
        * @fires selfEmit
        */
       isVisible(nv) {
-        bbn.fn.log("Changing isVisible for " + this.currentURL);
+        //bbn.fn.log("Changing isVisible for " + this.currentURL);
         let emit = true;
 
         if (!this.isPane && this.router?.isVisual) {

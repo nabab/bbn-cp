@@ -157,25 +157,28 @@
     // Will GO if the element is new or modified and not forgotten
     if (bbn.fn.numProperties(node.attr)) {
       if (node.attr['bbn-bind']) {
-        x(c, sp, `_tmp =  _sIr('${node.attr['bbn-bind'].hash}', ${node.attr['bbn-bind'].exp}, ${hashName}) || bbn.fn.createObject();`);
+        x(c, sp, `_tmp = _sIr('${node.attr['bbn-bind'].hash}', ${node.attr['bbn-bind'].exp}, ${hashName}) || bbn.fn.createObject();`);
         x(c, sp, `if (!$_go['${node.id}'] && (_gIs('${node.attr['bbn-bind'].hash}', ${hashName}) !== "OK")) {`);
         x(c, sp, `  $_go['${node.id}'] = true;`);
         x(c, sp, `}`);
+        x(c, sp, `_tmp2 = bbn.fn.createObject();`);
         for (let n in node.attr) {
           if (['bbn-bind', 'bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else', 'bbn-forget'].includes(n)) {
             continue;
           }
           
           if (node.attr[n].exp) {
-            x(c, sp, `_tmp['${n}'] = _sIr('${node.attr[n].hash}', ${node.attr[n].exp}, ${hashName});`);
+            x(c, sp, `_tmp2['${n}'] = _sIr('${node.attr[n].hash}', ${node.attr[n].exp}, ${hashName});`);
           }
           else {
-            x(c, sp, `_tmp['${n}'] = '${bbn.fn.escapeSquotes(node.attr[n].value)}';`);
+            x(c, sp, `_tmp2['${n}'] = '${bbn.fn.escapeSquotes(node.attr[n].value)}';`);
           }
         }
-
-        x(c, sp, `for (let n in _tmp) {`);
-        x(c, sp, `  let val = _tmp[n];`);
+        x(c, sp, `bbn.fn.each(bbn.fn.unique(Object.keys(_tmp).concat(Object.keys(_tmp2))), n => {`);
+        x(c, sp, `  let val = _tmp2[n] === undefined ? _tmp?.[n] : _tmp2[n];`);
+        x(c, sp, `  if (val === undefined) {`);
+        x(c, sp, `    return;`);
+        x(c, sp, `  }`);
         x(c, sp, `  if (n === 'class') {`);
         x(c, sp, `    _props[n] = bbn.cp.convertClasses(val);`);
         x(c, sp, `  }`);
@@ -188,7 +191,8 @@
         x(c, sp, `  if (!$_go['${node.id}'] && _node.attr[n] && !Object.hasOwn(_node.attr[n], 'value') && _node.attr[n].hash && (_gIs(_node.attr[n].hash, ${hashName}) !== "OK")) {`);
         x(c, sp, `    $_go['${node.id}'] = true;`);
         x(c, sp, `  }`);
-        x(c, sp, `}`);
+        x(c, sp, `});`);
+        //x(c, sp, `bbn.fn.log(["PROPS", _props, _tmp, _tmp2, bbn.fn.unique(Object.keys(_tmp).concat(Object.keys(_tmp2)))]);`);
       }
       // Simpler version
       else {
@@ -198,13 +202,18 @@
           }
           
           if (node.attr[n].exp) {
-            x(c, sp, `_props['${n}'] = _sIr('${node.attr[n].hash}', ${node.attr[n].exp}, ${hashName});`);
+            x(c, sp, `_tmp = _sIr('${node.attr[n].hash}', ${node.attr[n].exp}, ${hashName});`);
+            x(c, sp, `if (_tmp !== undefined) {`);
             if (n === 'class') {
-              x(c, sp, `_props['${n}'] = bbn.cp.convertClasses(_props['${n}']);`);
+              x(c, sp, `  _props['${n}'] = bbn.cp.convertClasses(_tmp);`);
             }
             else if (n === 'style') {
-              x(c, sp, `_props['${n}'] = bbn.cp.convertStyles(_props['${n}']);`);
+              x(c, sp, `  _props['${n}'] = bbn.cp.convertStyles(_tmp);`);
             }
+            else {
+              x(c, sp, `  _props['${n}'] = _tmp;`);
+            }
+            x(c, sp, `}`);
             x(c, sp, `if (!$_go['${node.id}'] && _node.attr['${n}'] && !Object.hasOwn(_node.attr['${n}'], 'value') && _node.attr['${n}'].hash && (_gIs(_node.attr['${n}'].hash, ${hashName}) !== "OK")) {`);
             x(c, sp, `  $_go['${node.id}'] = true;`);
             x(c, sp, `}`);
@@ -816,6 +825,7 @@
       x(c, sp, `let _props = bbn.fn.createObject();`);
       x(c, sp, `let _lastId = '';`);
       x(c, sp, `let _tmp;`);
+      x(c, sp, `let _tmp2;`);
       x(c, sp, `let _node;`);
       x(c, sp, `let isAnew;`);
       x(c, sp, `let oldEle;`);

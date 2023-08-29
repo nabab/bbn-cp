@@ -11,10 +11,11 @@
         throw new Error("Components definition must be objects");
       }
 
-      const res = bbn.fn.createObject({
+      //alert("normalize " + clsName);
+      const res = bbnData.immunizeValue(bbn.fn.createObject({
         props: bbn.fn.createObject(),
         data: [],
-        computed: bbn.fn.createObject(),
+        computed: bbnData.immunizeValue(bbn.fn.createObject()),
         methods: bbn.fn.createObject(),
         watch: bbn.fn.createObject(),
         components: bbn.fn.createObject(),
@@ -26,7 +27,9 @@
         extension: null,
         statics: [],
         _bbnComponent: true
-      });
+      }));
+      //bbn.fn.log(["NORM", clsName, cfg, res]);
+
 
       if (cfg.mixins) {
         //bbn.fn.log("MIXINS", cfg);
@@ -237,7 +240,9 @@
               });
             }
             else if (!["mixins", "componentNames", "name", "_bbnComponent"].includes(name)) {
-              throw new Error(bbn._("Unrecognize index %s in the config object for %s", name, clsName));
+              if (name.indexOf('__bbn') !== 0) {
+                throw new Error(bbn._("Unrecognize index %s in the config object for %s", name, clsName));
+              }
             }
 
         }
@@ -247,8 +252,6 @@
       if (!bbn.fn.numProperties(res.props)) {
         res.props.source = bbn.fn.createObject();
       }
-
-      bbnData.immunizeValue(res);
 
       return res;
     }

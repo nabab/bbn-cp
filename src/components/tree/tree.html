@@ -3,7 +3,7 @@
      @keydown.up.down.left.right.enter.space.page-down.page-up.end.home.prevent.stop="keyNav">
   <!-- A loader -->
   <div bbn-if="loading" class="loader">
-    <bbn-loadicon></bbn-loadicon> <span bbn-text="_('Loading')"></span>...
+    <bbn-loadicon/> <span bbn-text="_('Loading')"/>...
   </div>
   <!-- The container: a scroll if root and scrollable, a div otherwise -->
   <bbn-scroll bbn-else-if="isInit && isLoaded"
@@ -14,8 +14,7 @@
          ref="helperContainer">
       <ul class="bbn-tree-helper"
           ref="helper"
-          bbn-show="!!tree.realDragging"
-      ></ul>
+          bbn-show="!!tree.realDragging"/>
     </div>
     <!-- start of the list -->
     <ul bbn-if="filteredData.length && (isRoot || $parent.isExpanded)"
@@ -182,8 +181,7 @@
                     :opened="!!tree.opened"
                     :source-text="tree.sourceText"
                     :source-value="tree.sourceValue"
-                    :scrollable="tree.scrollable"
-          ></bbn-tree>
+                    :scrollable="tree.scrollable"/>
 
           <!-- Sortable interface is set at the bottom -->
           <span bbn-if="sortable"

@@ -25,9 +25,14 @@ return {
         default: 16
       },
     },
-    computed: {
-      currentSize(){
-        return bbn.fn.formatSize(this.size);
+    data() {
+      return {
+        currentSize: bbn.fn.formatSize(this.size)
+      }
+    },
+    watch: {
+      size(v) {
+        this.currentSize = bbn.fn.formatSize(v);
       }
 
     }

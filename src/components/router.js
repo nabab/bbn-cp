@@ -4,69 +4,70 @@
  * @copyright BBN Solutions
  * @author BBN Solutions
  */
-return {
-    name: 'bbn-router',
-    statics() {
-      // IndexedDb access for storing thumbnails in visual mode
-      let db = false;
-      if (bbn.db && bbn.db.ok && window.html2canvas) {
-        db = true;
-        if (!bbn.db._structures.bbn || !bbn.db._structures.bbn.containers) {
-          bbn.db.add('bbn', 'containers', {
-            keys: {
-              PRIMARY: {
-                columns: ['url'],
-                unique: true
-              }
-            },
-            fields: {
-              url: {
+ (function(bbn, Vue){
+  "use strict";
 
-              },
-              image: {
+  // Orientations of the thumbnails for visual mode
+  const possibleOrientations = [
+    {
+      name: 'auto',
+      text: bbn._("Position automatically")
+    }, {
+      name: 'left',
+      text: bbn._("Position on the left side")
+    }, {
+      name: 'top',
+      text: bbn._("Position on the top side")
+    }, {
+      name: 'bottom',
+      text: bbn._("Position on the bottom side")
+    }, {
+      name: 'right',
+      text: bbn._("Position on the right side")
+    }
+  ];
 
-              }
-            }
-          });
-        }
-      }
-      return {
-        db,
-        possibleOrientations: [
-          {
-            name: 'auto',
-            text: bbn._("Position automatically")
-          }, {
-            name: 'left',
-            text: bbn._("Position on the left side")
-          }, {
-            name: 'top',
-            text: bbn._("Position on the top side")
-          }, {
-            name: 'bottom',
-            text: bbn._("Position on the bottom side")
-          }, {
-            name: 'right',
-            text: bbn._("Position on the right side")
+  // IndexedDb access for storing thumbnails in visual mode
+  let db = false;
+  if (bbn.db && bbn.db.ok && window.html2canvas) {
+    db = true;
+    if (!bbn.db._structures.bbn || !bbn.db._structures.bbn.containers) {
+      bbn.db.add('bbn', 'containers', {
+        keys: {
+          PRIMARY: {
+            columns: ['url'],
+            unique: true
           }
-        ]
-      };
-    },
+        },
+        fields: {
+          url: {
+
+          },
+          image: {
+
+          }
+        }
+      });
+    }
+  }
+  
+  Vue.component("bbn-router", {
+    name: 'bbn-router',
     /**
-     * @mixin bbn.cp.mixins.basic
-     * @mixin bbn.cp.mixins.localStorage
-     * @mixin bbn.cp.mixins.close
-     * @mixin bbn.cp.mixins.observer
-     * @mixin bbn.cp.mixins.resizer
+     * @mixin bbn.vue.basicComponent
+     * @mixin bbn.vue.localStorageComponent
+     * @mixin bbn.vue.closeComponent
+     * @mixin bbn.vue.observerComponent
+     * @mixin bbn.vue.resizerComponent
      */
     mixins:
     [
-      bbn.cp.mixins.basic,
-      bbn.cp.mixins.localStorage,
-      bbn.cp.mixins.close,
-      bbn.cp.mixins.observer,
-      bbn.cp.mixins.resizer,
-      bbn.cp.mixins.keepCool
+      bbn.vue.basicComponent,
+      bbn.vue.localStorageComponent,
+      bbn.vue.closeComponent,
+      bbn.vue.observerComponent,
+      bbn.vue.resizerComponent,
+      bbn.vue.keepCoolComponent
     ],
     props: {
       /**
@@ -282,7 +283,7 @@ return {
           return 'auto'
         },
         validator(v) {
-          return !!bbn.fn.getRow(bbnRouterCp.possibleOrientations, {name: v})
+          return !!bbn.fn.getRow(possibleOrientations, {name: v})
         }
       },
       /**
@@ -342,10 +343,6 @@ return {
       resizable: {
         type: Boolean,
         default: true
-      },
-      disabled: {
-        type: Boolean,
-        default: false
       }
     },
     data(){
@@ -422,17 +419,17 @@ return {
         routers: {},
           /**
          * The direct parent router if there is one.
-         * @data {bbnCp} [null] parent
+         * @data {Vue} [null] parent
          */
         parent: null,
         /**
          * The root router or the current one it's the same.
-         * @data {bbnCp} [null] router
+         * @data {Vue} [null] router
          */
         router: null,
         /**
          * The container having the router in if there is one.
-         * @data {bbnCp} [null] parentContainer
+         * @data {Vue} [null] parentContainer
          */
         parentContainer: null,
         /**
@@ -442,7 +439,7 @@ return {
         visible: true,
         /**
          * The currently visible container.
-         * @data {bbnCp} [null] activeContainer
+         * @data {Vue} [null] activeContainer
          */
         activeContainer: null,
         /**
@@ -488,7 +485,7 @@ return {
          * Shows if the navigation mode is set to breacrumb.
          * @data {Boolean} isBreadcrumb
          */
-        isBreadcrumb: !!this.breadcrumb,
+        isBreadcrumb: this.breadcrumb,
         /**
          * itsMaster.isBreadcrumb watcher.
          * @data {Boolean} breadcrumbWatcher
@@ -544,7 +541,6 @@ return {
           return bbn.fn.search(this.tabsList, {idx: this.selected})
         },
         set(v) {
-          bbn.fn.log("SETING SELECTED TAB");
           this.selected = this.tabsList[v].idx;
         }
       },
@@ -616,7 +612,7 @@ return {
       /**
        * The master bbn-router of this one.
        * @computed itsMaster
-       * @return {bbnCp}
+       * @return {Vue}
        */
       itsMaster(){
         let r = this;
@@ -664,22 +660,21 @@ return {
        * @return {Vue|Boolean}
        */
       activeRealContainer(){
-        if ( bbn.fn.isNumber(this.selected) ) {
+        if ( bbn.fn.isNumber(this.selected) ){
           return this.getRealVue(this.selected);
         }
-
         return false;
       },
       /**
        * The last router i.e. the deepest in the current active container - or this one if none
        * @computed activeRouter
        * @fires getSubRouter
-       * @return {bbnCp}
+       * @return {Vue}
        */
       activeRouter(){
         if ( this.activeContainer ){
           let sub = this.getSubRouter(this.selected);
-          if ( bbn.cp.isComponent(sub) ){
+          if ( bbn.fn.isVue(sub) ){
             return sub.activeRouter;
           }
         }
@@ -912,78 +907,10 @@ return {
           && !this.isBreadcrumb
           && ((this.orientation === 'left')
             || (this.orientation === 'right'));
-      },
+      }
     },
 
     methods: {
-      /**
-       * @method visualStyleContainer
-       * @return {Object}
-       */
-      updateVisualStyleContainer() {
-        bbn.fn.warning("updateVisualStyleContainer");
-        if (!this.isVisual) {
-          return {};
-        }
-
-        bbn.fn.iterate(this.views, view => {
-          if (view.view) {
-            view = view.view;
-          }
-
-          if (!this.visualStyleContainer[view.url]) {
-            this.visualStyleContainer[view.url] = {};
-          }
-
-          if (!this.urls[view.url]) {
-            return;
-          }
-
-          const ct = this.urls[view.url];
-          if (!ct?.isVisible || this.visualShowAll) {
-            if (this.visualStyleContainer[view.url].zoom != 0.5) {
-              this.visualStyleContainer[view.url] = {zoom: 0.1};
-            }
-
-            return;
-          }
-
-          let num = this.numVisuals + 1;
-          let coord = [1, num, 1, num];
-          switch (this.visualOrientation) {
-            case 'up':
-              coord[2] = 2;
-              break;
-            case 'down':
-              coord[3] = num - 1;
-              break;
-            case 'left':
-              coord[0] = 2;
-              break;
-            case 'right':
-              coord[1] = num - 1;
-              break;
-          }
-
-
-          if ((this.visualStyleContainer[view.url].zoom != 1)
-              || (this.visualStyleContainer[view.url].gridColumnStart != coord[0])
-              || (this.visualStyleContainer[view.url].gridColumnEnd != coord[1])
-              || (this.visualStyleContainer[view.url].gridRowStart != coord[2])
-              || (this.visualStyleContainer[view.url].gridRowEnd != coord[3])
-          ) {
-            this.visualStyleContainer[view.url] = {
-              gridColumnStart: coord[0],
-              gridColumnEnd: coord[1],
-              gridRowStart: coord[2],
-              gridRowEnd: coord[3],
-              zoom: 1
-            };
-          }
-        });
-
-        return this.visualStyleContainer;
-      },
       /**
        * Alias of bbn.fn.isNumber
        * @method isNumber
@@ -996,16 +923,6 @@ return {
        * @return {Number|Boolean}
        */
       numProperties: bbn.fn.numProperties,
-      getPortalSelector(view) {
-        if (!this.disabled && this.panes.length) {
-          let pane = this.getPane(view);
-          if (pane) {
-            return '#' + pane + slashToHyphen(this.isVisual ? view.view.url : view.url);
-          }
-        }
-
-        return undefined;
-      },
       /**
        * Removes an element from the views
        * 
@@ -1183,7 +1100,6 @@ return {
                 obj2[n] = a;
               }
             });
-            obj2.real = true;
 
             // ---- ADDED 16/12/20 (Mirko) ----
             if ( !obj2.current ){
@@ -1249,6 +1165,7 @@ return {
             }
 
             index = this.search(obj.url);
+            //bbn.fn.warning("ADDING CONTAINER " + obj.current + " (" + index + ")");
             if ( index !== false ){
               let o = this.views[index],
                   cn = this.urls[this.views[index].url];
@@ -1310,7 +1227,7 @@ return {
       /**
        * Function used by container to make themselves known when they are mounted.
        * @method register
-       * @param {bbnCp} cp
+       * @param {Vue} cp
        * @param {Boolean} fake
        * @fires add
        * @fires search
@@ -1319,36 +1236,26 @@ return {
        */
       register(cp, fake) {
         if ( fake ){
-          //bbn.fn.log("ADDING FAKE", cp);
           this.add(cp);
           return;
         }
 
         if (!bbn.fn.isString(cp.url)) {
-          bbn.fn.log(cp);
           throw Error(bbn._('The component bbn-container must have a URL defined'));
         }
-        //bbn.fn.log("REGISRTE", cp.$el.bbnId, cp.url, this.urls[cp.url] ? this.urls[cp.url].$el.bbnId : "NO")
         if (this.urls[cp.url]) {
-          bbn.fn.log("It exists", this.urls[cp.url].$numBuild, this.numRegistered, this.views[0].real);
-          if (cp !== this.urls[cp.url]) {
-            throw Error(bbn._('Two containers cannot have the same URL defined (' + cp.url + ')'));
-          }
-          return;
-
+          throw Error(bbn._('Two containers cannot have the same URL defined (' + cp.url + ')'));
         }
 
         this.numRegistered++;
         this.urls[cp.url] = cp;
         if (this.isVisual) {
-          bbn.fn.log("VIEW ON VISUAL")
           cp.$on('view', () => {
             this.visualShowAll = false;
           })
         }
         let idx = this.search(cp.url);
         if (idx === false) {
-          bbn.fn.log("ADDING BECAUSE CAN'T FIND", cp.url, this.views.map(a => a.url));
           this.add(cp);
         }
         else {
@@ -1366,7 +1273,7 @@ return {
        * @method unregister
        * @fires search
        * @fires remove
-       * @param {bbnCp} cp
+       * @param {Vue} cp
        */
       unregister(cp) {
         //bbn.fn.log("UNREGISTERING " + cp.url);
@@ -1440,7 +1347,7 @@ return {
        * @param {String} baseURL
        * @returns {String}
        */
-      formatBaseURL(baseURL){
+       formatBaseURL(baseURL){
         while ( bbn.fn.substr(baseURL, -1) === '/' ){
           baseURL = bbn.fn.substr(baseURL, 0, baseURL.length-1);
         }
@@ -1503,7 +1410,7 @@ return {
       route(url, force) {
         //bbn.fn.log("ROUTING ON " + url);
         if (!bbn.fn.isString(url)) {
-          throw Error(bbn._('The component bbn-container must have a valid URL defined (URL is not a string)'));
+          throw Error(bbn._('The component bbn-container must have a valid URL defined'));
         }
         url = bbn.fn.replaceAll('//', '/', url);
         /** @var {Boolean} ok Will prevent the route to happen if false */ 
@@ -1514,7 +1421,7 @@ return {
           bbn.fn.each(this.currentPanes, a => {
             bbn.fn.each(a.tabs, (v, i) => {
               if (url.indexOf(v.url) === 0) {
-                /** @var {bbnCp} container The bbn-container component for the given URL if it's in a pane] */
+                /** @var {Vue} container The bbn-container component for the given URL if it's in a pane] */
                 let container = this.urls[v.url];
                 if (!container) {
                   ok = false;
@@ -1616,13 +1523,13 @@ return {
        */
       realRoute(url, st, force, anchor){
         if (!bbn.fn.isString(url) && !bbn.fn.isNumber(url)){
-          throw Error(bbn._('The component bbn-container must have a valid URL defined (URL given to route is not a string)'));
+          throw Error(bbn._('The component bbn-container must have a valid URL defined'));
         }
         if (this.urls[st]) {
           //bbn.fn.log("REAL ROUTING GOING ON FOR " + url);
           if (!this.urls[st].isPane && (url !== this.currentURL)) {
             //bbn.fn.log("THE URL IS DIFFERENT FROM THE ORIGINAL " + this.currentURL);
-            this.currentURL = url;
+            this.changeURL(url);
           }
           // First routing, triggered only once
           if (this.urls[st].currentView.pane) {
@@ -1702,7 +1609,7 @@ return {
        */
       activate(url, container){
         if (!bbn.fn.isString(url) ){
-          throw Error(bbn._('The component bbn-container must have a valid URL defined (activate)'));
+          throw Error(bbn._('The component bbn-container must have a valid URL defined'));
         }
         if (!container) {
           let row = bbn.fn.getRow(this.views, {current: url});
@@ -1726,11 +1633,10 @@ return {
             this.activeContainer = container;
           }
           container.show();
-          // Scrolling tabs
-          if (this.scrollable && this.nav && !this.breadcrumb && !this.isVisual) {
+          if (this.scrollable && this.nav && !this.breadcrumb) {
             let scroll = this.getRef('horizontal-scroll');
             let tab = this.getRef('tab-' + container.currentIndex);
-            if (scroll?.ready) {
+            if (scroll.ready) {
               scroll.scrollTo(tab);
             }
             else if (scroll) {
@@ -1774,7 +1680,7 @@ return {
        */
       changeURL(url, title, replace) {
         if (!bbn.fn.isString(url) ){
-          throw Error(bbn._('The component bbn-container must have a valid URL defined (change URL)'));
+          throw Error(bbn._('The component bbn-container must have a valid URL defined'));
         }
         if ( !bbn.env.isInit ){
           return;
@@ -1788,15 +1694,16 @@ return {
           return;
         }
 
+        /*
         bbn.fn.log(
           "changeURL",
           url,
           title,
-          this,
           this.parentContainer ? 
             ["FROM PQARENT", this.parentContainer.currentTitle, this.parentContainer.title]
             : this.currentTitle
         );
+        */
         // Changing the current property of the view cascades on the container's currentURL
         if (
           this.views[this.selected] &&
@@ -1811,7 +1718,7 @@ return {
           if (this.parentContainer) {
             this.parentContainer.currentTitle = title + ' < ' + this.parentContainer.title;
             if (!this.parentContainer.isPane) {
-              this.parent.currentURL = this.baseURL + url;
+              this.parent.changeURL(this.baseURL + url, this.parentContainer.currentTitle, replace);
             }
             else {
               this.parentContainer.currentView.current = this.baseURL + url;
@@ -1819,10 +1726,10 @@ return {
           }
           else if ( replace || (url !== bbn.env.path) ){
             if ( !replace ){
-              bbn.fn.log("NO REPLAACE", this.getFullBaseURL() + url, bbn.env.path);
+              //bbn.fn.log("NO REPLAACE", this.getFullBaseURL() + url, bbn.env.path);
             }
             if ( !replace && ((this.getFullBaseURL() + url).indexOf(bbn.env.path) === 0) ){
-              bbn.fn.log("REPLACING");
+              //bbn.fn.log("REPLACING");
               replace = true;
             }
             bbn.fn.setNavigationVars(this.getFullBaseURL() + url, this.currentTitle, {}, replace);
@@ -1963,7 +1870,7 @@ return {
        * Returns the corresponding container's component's DOM element.
        * @method getContainer
        * @param {Number} idx
-       * @return {bbnCp}
+       * @return {Vue}
        */
       getContainer(idx){
         if ( idx === undefined ){
@@ -2010,7 +1917,7 @@ return {
        * @fires getIndex
        * @fires getSubRouter
        * @fires getVue
-       * @return {bbnCp}
+       * @return {Vue}
        */
       getRealVue(misc){
         let idx = this.getIndex(misc),
@@ -2116,7 +2023,7 @@ return {
        */
       search(url){
         if (!bbn.fn.isString(url) ){
-          throw Error(bbn._('The component bbn-container must have a valid URL defined (Search)'));
+          throw Error(bbn._('The component bbn-container must have a valid URL defined'));
         }
         let r = bbn.fn.search(this.views, "url", url);
         if ( r === -1 ){
@@ -2193,7 +2100,7 @@ return {
        */
       callRouter(url, st){
         if (!bbn.fn.isString(url) ){
-          throw Error(bbn._('The component bbn-container must have a valid URL defined (from callRouter)'));
+          throw Error(bbn._('The component bbn-container must have a valid URL defined'));
         }
         if ( this.parent ){
           let containers = this.ancestors('bbn-container');
@@ -2257,8 +2164,6 @@ return {
             }
 
             view = this.views[idx];
-            //bbn.fn.log(finalURL, idx, JSON.stringify(view, null, 2), force, index);
-            //alert("STOP");
             if (force) {
               let kept = {
                 loading: true,
@@ -2273,7 +2178,6 @@ return {
                 static: view.static,
                 pinned: view.pinned,
                 index: idx,
-                real: view.real || false,
                 last: bbn.fn.timestamp()
               };
               if (view.icon) {
@@ -2307,13 +2211,12 @@ return {
           }
 
           if (toAdd){
-            bbn.fn.log("ADDING ON LOAD");
             this.add({
               url: url,
-              title: view?.title ? view.title : bbn._('Loading'),
+              title: view && view.title ? view.title : bbn._('Loading'),
               load: true,
               loading: true,
-              real: view?.real || false,
+              real: false,
               pane: false,
               scrollable: !this.single,
               current: url,
@@ -2322,166 +2225,144 @@ return {
               hidden: false,
               last: bbn.fn.timestamp()
             }, idx);
-            view = this.views[this.search(url)];
           }
           else if (!this.views[idx].loading) {
             this.views[idx].loading = true;
           }
 
           if (!this.views[idx].pane) {
-            this.currentURL = this.parseURL(url);
+            this.selected = idx;
+            this.changeURL(this.parseURL(url));
           }
 
           this.$forceUpdate();
-          let portal = this.getRef('portal-' + url);
-          if (portal) {
-            portal.$forceUpdate();
-          }
           this.$emit('update', this.views);
           this.$emit("load", finalURL);
           let dataObj = this.postBaseUrl ? {_bbn_baseURL: this.fullBaseURL} : {};
-          return this.$nextTick(() => {
-            this.post(
-              finalURL,
-              dataObj,
-              d => {
-                bbn.fn.warning("OK")
-                let callRealInit = true;
-                this.isLoading = false;
-                //this.remove(url);
-                if ( d.url ){
-                  d.url = this.parseURL(d.url);
+          return this.post(
+            finalURL,
+            dataObj,
+            d => {
+              let callRealInit = true;
+              this.isLoading = false;
+              //this.remove(url);
+              if ( d.url ){
+                d.url = this.parseURL(d.url);
+              }
+              if ( !d.url ){
+                d.url = url;
+              }
+              //bbn.fn.warning("URLS", url, d.url);
+              if ( url.indexOf(d.url) === 0 ){
+                d.current = url;
+                //bbn.fn.warning("CURRENT DEFINED AS " + d.current);
+              }
+              else {
+                bbn.fn.warning(url + ' != ' + d.url);
+                let searchIdx = this.search(url);
+                if (searchIdx !== false) {
+                  idx = searchIdx;
+                  this.remove(searchIdx, true);
                 }
-                if ( !d.url ){
-                  d.url = url;
-                }
-                //bbn.fn.warning("URLS", url, d.url);
-                if ( url.indexOf(d.url) === 0 ){
-                  d.current = url;
-                  //bbn.fn.warning("CURRENT DEFINED AS " + d.current);
-                }
-                else {
-                  bbn.fn.warning(url + ' != ' + d.url);
-                  let searchIdx = this.search(url);
-                  if (searchIdx !== false) {
-                    idx = searchIdx;
-                    bbn.fn.log("REMOVED");
-                    this.remove(searchIdx, true);
-                  }
-                }
+              }
 
-                if ( d.data && bbn.fn.numProperties(d.data)){
-                  d.source = d.data;
-                  delete d.data;
-                }
-                if ( (d.url !== d.current) && this.urls[d.current] ){
-                  bbn.fn.warning("DELETING VIEW CASE.... " + d.current + ' ' + this.urls[d.current].currentIndex);
-                  bbn.fn.log(d.url, bbn.fn.search(this.views, {idx: this.urls[d.current].idx}));
-                  this.remove(this.urls[d.current].currentIndex, true);
-                  callRealInit = false;
-                  /*
-                  this.$on('registered', url => {
-                    if (url === d.url) {
-                      this.$off('registered', url);
-                      let view = bbn.fn.getRow(this.views, {url: url});
-                      if ((this.selected === view.idx) || view.pane) {
-                        this.realInit(url);
-                      }
+              if ( d.data && bbn.fn.numProperties(d.data)){
+                d.source = d.data;
+                delete d.data;
+              }
+              if ( (d.url !== d.current) && this.urls[d.current] ){
+                //bbn.fn.warning("DELETING VIEW CASE.... " + d.current + ' ' + this.urls[d.current].currentIndex, d.url, bbn.fn.search(this.views, {idx: this.urls[d.current].idx}));
+                this.remove(this.urls[d.current].currentIndex, true);
+                callRealInit = false;
+                /*
+                this.$on('registered', url => {
+                  if (url === d.url) {
+                    this.$off('registered', url);
+                    let view = bbn.fn.getRow(this.views, {url: url});
+                    if ((this.selected === view.idx) || view.pane) {
+                      this.realInit(url);
                     }
-                  });
-                  */
-                  
+                  }
+                });
+                */
+                
+              }
+
+              if ( !d.title || (d.title === bbn._('Loading')) ){
+                if (view && view.title) {
+                  d.title = view.title;
                 }
-
-                if ( !d.title || (d.title === bbn._('Loading')) ){
-                  if (view && view.title) {
-                    d.title = view.title;
+                else{
+                  let title = bbn._('Untitled');
+                  let num = 0;
+                  while ( bbn.fn.search(this.views, {title: title}) > -1 ){
+                    num++;
+                    title = bbn._('Untitled') + ' ' + num;
                   }
-                  else{
-                    let title = bbn._('Untitled');
-                    let num = 0;
-                    while ( bbn.fn.search(this.views, {title: title}) > -1 ){
-                      num++;
-                      title = bbn._('Untitled') + ' ' + num;
-                    }
-                    d.title = title;
-                  }
+                  d.title = title;
                 }
+              }
 
-                if (!d.current && d.url) {
-                  d.current = d.url;
+              if (!d.current && d.url) {
+                d.current = d.url;
+              }
+
+              this.$nextTick(() => {
+                let o = bbn.fn.extend(view || {}, d, {loading: false, load: true, real: false, loaded: true});
+                let searchIndex = this.search(o.url);
+                //bbn.fn.log("Looking for " + o.url);
+                if (searchIndex !== false) {
+                  //bbn.fn.log("FOUND AND REMOVED " + idx);
+                  this.remove(idx, true);
                 }
-
-                this.$forceUpdate().then(() => {
-                  let o = bbn.fn.extend(view || bbn.fn.createObject(), d, {loading: false, load: true, real: view?.real || false, loaded: true});
-                  let searchIndex = this.search(o.url);
-                  //bbn.fn.log("Looking for " + o.url);
-                  if ((searchIndex !== false) && this.urls[this.views[searchIndex].url]) {
-                    //this.remove(searchIndex);
-                    bbn.fn.warning("FOUND AND NOT REMOVED " + searchIndex);
-                    this.urls[this.views[searchIndex].url].isLoaded = true;
-                    this.urls[this.views[searchIndex].url].dirty = false;
-                    this.urls[this.views[searchIndex].url].ready = false;
-                    this.urls[this.views[searchIndex].url].init();
-
+                this.add(o, idx);
+                if (o.title && !o.pane) {
+                  this.currentTitle = o.title;
+                }
+                this.$nextTick(() => {
+                  if (callRealInit) {
+                    this.realInit(d.url);
                   }
-                  else {
-                    bbn.fn.warning("ADDEDD " + idx);
-                    bbn.fn.log("ADDING AFTER LOAD");
-                    this.add(o, idx);
-                  }
-
-                  if (o.title && !o.pane) {
-                    this.currentTitle = o.title;
-                  }
-                  //this.$forceUpdate();
-                  this.$nextTick(() => {
-                    if (callRealInit) {
-                      this.realInit(d.url);
-                    }
-                  })
                 })
-              },
-              xhr => {
-                this.isLoading = false;
-                let idx = this.search(this.parseURL(finalURL));
-                if ( idx !== false ){
-                  let url = this.views[idx].url;
-                  if (this.urls[url]) {
-                    this.urls[url].errorStatus = xhr;
-                    this.urls[url].setTitle(bbn._("Error"));
-                    this.urls[url].setIcon("nf nf-fa-warning");
-                    if (this.selected === idx) {
-                      this.callRouter(finalURL, url);
-                    }
-                  }
-                }
-              },
-              () => {
-                this.isLoading = false;
-                let idx = this.search(this.parseURL(finalURL));
-                if ( idx !== false ){
-                  let url = this.views[idx].url;
-                  if (this.urls[url]) {
+              })
+            },
+            xhr => {
+              this.isLoading = false;
+              let idx = this.search(this.parseURL(finalURL));
+              if ( idx !== false ){
+                let url = this.views[idx].url;
+                if (this.urls[url]) {
+                  this.urls[url].errorStatus = xhr;
+                  this.urls[url].setTitle(bbn._("Error"));
+                  this.urls[url].setIcon("nf nf-fa-warning");
+                  if (this.selected === idx) {
                     this.callRouter(finalURL, url);
-                    this.$nextTick(() => {
-                      this.close(idx);
-                    });
                   }
                 }
               }
-            );
-          });
+            },
+            () => {
+              this.isLoading = false;
+              let idx = this.search(this.parseURL(finalURL));
+              if ( idx !== false ){
+                let url = this.views[idx].url;
+                if (this.urls[url]) {
+                  this.callRouter(finalURL, url);
+                  this.$nextTick(() => {
+                    this.close(idx);
+                  });
+                }
+              }
+            }
+          );
         }
       },
       realInit(url) {
-        //bbn.fn.log("REAL INIT", url, this.urls, this.views)
         if (this.urls[url]) {
           this.urls[url].setLoaded(true);
           // Otherwise the changes we just did on the props wont be taken into account at container level
           this.urls[url].init();
-          //bbn.fn.log("callRouter", this.urls[url], this.urls[url].currentView);
-          this.callRouter(this.urls[url].currentURL || url, url);
+          this.callRouter(this.urls[url].current, url);
           this.$emit('update', this.views);
         }
         else {
@@ -2536,7 +2417,6 @@ return {
               ) {
                 this.urls[this.views[idx].url].popups.splice(0);
               }
-
               this.load(url, true, idx);
             });
           }
@@ -3159,7 +3039,7 @@ return {
       * @fires getIndex
       */
       observerEmit(newVal, obs){
-        if ( bbn.cp.mixins.observer.methods.observerEmit.apply(this, [newVal, obs]) ){
+        if ( bbn.vue.observerComponent.methods.observerEmit.apply(this, [newVal, obs]) ){
           let ele = this.$el.querySelector(".bbn-observer-" + obs.element);
           if ( ele ){
             let idx = this.getIndex(ele);
@@ -3351,7 +3231,7 @@ return {
 
       /**
        * @method registerRouter
-       * @param {bbnCp} bc
+       * @param {Vue} bc
        * @param {String} url
        */
       registerRouter(router) {
@@ -3359,7 +3239,7 @@ return {
       },
       /**
        * @method unregisterRouter
-       * @param {bbnCp} bc
+       * @param {Vue} bc
        * @param {String} url
        */
       unregisterRouter(router){
@@ -3369,7 +3249,7 @@ return {
       //Breadcrumb
       /**
        * @method registerBreadcrumb
-       * @param {bbnCp} bc
+       * @param {Vue} bc
        * @param {String} url
        */
       registerBreadcrumb(bc){
@@ -3381,7 +3261,7 @@ return {
       },
       /**
        * @method unregisterBreadcrumb
-       * @param {bbnCp} bc
+       * @param {Vue} bc
        * @param {String} url
        */
       unregisterBreadcrumb(bc){
@@ -3412,7 +3292,7 @@ return {
       /**
        * Returns the breadcrumb's source list.
        * @method getList
-       * @param {bbnCp} bc
+       * @param {Vue} bc
        * @fires close
        * @return {Array}
        */
@@ -3483,6 +3363,40 @@ return {
       getView(url) {
         return bbn.fn.getRow(this.views, {url: url})
       },
+      /**
+       * @method visualStyleContainer
+       * @return {Object}
+       */
+      visualStyleContainer(ct) {
+        if (!ct.isVisible || this.visualShowAll) {
+          return {zoom: 0.1};
+        }
+
+        let num = this.numVisuals + 1;
+        let coord = [1, num, 1, num];
+        switch (this.visualOrientation) {
+          case 'up':
+            coord[2] = 2;
+            break;
+          case 'down':
+            coord[3] = num - 1;
+            break;
+          case 'left':
+            coord[0] = 2;
+            break;
+          case 'right':
+            coord[1] = num - 1;
+            break;
+        }
+
+        return {
+          gridColumnStart: coord[0],
+          gridColumnEnd: coord[1],
+          gridRowStart: coord[2],
+          gridRowEnd: coord[3],
+          zoom: 1
+        }
+      },
       addPane(paneId) {
         if (this.splittable) {
           if (!paneId) {
@@ -3549,11 +3463,12 @@ return {
 
         this.$set(this.views[containerIdx], "pane", paneId);
         pane.tabs.push(view);
-        //this.$forceUpdate();
-        if (containerIdx === this.selected) {
-          this.selectClosest(containerIdx);
-        }
-        pane.selected = pane.tabs.length - 1;
+        setTimeout(() => {
+          if (containerIdx === this.selected) {
+            this.selectClosest(containerIdx);
+          }
+          pane.selected = pane.tabs.length - 1;
+        }, 250);
       },
       removeFromPane(containerIdx) {
         let view = this.views[containerIdx];
@@ -3626,7 +3541,7 @@ return {
      * @fires getDefaultURL
      * @fires add
      */
-    beforeMount() {
+    mounted() {
       // All routers above (which constitute the fullBaseURL)
       this.parents = this.ancestors('bbn-router');
       // The closest
@@ -3634,11 +3549,10 @@ return {
       // The root
       this.router = this.parents.length ? this.parents[this.parents.length-1] : this;
       // Case where the rooter is not at the root level
-
       if ( this.parent ){
         this.parentContainer = this.closest('bbn-container');
         let uri = this.parentContainer.url;
-        if (this.root && (uri !== this.root) && (uri.indexOf(this.root) === 0) ){
+        if (this.root && (uri !== this.root) && (this.root.indexOf(uri) === 0) ){
           uri = this.root;
         }
         this.baseURL = this.formatBaseURL(uri);
@@ -3646,7 +3560,7 @@ return {
       // Case where the rooter is at root level
       else {
         // Opening the database for the visual mode multiview
-        if (!this.single && bbnRouterCp.db) {
+        if (!this.single && db) {
           bbn.db.open('bbn').then(r => {
             this.db = r;
           }, err => {
@@ -3672,8 +3586,6 @@ return {
 
       let tmp = [];
 
-      bbn.fn.warning("BEFORE MOUNT ROUTER")
-
       //Get config from the storage
       let storage = !this.single && this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
       if ( storage ){
@@ -3694,29 +3606,33 @@ return {
       // ---- ADDED 16/12/20 (Mirko) ----
       // Adding bbns-container from the slot
       if ( this.$slots.default ){
-        for ( let item of this.$slots.default ){
-          let node = item.bbnSchema;
-          //bbn.fn.log("ROUTER SLOT", node, '-------------');
-          
-          if (['bbn-container', 'bbns-container'].includes(node?.tag)) {
-            if (node.props.url === undefined) {
+        for ( let node of this.$slots.default ){
+          if (
+            node.componentOptions
+            && (node.componentOptions.tag === 'bbn-container')
+          ){
+            if (node.componentOptions.propsData.url === undefined) {
               throw new Error(bbn._("You cannot use containers in router without defining a URL property"));
             }
             if ( !this.hasRealContainers ){
               this.hasRealContainers = true;
             }
-            if (node.props.url === '') {
+            if (node.componentOptions.propsData.url === '') {
               this.hasEmptyURL = true;
             }
-            const obj = bbn.fn.createObject(bbn.fn.extend(true, {}, node.props));
+            let obj = bbn.fn.extend(true, {}, node.componentOptions.propsData),
+                props = node.componentOptions.Ctor.options.props;
+            bbn.fn.iterate(props, (v, i) => {
+              if (!(i in obj) && ('default' in v)) {
+                obj[i] = v.default;
+              }
+            });
             bbn.fn.iterate(this.getDefaultView(), (a, n) => {
               if ( obj[n] === undefined ){
                 obj[n] = a;
               }
             });
-            if (node.tag === 'bbn-container') {
-              obj.real = true;
-            }
+            obj.real = true;
             //let o = {real: true, load: false, loaded: true};
             //tmp.push(bbn.fn.extend({}, node.componentOptions.propsData, o));
             tmp.push(obj);
@@ -3757,9 +3673,7 @@ return {
         tmp = bbn.fn.multiorder(tmp, {real: 'desc'});
       }
 
-
       // Adding to the views
-      bbn.fn.warning("ROUTER BEFORE MOUNT");
       bbn.fn.each(tmp, a => {
         if (!bbn.fn.isString(a.url)) {
           throw new Error(bbn._("The container must have a valid URL"));
@@ -3817,13 +3731,12 @@ return {
       //Breadcrumb
       if (!this.master && this.parent && this.parentContainer) {
         this.parent.registerBreadcrumb(this);
-        bbn.fn.log("VIEW ON BREADCUMB")
         this.parentContainer.$on('view', () => {
           this.parent.registerBreadcrumb(this);
-        }, true);
+        });
         this.parentContainer.$on('unview', () => {
           this.parent.unregisterBreadcrumb(this);
-        }, true);
+        });
         if (this.parentContainer.isVisible) {
           this.parent.registerBreadcrumb(this);
         }
@@ -3833,26 +3746,11 @@ return {
         this.parentContainer.registerRouter(this);
       }
 
-      this.updateVisualStyleContainer();
       this.ready = true;
-      this.$forceUpdate();
 
-      this.$nextTick(() => {
-        if (this.$slots.default) {
-          for ( let item of this.$slots.default ){
-            if (item.bbnSchema.tag === 'bbn-container') {
-              let el = this.$refsElements['ct-' + item.bbnSchema.props.url];
-              if (el) {
-                el.parentNode.replaceChild(item, el);
-              }
-            }
-          }
-        }
-
-        if (!this.views.length) {
-          this.init(url);
-        }
-      });
+      if (!this.views.length) {
+        this.init(url);
+      }
 
     },
     /**
@@ -3884,9 +3782,6 @@ return {
           bbn.fn.map(bbn.fn.filter(this.views, {selected: true}), a => {
             if (a.idx !== idx) {
               a.selected = false;
-              if (this.urls[a.url]){
-                this.urls[a.url].$tick();
-              }
             }
           });
           if (!this.views[idx].selected && !this.views[idx].pane) {
@@ -3895,7 +3790,6 @@ return {
 
           this.views[idx].last = bbn.fn.timestamp();
           if (this.currentURL !== this.views[idx].current) {
-            bbn.fn.log("CHANGING URL " + this.currentURL + " TO " + this.views[idx].current);
             this.route(this.views[idx].current);
           }
         }
@@ -3916,23 +3810,25 @@ return {
        * @emit route
        */
       currentURL(newVal, oldVal){
-        if (this.ready) {
-          let idx = this.search(newVal);
-          if (idx !== false) {
-            let v = this.views[idx];
-            let ct = this.urls[v.url];
-            if (!v.pane) {
-              this.selected = idx;
-              if (ct) {
-                this.changeURL(newVal, ct.title);
-              }
-              else if (this.isLoading) {
-                this.changeURL(newVal, bbn._("Loading"));
+        if ( this.ready ){
+          this.$nextTick(() => {
+            let idx = this.search(newVal);
+            if (idx !== false) {
+              let v = this.views[idx];
+              let ct = this.urls[v.url];
+              if (!v.pane) {
+                this.selected = idx;
+                if (ct) {
+                  this.changeURL(newVal, ct.title);
+                }
+                else if (this.isLoading) {
+                  this.changeURL(newVal, bbn._("Loading"));
+                }
               }
             }
-          }
 
-          this.$emit('change', newVal);
+            this.$emit('change', newVal);
+          });
           this.$emit('route', newVal);
         }
       },
@@ -3941,8 +3837,7 @@ return {
        * @fires route
        */
       url(newVal){
-        if (this.ready && newVal && (newVal !== this.currentURL)) {
-          bbn.fn.log("URL CHANGED FROM WATCHER TO " + newVal);
+        if (this.ready) {
           this.route(newVal);
         }
       },
@@ -3959,7 +3854,7 @@ return {
        * @fires breadcrumbWatcher
        */
       itsMaster(newVal, oldVal){
-        if (this.nav && (newVal !== oldVal) ){
+        if ( this.nav && (newVal !== oldVal) ){
           this.isBreadcrumb = newVal ? newVal.isBreadcrumb : this.breadcrumb;
           if ( this.breadcrumbWatcher ){
             this.breadcrumbWatcher();
@@ -4001,32 +3896,13 @@ return {
        * @watch isVisual
        * @fires setConfig
        */
-      isVisual(v) {
+       isVisual(v) {
         this.$nextTick(() => {
           if (this.ready) {
             this.setConfig();
             this.onResize();
           }
         })
-      },
-      source(v, ov) {
-        //bbn.fn.log("ROUTER SOURCE WATCHER", v, ov);
-        bbn.fn.each(v, a => {
-          if (!bbn.fn.isString(a.url)) {
-            throw new Error(bbn._("The container must have a valid URL"));
-          }
-  
-          // Setting current if URL starts with default URL
-          if (url && url.indexOf(a.url) === 0) {
-            a.current = url;
-          }
-  
-          bbn.fn.warning(bbn._("ADDING %s ON WATCH", a.url));
-          this.add(a);
-        });
-      },
-      views() {
-        this.updateVisualStyleContainer();
       }
     },
     components: {
@@ -4185,7 +4061,7 @@ return {
             let k = this.source.key;
             if (this.source.closeAction()){
               let list = this.closest('bbn-list');
-              if (bbn.cp.isComponent(list) && list.source) {
+              if (bbn.fn.isVue(list) && list.source) {
                 let idx = bbn.fn.search(list.source, {'data.key': k});
                 if (idx > -1) {
                   list.source.splice(idx, 1);
@@ -4236,5 +4112,6 @@ return {
         }
       }
     }
-  };
-  
+  });
+
+})(bbn, Vue);
