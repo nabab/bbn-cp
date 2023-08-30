@@ -1,0 +1,11 @@
+.vscode/
+.history/
+.idea/
+_DS_STORE*
+*.DS_Store
+._*
+
+
+[core]
+filemode = false
+*.* text eol=lf

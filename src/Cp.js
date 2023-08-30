@@ -1301,7 +1301,7 @@ class bbnCp {
       for (let n in d.model) {
         if (n === '_default_') {
           if (isComponent) {
-            let modelProp = bbn.cp.statics[tag]?.models?.prop || 'value';
+            let modelProp = bbn.cp.statics[tag]?.cfg?.model?.prop || 'value';
             d.props[modelProp] = d.props._default_;
             delete d.props._default_;
             d.model[modelProp] = d.model._default_;
@@ -2309,7 +2309,7 @@ class bbnCp {
     // Setting up attributes
     bbn.fn.iterate(attr, (value, name) => {
       if (!isComponent) {
-        if (bbn.fn.isString(value)) {
+        if (bbn.fn.isPrimitive(value)) {
           let propName = name;
           if (bbn.cp.badCaseAttributes[name]) {
             propName = bbn.cp.badCaseAttributes[name];
@@ -2346,7 +2346,6 @@ class bbnCp {
         isChanged = true;
       }
     });
-    
 
     if (isChanged) {
       if (isComponent && ele.bbn?.$isMounted) {

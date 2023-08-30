@@ -15,13 +15,14 @@ return {
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.input
      * @mixin bbn.cp.mixins.events
-     *
+     * @mixin bbn.cp.mixins.componentInside
      */
-    mixins: 
+    mixins:
     [
       bbn.cp.mixins.basic,
       bbn.cp.mixins.input,
-      bbn.cp.mixins.events
+      bbn.cp.mixins.events,
+      bbn.cp.mixins.componentInside
     ],
     props: {
       value: {
@@ -61,7 +62,8 @@ return {
         }
       },
       /**
-       * @todo description
+       * The property used for the component's value instead of the classic "value" property.
+       *
        * @prop {String|Boolean|Number} [undefined] modelValue
        */
       modelValue: {
@@ -113,30 +115,18 @@ return {
         default: false
       },
       /**
-       * @todo description
+       * If set to true, a comparison will also be made on the component value type.
        *
        * @prop {Boolean} [false] strict
        */
       strict: {
         type: Boolean,
         default: false
-      },
-      component: {
-        type: [Object, String, Function]
       }
     },
     model: {
       prop: 'modelValue',
       event: 'input'
-    },
-    data(){
-      return {
-        /**
-         * @data valueToSet
-         */
-        valueToSet: this.value,
-        currentChecked: this.checked
-      }
     },
     computed: {
       /**
@@ -146,24 +136,21 @@ return {
        * @return {Boolean}
        */
       state(){
-        if ( this.currentChecked && (this.modelValue === undefined) ){
+        if (this.checked && (this.modelValue === undefined)) {
           return true;
         }
-        if ( this.currentChecked &&
-          (
-            ( !this.strict && (this.modelValue != this.valueToSet) ) ||
-            ( this.strict && (this.modelValue !== this.valueToSet) )
-          )
-        ){
+        if (this.checked
+          && ((!this.strict && (this.modelValue != this.value))
+            || (this.strict && (this.modelValue !== this.value)))
+        ) {
           return false;
         }
-        if (
-          ( this.strict && (this.modelValue === this.valueToSet) ) ||
-          ( !this.strict && (this.modelValue == this.valueToSet) )
-        ){
+        if ((this.strict && (this.modelValue === this.value))
+          || (!this.strict && (this.modelValue == this.value))
+        ) {
           return true;
         }
-        return this.currentChecked;
+        return this.checked;
       },
     },
     methods: {
@@ -174,15 +161,9 @@ return {
        * @emits input
        * @emits change
        */
-      toggle(force) {
-        if ( !this.isDisabled && !this.readonly ){
-          if ( force !== undefined ){
-            this.currentChecked = !!force;
-          }
-          else {
-            this.currentChecked = !this.currentChecked;
-          }
-          let emitVal = !this.state ? this.valueToSet : this.novalue;
+      toggle() {
+        if (!this.isDisabled && !this.readonly) {
+          let emitVal = !this.state ? this.value : this.novalue;
           this.$emit('input', emitVal);
           this.$emit('change', emitVal, this);
         }
@@ -193,13 +174,13 @@ return {
        * @fires click
        */
       onClick(ev){
-        if (this.isDisabled || this.readonly){
+        if (this.isDisabled || this.readonly) {
           ev.preventDefault();
         }
         else {
-          this.$emit('beforechange', ev, this.currentChecked);
+          this.$emit('beforechange', ev, this.state);
           if (!ev.defaultPrevented) {
-            this.toggle();
+            this.click(ev);
           }
         }
       },
@@ -226,11 +207,23 @@ return {
      * @emits input
      */
     mounted(){
-      if ( this.currentChecked && !this.state ){
+      if (this.checked && !this.state) {
         this.toggle();
       }
-      if ( !this.currentChecked && !this.state ){
+      if (!this.checked && !this.state) {
         //this.$emit('input', this.novalue);
+      }
+    },
+    watch: {
+      /**
+       * @watch checked
+       * @param {Boolean} newValue
+       * @fires toggle
+       */
+      checked(newValue){
+        if (newValue !== this.state) {
+          this.toggle();
+        }
       }
     }
   };
