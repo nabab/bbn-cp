@@ -20,6 +20,10 @@ return {
       bbn.cp.mixins.input
     ],
     props: {
+      noRouter: {
+        type: Boolean,
+        default: false
+      },
       /**
        * Set to true gives the component a rounded appearance.
        * @prop {Boolean} [false] radius
@@ -156,6 +160,11 @@ return {
           bbn.fn.log("GET MENU FN", idx, this.router.getMenuFn(idx));
           return this.router.getMenuFn(idx);
         }
+        else if (this.noRouter) {
+          bbn.fn.log("GET MENU FN", idx, this.source[idx].menu);
+          return this.source[idx].menu || [];
+        }
+        return [];
       },
       clickLi(tabIndex) {
         const tab = this.source[tabIndex];
@@ -204,7 +213,10 @@ return {
      * @emits input
      */
     mounted(){
-      this.router = this.closest('bbn-router');
+      if (!this.noRouter) {
+        this.router = this.closest('bbn-router');
+      }
+
       this.ready = true;
       // If no timeout color won't work
       setTimeout(() => {
