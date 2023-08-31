@@ -1,6 +1,36 @@
 (() => {
-  const startDrag = (e, ele, options) => {
-    if (!!ele.bbnDirectives.draggable.active) {
+  var isDragging = false;
+  var currentEle = false;
+
+  const fnClick = e => {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+  };
+
+  const fnDrag = e => {
+    drag(e, currentEle);
+  };
+
+  const fnEnd = e => {
+    endDrag(e, currentEle);
+    document.removeEventListener('mousemove', fnDrag);
+    setTimeout(() => {
+      document.removeEventListener('click', fnClick, {once: true, capture: true});
+    }, 100);
+    isDragging = false;
+  };
+
+  const fnUp = () => {
+    isDragging = false;
+  };
+
+  const startDrag = (e, ele) => {
+    if (!!ele.bbnDirectives.draggable.active
+      && !isDragging
+    ) {
+      isDragging = true;
+      currentEle = ele;
+      var options = ele.bbnDirectives.draggable.options;
       let ev = new CustomEvent('dragstart', {
         cancelable: true,
         bubbles: true,
@@ -45,35 +75,23 @@
           options.helper.style.width = rect.width + 'px';
           options.helper.style.height = rect.height + 'px';
           options.container[isSelf ? 'appendChild' : 'append'](options.helper);
-          let scroll = options.container.closest('.bbn-scroll');
-          options.scroll = !!scroll && (scroll.bbn !== undefined) ? scroll.bbn : false;
-          /**
-          @todo !!!
-          let v = new Vue({
-            el: '#bbn-draggable-current > *'
-          });
-          */
+          //bbn.cp.createApp(document.querySelector('#bbn-draggable-current > *'));
         }
         ele.bbnDirectives.draggable.pointerEvents = window.getComputedStyle(options.helper).pointerEvents;
         options.helper.style.pointerEvents = 'none';
-        let fnDrag = e => {
-          drag(e, ele, options);
-        };
-        let fnEnd = e => {
-          endDrag(e, ele, options);
-          document.removeEventListener('mousemove', fnDrag);
-        };
+        document.addEventListener('click', fnClick, {once: true, capture: true});
         document.addEventListener('mouseup', fnEnd, {once: true});
         document.addEventListener('mousemove', fnDrag);
       }
     }
   };
 
-  const drag = (e, ele, options) => {
+  const drag = (e, ele) => {
     if (!!ele.bbnDirectives.draggable.active) {
       // we prevent default from the event
       e.stopImmediatePropagation();
       e.preventDefault();
+      var options = ele.bbnDirectives.draggable.options;
       if (options.mode === 'move') {
         let rectContainer = options.container.getBoundingClientRect(),
             rectHelper = options.helper.getBoundingClientRect(),
@@ -178,7 +196,9 @@
         options.helper.style.left = left + 'px';
         options.helper.style.top = top + 'px';
         let style = window.getComputedStyle(options.helper);
-        if ((style.position !== 'absolute') && (style.position !== 'fixed') ) {
+        if ((style.position !== 'absolute')
+          && (style.position !== 'fixed')
+        ) {
           options.helper.style.position = 'absolute';
         }
         ele.bbnDirectives.draggable.mouseX = x;
@@ -188,6 +208,8 @@
         options.helper.style.left = e.pageX + 'px';
         options.helper.style.top = e.pageY + 'px';
       }
+      let scroll = e.target.closest('.bbn-scroll');
+          options.scroll = !!scroll && (scroll.bbn !== undefined) ? scroll.bbn : false;
       if (!!options.scroll
         && (options.scroll.hasScrollY || options.scroll.hasScrollX)
         && !options.scroll.isScrolling
@@ -231,9 +253,7 @@
         if (target
           && (target !== ele)
           && !target.classList.contains('bbn-undroppable')
-          && !!target.bbnDirectives
-          && !!target.bbnDirectives.droppable
-          && !!target.bbnDirectives.droppable.active
+          && !!target.bbnDirectives?.droppable?.active
         ) {
           let ev = new CustomEvent('dragoverdroppable', {
             cancelable: true,
@@ -246,10 +266,13 @@
     }
   };
 
-  const endDrag = (e, ele, options) => {
-    if (!!ele.bbnDirectives.draggable.active) {
+  const endDrag = (e, ele) => {
+    if (!!ele.bbnDirectives.draggable.active
+      && isDragging
+    ) {
       e.preventDefault();
       e.stopImmediatePropagation();
+      var options = ele.bbnDirectives.draggable.options;
       options.helper.style.pointerEvents = ele.bbnDirectives.draggable.pointerEvents;
       let target = options.mode !== 'move' ? e.target : false;
       if (bbn.fn.isDom(target)
@@ -259,8 +282,7 @@
       }
       if (bbn.fn.isDom(target)
         && !target.classList.contains('bbn-undroppable')
-        && !!target.bbnDirectives.droppable
-        && !!target.bbnDirectives.droppable.active
+        && !!target.bbnDirectives?.droppable?.active
       ) {
         let ev = new CustomEvent('beforedrop', {
           cancelable: true,
@@ -282,6 +304,10 @@
           }
         }
       }
+      document.removeEventListener('click', fnClick, {once: true, capture: true});
+      document.removeEventListener('mouseup', fnEnd, {once: true});
+      document.removeEventListener('mousemove', fnDrag);
+      document.removeEventListener('mouseup', fnUp, {once: true});
       if (options.mode !== 'move') {
         options.helper.remove();
       }
@@ -297,6 +323,38 @@
   };
 
   const inserted = (el, binding) => {
+    if (analyzeValue(el, binding)) {
+      // Add the events listener to capture the long press click and start the drag
+      let clickTimeout = 0,
+          holdClick = false;
+      el.bbnDirectives.draggable.onmousedown = ev => {
+        if (!!el.bbnDirectives.draggable.active) {
+          el.bbnDirectives.draggable.mouseX = ev.x;
+          el.bbnDirectives.draggable.mouseY = ev.y;
+          if (clickTimeout) {
+            clearTimeout(clickTimeout);
+          }
+          if (ev.button === 0) {
+            holdClick = true;
+            clickTimeout = setTimeout(() => {
+              if (holdClick) {
+                startDrag(ev, el);
+              }
+            }, 150);
+          }
+        }
+      };
+      el.addEventListener('mousedown', el.bbnDirectives.draggable.onmousedown);
+      el.bbnDirectives.draggable.onmouseup = ev => {
+        if (!!el.bbnDirectives.draggable.active) {
+          holdClick = false;
+        }
+      };
+      el.addEventListener('mouseup', el.bbnDirectives.draggable.onmouseup);
+    }
+  };
+
+  const analyzeValue = (el, binding)  => {
     if (el.bbnDirectives === undefined) {
       el.bbnDirectives = bbn.fn.createObject();
     }
@@ -315,7 +373,7 @@
       }
       let options = bbn.fn.createObject(),
           asArg = !!binding.arg && binding.arg.length,
-          asMods = bbn.fn.isArray(binding.modifiers) && !!binding.modifiers.length,
+          asMods = bbn.fn.isArray(binding.modifiers) && binding.modifiers.length,
           asComponentFromMods = asMods && binding.modifiers.includes('component'),
           asContainerFromMods = asMods && binding.modifiers.includes('container'),
           asModeFromMods = asMods && binding.modifiers.includes('mode'),
@@ -351,10 +409,12 @@
           options = binding.value;
           if (asComponentFromMods) {
             if ((options.component === undefined)
-              || (bbn.fn.isObject(options.component) && !bbn.fn.numProperties(options.component))
-              || (bbn.fn.isString(options.component) && !options.component.length)
+              || (bbn.fn.isObject(options.component)
+                && !bbn.fn.numProperties(options.component))
+              || (bbn.fn.isString(options.component)
+                && !options.component.length)
             ) {
-              throw new Error(bbn._('No "component" property found'));
+              bbn.fn.error(bbn._('No "component" property found'));
               throw bbn._('No "component" property found');
             }
             component = options.component;
@@ -363,7 +423,7 @@
             if ((options.container === undefined)
               || !bbn.fn.isDom(options.container)
             ) {
-              throw new Error(bbn._('No "container" property found or not a DOM element'));
+              bbn.fn.error(bbn._('No "container" property found or not a DOM element'));
               throw bbn._('No "container" property found or not a DOM element');
             }
             container = options.container;
@@ -372,7 +432,7 @@
             if ((options.data === undefined)
               || !bbn.fn.isObject(options.data)
             ) {
-              throw new Error(bbn._('No "data" property found or not an object'));
+              bbn.fn.error(bbn._('No "data" property found or not an object'));
               throw bbn._('No "data" property found or not an object');
             }
             data = options.data;
@@ -381,7 +441,7 @@
             if ((options.mode === undefined)
               || !bbn.fn.isString(options.mode)
             ) {
-              throw new Error(bbn._('No "mode" property found or not a string'));
+              bbn.fn.error(bbn._('No "mode" property found or not a string'));
               throw bbn._('No "mode" property found or not a string');
             }
             mode = options.mode;
@@ -391,7 +451,7 @@
               || (!bbn.fn.isString(options.helper)
                 && !bbn.fn.isDom(options.helper))
             ) {
-              throw new Error(bbn._('No "helper" property found or not a string or not a DOM element'));
+              bbn.fn.error(bbn._('No "helper" property found or not a string or not a DOM element'));
               throw bbn._('No "helper" property found or not a string or not a DOM element');
             }
             helper = options.helper;
@@ -421,39 +481,38 @@
         options.helperElement = helper;
       }
       el.bbnDirectives.draggable.options = options;
-      // Add the events listener to capture the long press click and start the drag
-      let clickTimeout = 0,
-          holdClick = false;
-      el.bbnDirectives.draggable.onmousedown = ev => {
-        if (!!el.bbnDirectives.draggable.active) {
-          el.bbnDirectives.draggable.mouseX = ev.x;
-          el.bbnDirectives.draggable.mouseY = ev.y;
-          if (clickTimeout) {
-            clearTimeout(clickTimeout);
-          }
-          if (ev.button === 0) {
-            holdClick = true;
-            clickTimeout = setTimeout(() => {
-              if (holdClick) {
-                startDrag(ev, el, el.bbnDirectives.draggable.options);
-              }
-            }, 150);
-          }
-        }
-      };
-      el.addEventListener('mousedown', el.bbnDirectives.draggable.onmousedown);
-      el.bbnDirectives.draggable.onmouseup = ev => {
-        if (!!el.bbnDirectives.draggable.active) {
-          holdClick = false;
-        }
-      };
-      el.addEventListener('mouseup', el.bbnDirectives.draggable.onmouseup);
+      return true;
     }
     else {
       el.dataset.bbn_draggable = false;
       el.bbnDirectives.draggable = bbn.fn.createObject({
         active: false
       });
+      return false;
+    }
+  };
+
+  const setOff = el => {
+    el.dataset.bbn_draggable = false;
+    if (el.bbnDirectives === undefined) {
+      el.bbnDirectives = bbn.fn.createObject();
+    }
+    if (el.bbnDirectives.draggable === undefined) {
+      el.bbnDirectives.draggable = bbn.fn.createObject();
+    }
+    if (!!el.bbnDirectives.draggable.active) {
+      if (bbn.fn.isFunction(el.bbnDirectives.draggable.onmousedown)) {
+        el.removeEventListener('mousedown', el.bbnDirectives.draggable.onmousedown);
+      }
+      if (bbn.fn.isFunction(el.bbnDirectives.draggable.onmouseup)) {
+        el.removeEventListener('mouseup', el.bbnDirectives.draggable.onmouseup);
+      }
+    }
+    el.bbnDirectives.draggable = bbn.fn.createObject({
+      active: false
+    });
+    if (el.classList.contains('bbn-draggable')) {
+      el.classList.remove('bbn-draggable');
     }
   };
 
@@ -466,35 +525,12 @@
         if (binding.oldValue === false) {
           inserted(el, binding);
         }
-        else {
-          el.dataset.bbn_draggable = true;
-          if (!el.classList.contains('bbn-draggable')) {
-            el.classList.add('bbn-draggable');
-          }
+        else if (!isDragging){
+          analyzeValue(el, binding);
         }
       }
       else {
-        el.dataset.bbn_draggable = false;
-        if (el.bbnDirectives === undefined) {
-          el.bbnDirectives = bbn.fn.createObject();
-        }
-        if (el.bbnDirectives.draggable === undefined) {
-          el.bbnDirectives.draggable = bbn.fn.createObject();
-        }
-        if (!!el.bbnDirectives.draggable.active) {
-          if (bbn.fn.isFunction(el.bbnDirectives.draggable.onmousedown)) {
-            el.removeEventListener('mousedown', el.bbnDirectives.draggable.onmousedown);
-          }
-          if (bbn.fn.isFunction(el.bbnDirectives.draggable.onmouseup)) {
-            el.removeEventListener('mouseup', el.bbnDirectives.draggable.onmouseup);
-          }
-        }
-        el.bbnDirectives.draggable = bbn.fn.createObject({
-          active: false
-        });
-        if (el.classList.contains('bbn-draggable')) {
-          el.classList.remove('bbn-draggable');
-        }
+        setOff(el);
       }
     }
   });

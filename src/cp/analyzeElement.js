@@ -212,7 +212,7 @@
                   exp: value,
                   hash: bbn.fn.hash(value),
                   modifiers: modifiers,
-                  valueName: main[1] || null,
+                  arg: main[1] || null,
                   oldValue: undefined,
                   lastUpdate: null
                 });
