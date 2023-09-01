@@ -208,11 +208,13 @@
                   res.directives = bbn.fn.createObject();
                 }
 
+                let directiveArg = attrName.match(new RegExp(/\:{1}([a-z]+)/g));
+                let directiveMod = attrName.match(new RegExp(/\.{1}([a-z]+)/g));
                 res.directives[a] = bbn.fn.createObject({
                   exp: value,
                   hash: bbn.fn.hash(value),
-                  modifiers: modifiers,
-                  arg: main[1] || null,
+                  modifiers: !!directiveMod ? bbn.fn.map(directiveMod, m => bbn.fn.substr(m, 1)) : [],
+                  arg: !!directiveArg ? bbn.fn.substr(directiveArg[0], 1) : null,
                   oldValue: undefined,
                   lastUpdate: null
                 });

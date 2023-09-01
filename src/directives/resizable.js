@@ -68,9 +68,9 @@
       // we prevent default from the event
       e.stopImmediatePropagation();
       e.preventDefault();
-      let rectContainer = ele.bbnDirectives.resizable.container.getBoundingClientRect(),
+      let rectCont = ele.bbnDirectives.resizable.container.getBoundingClientRect(),
           rectEle = ele.getBoundingClientRect(),
-          style = window.getComputedStyle(ele),
+          styleEle = window.getComputedStyle(ele),
           styleContainer = window.getComputedStyle(ele.bbnDirectives.resizable.container),
           x = bbn.fn.roundDecimal(e.x, 0),
           y = bbn.fn.roundDecimal(e.y, 0),
@@ -79,28 +79,36 @@
           yMovement = bbn.fn.roundDecimal(ele.bbnDirectives.resizable.mouseY - y, 0),
           width = rectEle.width + (!!modes.left ? xMovement : -xMovement),
           height = rectEle.height + (!!modes.top ? yMovement : -yMovement),
+          isAbs = styleEle.position === 'absolute',
+          isFixed = styleEle.position === 'fixed',
           element = {
-            minWidth: parseFloat(style.minWidth) || 10,
-            maxWidth: parseFloat(style.maxWidth) || rectContainer.width,
-            minHeight: parseFloat(style.minHeight) || 10,
-            maxHeight: parseFloat(style.maxHeight) || rectContainer.height,
+            minWidth: ((parseFloat(styleEle.paddingLeft) || 0) +
+              (parseFloat(styleEle.paddingRight) || 0) +
+              (parseFloat(styleEle.borderLeft) || 0) +
+              (parseFloat(styleEle.borderRight) || 0)) || 1,
+            maxWidth: rectCont.width,
+            minHeight: ((parseFloat(styleEle.paddingTop) || 0) +
+              (parseFloat(styleEle.paddingBottom) || 0) +
+              (parseFloat(styleEle.borderTop) || 0) +
+              (parseFloat(styleEle.borderBottom) || 0)) || 1,
+            maxHeight: rectCont.height,
             margin: {
-              top: parseFloat(style.marginTop) || 0,
-              right: parseFloat(style.marginRight) || 0,
-              bottom: parseFloat(style.marginBottom) || 0,
-              left: parseFloat(style.marginLeft) || 0,
+              top: parseFloat(styleEle.marginTop) || 0,
+              right: parseFloat(styleEle.marginRight) || 0,
+              bottom: parseFloat(styleEle.marginBottom) || 0,
+              left: parseFloat(styleEle.marginLeft) || 0,
             },
             padding : {
-              top: parseFloat(style.paddingTop) || 0,
-              right: parseFloat(style.paddingRight) || 0,
-              bottom: parseFloat(style.paddingBottom) || 0,
-              left: parseFloat(style.paddingLeft) || 0
+              top: parseFloat(styleEle.paddingTop) || 0,
+              right: parseFloat(styleEle.paddingRight) || 0,
+              bottom: parseFloat(styleEle.paddingBottom) || 0,
+              left: parseFloat(styleEle.paddingLeft) || 0
             },
             border : {
-              top: parseFloat(style.borderTop) || 0,
-              right: parseFloat(style.borderRight) || 0,
-              bottom: parseFloat(style.borderBottom) || 0,
-              left: parseFloat(style.borderLeft) || 0
+              top: parseFloat(styleEle.borderTop) || 0,
+              right: parseFloat(styleEle.borderRight) || 0,
+              bottom: parseFloat(styleEle.borderBottom) || 0,
+              left: parseFloat(styleEle.borderLeft) || 0
             }
           },
           container = {
@@ -122,58 +130,41 @@
               bottom: parseFloat(styleContainer.borderBottom) || 0,
               left: parseFloat(styleContainer.borderLeft) || 0
             }
-          },
-          wt = element.padding.left +
-            element.padding.right +
-            element.border.left +
-            element.border.right,
-          ht = element.padding.top +
-            element.padding.bottom +
-            element.border.top +
-            element.border.bottom,
-          mtx = element.margin.left + element.margin.right,
-          mty = element.margin.top + element.margin.bottom;
-      if (element.minWidth < wt) {
-        element.minWidth = wt;
+          };
+      element.margin.totalX = element.margin.left + element.margin.right;
+      element.margin.totalY = element.margin.top + element.margin.bottom;
+      container.margin.totalX = container.margin.left + container.margin.right;
+      container.margin.totalY = container.margin.top + container.margin.bottom;
+      container.padding.totalX = container.padding.left + container.padding.right;
+      container.padding.totalY = container.padding.top + container.padding.bottom;
+      if (element.maxWidth > (rectCont.width - container.padding.totalX - element.margin.totalX)) {
+        element.maxWidth = rectCont.width - container.padding.totalX - element.margin.totalX;
       }
-      if (element.minHeight < ht) {
-        element.minHeight = ht;
+
+      if (element.maxHeight > (rectCont.height - container.padding.totalY - element.margin.totalY)) {
+        element.maxHeight = rectCont.height - container.padding.totalY - element.margin.totalY;
       }
-      if (element.maxWidth > (rectContainer.width - mtx)) {
-        element.maxWidth = rectContainer.width - mtx;
-      }
-      if (element.maxHeight > (rectContainer.height - mty)) {
-        element.maxHeight = rectContainer.height - mty;
-      }
+
       width = width < element.minWidth ?
         element.minWidth :
         (width > element.maxWidth ? element.maxWidth : width);
       height = height < element.minHeight ?
         element.minHeight :
         (height > element.maxHeight ? element.maxHeight : height);
-      if (((!!modes.left && xMovement)
-          || (!!modes.top && yMovement))
-        && (style.position !== 'absolute')
-        && (style.position !== 'fixed')
-      ) {
-        ele.style.position = 'absolute';
-      }
-      bbn.fn.log('aaaaa', width, element.maxWidth, rectEle)
       if ((!!modes.left || !!modes.right) && xMovement) {
         if (!!modes.left) {
+          const minLeft = rectCont.left +
+            container.padding.left +
+            container.border.left +
+            element.margin.left;
           var tmpLeft = rectEle.left - xMovement;
-          if (tmpLeft < rectContainer.left) {
-            xMovement = rectContainer.left - tmpLeft;
+          if (tmpLeft < minLeft) {
+            xMovement = minLeft - tmpLeft;
             width -= xMovement;
-            tmpLeft = rectContainer.left;
+            tmpLeft = minLeft;
           }
         }
-        else {
-          if ((rectEle.right + xMovement) > rectContainer.right) {
-            xMovement = (rectEle.right + xMovement) - rectContainer.right;
-            width -= xMovement;
-          }
-        }
+
         if (width !== rectEle.width) {
           let detail = bbn.fn.createObject({
                 from: !!modes.left ? 'left' : 'right',
@@ -189,7 +180,14 @@
           ele.dispatchEvent(ev);
           if (!ev.defaultPrevented) {
             if (!!modes.left && xMovement) {
-              ele.style.left = tmpLeft + 'px';
+              if (!isAbs && !isFixed) {
+                isAbs = true;
+                ele.style.position = 'absolute';
+              }
+              if (isAbs) {
+                tmpLeft -= rectCont.left;
+              }
+              ele.style.left = tmpLeft - element.margin.left + 'px';
             }
             ele.style.width = width + 'px';
             if (ele.bbn !== undefined) {
@@ -206,21 +204,18 @@
       }
       if ((!!modes.top || !!modes.bottom) && yMovement) {
         if (!!modes.top) {
-          bbn.fn.log('yMovement', yMovement)
-          var tmpTop = ele.offsetTop - yMovement;
-          if (tmpTop < rectContainer.top) {
-            yMovement = rectContainer.top - tmpTop;
+          const minTop = rectCont.top +
+            container.padding.top +
+            container.border.top +
+            element.margin.top;
+          var tmpTop = rectEle.top - yMovement;
+          if (tmpTop < minTop) {
+            yMovement = minTop - tmpTop;
             height -= yMovement;
-            tmpTop = rectContainer.top;
+            tmpTop = minTop;
           }
         }
-        else {
-          if ((rectEle.bottom + yMovement) > rectContainer.bottom) {
-            yMovement = (rectEle.bottom + yMovement) - rectContainer.bottom;
-            height -= yMovement;
-          }
-        }
-        bbn.fn.log('aaaa', height, rectEle.height, yMovement, tmpTop)
+
         if (height !== rectEle.height) {
           let detail = bbn.fn.createObject({
                 from: !!modes.top ? 'top' : 'bottom',
@@ -236,7 +231,14 @@
           ele.dispatchEvent(ev);
           if (!ev.defaultPrevented) {
             if (!!modes.top && yMovement) {
-              ele.style.top = tmpTop + 'px';
+              if (!isAbs && !isFixed) {
+                isAbs = true;
+                ele.style.position = 'absolute';
+              }
+              if (isAbs) {
+                tmpTop -= rectCont.top;
+              }
+              ele.style.top = tmpTop - element.margin.top + 'px';
             }
             ele.style.height = height + 'px';
             if (ele.bbn !== undefined) {
