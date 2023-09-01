@@ -81,6 +81,7 @@
           height = rectEle.height + (!!modes.top ? yMovement : -yMovement),
           isAbs = styleEle.position === 'absolute',
           isFixed = styleEle.position === 'fixed',
+          toSetAbs = false,
           element = {
             minWidth: ((parseFloat(styleEle.paddingLeft) || 0) +
               (parseFloat(styleEle.paddingRight) || 0) +
@@ -166,39 +167,20 @@
         }
 
         if (width !== rectEle.width) {
-          let detail = bbn.fn.createObject({
-                from: !!modes.left ? 'left' : 'right',
-                movement: xMovement,
-                size: width,
-                oldSize: rectEle.width
-              }),
-              ev = new CustomEvent('resize', {
-                cancelable: true,
-                bubbles: true,
-                detail: detail
-              });
+          let ev = makeEvent(!!modes.left ? 'left' : 'right', xMovement, width, rectEle.width);
           ele.dispatchEvent(ev);
           if (!ev.defaultPrevented) {
             if (!!modes.left && xMovement) {
               if (!isAbs && !isFixed) {
+                toSetAbs = true;
                 isAbs = true;
-                ele.style.position = 'absolute';
               }
               if (isAbs) {
                 tmpLeft -= rectCont.left;
               }
               ele.style.left = tmpLeft - element.margin.left + 'px';
             }
-            ele.style.width = width + 'px';
-            if (ele.bbn !== undefined) {
-              ele.bbn.$emit('userresize', ev, detail);
-              if (!ev.defaultPrevented
-                && (ele.bbn.parentResizer !== undefined)
-                && bbn.fn.isFunction(ele.bbn.parentResizer.onResize)
-              ) {
-                ele.bbn.parentResizer.onResize();
-              }
-            }
+            setSize(ele, styleEle.height, width + 'px', toSetAbs);
           }
         }
       }
@@ -217,44 +199,55 @@
         }
 
         if (height !== rectEle.height) {
-          let detail = bbn.fn.createObject({
-                from: !!modes.top ? 'top' : 'bottom',
-                movement: yMovement,
-                size: height,
-                oldSize: rectEle.height
-              }),
-              ev = new CustomEvent('userresize', {
-                cancelable: true,
-                bubbles: true,
-                detail: detail
-              });
+          let ev = makeEvent(!!modes.top ? 'top' : 'bottom', yMovement, height, rectEle.height);
           ele.dispatchEvent(ev);
           if (!ev.defaultPrevented) {
             if (!!modes.top && yMovement) {
               if (!isAbs && !isFixed) {
+                toSetAbs = true;
                 isAbs = true;
-                ele.style.position = 'absolute';
               }
               if (isAbs) {
                 tmpTop -= rectCont.top;
               }
               ele.style.top = tmpTop - element.margin.top + 'px';
             }
-            ele.style.height = height + 'px';
-            if (ele.bbn !== undefined) {
-              ele.bbn.$emit('userresize', ev, detail);
-              if (!ev.defaultPrevented
-                && (ele.bbn.parentResizer !== undefined)
-                && bbn.fn.isFunction(ele.bbn.parentResizer.onResize)
-              ) {
-                ele.bbn.parentResizer.onResize();
-              }
-            }
+            setSize(ele, height + 'px', styleEle.width, toSetAbs);
           }
         }
       }
       ele.bbnDirectives.resizable.mouseX = x;
       ele.bbnDirectives.resizable.mouseY = y;
+    }
+  };
+
+  const makeEvent = (from, movement, size, oldSize) => {
+    return new CustomEvent('userresize', {
+      cancelable: true,
+      bubbles: true,
+      detail: bbn.fn.createObject({
+        from: from,
+        movement: movement,
+        size: size,
+        oldSize: oldSize
+      })
+    });
+  };
+
+  const setSize = (ele, height, width, abs) => {
+    ele.style.height = height;
+    ele.style.width = width;
+    if (abs) {
+      ele.style.position = 'absolute';
+    }
+    if (ele.bbn !== undefined) {
+      ele.bbn.$emit('userresize', ev, detail);
+      if (!ev.defaultPrevented
+        && (ele.bbn.parentResizer !== undefined)
+        && bbn.fn.isFunction(ele.bbn.parentResizer.onResize)
+      ) {
+        ele.bbn.parentResizer.onResize();
+      }
     }
   };
 
