@@ -1,47 +1,9 @@
 (() => {
+  var dragOver = false;
+  var mouseOver = false;
+
   const inserted = (el, binding) => {
-    if (el.bbnDirectives === undefined) {
-      el.bbnDirectives = bbn.fn.createObject();
-    }
-    if (el.bbnDirectives.droppable === undefined) {
-      el.bbnDirectives.droppable = bbn.fn.createObject();
-    }
-    if ((binding.value !== false)
-      && !el.classList.contains('bbn-undroppable')
-    ) {
-      el.dataset.bbn_droppable = true;
-      el.bbnDirectives.droppable = bbn.fn.createObject({
-        active: true
-      });
-      if (!el.classList.contains('bbn-droppable')) {
-        el.classList.add('bbn-droppable');
-      }
-      let options = bbn.fn.createObject(),
-          asArg = !!binding.arg && binding.arg.length,
-          asMods = bbn.fn.isArray(binding.modifiers) && !!binding.modifiers.length,
-          asDataFromMods = asMods && binding.modifiers.includes('data'),
-          data = bbn.fn.createObject(),
-          dragOver = false,
-          mouseOver = false;
-      if (asArg) {
-        if (binding.arg === 'data') {
-          data = binding.arg;
-        }
-      }
-      else if (bbn.fn.isObject(binding.value)) {
-        options = binding.value;
-        if (asDataFromMods) {
-          if ((options.data === undefined)
-            || !bbn.fn.isObject(options.data)
-          ) {
-            throw new Error(bbn._('No "data" property found or not an object'));
-            throw bbn._('No "data" property found or not an object');
-          }
-          data = options.data;
-        }
-      }
-      options.data = data;
-      el.bbnDirectives.droppable.options = options;
+    if (analyzeValue(el, binding)) {
       el.bbnDirectives.droppable.onmouseenter = e => {
         if (!!el.bbnDirectives.droppable.active) {
           mouseOver = true;
@@ -75,7 +37,7 @@
         ) {
           dragOver = bbn.fn.createObject({
             from: e.detail,
-            to: options
+            to: el.bbnDirectives.droppable.options
           });
           let ev = new CustomEvent('dragover', {
             cancelable: true,
@@ -125,11 +87,87 @@
       };
       el.addEventListener('beforedrop', el.bbnDirectives.droppable.onbeforedrop);
     }
+  };
+
+  const analyzeValue = (el, binding) => {
+    if (el.bbnDirectives === undefined) {
+      el.bbnDirectives = bbn.fn.createObject();
+    }
+    if (el.bbnDirectives.droppable === undefined) {
+      el.bbnDirectives.droppable = bbn.fn.createObject();
+    }
+    if ((binding.value !== false)
+      && !el.classList.contains('bbn-undroppable')
+    ) {
+      el.dataset.bbn_droppable = true;
+      el.bbnDirectives.droppable = bbn.fn.createObject({
+        active: true
+      });
+      if (!el.classList.contains('bbn-droppable')) {
+        el.classList.add('bbn-droppable');
+      }
+      let options = bbn.fn.createObject(),
+          asArg = !!binding.arg && binding.arg.length,
+          asMods = bbn.fn.isArray(binding.modifiers) && binding.modifiers.length,
+          asDataFromMods = asMods && binding.modifiers.includes('data'),
+          data = bbn.fn.createObject();
+      if (asArg) {
+        if (binding.arg === 'data') {
+          data = binding.arg;
+        }
+      }
+      else if (bbn.fn.isObject(binding.value)) {
+        options = binding.value;
+        if (asDataFromMods) {
+          if ((options.data === undefined)
+            || !bbn.fn.isObject(options.data)
+          ) {
+            bbn.fn.error(bbn._('No "data" property found or not an object'));
+            throw bbn._('No "data" property found or not an object');
+          }
+          data = options.data;
+        }
+      }
+      options.data = data;
+      el.bbnDirectives.droppable.options = options;
+      return true;
+    }
     else {
       el.dataset.bbn_droppable = false;
       el.bbnDirectives.droppable = bbn.fn.createObject({
         active: false
       });
+      return false;
+    }
+  };
+
+  const setOff = el => {
+    el.dataset.bbn_droppable = false;
+    if (el.bbnDirectives === undefined) {
+      el.bbnDirectives = bbn.fn.createObject();
+    }
+    if (el.bbnDirectives.droppable === undefined) {
+      el.bbnDirectives.droppable = bbn.fn.createObject();
+    }
+    if (!!el.bbnDirectives.droppable.active) {
+      if (bbn.fn.isFunction(el.bbnDirectives.droppable.onmouseenter)) {
+        el.removeEventListener('mouseenter', el.bbnDirectives.droppable.onmouseenter);
+      }
+      if (bbn.fn.isFunction(el.bbnDirectives.droppable.onmouseleave)) {
+        el.removeEventListener('mouseleave', el.bbnDirectives.droppable.onmouseleave);
+      }
+      if (bbn.fn.isFunction(el.bbnDirectives.droppable.ondragoverdroppable)) {
+        el.removeEventListener('dragoverdroppable', el.bbnDirectives.droppable.ondragoverdroppable);
+      }
+      if (bbn.fn.isFunction(el.bbnDirectives.droppable.onbeforedrop)) {
+        el.removeEventListener('beforedrop', el.bbnDirectives.droppable.onbeforedrop);
+      }
+    }
+    el.bbnDirectives.droppable = bbn.fn.createObject({
+      active: false
+    });
+    if (el.classList.contains('bbn-droppable')) {
+      el.classList.remove('bbn-droppable');
     }
   };
 
@@ -137,46 +175,17 @@
     inserted: inserted,
     update: (el, binding) => {
       if ((binding.value !== false)
-      && !el.classList.contains('bbn-undroppable')
+        && !el.classList.contains('bbn-undroppable')
       ) {
         if (binding.oldValue === false) {
           inserted(el, binding);
         }
-        else {
-          el.dataset.bbn_droppable = true;
-          if (!el.classList.contains('bbn-droppable')) {
-            el.classList.add('bbn-droppable');
-          }
+        else if (!el.dataset.bbn_droppable_over){
+          analyzeValue(el, binding);
         }
       }
       else {
-        el.dataset.bbn_droppable = false;
-        if (el.bbnDirectives === undefined) {
-          el.bbnDirectives = bbn.fn.createObject();
-        }
-        if (el.bbnDirectives.droppable === undefined) {
-          el.bbnDirectives.droppable = bbn.fn.createObject();
-        }
-        if (!!el.bbnDirectives.droppable.active) {
-          if (bbn.fn.isFunction(el.bbnDirectives.droppable.onmouseenter)) {
-            el.removeEventListener('mouseenter', el.bbnDirectives.droppable.onmouseenter);
-          }
-          if (bbn.fn.isFunction(el.bbnDirectives.droppable.onmouseleave)) {
-            el.removeEventListener('mouseleave', el.bbnDirectives.droppable.onmouseleave);
-          }
-          if (bbn.fn.isFunction(el.bbnDirectives.droppable.ondragoverdroppable)) {
-            el.removeEventListener('dragoverdroppable', el.bbnDirectives.droppable.ondragoverdroppable);
-          }
-          if (bbn.fn.isFunction(el.bbnDirectives.droppable.onbeforedrop)) {
-            el.removeEventListener('beforedrop', el.bbnDirectives.droppable.onbeforedrop);
-          }
-        }
-        el.bbnDirectives.droppable = bbn.fn.createObject({
-          active: false
-        });
-        if (el.classList.contains('bbn-droppable')) {
-          el.classList.remove('bbn-droppable');
-        }
+        setOff(el);
       }
     }
   });

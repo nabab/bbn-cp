@@ -232,6 +232,19 @@
     return c.text;
   };
 
+  const setDirectives = function(node, hashName) {
+    const c = x();
+    if (bbn.fn.numProperties(node.directives)) {
+      for (let n in node.directives) {
+        if (node.directives[n].exp) {
+          x(c, sp, `_node.directives['${n}'].value = _sIr('${node.directives[n].hash}', ${node.directives[n].exp}, ${hashName});`);
+        }
+      }
+    }
+
+    return c.text;
+  }
+
   const treatElement = function(cp, node, hashName) {
     const c = x();
     if (node.tag) {
@@ -684,6 +697,7 @@
       else if (node.tag) {
 
         c.text += setProperties(node, hashName);
+        c.text += setDirectives(node, hashName);
         if (treatEle) {
           c.text += treatElement(cp, node, hashName);
         }
