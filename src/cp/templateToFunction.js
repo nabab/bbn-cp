@@ -710,7 +710,7 @@
       else if (node.tag) {
 
         c.text += setProperties(node, hashName);
-        c.text += setDirectives(node, hashName);
+        //c.text += setDirectives(node, hashName);
         if (treatEle) {
           c.text += treatElement(cp, node, hashName);
         }

@@ -73,14 +73,14 @@ return {
   },
   data(){
     let isJSON = this.value && bbn.fn.isString(this.value);
-    let obj = this.value ? (isJSON ? JSON.parse(this.value) : bbn.fn.clone(this.value)) : [];
-    if (!bbn.fn.isArray(obj)) {
+    let value = this.value ? (isJSON ? JSON.parse(this.value) : bbn.fn.clone(this.value)) : [];
+    if (!bbn.fn.isArray(value)) {
       throw new Error("The value of bbn-values must be an array");
     }
     return {
       isJSON: isJSON,
-      obj: obj,
-      currentValue: obj.slice(),
+      currentValue: value,
+      oldValue: bbn.fn.clone(value),
       currentInput: ''
     };
   },
@@ -97,7 +97,7 @@ return {
           }
         }
 
-        return !this.obj.includes(a);
+        return !this.currentValue.includes(a);
       });
     },
     keydown(e){
@@ -135,17 +135,17 @@ return {
       this.currentInput = value.value;
       this.add();
     },
-    isValid(){
-      return bbn.fn.isArray(this.obj);
+    isValidValue(){
+      return bbn.fn.isArray(this.currentValue);
     },
     add(){
       if (!this.isDisabled
         && !this.readonly
         && this.currentInput.length
-        && (this.obj.indexOf(this.currentInput) === -1)
+        && (this.currentValue.indexOf(this.currentInput) === -1)
       ) {
-        this.obj.push(this.currentInput);
-        this.emitInput(this.isJSON ? JSON.stringify(this.obj) : this.obj);
+        this.currentValue.push(this.currentInput);
+        this.emitInput(this.isJSON ? JSON.stringify(this.currentValue) : this.currentValue);
         this.currentInput = '';
         this.$refs.input.focus();
       }
@@ -154,8 +154,8 @@ return {
       if (!this.isDisabled
         && !this.readonly
       ) {
-        this.obj.splice(idx, 1);
-        this.emitInput(this.isJSON ? JSON.stringify(this.obj) : this.obj);
+        this.currentValue.splice(idx, 1);
+        this.emitInput(this.isJSON ? JSON.stringify(this.currentValue) : this.currentValue);
       }
     },
     getText(val){
