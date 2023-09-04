@@ -251,16 +251,6 @@
   const treatElement = function(cp, node, hashName) {
     const c = x();
     if (node.tag) {
-      if (bbn.fn.numProperties(node.directives)) {
-        for (let n in node.directives) {
-          if (node.directives[n].exp) {
-            x(c, sp, `_node.directives['${n}'].value = _sIr('${node.directives[n].hash}', ${node.directives[n].exp}, ${hashName});`);
-            x(c, sp, `if (!$_go['${node.id}'] && (_gIs('${node.directives[n].hash}', ${hashName}) !== "OK")) {`);
-            x(c, sp, `  $_go['${node.id}'] = true;`);
-            x(c, sp, `}`);
-          }
-        }
-      }
       if (node.model) {
         bbn.fn.iterate(node.model, (m, prop) => {
           x(c, sp, `_sIr('${m.hash}', ${m.exp}, ${hashName});`);
@@ -271,6 +261,16 @@
 
         x(c, sp, ``);
         x(c, sp, ``);
+      }
+      if (bbn.fn.numProperties(node.directives)) {
+        for (let n in node.directives) {
+          if (node.directives[n].exp) {
+            x(c, sp, `_sIr('${node.directives[n].hash}', ${node.directives[n].exp}, ${hashName});`);
+            x(c, sp, `if (!$_go['${node.id}'] && (_gIs('${node.directives[n].hash}', ${hashName}) !== "OK")) {`);
+            x(c, sp, `  $_go['${node.id}'] = true;`);
+            x(c, sp, `}`);
+          }
+        }
       }
 
       // Start if ($_go)
@@ -331,6 +331,16 @@
           }
           else {
             x(c, sp, `  _tmp.model['${n}'].value = _tmp.props['${n}'] = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
+          }
+        }
+      }
+      if (bbn.fn.numProperties(node.directives)) {
+        for (let n in node.directives) {
+          if (node.directives[n].exp) {
+            x(c, sp, `if (_gIs('${node.directives[n].hash}', ${hashName}) !== "OK") {`);
+            x(c, sp, `  _node.directives['${n}'].value = _gIv('${node.directives[n].hash}', ${hashName});`);
+            x(c, sp, `  bbn.cp.updateDirectives({"${n}":_node.directives['${n}']}, _eles['${node.id}']);`);
+            x(c, sp, `}`);
           }
         }
       }

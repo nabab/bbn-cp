@@ -600,9 +600,6 @@ class bbnCp {
     }
 
     if (oldEle && !replace) {
-      if (!d.comment && d.directives) {
-        bbn.cp.updateDirectives(d.directives, oldEle);
-      }
       return oldEle;
     }
 
