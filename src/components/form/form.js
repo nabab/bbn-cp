@@ -164,6 +164,15 @@ return {
         default: false
       },
       /**
+       * Set to true to keep the scrollbars visible
+       *
+       * @prop {Boolean} [false] keepScrollVisible
+       */
+      keepScrollVisible: {
+        type: Boolean,
+        default: false
+      },
+      /**
        * The buttons shown on the form.
        *
        * @prop {Boolean|Array} ['cancel', 'submit'] buttons

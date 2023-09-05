@@ -27,7 +27,8 @@
                  :scroll-also="scrollAlso"
                  :initial="currentX"
                  @scroll="scrollHorizontal"
-                 :offset="offsetX"/>
+                 :offset="offsetX"
+                 :keep-visible="keepVisible"/>
   <bbn-scrollbar v-if="scrollReady && hasScrollY"
                  :hidden="isResizing || hiddenY"
                  orientation="vertical"
@@ -36,5 +37,6 @@
                  :scroll-also="scrollAlso"
                  :initial="currentY"
                  @scroll="scrollVertical"
-                 :offset="offsetY"/>
+                 :offset="offsetY"
+                 :keep-visible="keepVisible"/>
 </div>

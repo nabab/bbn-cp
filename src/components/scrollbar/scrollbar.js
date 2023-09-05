@@ -104,6 +104,13 @@ return {
         default(){
           return [0, 0];
         }
+      },
+      /**
+       * @prop {Boolean} [false] keepVisible
+       */
+      keepVisible: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -259,8 +266,8 @@ return {
        */
       barStyle(){
         return {
-          display: this.isVisible ? 'block' : 'none',
-          opacity: this.show && this.shouldBother ? 1 : 0,
+          display: (this.isVisible || this.keepVisible) ? 'block' : 'none',
+          opacity: (this.show || this.keepVisible) && this.shouldBother ? 1 : 0,
           [this.isVertical ? 'top' : 'left'] : this.offsetStart + 'px',
           [this.isVertical ? 'right' : 'bottom']: this.offsetEnd + 'px'
         }
