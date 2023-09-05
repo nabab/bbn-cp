@@ -158,11 +158,11 @@
               <bbn-portal :disabled="!routed || !getPane(a)"
                           bbn-forget="!splittable"
                           :ref="'portal-' + (isVisual ? a.view.url : a.url)"
-                          :selector="getPortalSelector(a)">
+                        :selector="(isVisual && a.view.pane) || (!isVisual && a.pane) ? '#' + (a.view?.pane || a.pane) + slashToHyphen(isVisual ? a.view.url : a.url) : null">
                 <slot v-if="(isVisual && a.view.real) || a.real"
                       class="bbn-router-container-fake"
                       :ref="'ct-' + (isVisual ? a.view.url : a.url)"/>
-                <bbn-container v-else-if="!component && !a.pane"
+                <bbn-container v-else-if="!component"
                               :visual="isVisual"
                               v-bind="isVisual ? a.view : a"/>
                 <bbn-container v-else-if="component"

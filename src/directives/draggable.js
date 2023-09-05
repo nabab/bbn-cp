@@ -323,6 +323,7 @@
   };
 
   const inserted = (el, binding) => {
+    bbn.fn.warning("DRAGGABLE INSERTED");
     if (analyzeValue(el, binding)) {
       // Add the events listener to capture the long press click and start the drag
       let clickTimeout = 0,
@@ -519,6 +520,7 @@
   bbn.cp.directives['bbn-draggable'] = bbn.fn.createObject({
     inserted: inserted,
     update: (el, binding) => {
+      bbn.fn.warning("DRAGGABLE UPDATED");
       if ((binding.value !== false)
         && !el.classList.contains('bbn-undraggable')
       ) {

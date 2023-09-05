@@ -309,6 +309,13 @@
           x(c, sp, `  _tmp.model['${n}'].value = _tmp.props['${n}'] = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
         }
       }
+      if (bbn.fn.numProperties(node.directives)) {
+        for (let n in node.directives) {
+          if (node.directives[n].exp) {
+            x(c, sp, `_tmp.directives['${n}'].value = _gIv('${node.directives[n].hash}', ${hashName});`);
+          }
+        }
+      }
       x(c, sp, `  _eles['${node.id}'] = await _t.$createElement(_tmp, _parents.at(-1));`);
       x(c, sp, `  if (_parents.at(-1) === _t.$el) {`);
       x(c, sp, `    $_final.push({ele: _eles['${node.id}'], position: $_num});`);
@@ -339,7 +346,8 @@
           if (node.directives[n].exp) {
             x(c, sp, `if (_gIs('${node.directives[n].hash}', ${hashName}) !== "OK") {`);
             x(c, sp, `  _node.directives['${n}'].value = _gIv('${node.directives[n].hash}', ${hashName});`);
-            x(c, sp, `  bbn.cp.updateDirectives({"${n}":_node.directives['${n}']}, _eles['${node.id}']);`);
+            x(c, sp, `  _eles['${node.id}'].bbnSchema.directives['${n}'].value = _gIv('${node.directives[n].hash}', ${hashName});`);
+            x(c, sp, `  bbn.cp.updateDirectives({"${n}": _node.directives['${n}']}, _eles['${node.id}']);`);
             x(c, sp, `}`);
           }
         }

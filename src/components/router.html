@@ -155,7 +155,7 @@
             <bbn-portal v-for="a in isVisual ? visualList : views"
                         :key="isVisual ? a.view.uid : (component && componentSource && componentUrl ? componentSource[componentUrl] : a.uid)"
                         :disabled="!routed || !getPane(a)"
-                        :selector="getPane(a) ? '#' + getPane(a) + slashToHyphen(isVisual ? a.view.url : a.url) : null">
+                        :selector="(isVisual && a.view.pane) || (!isVisual && a.pane) ? '#' + (a.view?.pane || a.pane) + slashToHyphen(isVisual ? a.view.url : a.url) : null">
               <bbn-container v-if="(isVisual ? !a.view.real : !a.real) && !component && (!a.pane || routed)"
                             :key="isVisual ? a.view.uid : a.uid"
                             :visual="isVisual"

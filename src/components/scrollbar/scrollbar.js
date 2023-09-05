@@ -329,6 +329,7 @@ return {
             // Movement in pixel
             let newStart = this.isVertical ? e.pageY : e.pageX;
             let movement = newStart - this.start;
+            bbn.fn.warning(newStart + '/' + movement);
             if ( movement && this.setSliderPos(this.sliderPos + movement)) {
               this.adjustFromBar();
             }
