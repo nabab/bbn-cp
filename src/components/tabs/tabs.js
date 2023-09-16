@@ -156,20 +156,24 @@ return {
         return '';
       },
       getMenuFn(idx) {
+        if (this.source[idx]?.idx) {
+          idx = this.source[idx].idx;
+        }
+
         if (this.router) {
-          bbn.fn.log("GET MENU FN", idx, this.router.getMenuFn(idx));
           return this.router.getMenuFn(idx);
         }
         else if (this.noRouter) {
-          bbn.fn.log("GET MENU FN", idx, this.source[idx].menu);
+          //bbn.fn.log("GET MENU FN", idx, this.source[idx].menu);
           return this.source[idx].menu || [];
         }
+
         return [];
       },
       clickLi(tabIndex) {
         const tab = this.source[tabIndex];
         if ( !tab.disabled && (tabIndex !== this.value)) {
-          bbn.fn.log("TABS CHANGING TO " + tabIndex);
+          //bbn.fn.log("TABS CHANGING TO " + tabIndex);
           this.emitInput(tabIndex)
         }
       },
@@ -198,6 +202,13 @@ return {
           this.selectedBarColor = this.source[v] ? this.getFontColor(v) : null;
           this.updateScroll();
         })
+      },
+      source: {
+        deep: true,
+        handler() {
+          bbn.fn.log("CHANGING TABS SOURCE");
+          this.$forceUpdate();
+        }
       }
     },
     updated() {
@@ -212,7 +223,7 @@ return {
      * @fires toggle
      * @emits input
      */
-    mounted(){
+    mounted() {
       if (!this.noRouter) {
         this.router = this.closest('bbn-router');
       }

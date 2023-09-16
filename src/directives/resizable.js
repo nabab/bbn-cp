@@ -366,9 +366,6 @@
   };
 
   const analyzeValue = (el, binding) => {
-    if (el.bbnDirectives === undefined) {
-      el.bbnDirectives = bbn.fn.createObject();
-    }
     if (el.bbnDirectives.resizable === undefined) {
       el.bbnDirectives.resizable = bbn.fn.createObject();
     }

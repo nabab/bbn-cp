@@ -495,9 +495,6 @@
 
   const setOff = el => {
     el.dataset.bbn_draggable = false;
-    if (el.bbnDirectives === undefined) {
-      el.bbnDirectives = bbn.fn.createObject();
-    }
     if (el.bbnDirectives.draggable === undefined) {
       el.bbnDirectives.draggable = bbn.fn.createObject();
     }

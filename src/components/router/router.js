@@ -922,8 +922,15 @@ return {
        */
       updateVisualStyleContainer() {
         bbn.fn.warning("updateVisualStyleContainer");
+        if (!this.visualStyleContainer) {
+          this.visualStyleContainer = bbn.fn.createObject();
+        }
+        else if (!this.isVisual) {
+          this.visualStyleContainer = bbn.fn.createObject();
+        }
+
         if (!this.isVisual) {
-          return {};
+          return;
         }
 
         bbn.fn.iterate(this.views, view => {

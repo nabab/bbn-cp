@@ -544,6 +544,14 @@ class bbnCp {
         configurable: false
       });
 
+      if (d.directives) {
+        Object.defineProperty(ele, 'bbnDirectives', {
+          value: bbn.fn.createObject(),
+          writable: false,
+          configurable: false
+        });
+      }
+
       if (loopInfo) {
         Object.defineProperty(ele, 'bbnLoopVars', {
           value: loopInfo,

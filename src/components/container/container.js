@@ -318,6 +318,10 @@ return {
       hidden: {
         type: [Boolean, Function],
         default: false
+      },
+      portal: {
+        type: [String, HTMLElement, Boolean],
+        default: false
       }
     },
     data(){

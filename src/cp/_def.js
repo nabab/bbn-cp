@@ -359,6 +359,7 @@ class bbnCp {
             const queue = bbn.cp.queue.splice(0, bbn.cp.queue.length);
             let i = 0;
             let time = bbn.fn.timestamp();
+            const todo = [];
             while (queue[i]) {
               if (!queue[i].cp.$isBusy && (queue[i].force || (time - queue[i].cp.$lastLaunch > bbn.cp.tickDelay))) {
                 //bbn.fn.log("UPDATING")
@@ -374,15 +375,20 @@ class bbnCp {
               else {
                 const queueElement = bbn.fn.getRow(bbn.cp.queue, {cp: queue[i].cp});
                 if (queueElement) {
-                  queueElement.fns.push(...queue[i].fns);
+                  queueElement.fns.unshift(...queue[i].fns.reverse());
                 }
                 else {
-                  bbn.cp.queue.unshift(queue[i]);
+                  todo.push(queue[i]);
                 }
                 //bbn.fn.log(["I++", i, queue[i].cp.$isBusy, queueElement, queue[i].cp]);
                 i++;
               }
             }
+
+            if (todo.length) {
+              bbn.cp.queue.unshift(...todo);
+            }
+
             bbn.cp.isRunning = false;
           }
         },

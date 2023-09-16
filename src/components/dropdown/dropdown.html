@@ -75,49 +75,41 @@
          v-model="value"
          ref="element"
          :name="name">
-  <bbn-portal bbn-forget="!portalSelector || isInsideFloater"
-              :selector="portalSelector"
-              v-if="!popup
-              && filteredData.length
-              && !isDisabled
-              && !readonly
-              && ready
-              && !native
-              && (isOpened || preload)">
-    <bbn-floater v-if="filteredData.length
-                      && !isDisabled
-                      && !readonly
-                      && ready
-                      && !native
-                      && (isOpened || preload)"
-                      v-show="isOpened"
-                :element="asMobile ? undefined : $el"
-                :max-height="asMobile ? undefined : maxHeight"
-                :min-width="$el.clientWidth"
-                :width="asMobile ? '100%' : undefined"
-                :height="asMobile ? '100%' : undefined"
-                ref="list"
-                @mouseover="isOverDropdown = true"
-                @mouseenter="isOverDropdown = true"
-                @mouseleave="isOverDropdown = false"
-                :uid="sourceValue"
-                :item-component="realComponent"
-                @ready="attachList"
-                @select="select"
-                :children="null"
-                :suggest="true"
-                :selected="value ? [value] : []"
-                @hide="isOpened = false"
-                :source="filteredData"
-                :source-text="sourceText"
-                :source-value="sourceValue"
-                :source-url="sourceUrl"
-                :source-icon="sourceIcon"
-                :title="floaterTitle"
-                :buttons="asMobile ? realButtons : []"
-                :groupable="groupable"
-                :source-group="sourceGroup"
-                :group-component="groupComponent"
-                :group-style="groupStyle"/>
-  </bbn-portal>
+  <bbn-floater v-if="!popup
+                    && filteredData.length
+                    && !isDisabled
+                    && !readonly
+                    && ready
+                    && !native
+                    && (isOpened || preload)"
+              v-show="isOpened"
+              bbn-portal="portalSelector && !isInsideFloater ? portalSelector : false"
+              :element="asMobile ? undefined : $el"
+              :max-height="asMobile ? undefined : maxHeight"
+              :min-width="$el.clientWidth"
+              :width="asMobile ? '100%' : undefined"
+              :height="asMobile ? '100%' : undefined"
+              ref="list"
+              @mouseover="isOverDropdown = true"
+              @mouseenter="isOverDropdown = true"
+              @mouseleave="isOverDropdown = false"
+              :uid="sourceValue"
+              :item-component="realComponent"
+              @ready="attachList"
+              @select="select"
+              :children="null"
+              :suggest="true"
+              :selected="value ? [value] : []"
+              @hide="isOpened = false"
+              :source="filteredData"
+              :source-text="sourceText"
+              :source-value="sourceValue"
+              :source-url="sourceUrl"
+              :source-icon="sourceIcon"
+              :title="floaterTitle"
+              :buttons="asMobile ? realButtons : []"
+              :groupable="groupable"
+              :source-group="sourceGroup"
+              :group-component="groupComponent"
+              :group-style="groupStyle"/>
 </div>

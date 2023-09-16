@@ -67,35 +67,33 @@
          v-model="value"
          ref="element"
          :name="name">
-  <component :is="!!portalSelector && !isInsideFloater ? 'bbn-portal' : 'div'"
-             :selector="portalSelector">
-    <bbn-floater v-if="!popup
-                    && filteredData.length
-                    && !isDisabled
-                    && !readonly
-                    && !native
-                    && ready
-                    && isOpened"
-                :element="asMobile ? undefined : $el"
-                :max-height="asMobile ? undefined : maxHeight"
-                :min-width="$el.clientWidth"
-                :width="asMobile ? '100%' : undefined"
-                :height="asMobile ? '100%' : undefined"
-                ref="list"
-                :children="null"
-                :source-value="sourceValue"
-                :source-text="sourceText"
-                :source-url="sourceUrl"
-                :source-icon="sourceIcon"
-                :title="floaterTitle"
-                :buttons="asMobile ? realButtons : []"
-                :item-component="realComponent"
-                @mouseenter="isOverDropdown = true"
-                @mouseleave="isOverDropdown = false"
-                @ready="attachList"
-                @select="select"
-                :selected="value ? [value] : []"
-                @close="isOpened = false"
-                :source="filteredData"/>
-  </component>
+  <bbn-floater v-if="!popup
+                  && filteredData.length
+                  && !isDisabled
+                  && !readonly
+                  && !native
+                  && ready
+                  && isOpened"
+              :element="asMobile ? undefined : $el"
+              :max-height="asMobile ? undefined : maxHeight"
+              :min-width="$el.clientWidth"
+              bbn-portal="portalSelector && !isInsideFloater ? portalSelector : false"
+              :width="asMobile ? '100%' : undefined"
+              :height="asMobile ? '100%' : undefined"
+              ref="list"
+              :children="null"
+              :source-value="sourceValue"
+              :source-text="sourceText"
+              :source-url="sourceUrl"
+              :source-icon="sourceIcon"
+              :title="floaterTitle"
+              :buttons="asMobile ? realButtons : []"
+              :item-component="realComponent"
+              @mouseenter="isOverDropdown = true"
+              @mouseleave="isOverDropdown = false"
+              @ready="attachList"
+              @select="select"
+              :selected="value ? [value] : []"
+              @close="isOpened = false"
+              :source="filteredData"/>
 </div>

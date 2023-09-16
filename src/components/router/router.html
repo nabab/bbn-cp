@@ -155,22 +155,22 @@
             </div>
             <template v-for="a in (isVisual ? visualList : views)"
                       :key="isVisual ? a.view.uid : a.uid">
-              <bbn-portal :disabled="!routed || !getPane(a)"
-                          bbn-forget="!splittable"
-                          :ref="'portal-' + (isVisual ? a.view.url : a.url)"
-                        :selector="(isVisual && a.view.pane) || (!isVisual && a.pane) ? '#' + (a.view?.pane || a.pane) + slashToHyphen(isVisual ? a.view.url : a.url) : null">
-                <slot v-if="(isVisual && a.view.real) || a.real"
-                      class="bbn-router-container-fake"
-                      :ref="'ct-' + (isVisual ? a.view.url : a.url)"/>
-                <bbn-container v-else-if="!component"
-                              :visual="isVisual"
-                              v-bind="isVisual ? a.view : a"/>
-                <bbn-container v-else-if="component"
-                              :source="componentSource"
-                              :visual="isVisual"
-                              :component="component"
-                              :url="a.view?.url || a.url || componentSource[componentUrl]"/>
-              </bbn-portal>
+              <slot v-if="(isVisual && a.view.real) || a.real"
+                    class="bbn-router-container-fake"
+                    :style="visualStyleContainer[a.view.url || a.url]"
+                    :ref="'ct-' + (isVisual ? a.view.url : a.url)"/>
+              <bbn-container v-else-if="!component"
+                            :visual="isVisual"
+                            :portal="routed && getPane(a) ? '#' + (a.view?.pane || a.pane) + slashToHyphen(a.view?.url || a.url) : false"
+                            :style="visualStyleContainer[a.view?.url || a.url]"
+                            v-bind="isVisual ? a.view : a"/>
+              <bbn-container v-else-if="component"
+                            :source="componentSource"
+                            :portal="routed && getPane(a) ? '#' + (a.view?.pane || a.pane) + slashToHyphen(a.view?.url || a.url) : false"
+                            :visual="isVisual"
+                            :style="visualStyleContainer[a.view?.url || a.url]"
+                            :component="component"
+                            :url="a.view?.url || a.url || componentSource[componentUrl]"/>
             </template>
           </div>
         </bbn-scroll>
@@ -205,6 +205,7 @@
             <!-- PANE TABS -->
             <bbn-tabs :scrollable="true"
                       :source="pane.tabs"
+                      :key="pane.url"
                       :closable="false"
                       v-model="pane.selected"
                       v-if="routed"
