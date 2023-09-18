@@ -814,13 +814,18 @@ return {
           let loader = bbn.fn.getRow(appui.loaders, {url: url, start: timestamp});
           if (loader) {
             if (history) {
+              if (history.loading) {
+                history.loading = false;
+                history.duration = (new Date()).getTime() - loader.start;
+              }
+
               bbn.fn.iterate(history, (val, prop) => {
                 if (loader[prop] !== val) {
                   loader[prop] = val;
                 }
               });
             }
-            else{
+            else {
               loader.loading = false;
               loader.duration = (new Date()).getTime() - loader.start;
             }

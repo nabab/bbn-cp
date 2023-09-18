@@ -1,3 +1,4 @@
+
 class bbnCp {
 
   constructor(el) {
@@ -446,7 +447,7 @@ class bbnCp {
       for (let n in d.model) {
         if (n === '_default_') {
           if (isComponent) {
-            let modelProp = bbn.cp.statics[tag]?.models?.prop || 'value';
+            let modelProp = bbn.cp.statics[tag]?.cfg?.model?.prop || 'value';
             d.props[modelProp] = d.props._default_;
             delete d.props._default_;
             d.model[modelProp] = d.model._default_;
@@ -1459,7 +1460,7 @@ class bbnCp {
     // Setting up attributes
     bbn.fn.iterate(attr, (value, name) => {
       if (!isComponent) {
-        if (bbn.fn.isString(value)) {
+        if (bbn.fn.isPrimitive(value)) {
           let propName = name;
           if (bbn.cp.badCaseAttributes[name]) {
             propName = bbn.cp.badCaseAttributes[name];
@@ -1496,7 +1497,6 @@ class bbnCp {
         isChanged = true;
       }
     });
-    
 
     if (isChanged) {
       if (isComponent && ele.bbn?.$isMounted) {
@@ -1575,13 +1575,18 @@ class bbnCp {
       const cp = this;
       const bits = name.split('.');
       const realName = bits.shift();
-      let tmp = this.$watcher[realName] || bbn.fn.createObject();
+      if (!this.$watcher[realName]) {
+        this.$watcher[realName] = bbn.fn.createObject();
+      }
+
+      let tmp = this.$watcher[realName];
       if (bits.length) {
         while (bits.length) {
           let n = bits.shift();
           if (!tmp.props) {
             tmp.props = bbn.fn.createObject();
           }
+
           tmp.props[n] = bbn.fn.createObject();
           if (!bits.length) {
             tmp.props[n].handler = bbn.fn.isFunction(a) ? a : a.handler;
@@ -1656,8 +1661,30 @@ class bbnCp {
       };
       Object.defineProperty(this, name, def);
       this.$addNamespace(name, 'data');
+      this.$updateWatcher(name, this.$dataValues[name], true);
       if (this.$isMounted) {
         this.$tick();
+      }
+    }
+  }
+
+
+  $updateWatcher(name, v, init) {
+    if (init || this.$isInit) {
+      if (this.$watcher?.[name]?.handler) {
+        if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
+          throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
+        }
+
+        const oldDataObj = bbnData.getObject(this.$watcher[name].value);
+        const oldV = oldDataObj ? oldDataObj.value : this.$watcher[name].value;
+        const oldHash = this.$watcher[name].hash;
+        this.$watcher[name].hash = bbnData.hash(v);
+        this.$watcher[name].value = v;
+        if (!init && (oldHash !== this.$watcher[name].hash)) {
+          this.$watcher[name].handler.apply(this, [v, oldV]);
+          this.$tick();
+        }
       }
     }
   }
@@ -1677,9 +1704,6 @@ class bbnCp {
       let isMod = true;
       // Will remain the same if not simple Obj/Array
       const oldV = bbnData.getValue(this.$dataValues[name]);
-      if (name === 'currentItems') {
-        bbn.fn.log(["SETTING " + name + " in " + this.$options.name, oldV, v, oldV.length, v.length]);
-      }
       // Getting the bbnData object
       let oldDataObj = bbnData.getObject(oldV);
       if (oldDataObj) {
@@ -1695,22 +1719,7 @@ class bbnCp {
       if (isMod) {
         const newVal = bbnData.treatValue(v, this, name);
         this.$dataValues[name] = newVal;
-        if (this.$isInit) {
-          if (this.$watcher?.[name]?.handler) {
-            if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
-              throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
-            }
-            this.$watcher[name].hash = bbnData.hash(v);
-            this.$watcher[name].value = v;
-            this.$watcher[name].handler.apply(this, [v, oldDataObj ? v : oldV]);
-          }
-
-          //bbn.fn.log("TICKING FOR", name);
-          this.$tick();
-        }
-        else if (this.$watcher?.[name]?.handler) {
-          this.$watcher[name].value = bbnData.hash(v);
-        }
+        this.$updateWatcher(name, newVal);
       }
     }
   }
@@ -1732,6 +1741,7 @@ class bbnCp {
 
     const value = this.$checkPropValue(name, cfg);
     const isDefined = value !== undefined;
+    this.$updateWatcher(name, value, true);
     if (isDefined) {
       this.$realSetProp(name, value);
     }
@@ -1795,6 +1805,7 @@ class bbnCp {
     if (v === this[name]) {
       return;
     }
+
     this.$realSetProp(name, v);
   }
 
@@ -1820,9 +1831,7 @@ class bbnCp {
       configurable: true
     });
 
-    if (this.$isInit && this.$watcher?.[name]) {
-      this.$watcher[name].handler.apply(this, [newValue, original]);
-    }
+    this.$updateWatcher(name, newValue);
 
     if (this.$isMounted) {
       this.$emit('propchange', name, newValue, original);
@@ -1904,20 +1913,7 @@ class bbnCp {
       this.$computed[name].num = this.$computed[name].num < this.$numBuild ? this.$numBuild + 1 : this.$computed[name].num + 1;
       val = bbnData.treatValue(val, this, name);
       this.$computed[name].val = val;
-      if (this.$watcher?.[name]) {
-        if (this.$watcher[name].handler) {
-          //bbn.fn.log(bbn._("Launching watcher for computed %s", name), val, oldValue);
-          this.$watcher[name].handler.call(this, val, oldValue);
-        }
-        if (this.$watcher[name].props) {
-          bbn.fn.iterate(this.$watcher[name].props, (a, n) => {
-            if (a.handler && !bbn.fn.isSame(val[n], oldValue?.[n])) {
-              a.handler.call(this, val[n], oldValue?.[n]);
-            }
-          });
-        }
-      }
-
+      this.$updateWatcher(name, val);
       this.$tick();
       return true;
     }
@@ -2629,3 +2625,4 @@ class bbnCp {
   }
 
 }
+

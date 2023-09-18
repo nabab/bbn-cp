@@ -172,7 +172,7 @@ class bbnCp {
             });
           }
 
-            this.$computed[name].update();
+          this.$computed[name].update();
 
           return bbnData.getValue(this.$computed[name].val);
         }
@@ -184,8 +184,8 @@ class bbnCp {
           return res;
         };
       }
-
       Object.defineProperty(obj, name, def);
+      obj.$updateWatcher(name, obj[name], true);
     },
   
     /**
@@ -335,6 +335,7 @@ class bbnCp {
           }
         });
         if (num < 3) {
+          bbn.fn.log(`REPEAT ${num} times`);
           await bbn.cp.repeatTick(cp, num + 1);
         }
         else {
@@ -343,6 +344,7 @@ class bbnCp {
         }
       }
     },
+
     startTick() {
       if (bbn.cp.interval) {
         throw new Error(bbn._("The tick is already started"));
@@ -370,12 +372,12 @@ class bbnCp {
                     fn.bind(queueElement.cp)();
                   }
                 });
-                await bbn.cp.repeatTick(queueElement.cp);
+                //await bbn.cp.repeatTick(queueElement.cp);
               }
               else {
                 const queueElement = bbn.fn.getRow(bbn.cp.queue, {cp: queue[i].cp});
                 if (queueElement) {
-                  queueElement.fns.unshift(...queue[i].fns.reverse());
+                  queueElement.fns.unshift(...queue[i].fns);
                 }
                 else {
                   todo.push(queue[i]);
@@ -395,6 +397,7 @@ class bbnCp {
         bbn.cp.tickDelay
       );
     },
+
     stopTick() {
       if (!bbn.cp.interval) {
         throw new Error(bbn._("The tick is not started"));

@@ -208,8 +208,8 @@ class bbnData {
       const res = target.unshift(...newArgs);
       const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
       if (dataObj) {
-        bbn.fn.log([dataObj.path, path]);
-        bbn.fn.warning("UNSHIFT");
+        //bbn.fn.log([dataObj.path, path]);
+        //bbn.fn.warning("UNSHIFT");
         dataObj.update();
       }
       else {
@@ -355,15 +355,22 @@ class bbnData {
         else if (!oldObj && !bbn.fn.isSame(oldValue, value)) {
           mod = true;
         }
-
+        
         if (mod) {
           const newVal = bbnData.treatValue(value, component, key, targetObj);
           target[key] = newVal;
           const dataObj = bbnData.getObject(newVal);
+          if (key === 'loading') {
+            bbn.fn.log(["SET LOADING", value, mod, target, targetObj]);
+          }
+
+          targetObj.update(false, key);
+
           if (dataObj) {
             //bbn.fn.log(["SET", dataObj, key, diff, newVal, oldValue, target, '------']);
             dataObj.update();
           }
+
         }
 
         return true;
@@ -379,7 +386,7 @@ class bbnData {
         }
         Object.defineProperty(target, key, description);
         if (targetObj) {
-          targetObj.update();
+          targetObj.update(false, key);
         }
         else {
           bbn.fn.log(target, key, description);
@@ -757,89 +764,64 @@ class bbnData {
    * Update all the components linked to the data object
    * @param {Boolean} deep 
    */
-  update(noParent) {
-    if (this.updater) {
-      clearTimeout(this.updater);
+  update(noParent, key) {
+    bbn.fn.log(["UPDATE", this, this.path + '/' + (key || "no key"), this.value]);
+    let data = this;
+    let lev = 0;
+    /*
+    if (data.root) {
+      bbn.fn.log(["UPDATEBBNDATA", data.root, data]);
     }
-
-    this.updater = setTimeout(() => {
-      let data = this;
-      let lev = 0;
-      /*
-      if (data.root) {
-        bbn.fn.log(["UPDATEBBNDATA", data.root, data]);
-      }
-      */
-      while (data) {
-        bbn.fn.iterate(data.components, (it, cid) => {
-          if (!it?.component) {
-            throw new Error(bbn._("Impossible to find the component %s", cid));
-          }
-
-          if (it.component.$isInit) {
-            let name = this.fullPath(it.component);
-            let bits = name.split('.');
-            /*
-            if (!noParent) {
-              bbn.fn.log(['ON UPDATE', this, name, it.path, lev]);
-            }
-            */
-
-            while (bits.length && !it.component.$watcher?.[name]?.handler) {
-              bits.pop();
-              name = bits.join('.');
-            }
-
-            if (it.component.$watcher?.[name]?.handler) {
-              let oldV = it.component.$watcher[name].value;
-              let v = bbn.fn.getProperty(it.component, name);
-              if (it.component.$isMounted && (!lev || it.component.$watcher[name].deep) ) {
-                //bbn.fn.log(["WATCHER: " + name, oldV, v, it.component, '---']);
-                if (bbnData.hash(v) !== it.component.$watcher[name].hash) {
-                  if (!bbn.fn.isFunction(it.component.$watcher[name].handler)) {
-                    throw new Error(bbn._("Watchers must be function, wrong parameter for %s", name));
-                  }
-                  it.component.$watcher[name].hash = bbnData.hash(v);
-                  it.component.$watcher[name].value = v;
-                  it.component.$watcher[name].num++;
-                  it.component.$watcher[name].handler.apply(this, [v, oldV]);
-                }
-              }
-              else {
-                it.component.$watcher[name].hash = bbnData.hash(v);
-                it.component.$watcher[name].value = v;
-              }
-            }
-
-            /*
-            name = paths.join(".");
-            if (name && (subpathDone.indexOf(name) === -1)) {
-              subpathDone.push(name);
-              const prop = bbn.fn.getProperty(this.root, name);
-              const dataObj = bbnData.getObject(prop);
-              if (dataObj) {
-                //dataObj.updateComponents(true);
-              }
-            }
-            */
-
-            //bbn.fn.log(["TICK", it.component]);
-            //it.component.$tick()
-          }
-        });
-
-
-        if (!lev) {
-          this.updateChildren();
-          if (noParent) {
-            return;
-          }
+    */
+    while (data) {
+      bbn.fn.iterate(data.components, (it, cid) => {
+        if (!it?.component) {
+          throw new Error(bbn._("Impossible to find the component %s", cid));
         }
 
-        data = data.parent;
-        lev++;
+        if (it.component.$isInit) {
+          let name = this.fullPath(it.component);
+          if (!lev && key) {
+            name += '.' + key;
+          }
+
+          let bits = name.split('.');
+          /*
+          if (!noParent) {
+            bbn.fn.log(['ON UPDATE', this, name, it.path, lev]);
+          }
+          */
+
+          while (bits.length) {
+            if (it.component.$watcher?.[name]) {
+              if (bits.length > 1) {
+                bits.shift();
+                it.component.$updateWatcher(name, bbn.fn.getProperty(data.value, bits.join(".")));
+              }
+              else {
+                it.component.$updateWatcher(name, data.value);
+              }
+            }
+            bits.pop();
+            name = bits.join('.');
+          }
+
+          //bbn.fn.log(["TICK", it.component]);
+          it.component.$tick()
+        }
+      });
+
+
+      if (!lev) {
+        this.updateChildren();
+        if (noParent) {
+          return;
+        }
       }
-    }, 1)
+
+      data = data.parent;
+      lev++;
+    }
   }
 
   updateChildren() {
@@ -851,6 +833,7 @@ class bbnData {
   }
 
 }
+
 
 
 class bbnCp {
@@ -2175,7 +2158,7 @@ class bbnCp {
       });
     }
     else if (this.$isBusy) {
-      return;
+      return this.$forceUpdate();
     }
     else {
       this.$isUpdating = true;
@@ -2190,6 +2173,12 @@ class bbnCp {
     const t1 = (new Date()).getTime();
     this.$lastLaunch = t1;
     this.$updateProps();
+    if (!this.$numBuild) {
+      bbn.fn.iterate(this.$watcher, (a, n) => {
+        this.$updateWatcher(n, bbn.fn.getProperty(this, n), true);
+      });
+    }
+
     //this.$updateAllComputed();
     const e = await this.$eval(this);
     const t2 = (new Date()).getTime();
@@ -2425,47 +2414,28 @@ class bbnCp {
    * @returns {undefined}
    */
   $watch(name, a) {
-    if (this.$watcher) {
-      const cp = this;
-      const bits = name.split('.');
-      const realName = bits.shift();
-      let tmp = this.$watcher[realName] || bbn.fn.createObject();
-      if (bits.length) {
-        while (bits.length) {
-          let n = bits.shift();
-          if (!tmp.props) {
-            tmp.props = bbn.fn.createObject();
-          }
-          tmp.props[n] = bbn.fn.createObject();
-          if (!bits.length) {
-            tmp.props[n].handler = bbn.fn.isFunction(a) ? a : a.handler;
-            tmp.props[n].immediate = a.immediate || false;
-            tmp.props[n].deep = a.deep || false;
-            tmp.props[n].value = undefined;
-            tmp.props[n].hash = undefined;
-            tmp.num = 0;
-          }
-          else {
-            tmp = tmp.props[n];
-          }
-        }
-      }
-      else {
-        tmp.handler = (bbn.fn.isFunction(a) ? a : a.handler).bind(this);
-        tmp.immediate = a.immediate || false;
-        tmp.deep = a.deep || false;
-        tmp.value = undefined;
-        tmp.num = 0;
-      }
+    const cp = this;
 
-      if (!this.$watcher[name]) {
-        this.$watcher[name] = tmp;
-      }
+    if (cp.$watcher[name]) {
+      throw new Error("The watcher " + name + " is already defined");
+    }
 
-      // Returns a function to cancel the watcher
-      return () => {
-        delete cp.$watcher[name];
-      }
+    const val = bbn.fn.getProperty(cp, name);
+    let tmp = bbn.fn.createObject({
+      handler: (bbn.fn.isFunction(a) ? a : a.handler).bind(cp),
+      immediate: a.immediate || false,
+      deep: a.deep || false,
+      value: val,
+      hash: bbnData.hash(val),
+      num: 0
+    });
+    //bbn.fn.log(["WATCHING " + name, val, tmp])
+
+    cp.$watcher[name] = tmp;
+
+    // Returns a function to cancel the watcher
+    return () => {
+      delete cp.$watcher[name];
     }
   }
 
@@ -2510,8 +2480,42 @@ class bbnCp {
       };
       Object.defineProperty(this, name, def);
       this.$addNamespace(name, 'data');
+      if (this.$numBuild) {
+        this.$updateWatcher(name, this.$dataValues[name], true);
+      }
       if (this.$isMounted) {
         this.$tick();
+      }
+    }
+  }
+
+
+  $updateWatcher(name, v, init) {
+    if ((init || this.$isInit) && this.$watcher?.[name]) {
+      let lev = 0;
+      const bits = name.split(".");
+      for (let i = bits.length - 1; i > -1; i--) {
+        let name = bits.join('.');
+        if (this.$watcher[name]?.handler) {
+          if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
+            throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
+          }
+  
+          const hash = bbnData.hash(v);
+          if ((!lev || this.$watcher[name].deep) && (hash !== this.$watcher[name].hash)) {
+            let oldDataObj = bbnData.getObject(this.$watcher[name].value);
+            let oldV = oldDataObj ? oldDataObj.value : this.$watcher[name].value;
+            this.$watcher[name].value = lev ? bbn.fn.getProperty(this, name) : v;
+            this.$watcher[name].hash = bbnData.hash(this.$watcher[name].value);
+            this.$watcher[name].num++;
+            if (!init) {
+              this.$watcher[name].handler.apply(this, [this.$watcher[name].value, oldV]);
+              this.$tick();
+            }
+          }
+        }
+        bits.pop();
+        lev++
       }
     }
   }
@@ -2546,22 +2550,7 @@ class bbnCp {
       if (isMod) {
         const newVal = bbnData.treatValue(v, this, name);
         this.$dataValues[name] = newVal;
-        if (this.$isInit) {
-          if (this.$watcher?.[name]?.handler) {
-            if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
-              throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
-            }
-            this.$watcher[name].hash = bbnData.hash(v);
-            this.$watcher[name].value = v;
-            this.$watcher[name].handler.apply(this, [v, oldDataObj ? v : oldV]);
-          }
-
-          //bbn.fn.log("TICKING FOR", name);
-          this.$tick();
-        }
-        else if (this.$watcher?.[name]?.handler) {
-          this.$watcher[name].value = bbnData.hash(v);
-        }
+        this.$updateWatcher(name, newVal);
       }
     }
   }
@@ -2646,6 +2635,7 @@ class bbnCp {
     if (v === this[name]) {
       return;
     }
+
     this.$realSetProp(name, v);
   }
 
@@ -2671,9 +2661,7 @@ class bbnCp {
       configurable: true
     });
 
-    if (this.$isInit && this.$watcher?.[name]) {
-      this.$watcher[name].handler.apply(this, [newValue, original]);
-    }
+    this.$updateWatcher(name, newValue);
 
     if (this.$isMounted) {
       this.$emit('propchange', name, newValue, original);
@@ -2755,20 +2743,7 @@ class bbnCp {
       this.$computed[name].num = this.$computed[name].num < this.$numBuild ? this.$numBuild + 1 : this.$computed[name].num + 1;
       val = bbnData.treatValue(val, this, name);
       this.$computed[name].val = val;
-      if (this.$watcher?.[name]) {
-        if (this.$watcher[name].handler) {
-          //bbn.fn.log(bbn._("Launching watcher for computed %s", name), val, oldValue);
-          this.$watcher[name].handler.call(this, val, oldValue);
-        }
-        if (this.$watcher[name].props) {
-          bbn.fn.iterate(this.$watcher[name].props, (a, n) => {
-            if (a.handler && !bbn.fn.isSame(val[n], oldValue?.[n])) {
-              a.handler.call(this, val[n], oldValue?.[n]);
-            }
-          });
-        }
-      }
-
+      this.$updateWatcher(name, val);
       this.$tick();
       return true;
     }
@@ -2960,6 +2935,7 @@ class bbnCp {
         row = {cp: this, fns: []};
         bbn.cp.queue.push(row);
       }
+
       row.fns.push(resolve);
       //bbn.fn.warning("TICK");
       //console.trace();
@@ -2967,18 +2943,6 @@ class bbnCp {
     });
 
   }
-  /*
-  $tick() {
-    return new Promise(resolve => {
-      if (!bbn.cp.$queue.length) {
-        bbn.cp.$queue.push([]);
-      }
-
-      this.$queue[0].push(resolve);
-    });
-  }
-  */
-
 
   /**
    * Check if there is no conflict between attributes/methods and

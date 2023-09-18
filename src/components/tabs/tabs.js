@@ -198,8 +198,8 @@ return {
     },
     watch: {
       value(v) {
+        this.selectedBarColor = this.source[v] ? this.getFontColor(v) : null;
         this.$nextTick(() => {
-          this.selectedBarColor = this.source[v] ? this.getFontColor(v) : null;
           this.updateScroll();
         })
       },
@@ -212,7 +212,7 @@ return {
       }
     },
     updated() {
-      if (!this.selectedBarColor && this.source[this.value]) {
+      if (this.source[this.value]) {
         this.selectedBarColor = this.getFontColor(this.value);
       }
 

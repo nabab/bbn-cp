@@ -545,7 +545,32 @@ return {
         },
         set(v) {
           bbn.fn.log("SETING SELECTED TAB");
-          this.selected = this.tabsList[v].idx;
+          let done = false;
+          let i = v;
+          while (i > -1) {
+            if (this.tabsList[i]) {
+              this.selected = this.tabsList[i].idx;
+              done = true;
+              break;
+            }
+            i--;
+          }
+
+          if (!done) {
+            i = v;
+            while (i < this.tabsList.length) {
+              if (this.tabsList[i]) {
+                this.selected = this.tabsList[i].idx;
+                done = true;
+                break;
+              }
+              i++;
+            }
+          }
+
+          if (!done) {
+            this.selected = null;
+          }
         }
       },
       isSplittable() {
@@ -1052,10 +1077,15 @@ return {
               });
             }
             else if (this.views[idx] && !this.views[idx].real) {
+              bbn.fn.log("ERMOVE FROM ROUTER " + idx)
               this.$emit('close', idx, onClose);
               let url = this.views[idx].url;
               this.views.splice(idx, 1);
-              this.$delete(this.urls, url);
+              if (this.urls[url]) {
+                this.urls[url].$el.parentNode.removeChild(this.urls[url].$el);
+                this.$delete(this.urls, url);
+              }
+              this.$forceUpdate();
               this.fixIndexes();
               return true;
             }
@@ -3245,17 +3275,9 @@ return {
        * @fires getRef
        * @return {String}
        */
-      getFontColor(idx){
-        if (bbn.fn.isNumber(idx)) {
-          if ( this.views[idx] && this.views[idx].fcolor ){
-            return this.views[idx].fcolor;
-          }
-          let el = this.getRef('title-' + idx);
-          if ( el ){
-            return window.getComputedStyle(el.$el ? el.$el : el).color;
-          }
-        }
-        return '';
+      getFontColor(idx) {
+        return this.views[idx].fcolor || '';
+        //this.views[idx].fcolor = window.getComputedStyle(el.$el ? el.$el : el).color;
       },
       /**s
        * @method getBackgroundColor
@@ -3263,17 +3285,23 @@ return {
        * @fires getRef
        * @return {String}
        */
-      getBackgroundColor(idx){
-        if (bbn.fn.isNumber(idx)) {
-          if ( this.views[idx] && this.views[idx].bcolor ){
-            return this.views[idx].bcolor;
+      getBackgroundColor(idx) {
+        return this.views[idx].bcolor || '';
+        /*
+        if (this.$isMounted && this.views[idx]) {
+          if (!this.views[idx].bcolor) {
+            let el = this.getRef('title-' + idx);
+            if (el) {
+              this.views[idx].bcolor = window.getComputedStyle(el.$el ? el.$el : el).backgroundColor;
+              bbn.fn.log(["GETTING BCOLOR", idx, this.views[idx].bcolor]);
+            }
           }
-          let el = this.getRef('title-' + idx);
-          if ( el ){
-            return window.getComputedStyle(el.$el ? el.$el : el).backgroundColor;
-          }
+
+          return this.views[idx].bcolor;
         }
+
         return '';
+        */
       },
       /**
        * @method getTab

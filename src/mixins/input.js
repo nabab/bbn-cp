@@ -230,7 +230,7 @@
          */
         emitInput(val, name) {
           let eventName = 'input' + (name ? ':' + name : '');
-          bbn.fn.log(`Emitting ${eventName} from ${this.$options.name}`, this);
+          //bbn.fn.log(`Emitting ${eventName} from ${this.$options.name}`, this);
           this.$emit(eventName, val);
         },
         /**

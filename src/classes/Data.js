@@ -360,6 +360,13 @@ class bbnData {
             //bbn.fn.log(["SET", dataObj, key, diff, newVal, oldValue, target, '------']);
             dataObj.update();
           }
+          else if (targetObj) {
+            targetObj.update();
+          }
+          else {
+            bbn.fn.log(target, key, description);
+            bbn.fn.warning("Impossible to get the target object");
+          }
         }
 
         return true;
@@ -790,7 +797,7 @@ class bbnData {
               let oldV = it.component.$watcher[name].value;
               let v = bbn.fn.getProperty(it.component, name);
               if (it.component.$isMounted && (!lev || it.component.$watcher[name].deep) ) {
-                //bbn.fn.log(["WATCHER: " + name, oldV, v, it.component, '---']);
+                bbn.fn.log(["WATCHER: " + name, oldV, v, it.component, '---']);
                 if (bbnData.hash(v) !== it.component.$watcher[name].hash) {
                   if (!bbn.fn.isFunction(it.component.$watcher[name].handler)) {
                     throw new Error(bbn._("Watchers must be function, wrong parameter for %s", name));

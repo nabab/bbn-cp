@@ -208,8 +208,8 @@ return {
       source: {
         deep: true,
         handler(v, ov) {
-          bbn.fn.log("DEEP WATCH ON SOURCE", JSON.stringify(v[0]));
-          this.$tick();
+          bbn.fn.log(["WATCHING LOADBAR SOURCE", v, ov, v === ov])
+          this.$forceUpdate();
         }
       },
       /*
@@ -218,7 +218,6 @@ return {
       },
       */
       info(v) {
-        /*
         if (this.interval) {
           clearInterval(this.interval);
         }
@@ -229,21 +228,20 @@ return {
             if (this.info) {
               this.timeNow = bbn.fn.timestamp();
             }
-          }, 1000);
+          }, 300);
         }
-        */
       }
     },
     /**
      * @event mounted
      */
-    mounted(){
+    mounted() {
       if (this.info) {
         this.interval = setInterval(() => {
           if (this.info) {
             this.timeNow = bbn.fn.timestamp();
           }
-        }, 1000);
+        }, 300);
       }
     },
     /**
