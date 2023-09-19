@@ -25,13 +25,30 @@ class bbnData {
    * @param {Object} value The value to immunize
    * @returns {Object} The immunized value
    */
-  static immunizeValue(value) {
+  static immunizeValue(value, deep) {
     if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor)) {
+      if (value.__bbnData) {
+        const dataObj = bbnData.getObject(value);
+        if (dataObj) {
+          dataObj.unset();
+        }
+      }
+
       Object.defineProperty(value, '__bbnNoData', {
         value: true,
         enumerable: false,
         configurable: false,
         writable: false
+      });
+    }
+      
+    if (deep) {
+      bbn.fn.iterate(value, (v, i) => {
+        try {
+          value[i] = bbnData.immunizeValue(v, true);
+        }
+        catch (e) {
+        }
       });
     }
 
@@ -415,10 +432,12 @@ class bbnData {
    * @param {bbnData} parent If the data is a sub-object of another bbnData object, the parent object
    */
   constructor(data, component, path, parent) {
+    /*
     if (path === 'computed') {
       bbn.fn.log([component, path, parent, data]);
       throw new Error("bbnData cannot be initialized with a computed property");
     }
+    */
 
     if (data instanceof bbnData) {
       throw new Error("bbnData cannot be initialized with a bbnData");
@@ -765,7 +784,7 @@ class bbnData {
    * @param {Boolean} deep 
    */
   update(noParent, key) {
-    bbn.fn.log(["UPDATE", this, this.path + '/' + (key || "no key"), this.value]);
+    //bbn.fn.log(["UPDATE", this, this.path + '/' + (key || "no key"), this.value]);
     let data = this;
     let lev = 0;
     /*
@@ -811,6 +830,9 @@ class bbnData {
         }
       });
 
+      if (data.root) {
+        data.root.$tick();
+      }
 
       if (!lev) {
         this.updateChildren();
@@ -1411,9 +1433,23 @@ class bbnCp {
         });
       }
       if (isComponent) {
+        let realSlots;
+        if (tag === 'bbn-anon') {
+          realSlots = bbn.cp.retrieveSlots(ele.bbnTpl || d.items);
+        }
+        else {
+          realSlots = bbn.fn.clone(ele.constructor.bbnSlots)
+        }
+
+        if (!bbn.fn.numProperties(realSlots)) {
+          realSlots = bbn.fn.createObject({
+            default: []
+          });
+        }
+
         // Outer schema of the component, with the slots
         Object.defineProperty(ele, 'bbnRealSlots', {
-          value: tag === 'bbn-anon' ? bbn.cp.retrieveSlots(ele.bbnTpl || d.items) : bbn.fn.clone(ele.constructor.bbnSlots),
+          value: realSlots,
           writable: false,
           configurable: false
         });
@@ -1508,7 +1544,10 @@ class bbnCp {
     this.$addToElements(ele);
 
     if (bbn.cp.isComponent(target)) {
-      target.bbnSlots.default.push(ele);
+      if (target.bbnSlots.default.length || bbn.fn.removeExtraSpaces(ele.textContent)) {
+        target.bbnSlots.default.push(ele);
+      }
+
       if (target.bbn && target.bbn.$isMounted) {
         target.bbn.$tick();
       }
@@ -1966,7 +2005,7 @@ class bbnCp {
 
     if (replace) {
       //bbn.fn.log("REPLACE", ele);
-      if (isParentComponent && !ele.bbnSchema.comment) {
+      if (isParentComponent && !ele.bbnSchema?.comment) {
         //bbn.fn.log("IN CP " + target.tagName, ele);
         const slot = ele.getAttribute("slot") || 'default';
         if (target.bbnSlots?.[slot]) {
@@ -2016,6 +2055,9 @@ class bbnCp {
       if (isParentComponent) {
         const slot = ele.bbnSchema.props?.slot || 'default';
         if (target.bbnSlots?.[slot]) {
+          if (!ele.bbnSchema && !bbn.fn.removeExtraSpaces(ele.textContent)) {
+            return;
+          }
 
           let search = {bbnId: ele.bbnId};
           if (ele.bbnHash) {
@@ -2416,10 +2458,6 @@ class bbnCp {
   $watch(name, a) {
     const cp = this;
 
-    if (cp.$watcher[name]) {
-      throw new Error("The watcher " + name + " is already defined");
-    }
-
     const val = bbn.fn.getProperty(cp, name);
     let tmp = bbn.fn.createObject({
       handler: (bbn.fn.isFunction(a) ? a : a.handler).bind(cp),
@@ -2510,7 +2548,6 @@ class bbnCp {
             this.$watcher[name].num++;
             if (!init) {
               this.$watcher[name].handler.apply(this, [this.$watcher[name].value, oldV]);
-              this.$tick();
             }
           }
         }
@@ -2551,6 +2588,7 @@ class bbnCp {
         const newVal = bbnData.treatValue(v, this, name);
         this.$dataValues[name] = newVal;
         this.$updateWatcher(name, newVal);
+        this.$tick();
       }
     }
   }

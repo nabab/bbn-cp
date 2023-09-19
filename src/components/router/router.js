@@ -3875,7 +3875,7 @@ return {
       this.$nextTick(() => {
         if (this.$slots.default) {
           for ( let item of this.$slots.default ){
-            if (item.bbnSchema.tag === 'bbn-container') {
+            if (item.bbnSchema?.tag === 'bbn-container') {
               let el = this.$refsElements['ct-' + item.bbnSchema.props.url];
               if (el) {
                 el.parentNode.replaceChild(item, el);

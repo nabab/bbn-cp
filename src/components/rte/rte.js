@@ -26,11 +26,11 @@ return {
       const formatBlock = 'formatBlock';
       const queryCommandState = command => document.queryCommandState(command);
       const queryCommandValue = command => document.queryCommandValue(command);
-      const defaultButtons = {
+      const defaultButtons = bbnData.immunizeValue({
         blockStyle: {
           text: bbn._('Style'),
           active: false,
-          component: {
+          component: bbnData.immunizeValue({
             name: 'bbn-rte-style',
             template: `
               <bbn-dropdown class="bbn-rte-style"
@@ -90,7 +90,7 @@ return {
               this.rte.styleComponent = this;
               this.rte.setStyle();
             }
-          }
+          })
         },
         fontsize: {
           text: bbn._('Font size'),
@@ -518,9 +518,9 @@ return {
             if (url) exec('insertImage', url)
           }
         }
-      };
+      });
       const setButtons = buttons => {
-        let res = [];
+        let res = bbnData.immunizeValue([]);
         if (!buttons.length) {
           buttons = Object.keys(this.defaultButtons);
         }

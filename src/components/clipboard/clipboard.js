@@ -54,7 +54,7 @@ return {
         /**
          * @data {Array} items
          */
-        items: this.source,
+        items: this.source ? this.source.slice() : [],
         /**
          * @data {String} [''] search
          */
@@ -68,9 +68,13 @@ return {
          */
         uid: null,
         /**
-         * @data {Boolean} [0] isOpened
+         * @data {Boolean} [false] isOpened
          */
-        isOpened: false
+        isOpened: false,
+        /**
+         * @data {Boolean} [false] isUpdatingClipboard
+         */
+        isUpdatingClipboard: false
       };
     },
     computed: {},
@@ -495,7 +499,8 @@ return {
        * @emits copy
        */
       items() {
-        if (this.ready) {
+        if (this.ready && !this.isUpdatingClipboard) {
+          this.isUpdatingClipboard = true;
           if (this.items.length > this.max) {
             let i;
             for (i = this.items.length - 1; i >= 0; i--) {
@@ -520,6 +525,7 @@ return {
 
           this.setStorage(this.items.map(a => a.uid), this.getComponentName(), true);
           this.$emit('copy');
+          this.isUpdatingClipboard = false;
         }
       },
       /**

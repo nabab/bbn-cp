@@ -1349,16 +1349,6 @@
             }
           }
         },
-        source: {
-          deep: true,
-          handler(){
-            if (this.ready && !this.editable) {
-              /*
-              this.updateData();
-              */
-            }
-          }
-        },
         /**
          * 
          */

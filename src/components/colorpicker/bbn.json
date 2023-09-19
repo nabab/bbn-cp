@@ -6,6 +6,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "iro.js": ">= 5.0.0"
+    "iro.js": "5.0.*"
   }
 }

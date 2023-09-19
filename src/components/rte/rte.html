@@ -6,17 +6,23 @@
 			 style="min-height: 100%; width: 100%; overflow: visible">
 		<div contenteditable="true"
 		     @focusin="isEditing = true"
+				 @focusout="isEditing = false"
 				 @input="updateContenteditable"
+				 tabindex="0"
 				 class="bbn-rte-element"
+				 style="min-height: 2rem"
 				 ref="element"/>
 		<bbn-floater :scrollable="false"
 								ref="floater"
-								:disatance="50"
-								:visible="isEditing"
+								:distance="50"
+								v-if="isEditing"
+								:visible="true"
+								@focus.stop
 								@focusin="isEditing = true"
 								:element="$el"
 								:opener="_self"
 								bbn-portal="true"
+								bbn-focused="true"
 								position="topLeft"
 								:title="false">
 			<bbn-toolbar :source="currentButtons"

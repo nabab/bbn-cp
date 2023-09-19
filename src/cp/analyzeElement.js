@@ -310,29 +310,29 @@
                       //.replace(/\$/g, (_, g) => '\\$')
                       // replacing double curly braces by dollar and single
                       .replace(/{{(.+?)}}/gs, (_, g1) => '${' + g1 + '}');
-          if (checkEmpty) {
-            let isDynamic = txt.indexOf('${') > -1;
-            let hash = bbn.fn.hash(txt);
-            const item = bbn.fn.createObject({
-              id: idx + '-' + num,
-              text: txt,
-              hash: hash
-            });
-            if (isDynamic) {
-              item.exp = txt;
-            }
-            res.items.push(item);
-            map[idx + '-' + num] = item;
-            num++;
+          let isDynamic = txt.indexOf('${') > -1;
+          let hash = bbn.fn.hash(txt);
+          const item = bbn.fn.createObject({
+            id: idx + '-' + num,
+            text: txt,
+            hash: hash,
+            empty: !checkEmpty
+          });
+          if (isDynamic) {
+            item.exp = txt;
           }
+          res.items.push(item);
+          map[idx + '-' + num] = item;
+          num++;
         }
         else {
           bbn.fn.log("Unknown node", node)
         }
       });
       let isIf = false;
-      let conditionId =null;
-      bbn.fn.each(res.items, (item, idx) => {
+      let conditionId = null;
+      for (let i = 0; i < res.items.length; i++) {
+        let item = res.items[i];
         if (item.condition) {
           if (item.condition.type === 'if') {
             conditionId = bbn.fn.randomString(32);
@@ -349,10 +349,17 @@
             isIf = false;
           }
         }
-        else {
-          isIf = false;
+        else if (isIf) {
+          if (item.empty) {
+            res.items.splice(i, 1);
+            i--;
+          }
+          else {
+           isIf = false;
+          }
         }
-      });
+      }
+
       if (res.condition) {
         res.conditionId = bbn.fn.randomString(32);
       }

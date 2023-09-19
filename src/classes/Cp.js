@@ -1179,6 +1179,9 @@ class bbnCp {
       if (isParentComponent) {
         const slot = ele.bbnSchema.props?.slot || 'default';
         if (target.bbnSlots?.[slot]) {
+          if (!ele.bbnSchema && !bbn.fn.removeExtraSpaces(ele.textContent)) {
+            return;
+          }
 
           let search = {bbnId: ele.bbnId};
           if (ele.bbnHash) {
@@ -1197,6 +1200,7 @@ class bbnCp {
           else {
             target.bbnSlots[slot].push(ele);
           }
+
           this.$addToElements(ele);
         }
       }

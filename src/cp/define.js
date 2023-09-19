@@ -35,7 +35,7 @@
       const cpCfg = bbn.cp.normalizeComponent(obj, publicName);
       Object.freeze(cpCfg);
       const cls = cpCfg.tag && bbn.cp.tagExtensions[cpCfg.tag] ? bbn.cp.tagExtensions[cpCfg.tag] : 'bbnHTML';
-      bbn.cp.statics[name] = bbn.fn.createObject({
+      bbn.cp.statics[name] = bbnData.immunizeValue(bbn.fn.createObject({
         tpl: tmp.res,
         map: tmp.map,
         cls: publicName + 'HTML',
@@ -44,7 +44,7 @@
         models: bbn.cp.retrieveModels(tmp.res),
         slots: bbn.cp.retrieveSlots(tmp.res),
         tag: cpCfg.tag,
-      });
+      }), true);
       if (!bbn.cp.statics[name].slots.default) {
         bbn.cp.statics[name].slots.default = [];
       }

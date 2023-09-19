@@ -6,6 +6,7 @@
     generateCpClass(publicClass, obj) {
       const tag = bbn.fn.camelToCss(publicClass);
       const proto = publicClass + 'Cp';
+      const methods = {};
       let originalProto = 'bbnCp';
       if (obj.tag && bbn.cp.tagExtensions[obj.tag]) {
         originalProto = bbn.cp.tagExtensions[obj.tag] + 'Cp';
@@ -34,6 +35,21 @@ class ${proto} extends bbnCp {
           return {};
         }
       },
+      writable: false,
+      configurable: false
+    });
+    Object.defineProperty(this, '\$methods', {
+      value: bbn.fn.createObject({`;
+      if (obj.methods) {
+        for (let n in obj.methods) {
+          methods[n] = bbn.fn.analyzeFunction(obj.methods[n]);
+          let fn = methods[n];
+          code += `
+          ${fn.name}: ${fn.isAsync ? 'async ' : ''} function(${fn.argString}) ${fn.body},`;
+        }
+      }
+    code+= `
+      }),
       writable: false,
       configurable: false
     });
@@ -130,15 +146,16 @@ class ${proto} extends bbnCp {
         }
       }
 
-      if (obj.methods) {
-        for (let n in obj.methods) {
-          let fn = bbn.fn.analyzeFunction(obj.methods[n]);
-          // for debug
-          //let body = fn.body.replace('{', '{bbn.fn.log("' + n + '");');
-          let body = fn.body;
-          code += `
-  ` + (fn.isAsync ? 'async ' : '') + fn.name + '(' + fn.argString + ') ' + body;
-        }
+      for (let n in methods) {
+        let fn = methods[n];
+        // for debug
+        //let body = fn.body.replace('{', '{bbn.fn.log("' + n + '");');
+        let body = fn.body;
+        code += `
+  get ${fn.name}() {
+    return this.$methods['${fn.name}'].bind(this);
+  };`;
+          
       }
 
       if (obj.computed) {
@@ -222,8 +239,8 @@ class ${proto} extends bbnCp {
         throw new Error(bbn._("If the static method returns it must be an object"));
       }
       bbn.fn.iterate(res, (v, n) => {
-        if (Object[n] === undefined) {
-          this[n] = v;
+        if (this[n] === undefined) {
+          this[n] = bbnData.immunizeValue(v);
         }
         else {
           throw new Error(bbn._("The static method cannot override an existing property"));

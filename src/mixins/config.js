@@ -19,7 +19,9 @@
       beforeCreate() {
         if (this.$slots.default) {
           bbn.fn.each(this.$slots.default, a => {
-            this[this.constructor.config.data].push(a.bbnSchema.props);
+            if (a.bbnSchema) {
+              this[this.constructor.config.data].push(a.bbnSchema.props);
+            }
           });
         }
       }

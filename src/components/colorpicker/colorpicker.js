@@ -367,15 +367,13 @@ return {
         }
       }
     },
-    created() {
-      if (!window.iro) {
-        bbn.fn.error("IRO NEEDED!!");
-      }
-    },
     /**
      * @event mounted
      */
     mounted(){
+      if (!window.iro) {
+        bbn.fn.error("IRO NEEDED!!");
+      }
       this.ready = true;
     },
     /**

@@ -1009,7 +1009,7 @@ return {
         this.$on('appui-notification', (type, data) => {
           if (this.plugins['appui-notification']) {
             if (type === 'message') {
-              let tray = this.getRef('notificationTray')
+              let tray = this.getRegistered('appui-notification-tray')
               if (bbn.cp.isComponent(tray) && bbn.fn.isFunction(tray.receive)) {
                 tray.receive(data);
               }

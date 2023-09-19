@@ -606,6 +606,28 @@
       },
     },
     methods: {
+      init() {
+        if (!this.ready) {
+          this.ready = true;
+          this.onResize(true);
+          this._setMinMax();
+          this.$forceUpdate().then(() => {
+            if (!this.scrollable || this.definedHeight) {
+              this.resizeAfterScroll();
+            }
+            else if (this.content) {
+
+              const sc = this.getRef('scroll');
+              if (sc) {
+                sc.initSize();
+                this.$nextTick(() => {
+                  this.resizeAfterScroll();
+                })
+              }
+            }
+          })
+        }
+      },
       /**
        * Setting up min/max width/height based on environment and properties
        */
@@ -904,6 +926,10 @@
             return;
           }
         }).then(r => {
+          if (!this.isResized) {
+            this.isResized = true;
+          }
+
           if (r) {
             let wasInit = this.isInit;
             if (!this.isInit) {
@@ -913,9 +939,6 @@
             this.isResizing = false;
             this.setResizeMeasures();
             this.updatePosition();
-            if (!this.isResized) {
-              this.isResized = true;
-            }
             //bbn.fn.log("AFTER PROMISE ++++++++++++++", this.isResized)
 
             this.$emit('resize');
@@ -1385,23 +1408,7 @@
      */
     mounted() {
       if (this.isVisible) {
-        this.ready = true;
-        this._setMinMax();
-        this.$forceUpdate().then(() => {
-          if (!this.scrollable || this.definedHeight) {
-            this.resizeAfterScroll();
-          }
-          else if (this.content) {
-
-            const sc = this.getRef('scroll');
-            if (sc) {
-              sc.initSize();
-              this.$nextTick(() => {
-                this.resizeAfterScroll();
-              })
-            }
-          }
-        })
+        this.init();
       }
       
       /* Useful ?
@@ -1524,14 +1531,15 @@
         //bbn.fn.log("CHANGING VISIBle")
       },
       isVisible(v) {
-        //bbn.fn.log("CHANGING VISIBILITY")
+        bbn.fn.log("CHANGING VISIBILITY")
         if (v) {
           if (!this.ready) {
-            this.ready = true;
+            this.init();
           }
           else {
-            //this.onResize(true);
+            this.onResize();
           }
+
           if (this.onOpen) {
             this.onOpen(this);
           }

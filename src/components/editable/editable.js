@@ -775,11 +775,15 @@ return {
               }
             },
             youtube(){
-              return this.source.src.indexOf('youtube') > -1
+              if (this.source.src) {
+                return this.source.src.indexOf('youtube') > -1
+              }
+
+              return false;
             },
             contentStyle(){
               let st = ''
-              if ( this.source.style['border-radius'] ){
+              if ( this.source.style?.['border-radius'] ){
                 st += 'border-radius:' + this.source.style['border-radius'] + ( bbn.fn.isNumber(this.source.style['border-radius']) ? ( 'px;') : ';');
               }
               return st;
