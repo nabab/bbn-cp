@@ -384,6 +384,7 @@
          * @memberof dropdownComponent
          */
         select(item, idx, dataIndex, e) {
+          bbn.fn.log(["SLECT DD", e.defaultPrevented, item, item[this.sourceAction], item[this.uid || this.sourceValue]]);
           if (item && (!e || !e.defaultPrevented)) {
             if (this.sourceAction && item[this.sourceAction] && bbn.fn.isFunction(item[this.sourceAction])) {
               item[this.sourceAction](item);
@@ -391,9 +392,9 @@
             else if (item[this.uid || this.sourceValue] !== undefined) {
               this.emitInput(item[this.uid || this.sourceValue]);
               this.$emit('change', item[this.uid || this.sourceValue], idx, dataIndex, e);
-              this.$nextTick(() => bbn.fn.log(this.$el.bbnSchema));
             }
           }
+
           this.isOpened = false;
         },
         attachList() {
@@ -542,9 +543,7 @@
          * @memberof dropdownComponent
          */
         value() {
-          this.$nextTick(() => {
-            this.currentText = this.currentTextValue;
-          });
+          this.currentText = this.currentTextValue;
         },
         /**
          * Closes the floater menu of the component.

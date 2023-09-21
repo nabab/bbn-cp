@@ -77,10 +77,10 @@
               <!-- If there are no children we leave the white space -->
               <span bbn-if="flat || !numChildren || (level < tree.minExpandLevel)">&nbsp;</span>
               <i bbn-else
-                  :class="{
+                  :class="['bbn-xs', {
                     'nf nf-fa-caret_down': isExpanded,
                     'nf nf-fa-caret_right': !isExpanded
-                  }"/>
+                  }]"/>
             </span>
 
             <!-- The checkobox if selection -->
@@ -132,7 +132,7 @@
                 <!-- Or the default template -->
                 <template bbn-else>
                   <span bbn-if="tree.icons"
-                        class="bbn-tree-node-block-icon">
+                        class="bbn-tree-node-block-icon bbn-right-xsmargin">
                     <!-- If icon is specifically false we leave the white space -->
                     <span bbn-if="data.icon === false"/>
                     <!-- or if it's an image -->

@@ -802,6 +802,7 @@
          * @method select
          */
         select(){
+          bbn.fn.log("SLECT LIST");
           //this.$emit('select', this.currentIndex);
         },
         /**

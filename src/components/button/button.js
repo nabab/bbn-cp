@@ -214,7 +214,7 @@
        * @fires action
        * @emit click
        */
-      click(e){
+      click(e) {
         if (this.url) {
           bbn.fn.link(this.url);
           e.preventDefault();

@@ -25,7 +25,7 @@ class bbnCp {
     return;
   }
   bbn.fn.autoExtend('cp', {
-    tickDelay: 5,
+    tickDelay: 25,
     uid: 0,
     mixins: bbn.fn.createObject(),
     defaults: bbn.fn.createObject(),

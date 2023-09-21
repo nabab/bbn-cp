@@ -2459,6 +2459,11 @@ return {
             })));
           }
 
+          const pager = this.getRef('pager');
+          if (pager) {
+            pager.$forceUpdate();
+          }
+
           this.isTableDataUpdating = false;
         });
       },

@@ -337,7 +337,7 @@ return {
        * @emits increment
        * @emits change
        */
-      increment(event, negative){
+      increment(event, negative) {
         if ( !this.readonly && !this.isDisabled && (negative ? !this.disableDecrease : !this.disableIncrease)){
           let evName = negative ? 'decrement' : 'increment',
               beforeEvName = 'before' + bbn.fn.correctCase(evName),
@@ -350,13 +350,8 @@ return {
           this.$emit(beforeEvName, value, ev);
           if ( !ev.defaultPrevented ){
             this.currentValue = value;
-            this.$nextTick(() => {
-              this.checkMinMax();
-              this.$nextTick(() => {
-                this.$emit(evName, this.currentValue);
-                //this.$emit('change', this.currentValue);
-              });
-            })
+            this.checkMinMax();
+            this.$emit(evName, this.currentValue);
           }
         }
       },

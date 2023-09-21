@@ -96,7 +96,7 @@
               :uid="sourceValue"
               :item-component="realComponent"
               @ready="attachList"
-              @select="select"
+              @select.prevent="select"
               :children="null"
               :suggest="true"
               :selected="value ? [value] : []"

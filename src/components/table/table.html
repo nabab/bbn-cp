@@ -460,6 +460,7 @@
     <bbn-pager class="bbn-table-footer bbn-no-border-right bbn-no-border-left bbn-no-border-bottom"
                v-if="hasPager"
                :item-name="itemName"
+               ref="pager"
                :page-name="pageName"
                :buttons="footerButtons"/>
     <bbn-anon v-else-if="(typeof footer === 'string') || (typeof footer === 'object')"

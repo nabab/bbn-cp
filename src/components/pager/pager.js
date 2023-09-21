@@ -87,7 +87,8 @@ return {
     },
     data(){
       return {
-        numericTimeout: false
+        numericTimeout: false,
+        currentNumericPage:  this.element?.currentPage
       }
     },
     computed: {
@@ -98,16 +99,6 @@ return {
         set(v) {
           if (this.element) {
             this.element.currentPage = v;
-          }
-        }
-      },
-      currentNumericPage: {
-        get(){
-          return this.element?.currentPage;
-        },
-        set(v) {
-          if (this.element) {
-            this.element.currentPage = parseInt(v);
           }
         }
       },
@@ -229,7 +220,7 @@ return {
           if (this.currentPage !== v) {
             this.currentPage = v;
           }
-        }, 500);
+        }, 250);
       }
     }
   };

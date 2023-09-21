@@ -42,7 +42,6 @@
          :class="['bbn-numeric-buttons', 'bbn-radius-top-right', 'bbn-radius-bottom-right', {'bbn-disabled' : !!readonly || isDisabled}]">
       <div :class="[
             'bbn-reactive-block',
-            'bbn-middle',
             'bbn-no-border-top',
             'bbn-no-border-right',
             'bbn-radius-top-right',
@@ -53,15 +52,16 @@
               'bbn-numeric-no-pointer-events' : disableIncrease
             }
           ]"
-          @click="increment"
+          @click="increment()"
           unselectable="on"
-          tabindex="-1"
+          tabindex="0"
           :disabled="disableIncrease">
-        <i class="nf nf-fa-caret_up bbn-middle"/>
+        <div class="bbn-100 bbn-middle">
+          <i class="nf nf-fa-caret_up bbn-middle"/>
+        </div>
       </div>
       <div :class="[
             'bbn-reactive-block',
-            'bbn-middle',
             'bbn-no-border-top',
             'bbn-no-border-bottom',
             'bbn-no-border-right',
@@ -73,11 +73,13 @@
               'bbn-numeric-no-pointer-events' : disableDecrease
             }
           ]"
-          @click="decrement"
+          @click="decrement()"
           unselectable="on"
-          tabindex="-1"
+          tabindex="0"
           :disabled="disableDecrease">
-        <i class="nf nf-fa-caret_down bbn-middle"/>
+        <div class="bbn-100 bbn-middle">
+          <i class="nf nf-fa-caret_down bbn-middle"/>
+        </div>
       </div>
     </div>
   </div>

@@ -154,7 +154,7 @@
               </div>
             </div>
             <template v-for="a in (isVisual ? visualList : views)"
-                      :key="isVisual ? a.view.uid : a.uid">
+                      :key="isVisual ? a.view.url : a.url">
               <slot v-if="(isVisual && a.view.real) || a.real"
                     class="bbn-router-container-fake"
                     :style="visualStyleContainer[a.view.url || a.url]"

@@ -908,6 +908,9 @@
             sp += 2;
             for (let n in tpl[0].events) {
               let ev = tpl[0].events[n];
+
+              x(c, sp, `if (!_eles['-'].bbnSchema?.events?.["${n}"]) {`);
+              sp += 2;
               //x(c, sp, `bbn.fn.log("SETTING EVENT ${n} ON " + _t.$options.name, _ele, ${isAnew});`);
               x(c, sp, `_eles['-'].addEventListener("${n}", _bbnEventObject => {`);
               //x(c, sp, `  bbn.fn.log("EXECUTING EVENT ${n} ${ev.action} ON ${node.tag}", _bbnEventObject.detail);`);
@@ -972,6 +975,8 @@
   
               eventEnd += ');';
               x(c, sp, eventEnd);
+              sp -= 2;
+              x(c, sp, '}');
             }
             sp -= 2;
             x(c, sp, `}`);
