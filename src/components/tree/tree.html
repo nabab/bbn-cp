@@ -158,7 +158,7 @@
           </span>
 
           <!-- If it has children another tree -->
-          <bbn-tree bbn-if="!!numChildren"
+          <bbn-tree bbn-if="numChildren"
                     ref="tree"
                     :key="'tree-' + level + '-' + idx"
                     class="bbn-text"
@@ -178,7 +178,7 @@
                     :multiple="source.multiple !== undefined ? source.multiple : tree.multiple"
                     :uid="uid"
                     :state="treeState"
-                    :opened="!!tree.opened"
+                    :opened="isExpanded"
                     :source-text="tree.sourceText"
                     :source-value="tree.sourceValue"
                     :scrollable="tree.scrollable"/>

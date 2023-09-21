@@ -1576,7 +1576,9 @@
           }
           else if (!v) {
             this.mouseLeaveTimeout = setTimeout(() => {
-              if (!this.isOver) {
+              let ev = new Event('before-hide', {cancelable: true});
+              this.$emit('before-hide', ev);
+              if (!ev.defaultPrevented && !this.isOver) {
                 this.close();
               }
               this.mouseLeaveTimeout = false;

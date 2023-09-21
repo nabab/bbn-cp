@@ -831,6 +831,7 @@ class bbnData {
       });
 
       if (data.root) {
+        //bbn.fn.log(["root", data.root]);
         data.root.$tick();
       }
 
@@ -1544,7 +1545,7 @@ class bbnCp {
     this.$addToElements(ele);
 
     if (bbn.cp.isComponent(target)) {
-      if (target.bbnSlots.default.length || bbn.fn.removeExtraSpaces(ele.textContent)) {
+      if (target.bbnSlots?.default?.length || bbn.fn.removeExtraSpaces(ele.textContent)) {
         target.bbnSlots.default.push(ele);
       }
 
