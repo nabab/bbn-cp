@@ -134,7 +134,7 @@ return {
       init() {
         let cm = window.codemirror6;
         let extensions = this.getExtensions();
-        bbn.fn.log("extensions", extensions, this.extensions);
+        //bbn.fn.log("extensions", extensions, this.extensions);
         let editorStateCfg = {
           doc: this.value,
           extensions: extensions,
@@ -203,9 +203,16 @@ return {
     watch: {
       value(nv) {
         if (this.widget) {
-          this.widget.dispatch({
-            changes: {from: 0, to: this.widget.state.doc.length, insert: nv}
-          });
+          let value = this.widget.state.doc.toString();
+          if (value !== nv) {
+            this.widget.dispatch({
+              changes: {
+                from: 0,
+                to: this.widget.state.doc.length,
+                insert: nv
+              }
+            });
+          }
         }
       }
     }

@@ -208,7 +208,7 @@ return {
       source: {
         deep: true,
         handler(v, ov) {
-          bbn.fn.log(["WATCHING LOADBAR SOURCE", v, ov, v === ov])
+          //bbn.fn.log(["WATCHING LOADBAR SOURCE", v, ov, v === ov])
           this.$forceUpdate();
         }
       },

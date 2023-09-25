@@ -390,7 +390,7 @@
             x(c, sp, `  let $event = _bbnEventObject;`);
             x(c, sp, `  let _bbnEventValue = $event.detail?.args ? $event.detail.args[0] : $event.target?.value;`);
             x(c, sp, `  let oldValue = bbn.fn.isPrimitive(${modelVarName}) ? _sIr("${m.hash}", ${modelVarName}, ${hashName}) : ${modelVarName};`);
-            x(c, sp, `  bbn.fn.log(["ON MODEL CHANGE", _bbnEventName, oldValue, "${modelVarRoot}", _bbnEventValue, _t.$options.name]);`);
+            //x(c, sp, `  bbn.fn.log(["ON MODEL CHANGE", _bbnEventName, oldValue, "${modelVarRoot}", _bbnEventValue, _t.$options.name]);`);
             x(c, sp, `  if (oldValue !== _bbnEventValue) {`);
             if (modelVarRoot === modelVarName) {
               x(c, sp, `    if (Object.hasOwn(_t.$props, "${modelVarRoot}")) {`);
