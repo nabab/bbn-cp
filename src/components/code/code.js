@@ -123,7 +123,7 @@ return {
           this.init();
           return;
         }
-        if (this.extensions.length)
+        if (this.extensions?.length)
           this.init();
         else {
           setTimeout(() => {
@@ -190,9 +190,23 @@ return {
         }
         this.$emit('keydown', event);
       },
+      scrollBottom() {
+        let sc = this.find('div.cm-scroller');
+        if (sc) {
+          sc.scrollTop = sc.scrollHeight;
+        }
+      }
     },
     mounted() {
       this.initUntilExtensionsLoaded(100);
     },
-    watch: {}
+    watch: {
+      value(nv) {
+        if (this.widget) {
+          this.widget.dispatch({
+            changes: {from: 0, to: this.widget.state.doc.length, insert: nv}
+          });
+        }
+      }
+    }
   }

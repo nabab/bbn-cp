@@ -59,13 +59,14 @@ return {
     data() {
       return {
         currentSelectedIndex: this.selectedIndex,
-        overIdx: -1
+        overIdx: -1,
+        isChanging: false
       };
     },
     methods: {
       _enterLi(idx) {
         //bbn.fn.log("ENTER LI");
-        if ((this.overIdx > -1) && (this.overIdx !== idx)) {
+        if ((idx > -1) && (this.overIdx !== idx)) {
           this.overIdx = idx;
           this.getRef('li' + idx).focus();
         }
@@ -117,7 +118,7 @@ return {
           }
         }
         if (this.sourceUrl && item[this.sourceUrl]) {
-          bbn.fn.link(item.url);
+          bbn.fn.link(item[this.sourceUrl]);
         }
 
         this.$emit('select', item, idx, idx2, ev);
@@ -127,13 +128,39 @@ return {
       }*/
     },
     watch: {
+      filteredData: {
+        deep: true,
+        handler() {
+          this.isChanging = true;
+          this.$forceUpdate().then(() => {
+            setTimeout(() => {
+              this.isChanging = false;
+              this.$forceUpdate().then(() => {
+                const floater = this.getRef('floater');
+                if (floater) {
+                  floater.updateData();
+                  floater.onResize(true);
+                }
+              }, 50);
+            })
+          });
+        }
+      },
       overIdx(nv, ov) {
         if (nv > -1) {
-          let fl = this.getRef('floater');
-          if (fl) {
-            // Allows to downsize
-            fl.fullResize();
-          }
+          this.isChanging = true;
+          this.$forceUpdate().then(() => {
+            setTimeout(() => {
+              this.isChanging = false;
+              this.$forceUpdate().then(() => {
+                const floater = this.getRef('floater');
+                if (floater) {
+                  floater.updateData();
+                  floater.onResize(true);
+                }
+              }, 50);
+            })
+          });
         }
       }
     },

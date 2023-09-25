@@ -137,8 +137,8 @@
                     <span bbn-if="data.icon === false"/>
                     <!-- or if it's an image -->
                     <img bbn-elseif="data.icon && (data.icon.indexOf('data:image') === 0)"
-                         :src="data.icon"
-                         alt="">
+                         alt=""
+                         :src="data.icon">
                     <!-- or if it's a class icon -->
                     <i bbn-elseif="data.icon"
                         :class="data.icon"

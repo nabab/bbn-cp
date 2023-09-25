@@ -54,10 +54,10 @@
                    @hook:mounted="selfEmit(true)"
                    :key="li.key"/>
         <component v-else
-                  :is="li.data && li.data.url && !li.data[children] ? 'a' : 'span'"
+                  :is="li.data && li.data[sourceUrl] && !li.data[children] ? 'a' : 'span'"
                   @click.prevent="() => {}"
                   class="bbn-w-100"
-                  :href="li.data && li.data.url ? li.data.url : null"
+                  :href="li.data && li.data[sourceUrl] ? li.data[sourceUrl] : undefined"
                   :key="li.key">
           <span class="space"
                 v-if="selection || (mode === 'options')">
@@ -76,7 +76,7 @@
              :class="['bbn-block', 'bbn-top-right', 'bbn-hspadded', 'bbn-h-100', {
               'bbn-vmiddle': (origin === 'floater')
              }]">
-          <i class="nf nf-fa-chevron_right"/>
+          <i class="nf nf-fa-chevron_right bbn-s"/>
         </div>
         <bbn-floater v-if="isOpened
                       && children
@@ -86,13 +86,13 @@
                     :uid="uid"
                     @select="select"
                     :level="level + 1"
+                    :scroll-hidden="scrollHidden"
                     :mode="li.data.mode || 'free'"
                     :source="li.data[children]"
                     :element="getRef('li' + idx)"
                     :element-width="false"
                     orientation="horizontal"
-                    :item-component="component">
-        </bbn-floater>
+                    :item-component="component"/>
         <bbn-list v-else-if="(origin !== 'floater')
                     && children
                     && li.data[children]
@@ -103,8 +103,7 @@
                   :children="children"
                   :source="li.data[children]"
                   :key="'sublist-' + li.key"
-                  :component="component">
-        </bbn-list>
+                  :component="component"/>
       </li>
     </template>
   </ul>

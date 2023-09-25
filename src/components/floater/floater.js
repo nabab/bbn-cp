@@ -315,7 +315,7 @@
       /**
        * @prop {Boolean} [false] groupable
        */
-       groupable: {
+      groupable: {
         type: Boolean,
         default: false
       },
@@ -344,6 +344,10 @@
       },
       index: {
         type: Number
+      },
+      scrollHidden: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -781,10 +785,10 @@
         if (this.element) {
           let coor = this.element.getBoundingClientRect();
           return {
-            top: this.isHorizontal ? coor.top : coor.bottom,
-            bottom: this.currentMaxHeight - (this.isHorizontal ? coor.bottom : coor.top),
-            left: this.isHorizontal ? coor.right : coor.left,
-            right: this.currentMaxWidth - (this.isHorizontal ? coor.left : coor.right)
+            top: this.isHorizontal ? coor.top : coor.bottom - 1,
+            bottom: this.currentMaxHeight - (this.isHorizontal ? coor.bottom : coor.top + 1),
+            left: this.isHorizontal ? coor.right - 1 : coor.left,
+            right: this.currentMaxWidth - (this.isHorizontal ? coor.left + 1: coor.right)
           };
         }
         else {

@@ -28,13 +28,13 @@
       </span>
     </li>
   </ul>
-  <bbn-floater v-if="ready && filteredData?.[overIdx]?.data?.[children]"
+  <bbn-floater v-if="ready && !isChanging && filteredData?.[overIdx]?.data?.[children]"
                class="bbn-menu-floater"
                ref="floater"
                :min-width="getRef('li' + overIdx).clientWidth"
                :children="children"
-               :auto-hide="true"
                :element="getRef('li' + overIdx)"
+               :scroll-hidden="true"
                :focused="false"
                :source="filteredData[overIdx].data[children]"
                @close="overIdx = -1"

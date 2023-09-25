@@ -184,6 +184,10 @@ return {
         type: [String, Function],
         default: 'url'
       },
+      scrollHidden: {
+        type: Boolean,
+        default: false
+      }
     },
     data(){
       return {

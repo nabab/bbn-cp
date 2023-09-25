@@ -1057,6 +1057,7 @@ return {
           /** @var {Event} onClose close event, cancelable only if not force */
           let onClose = new Event('close');
           this.$emit('beforeClose', idx, onBeforeClose);
+          bbn.fn.log("REMOVING " + this.views[idx].url)
           if (force || !onBeforeClose.defaultPrevented) {
             if (
               !force &&
@@ -1082,11 +1083,12 @@ return {
               let url = this.views[idx].url;
               this.views.splice(idx, 1);
               if (this.urls[url]) {
-                this.urls[url].$el.parentNode.removeChild(this.urls[url].$el);
-                this.$delete(this.urls, url);
+                this.$removeDOM(this.urls[url].$el);
               }
-              this.$forceUpdate();
+
+              this.$delete(this.urls, url);
               this.fixIndexes();
+              this.$forceUpdate();
               return true;
             }
           }
@@ -1162,6 +1164,7 @@ return {
        * @return {Boolean}
        */
        close(idx, force, noCfg) {
+        bbn.fn.log("CLOSING CT")
         let res = this.remove(idx, force);
         if (res) {
           if (this.selected > idx) {
@@ -1188,8 +1191,12 @@ return {
        * @fires isValidIndex
        * @fires getDefaultView
        */
-      add(obj, idx){
+      add(obj, idx) {
         let index;
+        if (this.single && this.views.length) {
+          this.remove(0, true);
+          this.$forceUpdate();
+        }
         //obj must be an object with property url
         if (bbn.fn.isObject(obj) && bbn.fn.isString(obj.url)) {
           obj.url = bbn.fn.replaceAll('//', '/', obj.url);
@@ -1329,7 +1336,8 @@ return {
               }
             }
           }
-          this.fixIndexes()
+          this.fixIndexes();
+          this.$forceUpdate();
         }
       },
       init(url) {
@@ -2343,8 +2351,11 @@ return {
             idx = index === undefined ? this.views.length : index;
           }
 
-          if (toAdd){
-            bbn.fn.log("ADDING ON LOAD");
+          if (this.single) {
+            idx = 0;
+          }
+
+          if (toAdd) {
             this.add({
               url: url,
               title: view?.title ? view.title : bbn._('Loading'),
@@ -2411,24 +2422,6 @@ return {
                   d.source = d.data;
                   delete d.data;
                 }
-                if ( (d.url !== d.current) && this.urls[d.current] ){
-                  bbn.fn.warning("DELETING VIEW CASE.... " + d.current + ' ' + this.urls[d.current].currentIndex);
-                  bbn.fn.log(d.url, bbn.fn.search(this.views, {idx: this.urls[d.current].idx}));
-                  this.remove(this.urls[d.current].currentIndex, true);
-                  callRealInit = false;
-                  /*
-                  this.$on('registered', url => {
-                    if (url === d.url) {
-                      this.$off('registered', url);
-                      let view = bbn.fn.getRow(this.views, {url: url});
-                      if ((this.selected === view.idx) || view.pane) {
-                        this.realInit(url);
-                      }
-                    }
-                  });
-                  */
-                  
-                }
 
                 if ( !d.title || (d.title === bbn._('Loading')) ){
                   if (view && view.title) {
@@ -2449,35 +2442,76 @@ return {
                   d.current = d.url;
                 }
 
-                this.$forceUpdate().then(() => {
-                  let o = bbn.fn.extend(view || bbn.fn.createObject(), d, {loading: false, load: true, real: view?.real || false, loaded: true});
-                  let searchIndex = this.search(o.url);
-                  //bbn.fn.log("Looking for " + o.url);
-                  if ((searchIndex !== false) && this.urls[this.views[searchIndex].url]) {
-                    //this.remove(searchIndex);
-                    bbn.fn.warning("FOUND AND NOT REMOVED " + searchIndex);
-                    this.urls[this.views[searchIndex].url].isLoaded = true;
-                    this.urls[this.views[searchIndex].url].dirty = false;
-                    this.urls[this.views[searchIndex].url].ready = false;
-                    this.urls[this.views[searchIndex].url].init();
-
-                  }
-                  else {
-                    bbn.fn.warning("ADDEDD " + idx);
-                    bbn.fn.log("ADDING AFTER LOAD");
-                    this.add(o, idx);
-                  }
-
-                  if (o.title && !o.pane) {
-                    this.currentTitle = o.title;
-                  }
-                  //this.$forceUpdate();
-                  this.$nextTick(() => {
-                    if (callRealInit) {
-                      this.realInit(d.url);
-                    }
+                if ((d.url !== d.current) && this.urls[d.current]){
+                  let currentIndex = this.urls[d.current].currentIndex;
+                  bbn.fn.warning("DELETING VIEW CASE.... " + d.url + ' / ' + d.current + ' ' + currentIndex);
+                  bbn.fn.log([d.url, this.urls[d.current], this.urls[d.url], Object.keys(this.urls), bbn.fn.search(this.views, {idx: this.urls[d.current].idx})]);
+                  this.remove(currentIndex, true);
+                  this.$forceUpdate().then(() => {
+                    bbn.fn.log("AFTER FU");
+                    const onRegister = url => {
+                      bbn.fn.log(["REGISTERED", url]);
+                      if (url === d.url) {
+                        this.$off('registered', onRegister);
+                        let view = bbn.fn.getRow(this.views, {url: url});
+                        if ((this.selected === view.idx) || view.pane) {
+                          this.realInit(url);
+                        }
+                      }
+                    };
+                    this.$on('registered', onRegister);
+                    let o = bbn.fn.extend(view || bbn.fn.createObject(), d, {loading: false, load: true, real: view?.real || false, loaded: true});
+                    bbn.fn.log(["BEFORE", this.views.length, Object.keys(this.urls)]);
+                    this.add(o, currentIndex);
+                    bbn.fn.log(["AFTER", this.views.length, Object.keys(this.urls)]);
+                    this.$forceUpdate().then(() => {
+                      bbn.fn.log(this.search(o.url), o);
+                      let searchIndex = this.search(o.url);
+                      //bbn.fn.log("Looking for " + o.url);
+                      if (searchIndex !== false) {
+                        //this.activateIndex(searchIndex);
+                        this.selected = searchIndex;
+                      }
+                    });
                   })
-                })
+                  //callRealInit = false;
+                  /*
+                  */
+                  
+                }
+                else {
+                  this.$forceUpdate().then(() => {
+                    let o = bbn.fn.extend(view || bbn.fn.createObject(), d, {loading: false, load: true, real: view?.real || false, loaded: true});
+                    let searchIndex = this.search(o.url);
+                    //bbn.fn.log("Looking for " + o.url);
+                    if ((searchIndex !== false) && this.urls[this.views[searchIndex].url]) {
+                      //this.remove(searchIndex);
+                      bbn.fn.warning("FOUND AND NOT REMOVED " + searchIndex);
+                      this.urls[this.views[searchIndex].url].isLoaded = true;
+                      this.urls[this.views[searchIndex].url].dirty = false;
+                      this.urls[this.views[searchIndex].url].ready = false;
+                      this.urls[this.views[searchIndex].url].init();
+  
+                    }
+                    else {
+                      bbn.fn.warning("ADDEDD " + idx);
+                      bbn.fn.log("ADDING AFTER LOAD");
+                      this.add(o, idx);
+                    }
+  
+                    if (o.title && !o.pane) {
+                      this.currentTitle = o.title;
+                    }
+                    //this.$forceUpdate();
+                    this.$nextTick(() => {
+                      if (callRealInit) {
+                        this.realInit(d.url);
+                      }
+                    })
+                  })
+
+                }
+
               },
               xhr => {
                 this.isLoading = false;

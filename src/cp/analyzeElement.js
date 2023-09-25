@@ -173,7 +173,8 @@
               res.condition = bbn.fn.createObject({
                 type,
                 exp: value,
-                hash
+                // Adding prefix as conditions can be set to false even when the expression is not
+                hash: 'CONDITION' + idx.toString() + '-' + hash
               });
 
               break;
@@ -291,6 +292,7 @@
       }
       
       let num = 0;
+      let lastEmpty = false;
       Array.from(childNodes).forEach(node => {
         if (node instanceof Comment) {
           
@@ -312,18 +314,21 @@
                       .replace(/{{(.+?)}}/gs, (_, g1) => '${' + g1 + '}');
           let isDynamic = txt.indexOf('${') > -1;
           let hash = bbn.fn.hash(txt);
-          const item = bbn.fn.createObject({
-            id: idx + '-' + num,
-            text: txt,
-            hash: hash,
-            empty: !checkEmpty
-          });
-          if (isDynamic) {
-            item.exp = txt;
+          if (checkEmpty || !lastEmpty) {
+            lastEmpty = !checkEmpty;
+            const item = bbn.fn.createObject({
+              id: idx + '-' + num,
+              text: txt,
+              hash: hash,
+              empty: !checkEmpty
+            });
+            if (isDynamic) {
+              item.exp = txt;
+            }
+            res.items.push(item);
+            map[idx + '-' + num] = item;
+            num++;
           }
-          res.items.push(item);
-          map[idx + '-' + num] = item;
-          num++;
         }
         else {
           bbn.fn.log("Unknown node", node)
