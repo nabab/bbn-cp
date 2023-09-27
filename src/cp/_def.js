@@ -111,10 +111,12 @@ class bbnCp {
       if (!cid) {
         throw new Error("The component doesn't have a component ID")
       }
+
       const cp = this.componentsIndex.get(cid);
       //bbn.fn.log("REMOVING COMPONENT", cp);
       if (!cp) {
-        throw new Error("The component already exists")
+        bbn.fn.log(["The component is already removed", cid]);
+        //throw new Error("The component is already removed")
       }
 
       this.componentsIndex.delete(cid);

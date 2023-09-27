@@ -115,6 +115,12 @@ return {
       };
     },
     computed: {
+      splitterStyle() {
+        return {
+          gridTemplateColumns: this.columnsCfg,
+          gridTemplateRows: this.rowsCfg,
+        }
+      },
       isHorizontal() {
         return this.currentOrientation === 'horizontal';
       },

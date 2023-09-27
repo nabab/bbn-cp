@@ -10,7 +10,6 @@
               'bbn-spadded': true,
               'bbn-state-disabled': !!isDisabled
             }"
-            :value="value"
             :name="name"
             ref="element"
             @input="onInput"
@@ -29,5 +28,5 @@
             :maxlength="maxlength"
             :rows="currentRows"
             :cols="cols"
-            :style="{resize: !resizable ? 'none' : ''}"/>
+            :style="currentStyle"/>
 </div>

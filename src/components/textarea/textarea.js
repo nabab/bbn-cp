@@ -49,6 +49,19 @@ return {
       resizable: {
         type: Boolean,
         default: true
+      },
+      /**
+       * Sets the textarea resizable
+       * @prop {Boolean} [true] resizable
+       */
+      autosize: {
+        type: Boolean,
+        default: false
+      }
+    },
+    data() {
+      return {
+        currentHeight: null
       }
     },
     computed: {
@@ -63,6 +76,17 @@ return {
 
         return undefined;
       },
+      currentStyle() {
+        const st = {resize: 'none'};
+        if (this.resizable) {
+          st.resize = bbn.fn.isString(this.resizable) ? this.resizable : 'both';
+        }
+        if (this.currentHeight) {
+          st.height = this.currentHeight + 'px';
+        }
+
+        return st;
+      }
     },
     methods: {
       onInput(e) {
@@ -70,9 +94,11 @@ return {
           this.emitInput(this.value);
           return;
         }
+
         if (this.autosize) {
           e.target.style.height = 'auto';
-          e.target.style.height = e.target.scrollHeight+'px';
+          this.currentHeight = e.target.scrollHeight;
+          e.target.style.height = e.target.scrollHeight + 'px';
         }
 
         this.emitInput(e.target.value)
@@ -106,6 +132,7 @@ return {
     mounted() {
       this.ready = true;
       const el = this.getRef('element');
+      el.value = this.value;
       if (this.autosize) {
         el.style.height = 'auto';
         el.style.height = el.scrollHeight+'px';

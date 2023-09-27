@@ -686,6 +686,7 @@ return {
             if ((bbn.fn.isFunction(a.isValid) && !a.isValid(a, callValidation))
               || (bbn.fn.isFunction(a.validation) && !a.validation())
             ) {
+              bbn.fn.log("PROB", a);
               ok = false;
             }
             if ( !ok ){

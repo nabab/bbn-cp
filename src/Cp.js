@@ -2109,8 +2109,8 @@ class bbnCp {
     //bbn.fn.log(this, "REMOVING " + (ele.bbn ? ele.bbn.$options.name + ' ': '') + ele.bbnId);
     const id = ele.bbnId;
     const hash = ele.bbnHash;
-    const cpSource = ele.bbnComponentId && (ele.bbnComponentId !== this.$cid) ? bbn.cp.getComponent(ele.bbnComponentId).bbn : this;
-    // It won't have an ID if it's a bbn-text or bbn-html
+    const cpSource = ele.bbnComponentId && (ele.bbnComponentId !== this.$cid) ? bbn.cp.getComponent(ele.bbnComponentId)?.bbn || this : this;
+    // It won't have an ID if it's a bbn-text or bbn-html or creaated by an external component/widget
     if (id) {
       if (ele.bbnSlots) {
         for (let n in ele.bbnSlots) {
@@ -2118,7 +2118,7 @@ class bbnCp {
           for (let i = 0; i < slot.length; i++) {
             let o = slot[i];
             //bbn.fn.log("REMOVE FROM SLOT", o);
-            let cp = o.bbnComponentId !== this.$cid ? bbn.cp.getComponent(o.bbnComponentId).bbn : this;
+            let cp = o.bbnComponentId !== this.$cid ? bbn.cp.getComponent(o.bbnComponentId)?.bbn || this : this;
             cp.$removeDOM(o);
           }
         }
@@ -2127,15 +2127,12 @@ class bbnCp {
       if (ele.childNodes && ele.bbnSchema && !Object.hasOwn(ele.bbnSchema.props || {}, 'bbn-text') && !Object.hasOwn(ele.bbnSchema.props || {}, 'bbn-html') && (ele.bbnSchema.tag !== 'svg')) {
         while (ele.childNodes.length) {
           let node = ele.childNodes[0];
-          let cp = ele.bbnComponentId !== this.$cid ? bbn.cp.getComponent(ele.bbnComponentId).bbn : this;
+          let cp = ele.bbnComponentId !== this.$cid ? bbn.cp.getComponent(ele.bbnComponentId)?.bbn || this : this;
           cp.$removeDOM(node);
         }
       }
 
       cpSource.$removeFromElements(id, hash);
-    }
-    else {
-      bbn.fn.log(["Impossible to remove element without ID", ele, typeof ele]);
     }
 
     if (ele.parentNode) {
@@ -2354,7 +2351,7 @@ class bbnCp {
             propName = bbn.cp.badCaseAttributes[name];
           }
 
-          const isAttr = (ele[propName] !== undefined) && bbn.fn.isPrimitive(this.$el[propName]);
+          const isAttr = (ele[propName] !== undefined);
           if (isAttr) {
             const attr = ele[propName];
             if (attr !== value) {
@@ -2440,6 +2437,48 @@ class bbnCp {
       }
       for (let n in props) {
         if (!['class', 'style'].includes(n)) {
+          let value = props[n];
+
+          if (Object.hasOwn(this.$props, n)) {
+            this.$setProp(n, value);
+          }
+
+          if (bbn.fn.isPrimitive(value)) {
+            let propName = n;
+            if (bbn.cp.badCaseAttributes[n]) {
+              propName = bbn.cp.badCaseAttributes[n];
+            }
+  
+            const isAttr = (this.$el[propName] !== undefined);
+            if (isAttr) {
+              const attr = this.$el[propName];
+              if (attr !== value) {
+                if (!value) {
+                  this.$el.removeAttribute(n);
+                  // for SVG
+                  if ({}.toString.apply(this.$el[propName]).substr(0, 7) !== '[object') {
+                    this.$el[propName] = '';
+                  }
+                }
+                else {
+                  this.$el.setAttribute(n, value);
+                  // for SVG
+                  if ({}.toString.apply(this.$el[propName]).substr(0, 7) !== '[object') {
+                    this.$el[n] = bbn.fn.isString(value) ? value : value?.toString() || '';
+                  }
+                  else {
+                    //bbn.fn.warning("SVG OBJ " +propName);
+                    //bbn.fn.log(this.$el[propName]);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      /*
+      for (let n in props) {
+        if (!['class', 'style'].includes(n)) {
           if (Object.hasOwn(this.$props, n)) {
             this.$setProp(n, props[n]);
           }
@@ -2448,6 +2487,7 @@ class bbnCp {
           }
         }
       }
+      */
     }
   }
 
@@ -2597,7 +2637,10 @@ class bbnCp {
   }
 
   $setUpProp(name, cfg) {
-    name = bbn.fn.camelize(name);
+    if (!/[A-Z]/.test(name)) {
+      name = bbn.fn.camelize(name);
+    }
+
     if (Object.hasOwn(this.$cfg.props, name)) {
       if (!Object.hasOwn(this.$props, name)) {
         Object.defineProperty(this.$props, name, {
@@ -2653,7 +2696,9 @@ class bbnCp {
    * Set properties of the initial component to the new web-component
    */
   $setProp(name, value) {
-    name = bbn.fn.camelize(name);
+    if (!/[A-Z]/.test(name)) {
+      name = bbn.fn.camelize(name);
+    }
     const cfg = this.$cfg.props[name];
     /*
     if (bbn.cp.possibleAttributes.includes(name)) {
@@ -2682,7 +2727,10 @@ class bbnCp {
 
 
   $realSetProp(name, value) {
-    name = bbn.fn.camelize(name);
+    if (!/[A-Z]/.test(name)) {
+      name = bbn.fn.camelize(name);
+    }
+
     const original = this.$props[name];
     if (!bbn.fn.isSame(value, original)) {
       const oldObj = bbnData.getObject(original);

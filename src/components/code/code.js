@@ -119,17 +119,7 @@ return {
         }
       },
       initUntilExtensionsLoaded(max) {
-        if (!max) {
-          this.init();
-          return;
-        }
-        if (this.extensions?.length)
-          this.init();
-        else {
-          setTimeout(() => {
-            this.initUntilExtensionsLoaded(max - 1);
-          }, 100);
-        }
+        this.init();
       },
       init() {
         let cm = window.codemirror6;

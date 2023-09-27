@@ -9,10 +9,7 @@
        },
        componentClass
      ]"
-     :style="{
-       gridTemplateColumns: columnsCfg,
-       gridTemplateRows: rowsCfg,
-     }"
+     :style="splitterStyle"
      @scroll.prevent.stop="preventScroll"
      v-show="panes.length">
   <slot></slot>

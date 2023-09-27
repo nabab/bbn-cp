@@ -103,7 +103,7 @@
        * @prop {(Boolean|Function)} [false] disabled
        */
       disabled: {
-        type: [Boolean, Function],
+        type: [Boolean, Function, String],
         default: false
       },
       /**
@@ -221,12 +221,11 @@
           e.stopPropagation();
         }
         else if (!e.defaultPrevented && this.action && bbn.fn.isFunction(this.action)) {
-          bbn.fn.log(['click button', this.action]);
           this.action.bind(this.$origin)(e, this);
+          bbn.fn.log([this.$origin, this.action])
           e.preventDefault();
           e.stopPropagation();
         }
-        
       }
     },
     beforeMount(){
