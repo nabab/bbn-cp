@@ -1833,7 +1833,7 @@ class bbnCp {
      * Unique ID for each component, used for global registration
      */
     Object.defineProperty(this, '$origin', {
-      value: this.$el.bbnComponentId && (this.$el.bbnComponentId !== this.$cid) ? bbn.cp.getComponent(this.$el.bbnComponentId).bbn : this,
+      value: this.$el.bbnComponentId && (this.$el.bbnComponentId !== this.$cid) ? bbn.cp.getComponent(this.$el.bbnComponentId)?.bbn || this : this,
       writable: false,
       configurable: false
     });

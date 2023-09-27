@@ -41,7 +41,8 @@ return {
     data() {
       return {
         state: null,
-        widget: null
+        widget: null,
+        compartments: bbnData.immunizeValue(bbn.fn.createObject())
       }
     },
 
@@ -50,6 +51,10 @@ return {
         this.$emit('update', this.currentDoc);
       },
       getExtensions() {
+        if (this.extensions?.length) {
+          return this.extensions;
+        }
+
         let cm = window.codemirror6;
 
         if (!this.mode || !this.theme) {
@@ -64,22 +69,29 @@ return {
         let extensions = [];
 
         // push current language extension and current theme extension
-
+        this.compartments.language = new codemirror6.state.Compartment;
         if (this.mode === "js") {
-          extensions.push(cm.javascript.javascript());
+          extensions.push(this.compartments.language.of(cm.javascript.javascript()));
         }
         else if (this.mode === "less") {
-          extensions.push(cm.css.css());
+          extensions.push(this.compartments.language.of(cm.css.css()));
         }
         else if (this.mode === "purephp") {
-          extensions.push(cm.languageExtensions['php']);
+          extensions.push(this.compartments.language.of(cm.languageExtensions['php']));
+        }
+        else if (cm.languageExtensions[this.mode]) {
+          extensions.push(this.compartments.language.of(cm.languageExtensions[this.mode]));
         }
         else {
-          extensions.push(cm.languageExtensions[this.mode]);
+          throw new Error("Language unrecognized!");
         }
 
-        extensions.push(cm.theme[this.theme]);
-        return bbnData.immunizeValue(this.extensions || extensions);
+        this.compartments.theme = new codemirror6.state.Compartment;
+        extensions.push(this.compartments.theme.of(cm.theme[this.theme]));
+        this.compartments.readonly = new codemirror6.state.Compartment;
+        extensions.push(this.compartments.readonly.of(this.disabled || this.readonly));
+
+        return extensions;
       },
       onChange(tr) {
         this.widget.update([tr]);
@@ -97,14 +109,15 @@ return {
         //bbn.fn.log("extensions", extensions, this.extensions);
         let editorStateCfg = {
           doc: this.value,
-          extensions: extensions,
+          extensions,
+          readOnly: cm.state.EditorState.readOnly.of(this.readonly)
         };
         this.state = cm.state.EditorState.create(editorStateCfg);
-        this.widget = new cm.view.EditorView({
+        this.widget = new cm.view.EditorView(bbnData.immunizeValue({
           state: this.state,
           parent: this.getRef('element'),
           dispatch: t => this.onChange(t)
-        });
+        }));
       },
       onKeyDown(event) {
         this.lastKeyDown = event;
@@ -168,6 +181,11 @@ return {
       this.initUntilExtensionsLoaded(100);
     },
     watch: {
+      readonly(v) {
+        this.widget.dispatch({
+          effects: this.compartments.readonly.reconfigure(codemirror6.state.EditorState.readOnly.of(v))
+        });
+      },
       value(nv) {
         if (this.widget) {
           let value = this.widget.state.doc.toString();
