@@ -19,7 +19,8 @@
              :required="required"
              :id="id + '_' + idx"
              @click="emitInput(d[sourceValue])"
-             :checked="d[sourceValue] === modelValue ? 'checked' : false">
+             :checked="d[sourceValue] === modelValue ? 'checked' : false"
+             style="display: none">
       <label class="bbn-radio-label bbn-iflex bbn-vmiddle"
              :for="id + '_' + idx">
         <component v-if="d.component"
