@@ -89,6 +89,7 @@ return {
             extensions.push(cm.html.html());
             break;
           case "php":
+          case "purephp":
             extensions.push(cm.php.php({
               baseLanguage: cm.languageExtensions.html
             }));
@@ -161,6 +162,13 @@ return {
             newValue = window.beautifier.html(this.widget.state.doc.toString(), options);
           } else if (this.mode === "php") {
             const options = {
+              indent_size: 2,
+              space_in_empty_paren: true
+            };
+            newValue = window.beautifier.html(this.widget.state.doc.toString(), options);
+          } else if (this.mode === "purephp") {
+            const options = {
+              plain: true,
               indent_size: 2,
               space_in_empty_paren: true
             };
