@@ -55,7 +55,7 @@ return {
         if (!this.mode || !this.theme) {
           throw new Error("You earmust provide a language and a theme");
         }
-        if (!cm.languageExtensions[this.mode] && this.mode !== "js" && this.mode !== "less") {
+        if (!cm.languageExtensions[this.mode] && !['js', 'less', 'purephp'].includes(this.mode)) {
           throw new Error("Unknown language");
         }
         if (!cm.theme[this.theme]) {
