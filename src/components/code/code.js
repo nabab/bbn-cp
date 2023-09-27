@@ -55,7 +55,7 @@ return {
         if (!this.mode || !this.theme) {
           throw new Error("You earmust provide a language and a theme");
         }
-        if (!cm.languageExtensions[this.mode] && this.mode !== "js" && this.mode !== "less") {
+        if (!cm.languageExtensions[this.mode] && !['js', 'less', 'purephp'].includes(this.mode)) {
           throw new Error("Unknown language");
         }
         if (!cm.theme[this.theme]) {
@@ -72,7 +72,7 @@ return {
           extensions.push(cm.css.css());
         }
         else if (this.mode === "purephp") {
-          extensions.push(cm.php.php());
+          extensions.push(cm.languageExtensions['php']);
         }
         else {
           extensions.push(cm.languageExtensions[this.mode]);
