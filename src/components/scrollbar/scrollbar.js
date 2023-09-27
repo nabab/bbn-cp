@@ -186,6 +186,7 @@ return {
          * @data {Boolean} [false] isOverSlider
          */
         isOverSlider: false,
+        isOverContent: false,
         animationInterval: false,
         nextLevel: false,
         adjustTimeout: false
@@ -283,6 +284,9 @@ return {
           res[this.isVertical ? 'top' : 'left'] = this.sliderPos + 'px';
           if ( this.color ){
             res.backgroundColor = this.color;
+          }
+          if (this.isOverContent) {
+            res.opacity = '0.15';
           }
         }
         return res;
@@ -586,15 +590,20 @@ return {
        * When the mouse is over the content.
        * @method overContent
        */
-      overContent(){
+      overContent() {
         this.keepCool(() => {
           clearTimeout(this.moveTimeout);
+          if (!this.isOverSlider) {
+            this.isOverContent = true;
+          }
+
           if ( !this.show ){
             this.show = true;
           }
           this.moveTimeout = setTimeout(() => {
             if (!this.isOverSlider) {
               this.hideSlider();
+              this.isOverContent = false;
             }
           }, 500);
         }, 'overContent', 250)
@@ -768,6 +777,7 @@ return {
        * @fires initContainer
        */
       isOverSlider(v){
+        this.isOverContent = false;
         if (!this.dragging) {
           if (!v) {
             this.overContent();
