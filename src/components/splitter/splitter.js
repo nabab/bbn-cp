@@ -333,11 +333,12 @@ return {
        * @return {Boolean|Number}
        */
       getNextResizable(idx, arr){
-        for ( let i = idx+1; i < arr.length; i++ ){
-          if ( arr[i].resizable ){
+        for (let i = idx+1; i < arr.length; i++) {
+          if (this.resizable && (arr[i].resizable !== false)) {
             return i;
           }
         }
+
         return false;
       },
       /**
@@ -347,12 +348,13 @@ return {
        * @param {Array} arr 
        * @return {Boolean|Number}
        */
-      getPrevResizable(idx, arr){
-        for ( let i = idx-1; i >= 0; i-- ){
-          if ( arr[i].resizable ){
+      getPrevResizable(idx, arr) {
+        for (let i = idx-1; i >= 0; i--) {
+          if (this.resizable && (arr[i].resizable !== false)) {
             return i;
           }
         }
+
         return false;
       },
       /**
@@ -363,11 +365,12 @@ return {
        * @return {Boolean|Number}
        */
       getNextCollapsible(idx, arr){
-        for ( let i = idx+1; i < arr.length; i++ ){
-          if ( arr[i].collapsible ){
+        for (let i = idx+1; i < arr.length; i++) {
+          if (this.collapsible && (arr[i].collapsible !== false)) {
             return i;
           }
         }
+
         return false;
       },
       /**
@@ -377,12 +380,13 @@ return {
        * @param {Array} arr 
        * @return {Boolean|Number}
        */
-      getPrevCollapsible(idx, arr){
-        for ( let i = idx-1; i >= 0; i-- ){
-          if ( arr[i].collapsible ){
+      getPrevCollapsible(idx, arr) {
+        for (let i = idx-1; i >= 0; i--) {
+          if (this.collapsible && (arr[i].collapsible !== false)) {
             return i;
           }
         }
+
         return false;
       },
       /**
@@ -487,6 +491,7 @@ return {
               next = this.getNextResizable(idx, tmp);
               prevc = this.getPrevCollapsible(idx, tmp);
               nextc = this.getNextCollapsible(idx, tmp);
+              bbn.fn.log([prev, prevc, next, nextc, '----'])
               // First collapsible
               if ( (prev !== false) || (prevc !== false) ){
                 bbn.fn.log("------ case 2", idx + ' position ' + currentPosition);
@@ -497,14 +502,15 @@ return {
                   pane1: false,
                   pane2: false
                 };
-                if ( pane.resizable && (prev !== false) ){
+                if (this.resizable && (pane.resizable !== false) && (prev !== false) ){
                   o.pane1 = prev;
                   o.pane2 = idx;
                 }
-                if ( pane.collapsible && (prevc !== false) ){
+                if (this.collapsible && (pane.collapsible !== false) && (prevc !== false) ){
                   o.panec1 = prevc;
                   o.panec2 = idx;
                 }
+
                 this.resizers.push(o);
                 hasResizers = true;
                 currentPosition++;
@@ -529,24 +535,26 @@ return {
                 pane2: false
               };
               if (
-                ((prev === false) && next && !tmp[idx + 1].resizable) ||
-                ((prevc === false) && nextc && !tmp[idx + 1].collapsible)
+                ((prev === false) && next && (tmp[idx + 1].resizable === false)) ||
+                ((prevc === false) && nextc && (tmp[idx + 1].collapsible === false))
               ){
                 //bbn.fn.log("------ case 4", idx + ' position ' + currentPosition);
                 if (
-                  pane.resizable &&
+                  this.resizable &&
+                  (pane.resizable !== false) &&
                   (prev === false) &&
                   next &&
-                  !tmp[idx + 1].resizable
+                  (tmp[idx + 1].resizable === false)
                 ){
                   o.pane1 = idx;
                   o.pane2 = next;
                 }
                 if (
-                  pane.collapsible &&
+                  this.collapsible &&
+                  (pane.collapsible !== false) &&
                   (prevc === false) &&
                   nextc &&
-                  !tmp[idx + 1].collapsible
+                  (tmp[idx + 1].collapsible === false)
                 ){
                   o.panec1 = idx;
                   o.panec2 = nextc;
@@ -577,10 +585,10 @@ return {
        * @return {Boolean}
        */
       areCollapsible(idxPane1, idxPane2){
-        return this.panes[idxPane1] &&
+        return this.collapsible && this.panes[idxPane1] &&
           this.panes[idxPane2] && (
-            this.panes[idxPane1].collapsible ||
-            this.panes[idxPane2].collapsible
+            (this.panes[idxPane1].collapsible !== false) ||
+            (this.panes[idxPane2].collapsible !== false)
           );
       },
       /**
@@ -591,12 +599,12 @@ return {
        * @return {Boolean}
        */
       isCollapsiblePrev(idxPane1, idxPane2){
-        return this.panes[idxPane2].collapsed || (
+        return this.collapsible && (this.panes[idxPane2].collapsed || (
           !this.panes[idxPane1].collapsed && (
             (idxPane2 === (this.panes.length - 1)) ||
             !this.panes[idxPane2].collapsed
           )
-        )
+        ))
       },
       /**
        * Returns true if the next pane is collapsible.
@@ -606,12 +614,12 @@ return {
        * @return {Boolean}
        */
       isCollapsibleNext(idxPane1, idxPane2){
-        return this.panes[idxPane1].collapsed || (
+        return this.collapsible && (this.panes[idxPane1].collapsed || (
           !this.panes[idxPane2].collapsed && (
             (idxPane1 === 0) ||
             !this.panes[idxPane2].collapsed
           )
-        )
+        ))
       },
       /**
        * Returns true if teh previous pane is fully collapsible.
@@ -622,13 +630,13 @@ return {
        * @return {Boolean}
        */
       isFullyCollapsiblePrev(idxPane1, idxPane2, idxResizer){
-        return this.panes[idxPane2].collapsed && (
+        return this.collapsible && this.panes[idxPane2].collapsed && (
           (
             (idxPane2 === (this.panes.length - 1)) &&
             (idxResizer === (this.resizers.length - 1))
           ) ||
           (idxPane1 === (idxPane2 - 1)) ||
-          this.panes[idxPane1+1].collapsible
+          (this.panes[idxPane1+1].collapsible !== false)
         )
       },
       /**
@@ -640,10 +648,10 @@ return {
        * @return {Boolean}
        */
       isFullyCollapsibleNext(idxPane1, idxPane2, idxResizer){
-        return this.panes[idxPane1].collapsed && (
+        return this.collapsible && this.panes[idxPane1].collapsed && (
           ((idxPane1 === 0) && (idxResizer === 0)) ||
           (idxPane1 === (idxPane2 - 1)) ||
-          (this.panes[idxPane2-1].collapsible)
+          (this.panes[idxPane2-1].collapsible !== false)
         )
       },
       /**
