@@ -39,18 +39,10 @@ return {
       }
     },
     data() {
-      const o = {
+      return {
         state: null,
-        widget: null,
-        currentMode: this.mode,
+        widget: null
       }
-
-      if (this.mode === 'purephp') {
-        o.currentMode = 'php';
-      }
-
-      return o;
-
     },
 
     methods: {
@@ -63,7 +55,7 @@ return {
         if (!this.mode || !this.theme) {
           throw new Error("You earmust provide a language and a theme");
         }
-        if (!cm.languageExtensions[this.currentMode] && this.mode !== "js" && this.mode !== "less") {
+        if (!cm.languageExtensions[this.mode] && this.mode !== "js" && this.mode !== "less") {
           throw new Error("Unknown language");
         }
         if (!cm.theme[this.theme]) {
@@ -72,51 +64,21 @@ return {
         let extensions = [];
 
         // push current language extension and current theme extension
-        if (this.currentMode !== "js" && this.currentMode !== "less") {
-            extensions.push(cm.languageExtensions[this.currentMode]);
-        } else {
-          if (this.currentMode === "js") {
-            extensions.push(cm.javascript.javascript());
-          }
-          if (this.currentMode === "less") {
-            extensions.push(cm.css.css());
-          }
+
+        if (this.mode === "js") {
+          extensions.push(cm.javascript.javascript());
         }
+        else if (this.mode === "less") {
+          extensions.push(cm.css.css());
+        }
+        else if (this.mode === "purephp") {
+          extensions.push(cm.php.php());
+        }
+        else {
+          extensions.push(cm.languageExtensions[this.mode]);
+        }
+
         extensions.push(cm.theme[this.theme]);
-        switch (this.currentMode) {
-          case "javascript":
-            extensions.push(cm.javascript.javascript());
-            break;
-          case "js":
-            extensions.push(cm.javascript.javascript());
-            break;
-          case "html":
-            extensions.push(cm.vue.vue());
-            break;
-          case "vue":
-            extensions.push(cm.html.html());
-            break;
-          case "php":
-            extensions.push(cm.php.php({
-              baseLanguage: cm.languageExtensions.html
-            }));
-            break;
-          case "css":
-            extensions.push(cm.css.css());
-            break;
-          case "less":
-            extensions.push(cm.css.css());
-            break;
-          case "json":
-            extensions.push(cm.json.json());
-            break;
-          case "xml":
-            extensions.push(cm.xml.xml());
-            break;
-          case "markdown":
-            extensions.push(cm.markdown.markdown());
-            break;
-        }
         return bbnData.immunizeValue(this.extensions || extensions);
       },
       onChange(tr) {
@@ -148,26 +110,29 @@ return {
         this.lastKeyDown = event;
         if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'f') {
           let newValue = "";
-          if ((this.currentMode === 'javascript' || this.currentMode === 'js') && window.beautifier.js) {
+          if (['javascript', 'js'].includes(this.mode) && window.beautifier.js) {
             const options = {
               indent_size: 2,
               space_in_empty_paren: true
             };
             newValue = window.beautifier.js(this.widget.state.doc.toString(), options);
-          } else if ((this.currentMode === "css" || this.currentMode === "less") && window.beautifier.css) {
+          }
+          else if (['css', 'less'].includes(this.mode) && window.beautifier.css) {
             const options = {
               indent_size: 2,
               space_in_empty_paren: true
             };
             newValue = window.beautifier.css(this.widget.state.doc.toString(), options);
-          } else if (this.currentMode === "html" && window.beautifier.html) {
+          }
+          else if (['html'].includes(this.mode) && window.beautifier.html) {
             const options = {
               indent_size: 2,
               space_in_empty_paren: true,
               wrap_attributes: 'force-aligned'
             };
             newValue = window.beautifier.html(this.widget.state.doc.toString(), options);
-          } else if (this.currentMode === "php") {
+          }
+          else if (['php', 'purephp'].includes(this.mode)) {
             const options = {
               indent_size: 2,
               space_in_empty_paren: true
