@@ -39,10 +39,18 @@ return {
       }
     },
     data() {
-      return {
+      o = {
         state: null,
-        widget: null
+        widget: null,
+        currentMode: this.mode,
       }
+
+      if (this.mode === 'purephp') {
+        o.currentMode = 'php';
+      }
+
+      return 0;
+
     },
 
     methods: {
@@ -55,7 +63,7 @@ return {
         if (!this.mode || !this.theme) {
           throw new Error("You earmust provide a language and a theme");
         }
-        if (!cm.languageExtensions[this.mode] && !['js', 'less', 'purephp'].includes(this.mode)) {
+        if (!cm.languageExtensions[this.currentMode] && this.mode !== "js" && this.mode !== "less") {
           throw new Error("Unknown language");
         }
         if (!cm.theme[this.theme]) {
@@ -64,13 +72,13 @@ return {
         let extensions = [];
 
         // push current language extension and current theme extension
-        if (this.mode !== "js" && this.mode !== "less") {
-            extensions.push(cm.languageExtensions[this.mode]);
+        if (this.currentMode !== "js" && this.currentMode !== "less") {
+            extensions.push(cm.languageExtensions[this.currentMode]);
         } else {
-          if (this.mode === "js") {
+          if (this.currentMode === "js") {
             extensions.push(cm.javascript.javascript());
           }
-          if (this.mode === "less") {
+          if (this.currentMode === "less") {
             extensions.push(cm.css.css());
           }
         }
@@ -89,7 +97,6 @@ return {
             extensions.push(cm.html.html());
             break;
           case "php":
-          case "purephp":
             extensions.push(cm.php.php({
               baseLanguage: cm.languageExtensions.html
             }));
@@ -141,37 +148,34 @@ return {
         this.lastKeyDown = event;
         if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'f') {
           let newValue = "";
-          if ((this.mode === 'javascript' || this.mode === 'js') && window.beautifier.js) {
+          if ((this.currentMode === 'javascript' || this.currentMode === 'js') && window.beautifier.js) {
             const options = {
               indent_size: 2,
               space_in_empty_paren: true
             };
             newValue = window.beautifier.js(this.widget.state.doc.toString(), options);
-          } else if ((this.mode === "css" || this.mode === "less") && window.beautifier.css) {
+          } else if ((this.currentMode === "css" || this.currentMode === "less") && window.beautifier.css) {
             const options = {
               indent_size: 2,
               space_in_empty_paren: true
             };
             newValue = window.beautifier.css(this.widget.state.doc.toString(), options);
-          } else if (this.mode === "html" && window.beautifier.html) {
+          } else if (this.currentMode === "html" && window.beautifier.html) {
             const options = {
               indent_size: 2,
               space_in_empty_paren: true,
               wrap_attributes: 'force-aligned'
             };
             newValue = window.beautifier.html(this.widget.state.doc.toString(), options);
-          } else if (this.mode === "php") {
+          } else if (this.currentMode === "php") {
             const options = {
               indent_size: 2,
               space_in_empty_paren: true
             };
-            newValue = window.beautifier.html(this.widget.state.doc.toString(), options);
-          } else if (this.mode === "purephp") {
-            const options = {
-              plain: true,
-              indent_size: 2,
-              space_in_empty_paren: true
-            };
+            if (this.mode === 'purephp') {
+              options.plain = true;
+            }
+
             newValue = window.beautifier.html(this.widget.state.doc.toString(), options);
           }
 
