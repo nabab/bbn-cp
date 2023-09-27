@@ -39,7 +39,7 @@ return {
       }
     },
     data() {
-      o = {
+      const o = {
         state: null,
         widget: null,
         currentMode: this.mode,
@@ -49,7 +49,7 @@ return {
         o.currentMode = 'php';
       }
 
-      return 0;
+      return o;
 
     },
 
