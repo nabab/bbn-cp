@@ -946,18 +946,18 @@ return {
        * @return {Object}
        */
       updateVisualStyleContainer() {
-        bbn.fn.warning("updateVisualStyleContainer");
         if (!this.visualStyleContainer) {
           this.visualStyleContainer = bbn.fn.createObject();
         }
         else if (!this.isVisual) {
           this.visualStyleContainer = bbn.fn.createObject();
         }
-
+        
         if (!this.isVisual) {
           return;
         }
-
+        
+        //bbn.fn.warning("updateVisualStyleContainer");
         bbn.fn.iterate(this.views, view => {
           if (view.view) {
             view = view.view;
@@ -1364,7 +1364,7 @@ return {
        */
       register(cp, fake) {
         if ( fake ){
-          //bbn.fn.log("ADDING FAKE", cp);
+          bbn.fn.log("ADDING FAKE", cp);
           this.add(cp);
           return;
         }
@@ -2356,6 +2356,7 @@ return {
           }
 
           if (toAdd) {
+            bbn.fn.log("ADDING ON LOAD");
             this.add({
               url: url,
               title: view?.title ? view.title : bbn._('Loading'),
@@ -2393,7 +2394,6 @@ return {
               finalURL,
               dataObj,
               d => {
-                bbn.fn.warning("OK")
                 let callRealInit = true;
                 this.isLoading = false;
                 //this.remove(url);
@@ -2444,13 +2444,12 @@ return {
 
                 if ((d.url !== d.current) && this.urls[d.current]){
                   let currentIndex = this.urls[d.current].currentIndex;
-                  bbn.fn.warning("DELETING VIEW CASE.... " + d.url + ' / ' + d.current + ' ' + currentIndex);
-                  bbn.fn.log([d.url, this.urls[d.current], this.urls[d.url], Object.keys(this.urls), bbn.fn.search(this.views, {idx: this.urls[d.current].idx})]);
+                  //bbn.fn.warning("DELETING VIEW CASE.... " + d.url + ' / ' + d.current + ' ' + currentIndex);
+                  //bbn.fn.log([d.url, this.urls[d.current], this.urls[d.url], Object.keys(this.urls), bbn.fn.search(this.views, {idx: this.urls[d.current].idx})]);
                   this.remove(currentIndex, true);
                   this.$forceUpdate().then(() => {
-                    bbn.fn.log("AFTER FU");
                     const onRegister = url => {
-                      bbn.fn.log(["REGISTERED", url]);
+                      //bbn.fn.log(["REGISTERED", url]);
                       if (url === d.url) {
                         this.$off('registered', onRegister);
                         let view = bbn.fn.getRow(this.views, {url: url});
@@ -2461,11 +2460,11 @@ return {
                     };
                     this.$on('registered', onRegister);
                     let o = bbn.fn.extend(view || bbn.fn.createObject(), d, {loading: false, load: true, real: view?.real || false, loaded: true});
-                    bbn.fn.log(["BEFORE", this.views.length, Object.keys(this.urls)]);
+                    //bbn.fn.log(["BEFORE", this.views.length, Object.keys(this.urls)]);
                     this.add(o, currentIndex);
-                    bbn.fn.log(["AFTER", this.views.length, Object.keys(this.urls)]);
+                    //bbn.fn.log(["AFTER", this.views.length, Object.keys(this.urls)]);
                     this.$forceUpdate().then(() => {
-                      bbn.fn.log(this.search(o.url), o);
+                      //bbn.fn.log(this.search(o.url), o);
                       let searchIndex = this.search(o.url);
                       //bbn.fn.log("Looking for " + o.url);
                       if (searchIndex !== false) {
@@ -2486,7 +2485,7 @@ return {
                     //bbn.fn.log("Looking for " + o.url);
                     if ((searchIndex !== false) && this.urls[this.views[searchIndex].url]) {
                       //this.remove(searchIndex);
-                      bbn.fn.warning("FOUND AND NOT REMOVED " + searchIndex);
+                      //bbn.fn.warning("FOUND AND NOT REMOVED " + searchIndex);
                       this.urls[this.views[searchIndex].url].isLoaded = true;
                       this.urls[this.views[searchIndex].url].dirty = false;
                       this.urls[this.views[searchIndex].url].ready = false;
@@ -2494,8 +2493,8 @@ return {
   
                     }
                     else {
-                      bbn.fn.warning("ADDEDD " + idx);
-                      bbn.fn.log("ADDING AFTER LOAD");
+                      //bbn.fn.warning("ADDEDD " + idx);
+                      //bbn.fn.log("ADDING AFTER LOAD");
                       this.add(o, idx);
                     }
   
@@ -2619,10 +2618,7 @@ return {
        * @return {String}
        */
       getDefaultURL(){
-        let url = '';
-        if (this.autoload) {
-          url = this.parseURL(bbn.env.path);
-        }
+        let url = this.parseURL(bbn.env.path);
 
         if (!url && this.url ){
           url = this.url;
@@ -3707,7 +3703,7 @@ return {
       if ( this.parent ){
         this.parentContainer = this.closest('bbn-container');
         let uri = this.parentContainer.url;
-        if (this.root && (uri !== this.root) && (uri.indexOf(this.root) === 0) ){
+        if (this.root && (uri !== this.root) && (this.root.indexOf(uri) === 0) ){
           uri = this.root;
         }
         this.baseURL = this.formatBaseURL(uri);
@@ -3741,7 +3737,7 @@ return {
 
       let tmp = [];
 
-      bbn.fn.warning("BEFORE MOUNT ROUTER")
+      //bbn.fn.warning("BEFORE MOUNT ROUTER")
 
       //Get config from the storage
       let storage = !this.single && this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
@@ -3828,7 +3824,7 @@ return {
 
 
       // Adding to the views
-      bbn.fn.warning("ROUTER BEFORE MOUNT");
+      //bbn.fn.warning("ROUTER BEFORE MOUNT");
       bbn.fn.each(tmp, a => {
         if (!bbn.fn.isString(a.url)) {
           throw new Error(bbn._("The container must have a valid URL"));
@@ -3839,6 +3835,8 @@ return {
           a.current = url;
         }
 
+        //bbn.fn.warning("ADDING BEFORE MOUNT");
+        //bbn.fn.log(a);
         this.add(a);
       });
 
@@ -4090,7 +4088,7 @@ return {
             a.current = url;
           }
   
-          bbn.fn.warning(bbn._("ADDING %s ON WATCH", a.url));
+          //bbn.fn.warning(bbn._("ADDING %s ON WATCH", a.url));
           this.add(a);
         });
       },

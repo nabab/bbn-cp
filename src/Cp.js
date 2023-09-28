@@ -1155,14 +1155,16 @@ class bbnCp {
 
 
     // Sending created event
-    const created = new Event('hook:created');
-    this.$onCreated();
-    this.$el.dispatchEvent(created);
-    Object.defineProperty(this, '$isCreated', {
-      value: true,
-      writable: false, 
-      configurable: false
-    });
+    if (!this.$isCreated) {
+      const created = new Event('hook:created');
+      this.$onCreated();
+      this.$el.dispatchEvent(created);
+      Object.defineProperty(this, '$isCreated', {
+        value: true,
+        writable: false, 
+        configurable: false
+      });
+    }
 
     // Sets the current template schema and creates the DOM
     await this.$updateComponent().then(() => {
@@ -1188,15 +1190,17 @@ class bbnCp {
         configurable: true
       });
 
-      // Sending mounted event
-      const mounted = new Event('hook:mounted');
-      this.$onMounted();
-      this.$el.dispatchEvent(mounted);
-      Object.defineProperty(this, '$isMounted', {
-        value: true,
-        writable: false, 
-        configurable: false
-      });
+      if (!this.$isMounted) {
+        // Sending mounted event
+        const mounted = new Event('hook:mounted');
+        this.$onMounted();
+        this.$el.dispatchEvent(mounted);
+        Object.defineProperty(this, '$isMounted', {
+          value: true,
+          writable: false, 
+          configurable: false
+        });
+      }
 
       this.$start();
 

@@ -31,7 +31,7 @@ return {
       },
       theme: {
         type: String,
-        default: 'ayuLight'
+        default: 'dracula'
       },
       extensions: {
         type: Array,
@@ -55,7 +55,7 @@ return {
           return this.extensions;
         }
 
-        let cm = window.codemirror6;
+        const cm = window.codemirror6;
 
         if (!this.mode || !this.theme) {
           throw new Error("You earmust provide a language and a theme");
@@ -66,10 +66,13 @@ return {
         if (!cm.theme[this.theme]) {
           throw new Error("Unknown theme");
         }
-        let extensions = [];
+        const extensions = [];
+        const state = cm.state;
+        const cpt = state.Compartment;
+
 
         // push current language extension and current theme extension
-        this.compartments.language = new codemirror6.state.Compartment;
+        this.compartments.language = new cpt;
         if (this.mode === "js") {
           extensions.push(this.compartments.language.of(cm.javascript.javascript()));
         }
@@ -77,7 +80,7 @@ return {
           extensions.push(this.compartments.language.of(cm.css.css()));
         }
         else if (this.mode === "purephp") {
-          extensions.push(this.compartments.language.of(cm.languageExtensions['php']));
+          extensions.push(this.compartments.language.of(cm.php.php({plain: true})));
         }
         else if (cm.languageExtensions[this.mode]) {
           extensions.push(this.compartments.language.of(cm.languageExtensions[this.mode]));
@@ -86,10 +89,10 @@ return {
           throw new Error("Language unrecognized!");
         }
 
-        this.compartments.theme = new codemirror6.state.Compartment;
+        this.compartments.theme = new cpt;
         extensions.push(this.compartments.theme.of(cm.theme[this.theme]));
-        this.compartments.readonly = new codemirror6.state.Compartment;
-        extensions.push(this.compartments.readonly.of(this.disabled || this.readonly));
+        this.compartments.readonly = new cpt;
+        extensions.push(this.compartments.readonly.of(state.EditorState.readOnly.of(this.disabled || this.readonly)));
 
         return extensions;
       },

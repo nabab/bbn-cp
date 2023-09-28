@@ -970,10 +970,7 @@ return {
        * @fires onResize
        */
       waitReady(ev) {
-        if (this.readyTimeout) {
-          clearTimeout(this.readyTimeout);
-          //bbn.fn.log("CLEARING TIMEOUT")
-        }
+        clearTimeout(this.readyTimeout);
         this.readyTimeout = setTimeout(() => {
           this.initSize();
         }, this.latency)
