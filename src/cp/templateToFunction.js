@@ -907,6 +907,9 @@
             for (let n in tpl[0].directives) {
               x(c, sp, `if (!_t.$el.bbnSchema.directives) {_t.$el.bbnSchema.directives = bbn.fn.createObject();}`);
               x(c, sp, `if (!_t.$el.bbnSchema.directives['${n}']) {_t.$el.bbnSchema.directives['${n}'] = bbn.fn.clone(_t.$tpl[0].directives['${n}']);}`);
+              if (tpl[0].directives[n].exp) {
+                x(c, sp, `  _t.$el.bbnSchema.directives['${n}'].value = _sIr('${tpl[0].directives[n].hash}', ${tpl[0].directives[n].exp}, ${hashName});`);
+              }
               x(c, sp, `if (!_t.$el.bbnDirectives) {Object.defineProperty(_t.$el, 'bbnDirectives', {value: bbn.fn.createObject(), writable: false, configurable: false});}`);
               x(c, sp, `if (!_t.$el.bbnDirectives['{$n}']) {_t.$el.bbnDirectives['${n}'] = bbn.fn.createObject();}`);
             }
@@ -916,9 +919,6 @@
             x(c, sp, `}`);
             for (let n in tpl[0].directives) {
               x(c, sp, `if (_t.$numBuild) {`);
-              if (tpl[0].directives[n].exp) {
-                x(c, sp, `  _t.$el.bbnSchema.directives['${n}'].value = _sIr('${tpl[0].directives[n].hash}', ${tpl[0].directives[n].exp}, ${hashName});`);
-              }
               x(c, sp, `  bbn.cp.updateDirectives({"${n}": _t.$el.bbnSchema.directives['${n}']}, _t.$el);`);
               x(c, sp, `}`);
       

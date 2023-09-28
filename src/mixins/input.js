@@ -440,8 +440,9 @@
             this.validationID = false;
           }
         })
-        const input = this.getRef('element');
-        if (input) {
+        // I think this code is not necessary, the events are already called. Mirko
+        /* const input = this.getRef('element');
+        if (input && bbn.fn.isFunction(input.addEventListener)) {
           input.addEventListener('input', e => {
             e.stopImmediatePropagation();
             if (this.value !== input.value) {
@@ -457,7 +458,7 @@
           input.addEventListener('change', e => {
             this.$emit('change', this.value);
           })
-        }
+        } */
       },
       watch: {
         /**

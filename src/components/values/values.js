@@ -85,10 +85,8 @@ return {
     };
   },
   computed: {
-  },
-  methods: {
-    _setFilteredData(){
-      this.filteredData = bbn.fn.filter(this.source, a => {
+    filteredData(){
+      return bbn.fn.filter(this.source, a => {
         if (this.currentInput.length) {
           let ci = bbn.fn.removeAccents(this.currentInput).toLowerCase();
           let tmp = bbn.fn.removeAccents(a).toLowerCase();
@@ -99,7 +97,9 @@ return {
 
         return !this.currentValue.includes(a);
       });
-    },
+    }
+  },
+  methods: {
     keydown(e){
       if (e.key === 'Enter') {
         e.preventDefault();
