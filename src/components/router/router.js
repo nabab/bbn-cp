@@ -1199,7 +1199,6 @@ return {
         }
         //obj must be an object with property url
         if (bbn.fn.isObject(obj) && bbn.fn.isString(obj.url)) {
-          obj.url = bbn.fn.replaceAll('//', '/', obj.url);
           // This is a component
           if (obj.$options) {
             if (!obj.current && !obj.currentURL) {
@@ -2631,10 +2630,6 @@ return {
 
         if ( !url && this.def ){
           url = this.def;
-        }
-
-        if (!this.autoload && !url) {
-          url = this.parseURL(bbn.env.path);
         }
 
         return url;

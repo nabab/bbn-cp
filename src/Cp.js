@@ -3082,23 +3082,31 @@ class bbnCp {
    * @returns 
    */
   $set(obj, prop, value, writable = true, configurable = true) {
+    // Case where it's the prop or data of a component
     if (bbn.cp.isComponent(obj)) {
+      //  It already exists
       if (obj.$namespaces[prop]) {
+        // New treated value
         const dataObj = bbnData.treatValue(value, obj, prop);
+        // The value is different
         if (!bbn.fn.isSame(dataObj, obj[prop])) {
+          // It's a prop
           if (obj.$namespaces[prop] === 'props') {
             obj.$setProp(prop, value);
           }
+          // It's a data
           else {
             obj[prop] = value;
           }
         }
       }
+      // Creating a new data
       else {
         obj.$setUpData(prop, value);
       }
     }
     else {
+      // Creating or updating if possible a property to the given object
       Object.defineProperty(obj, prop, {
         value,
         writable,

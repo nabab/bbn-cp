@@ -111,13 +111,7 @@
                     @dragleave="leaveDrag"
                     @drop="drop"
                     @dragend="endDrag"
-                    @mouseup.left="
-                    if ( !doubleClk ){
-                      if ( !tree.realDragging && selectable ){
-                        isSelected = !isSelected;
-                      }
-                      doubleClk = true;
-                    }"
+                    @mouseup.left="onMouseUp"
                     tabindex="0"
                     bbn-draggable.container.data.mode="tree.draggable ? {
                       mode: 'clone',

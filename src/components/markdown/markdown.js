@@ -187,7 +187,7 @@ return {
     },
     computed: {
       compiled() {
-        return marked.parse(this.value);
+        return this.value ? marked.parse(this.value) : '';
       },
       toolbar() {
         if (this.readonly) {

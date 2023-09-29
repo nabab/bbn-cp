@@ -163,6 +163,7 @@ return {
        */
       toggle() {
         if (!this.isDisabled && !this.readonly) {
+          bbn.fn.log("TOGGLE");
           let emitVal = !this.state ? this.value : this.novalue;
           this.$emit('input', emitVal);
           this.$emit('change', emitVal, this);
@@ -180,6 +181,7 @@ return {
         else {
           this.$emit('beforechange', ev, this.state);
           if (!ev.defaultPrevented) {
+            bbn.fn.log("ONCLICK");
             this.click(ev);
           }
         }
@@ -194,6 +196,7 @@ return {
           ev.preventDefault()
         }
         else {
+          bbn.fn.log("KEYDOWN");
           this.keydown(ev);
         }
       }

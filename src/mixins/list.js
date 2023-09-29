@@ -640,7 +640,7 @@
             }
             else if ( this.sourceValue ){
               return bbn.fn.search(this.filteredData, a => {
-                return a.data[this.sourceValue] === v;
+                return bbn.fn.getProperty(a.data, this.sourceValue) === v;
               });
             }
           }
@@ -671,7 +671,7 @@
             && this.currentData.length
           ){
             let idx = bbn.fn.search(this.currentData, a => {
-              return a.data[this.sourceValue] === this.value;
+              return bbn.fn.getProperty(a.data, this.sourceValue) === this.value;
             });
             if (idx > -1) {
               return this.currentData[idx].data;
@@ -746,8 +746,8 @@
             if ( data.length && !bbn.fn.isObject(data[0]) && !bbn.fn.isArray(data[0]) && this.sourceValue && this.sourceText ){
               data = data.map(a => {
                 let o = {};
-                o[this.sourceValue] = a;
-                o[this.sourceText] = a;
+                bbn.fn.setProperty(o, this.sourceValue, a);
+                bbn.fn.setProperty(o, this.sourceText, a);
                 return o;
               });
             }
@@ -965,7 +965,7 @@
                 o.selected = this.selected.includes(a[this.uid]);
               }
               else if ( this.sourceValue ){
-                o.selected = this.selected.includes(a[this.sourceValue]);
+                o.selected = this.selected.includes(bbn.fn.getProperty(a, this.sourceValue));
               }
             }
             return o;
@@ -1021,8 +1021,8 @@
                   else if ( bbn.fn.isObject(this.source) ){
                     bbn.fn.iterate(this.source, (a, n) => {
                       let o = {};
-                      o[this.sourceValue] = n;
-                      o[this.sourceText] = a;
+                      bbn.fn.setProperty(o, this.sourceValue, n);
+                      bbn.fn.setProperty(o, this.sourceText, a);
                       data.push(o);
                     });
                   }

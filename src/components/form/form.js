@@ -404,7 +404,7 @@ return {
        * @return {Boolean}
        */
       _canSubmit(){
-        return (this.prefilled || this.isModified()) && !this.disabled;
+        return !this.disabled && (this.prefilled || this.isModified()) && this.isValid();
       },
       /**
        * Returns an array containing the form's buttons.
