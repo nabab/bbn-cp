@@ -252,7 +252,7 @@
     const c = x();
     if (node.tag) {
       if (node.model) {
-        bbn.fn.iterate(node.model, (m, prop) => {
+        bbn.fn.iterate(node.model, m => {
           x(c, sp, `_sIr('${m.hash}', ${m.exp}, ${hashName});`);
           x(c, sp, `if (!$_go['${node.id}'] && (_gIs('${m.hash}', ${hashName}) !== "OK")) {`);
           x(c, sp, `  $_go['${node.id}'] = true;`);
@@ -404,41 +404,11 @@
               x(c, sp, `    bbn.fn.log("FROM MODEL " + _bbnRealName, _t.$options.name, _t.$cfg.props, _bbnEventValue, ${modelVarRoot}, "${modelVarRoot}", Object.hasOwn(_t.$cfg.props, "${modelVarRoot}"));`);
             }
             else {
-              /*
-              let st = '_t';
-              let prop;
-              let isQuoted = false;
-              bbn.fn.each(modelVarBits, (bit, i) => {
-                if (i === modelVarBits.length - 1) {
-                  prop = bit;
-                  if (['"', "'", "`"].includes(bit.substr(0, 1))) {
-                    isQuoted = true;
-                  }
-
-                  return false;
-                }
-                else {
-                  if (['"', "'", "`"].includes(bit.substr(0, 1))) {
-                    st += `[${bit}]`;
-                  }
-                  else {
-                    st += `.${bit}`;
-                  }
-                }
-              });
-
-              x(c, sp, `    bbn.fn.log("FROM MODEL ${name}", "${st}", _bbnEventValue, ${JSON.stringify(modelVarBits)}, "${modelVarRoot}");`);
-              x(c, sp, `    _t.$set(${st}, ${isQuoted ? prop : "'" + prop + "'"}, _bbnEventValue);`);
-              */
               x(c, sp, `    ${modelVarName} = _bbnEventValue;`);
             }
-            //x(c, sp, `    ${modelVarName} = _bbnEventValue;`);
-            x(c, sp, `    _bbnCurrentElement.bbnSchema.model[_bbnRealName].value = _bbnEventValue;`);
-            x(c, sp, `    _bbnCurrentElement.bbnSchema.props[_bbnRealName] = _bbnEventValue;`);
             x(c, sp, `    if (_bbnCurrentElement?.bbn) {`);
             x(c, sp, `      _bbnCurrentElement?.bbn.$forceUpdate();`);
             x(c, sp, `    }`);
-            x(c, sp, `    _t.$forceUpdate();`);
             x(c, sp, `    _t.$forceUpdate();`);
             x(c, sp, `  }`);
             x(c, sp, `});`);
@@ -453,9 +423,24 @@
             //x(c, sp, `  bbn.fn.log("EXECUTING EVENT ${n} ${ev.action} ON ${node.tag}", _bbnEventObject.detail);`);
             x(c, sp, `  let $event = _bbnEventObject;`);
             if (ev.modifiers.length) {
-              x(c, sp, `  if (!_bbnEventObject.key || !${JSON.stringify(ev.modifiers)}.includes(_bbnEventObject.key.toLowerCase())) {`);
-              x(c, sp, `    return;`);
-              x(c, sp, `  }`);
+              x(c, sp, `bbn.fn.log($event, "${n}");`);
+              if (n.indexOf('key') === 0) {
+                x(c, sp, `  if (!_bbnEventObject.key || !${JSON.stringify(ev.modifiers)}.includes(_bbnEventObject.key.toLowerCase())) {`);
+                x(c, sp, `    return;`);
+                x(c, sp, `  }`);
+              }
+              else if (n.indexOf('mouse') === 0) {
+                if (ev.modifiers.includes('right')) {
+                  x(c, sp, `  if (_bbnEventObject.button !== 2) {`);
+                  x(c, sp, `    return;`);
+                  x(c, sp, `  }`);
+                }
+                else if (ev.modifiers.includes('left')) {
+                  x(c, sp, `  if (_bbnEventObject.button !== 0) {`);
+                  x(c, sp, `    return;`);
+                  x(c, sp, `  }`);
+                }
+              }
             }
 
             if (ev.prevent) {
@@ -889,7 +874,7 @@
           && !tpl[0].attr?.['bbn-model']
           && !tpl[0].attr?.['bbn-forget']
           && !bbn.cp.isComponent(tpl[0])
-          && !['slot', 'template', 'component'].includes(tpl[0].tag)
+          && (['div', 'span'].includes(tpl[0].tag) || (tpl[0].tag === cp.$cfg.tag))
       ) {
         //x(c, sp, `_eles['0-0'] = _t.$el;`);
         if (tpl[0].attr) {

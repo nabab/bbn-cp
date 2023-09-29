@@ -1481,11 +1481,6 @@ return {
         return {
           ready: false,
           /**
-           * @data {Boolean} [false] doubleClk
-           * @memberof bbn-tree-node
-           */
-          doubleClk: false,
-          /**
            * The parent tree
            * @data {Boolean} [false] parent
            * @memberof bbn-tree-node
@@ -1943,15 +1938,15 @@ return {
           // if the current node isn't already selected
           if ( !this.tree.currentSelected.includes(this) ){
             let sameParent = this.tree.selectedNode && (this.tree.selectedNode.parent === this.parent);
-            if ( (this.tree.selectedNode && !this.tree.multiple) || (sameParent && !this.parent.multiple) ){
-              this.tree.selectedNode.isSelected = false;
-            }
             // initializing and calling the event beforeSelect
             let ev = new Event('beforeSelect', {cancelable: true});
             if ( emit ){
               this.tree.$emit('beforeSelect', this, ev);
             }
             if ( !ev.defaultPrevented ){
+              if ( (this.tree.selectedNode && !this.multiple) || (sameParent && !this.parent.multiple) ){
+                this.tree.selectedNode.isSelected = false;
+              }
               // adding the node to selected
               this.tree.currentSelected.push(this);
               // call the event select
@@ -2212,6 +2207,12 @@ return {
         },
         getCls(source, tree) {
           return source.cls !== undefined ? source.cls : (bbn.fn.isFunction(tree.cls) ? tree.cls(source, this.tree, this.parent) : tree.cls || '');
+        },
+        onMouseUp(e) {
+          bbn.fn.log('onMouseUp');
+          if (!this.tree.realDragging && this.tree.selectable) {
+            this.isSelected = !this.isSelected;
+          }
         }
       },
       /**
@@ -2280,18 +2281,6 @@ return {
         }
       },
       watch: {
-        /**
-         * @watch doubleClk
-         * @param {Boolean} newVal
-         * @memberof bbn-tree-node
-         */
-        doubleClk(newVal){
-          if ( newVal ){
-            setTimeout(() => {
-              this.doubleClk = false
-            }, 500);
-          }
-        },
         /**
          * Beware it's a computed, use tree.currentData[idx].expanded to change it.
          *
