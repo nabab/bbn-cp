@@ -331,13 +331,77 @@ return {
         _isSetting: false,
         window: null,
         isInit: false,
-        realButtons: [],
         canSubmit: false,
         sourceTimeout: 0,
         isClosing: false
       };
     },
     computed: {
+      /**
+       * Returns an array containing the form's buttons.
+       *
+       * @computed realButtons
+       * @return {Array}
+       */
+      realButtons(){
+        let r = [];
+        if ( this.buttons ){
+          bbn.fn.each(this.buttons, a => {
+            let t = typeof(a);
+            let obj;
+            if ( t === 'string' ){
+              switch ( a ){
+                case 'cancel':
+                  obj = {
+                    preset: 'cancel',
+                    text: this.cancelText,
+                    icon: 'nf nf-fa-times_circle',
+                    action: () => {
+                      this.cancel();
+                    },
+                    disabled: !this.canCancel
+                  };
+                  break;
+                case 'reset':
+                  obj = {
+                    preset: 'reset',
+                    text: this.resetText,
+                    icon: 'nf nf-fa-refresh',
+                    action: () => {
+                      this.reset();
+                    },
+                    disabled: !this.dirty && !this.prefilled
+                  };
+                  break;
+                case 'submit':
+                  obj = {
+                    preset: 'submit',
+                    text: this.submitText,
+                    icon: 'nf nf-fa-check_circle',
+                    action: () => {
+                      this.submit();
+                    },
+                    disabled: !this.canSubmit
+                  };
+                  break;
+              }
+            }
+            else if ( t === 'object' ){
+              if ( (typeof a.action === 'string') && bbn.fn.isFunction(this[a.action]) ){
+                a.action = this[a.action];
+              }
+              obj = a;
+            }
+            if (obj) {
+              if (this.isLoading) {
+                obj.disabled = true;
+              }
+              r.push(obj);
+            }
+          });
+        }
+        return r;
+      },
       /**
        * Returns true if the form has a footer.
        *
@@ -405,71 +469,6 @@ return {
        */
       _canSubmit(){
         return (this.prefilled || this.isModified()) && !this.disabled;
-      },
-      /**
-       * Returns an array containing the form's buttons.
-       *
-       * @computed realButtons
-       * @return {Array}
-       */
-      getRealButtons(){
-        let r = [];
-        if ( this.buttons ){
-          bbn.fn.each(this.buttons.slice(), a => {
-            let t = typeof(a);
-            let obj;
-            if ( t === 'string' ){
-              switch ( a ){
-                case 'cancel':
-                  obj = {
-                    preset: 'cancel',
-                    text: this.cancelText,
-                    icon: 'nf nf-fa-times_circle',
-                    action: () => {
-                      this.cancel();
-                    },
-                    disabled: !this.canCancel
-                  };
-                  break;
-                case 'reset':
-                  obj = {
-                    preset: 'reset',
-                    text: this.resetText,
-                    icon: 'nf nf-fa-refresh',
-                    action: () => {
-                      this.reset();
-                    },
-                    disabled: !this.dirty && !this.prefilled
-                  };
-                  break;
-                case 'submit':
-                  obj = {
-                    preset: 'submit',
-                    text: this.submitText,
-                    icon: 'nf nf-fa-check_circle',
-                    action: () => {
-                      this.submit();
-                    },
-                    disabled: !this.canSubmit
-                  };
-                  break;
-              }
-            }
-            else if ( t === 'object' ){
-              if ( (typeof a.action === 'string') && bbn.fn.isFunction(this[a.action]) ){
-                a.action = this[a.action];
-              }
-              obj = a;
-            }
-            if (obj) {
-              if (this.isLoading) {
-                obj.disabled = true;
-              }
-              r.push(obj);
-            }
-          });
-        }
-        return r;
       },
       /**
        * Defines the form behavior when submitted.
@@ -548,36 +547,12 @@ return {
           button.action(this.source, this, ev)
         }
       },
-      updateButtons(){
-        if (this.buttons === false) {
-          return;
-        }
-        if (this.realButtons.length) {
-          bbn.fn.each(this.getRealButtons(), (b, i) => {
-            let change = false;
-            for (let n in b) {
-              if (!bbn.fn.isFunction(b[n]) && !bbn.fn.isSame(b[n], this.realButtons[i][n])) {
-                bbn.fn.warning(n);
-                bbn.fn.log(b[n]);
-                change = true;
-                this.realButtons[i][n] = b[n];
-              }
-            }
-            if (change && this.$refs.butt?.[i]) {
-              this.$refs.butt[i].$forceUpdate()
-            }
-          });
-          return;
-        }
+      updateButtons() {
         if (this.window && bbn.fn.isArray(this.window.currentButtons) && (this.currentMode === 'big')) {
-          this.window.currentButtons.splice(0, this.window.currentButtons.length);
+          setTimeout(() => {
+            this.window.currentButtons.splice(0, this.window.currentButtons.length, ...this.realButtons);
+          }, 50);
         }
-        bbn.fn.each(this.getRealButtons(), b => {
-          this.realButtons.push(b);
-          if (this.window && bbn.fn.isArray(this.window.currentButtons) && (this.currentMode === 'big')) {
-            this.window.currentButtons.push(b);
-          }
-        });
       },
       /**
        * Compares the actual data with the original data of the form to identify the differences.

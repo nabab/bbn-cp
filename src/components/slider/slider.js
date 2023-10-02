@@ -136,21 +136,20 @@ return {
         if (!bbnSliderCp.orientations[this.orientation]) {
           throw new Error(bbn._("Impossible to get an orientation for the slider"));
         }
-        let o = {};
-        let or = bbnSliderCp.orientations[this.orientation];
+        let o = {visibility: 'hidden'};
+        let or = bbn.fn.createObject(bbnSliderCp.orientations[this.orientation]);
         if (this.showShadow) {
           o['-webkit-box-shadow'] = o['-moz-box-shadow'] = o['box-shadow'] = or.shadow + ' !important';
+        }
+
+        if ((o[or.prop] !== null) && this.ready && !this.isResizing) {
+          o.transition = this.orientation + ' 0.5s';
+          o.visibility = 'visible';
         }
 
         o[or.size] = 'auto';
         o[or.prop] = 0;
         o[this.orientation] = this.currentVisible ? 0 : -this.currentSize + 'px';
-        if (this.ready && !this.isResizing) {
-          o.transition = this.orientation + ' 0.5s';
-        }
-        else {
-          o.opacity = 0;
-        }
 
         return o;
       }
@@ -214,6 +213,10 @@ return {
         }
 
         this.transitionTimeout = setTimeout(() => {
+          if (!this.$isMounted) {
+            this.onResize();
+          }
+  
           if (this.setResizeMeasures() || this.setContainerMeasures()) {
             let s = this.$el.getBoundingClientRect()[this.isVertical ? 'width' : 'height'];
             if ((s !== this.currentSize) && (s > 20)){

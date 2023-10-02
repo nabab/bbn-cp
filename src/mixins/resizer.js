@@ -87,27 +87,20 @@
          * @memberof resizerComponent
          */
         onResize() {
-          return new Promise(resolve => {
-            if (!this.isResizing) {
-              this.isResizing = true;
-              //this.$forceUpdate();
-              if (this.$el.style.display !== 'none') {
-                // Setting initial dimensions
-                let ms2 = this.setContainerMeasures();
-                let ms1 = this.setResizeMeasures();
-                if (ms1 || ms2) {
-                  //bbn.fn.log(["DEFAULT ONRESIZE FN FROM " + this.$options.name, ms1, ms2]);
-                  this.$tick();
-                }
-              }
+          let res = false;
+          //this.$forceUpdate();
+          if (this.$el.style.display !== 'none') {
+            // Setting initial dimensions
+            let ms2 = this.setContainerMeasures();
+            let ms1 = this.setResizeMeasures();
+            if (ms1 || ms2) {
+              //bbn.fn.log(["DEFAULT ONRESIZE FN FROM " + this.$options.name, ms1, ms2]);
+              res = true;
+              this.$tick();
+            }
+          }
 
-              this.isResizing = false;
-              resolve();
-            }
-            else {
-              resolve();
-            }
-          });
+          return res;
         },
         /**
          * Sets the value of lastKnownHeight and lastKnownWidth basing on the current dimensions of width and height.
@@ -197,9 +190,11 @@
         setResizeEvent() {
           if (!this.resizerObserver && this.resizerObserved) {
             this.resizerObserver = new ResizeObserver((entries) => {
-              for (const entry of entries) {
-                if (entry.contentBoxSize?.[0]) {
-                  this.onResize();
+              if (!this.isResizing) {
+                for (const entry of entries) {
+                  if (entry.contentBoxSize?.[0]) {
+                    this.onResize();
+                  }
                   //bbn.fn.log(bbn._("RESIZEOBS from %s", this.$options.name), entry.contentBoxSize, this.Cid);
                 }
               }

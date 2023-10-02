@@ -1082,7 +1082,7 @@ return {
       },
       onResize(){
         if (this.isVisible && this.ready) {
-          bbn.cp.mixins.resizer.methods.onResize.apply(this, arguments);
+          return bbn.cp.mixins.resizer.methods.onResize.apply(this);
         }
       },
       /**

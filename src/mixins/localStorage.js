@@ -8,6 +8,44 @@
     configurable: false,
     writable: false,
     value: {
+      statics() {
+        let _storage = false;
+        if (window.localStorage) {
+          _storage = {
+            get(name){
+              let tmp = window.localStorage.getItem(name);
+              if ( tmp ){
+                tmp = JSON.parse(tmp);
+                return tmp.value;
+              }
+            },
+            set(name, value){
+              return window.localStorage.setItem(name, JSON.stringify({
+                value: value,
+                time: (new Date()).getTime()
+              }));
+            },
+            time(name){
+              let tmp = window.localStorage.getItem(name);
+              if ( tmp ){
+                tmp = JSON.parse(tmp);
+                return tmp.time;
+              }
+              return false;
+            },
+            remove(name){
+              return window.localStorage.removeItem(name);
+            },
+            clear(){
+              return window.localStorage.clear();
+            }
+          };
+        }
+
+        return {
+          _storage
+        };
+      },
       props: {
         /**
          * True if the component has to have storage.
@@ -46,36 +84,11 @@
          * @memberof localStorageComponent
          * 
          */
-        _storage(){
+        _storage() {
+          return this.constructor._storage;
+
           if (window.localStorage) {
             return {
-              get(name){
-                let tmp = window.localStorage.getItem(name);
-                if ( tmp ){
-                  tmp = JSON.parse(tmp);
-                  return tmp.value;
-                }
-              },
-              set(name, value){
-                return window.localStorage.setItem(name, JSON.stringify({
-                  value: value,
-                  time: (new Date()).getTime()
-                }));
-              },
-              time(name){
-                let tmp = window.localStorage.getItem(name);
-                if ( tmp ){
-                  tmp = JSON.parse(tmp);
-                  return tmp.time;
-                }
-                return false;
-              },
-              remove(name){
-                return window.localStorage.removeItem(name);
-              },
-              clear(){
-                return window.localStorage.clear();
-              }
             }
           }
           return false;

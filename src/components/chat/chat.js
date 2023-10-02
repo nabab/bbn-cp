@@ -1186,9 +1186,9 @@ return {
         scrollEnd(){
           let sc = this.getRef('scroll');
           if ( sc ){
-            sc.onResize(true).then(() => {
+            //sc.onResize(true).then(() => {
               sc.scrollEndY();
-            });
+            //});
           }
         },
         /**

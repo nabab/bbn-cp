@@ -7,8 +7,7 @@
      @mouseup.stop
      @mousedown.stop
      @keydown.escape="hide"
-     :style="currentStyle"
->
+     :style="currentStyle">
   <slot></slot>
   <div v-if="closeButton"
        :class="{

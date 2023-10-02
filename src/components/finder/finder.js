@@ -834,16 +834,16 @@ return {
        * @fires $nextTick
        * @fires getRef
        */
-      updateScroll(){
+      updateScroll() {
         this.$nextTick(() => {
           let sc = this.getRef('scroll');
           if (sc) {
-            sc.onResize().then(() => {
-              setTimeout(() => {
-                bbn.fn.log("IT SHOULD GO TO THE END OF THE SCROLL")
+            //sc.onResize().then(() => {
+              //setTimeout(() => {
+                //bbn.fn.log("IT SHOULD GO TO THE END OF THE SCROLL")
                 sc.scrollEndX(true);
-              }, 250);
-            });
+              //}, 250);
+            //});
           }
         })
       }

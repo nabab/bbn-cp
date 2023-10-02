@@ -208,7 +208,7 @@ return {
       currentPage(v) {
         //bbn.fn.log("CURRENT PAGE", v);
         if (this.currentNumericPage !== v) {
-          this.currentNumericPage = v;
+          this.currentNumericPage = parseInt(v);
         }
       },
       currentNumericPage(v){
@@ -217,7 +217,7 @@ return {
           clearTimeout(this.numericTimeout);
         }
         this.numericTimeout = setTimeout(() => {
-          if (this.currentPage !== v) {
+          if (this.currentPage != v) {
             this.currentPage = v;
           }
         }, 250);

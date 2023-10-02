@@ -14,8 +14,7 @@ class bbnData {
    * @returns {String} The hash
    */
   static hash(v) {
-    let hash = v;
-    hash = bbn.fn.hash(v);
+    let hash = bbn.fn.hash(v);
 
     return hash;
   }
@@ -1306,7 +1305,6 @@ class bbnCp {
       }
     }
 
-    
     if (d.model) {
       for (let n in d.model) {
         if (n === '_default_') {
@@ -1579,11 +1577,6 @@ class bbnCp {
       this.$el.dispatchEvent(beforeDestroy);
       
       // Sending destroyed event through a timeout
-      setTimeout(() => {
-        const destroyed = new Event('destroyed');
-        this.$onDestroyed();
-        this.$el.dispatchEvent(destroyed);
-      });
       // Deleting from elements prop
       while (this.$values.length) {
         let id = this.$values[this.$values.length -1];
@@ -1609,6 +1602,9 @@ class bbnCp {
         writable: false,
         configurable: true
       });
+      const destroyed = new Event('destroyed');
+      this.$onDestroyed();
+      this.$el.dispatchEvent(destroyed);
     }
   }
 
@@ -2226,11 +2222,16 @@ class bbnCp {
 
     //this.$updateAllComputed();
     //bbn.fn.log(["EVALUATING", this.$options.name, this.$cid]);
+    if (this.$options.name === 'bbn-table') {
+      //debugger;
+    }
     const e = await this.$eval(this);
     const t2 = (new Date()).getTime();
     this.$numBuild++;
     this.$lastLaunch = t2;
-    //bbn.fn.warning("UPDATE COMPONENT " + this.$options.name + ' - ' + this.$cid + ' - ' + this.$id + ' - time: ' + (this.$lastLaunch/1000) + '(' + this.$numBuild + ')');
+    if (this.$options.name === 'bbn-table') {
+      bbn.fn.warning("UPDATE COMPONENT " + this.$options.name + ' - ' + this.$cid + ' - ' + this.$id + ' - time: ' + ((t2-t1)/1000) + '(' + this.$numBuild + ')');
+    }
     if (this.$isCreating) {
       Object.defineProperty(this, '$isCreating', {
         writable: false,
@@ -2827,10 +2828,17 @@ class bbnCp {
   }
 
   $updateComputed(name, val) {
+    if (!this.$computed[name]) {
+      throw new Error(bbn._("The computed %s is not defined in %s", name, this.$options.name));
+    }
+
     const hash = bbnData.hash(val);
-    if (!bbn.fn.isSame(hash, this.$computed[name].hash)) {
+    if (name === 'selectedNode') {
+      bbn.fn.log(["UNSEL UPDATING COMPUTED " + name, val, this.$computed[name].val, bbn.fn.isSame(this.$computed[name].hash, hash)]);
+    }
+    if (!bbn.fn.isSame(this.$computed[name].hash, hash)) {
       const oldValue = this.$computed[name].val;
-      //bbn.fn.log(["UPDATING COMPUTED " + name, val, hash, bbn.fn.isFunction(hash), this.$computed[name].hash, oldValue]);
+      //bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue]);
       this.$computed[name].old = oldValue;
       this.$computed[name].hash = hash;
       this.$computed[name].num = this.$computed[name].num < this.$numBuild ? this.$numBuild + 1 : this.$computed[name].num + 1;
@@ -3022,18 +3030,14 @@ class bbnCp {
    * Add delay before another function call
    */
   $tick() {
-    return new Promise(resolve => {
-      let row = bbn.fn.getRow(bbn.cp.queue, {cp: this});
-      if (!row) {
-        row = {cp: this, fns: []};
-        bbn.cp.queue.push(row);
-      }
-
-      row.fns.push(resolve);
-      //bbn.fn.warning("TICK");
-      //console.trace();
-      //bbn.fn.log(this, '--------------------')
-    });
+    let row = bbn.fn.getRow(bbn.cp.queue, {cp: this});
+    if (!row) {
+      row = {cp: this, fns: []};
+      bbn.cp.queue.push(row);
+    }
+    //bbn.fn.warning("TICK");
+    //console.trace();
+    //bbn.fn.log(this, '--------------------')
 
   }
 

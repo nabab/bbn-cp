@@ -337,6 +337,9 @@ return {
         }
       }
     },
+    beforeCreate(){
+      bbn.fn.log(["BEFORE CREATE", this.$el, this.$slots, this.$el.bbnSlots, this.closest('bbn-anon')])
+    },
     props: {
       /**
        * True if the columns has to have titles.

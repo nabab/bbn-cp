@@ -801,17 +801,12 @@
         }
       },
       onResize(force) {
-        return bbn.cp.mixins.resizer.methods.onResize.apply(this, [force]).then((res) => {
-          if (this.isVisible && this.$el && (res || force)) {
-            bbn.fn.log("NORMAL RESIZE", this.lastKnownCtHeight, this.lastKnownCtWidth);
-            
-            //return this.realResize();
-          }
-        });
-
-        return new Promise(resolve => {
-          setTimeout(() => {resolve();}, 0);
-        });
+        let res = bbn.cp.mixins.resizer.methods.onResize.apply(this);
+        if (this.isVisible && this.$el && (res || force)) {
+          bbn.fn.log("NORMAL RESIZE", this.lastKnownCtHeight, this.lastKnownCtWidth);
+          
+          //return this.realResize();
+        }
       },
       fullResize() {
         this.isResized = false;

@@ -252,7 +252,7 @@ return {
         pollingTimeout: 0,
         prePollingTimeout: 0,
         pollingErrors: 0,
-        loaders: [],
+        loaders: bbn.env.loadersHistory,
         notifications: [],
         poller: false,
         debug: false,
@@ -790,49 +790,25 @@ return {
         c.alert.apply(c, arguments);
       };
 
-      bbn.fn.defaultStartLoadingFunction = (url, start, data, key) => {
+      bbn.fn.defaultStartLoadingFunction = () => {
         if (window.appui?.status) {
-          const loader = bbn.fn.getLoader(key);
-          if (loader) {
-            appui.loaders.unshift(loader);
-            let i = appui.loaders.length - 1;
-            while ((i > 0) && (appui.loaders.length > bbn.env.maxLoadersHistory)) {
-              if (!appui.loaders[i].loading) {
-                appui.loaders.splice(i, 1);
-              }
-
-              i--;
-            }
+          const loadBar = this.getRef('loading');
+          if (bbn.fn.isCp(loadBar)) {
+            loadBar.$forceUpdate();
           }
         }
       };
 
       bbn.fn.defaultEndLoadingFunction = (url, timestamp, data, res) => {
-        if (res && res.data && res.data.disconnected) {
+        if (res && res.data && (bbn.fn.numProperties(res.data) === 1) && res.data.disconnected) {
           window.location.reload();
           return;
         }
 
         if (window.appui?.status ){
-          let history = bbn.fn.getRow(bbn.env.loadersHistory, {url: url, start: timestamp});
-          let loader = bbn.fn.getRow(appui.loaders, {url: url, start: timestamp});
-          if (loader) {
-            if (history) {
-              if (history.loading) {
-                history.loading = false;
-                history.duration = (new Date()).getTime() - loader.start;
-              }
-
-              bbn.fn.iterate(history, (val, prop) => {
-                if (loader[prop] !== val) {
-                  loader[prop] = val;
-                }
-              });
-            }
-            else {
-              loader.loading = false;
-              loader.duration = (new Date()).getTime() - loader.start;
-            }
+          const loadBar = this.getRef('loading');
+          if (bbn.fn.isCp(loadBar)) {
+            loadBar.$forceUpdate();
           }
         }
       };
