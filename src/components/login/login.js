@@ -141,6 +141,13 @@ return {
        */
       note: {
         type: String
+      },
+      /**
+       * A custom HTML block to insert before the form
+       * @prop {String} custom
+       */
+      custom: {
+        type: String
       }
     },
     data(){
