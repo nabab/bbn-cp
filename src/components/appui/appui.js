@@ -279,7 +279,9 @@ return {
         isTouch: isMobile || isTablet,
         isDesktop: !isTablet && !isMobile,
         showBookmarks: false,
-        bookmarksLoaded: false
+        bookmarksLoaded: false,
+        isLoading: false,
+        loadingText: bbn._('Loading')
       };
       return d;
     },
@@ -766,6 +768,13 @@ return {
       },
       onLoad() {
         this.$emit('load', ...arguments);
+      },
+      startLoading(text){
+        this.loadingText = text === false ? '' : text || bbn._('Loading');
+        this.isLoading = true;
+      },
+      stopLoading(){
+        this.isLoading = false;
       }
     },
     beforeCreate(){
@@ -1111,6 +1120,11 @@ return {
           }, 1000);
         }
       },
+      isLoading(newVal){
+        if (!newVal) {
+          this.loadingText = bbn._('Loading');
+        }
+      }
     },
     components: {
       searchBar: {
