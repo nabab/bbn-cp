@@ -45,7 +45,7 @@ class ${proto} extends bbnCp {
           methods[n] = bbn.fn.analyzeFunction(obj.methods[n]);
           let fn = methods[n];
           code += `
-          ${fn.name}: ${fn.isAsync ? 'async ' : ''} function(${fn.argString}) ${fn.body},`;
+          ${n}: ${fn.isAsync ? 'async ' : ''} function(${fn.argString}) ${fn.body},`;
         }
       }
     code+= `
@@ -152,8 +152,8 @@ class ${proto} extends bbnCp {
         //let body = fn.body.replace('{', '{bbn.fn.log("' + n + '");');
         let body = fn.body;
         code += `
-  get ${fn.name}() {
-    return this.$methods['${fn.name}'].bind(this);
+  get ${n}() {
+    return this.$methods['${n}'].bind(this);
   };`;
           
       }

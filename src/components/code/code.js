@@ -36,6 +36,14 @@ return {
       extensions: {
         type: Array,
         default: null
+      },
+      wrap: {
+        type: Boolean,
+        default: true
+      },
+      tabSize: {
+        type: Number,
+        default: 2
       }
     },
     data() {
@@ -70,6 +78,11 @@ return {
         const state = cm.state;
         const cpt = state.Compartment;
 
+
+        this.compartments.wrap = new cpt;
+        extensions.push(this.compartments.wrap.of(cm.view.EditorView.lineWrapping));
+        this.compartments.tabSize = new cpt;
+        extensions.push(this.compartments.tabSize.of(state.EditorState.tabSize.of(this.tabSize)));
 
         // push current language extension and current theme extension
         this.compartments.language = new cpt;
@@ -119,7 +132,8 @@ return {
         this.widget = new cm.view.EditorView(bbnData.immunizeValue({
           state: this.state,
           parent: this.getRef('element'),
-          dispatch: t => this.onChange(t)
+          dispatch: t => this.onChange(t),
+          lineWrapping: this.wrap,
         }));
       },
       onKeyDown(event) {
@@ -184,6 +198,16 @@ return {
       this.initUntilExtensionsLoaded(100);
     },
     watch: {
+      tabSize(v) {
+        this.widget.dispatch({
+          effects: this.compartments.tabSize.reconfigure(codemirror6.state.EditorState.tabSize.of(v))
+        });
+      },
+      wrap(v) {
+        this.widget.dispatch({
+          effects: this.compartments.wrap.reconfigure(codemirror6.view.EditorView.lineWrapping.of(v))
+        });
+      },
       readonly(v) {
         this.widget.dispatch({
           effects: this.compartments.readonly.reconfigure(codemirror6.state.EditorState.readOnly.of(v))

@@ -733,6 +733,10 @@ return {
         return !!this.currentView?.pane;
       },
       currentView() {
+        if (!this.router) {
+          this.router = this.closest('bbn-router');
+        }
+
         if (this.router) {
           return bbn.fn.getRow(this.router.views, {idx: this.currentIndex})
         }

@@ -226,7 +226,9 @@
           }
           */
         },
-        formatSize: bbn.fn.formatSize,
+        formatSize(...args) {
+          return bbn.fn.formatSize(...args);
+        },
         setComputedStyle(){
           if (!this.computedStyle && this.$el && this.$el.clienttWidth) {
             this.computedStyle = window.getComputedStyle(this.$el);

@@ -830,8 +830,9 @@
         //bbn.fn.log("RESIZEAFTERSCROLL");
         let go = this.isVisible
             && bbn.fn.isDom(this.$el)
-            && this.isActiveResizer()
-            && !this.isResized;
+            && (!this.isInit 
+              || (this.isActiveResizer() && !this.isResized)
+            );
         if (go) {
           this._setMinMax();
         }
@@ -1391,6 +1392,7 @@
         if (this.source === undefined) {
           return this.$nextTick()
         }
+
         return bbn.cp.mixins.list.methods.updateData.apply(this);
       }
     },
@@ -1491,15 +1493,17 @@
       /**
        * @watch source
        * @fires updateData
-       */
+       * @todo This can trigger a bug if source is an object at the moment of the destruction
+       *
       source: {
         deep: true,
         handler() {
           if ( this.currentData.length ){
-            this.updateData();
+            //this.updateData();
           }
         }
       },
+      */
       /**
        * @watch filteredData
        * @fires getRef

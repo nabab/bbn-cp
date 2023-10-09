@@ -62,7 +62,7 @@
          * @memberof inputComponent
          */
         readonly: {
-          type: [Boolean, Function],
+          type: [Boolean, Function, String],
           default: false
         },
         /**

@@ -295,7 +295,6 @@
       let lastEmpty = false;
       Array.from(childNodes).forEach(node => {
         if (node instanceof Comment) {
-          
           return;
         }
 
@@ -303,6 +302,7 @@
           let tmp = bbn.cp.analyzeElement(node, map, inlineTemplates, idx + '-' + num);
           res.items.push(tmp.res);
           num++;
+          lastEmpty = false;
         }
         // No text nodes in the slots
         else if (node.textContent) {
@@ -329,9 +329,13 @@
             map[idx + '-' + num] = item;
             num++;
           }
+          else {
+            lastEmpty = false;
+          }
         }
         else {
           bbn.fn.log("Unknown node", node)
+          lastEmpty = false;
         }
       });
       let isIf = false;

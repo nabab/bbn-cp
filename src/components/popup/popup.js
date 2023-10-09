@@ -528,6 +528,7 @@
             focused: true,
             action($ev, btn) {
               btn.closest('bbn-floater').close(true);
+              bbn.fn.log("ON NO", btn);
               if (onNo) {
                 onNo($ev, btn);
               }
@@ -536,7 +537,8 @@
             text: yesText,
             cls: 'bbn-primary',
             icon: 'nf nf-fa-check_circle',
-            action($ev, btn) {
+            action: ($ev, btn) => {
+              bbn.fn.log("ON YES", btn);
               btn.closest('bbn-floater').close(true);
               onYes($ev, btn);
             }

@@ -128,7 +128,7 @@
     x(c, sp, `    ${indexName} = parseInt(${indexName});`);
     x(c, sp, `  }`);
     x(c, sp, `  let ${node.loop.item} = ${isNumber} ? ${indexName} : ${varName}[${indexName}];`);
-    x(c, sp, `  const ${hash} = (${hashName} ? ${hashName} + '-' : '') + '${node.loop.hash}-${indexName}' + ${node.loop.key ? node.loop.item + '[' + node.loop.key + ']' : indexName};`);
+    x(c, sp, `  const ${hash} = (${hashName} || '') + '${node.loop.hash}-${indexName}-' + (${node.attr?.key?.exp ? node.attr.key.exp : indexName});`);
     x(c, sp, `  ${listName}.push(${hash});`);
     x(c, sp, `  _sIr('${node.loop.item}', ${node.loop.item}, ${hash});`);
     x(c, sp, `  //bbn.fn.log(${node.loop.item});`);

@@ -215,12 +215,13 @@
        * @emit click
        */
       click(e) {
+        bbn.fn.log("ONCLICK", e, this);
         if (this.url) {
           bbn.fn.link(this.url);
           e.preventDefault();
           e.stopPropagation();
         }
-        else if (!e.defaultPrevented && this.action && bbn.fn.isFunction(this.action)) {
+        else if (!this.$el.bbnSchema.events?.click && this.action && bbn.fn.isFunction(this.action)) {
           this.action.bind(this.$origin)(e, this);
           bbn.fn.log([this.$origin, this.action])
           e.preventDefault();

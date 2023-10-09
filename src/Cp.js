@@ -90,10 +90,17 @@ class bbnData {
    * @returns {*} The original value or the reactive value
    */
   static treatValue(value, component, path, parent) {
+    if (component.$isDestroyed) {
+      return value;
+    }
+
     if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor) && !value.__bbnNoData) {
       if (value.__bbnData) {
         if (!bbn.cp.dataInventory.has(value.__bbnData)) {
-          throw new Error(bbn._("The data inventory does not contain the data object"));
+          //throw new Error(bbn._("The data inventory does not contain the data object"));
+          bbn.fn.log(value);
+          bbn.fn.warning(bbn._("The data inventory does not contain the data object"));
+          return value;
         }
 
         const dataObj = bbn.cp.dataInventory.get(value.__bbnData);
@@ -1576,6 +1583,11 @@ class bbnCp {
       this.$onBeforeDestroy();
       this.$el.dispatchEvent(beforeDestroy);
       
+      Object.defineProperty(this, '$isDestroyed', {
+        value: true,
+        writable: false,
+        configurable: true
+      });
       // Sending destroyed event through a timeout
       // Deleting from elements prop
       while (this.$values.length) {
@@ -2833,9 +2845,6 @@ class bbnCp {
     }
 
     const hash = bbnData.hash(val);
-    if (name === 'selectedNode') {
-      bbn.fn.log(["UNSEL UPDATING COMPUTED " + name, val, this.$computed[name].val, bbn.fn.isSame(this.$computed[name].hash, hash)]);
-    }
     if (!bbn.fn.isSame(this.$computed[name].hash, hash)) {
       const oldValue = this.$computed[name].val;
       //bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue]);
@@ -3050,6 +3059,10 @@ class bbnCp {
   $addNamespace(name, type) {
     if (!type) {
       throw new Error(bbn._("Type must be defined for %s", name));
+    }
+
+    if (bbn.var.reserved.includes(name)) {
+      throw new Error(bbn._("The name %s is reserved", name));
     }
 
     if (this.$namespaces[name] && (this.$namespaces[name] !== type)) {
