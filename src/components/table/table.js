@@ -1319,6 +1319,7 @@ return {
                 expander: true,
                 expanded: isExpanded
               };
+              expanderIndex = tmp.index;
               if (this.selection
                 && (!bbn.fn.isFunction(this.selection)
                   || this.selection(tmp))
@@ -2794,6 +2795,21 @@ return {
       toggleExpanded(idx) {
         if (this.currentData[idx]) {
           if (this.allExpanded) {
+            bbn.fn.each(this.items, item => {
+              if (!this.groupable) {
+                if (!this.currentExpanded.includes(item.index)) {
+                  this.currentExpanded.push(item.index);
+                }
+              }
+              else if ((this.group !== false)
+                && this.cols[this.group]
+                && this.cols[this.group].field
+                && (item.data[this.cols[this.group].field] !== undefined)
+                && !this.currentExpandedValues.includes(item.data[this.cols[this.group].field])
+              ) {
+                this.currentExpandedValues.push(item.data[this.cols[this.group].field]);
+              }
+            });
             this.allExpanded = false;
           }
           if (
