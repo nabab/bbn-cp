@@ -6,8 +6,7 @@
  * @author BBN Solutions
  * @created 10/02/2017
  */
-
-return {
+export default {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.localStorage

@@ -9,8 +9,7 @@
  *
  * @created 15/08/2019.
  */
-
-return {
+export default {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.localStorage

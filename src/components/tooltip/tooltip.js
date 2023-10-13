@@ -7,8 +7,7 @@
  *
  * @author BBN Solutions
  */
-
-return {
+export default {
     /**
      * @mixin bbn.cp.mixins.basic
      */

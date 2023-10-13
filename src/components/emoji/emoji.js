@@ -5,7 +5,7 @@
  * @copyright BBN Solutions
  * @created 13/11/2020
  */
-return {
+export default {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.resizer

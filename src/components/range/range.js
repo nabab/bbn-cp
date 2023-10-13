@@ -4,7 +4,7 @@
  * @copyright BBN Solutions
  * @author BBN Solutions
  */
-return {
+export default {
     name: 'bbn-range',
     /**
      * @mixin bbn.cp.mixins.basic

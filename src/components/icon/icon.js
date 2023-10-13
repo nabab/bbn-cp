@@ -7,7 +7,7 @@
  *
  * @author Mirko Argentino
  */
-return {
+export default {
     name: 'bbn-icon',
     /**
      * @mixin bbn.cp.mixins.basic

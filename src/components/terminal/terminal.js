@@ -8,7 +8,7 @@
  * 
  * @author BBN Solutions
  */
-return {
+export default {
     mixins: [bbn.cp.mixins.basic],
     props: {
     },

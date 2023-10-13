@@ -4,8 +4,7 @@
  * @author BBN Solutions
  * @copyright BBN Solutions
  */
-
-return {
+export default {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.list

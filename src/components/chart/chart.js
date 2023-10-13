@@ -10,8 +10,7 @@
  *
  * @created 10/02/2020
  */
-
-return {
+export default {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.resizer

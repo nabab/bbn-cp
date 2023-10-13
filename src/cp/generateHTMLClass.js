@@ -1,16 +1,14 @@
-(() => {
-  bbn.fn.autoExtend('cp', {
-    /**
-     * Generates the code for creating the public class
-     * Be careful that cpTpl, cpCfg and cpCls are defined
-     *
-     */
-    generateHTMLClass(name, clsExtends = 'bbnHTML') {
-      const eleName = bbn.fn.camelToCss(name);
-      const sc = document.createElement('script');
-      sc.setAttribute('type', 'text/javascript');
-      sc.setAttribute('id', name + 'Definition');
-      sc.innerHTML = `class ${name} extends ${clsExtends}
+/**
+ * Generates the code for creating the public class
+ * Be careful that cpTpl, cpCfg and cpCls are defined
+ *
+ */
+export default function generateHTMLClass(name, clsExtends = 'bbnHTML') {
+  const eleName = bbn.fn.camelToCss(name);
+  const sc = document.createElement('script');
+  sc.setAttribute('type', 'text/javascript');
+  sc.setAttribute('id', name + 'Definition');
+  sc.innerHTML = `class ${name} extends ${clsExtends}
 {
   static get bbnTpl() {
     return bbn.cp.statics['${eleName}'].tpl;
@@ -38,7 +36,5 @@
     super();
   }
 };`;
-      window.document.head.appendChild(sc);
-    }
-  })
-})();
+  window.document.head.appendChild(sc);
+}

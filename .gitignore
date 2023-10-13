@@ -4,6 +4,8 @@
 _DS_STORE*
 *.DS_Store
 ._*
+dist/
+node_modules/
 
 
 [core]

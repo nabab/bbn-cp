@@ -6,7 +6,7 @@
   * @created 10/03/2020
   * @ignore
   */
-return {
+export default {
     name: 'bbn-breadcrumb',
     mixins: [
       /**

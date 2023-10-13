@@ -5,7 +5,7 @@
  * @author Mirko Argentino
  * * @created 11/08/2020.
  */
-return {
+export default {
     /**
      * @mixin bbn.cp.mixins.basic
      */

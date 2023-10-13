@@ -1,8 +1,7 @@
 /**
  * Created by BBN on 15/08/2019.
  */
-
-return {
+export default {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.localStorage
@@ -41,6 +40,11 @@ return {
         json: 'nf nf-mdi-json bbn-red'
       },
       imageExt = ['jpeg', 'png', 'jpg', 'tiff', 'gif'];
+      return {
+        fields,
+        filesRules,
+        imageExt
+      }
     },
     props: {
       /**
@@ -488,7 +492,7 @@ return {
               this.copy(node)
             }
           }  
-        ]@
+        ];
         if ( n.data.dir ) {
           objContext.push({
             icon: 'nf nf-fa-paste',
@@ -861,7 +865,7 @@ return {
         });
       }
       
-    }
+    },
     watch: {
       /**
        * @watch isLoading

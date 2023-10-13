@@ -7,7 +7,7 @@
  *
  * @author Mirko Argentino
  */
-return {
+export default {
     name: 'bbn-editable-content',
     /**
      * @mixin bbn.cp.mixins.basic

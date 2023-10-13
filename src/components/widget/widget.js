@@ -9,7 +9,7 @@
  *
  * @created 15/02/2017.
  */
-return {
+export default {
     name: 'bbn-widget',
     /**
      * @mixin bbn.cp.mixins.basic,

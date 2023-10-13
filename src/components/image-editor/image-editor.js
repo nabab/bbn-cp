@@ -11,48 +11,47 @@
 
 
 //Markdown editor use simpleMDe
-return {
+export default {
+  /**
+   * @mixin bbn.cp.mixins.basic 
+   */
+  mixins: [bbn.cp.mixins.basic],
+  props: {
     /**
-     * @mixin bbn.cp.mixins.basic 
+     * @prop {String} source²
      */
-    mixins: [bbn.cp.mixins.basic],
-    props: {
-      /**
-       * @prop {String} source²
-       */
-      source: {
-        type: String
+    source: {
+      type: String
+    },
+    /**
+     * @prop {String} name
+     */
+    name: {
+      type: String
+    }
+  },
+  data(){
+    return {
+      widget: null
+    };
+  },
+  methods: {
+  },
+  watch: {
+  },
+  mounted(){
+    this.widget = new tui.ImageEditor(this.$refs.element, {
+      includeUI: {
+        locale: 'fr',
+        initMenu: 'filter',
+        menuBarPosition: 'bottom',
       },
-      /**
-       * @prop {String} name
-       */
-      name: {
-        type: String
-      }
-    },
-    data(){
-      return {
-        widget: null
-      };
-    },
-    methods: {
-    },
-    watch: {
-    },
-    mounted(){
-      this.widget = new tui.ImageEditor(this.$refs.element, {
-        includeUI: {
-          locale: 'fr',
-          initMenu: 'filter',
-          menuBarPosition: 'bottom',
-        },
-        cssMaxWidth: 700,
-        cssMaxHeight: 500,
-      });
-      this.widget.loadImageFromURL(this.source, this.name);
+      cssMaxWidth: 700,
+      cssMaxHeight: 500,
+    });
+    this.widget.loadImageFromURL(this.source, this.name);
 
-      this.ready = true;
-    },
+    this.ready = true;
+  },
 
-  };
-  
+};

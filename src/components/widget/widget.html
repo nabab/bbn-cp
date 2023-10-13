@@ -54,9 +54,8 @@
     <!-- COMPONENT -->
     <component v-if="component"
                 :is="component"
-                :source="currentSource"
                 @hook:mounted="$emit('loaded')"
-                v-bind="options"
+                v-bind="options || {source: currentSource}"
                 class="bbn-widget-content"/>
     <!-- HTML CONTENT -->
     <div v-else-if="content"

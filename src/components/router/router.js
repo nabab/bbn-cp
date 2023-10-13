@@ -4,7 +4,7 @@
  * @copyright BBN Solutions
  * @author BBN Solutions
  */
-return {
+export default {
     name: 'bbn-router',
     statics() {
       // IndexedDb access for storing thumbnails in visual mode
@@ -685,15 +685,11 @@ return {
       /**
        * The final Vue object for the active container (if it has sub-router).
        * @computed activeRealContainer
-       * @fires getRealVue
+       * @fires getFinalContainer
        * @return {Vue|Boolean}
        */
       activeRealContainer(){
-        if ( bbn.fn.isNumber(this.selected) ) {
-          return this.getRealVue(this.selected);
-        }
-
-        return false;
+        return this.getFinalContainer();
       },
       /**
        * The last router i.e. the deepest in the current active container - or this one if none
@@ -1993,15 +1989,8 @@ return {
        * @fires isValidIndex
        * @return {Vue|Boolean}
        */
-      getVue(idx){
-        if ( idx === undefined ){
-          idx = this.selected;
-        }
-        if ( this.isValidIndex(idx) ){
-          return this.urls[this.views[idx].url];
-        }
-
-        return false;
+      getVue(idx) {
+        return this.getContainer(idx);
       },
       /**
        * Returns the corresponding container's component's DOM element.
@@ -2013,20 +2002,21 @@ return {
         if ( idx === undefined ){
           idx = this.selected;
         }
-        return this.urls[this.views[idx].url];
+
+        return this.urls[this.views[idx]?.url];
       },
       /**
        * Returns the corresponding container's component's DOM element.
        * @method getDOMContainer
        * @param {Number} idx
-       * @fires getVue
+       * @fires getContainer
        * @return {HTMLElement|Boolean}
        */
       getDOMContainer(idx){
         if ( idx === undefined ){
           idx = this.selected;
         }
-        let c = this.getVue(idx);
+        let c = this.getContainer(idx);
         return c ? c.$el : false;
       },
       /**
@@ -2042,35 +2032,41 @@ return {
         if ( idx === undefined ){
           idx = this.selected;
         }
-        let container = this.getVue(idx);
+        let container = this.getContainer(idx);
         if ( container ){
           return container.find('bbn-router') || null;
         }
         return null;
       },
       /**
-       * @method getRealVue
+       * @method getFinalContainer
        * @param misc
        * @fires getIndex
        * @fires getSubRouter
-       * @fires getVue
+       * @fires getContainer
        * @return {bbnCp}
        */
-      getRealVue(misc){
-        let idx = this.getIndex(misc),
-            router = this,
-            sub = router;
+      getFinalContainer(misc) {
+        let idx = this.getIndex(misc);
         if ( idx === undefined ){
           idx = this.selected;
         }
-        while ( router ){
-          router = sub.getSubRouter(idx);
-          if ( router ){
-            sub = router;
-            idx = sub.selected;
-          }
+
+        let router = this.getSubRouter(idx);
+        if ( router ){
+          return router.getFinalContainer();
         }
-        return sub.getVue(idx);
+
+        return this.getContainer(idx);
+      },
+      /**
+       * @method getRealVue
+       * @param misc
+       * @fires getFinalContainer
+       * @return {bbnCp}
+       */
+      getRealVue(misc){
+        return this.getFinalContainer(misc);
       },
       /**
        * @method getIndex
@@ -2696,7 +2692,7 @@ return {
        * @method getMenuFn
        * @param {Number} idx
        * @fires getSubRouter
-       * @fires getVue
+       * @fires getContainer
        * @fires reload
        * @return {Array|Boolean}
        */
@@ -2707,7 +2703,7 @@ return {
         let items     = [];
         let tmp       = ((bbn.fn.isFunction(this.views[idx].menu) ? this.views[idx].menu() : this.views[idx].menu) || []).slice();
         let others    = false;
-        let container = this.getVue(idx);
+        let container = this.getContainer(idx);
         bbn.fn.each(this.views, (a, i) => {
           if ( (i !== idx) && !a.static ){
             others = true;
@@ -2750,7 +2746,7 @@ return {
             key: "help",
             icon: "nf nf-mdi-help_circle_outline",
             action: () => {
-              let view = this.getVue(idx),
+              let view = this.getContainer(idx),
                   span = document.createElement('span');
               span.innerHTML =  this.views[idx].title;
               let title = span.innerText;
