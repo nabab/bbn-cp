@@ -6,8 +6,19 @@ DIST_DIR="./dist/components"
 # Create the dist/components directory if it doesn't exist
 mkdir -p $DIST_DIR
 
+if [ "$#" -eq 1 ]; then
+    SPECIFIC_COMPONENT="$1"
+else
+    SPECIFIC_COMPONENT=""
+fi
+
+if [ -z "$SPECIFIC_COMPONENT" ]; then
+    COMPONENTS="$SRC_DIR/*"
+else
+    COMPONENTS="$SRC_DIR/$SPECIFIC_COMPONENT"
+fi
 # Loop through each component directory
-for componentDir in $SRC_DIR/*; do
+for componentDir in $COMPONENTS; do
     if [ -d "$componentDir" ]; then
         componentName=$(basename $componentDir)
         
@@ -30,7 +41,7 @@ for componentDir in $SRC_DIR/*; do
 
             # Process LESS file if it exists and compile to CSS
             if [ -f "${componentDir}/${componentName}.less" ]; then
-            styleContent=$(lessc ${componentDir}/${componentName}.less)
+            styleContent=$(./node_modules/.bin/lessc ${componentDir}/${componentName}.less)
             else
             styleContent=""
             fi
