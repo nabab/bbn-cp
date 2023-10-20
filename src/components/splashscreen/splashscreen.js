@@ -4,7 +4,7 @@
  * @author BBN Solutions
  * @copyright BBN Solutions
  */
-export default {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.list
@@ -233,3 +233,23 @@ export default {
     }
   };
   
+import cpHtml from './splashscreen.html';
+import cpStyle from './splashscreen.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./splashscreen.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-splashscreen',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

@@ -1,3 +1,5 @@
+import {bbn} from "@bbn/bbn/dist/index.js";
+
 export default async function fetchComponents(toDefine) {
   bbn.fn.checkType(toDefine, Array, bbn._("fetchComponents must be called with an array of component names to fetch"));
   // Returning a promise allows the loading for new components definition
@@ -69,11 +71,13 @@ export default async function fetchComponents(toDefine) {
     groups[bbn.cp.knownPrefixes[idx].prefix].components.push(tag);
   });
 
-  //bbn.fn.log("GROUPS", groups);
-  for (prefix in groups) {
+  bbn.fn.log("GROUPS", groups);
+  for (let prefix in groups) {
+    bbn.fn.log("PREFIX");
     const rule = groups[prefix];
+    bbn.fn.log("GROUPS2", prefix);
     let res = await rule.handler(rule.components);
-    //bbn.fn.log("RES", res);
+    bbn.fn.log("RES", res);
     if (bbn.fn.isArray(res.components)) {
       bbn.fn.each(res.components, obj => {
         if (!obj.definition || !obj.name) {

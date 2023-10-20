@@ -9,8 +9,9 @@
  *
  * @created 10/02/2017
  */
-export default {
-  name: 'bbn-scroll',
+import '../../cp.js';
+
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.resizer
@@ -1156,4 +1157,26 @@ export default {
       this.currentStepY = bbn.fn.isDom(val) ? val.clientHeight : val;
     }
   }
+};
+
+import cpHtml from './scroll.html';
+import cpStyle from './scroll.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./scroll.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+    
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-scroll',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
 };

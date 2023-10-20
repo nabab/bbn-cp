@@ -11,7 +11,7 @@
  * @created 15/02/2017
  */
 
-export default {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.resizer
@@ -139,3 +139,24 @@ export default {
   },
 };
 
+
+import cpHtml from './pane.html';
+import cpStyle from './pane.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./pane.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-pane',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

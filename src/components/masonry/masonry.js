@@ -4,7 +4,7 @@
  * @copyright BBN Solutions
  * @author Mirko Argentino
  */
-export default {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.resizer
@@ -218,4 +218,25 @@ export default {
       }
     }
   }
+};
+
+import cpHtml from './masonry.html';
+import cpStyle from './masonry.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./masonry.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-masonry',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
 };

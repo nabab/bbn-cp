@@ -9,7 +9,7 @@
  *
  * @copyright BBN Solutions
  */
-export default {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.list
@@ -337,3 +337,24 @@ export default {
       }
     }
   };
+
+import cpHtml from './fisheye.html';
+import cpStyle from './fisheye.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./fisheye.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-fisheye',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

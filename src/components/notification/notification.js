@@ -5,7 +5,7 @@
  * @copyright BBN Solutions
  * @created 11/01/2017
  */
-export default {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      */
@@ -335,3 +335,24 @@ export default {
       this._updatePositions();
     }
   };
+
+import cpHtml from './notification.html';
+import cpStyle from './notification.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./notification.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-notification',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

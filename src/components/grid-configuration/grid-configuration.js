@@ -7,7 +7,7 @@
  *
  * @author Mirko Argentino
  */
-export default {
+const cpDef = {
   name: 'bbn-grid-configuration',
   /**
    * @mixin bbn.cp.mixins.basic
@@ -61,3 +61,24 @@ export default {
   }
 };
 
+
+import cpHtml from './grid-configuration.html';
+import cpStyle from './grid-configuration.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./grid-configuration.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-grid-configuration',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

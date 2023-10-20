@@ -13,7 +13,7 @@
   /**
    * Classic input with normalized appearance
    */
-export default {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.events
@@ -215,3 +215,24 @@ export default {
     }
   }
 }
+
+import cpHtml from './multi-input.html';
+import cpStyle from './multi-input.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./multi-input.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-multi-input',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

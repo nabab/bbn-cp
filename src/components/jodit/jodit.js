@@ -9,7 +9,7 @@
  *
  * @created 11/01/2017
  */
-export default {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.position
@@ -130,3 +130,24 @@ export default {
       }
     }
   };
+
+import cpHtml from './jodit.html';
+import cpStyle from './jodit.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./jodit.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-jodit',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

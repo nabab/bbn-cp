@@ -1,17 +1,20 @@
 {
-  "presets": ["@babel/preset-env"],
+  "sourceType": "module",
+  "presets": [
+    ["@babel/preset-env", {
+      "modules": false,
+      "targets": "> 0.25%, not dead"
+    }]
+  ],
   "env": {
     "production": {
       "presets": ["minify"]
     }
   },
   "plugins": [
+    "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-proposal-class-properties",
-    ["module-resolver", {
-      "root": ["./src", "./node_modules"],
-      "alias": {
-        "test": "./test"
-      }
-    }]
+    "@babel/plugin-transform-optional-chaining"
   ]
 }
+

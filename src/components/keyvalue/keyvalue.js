@@ -8,7 +8,7 @@
  *
  * @created 15/02/2017.
  */
-export default {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.input
@@ -89,3 +89,24 @@ export default {
       this.setItems();
     }
   };
+
+import cpHtml from './keyvalue.html';
+import cpStyle from './keyvalue.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./keyvalue.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-keyvalue',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

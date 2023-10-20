@@ -9,7 +9,7 @@
   *
   * @created 10/02/2017
   */
-export default {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      */
@@ -42,3 +42,24 @@ export default {
       })
     }
   };
+
+import cpHtml from './grapes.html';
+import cpStyle from './grapes.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./grapes.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-grapes',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

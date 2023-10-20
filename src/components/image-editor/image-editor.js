@@ -11,7 +11,7 @@
 
 
 //Markdown editor use simpleMDe
-export default {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic 
    */
@@ -54,4 +54,25 @@ export default {
     this.ready = true;
   },
 
+};
+
+import cpHtml from './image-editor.html';
+import cpStyle from './image-editor.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./image-editor.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-image-editor',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
 };

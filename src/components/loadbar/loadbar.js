@@ -10,7 +10,7 @@
  *
  * @created 15/02/2017
  */
-export default {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic 
      */
@@ -252,3 +252,24 @@ export default {
       }
     }
   };
+
+import cpHtml from './loadbar.html';
+import cpStyle from './loadbar.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./loadbar.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-loadbar',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

@@ -5,7 +5,7 @@
  * @author Loredana Bruno
  * @created 09/11/2020.
  */
-export default {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.events
@@ -77,3 +77,24 @@ export default {
       }
     }
   };
+
+import cpHtml from './cursor.html';
+import cpStyle from './cursor.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./cursor.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-cursor',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

@@ -8,7 +8,7 @@
  *
  * @author Mirko Argentino
  */
-export default {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.input
@@ -450,3 +450,24 @@ export default {
       }
     }
   };
+
+import cpHtml from './datetimepicker.html';
+import cpStyle from './datetimepicker.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./datetimepicker.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-datetimepicker',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

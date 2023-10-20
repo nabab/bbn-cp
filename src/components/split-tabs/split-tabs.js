@@ -28,7 +28,7 @@
  * otherwise.
  * @param {boolean|number} selected - The index of the currently selected tab, and false otherwise.
  */
-export default {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.localStorage
@@ -275,7 +275,7 @@ export default {
         help: null,
         imessages: [],
         script: null,
-        static: false,
+        fixed: false,
         pinned: false,
         url: null,
         current: null,
@@ -1077,4 +1077,25 @@ export default {
       }
     }
   }
+};
+
+import cpHtml from './split-tabs.html';
+import cpStyle from './split-tabs.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./split-tabs.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-split-tabs',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
 };

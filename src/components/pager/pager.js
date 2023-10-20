@@ -4,7 +4,7 @@
  * @author BBN Solutions
  * @copyright BBN Solutions
  */
-export default {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      */
@@ -224,3 +224,24 @@ export default {
       }
     }
   };
+
+import cpHtml from './pager.html';
+import cpStyle from './pager.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./pager.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-pager',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

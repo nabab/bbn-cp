@@ -6,7 +6,7 @@
  * @ignore
  * @created 10/02/2017.
  */
-export default {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.resizer
@@ -116,7 +116,7 @@ export default {
           url: (this.plugins && this.plugins['appui-core'] ? this.plugins['appui-core'] : 'core') + '/home',
           title: bbn._("Dashboard"),
           load: true,
-          static: true,
+          fixed: true,
           icon: 'nf nf-fa-tachometer_alt'
         }*/];
       }
@@ -1077,4 +1077,26 @@ export default {
       }
     }
   }
+};
+
+import cpHtml from './appui.html';
+import cpStyle from './appui.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./appui.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+    
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-appui',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
 };

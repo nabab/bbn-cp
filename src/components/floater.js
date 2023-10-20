@@ -12,6 +12,7 @@
  */
 //bbn.vue.preloadBBN(['scroll', 'list', 'button']);
 const cpDef = {
+  name: 'bbn-floater',
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.list
@@ -1617,6 +1618,7 @@ if (bbn.env.lang) {
     if (cpLang.default) {
       cpLang = cpLang.default;
     }
+    
   }
   catch (err) {}
 }

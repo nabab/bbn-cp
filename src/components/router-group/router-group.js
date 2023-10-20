@@ -4,7 +4,7 @@
  * @copyright BBN Solutions
  * @author BBN Solutions
  */
-export default {
+const cpDef = {
     name: 'bbn-router-group',
     /**
      * @mixin bbn.cp.mixins.basic
@@ -65,3 +65,23 @@ export default {
     }
   };
   
+import cpHtml from './router-group.html';
+import cpStyle from './router-group.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./router-group.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-router-group',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

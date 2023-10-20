@@ -10,7 +10,7 @@
  * @created 10/02/2017.
  */
 
-export default {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.events
@@ -539,3 +539,24 @@ export default {
     this.ready = true;
   }
 }
+
+import cpHtml from './mini-search.html';
+import cpStyle from './mini-search.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./mini-search.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-mini-search',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

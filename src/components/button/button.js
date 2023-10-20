@@ -7,7 +7,9 @@
  *
  * @author BBN Solutions
  */
-export default {
+import basic from '../../cp/mixins/basic.js';
+import events from '../../cp/mixins/events.js';
+const cpDef = {
   tag: 'button',
   /**
    * @mixin bbn.cp.mixins.basic
@@ -15,8 +17,8 @@ export default {
    */
   mixins: 
   [
-    bbn.cp.mixins.basic,
-    bbn.cp.mixins.events
+    basic,
+    events
   ],
   props: {
     /**
@@ -260,3 +262,24 @@ export default {
   }
 };
 
+import cpHtml from './button.html';
+import cpStyle from './button.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./button.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+    
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-button',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

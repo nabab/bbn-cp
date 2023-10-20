@@ -1,37 +1,29 @@
+import {bbn} from "@bbn/bbn/dist/index.js";
+
 /**
 * Init anon component
 */
-export default function createApp(ele, obj) {
+export default async function createApp(ele, obj) {
+  bbn.fn.log("CP?", bbn.cp);
   bbn.cp.startTick();
   bbn.cp.addPrefix('bbn-', async components => {
-    const urlPrefix = bbn.env.cdn + 'dev/bbn-cp/v2/dist/components/?components=';
-    const prefix = 'bbn-';
-    const url = urlPrefix + components.map(a => a.indexOf(prefix) === 0 ? a.substr(prefix.length) : a).join(',') + '&v=3280&test=1&lang=fr';
-    // Request
-    const d = await bbn.fn.ajax(url, 'text');
-    let tmp;
-    try {
-      tmp = await eval(d.data);
-    }
-    catch (e) {
-      throw new Error(e);
-    }
     const res = bbn.fn.createObject({
       components: []
     });
-    bbn.fn.each(tmp, obj => {
-      if (!bbn.fn.isArray(obj.html)) {
-        throw new Error("No template for " + obj.name)
+    bbn.fn.log("COMPONENTS", components);
+    for (let cp of components) {
+      if (cp === 'bbn-anon') {
+        continue;
       }
-      const finalFn = eval(obj.script);
-      bbn.fn.checkType(finalFn, 'function');
-      res.components.push(bbn.fn.createObject({
-        name: prefix + obj.name,
-        definition: finalFn(),
-        template: obj.html?.[0].content,
-        css: obj.css?.[0] || null
-      }));
-    });
+      // Request needs to be done as a string explicitly
+      // @see https://stackoverflow.com/questions/42908116/webpack-critical-dependency-the-request-of-a-dependency-is-an-expression
+      const definition = await import(
+        /* webpackChunkName: "components/[request]" */
+        `../components/${cp.substr(4)}/${cp.substr(4)}.js`
+      );
+      bbn.fn.log(["DEFINITION", definition]);
+      res.components.push(definition.default);
+    }
 
     return res;
   });

@@ -7,7 +7,7 @@
  *
  * @author Mirko Argentino
  */
-export default {
+const cpDef = {
     name: 'bbn-flag',
     /**
      * @mixin bbn.cp.mixins.basic
@@ -99,3 +99,24 @@ export default {
       }
     }
   };
+
+import cpHtml from './flag.html';
+import cpStyle from './flag.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./flag.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-flag',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

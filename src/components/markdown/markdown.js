@@ -11,7 +11,7 @@
 
 
 //Markdown editor use simpleMDe
-export default {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic 
    * @mixin bbn.cp.mixins.input 
@@ -251,4 +251,25 @@ export default {
     this.ready = true;
   },
 
+};
+
+import cpHtml from './markdown.html';
+import cpStyle from './markdown.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./markdown.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-markdown',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
 };

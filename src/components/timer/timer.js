@@ -14,7 +14,7 @@
 
  console.log(formatted);*/
 
- export default {
+ const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    */
@@ -439,4 +439,23 @@
       clearInterval(this.interval);
     }
   }
+};
+
+import cpHtml from './timer.html';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./timer.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-timer',
+  definition: cpDef,
+  template: cpHtml,
+  lang: cpLang
 };

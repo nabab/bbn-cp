@@ -10,7 +10,7 @@
   * @cretaed 13/06/2017
   */
 
-export default {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.input
    * @mixin bbn.cp.mixins.basic
@@ -979,4 +979,25 @@ export default {
       }
     }
   }
+};
+
+import cpHtml from './upload.html';
+import cpStyle from './upload.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./upload.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-upload',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
 };

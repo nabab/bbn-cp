@@ -14,7 +14,7 @@
 
  console.log(formatted);*/
 
-export default {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    */
@@ -366,4 +366,23 @@ export default {
       this.init()
     }
   }
+};
+
+import cpHtml from './countdown.html';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./countdown.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-countdown',
+  definition: cpDef,
+  template: cpHtml,
+  lang: cpLang
 };

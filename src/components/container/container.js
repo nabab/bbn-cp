@@ -30,7 +30,7 @@
  * @param {boolean|number} selected - The index of the currently selected tab, and false otherwise.
  */
 
-export default {
+const cpDef = {
   name: 'bbn-container',
   /**
    * @mixin bbn.cp.mixins.basic
@@ -249,10 +249,10 @@ export default {
      */
     script: {},
     /**
-     * Defines if the component has to be static.
-     * @prop {Boolean|Number} [false] static
+     * Defines if the component has to be fixed.
+     * @prop {Boolean|Number} [false] fixed
      */
-    static: {
+    fixed: {
       type: [Boolean, Number],
       default: false
     },
@@ -380,10 +380,10 @@ export default {
        */
       isPinned: this.pinned,
       /**
-       * True if the container is static.
+       * True if the container is fixed.
        * @data {Boolean} isStatic
        */
-      isStatic: this.static,
+      isFixed: this.fixed,
       /**
        * The current url.
        * @data {String} currentURL
@@ -1770,4 +1770,25 @@ export default {
     }
   },
 
+};
+
+import cpHtml from './container.html';
+import cpStyle from './container.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./container.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-container',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
 };

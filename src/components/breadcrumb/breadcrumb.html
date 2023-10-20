@@ -30,7 +30,7 @@
             <span v-text="isNumber(selected) && source[selected] && !!source[selected].title ? source[selected].title : _('Untitled')"
                   :class="{'bbn-b': !currents.length}"
             ></span>
-            <i v-if="isNumber(selected) && source[selected] && !source[selected].static"
+            <i v-if="isNumber(selected) && source[selected] && !source[selected].fixed"
                class="nf nf-fa-times bbn-p bbn-abs bbn-breadcrumb-icons bbn-breadcrumb-icons-close"
                @click.prevent.stop="close(selected)"
             ></i>
@@ -74,7 +74,7 @@
               <span v-text="isNumber(sn.selected) && sn.source[sn.selected] && !!sn.source[sn.selected].title ? sn.source[sn.selected].title : _('Untitled')"
                     :class="{'bbn-b': !currents[isn+1]}"
               ></span>
-              <i v-if="isNumber(sn.selected) && sn.source[sn.selected] && !sn.source[sn.selected].static"
+              <i v-if="isNumber(sn.selected) && sn.source[sn.selected] && !sn.source[sn.selected].fixed"
                  class="nf nf-fa-times bbn-p bbn-abs bbn-breadcrumb-icons bbn-breadcrumb-icons-close"
                  @click.prevent.stop="sn.close(sn.selected)"
               ></i>

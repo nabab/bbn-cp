@@ -18,8 +18,8 @@ export default function addPrefix(prefix, handler, mixins){
   //bbn.fn.log("ADD PREFIX", prefix, mixins);
 
   bbn.cp.knownPrefixes.push({
-    prefix: prefix,
-    handler: handler,
+    prefix,
+    handler,
     mixins: mixins || []
   });
   // Ordering by length descending so going from more precise to less

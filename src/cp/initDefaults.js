@@ -1,10 +1,9 @@
 /**
- * Sets default object for a component, accessible through bbn.vue.defaults[cpName].
+ * Sets default object for a component, accessible through bbn.vue.defaults[__COMPONENT_NAME__].
  * 
  * @method initDefaults
  * @memberof bbn.cp
  * @param Object defaults 
- * @param String cpName 
  */
 export default function initDefaults(defaults){
   if ( typeof defaults !== 'object' ){

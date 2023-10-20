@@ -4,5 +4,5 @@
  */
 export default function removeSelfClosing(html) {
   const rxhtmlTag = new RegExp('<([A-z0-9-_]+)((([^>"]+"[^"]*")*)|([ˆ>]*))\\s*/>', 'gm');
-  return html.replace(rxhtmlTag, "<$1$2></$1>");
+  return html ? html.replace(rxhtmlTag, "<$1$2></$1>") : '';
 }

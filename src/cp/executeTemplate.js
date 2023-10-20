@@ -1,27 +1,3 @@
-const $_prep = st => {
-  if (st.trim().match(/^\{|\[/)) {
-    return '(() => {return ' + st + '})()';
-  }
-
-  return st;
-};
-
-let sp = 2;
-
-const x = (obj, spaces, content)  => {
-  if (!obj) {
-    obj = bbn.fn.createObject({text: ''});
-  }
-  if (content) {
-    obj.text += ' '.repeat(spaces) + content + '\n';
-  }
-  else {
-    obj.text += '\n';
-  }
-
-  return obj;
-};
-
 const forbidden = ['bbn-forget', 'bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else'];
 
 const treatCondition = (cp, node, arr, hashName) => {
@@ -787,6 +763,7 @@ export default function templateToFunction(cp, tpl, sp = 0) {
   let c = x();
   x(c, sp, `async (_t, _d) => {`);
   sp += 2;
+  let code2 = '';
   x(c, sp, `const _r = _t.$currentResult;`);
   x(c, sp, `let ${hashName} = '';`);
   x(c, sp, `bbn.fn.iterate(_r, a => {`);
@@ -797,27 +774,36 @@ export default function templateToFunction(cp, tpl, sp = 0) {
   x(c, sp, `  });`);
   x(c, sp, `});`);
   x(c, sp, `const _bbnCurrentData = bbn.fn.createObject();`);
-  let argNames = [];
-  let argValues = [];
   for (let n in cp.$namespaces) {
-    argNames.push(n);
-    argValues.push(cp.$namespaces[n] === 'method' ? `_t['${n}'].bind(_t)` : `_t['${n}']`);
-    if ((n.indexOf('$') !== 0) && !['method', 'props'].includes(cp.$namespaces[n]) && (n !== 'internal')) {
-      x(c, sp, `_bbnCurrentData["${n}"] = _t.${n};`);
+    if (cp.$namespaces[n] === 'props') {
+      continue;
+    }
+    if (cp.$namespaces[n] === 'method') {
+      x(c, sp, `const ${n} = _t.${n}.bind(_t);`);
+    }
+    else if (n.indexOf('$') === 0) {
+      x(c, sp, `const ${n} = _t.${n};`);
+    }
+    else {
+      x(c, sp, `let ${n} = _t["${n}"];`);
+      if (n !== 'internal') {
+        x(c, sp, `_bbnCurrentData["${n}"] = ${n};`);
+      }
     }
   }
 
-  x(c, sp, `await (async function (${argNames.join(', ')}) {`);
-  sp += 2;
-
-  //x(c, sp, `let ownProps = Object.getOwnPropertyNames(_t);`);
-  //x(c, sp, `let n;`);
-  //x(c, sp, `for (let i = 0; n = ownProps[i]; i++) {`);
-  //x(c, sp, `  if ((n.indexOf('$') !== 0) && !_t.$namespaces[n]) {`);
+  for (let n in cp.$cfg.props) {
+    x(c, sp, `let ${n} = _t["${n}"];`);
+    x(c, sp, `_bbnCurrentData["${n}"] = ${n};`);
+  }
+  x(c, sp, `let ownProps = Object.getOwnPropertyNames(_t);`);
+  x(c, sp, `let n;`);
+  x(c, sp, `for (let i = 0; n = ownProps[i]; i++) {`);
+  x(c, sp, `  if ((n.indexOf('$') !== 0) && !_t.$namespaces[n]) {`);
   //x(c, sp, `    bbn.fn.warning('var ' + n + ' = _t["' + n + '"];');`);
-  //x(c, sp, `    eval('var ' + n + ' = _t["' + n + '"];');`);
-  //x(c, sp, `  }`);
-  //x(c, sp, `}`);
+  x(c, sp, `    eval('var ' + n + ' = _t["' + n + '"];');`);
+  x(c, sp, `  }`);
+  x(c, sp, `}`);
   
   x(c, sp, `// _setInternalResult`);
   x(c, sp, `const _sIr = (_name, _exp, _hash) => {`);
@@ -994,8 +980,7 @@ export default function templateToFunction(cp, tpl, sp = 0) {
   x(c, sp, `    _t.$insertElement(a.ele, _t.$el);`);
   x(c, sp, `  }`);
   x(c, sp, `})`);
-  sp -= 2;
-  x(c, sp, `})(${argValues.join(', ')});`);
+  c.text += code2;
   x(c, sp, `bbn.fn.iterate(_r, a => {`);
   x(c, sp, `  bbn.fn.iterate(a, b => {`);
   x(c, sp, `    if (b.state === 'TMP') {`);

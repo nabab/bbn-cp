@@ -89,7 +89,7 @@
                         </div>
                         <span v-if="isNumber(bc.selected)
                                 && bc.views[bc.selected]
-                                && !bc.views[bc.selected].static
+                                && !bc.views[bc.selected].fixed
                                 && !bc.views[bc.selected].pinned"
                           class="bbn-p bbn-iblock bbn-top-right bbn-hxspadded bbn-xs"
                           @mousedown.prevent.stop="bc.close(bc.selected)"

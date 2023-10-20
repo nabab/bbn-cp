@@ -15,7 +15,7 @@
 
 
 //Markdown editor use simpleMDe
-export default {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.input
@@ -342,4 +342,25 @@ export default {
       }
     }
   }
+};
+
+import cpHtml from './json-editor.html';
+import cpStyle from './json-editor.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./json-editor.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-json-editor',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
 };

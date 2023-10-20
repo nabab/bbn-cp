@@ -4,7 +4,7 @@
  * @author Mirko Argentino
  * @copyright BBN Solutions
  */
-export default {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.input
@@ -251,4 +251,25 @@ export default {
       }
     }
   }
+};
+
+import cpHtml from './wheel.html';
+import cpStyle from './wheel.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./wheel.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-wheel',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
 };

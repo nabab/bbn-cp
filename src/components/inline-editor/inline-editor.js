@@ -5,7 +5,7 @@
  * @author Loredana Bruno
  * @created 09/11/2020.
  */
-export default {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.input
@@ -53,3 +53,24 @@ export default {
     }, 
  
   };
+
+import cpHtml from './inline-editor.html';
+import cpStyle from './inline-editor.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./inline-editor.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-inline-editor',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

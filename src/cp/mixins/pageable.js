@@ -85,7 +85,7 @@ const pageable = {
      * @memberof listComponent
      * @return {number}
      */
-      numPages() {
+    numPages() {
       return Math.ceil(this.total / this.currentLimit);
     },
     /**

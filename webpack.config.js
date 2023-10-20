@@ -1,18 +1,42 @@
 import { URL } from 'url'; // in Browser, the URL in native accessible on window
+import path from 'path';
+import TerserPlugin from "terser-webpack-plugin";
+import fs from 'fs';
 
 // Will contain trailing slash
 const __dirname = new URL('.', import.meta.url).pathname;
 import webpack from 'webpack';
+const mode = process.env.NODE_ENV || 'development';
 
+const componentsDir = path.resolve(__dirname, 'src/components');
+
+// Dynamically find all component middle-man .mjs files
+const entryPoints = {
+  'bbn-cp': path.resolve(__dirname, 'src/index.js')    
+};
+
+/*
+fs.readdirSync(componentsDir).forEach(dir => {
+  const middleManFile = path.join(componentsDir, dir, `${dir}.js`);
+  if (fs.existsSync(middleManFile)) {
+    entryPoints[`components/${dir}/${dir}`] = middleManFile;
+  }
+});
+*/
 export default {
-    mode: "development",
+    mode: mode,
     // Entry file(s)
-    entry: './src/index.js',
+    entry: entryPoints,
 
     // Output configuration
     output: {
-        path: __dirname  + 'dist',
-        filename: 'bbn-cp.js',
+        path: path.resolve(__dirname, 'dist'),
+        filename: chunkData => {
+            if (chunkData.chunk.name === 'bbn-cp') {
+              return 'bbn-cp.js';
+            }
+            return `${chunkData.chunk.name}.js`;
+        },
         libraryTarget: 'global'
     },
 
@@ -21,28 +45,73 @@ export default {
         rules: [
             {
                 test: /\.js$/,
-                use: 'babel-loader',
+                include: [path.resolve(__dirname, 'src/components')], // only target your component files
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            sourceMap: true
+                        }
+                    },
+                    //path.resolve(__dirname, './filename-loader.js')
+                ],
                 exclude: /node_modules/,
             },
+            {
+                test: /\.html$/,
+                exclude: /node_modules/,
+                use: 'html-loader'
+            },
+            {
+                test: /\.lang$/,
+                type: 'json'
+            },
+            {
+                test: /\.less/,
+                use: [
+                  'style-loader',
+                  'css-loader',
+                  'less-loader'
+                ]
+            }
         ],
     },
     // Resolve extensions and modules
     resolve: {
-        extensions: ['.js'],
+        extensions: ['.js', '.json'],
+        preferRelative: true,
         modules: [
-            'dist',
             'node_modules'
-        ]
+        ],
     },
     optimization: {
+        /*
+        splitChunks: {
+            cacheGroups: {
+                components: {
+                    test: /[\\/]components[\\/]/,
+                    name: (module, chunks, cacheGroupKey) => {
+                        const match = module.resource.match(/[\\/]components[\\/](.+?)[\\/]/);
+                        if (match) {
+                            // Add a prefix or modify this to ensure a unique name
+                            return `dynamic-${cacheGroupKey}/${match[1]}/${match[1]}`;
+                        }
+                        return 'vendor';
+                    },
+                    chunks: 'all'
+                }
+            }
+        },*/
+        minimize: mode === 'production',
+        minimizer: [new TerserPlugin()],
         concatenateModules: true
     },
 
     // Plugins (if you have any)
     plugins: [
-      new webpack.DefinePlugin({
-        IS_TESTING: JSON.stringify(process.env.IS_TESTING)
-      })
+        new webpack.DefinePlugin({
+            IS_TESTING: JSON.stringify(process.env.IS_TESTING),
+        }),
     ],
     externals: {
         "bbn": "bbn"
@@ -56,6 +125,7 @@ export default {
     // },
 
     // Optional: Source maps for development
-    devtool: 'source-map',
+    //devtool: 'inline-source-map',
 };
+
 
