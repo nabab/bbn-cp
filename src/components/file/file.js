@@ -9,6 +9,8 @@
   *
   * @created 13/06/2017.
   */
+import FileDrop from 'filedrop';
+
 const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
@@ -226,7 +228,7 @@ const cpDef = {
         */
         let widget = new FileDrop(this.getRef('zone'), {
           upload(){
-            bbn.fn.log("UPL<ADING", arguments);
+            bbn.fn.log("UPLOADING", arguments);
           },
           /* iframe: {
             url: this.saveUrl
@@ -305,10 +307,12 @@ if (bbn.env.lang) {
   catch (err) {}
 }
 
-export default {
+const def = {
   name: 'bbn-file',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
   lang: cpLang
 };
+
+export {def as default, FileDrop};

@@ -7,6 +7,8 @@
  *
  * @author Mirko Argentino
  */
+import 'flag-icons/css/flag-icons.css';
+
 const cpDef = {
     name: 'bbn-flag',
     /**

@@ -22,7 +22,14 @@ export default async function createApp(ele, obj) {
         `../components/${cp.substr(4)}/${cp.substr(4)}.js`
       );
       bbn.fn.log(["DEFINITION", definition]);
-      res.components.push(definition.default);
+      for (let n in definition) {
+        if (n === 'default') {
+          res.components.push(definition.default);
+        }
+        else if (!window[n]) {
+          window[n] = definition[n];
+        }
+      }
     }
 
     return res;

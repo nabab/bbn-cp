@@ -9,7 +9,7 @@
  * @author BBN Solutions
  */
 
-
+import tui from 'tui-image-editor';
 //Markdown editor use simpleMDe
 const cpDef = {
   /**

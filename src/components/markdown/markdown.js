@@ -9,7 +9,8 @@
  * @author BBN Solutions
  */
 
-
+import EasyMDE from 'easymde';
+import {marked} from 'marked';
 //Markdown editor use simpleMDe
 const cpDef = {
   /**
@@ -29,13 +30,13 @@ const cpDef = {
         name: "bold",
         className: "nf nf-fa-bold",
         title: bbn._("Bold"),
-        action: EasyMDE.toggleBold
+        action: window.EasyMDE.toggleBold
       },
       {
         name: "italic",
         className: "nf nf-fa-italic",
         title: bbn._("Italic"),
-        action: EasyMDE.toggleItalic
+        action: window.EasyMDE.toggleItalic
       },
       {
         name: "heading",
@@ -46,32 +47,32 @@ const cpDef = {
             name: "heading-1",
             className: "nf nf-md-format_header_1",
             title: bbn._("Heading") + " 1",
-            action: EasyMDE.toggleHeading1
+            action: window.EasyMDE.toggleHeading1
           }, {
             name: "heading-2",
             className: "nf nf-md-format_header_2",
             title: bbn._("Heading") + " 2",
-            action: EasyMDE.toggleHeading2
+            action: window.EasyMDE.toggleHeading2
           }, {
             name: "heading-3",
             className: "nf nf-md-format_header_3",
             title: bbn._("Heading") + " 3",
-            action: EasyMDE.toggleHeading3
+            action: window.EasyMDE.toggleHeading3
           }, {
             name: "heading-4",
             className: "nf nf-md-format_header_4",
             title: bbn._("Heading") + " 4",
-            action: EasyMDE.toggleHeading4
+            action: window.EasyMDE.toggleHeading4
           }, {
             name: "heading-5",
             className: "nf nf-md-format_header_5",
             title: bbn._("Heading") + " 5",
-            action: EasyMDE.toggleHeading5
+            action: window.EasyMDE.toggleHeading5
           }, {
             name: "heading-6",
             className: "nf nf-md-format_header_6",
             title: bbn._("Heading") + " 6",
-            action: EasyMDE.toggleHeading6
+            action: window.EasyMDE.toggleHeading6
           }
         ]
       },
@@ -80,52 +81,52 @@ const cpDef = {
         name: "quote",
         className: "nf nf-fa-quote_left",
         title: bbn._("Quote"),
-        action: EasyMDE.toggleBlockquote
+        action: window.EasyMDE.toggleBlockquote
       },
       {
         name: "unordered-list",
         className: "nf nf-fa-list_ul",
         title: bbn._("Generic List"),
-        action: EasyMDE.toggleUnorderedList
+        action: window.EasyMDE.toggleUnorderedList
       },
       {
         name: "ordered-list",
         className: "nf nf-fa-list_ol",
         title: bbn._("Numbered List"),
-        action: EasyMDE.toggleOrderedList
+        action: window.EasyMDE.toggleOrderedList
       },
       "|",
       {
         name: "link",
         className: "nf nf-fa-link",
         title: bbn._("Create Link"),
-        action: EasyMDE.drawLink
+        action: window.EasyMDE.drawLink
       },
       {
         name: "image",
         className: "nf nf-fa-image",
         title: bbn._("Insert Image"),
-        action: EasyMDE.drawImage
+        action: window.EasyMDE.drawImage
       },
       "|",
       {
         name: "preview",
         className: "nf nf-fa-eye no-disable",
         title: bbn._("Toggle Preview"),
-        action: EasyMDE.togglePreview
+        action: window.EasyMDE.togglePreview
       },
       {
         name: "side-by-side",
         className: "nf nf-fa-columns no-disable no-mobile",
         title: bbn._("Toggle Side by Side"),
-        action: EasyMDE.toggleSideBySide,
+        action: window.EasyMDE.toggleSideBySide,
         default: true
       },
       {
         name: "fullscreen",
         className: "nf nf-fa-arrows_alt no-disable no-mobile",
         title: bbn._("Toggle Fullscreen"),
-        action: EasyMDE.toggleFullScreen
+        action: window.EasyMDE.toggleFullScreen
       },
       "|",
       {
@@ -187,7 +188,7 @@ const cpDef = {
   },
   computed: {
     compiled() {
-      return this.value ? marked.parse(this.value) : '';
+      return this.value ? window.marked.parse(this.value) : '';
     },
     toolbar() {
       if (this.readonly) {
@@ -234,7 +235,7 @@ const cpDef = {
         return true
       }
     });*/
-    this.widget = new EasyMDE(bbn.fn.extend({
+    this.widget = new window.EasyMDE(bbn.fn.extend({
       element: this.$refs.element,
       value: this.value,
     }, this.$data, toolbar
@@ -266,10 +267,12 @@ if (bbn.env.lang) {
   catch (err) {}
 }
 
-export default {
+const def = {
   name: 'bbn-markdown',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
   lang: cpLang
 };
+
+export {def as default, EasyMDE, marked};

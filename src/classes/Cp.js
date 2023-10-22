@@ -821,6 +821,12 @@ export default class bbnCp {
       configurable: true
     });
 
+    Object.defineProperty(this, '$isDestroyed', {
+      value: false,
+      writable: true, 
+      configurable: true
+    });
+
     Object.defineProperty(this, '$isMounted', {
       value: false,
       writable: true, 
@@ -1774,7 +1780,7 @@ export default class bbnCp {
         }
         else {
           bbn.fn.log(["REMOVING COMPONENT FROM DATA", this, oldV, v]);
-          oldDataObj.removeComponent(this);
+          oldDataObj.removeComponent(this, name);
         }
       }
 

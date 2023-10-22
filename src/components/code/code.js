@@ -1,4 +1,93 @@
 /*jshint esversion: 6 */
+import {js_beautify, css_beautify, html_beautify} from "js-beautify";
+import tern from "tern";
+import {LanguageSupport} from "@codemirror/language"
+import * as autocomplete from "@codemirror/autocomplete";
+import * as commands from "@codemirror/commands";
+import * as collaboration from "@codemirror/collab";
+import * as language from "@codemirror/language";
+import * as lint from "@codemirror/lint";
+import * as state from "@codemirror/state";
+import * as search from "@codemirror/search";
+import * as view from "@codemirror/view";
+import * as html from "@codemirror/lang-html";
+import * as vue from "@codemirror/lang-vue";
+import * as javascript from "@codemirror/lang-javascript";
+import * as php from "@codemirror/lang-php";
+import * as css from "@codemirror/lang-css";
+import * as json from "@codemirror/lang-json";
+import * as markdown from "@codemirror/lang-markdown";
+import * as xml from "@codemirror/lang-xml";
+import * as theme from "thememirror";
+import { abbreviationTracker } from '@emmetio/codemirror6-plugin';
+
+const languageExtensions = {
+  javascript: [new LanguageSupport(javascript.javascriptLanguage)],
+  html: [new LanguageSupport(html.htmlLanguage)],
+  css: [new LanguageSupport(css.cssLanguage)],
+  php: [new LanguageSupport(php.phpLanguage)],
+  json: [new LanguageSupport(json.jsonLanguage)],
+  markdown: [new LanguageSupport(markdown.markdownLanguage)],
+  xml: [new LanguageSupport(xml.xmlLanguage)],
+  vue: [new LanguageSupport(vue.vueLanguage)]
+};
+
+const codemirror6 = {
+  autocomplete,
+  commands,
+  collaboration,
+  language,
+  languageExtensions,
+  lint,
+  state,
+  search,
+  view,
+  vue,
+  html,
+  javascript,
+  php,
+  css,
+  json,
+  markdown,
+  xml,
+  theme,
+  elmet: abbreviationTracker(),
+  getBasicExtensions(cm) {
+    if (!cm.ext) {
+      cm.ext = {
+        lineNumbers: cm.view.lineNumbers(),
+        lineWrapping: cm.view.EditorView.lineWrapping,
+        highlightActiveLineGutter: cm.view.highlightActiveLineGutter(),
+        highlightSpecialChars: cm.view.highlightSpecialChars(),
+        history: cm.commands.history(),
+        foldGutter: cm.language.foldGutter(),
+        drawSelection: cm.view.drawSelection(),
+        dropCursor: cm.view.dropCursor(),
+        allowMultipleSelections: cm.state.EditorState.allowMultipleSelections.of(true),
+        indentOnInput: cm.language.indentOnInput(),
+        syntaxHighlighting: cm.language.syntaxHighlighting(cm.language.defaultHighlightStyle, {fallback: true}),
+        bracketMatching: cm.language.bracketMatching(),
+        closeBrackets: cm.autocomplete.closeBrackets(),
+        autocompletion: cm.autocomplete.autocompletion(),
+        rectangularSelection: cm.view.rectangularSelection(),
+        crosshairCursor: cm.view.crosshairCursor(),
+        highlightSelectionMatches: cm.search.highlightSelectionMatches(),
+        keymap: cm.view.keymap.of([
+          ...cm.autocomplete.closeBracketsKeymap,
+          ...cm.commands.defaultKeymap,
+          ...cm.search.searchKeymap,
+          ...cm.commands.historyKeymap,
+          ...cm.language.foldKeymap,
+          ...cm.autocomplete.completionKeymap,
+          ...cm.lint.lintKeymap,
+          cm.commands.indentWithTab
+        ]),
+      };
+    }
+    return cm.ext;
+  }
+};
+
 /**
  * @file bbn-code component
  *
@@ -61,7 +150,7 @@ const cpDef = {
         return this.extensions;
       }
 
-      const cm = window.codemirror6;
+      const cm = codemirror6;
 
       if (!this.mode || !this.theme) {
         throw new Error("You earmust provide a language and a theme");
@@ -118,7 +207,7 @@ const cpDef = {
       this.init();
     },
     init() {
-      let cm = window.codemirror6;
+      let cm = codemirror6;
       let extensions = this.getExtensions();
       //bbn.fn.log("extensions", extensions, this.extensions);
       let editorStateCfg = {
@@ -242,10 +331,12 @@ if (bbn.env.lang) {
   catch (err) {}
 }
 
-export default {
+const def = {
   name: 'bbn-code',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
   lang: cpLang
 };
+
+export {def as default, codemirror6, js_beautify, css_beautify, html_beautify, tern}

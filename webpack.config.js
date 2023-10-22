@@ -1,7 +1,6 @@
 import { URL } from 'url'; // in Browser, the URL in native accessible on window
 import path from 'path';
 import TerserPlugin from "terser-webpack-plugin";
-import fs from 'fs';
 
 // Will contain trailing slash
 const __dirname = new URL('.', import.meta.url).pathname;
@@ -55,11 +54,9 @@ export default {
                     },
                     //path.resolve(__dirname, './filename-loader.js')
                 ],
-                exclude: /node_modules/,
             },
             {
                 test: /\.html$/,
-                exclude: /node_modules/,
                 use: 'html-loader'
             },
             {
@@ -67,16 +64,25 @@ export default {
                 type: 'json'
             },
             {
-                test: /\.less/,
+                test: /\.less$/,
                 use: [
                   'style-loader',
                   'css-loader',
                   'less-loader'
                 ]
+            },
+            {
+                test: /\.css$/,
+                use: [
+                  'style-loader',
+                  'css-loader'
+                ]
             }
         ],
     },
+    
     // Resolve extensions and modules
+    /*
     resolve: {
         extensions: ['.js', '.json'],
         preferRelative: true,
@@ -84,6 +90,7 @@ export default {
             'node_modules'
         ],
     },
+    */
     optimization: {
         /*
         splitChunks: {

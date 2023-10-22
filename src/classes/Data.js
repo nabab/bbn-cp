@@ -565,7 +565,7 @@ export default class bbnData {
     if (!this.parent || !this.parent.hasComponent(component)) {
       this.components[component.$cid] = {
         component,
-        path
+        path: [path]
       };
       component.$values.push(this.id);
     }
@@ -599,7 +599,7 @@ export default class bbnData {
     }
     while (dataObj) {
       if (dataObj.components[component.$cid]) {
-        paths.unshift(dataObj.components[component.$cid].path);
+        paths.unshift(dataObj.components[component.$cid].path[0]);
         break;
       }
       else {
@@ -717,12 +717,23 @@ export default class bbnData {
     if (!this.hasComponent(component)) {
       this.components[component.$cid] = {
         component,
-        path
+        path: [path]
       };
       if (!component.$values.includes(this.id)) {
         component.$values.push(this.id);
         return true;
       }
+    }
+    else if (!this.components[component.$cid]) {
+      this.components[component.$cid] = {
+        component,
+        path: [this.path, path]
+      };
+      return true;
+    }
+    else if (!this.components[component.$cid].path.includes(path)) {
+      this.components[component.$cid].path.push(path);
+      return true;
     }
 
     
@@ -758,7 +769,7 @@ export default class bbnData {
    * Removes a component from the data object
    * @param {bbnCp} component 
    */
-  removeComponent(component) {
+  removeComponent(component, path) {
     if (!(component instanceof bbnCp)) {
       throw new Error("bbnData hasComponent must be called with a bbn component");
     }
@@ -767,17 +778,26 @@ export default class bbnData {
       throw new Error("The component is not in the list of components");
     }
 
-    if (component === this.root) {
-      //bbn.fn.log("UNSETTING");
+    if ((component === this.root) && (!path || (path === this.path))) {
       this.unset();
     }
     else {
-      let idx = component.$values.indexOf(this.id);
-      if (idx > -1) {
-        component.$values.splice(idx, 1);
+      if (path) {
+        let pathIdx = this.components[component.$cid].path.indexOf(path);
+        if (pathIdx === -1) {
+          throw new Error("The path is not in the list of paths");
+        }
+        this.components[component.$cid].path.splice(pathIdx, 1);
       }
 
-      delete this.components[component.$cid];
+      if (!path || !this.components[component.$cid].path.length) {
+        let idx = component.$values.indexOf(this.id);
+        if (idx > -1) {
+          component.$values.splice(idx, 1);
+        }
+  
+        delete this.components[component.$cid];
+      }
     }
   }
 

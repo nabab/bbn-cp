@@ -1307,7 +1307,6 @@ const cpDef = {
         //bbn.fn.log("The popup should have closed the floater");
         let idx = popup.getIndexByUID(this.uid);
         popup.close(idx, true);
-        this.$destroy();
       }
       else {
         //bbn.fn.log("The floater should have closed itself");

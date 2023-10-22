@@ -10,6 +10,8 @@
  *
  * @created 10/02/2020
  */
+import ApexCharts from 'apexcharts';
+
 const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
@@ -1305,7 +1307,7 @@ const cpDef = {
             cfg.series = [];
             cfg.labels = [];
           }
-          this.widget = new ApexCharts(this.getRef('chart'), cfg)
+          this.widget = new window.ApexCharts(this.getRef('chart'), cfg)
           this.widget.render();
           this.isInit = true;
         }
@@ -1313,7 +1315,7 @@ const cpDef = {
     },
     /**
      * Destroys the component chart.
-     *
+     *  
      * @method destroy
      */
     destroy(){
@@ -1429,10 +1431,13 @@ if (bbn.env.lang) {
   catch (err) {}
 }
 
-export default {
+const def = {
   name: 'bbn-chart',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
   lang: cpLang
 };
+
+export {ApexCharts, def as default}
+

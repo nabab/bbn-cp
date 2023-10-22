@@ -13,6 +13,8 @@
 
 
 
+import 'jsoneditor/dist/jsoneditor.css';
+import JSONEditor from 'jsoneditor';
 
 //Markdown editor use simpleMDe
 const cpDef = {
@@ -287,7 +289,7 @@ const cpDef = {
     init(){
       let cfg = this.getCfg();
       bbn.fn.log("VALUE", this.value);
-      this.widget = new JSONEditor(this.$refs.element, cfg);
+      this.widget = new window.JSONEditor(this.$refs.element, cfg);
       if (this.currentValue) {
         this.widget.setText(this.currentValue);
       }
@@ -357,10 +359,12 @@ if (bbn.env.lang) {
   catch (err) {}
 }
 
-export default {
+const def = {
   name: 'bbn-json-editor',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
   lang: cpLang
 };
+
+export {def as default, JSONEditor}

@@ -12,6 +12,8 @@
  *
  * @created 10/02/2020
  */
+import iro from '@jaames/iro';
+
 const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
@@ -397,10 +399,12 @@ if (bbn.env.lang) {
   catch (err) {}
 }
 
-export default {
+const def = {
   name: 'bbn-colorpicker',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
   lang: cpLang
 };
+
+export {def as default, iro};
