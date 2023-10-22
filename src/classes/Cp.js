@@ -1773,7 +1773,7 @@ export default class bbnCp {
           isMod = false;
         }
         else {
-          //bbn.fn.log(["REMOVING COMPONENT FROM DATA", this, oldV, v]);
+          bbn.fn.log(["REMOVING COMPONENT FROM DATA", this, oldV, v]);
           oldDataObj.removeComponent(this);
         }
       }
