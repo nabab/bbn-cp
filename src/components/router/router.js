@@ -4076,11 +4076,11 @@ const cpDef = {
           }
   
           // Setting current if URL starts with default URL
-          if (url && url.indexOf(a.url) === 0) {
-            a.current = url;
+          if (this.currentURL && this.currentURL.indexOf(a.url) === 0) {
+            a.current = this.currentURL;
           }
   
-          //bbn.fn.warning(bbn._("ADDING %s ON WATCH", a.url));
+          bbn.fn.warning(bbn._("ADDING %s ON WATCH", a.url));
           this.add(a);
         });
       },
