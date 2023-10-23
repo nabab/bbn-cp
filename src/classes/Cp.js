@@ -2047,8 +2047,8 @@ export default class bbnCp {
 
 
   $_setInternalResult(_r, _name, _res, _hash) {
-    bbn.fn.log(["SET INTERNAL RESULT", _name, _res, _hash])
     if (!_r[_name]) {
+      bbn.fn.log(["SET INTERNAL RESULT", _name, _res, _hash])
       _r[_name] = bbn.fn.createObject();
     }
     if (!_hash) {
