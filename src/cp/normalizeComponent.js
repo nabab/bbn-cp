@@ -6,7 +6,7 @@ import bbnData from '../classes/Data.js';
  * and add them to their respective namespaces
  */
 export default function normalizeComponent(cfg, clsName) {
-  bbn.fn.warning("NORMALIZE " + clsName);
+  //bbn.fn.warning("NORMALIZE " + clsName);
   if (!bbn.fn.isObject(cfg)) {
     bbn.fn.log(cfg, clsName);
     throw new Error("Components definition must be objects");

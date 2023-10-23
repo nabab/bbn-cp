@@ -71,13 +71,13 @@ export default async function fetchComponents(toDefine) {
     groups[bbn.cp.knownPrefixes[idx].prefix].components.push(tag);
   });
 
-  bbn.fn.log("GROUPS", groups);
+  //bbn.fn.log("GROUPS", groups);
   for (let prefix in groups) {
-    bbn.fn.log("PREFIX");
+    //bbn.fn.log("PREFIX");
     const rule = groups[prefix];
-    bbn.fn.log("GROUPS2", prefix);
+    //bbn.fn.log("GROUPS2", prefix);
     let res = await rule.handler(rule.components);
-    bbn.fn.log("RES", res);
+    //bbn.fn.log("RES", res);
     if (bbn.fn.isArray(res.components)) {
       bbn.fn.each(res.components, obj => {
         if (!obj.definition || !obj.name) {

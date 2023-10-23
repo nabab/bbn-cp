@@ -579,7 +579,7 @@ const cpDef = {
        * @returns {Object}
        */
       normalize(obj_orig){
-        bbn.fn.log("NORMALIZE");
+        //bbn.fn.log("NORMALIZE");
         let obj = obj_orig || {};
         obj.hidden = !!obj.hidden;
         if ( !obj.key ){

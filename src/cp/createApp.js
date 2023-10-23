@@ -5,13 +5,13 @@ import {bbn} from "@bbn/bbn/dist/index.js";
 */
 export default async function createApp(ele, obj) {
   await import('@bbn/bbn-css/dist/css/bbn-css-' + (bbn.env.theme || 'default') + '.css');
-  bbn.fn.log("CP?", bbn.cp);
+  //bbn.fn.log("CP?", bbn.cp);
   bbn.cp.startTick();
   bbn.cp.addPrefix('bbn-', async components => {
     const res = bbn.fn.createObject({
       components: []
     });
-    bbn.fn.log("COMPONENTS", components);
+    //bbn.fn.log("COMPONENTS", components);
     for (let cp of components) {
       if (cp === 'bbn-anon') {
         continue;
@@ -22,7 +22,7 @@ export default async function createApp(ele, obj) {
         /* webpackChunkName: "components/[request]" */
         `../components/${cp.substr(4)}/${cp.substr(4)}.js`
       );
-      bbn.fn.log(["DEFINITION", definition]);
+      //bbn.fn.log(["DEFINITION", definition]);
       for (let n in definition) {
         if (n === 'default') {
           res.components.push(definition.default);
