@@ -628,7 +628,7 @@ export default class bbnData {
 
   isSame(obj) {
     if (obj?.__bbnProxy) {
-      return obj === this.value;
+      return bbn.fn.isSame(obj, this.value);
     }
     else if (obj?.__bbnData) {
       return bbn.fn.isSame(obj, this.data);
