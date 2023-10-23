@@ -1988,7 +1988,7 @@ export default class bbnCp {
     const hash = bbnData.hash(val);
     if (!bbn.fn.isSame(this.$computed[name].hash, hash)) {
       const oldValue = this.$computed[name].val;
-      bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue]);
+      //bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue]);
       this.$computed[name].old = oldValue;
       this.$computed[name].hash = hash;
       this.$computed[name].num = this.$computed[name].num < this.$numBuild ? this.$numBuild + 1 : this.$computed[name].num + 1;
@@ -2071,7 +2071,6 @@ export default class bbnCp {
       _r[_name][_hash].value = _res;
       const _o = bbnData.hash(_r[_name][_hash].value);
       if (!bbn.fn.isSame(_r[_name][_hash].old, _o)) {
-        bbn.fn.log(["SET INTERNAL RESULT", _name, _res, _hash])
         _r[_name][_hash].state = 'MOD';
       }
       else {
