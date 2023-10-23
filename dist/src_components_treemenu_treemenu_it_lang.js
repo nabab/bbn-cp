@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunkbbn_axios_dayjs"] = self["webpackChunkbbn_axios_dayjs"] || []).push([["src_components_treemenu_treemenu_it_lang"],{
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_treemenu_treemenu_it_lang"],{
 
 /***/ "./src/components/treemenu/treemenu.it.lang":
 /*!**************************************************!*\
@@ -15,7 +15,7 @@
   \**************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Search\":\"Ricerca\",\"Create a shortcut\":\"Crea una scorciatoia\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs/./src/components/treemenu/treemenu.it.lang?");
+eval("module.exports = JSON.parse('{\"Search\":\"Ricerca\",\"Create a shortcut\":\"Crea una scorciatoia\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/treemenu/treemenu.it.lang?");
 
 /***/ })
 

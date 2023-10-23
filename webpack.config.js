@@ -36,11 +36,9 @@ export default {
             }
             return `${chunkData.chunk.name}.js`;
         },
-        library: {
-            name: ['bbn', 'axios', 'dayjs'],
-            type: 'global'
-        }
+        libraryTarget: 'global'
     },
+
     // Set up loaders
     module: {
         rules: [

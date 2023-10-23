@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunkbbn_axios_dayjs"] = self["webpackChunkbbn_axios_dayjs"] || []).push([["src_components_form_form_it_lang"],{
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_form_form_it_lang"],{
 
 /***/ "./src/components/form/form.it.lang":
 /*!******************************************!*\
@@ -15,7 +15,7 @@
   \******************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Are you sure you want to discard the changes you made in this form?\":\"Sei sicuro di voler eliminare le modifiche apportate in questo formulario?\",\"Cancel\":\"Annulla\",\"Reset\":\"Reimposta\",\"Submit\":\"Invia\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs/./src/components/form/form.it.lang?");
+eval("module.exports = JSON.parse('{\"Are you sure you want to discard the changes you made in this form?\":\"Sei sicuro di voler eliminare le modifiche apportate in questo formulario?\",\"Cancel\":\"Annulla\",\"Reset\":\"Reimposta\",\"Submit\":\"Invia\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/form/form.it.lang?");
 
 /***/ })
 

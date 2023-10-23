@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunkbbn_axios_dayjs"] = self["webpackChunkbbn_axios_dayjs"] || []).push([["src_components_field_field_fr_lang"],{
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_field_field_fr_lang"],{
 
 /***/ "./src/components/field/field.fr.lang":
 /*!********************************************!*\
@@ -15,7 +15,7 @@
   \********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"No\":\"Non\",\"Yes\":\"Oui\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs/./src/components/field/field.fr.lang?");
+eval("module.exports = JSON.parse('{\"No\":\"Non\",\"Yes\":\"Oui\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/field/field.fr.lang?");
 
 /***/ })
 
