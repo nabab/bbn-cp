@@ -2048,7 +2048,6 @@ export default class bbnCp {
 
   $_setInternalResult(_r, _name, _res, _hash) {
     if (!_r[_name]) {
-      bbn.fn.log(["SET INTERNAL RESULT", _name, _res, _hash])
       _r[_name] = bbn.fn.createObject();
     }
     if (!_hash) {
@@ -2071,7 +2070,8 @@ export default class bbnCp {
     else if (_r[_name][_hash].state === 'TMP') {
       _r[_name][_hash].value = _res;
       const _o = bbnData.hash(_r[_name][_hash].value);
-      if (_r[_name][_hash].old !== _o) {
+      if (!bbn.fn.isSame(_r[_name][_hash].old, _o)) {
+        bbn.fn.log(["SET INTERNAL RESULT", _name, _res, _hash])
         _r[_name][_hash].state = 'MOD';
       }
       else {
