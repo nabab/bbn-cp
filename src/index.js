@@ -1,3 +1,4 @@
+import {bbn, axios, dayjs} from "@bbn/bbn/dist/index.js";
 import bbnData from "./classes/Data.js";
 import bbnHTML from "./classes/Html.js";
 import bbnButtonHTML from "./classes/Button.js";
@@ -16,6 +17,9 @@ customElements.define('bbn-anon', bbnAnon);
 const woo = {};
 
 export {
+  axios,
+  dayjs,
+  bbn,
   bbnHTML,
   bbnAnon,
   bbnButtonHTML,
