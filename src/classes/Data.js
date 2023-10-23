@@ -385,10 +385,10 @@ export default class bbnData {
             bbn.fn.log(["SET LOADING", value, mod, target, targetObj]);
           }
 
+          bbn.fn.log(["SET", targetObj, key, newVal, oldValue, target, '------']);
           targetObj.update(false, key);
 
           if (dataObj) {
-            bbn.fn.log(["SET", dataObj, key, newVal, oldValue, target, '------']);
             dataObj.update();
           }
 
