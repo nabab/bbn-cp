@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_file_file_it_lang"],{
+(self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] = self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] || []).push([["src_components_file_file_it_lang"],{
 
 /***/ "./src/components/file/file.it.lang":
 /*!******************************************!*\
@@ -15,7 +15,7 @@
   \******************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"uploading\":\"caricamento\",\"Upload a file\":\"Carica un file\",\"Or click here to\":\"O clicca qui per\",\"Drop files here\":\"Rilascia i file qui\",\"Processing dropped files\":\"Processando i file rilasciati\",\"Retry\":\"Riprova\",\"Edit filename\":\"Modifica il nome del file\",\"Delete\":\"Elimina\",\"Pause\":\"Pausa\",\"Continue\":\"Riprendi\",\"Close\":\"Chiudi\",\"No\":\"No\",\"Yes\":\"Si\",\"Cancel\":\"Annulla\",\"OK\":\"OK\",\"Browse\":\"Sfoglia\",\"This type of file is not allowed, only files of type\":\"Questo tipo di file non è consentito, solo file di tipo\",\"The file si too big, the maximum size is\":\"Il file è troppo grande, la dimensione massima è\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/file/file.it.lang?");
+eval("module.exports = JSON.parse('{\"uploading\":\"caricamento\",\"Upload a file\":\"Carica un file\",\"Or click here to\":\"O clicca qui per\",\"Drop files here\":\"Rilascia i file qui\",\"Processing dropped files\":\"Processando i file rilasciati\",\"Retry\":\"Riprova\",\"Edit filename\":\"Modifica il nome del file\",\"Delete\":\"Elimina\",\"Pause\":\"Pausa\",\"Continue\":\"Riprendi\",\"Close\":\"Chiudi\",\"No\":\"No\",\"Yes\":\"Si\",\"Cancel\":\"Annulla\",\"OK\":\"OK\",\"Browse\":\"Sfoglia\",\"This type of file is not allowed, only files of type\":\"Questo tipo di file non è consentito, solo file di tipo\",\"The file si too big, the maximum size is\":\"Il file è troppo grande, la dimensione massima è\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs.bbnHTML.bbnAnon.bbnButtonHTML.bbnCellHTML.bbnElementHTML.bbnFormHTML.bbnListHTML.bbnRowHTML.bbnAnonCp.bbnData.bbnCp/./src/components/file/file.it.lang?");
 
 /***/ })
 

@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_editable_editable_fr_lang"],{
+(self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] = self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] || []).push([["src_components_editable_editable_fr_lang"],{
 
 /***/ "./src/components/editable/editable.fr.lang":
 /*!**************************************************!*\
@@ -15,7 +15,7 @@
   \**************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Title tag\":\"Balise titre\",\"Title text\":\"Texte du titre\",\"Title alignment\":\"Alignement du texte\",\"Line\":\"Ligne\",\"Upload your image\":\"Uploader votre image\",\"Image size\":\"Taille de l\\'image\",\"Image alignment\":\"Alignement de l\\'image\",\"Upload your images\":\"Uploader vos images\",\"Video source\":\"Source vidéo\",\"Mute the video\":\"Couper le son\",\"Autoplay\":\"Lecture automatique\",\"Block changed\":\"Bloc modifié\",\"Image correctly uploaded\":\"Image correctement uploadée\",\"An error occurred while uploading the image\":\"Une erreur est survenue lors de l\\'upload de l\\'image\",\"Align left\":\"Aligner à gauche\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/editable/editable.fr.lang?");
+eval("module.exports = JSON.parse('{\"Title tag\":\"Balise titre\",\"Title text\":\"Texte du titre\",\"Title alignment\":\"Alignement du texte\",\"Line\":\"Ligne\",\"Upload your image\":\"Uploader votre image\",\"Image size\":\"Taille de l\\'image\",\"Image alignment\":\"Alignement de l\\'image\",\"Upload your images\":\"Uploader vos images\",\"Video source\":\"Source vidéo\",\"Mute the video\":\"Couper le son\",\"Autoplay\":\"Lecture automatique\",\"Block changed\":\"Bloc modifié\",\"Image correctly uploaded\":\"Image correctement uploadée\",\"An error occurred while uploading the image\":\"Une erreur est survenue lors de l\\'upload de l\\'image\",\"Align left\":\"Aligner à gauche\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs.bbnHTML.bbnAnon.bbnButtonHTML.bbnCellHTML.bbnElementHTML.bbnFormHTML.bbnListHTML.bbnRowHTML.bbnAnonCp.bbnData.bbnCp/./src/components/editable/editable.fr.lang?");
 
 /***/ })
 

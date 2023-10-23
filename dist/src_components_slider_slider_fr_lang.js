@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_slider_slider_fr_lang"],{
+(self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] = self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] || []).push([["src_components_slider_slider_fr_lang"],{
 
 /***/ "./src/components/slider/slider.fr.lang":
 /*!**********************************************!*\
@@ -15,7 +15,7 @@
   \**********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Impossible to get an orientation for the slider\":\"Impossbile d\\'avoir une orientation pour le slider\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/slider/slider.fr.lang?");
+eval("module.exports = JSON.parse('{\"Impossible to get an orientation for the slider\":\"Impossbile d\\'avoir une orientation pour le slider\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs.bbnHTML.bbnAnon.bbnButtonHTML.bbnCellHTML.bbnElementHTML.bbnFormHTML.bbnListHTML.bbnRowHTML.bbnAnonCp.bbnData.bbnCp/./src/components/slider/slider.fr.lang?");
 
 /***/ })
 

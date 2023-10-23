@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_dashboard_dashboard_it_lang"],{
+(self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] = self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] || []).push([["src_components_dashboard_dashboard_it_lang"],{
 
 /***/ "./src/components/dashboard/dashboard.it.lang":
 /*!****************************************************!*\
@@ -15,7 +15,7 @@
   \****************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Untitled\":\"Senza titolo\",\"Widgets\":\"Widget\",\"Show every widget\":\"Mostra tutti i widget\",\"Hide every widget\":\"Nascondi tutti i widget\",\"Reset widgets order\":\"Reimposta l\\'ordine dei widget\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/dashboard/dashboard.it.lang?");
+eval("module.exports = JSON.parse('{\"Untitled\":\"Senza titolo\",\"Widgets\":\"Widget\",\"Show every widget\":\"Mostra tutti i widget\",\"Hide every widget\":\"Nascondi tutti i widget\",\"Reset widgets order\":\"Reimposta l\\'ordine dei widget\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs.bbnHTML.bbnAnon.bbnButtonHTML.bbnCellHTML.bbnElementHTML.bbnFormHTML.bbnListHTML.bbnRowHTML.bbnAnonCp.bbnData.bbnCp/./src/components/dashboard/dashboard.it.lang?");
 
 /***/ })
 

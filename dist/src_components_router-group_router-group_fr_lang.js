@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_router-group_router-group_fr_lang"],{
+(self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] = self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] || []).push([["src_components_router-group_router-group_fr_lang"],{
 
 /***/ "./src/components/router-group/router-group.fr.lang":
 /*!**********************************************************!*\
@@ -15,7 +15,7 @@
   \**********************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Untitled\":\"Sans titre\",\"Loading\":\"Chargement\",\"Impossible to find the container for URL\":\"Impossible de trrouver un conteneur correspondant à cette URL\",\"Untitled site\":\"Site sans titre\",\"You have unsaved data, are you sure you want to leave?\":\"Vous avez des données non sauvegardées, êtes-vous sûr de vouloir quitter?\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/router-group/router-group.fr.lang?");
+eval("module.exports = JSON.parse('{\"Untitled\":\"Sans titre\",\"Loading\":\"Chargement\",\"Impossible to find the container for URL\":\"Impossible de trrouver un conteneur correspondant à cette URL\",\"Untitled site\":\"Site sans titre\",\"You have unsaved data, are you sure you want to leave?\":\"Vous avez des données non sauvegardées, êtes-vous sûr de vouloir quitter?\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs.bbnHTML.bbnAnon.bbnButtonHTML.bbnCellHTML.bbnElementHTML.bbnFormHTML.bbnListHTML.bbnRowHTML.bbnAnonCp.bbnData.bbnCp/./src/components/router-group/router-group.fr.lang?");
 
 /***/ })
 

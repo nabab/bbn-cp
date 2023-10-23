@@ -36,9 +36,26 @@ export default {
             }
             return `${chunkData.chunk.name}.js`;
         },
-        libraryTarget: 'global'
+        library: {
+            name: [
+                'bbn',
+                'axios',
+                'dayjs',
+                'bbnHTML',
+                'bbnAnon',
+                'bbnButtonHTML',
+                'bbnCellHTML',
+                'bbnElementHTML',
+                'bbnFormHTML',
+                'bbnListHTML',
+                'bbnRowHTML',
+                'bbnAnonCp',
+                'bbnData',
+                'bbnCp'
+            ],
+            type: 'global'
+        }
     },
-
     // Set up loaders
     module: {
         rules: [
