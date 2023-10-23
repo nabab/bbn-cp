@@ -120,10 +120,6 @@ export default {
             IS_TESTING: JSON.stringify(process.env.IS_TESTING),
         }),
     ],
-    externals: {
-        "bbn": "bbn"
-    },
-
     // Optional: Development server configuration
     // devServer: {
     //     contentBase: path.join(__dirname, 'public'),
