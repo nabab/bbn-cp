@@ -258,11 +258,11 @@ const cpDef = {
               file: o.data
             },
             // success
-            res => bbn.fn.log('success', res),
+            res => bbn.fn.log("CLIPBOARD success", res),
             // failure
-            res => bbn.fn.log('failure', res),
+            res => bbn.fn.log("CLIPBOARD failure", res),
             // progress
-            res => bbn.fn.log('progress', res)
+            res => bbn.fn.log("CLIPBOARD progress", res)
           );
         });
         this.$emit('add', added);

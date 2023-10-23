@@ -856,7 +856,7 @@ const cpDef = {
                   return this.$parent.escape(st);
                 },
                 selectImg(){
-                  bbn.fn.log(this.closest('bbn-container'), this.closest('bbn-container').getComponent());
+                  //bbn.fn.log("SELECT IMG", this.closest('bbn-container'), this.closest('bbn-container').getComponent());
                   return this.closest('bbn-cms-block').selectImg(this.source.href)
                 }
               },

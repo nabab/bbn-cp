@@ -443,7 +443,7 @@ const cpDef = {
         }
         this.searchTimeout = setTimeout(() => {
           let idx = bbn.fn.search(this.currentFilters.conditions, { field: this.searchName });
-          bbn.fn.log(idx)
+          bbn.fn.log("GALLERY", idx)
           if (idx > -1) {
             if (newVal) {
               this.currentFilters.conditions[idx].value == newVal;

@@ -1382,14 +1382,14 @@ const cpDef = {
         this.numRegistered++;
         this.urls[cp.url] = cp;
         if (this.isVisual) {
-          bbn.fn.log("VIEW ON VISUAL")
+          //bbn.fn.log("VIEW ON VISUAL")
           cp.$on('view', () => {
             this.visualShowAll = false;
           })
         }
         let idx = this.search(cp.url);
         if (idx === false) {
-          bbn.fn.log("ADDING BECAUSE CAN'T FIND", cp.url, this.views.map(a => a.url));
+          //bbn.fn.log("ADDING BECAUSE CAN'T FIND", cp.url, this.views.map(a => a.url));
           this.add(cp);
         }
         else {
@@ -1829,7 +1829,7 @@ const cpDef = {
           return;
         }
 
-        bbn.fn.log(
+        bbn.fn.log([
           "changeURL",
           url,
           title,
@@ -1837,7 +1837,7 @@ const cpDef = {
           this.parentContainer ? 
             ["FROM PQARENT", this.parentContainer.currentTitle, this.parentContainer.title]
             : this.currentTitle
-        );
+        ]);
         // Changing the current property of the view cascades on the container's currentURL
         if (
           this.views[this.selected] &&
@@ -1860,10 +1860,10 @@ const cpDef = {
           }
           else if ( replace || (url !== bbn.env.path) ){
             if ( !replace ){
-              bbn.fn.log("NO REPLAACE", this.getFullBaseURL() + url, bbn.env.path);
+              //bbn.fn.log("NO REPLAACE", this.getFullBaseURL() + url, bbn.env.path);
             }
             if ( !replace && ((this.getFullBaseURL() + url).indexOf(bbn.env.path) === 0) ){
-              bbn.fn.log("REPLACING");
+              //bbn.fn.log("REPLACING");
               replace = true;
             }
             bbn.fn.setNavigationVars(this.getFullBaseURL() + url, this.currentTitle, {}, replace);

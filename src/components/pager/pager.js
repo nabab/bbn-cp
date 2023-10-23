@@ -199,8 +199,6 @@ const cpDef = {
     },
     watch: {
       element(v, oldV) {
-        bbn.fn.log(v, oldV);
-        alert("ELE");
         if (v && (v instanceof bbnCp)) {
           this.ready = true;
         }

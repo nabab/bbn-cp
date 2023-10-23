@@ -217,7 +217,7 @@ const cpDef = {
      * @emit click
      */
     click(e) {
-      bbn.fn.log("ONCLICK", e, this);
+      //bbn.fn.log("ONCLICK", e, this);
       if (this.url) {
         bbn.fn.link(this.url);
         e.preventDefault();
@@ -225,7 +225,7 @@ const cpDef = {
       }
       else if (!this.$el.bbnSchema.events?.click && this.action && bbn.fn.isFunction(this.action)) {
         this.action.bind(this.$origin)(e, this);
-        bbn.fn.log([this.$origin, this.action])
+        //bbn.fn.log(["CLICK BUTTON EVENT", this.$origin, this.action])
         e.preventDefault();
         e.stopPropagation();
       }

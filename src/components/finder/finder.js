@@ -418,7 +418,7 @@ const cpDef = {
        * @return {Object}
        */
       mapTree(node){
-        bbn.fn.log(node);
+        //bbn.fn.log("NODE", node);
         let bits = node.text.split('.');
         let ext = bits[bits.length-1];
         if ( node.dir) {
@@ -554,7 +554,7 @@ const cpDef = {
        */
       uploadSuccess(a, b, d){
         bbn.fn.happy('now')
-        bbn.fn.log(d.data, arguments,'args')
+        bbn.fn.log("FINDER", d.data, arguments,'args')
         if ( d.data.success ){
           if ( d.data.name ){
             appui.success(bbn._(d.data.name + ' ' +'successfully uploaded'));
@@ -669,11 +669,11 @@ const cpDef = {
             }, d => {
               if ( d.success ){
                 bbn.fn.happy('pasted')
-                bbn.fn.log(n.tree.items)
+                //bbn.fn.log(n.tree.items)
                 bbn.fn.each(trees, (v, i) => {
-                  bbn.fn.log(n,( v.data.name === n.data.value ), v.data.name ,n.data.value )
+                  //bbn.fn.log(n,( v.data.name === n.data.value ), v.data.name ,n.data.value )
                   if ( v.data.name === n.data.value ){
-                    bbn.fn.log(v.source)
+                    //bbn.fn.log(v.source)
                     v.reload();
                   }  
                 });

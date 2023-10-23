@@ -802,7 +802,7 @@ const cpDef = {
     onResize(force) {
       let res = bbn.cp.mixins.resizer.methods.onResize.apply(this);
       if (this.isVisible && this.$el && (res || force)) {
-        bbn.fn.log("NORMAL RESIZE", this.lastKnownCtHeight, this.lastKnownCtWidth);
+        //bbn.fn.log("NORMAL RESIZE", this.lastKnownCtHeight, this.lastKnownCtWidth);
         
         //return this.realResize();
       }
@@ -1532,7 +1532,7 @@ const cpDef = {
       //bbn.fn.log("CHANGING VISIBle")
     },
     isVisible(v) {
-      bbn.fn.log("CHANGING VISIBILITY")
+      //bbn.fn.log("CHANGING VISIBILITY")
       if (v) {
         if (!this.ready) {
           this.init();

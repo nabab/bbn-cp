@@ -221,7 +221,7 @@ const cpDef = {
         };
       }
 
-      bbn.fn.log(cp, this.source);
+      bbn.fn.log("MINISEARCH", cp, this.source);
       return cp;
     },
     currentIcon(){

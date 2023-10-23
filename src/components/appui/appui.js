@@ -563,7 +563,7 @@ const cpDef = {
             }
             if (message.data && message.data.disconnected) {
               //document.location.reload();
-              bbn.fn.log('DISCONNECTED', message.data);
+              bbn.fn.log("DISCONNECTED", message.data);
             }
             else if (message.data && message.data.data) {
 
@@ -582,11 +582,11 @@ const cpDef = {
             this.$emit('swlog', message.data);
             break;
           case 'messageFromChannel':
-            bbn.fn.log('messageFromChannel', message);
+            bbn.fn.log("messageFromChannel", message);
             this.$emit(message.channel, message.type, message.data);
             break;
           case 'notificationClick':
-            bbn.fn.log('notificationClick', message.data);
+            bbn.fn.log("notificationClick", message.data);
             this.browserNotificationClick(message.data);
         }
       }

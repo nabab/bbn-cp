@@ -163,7 +163,7 @@ const cpDef = {
      */
     toggle() {
       if (!this.isDisabled && !this.readonly) {
-        bbn.fn.log("TOGGLE");
+        //bbn.fn.log("TOGGLE");
         let emitVal = !this.state ? this.value : this.novalue;
         this.$emit('input', emitVal);
         this.$emit('change', emitVal, this);
@@ -181,7 +181,7 @@ const cpDef = {
       else {
         this.$emit('beforechange', ev, this.state);
         if (!ev.defaultPrevented) {
-          bbn.fn.log("ONCLICK");
+          //bbn.fn.log("ONCLICK");
           this.click(ev);
         }
       }
@@ -196,7 +196,7 @@ const cpDef = {
         ev.preventDefault()
       }
       else {
-        bbn.fn.log("KEYDOWN");
+        //bbn.fn.log("KEYDOWN");
         this.keydown(ev);
       }
     }

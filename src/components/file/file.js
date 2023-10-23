@@ -256,7 +256,7 @@ const cpDef = {
                 });
 
                 file.sendTo(this.saveUrl, { xRequestedWith: 'XMLHttpRequest'});
-                bbn.fn.log(file);
+                //bbn.fn.log("FROM FILE", file);
                 this.files.push(file);
               }
             });
