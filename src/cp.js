@@ -1,4 +1,4 @@
-import {bbn, Axios, Dayjs} from "@bbn/bbn/dist/index.js";
+import {bbn, axios, dayjs} from "@bbn/bbn/dist/index.js";
 import addComponent from "./cp/addComponent.js";
 import addPrefix from "./cp/addPrefix.js";
 import analyzeElement from "./cp/analyzeElement.js";
@@ -205,4 +205,4 @@ focused();
 portal();
 resizable();
 
-export {cpObj as default, Dayjs, Axios};
+export {cpObj as default, dayjs, axios};
