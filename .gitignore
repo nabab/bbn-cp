@@ -11,3 +11,4 @@ node_modules/
 [core]
 filemode = false
 *.* text eol=lf
+user-*.sh
