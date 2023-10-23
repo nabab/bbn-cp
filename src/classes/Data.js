@@ -388,7 +388,7 @@ export default class bbnData {
           targetObj.update(false, key);
 
           if (dataObj) {
-            bbn.fn.log(["SET", dataObj, key, diff, newVal, oldValue, target, '------']);
+            bbn.fn.log(["SET", dataObj, key, newVal, oldValue, target, '------']);
             dataObj.update();
           }
 
