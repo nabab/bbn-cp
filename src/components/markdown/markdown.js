@@ -9,6 +9,7 @@
  * @author BBN Solutions
  */
 
+import 'easymde/dist/easymde.min.css';
 import EasyMDE from 'easymde';
 import {marked} from 'marked';
 //Markdown editor use simpleMDe
