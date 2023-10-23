@@ -747,7 +747,6 @@ const cpDef = {
     bbn.fn.defaultStartLoadingFunction = () => {
       if (window.appui?.status) {
         this.$nextTick(() => {
-          bbn.fn.log("UPDATE LOADBAR");
           const loadBar = this.getRef('loading');
           if (bbn.fn.isCp(loadBar)) {
             loadBar.$updateAllComputed();
@@ -764,7 +763,6 @@ const cpDef = {
 
       if (window.appui?.status ){
         this.$nextTick(() => {
-          bbn.fn.log("UPDATE LOADBAR");
           const loadBar = this.getRef('loading');
           if (bbn.fn.isCp(loadBar)) {
             loadBar.$updateAllComputed();

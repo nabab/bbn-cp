@@ -2318,12 +2318,12 @@ const cpDef = {
            * @memberof bbn-tree-node
            */
           isSelected(newVal){
-            bbn.fn.log(["WATCH UNSELECT", newVal]);
+            //bbn.fn.log(["WATCH UNSELECT", newVal]);
             if ( newVal ){
               this.addToSelected();
             }
             else {
-              bbn.fn.log("REMOVING FROM SELECTED - UNSE")
+              //bbn.fn.log("REMOVING FROM SELECTED - UNSE")
               this.removeFromSelected();
             }
           },

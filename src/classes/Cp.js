@@ -1382,9 +1382,6 @@ export default class bbnCp {
     const t2 = (new Date()).getTime();
     this.$numBuild++;
     this.$lastLaunch = t2;
-    if (this.$options.name === 'bbn-table') {
-      bbn.fn.warning("UPDATE COMPONENT " + this.$options.name + ' - ' + this.$cid + ' - ' + this.$id + ' - time: ' + ((t2-t1)/1000) + 'sec. (' + this.$numBuild + ')');
-    }
     if (this.$isCreating) {
       Object.defineProperty(this, '$isCreating', {
         writable: false,

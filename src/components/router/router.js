@@ -4001,7 +4001,7 @@ const cpDef = {
        */
       url(newVal){
         if (this.ready && newVal && (newVal !== this.currentURL)) {
-          bbn.fn.log("URL CHANGED FROM WATCHER TO " + newVal);
+          //bbn.fn.log("URL CHANGED FROM WATCHER TO " + newVal);
           this.route(newVal);
         }
       },
@@ -4080,7 +4080,7 @@ const cpDef = {
             a.current = this.currentURL;
           }
   
-          bbn.fn.warning(bbn._("ADDING %s ON WATCH", a.url));
+          //bbn.fn.warning(bbn._("ADDING %s ON WATCH", a.url));
           this.add(a);
         });
       },

@@ -304,10 +304,8 @@ const cpDef = {
        * @fires reset
        * @fires getRef
        */
-      currentMenu(val){
-        bbn.fn.log("WATCH ON TREE MENU")
+      currentMenu(val) {
         if (val !== null) {
-          bbn.fn.log("RESETTING")
           this.reset();
         }
       }
