@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] = self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] || []).push([["src_components_markdown_markdown_it_lang"],{
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_markdown_markdown_it_lang"],{
 
 /***/ "./src/components/markdown/markdown.it.lang":
 /*!**************************************************!*\
@@ -15,7 +15,7 @@
   \**************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Bold\":\"Grassetto\",\"Italic\":\"Italico\",\"Heading\":\"Intestazione\",\"Quote\":\"Citazione\",\"Generic List\":\"Elenco Generico\",\"Numbered List\":\"Elenco Numerato\",\"Create Link\":\"Crea Collegamento\",\"Insert Image\":\"Inserisci Immagine\",\"Toggle Preview\":\"Attiva/Disattiva Anteprima\",\"Toggle Side by Side\":\"Attiva/Disattiva Fianco a Fianco\",\"Toggle Fullscreen\":\"Attiva/Disattiva Schermo Intero\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs.bbnHTML.bbnAnon.bbnButtonHTML.bbnCellHTML.bbnElementHTML.bbnFormHTML.bbnListHTML.bbnRowHTML.bbnAnonCp.bbnData.bbnCp/./src/components/markdown/markdown.it.lang?");
+eval("module.exports = JSON.parse('{\"Bold\":\"Grassetto\",\"Italic\":\"Italico\",\"Heading\":\"Intestazione\",\"Quote\":\"Citazione\",\"Generic List\":\"Elenco Generico\",\"Numbered List\":\"Elenco Numerato\",\"Create Link\":\"Crea Collegamento\",\"Insert Image\":\"Inserisci Immagine\",\"Toggle Preview\":\"Attiva/Disattiva Anteprima\",\"Toggle Side by Side\":\"Attiva/Disattiva Fianco a Fianco\",\"Toggle Fullscreen\":\"Attiva/Disattiva Schermo Intero\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/markdown/markdown.it.lang?");
 
 /***/ })
 

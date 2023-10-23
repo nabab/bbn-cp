@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] = self["webpackChunkbbn_axios_dayjs_bbnHTML_bbnAnon_bbnButtonHTML_bbnCellHTML_bbnElementHTML_bbnFormHTML_bbnListHTML_bbnRowHTML_bbnAnonCp_bbnData_bbnCp"] || []).push([["src_components_rte_rte_fr_lang"],{
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_rte_rte_fr_lang"],{
 
 /***/ "./src/components/rte/rte.fr.lang":
 /*!****************************************!*\
@@ -15,7 +15,7 @@
   \****************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Style\":\"Style\",\"Normal\":\"Normal\",\"Paragraph\":\"Paragraphe\",\"Heading 1\":\"Titre 1\",\"Heading 2\":\"Titre 2\",\"Heading 3\":\"Titre 3\",\"Heading 4\":\"Titre 4\",\"Heading 5\":\"Titre 5\",\"Heading 6\":\"Titre 6\",\"Preformatted\":\"Préformaté\",\"Quote\":\"Citation\",\"Font size\":\"Taille de police\",\"Increase font size\":\"Augmenter la taille de police\",\"Decrease font size\":\"Diminuer la taille de police\",\"Bold\":\"Gras\",\"Italic\":\"Italique\",\"Underline\":\"Souligner\",\"Strike-through\":\"barrer\",\"Font Color\":\"Couleur de la police\",\"Font Background Color\":\"Couleur de fond de la police\",\"Ordered List\":\"Liste ordonnée\",\"Unordered List\":\"Liste non ordonnée\",\"Code\":\"Code\",\"Horizontal Line\":\"Ligne horizontale\",\"Link\":\"Lien\",\"Enter the link URL\":\"Entrez le lien de l\\'URL\",\"Image\":\"Image\",\"Image from URL\":\"Image à partir de l\\'URL\",\"Enter the image URL\":\"Entrez l\\'URL de l\\'image\",\"Close\":\"Fermer\",\"Increase indent\":\"Augmenter l\\'indentation\",\"Decrease indent\":\"Réduire l\\'indentation\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs.bbnHTML.bbnAnon.bbnButtonHTML.bbnCellHTML.bbnElementHTML.bbnFormHTML.bbnListHTML.bbnRowHTML.bbnAnonCp.bbnData.bbnCp/./src/components/rte/rte.fr.lang?");
+eval("module.exports = JSON.parse('{\"Style\":\"Style\",\"Normal\":\"Normal\",\"Paragraph\":\"Paragraphe\",\"Heading 1\":\"Titre 1\",\"Heading 2\":\"Titre 2\",\"Heading 3\":\"Titre 3\",\"Heading 4\":\"Titre 4\",\"Heading 5\":\"Titre 5\",\"Heading 6\":\"Titre 6\",\"Preformatted\":\"Préformaté\",\"Quote\":\"Citation\",\"Font size\":\"Taille de police\",\"Increase font size\":\"Augmenter la taille de police\",\"Decrease font size\":\"Diminuer la taille de police\",\"Bold\":\"Gras\",\"Italic\":\"Italique\",\"Underline\":\"Souligner\",\"Strike-through\":\"barrer\",\"Font Color\":\"Couleur de la police\",\"Font Background Color\":\"Couleur de fond de la police\",\"Ordered List\":\"Liste ordonnée\",\"Unordered List\":\"Liste non ordonnée\",\"Code\":\"Code\",\"Horizontal Line\":\"Ligne horizontale\",\"Link\":\"Lien\",\"Enter the link URL\":\"Entrez le lien de l\\'URL\",\"Image\":\"Image\",\"Image from URL\":\"Image à partir de l\\'URL\",\"Enter the image URL\":\"Entrez l\\'URL de l\\'image\",\"Close\":\"Fermer\",\"Increase indent\":\"Augmenter l\\'indentation\",\"Decrease indent\":\"Réduire l\\'indentation\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/rte/rte.fr.lang?");
 
 /***/ })
 
