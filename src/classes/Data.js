@@ -1,3 +1,5 @@
+import { bbn } from "@bbn/bbn";
+
 /**
  * Takes care of the data reactivity for non primitive values.
  */
@@ -680,6 +682,7 @@ export default class bbnData {
         bbn.fn.log(this);
         throw new Error(bbn._("Impossible to find the data object in the values of the component %s", dataObj.root.$options.name));
       }
+      bbn.fn.log(["TICK ON UNSET", this]);
       this.root.$tick();
     }
     if (this.parent) {
@@ -847,7 +850,7 @@ export default class bbnData {
             name = bits.join('.');
           }
 
-          //bbn.fn.log(["TICK", it.component]);
+          bbn.fn.log(["TICK on UPDATE", this]);
           it.component.$tick()
         }
       });

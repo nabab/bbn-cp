@@ -1,3 +1,4 @@
+import { bbn } from "@bbn/bbn";
 import "../cp.js";
 export default class bbnCp {
 
@@ -1382,7 +1383,7 @@ export default class bbnCp {
     this.$numBuild++;
     this.$lastLaunch = t2;
     if (this.$options.name === 'bbn-table') {
-      bbn.fn.warning("UPDATE COMPONENT " + this.$options.name + ' - ' + this.$cid + ' - ' + this.$id + ' - time: ' + ((t2-t1)/1000) + '(' + this.$numBuild + ')');
+      bbn.fn.warning("UPDATE COMPONENT " + this.$options.name + ' - ' + this.$cid + ' - ' + this.$id + ' - time: ' + ((t2-t1)/1000) + 'sec. (' + this.$numBuild + ')');
     }
     if (this.$isCreating) {
       Object.defineProperty(this, '$isCreating', {
@@ -1987,7 +1988,7 @@ export default class bbnCp {
     const hash = bbnData.hash(val);
     if (!bbn.fn.isSame(this.$computed[name].hash, hash)) {
       const oldValue = this.$computed[name].val;
-      //bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue]);
+      bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue]);
       this.$computed[name].old = oldValue;
       this.$computed[name].hash = hash;
       this.$computed[name].num = this.$computed[name].num < this.$numBuild ? this.$numBuild + 1 : this.$computed[name].num + 1;
@@ -2046,6 +2047,7 @@ export default class bbnCp {
 
 
   $_setInternalResult(_r, _name, _res, _hash) {
+    bbn.fn.log(["SET INTERNAL RESULT", _name, _res, _hash])
     if (!_r[_name]) {
       _r[_name] = bbn.fn.createObject();
     }
@@ -2184,7 +2186,7 @@ export default class bbnCp {
       row = {cp: this, fns: []};
       bbn.cp.queue.push(row);
     }
-    //bbn.fn.warning("TICK");
+    //bbn.fn.log("TICK");
     //console.trace();
     //bbn.fn.log(this, '--------------------')
 

@@ -4,6 +4,7 @@ import {bbn} from "@bbn/bbn/dist/index.js";
 * Init anon component
 */
 export default async function createApp(ele, obj) {
+  await import('@bbn/bbn-css/dist/css/bbn-css-' + (bbn.env.theme || 'default') + '.css');
   bbn.fn.log("CP?", bbn.cp);
   bbn.cp.startTick();
   bbn.cp.addPrefix('bbn-', async components => {
