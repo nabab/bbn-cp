@@ -40,8 +40,8 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@bbn/bbn": "^1.0.149",
-    "@bbn/bbn-css": "^1.0.8",
+    "@bbn/bbn": "^1.0.0",
+    "@bbn/bbn-css": "^1.0.0",
     "@codemirror/autocomplete": "^6.10.2",
     "@codemirror/collab": "^6.1.1",
     "@codemirror/commands": "^6.3.0",
