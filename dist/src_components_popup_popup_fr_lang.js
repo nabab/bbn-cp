@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_popup_popup_fr_lang"],{
+(self["webpackChunkbbn_axios_dayjs"] = self["webpackChunkbbn_axios_dayjs"] || []).push([["src_components_popup_popup_fr_lang"],{
 
 /***/ "./src/components/popup/popup.fr.lang":
 /*!********************************************!*\
@@ -15,7 +15,7 @@
   \********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Untitled\":\"Sans titre\",\"There was a problem\":\"Un problème est survenu\",\"Confirmation request\":\"Demande de confirmation\",\"Are you sure?\":\"Êtes-vous sûr?\",\"OK\":\"OK\",\"Yes\":\"Oui\",\"No\":\"Non\",\"Loading\":\"Chargement\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/popup/popup.fr.lang?");
+eval("module.exports = JSON.parse('{\"Untitled\":\"Sans titre\",\"There was a problem\":\"Un problème est survenu\",\"Confirmation request\":\"Demande de confirmation\",\"Are you sure?\":\"Êtes-vous sûr?\",\"OK\":\"OK\",\"Yes\":\"Oui\",\"No\":\"Non\",\"Loading\":\"Chargement\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs/./src/components/popup/popup.fr.lang?");
 
 /***/ })
 

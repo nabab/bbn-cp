@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_breadcrumb_breadcrumb_it_lang"],{
+(self["webpackChunkbbn_axios_dayjs"] = self["webpackChunkbbn_axios_dayjs"] || []).push([["src_components_breadcrumb_breadcrumb_it_lang"],{
 
 /***/ "./src/components/breadcrumb/breadcrumb.it.lang":
 /*!******************************************************!*\
@@ -15,7 +15,7 @@
   \******************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Untitled\":\"Senza titolo\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/breadcrumb/breadcrumb.it.lang?");
+eval("module.exports = JSON.parse('{\"Untitled\":\"Senza titolo\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs/./src/components/breadcrumb/breadcrumb.it.lang?");
 
 /***/ })
 

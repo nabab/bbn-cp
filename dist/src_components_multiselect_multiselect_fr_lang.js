@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_multiselect_multiselect_fr_lang"],{
+(self["webpackChunkbbn_axios_dayjs"] = self["webpackChunkbbn_axios_dayjs"] || []).push([["src_components_multiselect_multiselect_fr_lang"],{
 
 /***/ "./src/components/multiselect/multiselect.fr.lang":
 /*!********************************************************!*\
@@ -15,7 +15,7 @@
   \********************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Filter tree\":\"Arborescence des filtres\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/multiselect/multiselect.fr.lang?");
+eval("module.exports = JSON.parse('{\"Filter tree\":\"Arborescence des filtres\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs/./src/components/multiselect/multiselect.fr.lang?");
 
 /***/ })
 

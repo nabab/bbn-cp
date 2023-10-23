@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_slideshow_slideshow_fr_lang"],{
+(self["webpackChunkbbn_axios_dayjs"] = self["webpackChunkbbn_axios_dayjs"] || []).push([["src_components_slideshow_slideshow_fr_lang"],{
 
 /***/ "./src/components/slideshow/slideshow.fr.lang":
 /*!****************************************************!*\
@@ -15,7 +15,7 @@
   \****************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Summary\":\"Sommaire\",\"Untitled\":\"Sans titre\",\"Previous\":\"Précédent\",\"Next\":\"Suivant\",\"Don\\'t show it again\":\"Ne plus montrer ceci\",\"Loading\":\"Chargement\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/slideshow/slideshow.fr.lang?");
+eval("module.exports = JSON.parse('{\"Summary\":\"Sommaire\",\"Untitled\":\"Sans titre\",\"Previous\":\"Précédent\",\"Next\":\"Suivant\",\"Don\\'t show it again\":\"Ne plus montrer ceci\",\"Loading\":\"Chargement\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs/./src/components/slideshow/slideshow.fr.lang?");
 
 /***/ })
 

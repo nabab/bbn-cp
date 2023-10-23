@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_grid-configuration_grid-configuration_fr_lang"],{
+(self["webpackChunkbbn_axios_dayjs"] = self["webpackChunkbbn_axios_dayjs"] || []).push([["src_components_grid-configuration_grid-configuration_fr_lang"],{
 
 /***/ "./src/components/grid-configuration/grid-configuration.fr.lang":
 /*!**********************************************************************!*\
@@ -15,7 +15,7 @@
   \**********************************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Open selector\":\"Ouvrir le sélecteur\",\"Row\":\"Ligne\",\"Col\":\"Colonne\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/grid-configuration/grid-configuration.fr.lang?");
+eval("module.exports = JSON.parse('{\"Open selector\":\"Ouvrir le sélecteur\",\"Row\":\"Ligne\",\"Col\":\"Colonne\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs/./src/components/grid-configuration/grid-configuration.fr.lang?");
 
 /***/ })
 

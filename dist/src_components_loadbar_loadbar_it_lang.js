@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_loadbar_loadbar_it_lang"],{
+(self["webpackChunkbbn_axios_dayjs"] = self["webpackChunkbbn_axios_dayjs"] || []).push([["src_components_loadbar_loadbar_it_lang"],{
 
 /***/ "./src/components/loadbar/loadbar.it.lang":
 /*!************************************************!*\
@@ -15,7 +15,7 @@
   \************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Loading\":\"Caricamento\",\"Requests\\' history\":\"Cronologia richieste\",\"Are you sure you want to abort this request?\":\"Sei sicuro di voler abortire questa richiesta?\",\"Copy URL\":\"Copia URL\",\"Copied\":\"Copiato\",\"abort\":\"Abortisci\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/loadbar/loadbar.it.lang?");
+eval("module.exports = JSON.parse('{\"Loading\":\"Caricamento\",\"Requests\\' history\":\"Cronologia richieste\",\"Are you sure you want to abort this request?\":\"Sei sicuro di voler abortire questa richiesta?\",\"Copy URL\":\"Copia URL\",\"Copied\":\"Copiato\",\"abort\":\"Abortisci\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs/./src/components/loadbar/loadbar.it.lang?");
 
 /***/ })
 

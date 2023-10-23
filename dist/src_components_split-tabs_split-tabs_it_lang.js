@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_split-tabs_split-tabs_it_lang"],{
+(self["webpackChunkbbn_axios_dayjs"] = self["webpackChunkbbn_axios_dayjs"] || []).push([["src_components_split-tabs_split-tabs_it_lang"],{
 
 /***/ "./src/components/split-tabs/split-tabs.it.lang":
 /*!******************************************************!*\
@@ -15,7 +15,7 @@
   \******************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Untitled\":\"Sanza titolo\",\"Loading\":\"Caricamento\",\"Impossible to find the container for URL\":\"Impossibile trovare il contenitore per l\\'URL\",\"Untitled site\":\"Sito senza titolo\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/split-tabs/split-tabs.it.lang?");
+eval("module.exports = JSON.parse('{\"Untitled\":\"Sanza titolo\",\"Loading\":\"Caricamento\",\"Impossible to find the container for URL\":\"Impossibile trovare il contenitore per l\\'URL\",\"Untitled site\":\"Sito senza titolo\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs/./src/components/split-tabs/split-tabs.it.lang?");
 
 /***/ })
 

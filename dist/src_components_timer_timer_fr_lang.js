@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_timer_timer_fr_lang"],{
+(self["webpackChunkbbn_axios_dayjs"] = self["webpackChunkbbn_axios_dayjs"] || []).push([["src_components_timer_timer_fr_lang"],{
 
 /***/ "./src/components/timer/timer.fr.lang":
 /*!********************************************!*\
@@ -15,7 +15,7 @@
   \********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"years\":\"ans\",\"year\":\"an\",\"months\":\"mois\",\"month\":\"mois\",\"days\":\"jours\",\"day\":\"jour\",\"hours\":\"heures\",\"hour\":\"heure\",\"minutes\":\"minutes\",\"minute\":\"minute\",\"seconds\":\"secondes\",\"second\":\"seconde\",\"milliseconds\":\"millisecondes\",\"millisecond\":\"milliseconde\",\"The precision is incorrect\":\"La précision est incorrecte\",\"The scale is incorrect\":\"L\\'échelle est incorrecte\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/timer/timer.fr.lang?");
+eval("module.exports = JSON.parse('{\"years\":\"ans\",\"year\":\"an\",\"months\":\"mois\",\"month\":\"mois\",\"days\":\"jours\",\"day\":\"jour\",\"hours\":\"heures\",\"hour\":\"heure\",\"minutes\":\"minutes\",\"minute\":\"minute\",\"seconds\":\"secondes\",\"second\":\"seconde\",\"milliseconds\":\"millisecondes\",\"millisecond\":\"milliseconde\",\"The precision is incorrect\":\"La précision est incorrecte\",\"The scale is incorrect\":\"L\\'échelle est incorrecte\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs/./src/components/timer/timer.fr.lang?");
 
 /***/ })
 

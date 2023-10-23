@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_range_range_fr_lang"],{
+(self["webpackChunkbbn_axios_dayjs"] = self["webpackChunkbbn_axios_dayjs"] || []).push([["src_components_range_range_fr_lang"],{
 
 /***/ "./src/components/range/range.fr.lang":
 /*!********************************************!*\
@@ -15,7 +15,7 @@
   \********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Reset\":\"Réinitialiser\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/range/range.fr.lang?");
+eval("module.exports = JSON.parse('{\"Reset\":\"Réinitialiser\"}');\n\n//# sourceURL=webpack://bbn.axios.dayjs/./src/components/range/range.fr.lang?");
 
 /***/ })
 
