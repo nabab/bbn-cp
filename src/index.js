@@ -14,8 +14,6 @@ import "./cp.js";
 
 customElements.define('bbn-anon', bbnAnon);
 
-const woo = {};
-
 export {
   axios,
   dayjs,

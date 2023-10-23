@@ -37,22 +37,24 @@ export default {
             return `${chunkData.chunk.name}.js`;
         },
         library: {
-            name: [
-                'bbn',
-                'axios',
-                'dayjs',
-                'bbnHTML',
-                'bbnAnon',
-                'bbnButtonHTML',
-                'bbnCellHTML',
-                'bbnElementHTML',
-                'bbnFormHTML',
-                'bbnListHTML',
-                'bbnRowHTML',
-                'bbnAnonCp',
-                'bbnData',
-                'bbnCp'
-            ],
+            name: {
+                root: [
+                    'bbn',
+                    'axios',
+                    'dayjs',
+                    'bbnHTML',
+                    'bbnAnon',
+                    'bbnButtonHTML',
+                    'bbnCellHTML',
+                    'bbnElementHTML',
+                    'bbnFormHTML',
+                    'bbnListHTML',
+                    'bbnRowHTML',
+                    'bbnAnonCp',
+                    'bbnData',
+                    'bbnCp'
+                ]
+            },
             type: 'global'
         }
     },
