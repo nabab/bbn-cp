@@ -7,8 +7,6 @@
  *
  * @author BBN Solutions
  */
-import basic from '../../cp/mixins/basic.js';
-import events from '../../cp/mixins/events.js';
 const cpDef = {
   tag: 'button',
   /**
@@ -17,8 +15,8 @@ const cpDef = {
    */
   mixins: 
   [
-    basic,
-    events
+    bbn.cp.mixins.basic,
+    bbn.cp.mixins.events
   ],
   props: {
     /**

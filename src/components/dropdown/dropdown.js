@@ -9,15 +9,6 @@
  *
  * @created 10/02/2017.
  */
-import basic from '../../cp/mixins/basic.js';
-import resizer from '../../cp/mixins/resizer.js';
-import input from '../../cp/mixins/input.js';
-import events from '../../cp/mixins/events.js';
-import list from '../../cp/mixins/list.js';
-import keynav from '../../cp/mixins/keynav.js';
-import url from '../../cp/mixins/url.js';
-import dropdown from '../../cp/mixins/dropdown.js';
-import localStorage from '../../cp/mixins/localStorage.js';
 
 const cpDef = {
   /**
@@ -33,15 +24,15 @@ const cpDef = {
     */
   mixins: 
   [
-    basic,
-    events,
-    input,
-    resizer,
-    list,
-    keynav,
-    url,
-    dropdown,
-    localStorage
+    bbn.cp.mixins.basic,
+    bbn.cp.mixins.events,
+    bbn.cp.mixins.input,
+    bbn.cp.mixins.resizer,
+    bbn.cp.mixins.list,
+    bbn.cp.mixins.keynav,
+    bbn.cp.mixins.url,
+    bbn.cp.mixins.dropdown,
+    bbn.cp.mixins.localStorage
   ],
   props: {
     /**

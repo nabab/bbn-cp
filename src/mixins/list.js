@@ -1,4 +1,4 @@
-import bbnCp from '../../classes/Cp.js';
+import bbnCp from '../classes/Cp.js';
 
 const list = {
   props: {

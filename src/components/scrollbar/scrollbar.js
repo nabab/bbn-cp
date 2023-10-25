@@ -9,9 +9,6 @@
  *
  * @created 10/07/2017
  */
-import basic from '../../cp/mixins/basic.js';
-import keepCool from '../../cp/mixins/keepCool.js';
-
 const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
@@ -19,8 +16,8 @@ const cpDef = {
    */
   mixins: 
   [
-    basic, 
-    keepCool
+    bbn.cp.mixins.basic, 
+    bbn.cp.mixins.keepCool
   ],
   props: {
     /**

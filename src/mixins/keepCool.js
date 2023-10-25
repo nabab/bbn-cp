@@ -1,4 +1,4 @@
-import bbnData from '../../classes/Data.js';
+import bbnData from '../classes/Data.js';
 
 const keepCool =  {
   data(){
