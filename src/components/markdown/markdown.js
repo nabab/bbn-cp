@@ -22,6 +22,7 @@ const cpDef = {
   mixins: 
   [
     bbn.cp.mixins.basic,
+    bbn.cp.mixins.input,
     bbn.cp.mixins.events
   ],
   statics() {
