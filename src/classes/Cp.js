@@ -1126,9 +1126,10 @@ export default class bbnCp {
    * Creates an element in the given target
    * @param {HTMLElement} d 
    * @param {HTMLElement} target 
+   * @param {HTMLElement} after 
    * @returns 
    */
-  $insertElement(ele, target, before, oldEle) {
+  $insertElement(ele, target, after, oldEle) {
     bbn.fn.checkType(target, HTMLElement, "The $insert function should have an HTMLElement as target");
     const d = ele.bbnSchema;
     //bbn.fn.checkType(ele, HTMLElement);
@@ -1232,8 +1233,8 @@ export default class bbnCp {
         }
       }
       else {
-        if (before) {
-          target.insertBefore(ele, before);
+        if (after) {
+          after.after(ele);
         }
         else {
           target.appendChild(ele);

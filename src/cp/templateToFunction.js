@@ -109,6 +109,7 @@ const treatLoop = (cp, node, hashName) => {
   const isArray = 'bbnLoopIsArray_' + md5;
   const varName = 'bbnLoopName_' + md5;
   const listName = 'bbnLoopList_' + md5;
+  const prevHash = 'bbnLoopPrev_' + md5;
   const parentName = 'bbnLoopParent_' + md5;
   const indexName = node.loop.index || ('bbnLoopIndex_' + md5);
   // Starting the loop
@@ -117,17 +118,19 @@ const treatLoop = (cp, node, hashName) => {
   x(c, sp, `let ${isNumber} = bbn.fn.isNumber(${varName});`);
   x(c, sp, `let ${parentName} = _parents.at(-1);`);
   x(c, sp, `let ${listName} = [];`);
+  x(c, sp, `let ${hash} = false;`);
   x(c, sp, `let ${isArray} = bbn.fn.isArray(${varName});`);
   x(c, sp, `if (${isNumber}) {`);
   x(c, sp, `  ${varName} = Object.keys((new Array(${varName})).fill(0)).map(a=>parseInt(a));`);
   x(c, sp, `  //bbn.fn.log("LOOP VALUE", ${varName});`);
   x(c, sp, `}`);
+  x(c, sp, `oldEle = false;`);
   x(c, sp, `for (let ${indexName} in ${varName}) {`);
   x(c, sp, `  if (${isArray}) {`);
   x(c, sp, `    ${indexName} = parseInt(${indexName});`);
   x(c, sp, `  }`);
   x(c, sp, `  let ${node.loop.item} = ${isNumber} ? ${indexName} : ${varName}[${indexName}];`);
-  x(c, sp, `  const ${hash} = (${hashName} || '') + '${node.loop.hash}-${indexName}-' + (${node.attr?.key?.exp ? node.attr.key.exp : indexName});`);
+  x(c, sp, `  ${hash} = (${hashName} || '') + '${node.loop.hash}-${indexName}-' + (${node.attr?.key?.exp ? node.attr.key.exp : indexName});`);
   x(c, sp, `  ${listName}.push(${hash});`);
   x(c, sp, `  _sIr('${node.loop.item}', ${node.loop.item}, ${hash});`);
   x(c, sp, `  //bbn.fn.log(${node.loop.item});`);
@@ -315,9 +318,9 @@ const treatElement = function(cp, node, hashName) {
         }
       }
     }
-    x(c, sp, `  _eles['${node.id}'] = await _t.$createElement(_tmp, _parents.at(-1));`);
+    x(c, sp, `  _eles['${node.id}'] = await _t.$createElement(_tmp, _parents.at(-1), _eles['${node.id}']);`);
     x(c, sp, `  if (_parents.at(-1) === _t.$el) {`);
-    x(c, sp, `    $_final.push({ele: _eles['${node.id}'], position: $_num});`);
+    x(c, sp, `    $_final.push({ele: _eles['${node.id}'], position: $_num - 1});`);
     x(c, sp, `  }`);
     x(c, sp, `}`);
     x(c, sp, `else {`);
@@ -538,7 +541,7 @@ const treatSlot = function(cp, node, hashName) {
     // Else if only the element is not mounted (otherwise it's already there)
     x(c, sp, `    else if (!a.parentNode) {`);
     x(c, sp, `      if (_parents.at(-1) === _t.$el) {`);
-    x(c, sp, `        $_final.push({ele: a, position: $_num});`);
+    x(c, sp, `        $_final.push({ele: a, position: $_num - 1});`);
     x(c, sp, `      }`);
     x(c, sp, `      else {`);
     x(c, sp, `        let idx = bbn.fn.search(_parents.at(-1).childNodes, search);`);
@@ -577,7 +580,7 @@ const treatText = function(node, hashName) {
     x(c, sp, `      loopHash: ${hashName},`);
     x(c, sp, `    }, _parents.at(-1));`);
     x(c, sp, `    if (_parents.at(-1) === _t.$el) {`);
-    x(c, sp, `      $_final.push({ele: _eles['${node.id}'], position: $_num});`);
+    x(c, sp, `      $_final.push({ele: _eles['${node.id}'], position: $_num - 1});`);
     x(c, sp, `    }`);
     x(c, sp, `  }`);
     x(c, sp, `}`);
