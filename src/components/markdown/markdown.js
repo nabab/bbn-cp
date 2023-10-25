@@ -190,7 +190,6 @@ const cpDef = {
   },
   data() {
     return {
-      isDisabled: this.disabled || false,
       defaultCfg: {
         widgetName: "EasyMDE",
         sideBySideFullscreen: false,
@@ -214,6 +213,9 @@ const cpDef = {
     };
   },
   computed: {
+    isDisabled() {
+      return this.disabled || false;
+    },
     mdeCfg() {
       const cfg = bbn.fn.extend({}, this.defaultCfg, this.cfg);
       return cfg;
