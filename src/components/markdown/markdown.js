@@ -137,7 +137,18 @@ const cpDef = {
         title: bbn._("Markdown Guide")
       },
     ];
-    return {toolbar};
+    return {
+      toolbar,
+      insertTexts: {
+        horizontalRule: ["", "\n\n-----\n\n"],
+        image: ["![](https://", ")"],
+        link: ["[", "](https://)"],
+        table: ["", "\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text      | Text     |\n\n"],
+      },
+      shortCuts: {
+        drawTable: "Cmd-Alt-T"
+      }
+    };
   },
   props: {
     /**
@@ -159,35 +170,35 @@ const cpDef = {
       type: Array
     }
   },
-  data(){
+  data() {
     return {
-      widgetName: "EasyMDE",
-      sideBySideFullscreen: false,
-      nativeSpellcheck: this.cfg.nativeSpellCheck || false,
-      spellChecker: this.cfg.spellChecker || false,
-      indentWithTabs: this.cfg.indentWithTabs === undefined ? true : this.cfg.indentWithTabs,
-      initialValue: this.value,
-      insertTexts: {
-        horizontalRule: ["", "\n\n-----\n\n"],
-        image: ["![](https://", ")"],
-        link: ["[", "](https://)"],
-        table: ["", "\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text      | Text     |\n\n"],
-      },
-      autoDownloadFontAwesome: false,
-      renderingConfig: {
-        singleLineBreaks: true,
-        codeSyntaxHighlighting: true,
-      },
-      minHeight: "100px",
-      status: false,
-      tabSize: this.cfg.tabSize || 2,
-      toolbarTips: true,
-      shortcuts: {
-        drawTable: "Cmd-Alt-T"
+      defaultCfg: {
+        widgetName: "EasyMDE",
+        sideBySideFullscreen: false,
+        nativeSpellcheck: this.cfg.nativeSpellCheck || false,
+        spellChecker: this.cfg.spellChecker || false,
+        indentWithTabs: this.cfg.indentWithTabs === undefined ? true : this.cfg.indentWithTabs,
+        initialValue: this.value,
+        autoDownloadFontAwesome: false,
+        renderingConfig: {
+          singleLineBreaks: true,
+          codeSyntaxHighlighting: true,
+        },
+        status: false,
+        tabSize: this.cfg.tabSize || 2,
+        toolbarTips: true,
+        minHeight: "100px",
+        insertTexts: this.constructor.insertTexts,
+        shortcuts: this.constructor.shortcuts,
+        toolbar: this.constructor.toolbar,
       }
     };
   },
   computed: {
+    mdeCfg() {
+      const cfg = bbn.fn.extend({}, this.defaultCfg, this.cfg);
+      return cfg;
+    },
     compiled() {
       return this.value ? window.marked.parse(this.value) : '';
     },
@@ -236,10 +247,10 @@ const cpDef = {
         return true
       }
     });*/
-    this.widget = new window.EasyMDE(bbn.fn.extend({
-      element: this.$refs.element,
-      value: this.value,
-    }, this.$data, toolbar
+    this.widget = new EasyMDE(bbn.fn.extend({
+        element: this.$refs.element,
+        value: this.value,
+      }, this.mdeCfg
     ));
     this.widget.codemirror.on("change", () => {
       this.emitInput(this.widget.value());
