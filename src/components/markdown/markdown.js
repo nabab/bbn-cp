@@ -157,6 +157,9 @@ const cpDef = {
     disabled: {
       type: [String, Boolean],
     },
+    readonly: {
+      type: [String, Boolean],
+    },
     /**
      * The object of configuration
      * @prop {Object} cfg
