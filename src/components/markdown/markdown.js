@@ -181,6 +181,7 @@ const cpDef = {
   },
   data() {
     return {
+      isDisabled: this.disabled || false,
       defaultCfg: {
         widgetName: "EasyMDE",
         sideBySideFullscreen: false,
