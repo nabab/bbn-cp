@@ -151,24 +151,6 @@ const cpDef = {
     };
   },
   props: {
-    required: {
-      type: String,
-      default: ''
-    },
-    placeholder: {
-      type: String,
-      default: ''
-    },
-    value: {
-      type: String,
-      default: ''
-    },
-    disabled: {
-      type: [String, Boolean],
-    },
-    readonly: {
-      type: [String, Boolean],
-    },
     /**
      * The object of configuration
      * @prop {Object} cfg
@@ -213,9 +195,6 @@ const cpDef = {
     };
   },
   computed: {
-    isDisabled() {
-      return this.disabled || false;
-    },
     mdeCfg() {
       const cfg = bbn.fn.extend({}, this.defaultCfg, this.cfg);
       return cfg;

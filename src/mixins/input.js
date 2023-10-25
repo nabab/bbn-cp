@@ -463,6 +463,7 @@ const input = {
       if (newVal !== this.currentValue) {
         this.currentValue = newVal;
       }
+      /*
       if ( this.widget && (this.widget.value !== undefined) ){
         if (bbn.fn.isFunction(this.widget.value) ){
           if ( this.widget.value() !== newVal ){
@@ -475,6 +476,7 @@ const input = {
           }
         }
       }
+      */
       if ( !!newVal !== this.hasValue ){
         this.hasValue = !!newVal;
       }
