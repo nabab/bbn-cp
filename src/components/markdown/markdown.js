@@ -150,6 +150,10 @@ const cpDef = {
     };
   },
   props: {
+    placeholder: {
+      type: String,
+      default: ''
+    },
     value: {
       type: String,
       default: ''
