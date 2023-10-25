@@ -252,9 +252,11 @@ const cpDef = {
         value: this.value,
       }, this.mdeCfg
     ));
+    /*
     this.widget.codemirror.on("change", () => {
       this.emitInput(this.widget.value());
     });
+    */
     if ( this.isDisabled ){
       this.disableWidget(true);
     }
