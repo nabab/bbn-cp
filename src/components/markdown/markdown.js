@@ -21,8 +21,7 @@ const cpDef = {
    */
   mixins: 
   [
-    bbn.cp.mixins.basic, 
-    bbn.cp.mixins.input, 
+    bbn.cp.mixins.basic,
     bbn.cp.mixins.events
   ],
   statics() {
@@ -151,6 +150,13 @@ const cpDef = {
     };
   },
   props: {
+    value: {
+      type: String,
+      default: ''
+    },
+    disabled: {
+      type: [String, Boolean],
+    },
     /**
      * The object of configuration
      * @prop {Object} cfg
