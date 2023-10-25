@@ -66,11 +66,11 @@ import serviceWorker from "./cp/mixins/serviceWorker.js";
 import toggle from "./cp/mixins/toggle.js";
 import url from "./cp/mixins/url.js";
 import view from "./cp/mixins/view.js";
-import draggable from "./cp/directives/draggable.js";
-import droppable from "./cp/directives/droppable.js";
-import focused from "./cp/directives/focused.js";
-import portal from "./cp/directives/portal.js";
-import resizable from "./cp/directives/resizable.js";
+import draggable from "./directives/draggable.js";
+import droppable from "./directives/droppable.js";
+import focused from "./directives/focused.js";
+import portal from "./directives/portal.js";
+import resizable from "./directives/resizable.js";
 
 const possibleAttributes = ['is', 'source', 'ref', 'slot', 'id', 'class', 'style', 'key'];
 /** Custom elements polyfill */
