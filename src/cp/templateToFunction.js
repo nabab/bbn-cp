@@ -80,7 +80,7 @@ const treatCondition = (cp, node, arr, hashName) => {
       x(c, sp, `        loopHash: ${hashName},`);
       x(c, sp, `        conditionId: "${cond.conditionId}",`);
       x(c, sp, `        comment: true`);
-      x(c, sp, `      }, _parents.at(-1));`);
+      x(c, sp, `      }, _parents.at(-1), _eles['${cond.id}'], _node.loop);`);
       x(c, sp, `    }`);
     }
 
@@ -109,7 +109,6 @@ const treatLoop = (cp, node, hashName) => {
   const isArray = 'bbnLoopIsArray_' + md5;
   const varName = 'bbnLoopName_' + md5;
   const listName = 'bbnLoopList_' + md5;
-  const prevHash = 'bbnLoopPrev_' + md5;
   const parentName = 'bbnLoopParent_' + md5;
   const indexName = node.loop.index || ('bbnLoopIndex_' + md5);
   // Starting the loop
@@ -318,7 +317,7 @@ const treatElement = function(cp, node, hashName) {
         }
       }
     }
-    x(c, sp, `  _eles['${node.id}'] = await _t.$createElement(_tmp, _parents.at(-1), _eles['${node.id}']);`);
+    x(c, sp, `  _eles['${node.id}'] = await _t.$createElement(_tmp, _parents.at(-1), _eles['${node.id}'], _node.loop);`);
     x(c, sp, `  if (_parents.at(-1) === _t.$el) {`);
     x(c, sp, `    $_final.push({ele: _eles['${node.id}'], position: $_num - 1});`);
     x(c, sp, `  }`);

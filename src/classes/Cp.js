@@ -394,7 +394,7 @@ export default class bbnCp {
    * @param {HTMLElement} target 
    * @returns 
    */
-  async $createElement(node, target, before, loopInfo) {
+  async $createElement(node, target, after, loopInfo) {
     const d = node;
     // Components have an hyphen
     let isComponent = this.$isComponent(d);
@@ -631,7 +631,7 @@ export default class bbnCp {
     }
 
     if (target !== this.$el) {
-      this.$insertElement(ele, target, before, oldEle);
+      this.$insertElement(ele, target, after, oldEle);
     }
     else {
       this.$addToElements(ele);
