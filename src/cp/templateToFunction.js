@@ -80,7 +80,7 @@ const treatCondition = (cp, node, arr, hashName) => {
       x(c, sp, `        loopHash: ${hashName},`);
       x(c, sp, `        conditionId: "${cond.conditionId}",`);
       x(c, sp, `        comment: true`);
-      x(c, sp, `      }, _parents.at(-1), _eles['${cond.id}'], _node.loop);`);
+      x(c, sp, `      }, _parents.at(-1), _eles['${cond.id}'], _t.$currentMap['${node.id}'].loop);`);
       x(c, sp, `    }`);
     }
 
@@ -646,7 +646,6 @@ const nodesToFunction = function(cp, arr, hashName) {
       return;
     }
 
-    x(c, sp, `_node = _t.$currentMap['${node.id}'];`);
     // Launching condition (MUST be before the rest)
     if (node.condition) {
       if ((node.conditionId !== conditionId) && !conditions.includes(node.conditionId)) {
@@ -666,6 +665,7 @@ const nodesToFunction = function(cp, arr, hashName) {
     }
     
     x(c, sp, `oldEle = _t.$retrieveElement("${node.id}", ${hashName});`);
+    x(c, sp, `_node = _t.$currentMap['${node.id}'];`);
     x(c, sp, `_eles['${node.id}'] = oldEle;`);
     x(c, sp, `if (!Object.hasOwn($_go, '${node.id}')) {`);
     x(c, sp, `  $_go['${node.id}'] = !oldEle;`);
