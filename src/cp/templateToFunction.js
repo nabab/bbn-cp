@@ -317,7 +317,7 @@ const treatElement = function(cp, node, hashName) {
         }
       }
     }
-    x(c, sp, `  _eles['${node.id}'] = await _t.$createElement(_tmp, _parents.at(-1), _eles['${node.id}'], _node.loop);`);
+    x(c, sp, `  _eles['${node.id}'] = await _t.$createElement(_tmp, _parents.at(-1), _eles['${node.id}'], _tmp.loop);`);
     x(c, sp, `  if (_parents.at(-1) === _t.$el) {`);
     x(c, sp, `    $_final.push({ele: _eles['${node.id}'], position: $_num - 1});`);
     x(c, sp, `  }`);
@@ -646,6 +646,7 @@ const nodesToFunction = function(cp, arr, hashName) {
       return;
     }
 
+    x(c, sp, `_node = _t.$currentMap['${node.id}'];`);
     // Launching condition (MUST be before the rest)
     if (node.condition) {
       if ((node.conditionId !== conditionId) && !conditions.includes(node.conditionId)) {
@@ -665,7 +666,6 @@ const nodesToFunction = function(cp, arr, hashName) {
     }
     
     x(c, sp, `oldEle = _t.$retrieveElement("${node.id}", ${hashName});`);
-    x(c, sp, `_node = _t.$currentMap['${node.id}'];`);
     x(c, sp, `_eles['${node.id}'] = oldEle;`);
     x(c, sp, `if (!Object.hasOwn($_go, '${node.id}')) {`);
     x(c, sp, `  $_go['${node.id}'] = !oldEle;`);
