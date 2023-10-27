@@ -923,7 +923,7 @@ const nodesToFunction = function(cp, arr, hashName) {
 export default function templateToFunction(cp, tpl, sp = 0) {
   let hashName = '_bbnHash';
   x.msp();
-  //x(`bbn.fn.log(['templateToFunction', _t]); const _r = _t.$currentResult;`);
+  x(`const _r = _t.$currentResult;`);
   x(`let ${hashName} = '';`);
   x(`bbn.fn.iterate(_r, a => {`);
   x(`  bbn.fn.iterate(a, b => {`);
