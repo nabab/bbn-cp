@@ -803,7 +803,7 @@ const cpDef = {
         }
 
         let d = { width: content.offsetWidth, height: content.offsetHeight };
-        bbn.fn.log(["NAT DIM " + JSON.stringify(d)])
+        //bbn.fn.log(["NAT DIM " + JSON.stringify(d)])
         if (!d.width || !d.height) {
           if (sc && (sc.$el.clientWidth === this.$el.clientWidth) && (sc.$el.clientHeight === this.$el.clientHeight)) {
             sc.getNaturalDimensions();
@@ -863,12 +863,10 @@ const cpDef = {
      */
     async initSize() {
       //await this.$forceUpdate();
-      if (this.maxHeight || this.maxWidth) {
-        //throw new Error("BOOOOOO");
-        this.getNaturalDimensions();
-        if (!this.naturalWidth) {
-          return this.waitReady();
-        }
+      //throw new Error("BOOOOOO");
+      this.getNaturalDimensions();
+      if (!this.naturalWidth && !this.disabled) {
+        return this.waitReady();
       }
       //bbn.fn.log(bbn._("Init size from %s with ID %s", this.$options.name, this.$cid));
       this.scrollReady = true;
@@ -983,7 +981,7 @@ const cpDef = {
      * @fires onResize
      */
     waitReady(ev) {
-      if (this.isResizing) {
+      if (this.isResizing || !this.$el.clientWidth || !bbn.fn.isInViewport(this.$el)) {
         return;
       }
 
@@ -1060,7 +1058,6 @@ const cpDef = {
    */
   mounted() {
     this.setObserver();
-    this.ready = true;
     this.waitReady();
     /*
     this.initSize().then(() => {

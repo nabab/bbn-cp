@@ -644,6 +644,7 @@ export default class bbnData {
    * Deletes all references to the data object and its children
    */
   unset(noParent) {
+    //bbn.fn.log("UNSET", this);
     const id = this.id;
     // Unsetting the children
     bbn.fn.each(this.children, subObj => {

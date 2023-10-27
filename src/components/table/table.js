@@ -2682,7 +2682,7 @@ const cpDef = {
        * @method resizeWidth
        * @returns {bbnCp}
        */
-      resizeWidth(){
+      resizeWidth() {
         let currentTot = this.groupCols[0].width + this.groupCols[1].width + this.groupCols[2].width,
             parentWidth = this.$el.offsetParent ? this.$el.offsetParent.getBoundingClientRect().width : this.lastKnownCtWidth,
             diff =  parentWidth - this.borderLeft - this.borderRight - currentTot,
