@@ -45,7 +45,7 @@ export default async function createApp(ele, obj) {
     let tmp;
     try {
       if (bbn.fn.isString(d.data)) {
-        tmp = eval('(() => {return ' + d.data + '})()');
+        tmp = (new Function('return ' + d.data + ';'))();
       }
     }
     catch (e) {

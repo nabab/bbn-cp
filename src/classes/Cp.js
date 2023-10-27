@@ -263,24 +263,24 @@ export default class bbnCp {
         // The function has never been generated for this component
         if (!this.$el.constructor.bbnEval) {
           // Generating
-          const stFn = bbn.cp.templateToFunction(this, this.$el.constructor.bbnTpl);
-          if (!stFn) {
+          const fn = bbn.cp.templateToFunction(this, this.$el.constructor.bbnTpl);
+          if (!fn) {
             throw new Error(bbn._("Impossible to create the template evaluator"));
           }
           // Setting in component's constructor
-          this.$el.constructor.prototype.bbnEval = stFn;
+          this.$el.constructor.prototype.bbnEval = fn;
         }
       }
       // The template is a one-shot, bbnAnon
       else {
         // Generating
-        const stFn = bbn.cp.templateToFunction(this, this.$el.bbnTpl);
-        if (!stFn) {
+        const fn = bbn.cp.templateToFunction(this, this.$el.bbnTpl);
+        if (!fn) {
           throw new Error(bbn._("Impossible to create the template evaluator"));
         }
         // Setting in component's property
         Object.defineProperty(this.$el, 'bbnEval', {
-          value: eval(stFn),
+          value: fn,
           writable: false,
           configurable: false
         });
@@ -394,7 +394,7 @@ export default class bbnCp {
    * @param {HTMLElement} target 
    * @returns 
    */
-  async $createElement(node, target, after, loopInfo) {
+  async $createElement(node, target, before, loopInfo) {
     const d = node;
     // Components have an hyphen
     let isComponent = this.$isComponent(d);
@@ -630,10 +630,7 @@ export default class bbnCp {
       return oldEle;
     }
 
-    if (target !== this.$el) {
-      this.$insertElement(ele, target, after, oldEle);
-    }
-    else {
+    if (target === this.$el) {
       this.$addToElements(ele);
     }
 
@@ -1126,10 +1123,9 @@ export default class bbnCp {
    * Creates an element in the given target
    * @param {HTMLElement} d 
    * @param {HTMLElement} target 
-   * @param {HTMLElement} after 
    * @returns 
    */
-  $insertElement(ele, target, after, oldEle) {
+  $insertElement(ele, target, before, oldEle) {
     bbn.fn.checkType(target, HTMLElement, "The $insert function should have an HTMLElement as target");
     const d = ele.bbnSchema;
     //bbn.fn.checkType(ele, HTMLElement);
@@ -1233,8 +1229,8 @@ export default class bbnCp {
         }
       }
       else {
-        if (after) {
-          after.after(ele);
+        if (before) {
+          target.insertBefore(ele, before);
         }
         else {
           target.appendChild(ele);
