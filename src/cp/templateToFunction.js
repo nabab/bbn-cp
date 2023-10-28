@@ -315,7 +315,7 @@ const treatElement = function(cp, node, hashName) {
     x(`  if (_parents.at(-1) === _t.$el) {`);
     x(`    $_final.push({ele: _eles['${node.id}'], position: $_num});`);
     x(`  }`);
-    x(`  else {`);
+    x(`  else if (!_eles['${node.id}'].parentNode) {`);
     x(`    if (_num[_parents.at(-1).bbnId] < _parents.at(-1).childNodes.length) {`);
     x(`      _t.$insertElement(_eles['${node.id}'], _parents.at(-1), _parents.at(-1).childNodes[_num[_parents.at(-1).bbnId]]);`);
     x(`    }`);
