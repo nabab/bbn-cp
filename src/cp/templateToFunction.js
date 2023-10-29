@@ -9,12 +9,12 @@ const $_prep = st => {
 const writer = function() {
   let text = '';
   let spaces = 0;
-  const x = function(st) {
+const x = function(st) {
       text += ' '.repeat(spaces) + st + '\n';
   };
   x.get = function(clean) {
-    if (clean) {
-      const tmp = text;
+  if (clean) {
+    const tmp = text;
       text = '';
       return tmp;
     }
@@ -30,7 +30,7 @@ const x = new writer();
 const forbidden = ['bbn-forget', 'bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else'];
 
 const treatCondition = (cp, node, arr, hashName) => {
-  let tmp = arr.filter(a => (a.conditionId === node.conditionId));
+    let tmp = arr.filter(a => (a.conditionId === node.conditionId));
   if (!tmp.length || !node.conditionId) {
     bbn.fn.log("FINISHING HERE ",node.conditionId, node.condition);
     return;
@@ -84,7 +84,7 @@ const treatCondition = (cp, node, arr, hashName) => {
       x(`        loopHash: ${hashName},`);
       x(`        conditionId: "${cond.conditionId}",`);
       x(`        comment: true`);
-      x(`      }, _parents.at(-1));`);
+      x(`      }, _parents.at(-1), _num[_parents.at(-1).bbnId], _t.$currentMap['${node.id}'].loop);`);
       x(`    }`);
     }
 
@@ -123,6 +123,7 @@ const treatLoop = (cp, node, hashName) => {
   x(`  ${varName} = Object.keys((new Array(${varName})).fill(0)).map(a=>parseInt(a));`);
   x(`  //bbn.fn.log("LOOP VALUE", ${varName});`);
   x(`}`);
+  x(`oldEle = false;`);
   x(`for (let ${indexName} in ${varName}) {`);
   x(`  if (${isArray}) {`);
   x(`    ${indexName} = parseInt(${indexName});`);
@@ -148,10 +149,10 @@ const treatLoop = (cp, node, hashName) => {
   x(`    _t.$removeDOM(a);`);
   x(`  }`);
   x(`});`);
-};
+  };
 
 const setProperties = function(node, hashName) {
-  x(`_props = bbn.fn.createObject();`);
+    x(`_props = bbn.fn.createObject();`);
   // Will GO if the element is new or modified and not forgotten
   if (bbn.fn.numProperties(node.attr)) {
     if (node.attr['bbn-bind']) {
@@ -245,7 +246,7 @@ const setDirectives = function(node, hashName) {
 */
 
 const treatElement = function(cp, node, hashName) {
-  if (node.tag) {
+    if (node.tag) {
     if (node.model) {
       bbn.fn.iterate(node.model, m => {
         x(`_sIr('${m.hash}', ${m.exp}, ${hashName});`);
@@ -311,17 +312,9 @@ const treatElement = function(cp, node, hashName) {
         }
       }
     }
-    x(`  _eles['${node.id}'] = await _t.$createElement(_tmp, _parents.at(-1));`);
+    x(`  _eles['${node.id}'] = await _t.$createElement(_tmp, _parents.at(-1), _num[_parents.at(-1).bbnId], _tmp.loop);`);
     x(`  if (_parents.at(-1) === _t.$el) {`);
-    x(`    $_final.push({ele: _eles['${node.id}'], position: $_num});`);
-    x(`  }`);
-    x(`  else if (!_eles['${node.id}'].parentNode) {`);
-    x(`    if (_num[_parents.at(-1).bbnId] < _parents.at(-1).childNodes.length) {`);
-    x(`      _t.$insertElement(_eles['${node.id}'], _parents.at(-1), _parents.at(-1).childNodes[_num[_parents.at(-1).bbnId]]);`);
-    x(`    }`);
-    x(`    else {`);
-    x(`      _t.$insertElement(_eles['${node.id}'], _parents.at(-1));`);
-    x(`    }`);
+    x(`    $_final.push({ele: _eles['${node.id}'], position: $_num - 1});`);
     x(`  }`);
     x(`}`);
     x(`else {`);
@@ -517,7 +510,7 @@ const treatElement = function(cp, node, hashName) {
 };
 
 const treatSlot = function(cp, node, hashName) {
-  if (node.tag === 'slot') {
+    if (node.tag === 'slot') {
     let slot = "'default'";
     if (node.attr?.name) {
       slot = node.attr.name.exp ? `${node.attr.name.exp}` : `'${node.attr.name.value}'`;
@@ -542,7 +535,7 @@ const treatSlot = function(cp, node, hashName) {
     // Else if only the element is not mounted (otherwise it's already there)
     x(`    else if (!a.parentNode) {`);
     x(`      if (_parents.at(-1) === _t.$el) {`);
-    x(`        $_final.push({ele: a, position: $_num});`);
+    x(`        $_final.push({ele: a, position: $_num - 1});`);
     x(`      }`);
     x(`      else {`);
     x(`        let idx = bbn.fn.search(_parents.at(-1).childNodes, search);`);
@@ -566,10 +559,10 @@ const treatSlot = function(cp, node, hashName) {
     treatItems(cp, node, hashName);
   }
 
-};
+  };
 
 const treatText = function(node, hashName) {
-  if (node.text) {
+    if (node.text) {
     x(`_sIr('${node.hash}', \`${bbn.fn.escapeTicks(node.text)}\`, ${hashName});`);
     x(`if ($_go['${node.id}'] || (_gIs('${node.hash}', ${hashName}) !== "OK")) {`);
     x(`  if (_eles['${node.id}'] && (_eles['${node.id}'].textContent !== _gIv('${node.hash}', ${hashName}))) {`);
@@ -583,7 +576,7 @@ const treatText = function(node, hashName) {
     x(`      loopHash: ${hashName},`);
     x(`    }, _parents.at(-1));`);
     x(`    if (_parents.at(-1) === _t.$el) {`);
-    x(`      $_final.push({ele: _eles['${node.id}'], position: $_num});`);
+    x(`      $_final.push({ele: _eles['${node.id}'], position: $_num - 1});`);
     x(`    }`);
     x(`  }`);
     x(`}`);
@@ -600,7 +593,7 @@ const treatText = function(node, hashName) {
 };
 
 const treatItems = function(cp, node, hashName) {
-  if (node.items?.length) {
+    if (node.items?.length) {
     x(`if (_eles['${node.id}']) {`);
     x.msp();
     x(`_parents.push(_eles['${node.id}']);`);
@@ -744,13 +737,12 @@ const treatRoot = function(cp, tpl, hashName) {
     return tpl[0].items;
   }
   x(`_t.$updateFromSchema();`);
-  nodesToFunction(cp, tpl, hashName);
   return tpl;
 };
 
 
 const endCondition = function(node) {
-  if (node.condition) {
+    if (node.condition) {
     x.lsp();
     x(`//Ending condition`);
     x(`}`);
@@ -904,6 +896,8 @@ const nodesToFunction = function(cp, arr, hashName) {
       x(`  }`);
       x(`  _num[_parents.at(-1).bbnId]++;`);
       x(`}`);
+
+
     }
 
     endCondition(node);
@@ -923,7 +917,7 @@ const nodesToFunction = function(cp, arr, hashName) {
 export default function templateToFunction(cp, tpl, sp = 0) {
   let hashName = '_bbnHash';
   x.msp();
-  x(`const _r = _t.$currentResult;`);
+    x(`const _r = _t.$currentResult;`);
   x(`let ${hashName} = '';`);
   x(`bbn.fn.iterate(_r, a => {`);
   x(`  bbn.fn.iterate(a, b => {`);
@@ -991,19 +985,14 @@ export default function templateToFunction(cp, tpl, sp = 0) {
   x(`let $_num = 0;`);
   x(`const $_final = [];`);
   x(`_r._num++;`);
-
+  
 
   const template = treatRoot(cp, tpl, hashName);
 
   nodesToFunction(cp, template, hashName);
   //x(`bbn.fn.warning("KKKKK"); bbn.fn.log($_final);`);
   x(`bbn.fn.each($_final, a => {`);
-  x(`  if (_t.$el.childNodes[a.position]) {`);
-  x(`    _t.$insertElement(a.ele, _t.$el, _t.$el.childNodes[a.position]);`);
-  x(`  }`);
-  x(`  else {`);
-  x(`    _t.$insertElement(a.ele, _t.$el);`);
-  x(`  }`);
+  x(`  _t.$insertElement(a.ele, _t.$el, a.position);`);
   x(`})`);
   x.lsp();
   x(`})(${argValues.join(', ')});`);
@@ -1016,7 +1005,7 @@ export default function templateToFunction(cp, tpl, sp = 0) {
   x(`});`);
   x(`return _r;`);
   x.lsp();
-
+    
   const AsyncFunction = async function () {}.constructor;
   return new AsyncFunction('_t', '_d', x.get(true));
 }

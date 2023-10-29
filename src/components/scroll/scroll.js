@@ -1058,6 +1058,7 @@ const cpDef = {
    */
   mounted() {
     this.setObserver();
+    this.ready = true;
     this.waitReady();
     /*
     this.initSize().then(() => {

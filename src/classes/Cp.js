@@ -394,7 +394,7 @@ export default class bbnCp {
    * @param {HTMLElement} target 
    * @returns 
    */
-  async $createElement(node, target, before, loopInfo) {
+  async $createElement(node, target, prevElementIndex, loopInfo) {
     // Components have an hyphen
     let isComponent = !node.comment && this.$isComponent(node);
     /** @constant {Array} todo A list of function to apply once the element will ne created */
@@ -629,14 +629,11 @@ export default class bbnCp {
       return oldEle;
     }
 
-    if (target === this.$el) {
-      this.$addToElements(ele);
+    if (target !== this.$el) {
+      this.$insertElement(ele, target, prevElementIndex, oldEle);
     }
-
-    if (!node.comment && node.directives) {
-      setTimeout(() => {
-        bbn.cp.insertDirectives(node.directives, ele);
-      }, 5);
+    else {
+      this.$addToElements(ele);
     }
 
     return ele;
@@ -1124,9 +1121,10 @@ export default class bbnCp {
    * Creates an element in the given target
    * @param {HTMLElement} d 
    * @param {HTMLElement} target 
+   * @param {HTMLElement} after 
    * @returns 
    */
-  $insertElement(ele, target, before, oldEle) {
+  $insertElement(ele, target, prevElementIndex, oldEle) {
     bbn.fn.checkType(target, HTMLElement, "The $insert function should have an HTMLElement as target");
     const node = ele.bbnSchema;
     //bbn.fn.checkType(ele, HTMLElement);
@@ -1230,8 +1228,8 @@ export default class bbnCp {
         }
       }
       else {
-        if (before) {
-          target.insertBefore(ele, before);
+        if (target.childNodes[prevElementIndex]) {
+          target.childNodes[prevElementIndex].after(ele);
         }
         else {
           target.appendChild(ele);
