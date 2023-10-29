@@ -1,11 +1,3 @@
-const $_prep = st => {
-  if (st.trim().match(/^\{|\[/)) {
-    return '(() => {return ' + st + '})()';
-  }
-
-  return st;
-};
-
 const writer = function() {
   let text = '';
   let spaces = 0;
@@ -25,6 +17,7 @@ const x = function(st) {
   x.lsp = function() {spaces -= 2; return x};
   return x;
 };
+
 const x = new writer();
 
 const forbidden = ['bbn-forget', 'bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else'];
@@ -45,46 +38,46 @@ const treatCondition = (cp, node, arr, hashName) => {
       x(`if (!_isCondTrue) {`);
       x.msp();
     }
-    x(`_isCondTrue = _sIr("${cond.condition.hash}", ${cond.condition.type === 'else' ? 'true' : cond.condition.exp}, ${hashName});`);
+    x(`_isCondTrue = $_sr("${cond.condition.hash}", ${cond.condition.type === 'else' ? 'true' : cond.condition.exp}, ${hashName});`);
     if (j) {
       x.lsp();
       x(`}`);
       x(`else {`);
-      x(`  _sIr("${cond.condition.hash}", false, ${hashName});`);
+      x(`  $_sr("${cond.condition.hash}", false, ${hashName});`);
       x(`}`);
     }
-    x(`if (_gIs("${cond.condition.hash}", ${hashName}) !== "OK") {`)
+    x(`if ($_gs("${cond.condition.hash}", ${hashName}) !== "OK") {`)
     x(`  $_go['${cond.id}'] = true;`);
-    x(`  let _tmp = _gIv("${cond.condition.hash}", ${hashName});`);
+    x(`  let $_tmp1 = $_gv("${cond.condition.hash}", ${hashName});`);
     x(`  let _e;`);
-    x(`  if (!_tmp) {`);
+    x(`  if (!$_tmp1) {`);
     if (['template', 'transition', 'slot'].includes(cond.tag)) {
       if (cond.items) {
         bbn.fn.each(cond.items, it => {
-          x(`    _e = _t.$retrieveElement("${it.id}", ${hashName});`);
+          x(`    _e = $_this.$retrieveElement("${it.id}", ${hashName});`);
           x(`    if (_e && !bbn.fn.isComment(_e)) {`);
-          x(`      _t.$removeDOM(_e);`);
+          x(`      $_this.$removeDOM(_e);`);
           x(`    }`);
         });
       }
     }
     else {
-      x(`    _e = _t.$retrieveElement("${cond.id}", ${hashName});`);
+      x(`    _e = $_this.$retrieveElement("${cond.id}", ${hashName});`);
       x(`    if (_e && !bbn.fn.isComment(_e)) {`);
       //x(`      bbn.fn.log("REMOVING ${cond.id} from node2fn")`);
       x(`      let _cp = bbn.cp.getComponent(_e.bbnComponentId)?.bbn || _t;`);
-      //x(`      bbn.fn.log("this is my moment", _e.tagName, _t.$options.name);`);
-      x(`      _t.$removeDOM(_e);`);
+      //x(`      bbn.fn.log("this is my moment", _e.tagName, $_this.$options.name);`);
+      x(`      $_this.$removeDOM(_e);`);
       x(`      _e = false;`);
       x(`    }`);
       x(`    if (!_e) {`);
-      x(`      _eles['${cond.id}'] = await _t.$createElement({`);
+      x(`      $_items['${cond.id}'] = await $_this.$createElement({`);
       x(`        id: "${cond.id}",`);
       x(`        hash: "${cond.condition.hash}",`);
       x(`        loopHash: ${hashName},`);
       x(`        conditionId: "${cond.conditionId}",`);
       x(`        comment: true`);
-      x(`      }, _parents.at(-1), _num[_parents.at(-1).bbnId], _t.$currentMap['${node.id}'].loop);`);
+      x(`      }, $_par.at(-1), $_num[$_par.at(-1).bbnId], $_this.$currentMap['${node.id}'].loop);`);
       x(`    }`);
     }
 
@@ -94,11 +87,9 @@ const treatCondition = (cp, node, arr, hashName) => {
 };
 /**
  * Generates the code recursively for a loop
+ * @param {bbnCp} node 
  * @param {Object} node 
- * @param {String} rv 
  * @param {String} hashName   
- * @param {Number} sp 
- * @param {Array} done 
  * @returns 
  */
 const treatLoop = (cp, node, hashName) => {
@@ -114,16 +105,16 @@ const treatLoop = (cp, node, hashName) => {
   const indexName = node.loop.index || ('bbnLoopIndex_' + md5);
   // Starting the loop
 
-  x(`let ${varName} = _sIr('${node.loop.hash}', ${node.loop.exp}, ${hashName});`);
+  x(`let ${varName} = $_sr('${node.loop.hash}', ${node.loop.exp}, ${hashName});`);
   x(`let ${isNumber} = bbn.fn.isNumber(${varName});`);
-  x(`let ${parentName} = _parents.at(-1);`);
+  x(`let ${parentName} = $_par.at(-1);`);
   x(`let ${listName} = [];`);
   x(`let ${isArray} = bbn.fn.isArray(${varName});`);
   x(`if (${isNumber}) {`);
   x(`  ${varName} = Object.keys((new Array(${varName})).fill(0)).map(a=>parseInt(a));`);
-  x(`  //bbn.fn.log("LOOP VALUE", ${varName});`);
+  //x(`  //bbn.fn.log("LOOP VALUE", ${varName});`);
   x(`}`);
-  x(`oldEle = false;`);
+  x(`$_old = false;`);
   x(`for (let ${indexName} in ${varName}) {`);
   x(`  if (${isArray}) {`);
   x(`    ${indexName} = parseInt(${indexName});`);
@@ -131,8 +122,8 @@ const treatLoop = (cp, node, hashName) => {
   x(`  let ${node.loop.item} = ${isNumber} ? ${indexName} : ${varName}[${indexName}];`);
   x(`  const ${hash} = (${hashName} || '') + '${node.loop.hash}-${indexName}-' + (${node.attr?.key?.exp ? node.attr.key.exp : indexName});`);
   x(`  ${listName}.push(${hash});`);
-  x(`  _sIr('${node.loop.item}', ${node.loop.item}, ${hash});`);
-  x(`  //bbn.fn.log(${node.loop.item});`);
+  x(`  $_sr('${node.loop.item}', ${node.loop.item}, ${hash});`);
+  //x(`  bbn.fn.log(${node.loop.item});`);
 
   x.msp();
   nodesToFunction(
@@ -146,52 +137,52 @@ const treatLoop = (cp, node, hashName) => {
   x(`}`);
   x(`Array.from(${parentName}.childNodes).forEach(a => {`);
   x(`  if ((!a.bbnHash || (a.bbnHash.indexOf(${hashName}) === 0)) && (a.bbnId === "${node.id}") && (${listName}.indexOf(a.bbnHash) === -1)) {`);
-  x(`    _t.$removeDOM(a);`);
+  x(`    $_this.$removeDOM(a);`);
   x(`  }`);
   x(`});`);
   };
 
 const setProperties = function(node, hashName) {
-    x(`_props = bbn.fn.createObject();`);
+    x(`$_props = bbn.fn.createObject();`);
   // Will GO if the element is new or modified and not forgotten
   if (bbn.fn.numProperties(node.attr)) {
     if (node.attr['bbn-bind']) {
-      x(`_tmp = _sIr('${node.attr['bbn-bind'].hash}', ${node.attr['bbn-bind'].exp}, ${hashName}) || bbn.fn.createObject();`);
-      x(`if (!$_go['${node.id}'] && (_gIs('${node.attr['bbn-bind'].hash}', ${hashName}) !== "OK")) {`);
+      x(`$_tmp1 = $_sr('${node.attr['bbn-bind'].hash}', ${node.attr['bbn-bind'].exp}, ${hashName}) || bbn.fn.createObject();`);
+      x(`if (!$_go['${node.id}'] && ($_gs('${node.attr['bbn-bind'].hash}', ${hashName}) !== "OK")) {`);
       x(`  $_go['${node.id}'] = true;`);
       x(`}`);
-      x(`_tmp2 = bbn.fn.createObject();`);
+      x(`$_tmp2 = bbn.fn.createObject();`);
       for (let n in node.attr) {
         if (['bbn-bind', 'bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else', 'bbn-forget'].includes(n)) {
           continue;
         }
         
         if (node.attr[n].exp) {
-          x(`_tmp2['${n}'] = _sIr('${node.attr[n].hash}', ${node.attr[n].exp}, ${hashName});`);
+          x(`$_tmp2['${n}'] = $_sr('${node.attr[n].hash}', ${node.attr[n].exp}, ${hashName});`);
         }
         else {
-          x(`_tmp2['${n}'] = '${bbn.fn.escapeSquotes(node.attr[n].value)}';`);
+          x(`$_tmp2['${n}'] = '${bbn.fn.escapeSquotes(node.attr[n].value)}';`);
         }
       }
-      x(`bbn.fn.each(bbn.fn.unique(Object.keys(_tmp).concat(Object.keys(_tmp2))), n => {`);
-      x(`  let val = _tmp2[n] === undefined ? _tmp?.[n] : _tmp2[n];`);
+      x(`bbn.fn.each(bbn.fn.unique(Object.keys($_tmp1).concat(Object.keys($_tmp2))), n => {`);
+      x(`  let val = $_tmp2[n] === undefined ? $_tmp1?.[n] : $_tmp2[n];`);
       x(`  if (val === undefined) {`);
       x(`    return;`);
       x(`  }`);
       x(`  if (n === 'class') {`);
-      x(`    _props[n] = bbn.cp.convertClasses(val);`);
+      x(`    $_props[n] = bbn.cp.convertClasses(val);`);
       x(`  }`);
       x(`  else if (n === 'style') {`);
-      x(`    _props[n] = bbn.cp.convertStyles(val);`);
+      x(`    $_props[n] = bbn.cp.convertStyles(val);`);
       x(`  }`);
       x(`  else {`);
-      x(`    _props[n] = val;`);
+      x(`    $_props[n] = val;`);
       x(`  }`);
-      x(`  if (!$_go['${node.id}'] && _node.attr[n] && !Object.hasOwn(_node.attr[n], 'value') && _node.attr[n].hash && (_gIs(_node.attr[n].hash, ${hashName}) !== "OK")) {`);
+      x(`  if (!$_go['${node.id}'] && $_node.attr[n] && !Object.hasOwn($_node.attr[n], 'value') && $_node.attr[n].hash && ($_gs($_node.attr[n].hash, ${hashName}) !== "OK")) {`);
       x(`    $_go['${node.id}'] = true;`);
       x(`  }`);
       x(`});`);
-      //x(`bbn.fn.log(["PROPS", _props, _tmp, _tmp2, bbn.fn.unique(Object.keys(_tmp).concat(Object.keys(_tmp2)))]);`);
+      //x(`bbn.fn.log(["PROPS", $_props, $_tmp1, $_tmp2, bbn.fn.unique(Object.keys($_tmp1).concat(Object.keys($_tmp2)))]);`);
     }
     // Simpler version
     else {
@@ -201,24 +192,24 @@ const setProperties = function(node, hashName) {
         }
         
         if (node.attr[n].exp) {
-          x(`_tmp = _sIr('${node.attr[n].hash}', ${node.attr[n].exp}, ${hashName});`);
-          x(`if (_tmp !== undefined) {`);
+          x(`$_tmp1 = $_sr('${node.attr[n].hash}', ${node.attr[n].exp}, ${hashName});`);
+          x(`if ($_tmp1 !== undefined) {`);
           if (n === 'class') {
-            x(`  _props['${n}'] = bbn.cp.convertClasses(_tmp);`);
+            x(`  $_props['${n}'] = bbn.cp.convertClasses($_tmp1);`);
           }
           else if (n === 'style') {
-            x(`  _props['${n}'] = bbn.cp.convertStyles(_tmp);`);
+            x(`  $_props['${n}'] = bbn.cp.convertStyles($_tmp1);`);
           }
           else {
-            x(`  _props['${n}'] = _tmp;`);
+            x(`  $_props['${n}'] = $_tmp1;`);
           }
           x(`}`);
-          x(`if (!$_go['${node.id}'] && _node.attr['${n}'] && !Object.hasOwn(_node.attr['${n}'], 'value') && _node.attr['${n}'].hash && (_gIs(_node.attr['${n}'].hash, ${hashName}) !== "OK")) {`);
+          x(`if (!$_go['${node.id}'] && $_node.attr['${n}'] && !Object.hasOwn($_node.attr['${n}'], 'value') && $_node.attr['${n}'].hash && ($_gs($_node.attr['${n}'].hash, ${hashName}) !== "OK")) {`);
           x(`  $_go['${node.id}'] = true;`);
           x(`}`);
         }
         else {
-          x(`_props['${n}'] = '${bbn.fn.escapeSquotes(node.attr[n].value)}';`);
+          x(`$_props['${n}'] = '${bbn.fn.escapeSquotes(node.attr[n].value)}';`);
         }
       }
 
@@ -229,28 +220,12 @@ const setProperties = function(node, hashName) {
   }
 };
 
-/*
-const setDirectives = function(node, hashName) {
-  const c = x();
-  if (bbn.fn.numProperties(node.directives)) {
-    for (let n in node.directives) {
-      if (node.directives[n].exp) {
-        x(`_node.directives['${n}'].value = _sIr('${node.directives[n].hash}', ${node.directives[n].exp}, ${hashName});`);
-
-      }
-    }
-  }
-
-  return c.text;
-}
-*/
-
 const treatElement = function(cp, node, hashName) {
     if (node.tag) {
     if (node.model) {
       bbn.fn.iterate(node.model, m => {
-        x(`_sIr('${m.hash}', ${m.exp}, ${hashName});`);
-        x(`if (!$_go['${node.id}'] && (_gIs('${m.hash}', ${hashName}) !== "OK")) {`);
+        x(`$_sr('${m.hash}', ${m.exp}, ${hashName});`);
+        x(`if (!$_go['${node.id}'] && ($_gs('${m.hash}', ${hashName}) !== "OK")) {`);
         x(`  $_go['${node.id}'] = true;`);
         x(`}`);
       });
@@ -261,8 +236,8 @@ const treatElement = function(cp, node, hashName) {
     if (bbn.fn.numProperties(node.directives)) {
       for (let n in node.directives) {
         if (node.directives[n].exp) {
-          x(`_sIr('${node.directives[n].hash}', ${node.directives[n].exp}, ${hashName});`);
-          x(`if (!$_go['${node.id}'] && (_gIs('${node.directives[n].hash}', ${hashName}) !== "OK")) {`);
+          x(`$_sr('${node.directives[n].hash}', ${node.directives[n].exp}, ${hashName});`);
+          x(`if (!$_go['${node.id}'] && ($_gs('${node.directives[n].hash}', ${hashName}) !== "OK")) {`);
           x(`  $_go['${node.id}'] = true;`);
           x(`}`);
         }
@@ -270,99 +245,99 @@ const treatElement = function(cp, node, hashName) {
     }
 
     // Start if ($_go)
-    x(`if ($_go['${node.id}'] && !_forgotten['${node.id}']?.[${hashName} || '_root']) {`);
+    x(`if ($_go['${node.id}'] && !$_fgtn['${node.id}']?.[${hashName} || '$_resoot']) {`);
     x.msp();
-    x(`//  bbn.fn.log("IN TODO " + _t.$options.name);`);
-    x(`//  bbn.fn.log("DOING ${node.id} ${node.tag}");`);
-    x(`_tmp = bbn.fn.clone(_node);`);
+    //x(`  bbn.fn.log("IN TODO " + $_this.$options.name);`);
+    //x(`  bbn.fn.log("DOING ${node.id} ${node.tag}");`);
+    x(`$_tmp1 = bbn.fn.clone($_node);`);
     x(`if (${hashName}) {`);
-    x(`  _tmp.loopHash = ${hashName};`);
+    x(`  $_tmp1.loopHash = ${hashName};`);
     x(`}`);
-    x(`_tmp.props = _props;`);
+    x(`$_tmp1.props = $_props;`);
 
     if (node.tag === 'component') {
-      x(`if (bbn.fn.isObject(_props.is)) {`);
-      x(`  _tmp.tag = _props.name ? bbn.fn.camelToCss(_props.name) : 'bbn-anon';`);
-      x(`  _tmp.cfg = bbn.cp.normalizeComponent(_props.is);`);
+      x(`if (bbn.fn.isObject($_props.is)) {`);
+      x(`  $_tmp1.tag = $_props.name ? bbn.fn.camelToCss($_props.name) : 'bbn-anon';`);
+      x(`  $_tmp1.cfg = bbn.cp.normalizeComponent($_props.is);`);
       x(`}`);
       x(`else {`);
-      x(`  _tmp.tag = bbn.fn.camelToCss(_props.is);`);
+      x(`  $_tmp1.tag = bbn.fn.camelToCss($_props.is);`);
       x(`}`);
     }
 
-    x(`isAnew = false;`);
-    x(`if ((_eles['${node.id}'] !== _t.$el) && !_forgotten['${node.id}']?.[${hashName} || '_root'] && (`);
-    x(`    !_eles['${node.id}']`);
-    x(`    || bbn.fn.isComment(_eles['${node.id}'])`);
-    x(`    || !bbn.cp.isTag(_tmp.tag, _eles['${node.id}'])`);
+    x(`$_anew = false;`);
+    x(`if (($_items['${node.id}'] !== $_this.$el) && !$_fgtn['${node.id}']?.[${hashName} || '$_resoot'] && (`);
+    x(`    !$_items['${node.id}']`);
+    x(`    || bbn.fn.isComment($_items['${node.id}'])`);
+    x(`    || !bbn.cp.isTag($_tmp1.tag, $_items['${node.id}'])`);
     x(`  )`);
     x(`) {`);
-    x(`  isAnew = true;`);
+    x(`  $_anew = true;`);
     x(`}`);
-    x(`if (isAnew) {`);
+    x(`if ($_anew) {`);
     if (node.model) {
       for (let n in node.model) {
-        x(`  _tmp.model['${n}'].value = _tmp.props['${n}'] = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
+        x(`  $_tmp1.model['${n}'].value = $_tmp1.props['${n}'] = $_sr($_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
       }
     }
     if (bbn.fn.numProperties(node.directives)) {
       for (let n in node.directives) {
         if (node.directives[n].exp) {
-          x(`_tmp.directives['${n}'].value = _gIv('${node.directives[n].hash}', ${hashName});`);
+          x(`$_tmp1.directives['${n}'].value = $_gv('${node.directives[n].hash}', ${hashName});`);
         }
       }
     }
-    x(`  _eles['${node.id}'] = await _t.$createElement(_tmp, _parents.at(-1), _num[_parents.at(-1).bbnId], _tmp.loop);`);
-    x(`  if (_parents.at(-1) === _t.$el) {`);
-    x(`    $_final.push({ele: _eles['${node.id}'], position: $_num - 1});`);
+    x(`  $_items['${node.id}'] = await $_this.$createElement($_tmp1, $_par.at(-1), $_num[$_par.at(-1).bbnId], $_tmp1.loop);`);
+    x(`  if ($_par.at(-1) === $_this.$el) {`);
+    x(`    $_final.push({ele: $_items['${node.id}'], position: $_num['-'] - 1});`);
     x(`  }`);
     x(`}`);
     x(`else {`);
 
 
     if (node.model) {
-      x(`  _tmp.model = _eles['${node.id}'].bbnSchema.model;`);
+      x(`  $_tmp1.model = $_items['${node.id}'].bbnSchema.model;`);
       for (let n in node.model) {
         if (n === '_default_') {
-          x(`  if (_t.$isComponent(_eles['${node.id}'])) {`)
-          x(`    let modelProp = _eles['${node.id}'].bbnCfg?.model?.prop || _eles['${node.id}'].constructor?.bbnCfg?.model?.prop || 'value';`);
-          x(`    _tmp.model[modelProp].value = _tmp.props[modelProp] = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
+          x(`  if ($_this.$isComponent($_items['${node.id}'])) {`)
+          x(`    let modelProp = $_items['${node.id}'].bbnCfg?.model?.prop || $_items['${node.id}'].constructor?.bbnCfg?.model?.prop || 'value';`);
+          x(`    $_tmp1.model[modelProp].value = $_tmp1.props[modelProp] = $_sr($_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
           x(`  }`);
           x(`  else {`);
-          x(`    _tmp.model.value.value = _tmp.props.value = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
+          x(`    $_tmp1.model.value.value = $_tmp1.props.value = $_sr($_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
           x(`  }`);
         }
         else {
-          x(`  _tmp.model['${n}'].value = _tmp.props['${n}'] = _sIr(_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
+          x(`  $_tmp1.model['${n}'].value = $_tmp1.props['${n}'] = $_sr($_node.model['${n}'].hash, ${node.model[n].exp}, ${hashName});`);
         }
       }
     }
     if (bbn.fn.numProperties(node.directives)) {
       for (let n in node.directives) {
         if (node.directives[n].exp) {
-          x(`if (_gIs('${node.directives[n].hash}', ${hashName}) !== "OK") {`);
-          x(`  _node.directives['${n}'].value = _gIv('${node.directives[n].hash}', ${hashName});`);
-          x(`  _eles['${node.id}'].bbnSchema.directives['${n}'].value = _gIv('${node.directives[n].hash}', ${hashName});`);
-          x(`  bbn.cp.updateDirectives({"${n}": _node.directives['${n}']}, _eles['${node.id}']);`);
+          x(`if ($_gs('${node.directives[n].hash}', ${hashName}) !== "OK") {`);
+          x(`  $_node.directives['${n}'].value = $_gv('${node.directives[n].hash}', ${hashName});`);
+          x(`  $_items['${node.id}'].bbnSchema.directives['${n}'].value = $_gv('${node.directives[n].hash}', ${hashName});`);
+          x(`  bbn.cp.updateDirectives({"${n}": $_node.directives['${n}']}, $_items['${node.id}']);`);
           x(`}`);
         }
       }
     }
-    x(`  _t.$updateElementFromProps(_tmp, _eles['${node.id}']);`);
+    x(`  $_this.$updateElementFromProps($_tmp1, $_items['${node.id}']);`);
     x(`}`);
-    x(`if (_parents.at(-1) === _t.$el) {`);
-    x(`  $_num++;`);
+    x(`if ($_par.at(-1) === $_this.$el) {`);
+    x(`  $_num['-']++;`);
     x(`}`);
-    x(`if (!_num[_parents.at(-1).bbnId]) {`);
-    x(`  _num[_parents.at(-1).bbnId] = 0;`);
+    x(`if (!$_num[$_par.at(-1).bbnId]) {`);
+    x(`  $_num[$_par.at(-1).bbnId] = 0;`);
     x(`}`);
-    x(`_num[_parents.at(-1).bbnId]++;`);
+    x(`$_num[$_par.at(-1).bbnId]++;`);
     let hasEvents = Object.keys(node.events || {}).length > 0;
 
     if (node.model || hasEvents) {
-      x(`if (isAnew) {`);
+      x(`if ($_anew) {`);
       x.msp();
-      x(`let _bbnCurrentElement = _eles['${node.id}'];`);
+      x(`let _bbnCurrentElement = $_items['${node.id}'];`);
       if (node.model) {
         for (let name in node.model) {
           let m = node.model[name];
@@ -376,7 +351,7 @@ const treatElement = function(cp, node, hashName) {
           x(`let _bbnEventName = '${eventName}';`);
           x(`let _bbnRealName = '${name}';`);
           if (name === '_default_') {
-            x(`let _bbnModelCfg = _t.$isComponent(_eles['${node.id}']) ? _eles['${node.id}'].bbnCfg?.model || _eles['${node.id}'].constructor?.bbnCfg?.model : {prop: 'value', event: _bbnEventName};`);
+            x(`let _bbnModelCfg = $_this.$isComponent($_items['${node.id}']) ? $_items['${node.id}'].bbnCfg?.model || $_items['${node.id}'].constructor?.bbnCfg?.model : {prop: 'value', event: _bbnEventName};`);
             x(`_bbnRealName = _bbnModelCfg.prop;`);
             x(`_bbnEventName = _bbnModelCfg.event;`);
             x(`_bbnCurrentElement.bbnSchema.model[_bbnRealName] = _bbnCurrentElement.bbnSchema.model._default_;`);
@@ -388,27 +363,27 @@ const treatElement = function(cp, node, hashName) {
           x(`_bbnCurrentElement.addEventListener(_bbnEventName, _bbnEventObject => {`);
           x(`  let $event = _bbnEventObject;`);
           x(`  let _bbnEventValue = $event.detail?.args ? $event.detail.args[0] : $event.target?.value;`);
-          x(`  let oldValue = bbn.fn.isPrimitive(${modelVarName}) ? _sIr("${m.hash}", ${modelVarName}, ${hashName}) : ${modelVarName};`);
-          //x(`  bbn.fn.log(["ON MODEL CHANGE", _bbnEventName, oldValue, "${modelVarRoot}", _bbnEventValue, _t.$options.name]);`);
+          x(`  let oldValue = bbn.fn.isPrimitive(${modelVarName}) ? $_sr("${m.hash}", ${modelVarName}, ${hashName}) : ${modelVarName};`);
+          //x(`  bbn.fn.log(["ON MODEL CHANGE", _bbnEventName, oldValue, "${modelVarRoot}", _bbnEventValue, $_this.$options.name]);`);
           x(`  if (oldValue !== _bbnEventValue) {`);
           if (modelVarRoot === modelVarName) {
-            x(`    if (Object.hasOwn(_t.$props, "${modelVarRoot}")) {`);
-            x(`      bbn.fn.log("IS A PROP " + _bbnRealName, _t.$options.name, "${modelVarRoot}", _bbnEventValue);`);
-            x(`      _t.$setProp("${modelVarRoot}", _bbnEventValue);`);
+            x(`    if (Object.hasOwn($_this.$props, "${modelVarRoot}")) {`);
+            //x(`      bbn.fn.log("IS A PROP " + _bbnRealName, $_this.$options.name, "${modelVarRoot}", _bbnEventValue);`);
+            x(`      $_this.$setProp("${modelVarRoot}", _bbnEventValue);`);
             x(`    }`);
             x(`    else {`);
-            x(`      _t["${modelVarRoot}"] = _bbnEventValue;`);
+            x(`      $_this["${modelVarRoot}"] = _bbnEventValue;`);
             x(`    }`);
             x(`    ${modelVarRoot} = _bbnEventValue;`);
-            x(`    bbn.fn.log("FROM MODEL " + _bbnRealName, _t.$options.name, _t.$cfg.props, _bbnEventValue, ${modelVarRoot}, "${modelVarRoot}", Object.hasOwn(_t.$cfg.props, "${modelVarRoot}"));`);
+            //x(`    bbn.fn.log("FROM MODEL " + _bbnRealName, $_this.$options.name, $_this.$cfg.props, _bbnEventValue, ${modelVarRoot}, "${modelVarRoot}", Object.hasOwn($_this.$cfg.props, "${modelVarRoot}"));`);
           }
           else {
             x(`    ${modelVarName} = _bbnEventValue;`);
           }
-          x(`    if (_bbnCurrentElement?.bbn) {`);
-          x(`      _bbnCurrentElement?.bbn.$forceUpdate();`);
-          x(`    }`);
-          x(`    _t.$forceUpdate();`);
+          //x(`    if (_bbnCurrentElement?.bbn) {`);
+          //x(`      _bbnCurrentElement?.bbn.$forceUpdate();`);
+          //x(`    }`);
+          //x(`    $_this.$forceUpdate();`);
           x(`  }`);
           x(`});`);
         }
@@ -417,12 +392,12 @@ const treatElement = function(cp, node, hashName) {
       if (hasEvents) {
         for (let n in node.events) {
           let ev = node.events[n];
-          //x(`bbn.fn.log("SETTING EVENT ${n} ON " + _t.$options.name, _ele, ${isAnew});`);
-          x(`_eles['${node.id}'].addEventListener("${n}", _bbnEventObject => {`);
+          //x(`bbn.fn.log("SETTING EVENT ${n} ON " + $_this.$options.name, _ele, ${$_anew});`);
+          x(`$_items['${node.id}'].addEventListener("${n}", _bbnEventObject => {`);
           //x(`  bbn.fn.log("EXECUTING EVENT ${n} ${ev.action} ON ${node.tag}", _bbnEventObject.detail);`);
           x(`  let $event = _bbnEventObject;`);
           if (ev.modifiers.length) {
-            x(`bbn.fn.log($event, "${n}");`);
+            //x(`bbn.fn.log($event, "${n}");`);
             if (n.indexOf('key') === 0) {
               x(`  if (!_bbnEventObject.key || !${JSON.stringify(ev.modifiers)}.includes(_bbnEventObject.key.toLowerCase())) {`);
               x(`    return;`);
@@ -459,21 +434,21 @@ const treatElement = function(cp, node, hashName) {
               x(`  if (bbn.fn.isFunction($_action)) {`);
               x(`    const args = _bbnEventObject.detail?.args || [$event];`);
               x(`    args.push(_bbnEventObject);`);
-              x(`    $_action.bind(_t.$origin)(...args);`);
+              x(`    $_action.bind($_this.$origin)(...args);`);
               x(`  }`);
             }
-            x(`  bbn.fn.iterate(_bbnCurrentData, (_bbnCurrentDataValue, _bbnCurrentDataIndex) => {`);
-            x(`    //bbn.fn.log('_bbnCurrentDataValue, _bbnCurrentDataIndex', _bbnCurrentDataValue, _bbnCurrentDataIndex, eval(_bbnCurrentDataIndex), _t[_bbnCurrentDataIndex], '++++');`);
-            x(`    if (_bbnCurrentDataValue !== eval(_bbnCurrentDataIndex)) {`);
-            x(`      if (_t[_bbnCurrentDataIndex] !== undefined) {`);
-            x(`        _t[_bbnCurrentDataIndex] = eval(_bbnCurrentDataIndex);`);
+            x(`  bbn.fn.iterate($_data, ($_val, $_idx) => {`);
+            //x(`    bbn.fn.log(['$_val, $_idx', $_val, $_idx, eval($_idx), $_this[$_idx], '++++']);`);
+            x(`    if ($_val !== eval($_idx)) {`);
+            x(`      if ($_this[$_idx] !== undefined) {`);
+            x(`        $_this[$_idx] = eval($_idx);`);
             x(`      }`);
-            x(`      _bbnCurrentData[_bbnCurrentDataIndex] = _t[_bbnCurrentDataIndex];`);
+            x(`      $_data[$_idx] = $_this[$_idx];`);
             x(`    }`);
             x(`  });`);
           }
 
-          x(`  _t.$tick();`);
+          //x(`  $_this.$tick();`);
           let eventEnd = '}';
           if (ev.once || ev.passive || ev.capture) {
             eventEnd += ', {';
@@ -515,45 +490,45 @@ const treatSlot = function(cp, node, hashName) {
     if (node.attr?.name) {
       slot = node.attr.name.exp ? `${node.attr.name.exp}` : `'${node.attr.name.value}'`;
     }
-    x(`_eles['${node.id}'] = _parents.at(-1);`);
-    x(`if (_t.$el.bbnSlots?.[${slot}]?.length) {`);
+    x(`$_items['${node.id}'] = $_par.at(-1);`);
+    x(`if ($_this.$el.bbnSlots?.[${slot}]?.length) {`);
     // Iterating the elements going in the slot
-    x(`  bbn.fn.each(_t.$el.bbnSlots[${slot}], a => {`);
+    x(`  bbn.fn.each($_this.$el.bbnSlots[${slot}], a => {`);
     //x(`    bbn.fn.log("This is a slot element", a)`);
     x(`    let search = {bbnId: a.bbnId};`);
     x(`    if (a.bbnHash) {`);
     x(`      search.bbnHash = a.bbnHash;`);
     x(`    }`);
     // Case where the slot is inside another component
-    x(`    if ((_parents.at(-1) !== _t.$el) && bbn.cp.isComponent(_parents.at(-1))) {`);
-    x(`      let idx = bbn.fn.search(_parents.at(-1).bbnSlots[${slot}], search);`);
-    x(`      _parents.at(-1).bbnSlots.default.splice(idx > -1 ? idx : _parents.at(-1).bbnSlots.default.length, idx > -1 ? 1 : 0, a);`);
-    x(`      if (_parents.at(-1).bbn) {`);
-    x(`        _parents.at(-1).bbn.$tick();`);
-    x(`      }`);
+    x(`    if (($_par.at(-1) !== $_this.$el) && bbn.cp.isComponent($_par.at(-1))) {`);
+    x(`      let idx = bbn.fn.search($_par.at(-1).bbnSlots[${slot}], search);`);
+    x(`      $_par.at(-1).bbnSlots.default.splice(idx > -1 ? idx : $_par.at(-1).bbnSlots.default.length, idx > -1 ? 1 : 0, a);`);
+    //x(`      if ($_par.at(-1).bbn) {`);
+    //x(`        $_par.at(-1).bbn.$tick();`);
+    //x(`      }`);
     x(`    }`);
     // Else if only the element is not mounted (otherwise it's already there)
     x(`    else if (!a.parentNode) {`);
-    x(`      if (_parents.at(-1) === _t.$el) {`);
-    x(`        $_final.push({ele: a, position: $_num - 1});`);
+    x(`      if ($_par.at(-1) === $_this.$el) {`);
+    x(`        $_final.push({ele: a, position: $_num['-'] - 1});`);
     x(`      }`);
     x(`      else {`);
-    x(`        let idx = bbn.fn.search(_parents.at(-1).childNodes, search);`);
+    x(`        let idx = bbn.fn.search($_par.at(-1).childNodes, search);`);
     x(`        if (idx > -1) {`);
-    x(`          _parents.at(-1).replaceChild(a, _parents.at(-1).childNodes[idx]);`);
+    x(`          $_par.at(-1).replaceChild(a, $_par.at(-1).childNodes[idx]);`);
     x(`        }`);
     x(`        else {`);
-    x(`          _parents.at(-1).appendChild(a);`);
+    x(`          $_par.at(-1).appendChild(a);`);
     x(`        }`);
     x(`      }`);
     x(`    }`);
-    x(`    if (_parents.at(-1) === _t.$el) {`);
-    x(`      $_num++;`);
+    x(`    if ($_par.at(-1) === $_this.$el) {`);
+    x(`      $_num['-']++;`);
     x(`    }`);
-    x(`    if (!_num[_parents.at(-1).bbnId]) {`);
-    x(`      _num[_parents.at(-1).bbnId] = 0;`);
+    x(`    if (!$_num[$_par.at(-1).bbnId]) {`);
+    x(`      $_num[$_par.at(-1).bbnId] = 0;`);
     x(`    }`);
-    x(`    _num[_parents.at(-1).bbnId]++;`);
+    x(`    $_num[$_par.at(-1).bbnId]++;`);
     x(`  });`);
     x(`}`);
     treatItems(cp, node, hashName);
@@ -563,30 +538,30 @@ const treatSlot = function(cp, node, hashName) {
 
 const treatText = function(node, hashName) {
     if (node.text) {
-    x(`_sIr('${node.hash}', \`${bbn.fn.escapeTicks(node.text)}\`, ${hashName});`);
-    x(`if ($_go['${node.id}'] || (_gIs('${node.hash}', ${hashName}) !== "OK")) {`);
-    x(`  if (_eles['${node.id}'] && (_eles['${node.id}'].textContent !== _gIv('${node.hash}', ${hashName}))) {`);
-    x(`    _eles['${node.id}'].textContent = _gIv('${node.hash}', ${hashName});`);
+    x(`$_sr('${node.hash}', \`${bbn.fn.escapeTicks(node.text)}\`, ${hashName});`);
+    x(`if ($_go['${node.id}'] || ($_gs('${node.hash}', ${hashName}) !== "OK")) {`);
+    x(`  if ($_items['${node.id}'] && ($_items['${node.id}'].textContent !== $_gv('${node.hash}', ${hashName}))) {`);
+    x(`    $_items['${node.id}'].textContent = $_gv('${node.hash}', ${hashName});`);
     x(`  }`);
     x(`  else {`);
-    x(`    _eles['${node.id}'] = _t.$createText({`);
+    x(`    $_items['${node.id}'] = $_this.$createText({`);
     x(`      id: '${node.id}',`);
     x(`      hash: '${node.hash}',`);
-    x(`      text: _gIv('${node.hash}', ${hashName}),`);
+    x(`      text: $_gv('${node.hash}', ${hashName}),`);
     x(`      loopHash: ${hashName},`);
-    x(`    }, _parents.at(-1));`);
-    x(`    if (_parents.at(-1) === _t.$el) {`);
-    x(`      $_final.push({ele: _eles['${node.id}'], position: $_num - 1});`);
+    x(`    }, $_par.at(-1));`);
+    x(`    if ($_par.at(-1) === $_this.$el) {`);
+    x(`      $_final.push({ele: $_items['${node.id}'], position: $_num['-'] - 1});`);
     x(`    }`);
     x(`  }`);
     x(`}`);
-    x(`if (_parents.at(-1) === _t.$el) {`);
-    x(`  $_num++;`);
+    x(`if ($_par.at(-1) === $_this.$el) {`);
+    x(`  $_num['-']++;`);
     x(`}`);
-    x(`if (!_num[_parents.at(-1).bbnId]) {`);
-    x(`  _num[_parents.at(-1).bbnId] = 0;`);
+    x(`if (!$_num[$_par.at(-1).bbnId]) {`);
+    x(`  $_num[$_par.at(-1).bbnId] = 0;`);
     x(`}`);
-    x(`_num[_parents.at(-1).bbnId]++;`);
+    x(`$_num[$_par.at(-1).bbnId]++;`);
     x(``);
     x(``);
   }
@@ -594,11 +569,11 @@ const treatText = function(node, hashName) {
 
 const treatItems = function(cp, node, hashName) {
     if (node.items?.length) {
-    x(`if (_eles['${node.id}']) {`);
+    x(`if ($_items['${node.id}']) {`);
     x.msp();
-    x(`_parents.push(_eles['${node.id}']);`);
+    x(`$_par.push($_items['${node.id}']);`);
     nodesToFunction(cp, node.items, hashName);
-    x(`_parents.pop();`);
+    x(`$_par.pop();`);
     x.lsp();
     x(`}`);
 
@@ -617,12 +592,13 @@ const treatRoot = function(cp, tpl, hashName) {
       && !bbn.cp.isComponent(tpl[0])
       && (['div', 'span'].includes(tpl[0].tag) || (tpl[0].tag === cp.$cfg.tag))
   ) {
-    //x(`_eles['0-0'] = _t.$el;`);
+    //x(`$_items['0-0'] = $_this.$el;`);
     if (tpl[0].attr) {
+      x(`$_props = bbn.fn.createObject();`);
       for (let n in tpl[0].attr) {
-        x(`_props["${n}"] = `);
+        x(`$_props["${n}"] = `);
         if (tpl[0].attr[n].exp) {
-          x(`_sIr("${tpl[0].attr[n].hash}", ${tpl[0].attr[n].exp}, ${hashName});`);
+          x(`$_sr("${tpl[0].attr[n].hash}", ${tpl[0].attr[n].exp}, ${hashName});`);
         }
         else {
           x(`"${bbn.fn.escapeDquotes(tpl[0].attr[n].value)}";`);
@@ -631,36 +607,36 @@ const treatRoot = function(cp, tpl, hashName) {
       if (bbn.fn.numProperties(tpl[0].directives)) {
 
         for (let n in tpl[0].directives) {
-          x(`if (!_t.$el.bbnSchema.directives) {_t.$el.bbnSchema.directives = bbn.fn.createObject();}`);
-          x(`if (!_t.$el.bbnSchema.directives['${n}']) {_t.$el.bbnSchema.directives['${n}'] = bbn.fn.clone(_t.$tpl[0].directives['${n}']);}`);
+          x(`if (!$_this.$el.bbnSchema.directives) {$_this.$el.bbnSchema.directives = bbn.fn.createObject();}`);
+          x(`if (!$_this.$el.bbnSchema.directives['${n}']) {$_this.$el.bbnSchema.directives['${n}'] = bbn.fn.clone($_this.$tpl[0].directives['${n}']);}`);
           if (tpl[0].directives[n].exp) {
-            x(`  _t.$el.bbnSchema.directives['${n}'].value = _sIr('${tpl[0].directives[n].hash}', ${tpl[0].directives[n].exp}, ${hashName});`);
+            x(`  $_this.$el.bbnSchema.directives['${n}'].value = $_sr('${tpl[0].directives[n].hash}', ${tpl[0].directives[n].exp}, ${hashName});`);
           }
-          x(`if (!_t.$el.bbnDirectives) {Object.defineProperty(_t.$el, 'bbnDirectives', {value: bbn.fn.createObject(), writable: false, configurable: false});}`);
-          x(`if (!_t.$el.bbnDirectives['{$n}']) {_t.$el.bbnDirectives['${n}'] = bbn.fn.createObject();}`);
+          x(`if (!$_this.$el.bbnDirectives) {Object.defineProperty($_this.$el, 'bbnDirectives', {value: bbn.fn.createObject(), writable: false, configurable: false});}`);
+          x(`if (!$_this.$el.bbnDirectives['{$n}']) {$_this.$el.bbnDirectives['${n}'] = bbn.fn.createObject();}`);
         }
 
-        x(`if (!_t.$numBuild) {`);
-        x(`  bbn.cp.insertDirectives(_t.$el.bbnSchema.directives, _t.$el);`);
+        x(`if (!$_this.$numBuild) {`);
+        x(`  bbn.cp.insertDirectives($_this.$el.bbnSchema.directives, $_this.$el);`);
         x(`}`);
         for (let n in tpl[0].directives) {
-          x(`if (_t.$numBuild) {`);
-          x(`  bbn.cp.updateDirectives({"${n}": _t.$el.bbnSchema.directives['${n}']}, _t.$el);`);
+          x(`if ($_this.$numBuild) {`);
+          x(`  bbn.cp.updateDirectives({"${n}": $_this.$el.bbnSchema.directives['${n}']}, $_this.$el);`);
           x(`}`);
   
         }
       }
-      x(`_t.$updateFromSchema(_props);`);
+      x(`$_this.$updateFromSchema($_props);`);
       if (tpl[0].events) {
-        x(`if (_r._num === 1) {`);
+        x(`if ($_res._num === 1) {`);
         x.msp();
         for (let n in tpl[0].events) {
           let ev = tpl[0].events[n];
 
-          x(`if (!_eles['-'].bbnSchema?.events?.["${n}"]) {`);
+          x(`if (!$_items['-'].bbnSchema?.events?.["${n}"]) {`);
           x.msp();
-          //x(`bbn.fn.log("SETTING EVENT ${n} ON " + _t.$options.name, _ele, ${isAnew});`);
-          x(`_eles['-'].addEventListener("${n}", _bbnEventObject => {`);
+          //x(`bbn.fn.log("SETTING EVENT ${n} ON " + $_this.$options.name, _ele, ${$_anew});`);
+          x(`$_items['-'].addEventListener("${n}", _bbnEventObject => {`);
           //x(`  bbn.fn.log("EXECUTING EVENT ${n} ${ev.action} ON ${node.tag}", _bbnEventObject.detail);`);
           if (ev.modifiers.length) {
             x(`  if (!_bbnEventObject.key || !${JSON.stringify(ev.modifiers)}.includes(_bbnEventObject.key.toLowerCase())) {`);
@@ -687,22 +663,22 @@ const treatRoot = function(cp, tpl, hashName) {
               x(`  if (bbn.fn.isFunction($_action)) {`);
               x(`    const args = _bbnEventObject.detail?.args || [$event];`);
               x(`    args.push(_bbnEventObject);`);
-              x(`    $_action.bind(_t.$origin)(...args);`);
+              x(`    $_action.bind($_this.$origin)(...args);`);
               x(`  }`);
             }
 
-            x(`  bbn.fn.iterate(_bbnCurrentData, (_bbnCurrentDataValue, _bbnCurrentDataIndex) => {`);
-            x(`    //bbn.fn.log('_bbnCurrentDataValue, _bbnCurrentDataIndex', _bbnCurrentDataValue, _bbnCurrentDataIndex, eval(_bbnCurrentDataIndex), _t[_bbnCurrentDataIndex], '++++');`);
-            x(`    if (_bbnCurrentDataValue !== eval(_bbnCurrentDataIndex)) {`);
-            x(`      if (_t[_bbnCurrentDataIndex] !== undefined) {`);
-            x(`        _t[_bbnCurrentDataIndex] = eval(_bbnCurrentDataIndex);`);
+            x(`  bbn.fn.iterate($_data, ($_val, $_idx) => {`);
+            //x(`    bbn.fn.log(['$_val, $_idx', $_val, $_idx, eval($_idx), $_this[$_idx], '++++']);`);
+            x(`    if ($_val !== eval($_idx)) {`);
+            x(`      if ($_this[$_idx] !== undefined) {`);
+            x(`        $_this[$_idx] = eval($_idx);`);
             x(`      }`);
-            x(`      _bbnCurrentData[_bbnCurrentDataIndex] = _t[_bbnCurrentDataIndex];`);
+            x(`      $_data[$_idx] = $_this[$_idx];`);
             x(`    }`);
             x(`  });`);
           }
 
-          x(`  _t.$forceUpdate();`);
+          //x(`  $_this.$forceUpdate();`);
           let eventEnd = '}';
           if (ev.once || ev.passive || ev.capture) {
             eventEnd += ', {';
@@ -731,12 +707,12 @@ const treatRoot = function(cp, tpl, hashName) {
       }
     }
     else {
-      x(`_t.$updateFromSchema();`);
+      x(`$_this.$updateFromSchema();`);
     }
 
     return tpl[0].items;
   }
-  x(`_t.$updateFromSchema();`);
+  x(`$_this.$updateFromSchema();`);
   return tpl;
 };
 
@@ -744,7 +720,7 @@ const treatRoot = function(cp, tpl, hashName) {
 const endCondition = function(node) {
     if (node.condition) {
     x.lsp();
-    x(`//Ending condition`);
+    //x(`Ending condition`);
     x(`}`);
     x(``);
     x(``);
@@ -766,7 +742,7 @@ const nodesToFunction = function(cp, arr, hashName) {
   let conditionId = null;
   bbn.fn.each(arr, (node, i) => {
     x('');
-    x(`// Taking care of the node ${node.tag || 'with no tag'} ${node.id}`);
+    //x(` Taking care of the node ${node.tag || 'with no tag'} ${node.id}`);
     if (node.loop?.exp) {
       treatLoop(cp, node, hashName);
       return;
@@ -782,7 +758,7 @@ const nodesToFunction = function(cp, arr, hashName) {
 
       let condText = (node.condition.type === 'elseif' ? 'else if' : node.condition.type);
       if (node.condition.type !== 'else') {
-        condText += ' (_gIv("' + node.condition.hash + '", ' + hashName + '))';
+        condText += ' ($_gv("' + node.condition.hash + '", ' + hashName + '))';
       }
       // New level
       condText += ' {';
@@ -790,25 +766,25 @@ const nodesToFunction = function(cp, arr, hashName) {
       x.msp();
     }
     
-    x(`oldEle = _t.$retrieveElement("${node.id}", ${hashName});`);
-    x(`_node = _t.$currentMap['${node.id}'];`);
-    x(`_eles['${node.id}'] = oldEle;`);
+    x(`$_old = $_this.$retrieveElement("${node.id}", ${hashName});`);
+    x(`$_node = $_this.$currentMap['${node.id}'];`);
+    x(`$_items['${node.id}'] = $_old;`);
     x(`if (!Object.hasOwn($_go, '${node.id}')) {`);
-    x(`  $_go['${node.id}'] = !oldEle;`);
+    x(`  $_go['${node.id}'] = !$_old;`);
     x(`}`);
 
-    // Setting _forgotten variable
+    // Setting $_fgtn variable
     if (node.forget?.exp) {
-      x(`_sIr('${node.forget.hash}', ${node.forget.exp}, ${hashName});`);
-      x(`if (!_forgotten['${node.id}']) {`);
-      x(`  _forgotten['${node.id}'] = bbn.fn.createObject();`);
+      x(`$_sr('${node.forget.hash}', ${node.forget.exp}, ${hashName});`);
+      x(`if (!$_fgtn['${node.id}']) {`);
+      x(`  $_fgtn['${node.id}'] = bbn.fn.createObject();`);
       x(`}`);
-      x(`_forgotten['${node.id}'][${hashName} || '_root'] = _gIv('${node.forget.hash}', ${hashName});`);
-      x(`if (_forgotten['${node.id}'][${hashName} || '_root']) {`);
-      x(`  _eles['${node.id}'] = _parents.at(-1);`);
+      x(`$_fgtn['${node.id}'][${hashName} || '$_resoot'] = $_gv('${node.forget.hash}', ${hashName});`);
+      x(`if ($_fgtn['${node.id}'][${hashName} || '$_resoot']) {`);
+      x(`  $_items['${node.id}'] = $_par.at(-1);`);
       x(`  $_go['${node.id}'] = false;`);
       x(`}`);
-      x(`else if (['NEW', 'MOD'].includes(_gIs('${node.forget.hash}', ${hashName}))) {`);
+      x(`else if (['NEW', 'MOD'].includes($_gs('${node.forget.hash}', ${hashName}))) {`);
       x(`  $_go['${node.id}'] = true;`);
       x(`}`);
 
@@ -820,12 +796,12 @@ const nodesToFunction = function(cp, arr, hashName) {
     if ((!node.pre && (node.tag === 'template'))
         || ('transition' === node.tag)
     ) {
-      x(`_eles['${node.id}'] = _parents.at(-1);`);
+      x(`$_items['${node.id}'] = $_par.at(-1);`);
       x(`$_go['${node.id}'] = false;`);
       treatEle = false;
     }
     else {
-      x(`if (!$_go['${node.id}'] && !_eles['${node.id}']) {`);
+      x(`if (!$_go['${node.id}'] && !$_items['${node.id}']) {`);
       x(`  $_go['${node.id}'] = true;`);
       x(`}`);
     }
@@ -846,28 +822,28 @@ const nodesToFunction = function(cp, arr, hashName) {
       }
         
       if (node.forget?.exp) {
-        x(`if (_gIs('${node.forget.hash}', ${hashName}) === 'MOD') {`);
-        x(`  if (_forgotten['${node.id}']?.[${hashName} || '_root']) {`);
-        x(`    if (oldEle) {`);
-        x(`      oldEle.childNodes.forEach(o => {`);
-        x(`        _parents.at(-1).appendChild(o);`);
+        x(`if ($_gs('${node.forget.hash}', ${hashName}) === 'MOD') {`);
+        x(`  if ($_fgtn['${node.id}']?.[${hashName} || '$_resoot']) {`);
+        x(`    if ($_old) {`);
+        x(`      $_old.childNodes.forEach(o => {`);
+        x(`        $_par.at(-1).appendChild(o);`);
         x(`      });`);
-        x(`      bbn.fn.log("From here");`);
-        x(`      _t.$removeDOM(oldEle);`);
+        //x(`      bbn.fn.log("From here");`);
+        x(`      $_this.$removeDOM($_old);`);
         x(`    }`);
         x(`    // Ele is the current parent`);
-        x(`    _eles['${node.id}'] = _parents.at(-1);`);
+        x(`    $_items['${node.id}'] = $_par.at(-1);`);
         x(`  }`);
         x(`  else {`);
-        x(`    _parents.at(-1).childNodes.forEach(o => {`);
+        x(`    $_par.at(-1).childNodes.forEach(o => {`);
         x(`      if (o.bbnId.indexOf('${node.id}' + "-") === 0) {`);
-        x(`        _eles['${node.id}'].appendChild(o);`);
+        x(`        $_items['${node.id}'].appendChild(o);`);
         x(`      }`);
         x(`    });`);
         x(`  }`);
         x(`}`);
-        x(`else if (_forgotten['${node.id}']?.[${hashName} || '_root']) {`);
-        x(`  _eles['${node.id}'] = _parents.at(-1);`);
+        x(`else if ($_fgtn['${node.id}']?.[${hashName} || '$_resoot']) {`);
+        x(`  $_items['${node.id}'] = $_par.at(-1);`);
         x(`}`);
         
 
@@ -877,8 +853,8 @@ const nodesToFunction = function(cp, arr, hashName) {
 
 
       if (node.pre) {
-        x(`if (_eles['${node.id}']) {`);
-        x(`  _eles['${node.id}'].innerHTML = \`${bbn.fn.escapeTicks(node.pre)}\`;`);
+        x(`if ($_items['${node.id}']) {`);
+        x(`  $_items['${node.id}'].innerHTML = \`${bbn.fn.escapeTicks(node.pre)}\`;`);
         x(`}`);
 
         x(``);
@@ -887,14 +863,14 @@ const nodesToFunction = function(cp, arr, hashName) {
       else {
         treatItems(cp, node, hashName);
       }
-      x(`if (_eles['${node.id}'] && (_eles['${node.id}'] !== _t.$el)) {`);
-      x(`  if (_t.$el === _parents.at(-1)) {`);
-      x(`    $_num++;`);
+      x(`if ($_items['${node.id}'] && ($_items['${node.id}'] !== $_this.$el)) {`);
+      x(`  if ($_this.$el === $_par.at(-1)) {`);
+      x(`    $_num['-']++;`);
       x(`  }`);
-      x(`  if (!_num[_parents.at(-1).bbnId]) {`);
-      x(`    _num[_parents.at(-1).bbnId] = 0;`);
+      x(`  if (!$_num[$_par.at(-1).bbnId]) {`);
+      x(`    $_num[$_par.at(-1).bbnId] = 0;`);
       x(`  }`);
-      x(`  _num[_parents.at(-1).bbnId]++;`);
+      x(`  $_num[$_par.at(-1).bbnId]++;`);
       x(`}`);
 
 
@@ -915,97 +891,93 @@ const nodesToFunction = function(cp, arr, hashName) {
  * @returns {Promise}
  */
 export default function templateToFunction(cp, tpl, sp = 0) {
-  let hashName = '_bbnHash';
+  let hashName = '$_hash';
   x.msp();
-    x(`const _r = _t.$currentResult;`);
+  x(`const $_res = $_this.$currentResult;`);
   x(`let ${hashName} = '';`);
-  x(`bbn.fn.iterate(_r, a => {`);
+  x(`bbn.fn.iterate($_res, a => {`);
   x(`  bbn.fn.iterate(a, b => {`);
   x(`    if (b.state !== 'DEL') {`);
   x(`      b.state = 'TMP';`);
   x(`    }`);
   x(`  });`);
   x(`});`);
-  x(`const _bbnCurrentData = bbn.fn.createObject();`);
+  x(`const $_data = bbn.fn.createObject();`);
   let argNames = [];
   let argValues = [];
   for (let n in cp.$namespaces) {
     argNames.push(n);
-    argValues.push(cp.$namespaces[n] === 'method' ? `_t['${n}'].bind(_t)` : `_t['${n}']`);
+    argValues.push(cp.$namespaces[n] === 'method' ? `$_this['${n}'].bind($_this)` : `$_this['${n}']`);
     if ((n.indexOf('$') !== 0) && !['method', 'props'].includes(cp.$namespaces[n]) && (n !== 'internal')) {
-      x(`_bbnCurrentData["${n}"] = _t.${n};`);
+      x(`$_data["${n}"] = $_this.${n};`);
     }
   }
 
   x(`await (async function (${argNames.join(', ')}) {`);
   x.msp();
 
-  //x(`let ownProps = Object.getOwnPropertyNames(_t);`);
+  //x(`let ownProps = Object.getOwnPropertyNames($_this);`);
   //x(`let n;`);
   //x(`for (let i = 0; n = ownProps[i]; i++) {`);
-  //x(`  if ((n.indexOf('$') !== 0) && !_t.$namespaces[n]) {`);
-  //x(`    bbn.fn.warning('var ' + n + ' = _t["' + n + '"];');`);
-  //x(`    eval('var ' + n + ' = _t["' + n + '"];');`);
+  //x(`  if ((n.indexOf('$') !== 0) && !$_this.$namespaces[n]) {`);
+  //x(`    bbn.fn.warning('var ' + n + ' = $_this["' + n + '"];');`);
+  //x(`    eval('var ' + n + ' = $_this["' + n + '"];');`);
   //x(`  }`);
   //x(`}`);
   
-  x(`// _setInternalResult`);
-  x(`const _sIr = (_name, _exp, _hash) => {`);
-  x(`  return _t.$_setInternalResult(_r, _name, _exp, _hash);`);
+  //x(` _setInternalResult`);
+  x(`const $_sr = (_name, _exp, _hash) => {`);
+  x(`  return $_this.$_setInternalResult($_res, _name, _exp, _hash);`);
   x(`};`);
-  x(`// _getInternalState`);
-  x(`const _gIs = (_name, _hash) => {`);
-  x(`  return _t.$_getInternalState(_r, _name, _hash);`);
+  //x(` _getInternalState`);
+  x(`const $_gs = (_name, _hash) => {`);
+  x(`  return $_this.$_getInternalState($_res, _name, _hash);`);
   x(`};`);
-  x(`// _getInternalValue`);
-  x(`const _gIv = (_name, _hash) => {`);
+  //x(` _getInternalValue`);
+  x(`const $_gv = (_name, _hash) => {`);
   x(`  let val = undefined;`);
   x(`  try {`);
-  x(`    val = _t.$_getInternalValue(_r, _name, _hash);`);
+  x(`    val = $_this.$_getInternalValue($_res, _name, _hash);`);
   x(`  } catch (e) {`);
-  x(`    bbn.fn.log("THERE SHOULD BE AN ERROR", _name, _t);`);
+  x(`    bbn.fn.log(["THERE SHOULD BE AN ERROR", _name, _t]);`);
   x(`  }`);
   x(`  return val;`);
   x(`};`);
-  x(`const _eles = bbn.fn.createObject({"-": _t.$el});`);
+  x(`const $_items = bbn.fn.createObject({"-": $_this.$el});`);
   x(`let _isCondTrue = false;`);
-  x(`let _props = bbn.fn.createObject();`);
-  x(`let _lastId = '';`);
-  x(`let _tmp;`);
-  x(`let _tmp2;`);
-  x(`let _num = {};`);
-  x(`let _node;`);
-  x(`let isAnew;`);
-  x(`let oldEle;`);
-  x(`const _cps = [];`);
-  x(`const _parents = [_t.$el];`);
-  x(`let $_ct = _t.$el;`);
-  x(`const _forgotten = bbn.fn.createObject();`);
+  x(`let $_props;`);
+  x(`let $_tmp1;`);
+  x(`let $_tmp2;`);
+  x(`let $_node;`);
+  x(`let $_anew;`);
+  x(`let $_old;`);
+  x(`const $_par = [$_this.$el];`);
+  x(`let $_ct = $_this.$el;`);
+  x(`const $_fgtn = bbn.fn.createObject();`);
   x(`const $_go = bbn.fn.createObject();`);
-  x(`let $_num = 0;`);
+  x(`let $_num = bbn.fn.createObject({"-": 0});`);
   x(`const $_final = [];`);
-  x(`_r._num++;`);
+  x(`$_res._num++;`);
   
 
   const template = treatRoot(cp, tpl, hashName);
 
   nodesToFunction(cp, template, hashName);
-  //x(`bbn.fn.warning("KKKKK"); bbn.fn.log($_final);`);
   x(`bbn.fn.each($_final, a => {`);
-  x(`  _t.$insertElement(a.ele, _t.$el, a.position);`);
+  x(`  $_this.$insertElement(a.ele, $_this.$el, a.position);`);
   x(`})`);
   x.lsp();
   x(`})(${argValues.join(', ')});`);
-  x(`bbn.fn.iterate(_r, a => {`);
+  x(`bbn.fn.iterate($_res, a => {`);
   x(`  bbn.fn.iterate(a, b => {`);
   x(`    if (b.state === 'TMP') {`);
   x(`      b.state = 'DEL';`);
   x(`    }`);
   x(`  });`);
   x(`});`);
-  x(`return _r;`);
+  x(`return $_res;`);
   x.lsp();
     
   const AsyncFunction = async function () {}.constructor;
-  return new AsyncFunction('_t', '_d', x.get(true));
+  return new AsyncFunction('$_this', x.get(true));
 }
