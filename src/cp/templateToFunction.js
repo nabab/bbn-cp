@@ -895,6 +895,7 @@ export default function templateToFunction(cp, tpl, sp = 0) {
   x.msp();
   x(`const $_res = $_this.$currentResult;`);
   x(`let ${hashName} = '';`);
+  // Setting the state of each element in $currentResult to TMP except DEL state, which remains
   x(`bbn.fn.iterate($_res, a => {`);
   x(`  bbn.fn.iterate(a, b => {`);
   x(`    if (b.state !== 'DEL') {`);
@@ -903,6 +904,7 @@ export default function templateToFunction(cp, tpl, sp = 0) {
   x(`  });`);
   x(`});`);
   x(`const $_data = bbn.fn.createObject();`);
+  // Each element with namespace is set in $_data and is added to argNames and argValues
   let argNames = [];
   let argValues = [];
   for (let n in cp.$namespaces) {
@@ -913,6 +915,7 @@ export default function templateToFunction(cp, tpl, sp = 0) {
     }
   }
 
+  // Calling the function with each element from namespace as named arguments
   x(`await (async function (${argNames.join(', ')}) {`);
   x.msp();
 
@@ -943,38 +946,44 @@ export default function templateToFunction(cp, tpl, sp = 0) {
   x(`  }`);
   x(`  return val;`);
   x(`};`);
-  x(`const $_items = bbn.fn.createObject({"-": $_this.$el});`);
+  // Used for conditions
   x(`let _isCondTrue = false;`);
+  // Used for setting properties
   x(`let $_props;`);
   x(`let $_tmp1;`);
   x(`let $_tmp2;`);
   x(`let $_node;`);
+  // Will be true when an element needs to be created
   x(`let $_anew;`);
+  // Will contain an HTML element of the existing element
   x(`let $_old;`);
+  // Will contain a map of the current elements while the function is running
+  x(`const $_items = bbn.fn.createObject({"-": $_this.$el});`);
+  // An array of the parents elements
   x(`const $_par = [$_this.$el];`);
-  x(`let $_ct = $_this.$el;`);
+  // Forgotten elements
   x(`const $_fgtn = bbn.fn.createObject();`);
+  // An array of booleans meaning a node should be looked into / evaluated
   x(`const $_go = bbn.fn.createObject();`);
-  x(`let $_num = bbn.fn.createObject({"-": 0});`);
+  // An object of current indexes in the DOM creation
+  x(`const $_num = bbn.fn.createObject({"-": 0});`);
+  // An array of the final elements to be inserted
   x(`const $_final = [];`);
+  // Every time the function is run $currentResult._num will be incremented
   x(`$_res._num++;`);
   
-
+  // If the element merges with its root, it happens here and the template will change
   const template = treatRoot(cp, tpl, hashName);
 
+  // Taking care of the whole template
   nodesToFunction(cp, template, hashName);
+
+  // Inserting root elements last
   x(`bbn.fn.each($_final, a => {`);
   x(`  $_this.$insertElement(a.ele, $_this.$el, a.position);`);
   x(`})`);
   x.lsp();
   x(`})(${argValues.join(', ')});`);
-  x(`bbn.fn.iterate($_res, a => {`);
-  x(`  bbn.fn.iterate(a, b => {`);
-  x(`    if (b.state === 'TMP') {`);
-  x(`      b.state = 'DEL';`);
-  x(`    }`);
-  x(`  });`);
-  x(`});`);
   x(`return $_res;`);
   x.lsp();
     
