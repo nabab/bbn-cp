@@ -1098,8 +1098,9 @@ const cpDef = {
         //bbn.fn.log("INIT " + this.currentURL, this.real,this.currentScript, this.currentView )
         let res;
 
-        if (this.currentScript){
-          res = typeof this.currentScript === 'string' ? eval(this.currentView.script) : this.currentView.script;
+        if (this.currentScript) {
+          console.log(this.currentScript);
+          res = typeof this.currentScript === 'string' ? eval(this.currentScript) : this.currentScript;
           //bbn.fn.log("************************************", res);
           // if evaluating the script property returns a function that will be onMount
           if (bbn.fn.isFunction(res) ){

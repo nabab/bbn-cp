@@ -263,24 +263,24 @@ export default class bbnCp {
         // The function has never been generated for this component
         if (!this.$el.constructor.bbnEval) {
           // Generating
-          const stFn = bbn.cp.templateToFunction(this, this.$el.constructor.bbnTpl);
-          if (!stFn) {
+          const fn = bbn.cp.templateToFunction(this, this.$el.constructor.bbnTpl);
+          if (!fn) {
             throw new Error(bbn._("Impossible to create the template evaluator"));
           }
           // Setting in component's constructor
-          this.$el.constructor.prototype.bbnEval = stFn;
+          this.$el.constructor.prototype.bbnEval = fn;
         }
       }
       // The template is a one-shot, bbnAnon
       else {
         // Generating
-        const stFn = bbn.cp.templateToFunction(this, this.$el.bbnTpl);
-        if (!stFn) {
+        const fn = bbn.cp.templateToFunction(this, this.$el.bbnTpl);
+        if (!fn) {
           throw new Error(bbn._("Impossible to create the template evaluator"));
         }
         // Setting in component's property
         Object.defineProperty(this.$el, 'bbnEval', {
-          value: eval(stFn),
+          value: fn,
           writable: false,
           configurable: false
         });
@@ -394,15 +394,14 @@ export default class bbnCp {
    * @param {HTMLElement} target 
    * @returns 
    */
-  async $createElement(node, target, after, loopInfo) {
-    const d = node;
+  async $createElement(node, target, prevElementIndex, loopInfo) {
     // Components have an hyphen
-    let isComponent = this.$isComponent(d);
+    let isComponent = !node.comment && this.$isComponent(node);
     /** @constant {Array} todo A list of function to apply once the element will ne created */
     const todo = [];
     /** @constant {bbnComponentFunction} cpSource */
-    const cpSource = d.componentId ? bbn.cp.getComponent(d.componentId)?.bbn : this;
-    const oldEle = cpSource.$retrieveElement(d.id, d.loopHash);
+    const cpSource = node.componentId ? bbn.cp.getComponent(node.componentId)?.bbn : this;
+    const oldEle = cpSource.$retrieveElement(node.id, node.loopHash);
     let replace = false;
     let ele;
     if (oldEle) {
@@ -410,15 +409,15 @@ export default class bbnCp {
       if (
         (oldEle !== this.$el)
         && (
-          (!!d.comment !== isComment)
+          (!!node.comment !== isComment)
           || (
             !isComment
-            && d.tag
-            && !bbn.cp.isTag(d.tag, oldEle)
+            && node.tag
+            && !bbn.cp.isTag(node.tag, oldEle)
           )
         )
       ) {
-        //bbn.fn.log("REPLACING " + d.id, isComment, d, oldEle);
+        //bbn.fn.log("REPLACING " + node.id, isComment, d, oldEle);
         replace = true;
       }
       else {
@@ -427,8 +426,8 @@ export default class bbnCp {
     }
 
     /** @todo check todo */
-    let tag = d.tag;
-    let originalTag = d.tag;
+    let tag = node.tag;
+    let originalTag = node.tag;
     if (tag && this.$cfg.componentNames[tag]) {
       tag = this.$cfg.componentNames[tag];
       isComponent = true;
@@ -447,33 +446,33 @@ export default class bbnCp {
       }
     }
 
-    if (d.model) {
-      for (let n in d.model) {
+    if (node.model) {
+      for (let n in node.model) {
         if (n === '_default_') {
           if (isComponent) {
             let modelProp = bbn.cp.statics[tag]?.cfg?.model?.prop || 'value';
-            d.props[modelProp] = d.props._default_;
-            delete d.props._default_;
-            d.model[modelProp] = d.model._default_;
-            //delete d.model._default_;
+            node.props[modelProp] = node.props._default_;
+            delete node.props._default_;
+            node.model[modelProp] = node.model._default_;
+            //delete node.model._default_;
           }
           else {
-            d.model.value = d.model._default_;
-            //delete d.model._default_;
-            d.props.value = d.props._default_;
-            delete d.props._default_;
+            node.model.value = node.model._default_;
+            //delete node.model._default_;
+            node.props.value = node.props._default_;
+            delete node.props._default_;
           }
         }
       }
     }
 
     if (!oldEle || replace) {
-      if (d.comment) {
+      if (node.comment) {
         ele = document.createComment(" ***_BBN_*** ");
       }
       else if (tag === 'svg') {
         ele = document.createElementNS("http://www.w3.org/2000/svg", tag);
-        ele.innerHTML = d.content;
+        ele.innerHTML = node.content;
       }
       else {
         /** 
@@ -498,17 +497,17 @@ export default class bbnCp {
           ele.setAttribute('is', originalTag);
         }
         if (tag === 'bbn-anon') {
-          if (d.cfg){
-            if (d.cfg.mixins && d.cfg.mixins.indexOf(bbn.cp.mixins.basic) === -1) {
-              d.cfg.mixins.push(bbn.cp.mixins.basic);
+          if (node.cfg){
+            if (node.cfg.mixins && node.cfg.mixins.indexOf(bbn.cp.mixins.basic) === -1) {
+              node.cfg.mixins.push(bbn.cp.mixins.basic);
             }
             Object.defineProperty(ele, 'bbnCfg', {
-              value: d.cfg,
+              value: node.cfg,
               writable: false,
               configurable: false
             });
-            if (d.cfg.template) {
-              const tmp = bbn.cp.stringToTemplate(d.cfg.template, true);
+            if (node.cfg.template) {
+              const tmp = bbn.cp.stringToTemplate(node.cfg.template, true);
               Object.defineProperty(ele, 'bbnTpl', {
                 value: tmp.res,
                 writable: false,
@@ -531,14 +530,14 @@ export default class bbnCp {
 
       // Giving to all elements property bbnId
       Object.defineProperty(ele, 'bbnId', {
-        value: d.id,
+        value: node.id,
         writable: false,
         configurable: false
       });
 
       // Outer schema of the component, with the slots
       Object.defineProperty(ele, 'bbnSchema', {
-        value: d,
+        value: node,
         writable: true,
         configurable: true
       });
@@ -549,7 +548,7 @@ export default class bbnCp {
         configurable: false
       });
 
-      if (d.directives) {
+      if (node.directives) {
         Object.defineProperty(ele, 'bbnDirectives', {
           value: bbn.fn.createObject(),
           writable: false,
@@ -565,14 +564,14 @@ export default class bbnCp {
         });
       }
 
-      if (d.loopHash) {
+      if (node.loopHash) {
         Object.defineProperty(ele, 'bbnHash', {
-          value: d.loopHash,
+          value: node.loopHash,
           writable: false,
           configurable: false
         });
         Object.defineProperty(ele, 'bbnIndex', {
-          value: d.loopIndex,
+          value: node.loopIndex,
           writable: false,
           configurable: false
         });
@@ -580,7 +579,7 @@ export default class bbnCp {
       if (isComponent) {
         let realSlots;
         if (tag === 'bbn-anon') {
-          realSlots = bbn.cp.retrieveSlots(ele.bbnTpl || d.items);
+          realSlots = bbn.cp.retrieveSlots(ele.bbnTpl || node.items);
         }
         else {
           realSlots = bbn.fn.clone(ele.constructor.bbnSlots)
@@ -609,7 +608,7 @@ export default class bbnCp {
     }
     else {
       ele = oldEle;
-      if (!bbn.fn.isSame(ele.bbnSchema.props,  d.props)) {
+      if (!bbn.fn.isSame(ele.bbnSchema.props,  node.props)) {
         ele.bbnSchema = d;
         if (isComponent && ele.bbn && ele.bbn.$isMounted) {
           ele.bbn.$forceUpdate();
@@ -617,11 +616,11 @@ export default class bbnCp {
       }
     }
 
-    if (!d.comment) {
-      cpSource.$updateElementFromProps(d, ele);
+    if (!node.comment) {
+      cpSource.$updateElementFromProps(node, ele);
 
-      if (d.pre) {
-        ele.innerHTML = d.pre;
+      if (node.pre) {
+        ele.innerHTML = node.pre;
       }
 
     }
@@ -631,14 +630,10 @@ export default class bbnCp {
     }
 
     if (target !== this.$el) {
-      this.$insertElement(ele, target, after, oldEle);
+      this.$insertElement(ele, target, prevElementIndex, oldEle);
     }
     else {
       this.$addToElements(ele);
-    }
-
-    if (!d.comment && d.directives) {
-      bbn.cp.insertDirectives(d.directives, ele);
     }
 
     return ele;
@@ -651,11 +646,11 @@ export default class bbnCp {
    * @param {HTMLElement} target 
    * @returns 
    */
-  $createText(d, target, loopInfo) {
-    const ele = document.createTextNode(d.text);
-    bbn.fn.checkType(d.id, String, "Boo");
+  $createText(node, target, loopInfo) {
+    const ele = document.createTextNode(node.text);
+    bbn.fn.checkType(node.id, String, "Boo");
     Object.defineProperty(ele, 'bbnId', {
-      value: d.id,
+      value: node.id,
       writable: false,
       configurable: false
     });
@@ -673,14 +668,14 @@ export default class bbnCp {
       });
     }
 
-    if (d.loopHash) {
+    if (node.loopHash) {
       Object.defineProperty(ele, 'bbnHash', {
-        value: d.loopHash,
+        value: node.loopHash,
         writable: false,
         configurable: false
       });
       Object.defineProperty(ele, 'bbnIndex', {
-        value: d.loopIndex,
+        value: node.loopIndex,
         writable: false,
         configurable: false
       });
@@ -1129,9 +1124,9 @@ export default class bbnCp {
    * @param {HTMLElement} after 
    * @returns 
    */
-  $insertElement(ele, target, after, oldEle) {
+  $insertElement(ele, target, prevElementIndex, oldEle) {
     bbn.fn.checkType(target, HTMLElement, "The $insert function should have an HTMLElement as target");
-    const d = ele.bbnSchema;
+    const node = ele.bbnSchema;
     //bbn.fn.checkType(ele, HTMLElement);
     const isParentComponent = (target !== this.$el) && bbn.cp.isComponent(target);
     let replace = false;
@@ -1144,8 +1139,8 @@ export default class bbnCp {
           (isOldComment !== isComment)
           || (
             !isOldComment
-            && d.tag
-            && !bbn.cp.isTag(d.tag, oldEle)
+            && node.tag
+            && !bbn.cp.isTag(node.tag, oldEle)
           )
         )
       ) {
@@ -1233,8 +1228,8 @@ export default class bbnCp {
         }
       }
       else {
-        if (after) {
-          after.after(ele);
+        if (target.childNodes[prevElementIndex]) {
+          target.childNodes[prevElementIndex].after(ele);
         }
         else {
           target.appendChild(ele);

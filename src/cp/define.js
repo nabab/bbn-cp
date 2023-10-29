@@ -80,7 +80,7 @@ export default function define(name, obj, tpl, css) {
 
   // Getting the class object from the Window (seems impossible otherwise)
   //bbn.fn.log(publicName);
-  const args = [name, eval(publicName)];
+  const args = [name, (new Function(`return ${publicName};`))()];
   if (cpCfg.tag) {
     args.push({extends: cpCfg.tag});
   }
