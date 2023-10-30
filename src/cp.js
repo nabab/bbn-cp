@@ -1,4 +1,4 @@
-import {bbn} from "@bbn/bbn/dist/index.js";
+import {bbn} from "@bbn/bbn";
 import addComponent from "./cp/addComponent.js";
 import addPrefix from "./cp/addPrefix.js";
 import analyzeElement from "./cp/analyzeElement.js";

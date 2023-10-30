@@ -209,7 +209,7 @@ export default class bbnCp {
     Object.defineProperty(this, '$currentResult', {
       configurable: false,
       writable: false,
-      value: bbn.fn.createObject({_num: 0})
+      value: bbn.fn.createObject()
     });
     Object.defineProperty(this, '$schema', {
       configurable: false,
@@ -1583,9 +1583,10 @@ export default class bbnCp {
       }
 
       stl = bbn.cp.convertStyles(stl);
-      if (stl) {
-        this.$el.style.cssText = bbn.cp.convertStyles(stl);
+      if (stl && (stl !== this.$el.style.cssText)) {
+        this.$el.style.cssText = stl;
       }
+
       for (let n in props) {
         if (!['class', 'style'].includes(n)) {
           let value = props[n];
@@ -1981,13 +1982,21 @@ export default class bbnCp {
     const hash = bbnData.hash(val);
     if (!bbn.fn.isSame(this.$computed[name].hash, hash)) {
       const oldValue = this.$computed[name].val;
-      //bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue]);
-      this.$computed[name].old = oldValue;
-      this.$computed[name].hash = hash;
-      this.$computed[name].num = this.$computed[name].num < this.$numBuild ? this.$numBuild + 1 : this.$computed[name].num + 1;
-      val = bbnData.treatValue(val, this, name);
-      this.$computed[name].val = val;
-      this.$updateWatcher(name, val);
+      /*
+      const newData = bbnData.getObject(val);
+      if (bbn.fn.isArray(val, oldValue) && !newData && !bbn.fn.isSame(val, oldValue)) {
+        const dataObj = bbnData.getObject(oldValue);
+        bbn.fn.mutateArray(dataObj?.data || oldValue, val);
+      }
+      else {*/
+        //bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue]);
+        this.$computed[name].old = oldValue;
+        this.$computed[name].hash = hash;
+        this.$computed[name].num = this.$computed[name].num < this.$numBuild ? this.$numBuild + 1 : this.$computed[name].num + 1;
+        val = bbnData.treatValue(val, this, name);
+        this.$computed[name].val = val;
+        this.$updateWatcher(name, val);
+      //}
       this.$tick();
       return true;
     }

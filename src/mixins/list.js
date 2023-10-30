@@ -714,18 +714,25 @@ const list = {
     },
     filteredData() {
       //bbn.fn.warning("FILTERING DATA")
+      let data;
       if (this.currentData.length && this.currentFilters &&
         this.currentFilters.conditions &&
         this.currentFilters.conditions.length &&
         (!this.serverFiltering || !this.isAjax)
       ) {
-        return bbn.fn.filter(this.currentData, a => {
+        data = bbn.fn.filter(this.currentData, a => {
           return this._checkConditionsOnItem(this.currentFilters, a.data);
         });
       }
       else{
-        return this.currentData;
+        data = this.currentData.slice();
       }
+
+      if (this.pageable && this.currentLimit && (this.currentLimit < data.length)) {
+        data = data.splice(this.start, this.currentLimit);
+      }
+
+      return data;
     },
   },
   methods: {

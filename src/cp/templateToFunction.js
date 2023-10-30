@@ -628,7 +628,7 @@ const treatRoot = function(cp, tpl, hashName) {
       }
       x(`$_this.$updateFromSchema($_props);`);
       if (tpl[0].events) {
-        x(`if ($_res._num === 1) {`);
+        x(`if (!$_this.$numBuild) {`);
         x.msp();
         for (let n in tpl[0].events) {
           let ev = tpl[0].events[n];
@@ -969,8 +969,6 @@ export default function templateToFunction(cp, tpl, sp = 0) {
   x(`const $_num = bbn.fn.createObject({"-": 0});`);
   // An array of the final elements to be inserted
   x(`const $_final = [];`);
-  // Every time the function is run $currentResult._num will be incremented
-  x(`$_res._num++;`);
   
   // If the element merges with its root, it happens here and the template will change
   const template = treatRoot(cp, tpl, hashName);

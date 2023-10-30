@@ -80,6 +80,10 @@ export default {
             }
         ],
     },
+
+    externals : {
+        bbn: 'bbn'
+    },
     
     // Resolve extensions and modules
     /*

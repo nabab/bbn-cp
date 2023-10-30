@@ -204,7 +204,7 @@ const cpDef = {
      * @computed realComponent
      * @memberof listComponent
      */
-      searchComponent(){
+    searchComponent(){
       let cp = bbn.fn.isString(this.component) || (bbn.fn.isObject(this.component) && Object.keys(this.component).length) ? this.component : null;
       if (!cp) {
         cp = {
@@ -212,16 +212,9 @@ const cpDef = {
           data(){
             return this.source;
           },
-          template: `<component :is="myCp" :source="source"></component>`,
-          computed: {
-            myCp() {
-              return this.source.component || 'div';
-            }
-          }
+          template: `<component :is="source.component || 'div'" :source="source"></component>`,
         };
       }
-
-      bbn.fn.log("MINISEARCH", cp, this.source);
       return cp;
     },
     currentIcon(){

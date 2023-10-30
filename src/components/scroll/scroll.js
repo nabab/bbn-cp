@@ -286,7 +286,8 @@ const cpDef = {
       touchDirection: null,
       scrollTimeout: null,
       currentStepX: bbn.fn.isDom(this.stepX) ? this.stepX.clientHeight : this.stepX,
-      currentStepY: bbn.fn.isDom(this.stepY) ? this.stepY.clientHeight : this.stepY
+      currentStepY: bbn.fn.isDom(this.stepY) ? this.stepY.clientHeight : this.stepY,
+      inFloater: null
     };
   },
   computed: {
@@ -862,10 +863,15 @@ const cpDef = {
      * @fires onResize
      */
     async initSize() {
+      window.bbn.fn.log("initSize");
       //await this.$forceUpdate();
       //throw new Error("BOOOOOO");
       this.getNaturalDimensions();
-      if (!this.naturalWidth && !this.disabled) {
+      if (this.inFloater === null) {
+        this.inFloater = !!this.closest('bbn-floater');
+      }
+
+      if (this.inFloater && !this.naturalWidth && !this.disabled) {
         return this.waitReady();
       }
       //bbn.fn.log(bbn._("Init size from %s with ID %s", this.$options.name, this.$cid));
@@ -988,6 +994,7 @@ const cpDef = {
 
       clearTimeout(this.readyTimeout);
       this.readyTimeout = setTimeout(() => {
+        window.bbn.fn.log("WAIT READY");
         this.initSize();
       }, this.latency)
     },

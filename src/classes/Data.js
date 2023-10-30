@@ -304,14 +304,13 @@ export default class bbnData {
         newArgs.push(newVal);
       });
 
-      for (let i = index; i < index + numDelete; i++) {
-        let subObj = bbnData.getObject(target[i]);
+      const res = target.splice(index, numDelete, ...newArgs);
+      bbn.fn.each(res, t => {
+        let subObj = bbnData.getObject(t);
         if (subObj) {
           subObj.unset();
         }
-      }
-
-      const res = target.splice(index, numDelete, ...newArgs);
+      });
       if (dataObj) {
         //bbn.fn.log("SPLICE");
         dataObj.update();
@@ -480,8 +479,7 @@ export default class bbnData {
      * @var {String} path The path of the data in the component
      */
     Object.defineProperty(this, 'path', {
-      writable: false,
-      configurable: false,
+      writable: true,
       value: path
     });
 
@@ -664,8 +662,9 @@ export default class bbnData {
           cp.$values.splice(idx, 1);
         }
         else if (cp.$isInit) {
+          bbn.fn.warning(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
           bbn.fn.log(this, it);
-          throw new Error(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
+          //throw new Error(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
         }
         
         //cp.$tick();
@@ -815,6 +814,17 @@ export default class bbnData {
     //bbn.fn.log(["UPDATE", this, this.path + '/' + (key || "no key"), this.value]);
     let data = this;
     let lev = 0;
+    if (this.isArray) {
+      bbn.fn.each(this.value, (v, i) => {
+        const objData = bbnData.getObject(v);
+        if (objData && (i != objData.path)) {
+          objData.path = i.toString();
+        }
+      });
+      bbn.fn.each(this.children, obj => {
+
+      })
+    }
     /*
     if (data.root) {
       bbn.fn.log(["UPDATEBBNDATA", data.root, data]);

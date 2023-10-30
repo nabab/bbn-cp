@@ -189,7 +189,8 @@ const cpDef = {
       /**
        * @data {Array} [null] registeredFunctions
        */
-      registeredFunctions: this.searchFunctions.slice()
+      registeredFunctions: this.searchFunctions.slice(),
+      requestedText: ''
     };
   },
   computed: {
@@ -201,7 +202,7 @@ const cpDef = {
      * @computed realComponent
      * @memberof listComponent
      */
-      searchComponent(){
+    searchComponent(){
       let cp = bbn.fn.isString(this.component) || (bbn.fn.isObject(this.component) && Object.keys(this.component).length) ? this.component : null;
       if (!cp) {
         cp = {
@@ -209,12 +210,7 @@ const cpDef = {
           data(){
             return this.source;
           },
-          template: `<component :is="myCp" :source="source"></component>`,
-          computed: {
-            myCp() {
-              return this.source.component || 'div';
-            }
-          }
+          template: `<component :is="source.component || 'div'" :source="source"></component>`
         };
       }
 
@@ -246,7 +242,7 @@ const cpDef = {
      * @method registerFunction
      * @param {Function} fn 
      */
-      unregisterFunction(fn) {
+    unregisterFunction(fn) {
       let idx = this.registeredFunctions.indexOf(fn);
       if (idx > -1) {
         this.registeredFunctions.splice(idx, 1);
@@ -331,17 +327,14 @@ const cpDef = {
     },
     async updateData() {
       if (this.beforeUpdate() !== false) {
+        this.currentData.splice(0, this.currentData.length);
+        this.currentTotal = 0;
         this._dataPromise = new Promise(resolve => {
           let loadingRequestID;
           if (this.loadingRequestID) {
             bbn.fn.abort(this.loadingRequestID);
-            setTimeout(() => {
-              this.loadingRequestID = false;
-              this.updateData().then(() => {
-                resolve();
-              })
-            }, 50);
-            return;
+            this.loadingRequestID = false;
+            return this.updateData();
           }
 
           this.isLoading = true;
@@ -350,16 +343,7 @@ const cpDef = {
           loadingRequestID = bbn.fn.getRequestId(this.source, data);
           this.loadingRequestID = loadingRequestID;
           this.post(this.source, data).then(d => {
-            if (!this.loadingRequestID || (this.loadingRequestID !== loadingRequestID)) {
-              this.isLoading = false;
-              this.loadingRequestID = false;
-              throw new Error("No loading request");
-            }
-
-            this.isLoading = false;
-            this.loadingRequestID = false;
-
-            if ( !d ){
+            if ( !d || (this.requestedText !== this.filterString)) {
               return;
             }
 
@@ -409,10 +393,11 @@ const cpDef = {
 
         if (todo) {
           this.currentData.push(a);
+          this.currentTotal++;
         }
       });
-      bbn.fn.order(this.currentData, 'data.score', 'desc');
-      this.updateIndexes();
+      //bbn.fn.order(this.currentData, 'data.score', 'desc');
+      //this.updateIndexes();
     },
 
     getMoreData(step = 0) {
@@ -467,9 +452,13 @@ const cpDef = {
   },
   watch: {
     isOpened(v) {
-      bbn.fn.log("isOpened", this.isOpened);
       if (!v) {
         this.$emit('close');
+      }
+      else {
+        this.$nextTick(() => {
+          bbn.fn.selectElementText(this.getRef('input').getRef('element'));
+        })
       }
     },
     /**
@@ -482,40 +471,43 @@ const cpDef = {
       }
 
       clearTimeout(this.filterTimeout);
-      if (v !== this.currentText) {
-        this.emitInput(v);
-        this.$emit('change', v);
-        if (this.currentData.length) {
-          this.currentData.splice(0);
+      this.emitInput(v);
+      this.$emit('change', v);
+      if (this.currentData.length) {
+        this.currentData.splice(0, this.currentData.length);
+      }
+
+      this.launchRegisteredFunctions(v);
+
+      this.filterTimeout = setTimeout(() => {
+        this.filterTimeout = false;
+        // We don't relaunch the source if the component has been left
+        if (v !== this.filterString) {
+          return;
         }
 
-        this.launchRegisteredFunctions(v);
+        if (v && (v.length >= this.minLength)) {
+          this.requestedText = v;
+          this.$once('dataloaded', () => {
+            this.$nextTick(() => {
+              let list = this.find('bbn-scroll');
+              if ( list ){
+                list.onResize();
+              }
+            });
+          });
 
-        this.$nextTick(() => {
-          this.filterTimeout = setTimeout(() => {
-            this.filterTimeout = false;
-            // We don't relaunch the source if the component has been left
-            if (v && (v.length >= this.minLength)) {
-              this.$once('dataloaded', () => {
-                this.$nextTick(() => {
-                  let list = this.find('bbn-scroll');
-                  if ( list ){
-                    list.onResize();
-                  }
-                });
-              });
-              this.currentFilters.conditions.splice(0, this.currentFilters.conditions.length ? 1 : 0, {
-                field: this.sourceText,
-                operator: 'startswith',
-                value: v
-              });
-            }
-            else {
-              this.unfilter();
-            }
-          }, this.delay);
-        })
-      }
+          this.currentFilters.conditions.splice(0, this.currentFilters.conditions.length ? 1 : 0, {
+            field: this.sourceText,
+            operator: 'startswith',
+            value: v
+          });
+        }
+        else {
+          this.requestedText = '';
+          this.unfilter();
+        }
+      }, this.delay);
     }
   },
   mounted() {
