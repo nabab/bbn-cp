@@ -2692,6 +2692,7 @@ const cpDef = {
               ? (diff / (numDynCols || numStaticCols))
               : 0;
         if (newWidth) {
+          window.bbn.fn.log(['inside table', diff, newWidth, numDynCols, numStaticCols]);
           this.isResizingWidth = true;
           bbn.fn.each(this.groupCols, (groupCol, groupIdx) => {
             let sum = 0,

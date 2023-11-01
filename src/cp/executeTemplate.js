@@ -839,7 +839,6 @@ export default function templateToFunction(cp, tpl, sp = 0) {
   x(c, sp, `const $_go = bbn.fn.createObject();`);
   x(c, sp, `let $_num = 0;`);
   x(c, sp, `const $_final = [];`);
-  x(c, sp, `_r._num++;`);
   if ((tpl.length === 1)
       && tpl[0].items
       && !tpl[0].attr?.['bbn-if']

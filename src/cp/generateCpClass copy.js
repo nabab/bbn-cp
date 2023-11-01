@@ -11,6 +11,9 @@ export default function generateCpClass(publicClass, obj) {
     originalProto = bbn.cp.tagExtensions[obj.tag] + 'Cp';
   }
 
+  const sc = document.createElement('script');
+  sc.setAttribute('type', 'text/javascript');
+  sc.setAttribute('id', proto + 'Definition');
   const acceptedAttr = bbn.cp.possibleAttributes
     .concat(bbn.cp.possibleAttributes.map(a => ':' + a))
     .concat(Object.keys(obj.props))
