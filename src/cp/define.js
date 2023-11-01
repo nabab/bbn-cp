@@ -70,7 +70,7 @@ export default function define(name, obj, tpl, css) {
   }
   // Generating a basic HTML class based on the component config
   //bbn.fn.log('generateHTMLClass', publicName, cls, '-------');
-  window[publicName] = bbn.cp.generateHTMLClass(publicName, (new Function(`() => ${cls}`))());
+  window[publicName] = bbn.cp.generateHTMLClass(publicName, (new Function(`return ${cls};`))());
   // Generating the code for the private class based on the component config
   //const privateClassCode = makePrivateClass(privateName, cpCfg);
   //bbn.fn.log('generateCpClass', publicName);

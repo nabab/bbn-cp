@@ -39,6 +39,45 @@ export default function generateCpClass(publicClass, obj) {
         writable: false,
         configurable: false
       });
+      if (obj.computed) {
+        for (let n in obj.computed) {
+          const def = {
+            get() {
+              if (!this.$isDataSet) {
+                return undefined;
+              }
+    
+              if (!Object.hasOwn(this.$computed, n)) {
+                this.$computed[n] = bbn.fn.createObject({
+                  old: undefined,
+                  val: undefined,
+                  hash: undefined,
+                  num: 0,
+                  update: () => {
+                    this.$updateComputed(
+                      n, obj.computed[n].get.bind(this)()
+                    );
+                  }
+                });
+              }
+          
+              if (this.$computed[n].num <= this.$numBuild) {
+                this.$computed[n].update();
+              }
+          
+              return bbnData.getValue(this.$computed[n].val);
+            }
+          };
+          if (obj.computed[n].set) {
+            def.set = function (v) {
+              this.$computed[n].set(v);
+            }
+          }
+    
+          Object.defineProperty(this, n, def);
+        }
+      }
+    
     }
 
     $init(el) {
@@ -84,11 +123,6 @@ export default function generateCpClass(publicClass, obj) {
     configurable: false
   });
 
-  Object.defineProperty(newCpClass.prototype, '$computed', {
-    value: {},
-    writable: false,
-    configurable: false
-  });
 
   Object.defineProperty(newCpClass.prototype, '$watcher', {
     value: obj.methods,
@@ -115,46 +149,6 @@ export default function generateCpClass(publicClass, obj) {
       });
     }
   }
-
-  if (obj.computed) {
-    for (let n in obj.computed) {
-      const def = {
-        get() {
-          if (!this.$isDataSet) {
-            return undefined;
-          }
-
-          if (!Object.hasOwn(this.$computed, n)) {
-            this.$computed[n] = bbn.fn.createObject({
-              old: undefined,
-              val: undefined,
-              hash: undefined,
-              num: 0,
-              update: () => {
-                this.$updateComputed(
-                  n, obj.computed[n].get.bind(this)()
-                );
-              }
-            });
-          }
-      
-          if (this.$computed[n].num <= this.$numBuild) {
-            this.$computed[n].update();
-          }
-      
-          return bbnData.getValue(this.$computed[n].val);
-        }
-      };
-      if (obj.computed[n].set) {
-        def.set = function (v) {
-          this.$computed[n].set(v);
-        }
-      }
-
-      Object.defineProperty(newCpClass.prototype.$computed, n, def);
-    }
-  }
-
 
   return newCpClass;
 }
