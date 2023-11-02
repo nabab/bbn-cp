@@ -245,7 +245,7 @@ const treatElement = function(cp, node, hashName) {
     }
 
     // Start if ($_go)
-    x(`if ($_go['${node.id}'] && !$_fgtn['${node.id}']?.[${hashName} || '$_resoot']) {`);
+    x(`if ($_go['${node.id}'] && !$_fgtn['${node.id}']?.[${hashName} || '$_root']) {`);
     x.msp();
     //x(`  bbn.fn.log("IN TODO " + $_this.$options.name);`);
     //x(`  bbn.fn.log("DOING ${node.id} ${node.tag}");`);
@@ -266,7 +266,7 @@ const treatElement = function(cp, node, hashName) {
     }
 
     x(`$_anew = false;`);
-    x(`if (($_items['${node.id}'] !== $_this.$el) && !$_fgtn['${node.id}']?.[${hashName} || '$_resoot'] && (`);
+    x(`if (($_items['${node.id}'] !== $_this.$el) && !$_fgtn['${node.id}']?.[${hashName} || '$_root'] && (`);
     x(`    !$_items['${node.id}']`);
     x(`    || bbn.fn.isComment($_items['${node.id}'])`);
     x(`    || !bbn.cp.isTag($_tmp1.tag, $_items['${node.id}'])`);
@@ -779,8 +779,8 @@ const nodesToFunction = function(cp, arr, hashName) {
       x(`if (!$_fgtn['${node.id}']) {`);
       x(`  $_fgtn['${node.id}'] = bbn.fn.createObject();`);
       x(`}`);
-      x(`$_fgtn['${node.id}'][${hashName} || '$_resoot'] = $_gv('${node.forget.hash}', ${hashName});`);
-      x(`if ($_fgtn['${node.id}'][${hashName} || '$_resoot']) {`);
+      x(`$_fgtn['${node.id}'][${hashName} || '$_root'] = $_gv('${node.forget.hash}', ${hashName});`);
+      x(`if ($_fgtn['${node.id}'][${hashName} || '$_root']) {`);
       x(`  $_items['${node.id}'] = $_par.at(-1);`);
       x(`  $_go['${node.id}'] = false;`);
       x(`}`);
@@ -823,7 +823,7 @@ const nodesToFunction = function(cp, arr, hashName) {
         
       if (node.forget?.exp) {
         x(`if ($_gs('${node.forget.hash}', ${hashName}) === 'MOD') {`);
-        x(`  if ($_fgtn['${node.id}']?.[${hashName} || '$_resoot']) {`);
+        x(`  if ($_fgtn['${node.id}']?.[${hashName} || '$_root']) {`);
         x(`    if ($_old) {`);
         x(`      $_old.childNodes.forEach(o => {`);
         x(`        $_par.at(-1).appendChild(o);`);
@@ -842,7 +842,7 @@ const nodesToFunction = function(cp, arr, hashName) {
         x(`    });`);
         x(`  }`);
         x(`}`);
-        x(`else if ($_fgtn['${node.id}']?.[${hashName} || '$_resoot']) {`);
+        x(`else if ($_fgtn['${node.id}']?.[${hashName} || '$_root']) {`);
         x(`  $_items['${node.id}'] = $_par.at(-1);`);
         x(`}`);
         
