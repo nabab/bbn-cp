@@ -96,7 +96,7 @@ export default function generateCpClass(publicClass, obj) {
 
     static {
       let res;
-      let iface = obj.iface;
+      const iface = bbn.fn.isFunction(obj.iface) ? obj.iface() : obj.iface || {};
       bbn.fn.each(obj.statics, f => {
         res = f(iface);
         if (res) {
