@@ -12,8 +12,9 @@
  *
  * @created 10/02/2020
  */
+import iro from '@jaames/iro';
 
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.input
@@ -384,3 +385,26 @@ return {
       this.destroy();
     }
   };
+
+import cpHtml from './colorpicker.html';
+import cpStyle from './colorpicker.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./colorpicker.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+const def = {
+  name: 'bbn-colorpicker',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};
+
+export {def as default, iro};

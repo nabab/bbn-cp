@@ -9,7 +9,7 @@
  *
  * @created 15/02/2017.
  */
-return {
+const cpDef = {
     name: 'bbn-widget',
     /**
      * @mixin bbn.cp.mixins.basic,
@@ -666,3 +666,24 @@ return {
       }
     }
   };
+
+import cpHtml from './widget.html';
+import cpStyle from './widget.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./widget.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-widget',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

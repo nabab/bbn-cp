@@ -1,7 +1,9 @@
+import { bbn } from "@bbn/bbn";
+
 /**
  * Takes care of the data reactivity for non primitive values.
  */
-class bbnData {
+export default class bbnData {
 
   /**
    * Returns a unique identifier from any type of value (hashes only simple objects and arrays)
@@ -10,8 +12,7 @@ class bbnData {
    * @returns {String} The hash
    */
   static hash(v) {
-    let hash = v;
-    hash = bbn.fn.hash(v);
+    let hash = bbn.fn.hash(v);
 
     return hash;
   }
@@ -21,13 +22,30 @@ class bbnData {
    * @param {Object} value The value to immunize
    * @returns {Object} The immunized value
    */
-  static immunizeValue(value) {
+  static immunizeValue(value, deep) {
     if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor)) {
+      if (value.__bbnData) {
+        const dataObj = bbnData.getObject(value);
+        if (dataObj) {
+          dataObj.unset();
+        }
+      }
+
       Object.defineProperty(value, '__bbnNoData', {
         value: true,
         enumerable: false,
         configurable: false,
         writable: false
+      });
+    }
+      
+    if (deep) {
+      bbn.fn.iterate(value, (v, i) => {
+        try {
+          value[i] = bbnData.immunizeValue(v, true);
+        }
+        catch (e) {
+        }
       });
     }
 
@@ -70,10 +88,17 @@ class bbnData {
    * @returns {*} The original value or the reactive value
    */
   static treatValue(value, component, path, parent) {
+    if (component.$isDestroyed) {
+      return value;
+    }
+
     if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor) && !value.__bbnNoData) {
       if (value.__bbnData) {
         if (!bbn.cp.dataInventory.has(value.__bbnData)) {
-          throw new Error(bbn._("The data inventory does not contain the data object"));
+          //throw new Error(bbn._("The data inventory does not contain the data object"));
+          bbn.fn.log(value);
+          bbn.fn.warning(bbn._("The data inventory does not contain the data object"));
+          return value;
         }
 
         const dataObj = bbn.cp.dataInventory.get(value.__bbnData);
@@ -204,8 +229,8 @@ class bbnData {
       const res = target.unshift(...newArgs);
       const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
       if (dataObj) {
-        bbn.fn.log([dataObj.path, path]);
-        bbn.fn.warning("UNSHIFT");
+        //bbn.fn.log([dataObj.path, path]);
+        //bbn.fn.warning("UNSHIFT");
         dataObj.update();
       }
       else {
@@ -279,14 +304,13 @@ class bbnData {
         newArgs.push(newVal);
       });
 
-      for (let i = index; i < index + numDelete; i++) {
-        let subObj = bbnData.getObject(target[i]);
+      const res = target.splice(index, numDelete, ...newArgs);
+      bbn.fn.each(res, t => {
+        let subObj = bbnData.getObject(t);
         if (subObj) {
           subObj.unset();
         }
-      }
-
-      const res = target.splice(index, numDelete, ...newArgs);
+      });
       if (dataObj) {
         //bbn.fn.log("SPLICE");
         dataObj.update();
@@ -351,22 +375,24 @@ class bbnData {
         else if (!oldObj && !bbn.fn.isSame(oldValue, value)) {
           mod = true;
         }
-
+        
         if (mod) {
           const newVal = bbnData.treatValue(value, component, key, targetObj);
           target[key] = newVal;
           const dataObj = bbnData.getObject(newVal);
+          /*
+          if (key === 'loading') {
+            bbn.fn.log(["SET LOADING", value, mod, target, targetObj]);
+          }
+
+          bbn.fn.log(["SET", targetObj, key, newVal, oldValue, target, '------']);
+          */
+          targetObj.update(false, key);
+
           if (dataObj) {
-            //bbn.fn.log(["SET", dataObj, key, diff, newVal, oldValue, target, '------']);
             dataObj.update();
           }
-          else if (targetObj) {
-            targetObj.update();
-          }
-          else {
-            bbn.fn.log(target, key, description);
-            bbn.fn.warning("Impossible to get the target object");
-          }
+
         }
 
         return true;
@@ -382,7 +408,7 @@ class bbnData {
         }
         Object.defineProperty(target, key, description);
         if (targetObj) {
-          targetObj.update();
+          targetObj.update(false, key);
         }
         else {
           bbn.fn.log(target, key, description);
@@ -411,10 +437,12 @@ class bbnData {
    * @param {bbnData} parent If the data is a sub-object of another bbnData object, the parent object
    */
   constructor(data, component, path, parent) {
+    /*
     if (path === 'computed') {
       bbn.fn.log([component, path, parent, data]);
       throw new Error("bbnData cannot be initialized with a computed property");
     }
+    */
 
     if (data instanceof bbnData) {
       throw new Error("bbnData cannot be initialized with a bbnData");
@@ -451,8 +479,7 @@ class bbnData {
      * @var {String} path The path of the data in the component
      */
     Object.defineProperty(this, 'path', {
-      writable: false,
-      configurable: false,
+      writable: true,
       value: path
     });
 
@@ -540,7 +567,7 @@ class bbnData {
     if (!this.parent || !this.parent.hasComponent(component)) {
       this.components[component.$cid] = {
         component,
-        path
+        path: [path]
       };
       component.$values.push(this.id);
     }
@@ -574,7 +601,7 @@ class bbnData {
     }
     while (dataObj) {
       if (dataObj.components[component.$cid]) {
-        paths.unshift(dataObj.components[component.$cid].path);
+        paths.unshift(dataObj.components[component.$cid].path[0]);
         break;
       }
       else {
@@ -601,7 +628,7 @@ class bbnData {
 
   isSame(obj) {
     if (obj?.__bbnProxy) {
-      return obj === this.value;
+      return bbn.fn.isSame(obj, this.value);
     }
     else if (obj?.__bbnData) {
       return bbn.fn.isSame(obj, this.data);
@@ -615,6 +642,7 @@ class bbnData {
    * Deletes all references to the data object and its children
    */
   unset(noParent) {
+    //bbn.fn.log("UNSET", this);
     const id = this.id;
     // Unsetting the children
     bbn.fn.each(this.children, subObj => {
@@ -634,8 +662,9 @@ class bbnData {
           cp.$values.splice(idx, 1);
         }
         else if (cp.$isInit) {
+          bbn.fn.warning(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
           bbn.fn.log(this, it);
-          throw new Error(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
+          //throw new Error(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
         }
         
         //cp.$tick();
@@ -655,6 +684,7 @@ class bbnData {
         bbn.fn.log(this);
         throw new Error(bbn._("Impossible to find the data object in the values of the component %s", dataObj.root.$options.name));
       }
+      //bbn.fn.log(["TICK ON UNSET", this]);
       this.root.$tick();
     }
     if (this.parent) {
@@ -692,12 +722,23 @@ class bbnData {
     if (!this.hasComponent(component)) {
       this.components[component.$cid] = {
         component,
-        path
+        path: [path]
       };
       if (!component.$values.includes(this.id)) {
         component.$values.push(this.id);
         return true;
       }
+    }
+    else if (!this.components[component.$cid]) {
+      this.components[component.$cid] = {
+        component,
+        path: [this.path, path]
+      };
+      return true;
+    }
+    else if (!this.components[component.$cid].path.includes(path)) {
+      this.components[component.$cid].path.push(path);
+      return true;
     }
 
     
@@ -733,7 +774,7 @@ class bbnData {
    * Removes a component from the data object
    * @param {bbnCp} component 
    */
-  removeComponent(component) {
+  removeComponent(component, path) {
     if (!(component instanceof bbnCp)) {
       throw new Error("bbnData hasComponent must be called with a bbn component");
     }
@@ -742,17 +783,26 @@ class bbnData {
       throw new Error("The component is not in the list of components");
     }
 
-    if (component === this.root) {
-      //bbn.fn.log("UNSETTING");
+    if ((component === this.root) && (!path || (path === this.path))) {
       this.unset();
     }
     else {
-      let idx = component.$values.indexOf(this.id);
-      if (idx > -1) {
-        component.$values.splice(idx, 1);
+      if (path) {
+        let pathIdx = this.components[component.$cid].path.indexOf(path);
+        if (pathIdx === -1) {
+          throw new Error("The path is not in the list of paths");
+        }
+        this.components[component.$cid].path.splice(pathIdx, 1);
       }
 
-      delete this.components[component.$cid];
+      if (!path || !this.components[component.$cid].path.length) {
+        let idx = component.$values.indexOf(this.id);
+        if (idx > -1) {
+          component.$values.splice(idx, 1);
+        }
+  
+        delete this.components[component.$cid];
+      }
     }
   }
 
@@ -760,89 +810,79 @@ class bbnData {
    * Update all the components linked to the data object
    * @param {Boolean} deep 
    */
-  update(noParent) {
-    if (this.updater) {
-      clearTimeout(this.updater);
+  update(noParent, key) {
+    //bbn.fn.log(["UPDATE", this, this.path + '/' + (key || "no key"), this.value]);
+    let data = this;
+    let lev = 0;
+    if (this.isArray) {
+      bbn.fn.each(this.value, (v, i) => {
+        const objData = bbnData.getObject(v);
+        if (objData && (i != objData.path)) {
+          objData.path = i.toString();
+        }
+      });
+      bbn.fn.each(this.children, obj => {
+
+      })
     }
-
-    this.updater = setTimeout(() => {
-      let data = this;
-      let lev = 0;
-      /*
-      if (data.root) {
-        bbn.fn.log(["UPDATEBBNDATA", data.root, data]);
-      }
-      */
-      while (data) {
-        bbn.fn.iterate(data.components, (it, cid) => {
-          if (!it?.component) {
-            throw new Error(bbn._("Impossible to find the component %s", cid));
-          }
-
-          if (it.component.$isInit) {
-            let name = this.fullPath(it.component);
-            let bits = name.split('.');
-            /*
-            if (!noParent) {
-              bbn.fn.log(['ON UPDATE', this, name, it.path, lev]);
-            }
-            */
-
-            while (bits.length && !it.component.$watcher?.[name]?.handler) {
-              bits.pop();
-              name = bits.join('.');
-            }
-
-            if (it.component.$watcher?.[name]?.handler) {
-              let oldV = it.component.$watcher[name].value;
-              let v = bbn.fn.getProperty(it.component, name);
-              if (it.component.$isMounted && (!lev || it.component.$watcher[name].deep) ) {
-                bbn.fn.log(["WATCHER: " + name, oldV, v, it.component, '---']);
-                if (bbnData.hash(v) !== it.component.$watcher[name].hash) {
-                  if (!bbn.fn.isFunction(it.component.$watcher[name].handler)) {
-                    throw new Error(bbn._("Watchers must be function, wrong parameter for %s", name));
-                  }
-                  it.component.$watcher[name].hash = bbnData.hash(v);
-                  it.component.$watcher[name].value = v;
-                  it.component.$watcher[name].num++;
-                  it.component.$watcher[name].handler.apply(this, [v, oldV]);
-                }
-              }
-              else {
-                it.component.$watcher[name].hash = bbnData.hash(v);
-                it.component.$watcher[name].value = v;
-              }
-            }
-
-            /*
-            name = paths.join(".");
-            if (name && (subpathDone.indexOf(name) === -1)) {
-              subpathDone.push(name);
-              const prop = bbn.fn.getProperty(this.root, name);
-              const dataObj = bbnData.getObject(prop);
-              if (dataObj) {
-                //dataObj.updateComponents(true);
-              }
-            }
-            */
-
-            //bbn.fn.log(["TICK", it.component]);
-            //it.component.$tick()
-          }
-        });
-
-
-        if (!lev) {
-          this.updateChildren();
-          if (noParent) {
-            return;
-          }
+    /*
+    if (data.root) {
+      bbn.fn.log(["UPDATEBBNDATA", data.root, data]);
+    }
+    */
+    while (data) {
+      bbn.fn.iterate(data.components, (it, cid) => {
+        if (!it?.component) {
+          throw new Error(bbn._("Impossible to find the component %s", cid));
         }
 
-        data = data.parent;
-        lev++;
+        if (it.component.$isInit) {
+          let name = this.fullPath(it.component);
+          if (!lev && key) {
+            name += '.' + key;
+          }
+
+          let bits = name.split('.');
+          /*
+          if (!noParent) {
+            bbn.fn.log(['ON UPDATE', this, name, it.path, lev]);
+          }
+          */
+
+          while (bits.length) {
+            if (it.component.$watcher?.[name]) {
+              if (bits.length > 1) {
+                bits.shift();
+                it.component.$updateWatcher(name, bbn.fn.getProperty(data.value, bits.join(".")));
+              }
+              else {
+                it.component.$updateWatcher(name, data.value);
+              }
+            }
+            bits.pop();
+            name = bits.join('.');
+          }
+
+          //bbn.fn.log(["TICK on UPDATE", this]);
+          it.component.$tick()
+        }
+      });
+
+      if (data.root) {
+        //bbn.fn.log(["root", data.root]);
+        data.root.$tick();
       }
-    }, 1)
+
+      if (!lev) {
+        this.updateChildren();
+        if (noParent) {
+          return;
+        }
+      }
+
+      data = data.parent;
+      lev++;
+    }
   }
 
   updateChildren() {
@@ -854,3 +894,4 @@ class bbnData {
   }
 
 }
+

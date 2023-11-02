@@ -5,7 +5,7 @@
  * @author BBN Solutions
  * @created 13/02/2017
  */
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.input
@@ -115,3 +115,24 @@ return {
       },
     }
   };
+
+import cpHtml from './radiobuttons.html';
+import cpStyle from './radiobuttons.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./radiobuttons.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-radiobuttons',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

@@ -8,7 +8,7 @@
  *
  * @author BBN Solutions
  */
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.input
@@ -140,3 +140,24 @@ return {
 
     }
   };
+
+import cpHtml from './textarea.html';
+import cpStyle from './textarea.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./textarea.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-textarea',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

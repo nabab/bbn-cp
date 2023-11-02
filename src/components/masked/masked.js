@@ -5,8 +5,7 @@
  * @copyright BBN Solutions
  * @author Mirko Argentino
  */
-
-return {
+const cpDef = {
 	/**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.input
@@ -793,3 +792,24 @@ return {
       }
     }
   };
+
+import cpHtml from './masked.html';
+import cpStyle from './masked.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./masked.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-masked',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

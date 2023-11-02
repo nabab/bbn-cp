@@ -5,8 +5,7 @@
  * @author BBN Solutions
  * @created 31/05/2021
  */
-
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.resizer
@@ -357,3 +356,24 @@ return {
       }
     }
   };
+
+import cpHtml from './login.html';
+import cpStyle from './login.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./login.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-login',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

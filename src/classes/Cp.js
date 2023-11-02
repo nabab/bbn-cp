@@ -1,5 +1,6 @@
-
-class bbnCp {
+import { bbn } from "@bbn/bbn";
+import "../cp.js";
+export default class bbnCp {
 
   constructor(el) {
     // Setting up basic props
@@ -208,7 +209,7 @@ class bbnCp {
     Object.defineProperty(this, '$currentResult', {
       configurable: false,
       writable: false,
-      value: bbn.fn.createObject({_num: 0})
+      value: bbn.fn.createObject()
     });
     Object.defineProperty(this, '$schema', {
       configurable: false,
@@ -262,24 +263,24 @@ class bbnCp {
         // The function has never been generated for this component
         if (!this.$el.constructor.bbnEval) {
           // Generating
-          const stFn = bbn.cp.templateToFunction(this, this.$el.constructor.bbnTpl);
-          if (!stFn) {
+          const fn = bbn.cp.templateToFunction(this, this.$el.constructor.bbnTpl);
+          if (!fn) {
             throw new Error(bbn._("Impossible to create the template evaluator"));
           }
           // Setting in component's constructor
-          this.$el.constructor.prototype.bbnEval = stFn;
+          this.$el.constructor.prototype.bbnEval = fn;
         }
       }
       // The template is a one-shot, bbnAnon
       else {
         // Generating
-        const stFn = bbn.cp.templateToFunction(this, this.$el.bbnTpl);
-        if (!stFn) {
+        const fn = bbn.cp.templateToFunction(this, this.$el.bbnTpl);
+        if (!fn) {
           throw new Error(bbn._("Impossible to create the template evaluator"));
         }
         // Setting in component's property
         Object.defineProperty(this.$el, 'bbnEval', {
-          value: eval(stFn),
+          value: fn,
           writable: false,
           configurable: false
         });
@@ -295,14 +296,16 @@ class bbnCp {
 
 
     // Sending created event
-    const created = new Event('hook:created');
-    this.$onCreated();
-    this.$el.dispatchEvent(created);
-    Object.defineProperty(this, '$isCreated', {
-      value: true,
-      writable: false, 
-      configurable: false
-    });
+    if (!this.$isCreated) {
+      const created = new Event('hook:created');
+      this.$onCreated();
+      this.$el.dispatchEvent(created);
+      Object.defineProperty(this, '$isCreated', {
+        value: true,
+        writable: false, 
+        configurable: false
+      });
+    }
 
     // Sets the current template schema and creates the DOM
     await this.$updateComponent().then(() => {
@@ -328,15 +331,17 @@ class bbnCp {
         configurable: true
       });
 
-      // Sending mounted event
-      const mounted = new Event('hook:mounted');
-      this.$onMounted();
-      this.$el.dispatchEvent(mounted);
-      Object.defineProperty(this, '$isMounted', {
-        value: true,
-        writable: false, 
-        configurable: false
-      });
+      if (!this.$isMounted) {
+        // Sending mounted event
+        const mounted = new Event('hook:mounted');
+        this.$onMounted();
+        this.$el.dispatchEvent(mounted);
+        Object.defineProperty(this, '$isMounted', {
+          value: true,
+          writable: false, 
+          configurable: false
+        });
+      }
 
       this.$start();
 
@@ -389,15 +394,14 @@ class bbnCp {
    * @param {HTMLElement} target 
    * @returns 
    */
-  async $createElement(node, target, before, loopInfo) {
-    const d = node;
+  async $createElement(node, target, prevElementIndex, loopInfo) {
     // Components have an hyphen
-    let isComponent = this.$isComponent(d);
+    let isComponent = !node.comment && this.$isComponent(node);
     /** @constant {Array} todo A list of function to apply once the element will ne created */
     const todo = [];
     /** @constant {bbnComponentFunction} cpSource */
-    const cpSource = d.componentId ? bbn.cp.getComponent(d.componentId)?.bbn : this;
-    const oldEle = cpSource.$retrieveElement(d.id, d.loopHash);
+    const cpSource = node.componentId ? bbn.cp.getComponent(node.componentId)?.bbn : this;
+    const oldEle = cpSource.$retrieveElement(node.id, node.loopHash);
     let replace = false;
     let ele;
     if (oldEle) {
@@ -405,15 +409,15 @@ class bbnCp {
       if (
         (oldEle !== this.$el)
         && (
-          (!!d.comment !== isComment)
+          (!!node.comment !== isComment)
           || (
             !isComment
-            && d.tag
-            && !bbn.cp.isTag(d.tag, oldEle)
+            && node.tag
+            && !bbn.cp.isTag(node.tag, oldEle)
           )
         )
       ) {
-        //bbn.fn.log("REPLACING " + d.id, isComment, d, oldEle);
+        //bbn.fn.log("REPLACING " + node.id, isComment, d, oldEle);
         replace = true;
       }
       else {
@@ -422,8 +426,8 @@ class bbnCp {
     }
 
     /** @todo check todo */
-    let tag = d.tag;
-    let originalTag = d.tag;
+    let tag = node.tag;
+    let originalTag = node.tag;
     if (tag && this.$cfg.componentNames[tag]) {
       tag = this.$cfg.componentNames[tag];
       isComponent = true;
@@ -442,34 +446,33 @@ class bbnCp {
       }
     }
 
-    
-    if (d.model) {
-      for (let n in d.model) {
+    if (node.model) {
+      for (let n in node.model) {
         if (n === '_default_') {
           if (isComponent) {
             let modelProp = bbn.cp.statics[tag]?.cfg?.model?.prop || 'value';
-            d.props[modelProp] = d.props._default_;
-            delete d.props._default_;
-            d.model[modelProp] = d.model._default_;
-            //delete d.model._default_;
+            node.props[modelProp] = node.props._default_;
+            delete node.props._default_;
+            node.model[modelProp] = node.model._default_;
+            //delete node.model._default_;
           }
           else {
-            d.model.value = d.model._default_;
-            //delete d.model._default_;
-            d.props.value = d.props._default_;
-            delete d.props._default_;
+            node.model.value = node.model._default_;
+            //delete node.model._default_;
+            node.props.value = node.props._default_;
+            delete node.props._default_;
           }
         }
       }
     }
 
     if (!oldEle || replace) {
-      if (d.comment) {
+      if (node.comment) {
         ele = document.createComment(" ***_BBN_*** ");
       }
       else if (tag === 'svg') {
         ele = document.createElementNS("http://www.w3.org/2000/svg", tag);
-        ele.innerHTML = d.content;
+        ele.innerHTML = node.content;
       }
       else {
         /** 
@@ -494,17 +497,17 @@ class bbnCp {
           ele.setAttribute('is', originalTag);
         }
         if (tag === 'bbn-anon') {
-          if (d.cfg){
-            if (d.cfg.mixins && d.cfg.mixins.indexOf(bbn.cp.mixins.basic) === -1) {
-              d.cfg.mixins.push(bbn.cp.mixins.basic);
+          if (node.cfg){
+            if (node.cfg.mixins && node.cfg.mixins.indexOf(bbn.cp.mixins.basic) === -1) {
+              node.cfg.mixins.push(bbn.cp.mixins.basic);
             }
             Object.defineProperty(ele, 'bbnCfg', {
-              value: d.cfg,
+              value: node.cfg,
               writable: false,
               configurable: false
             });
-            if (d.cfg.template) {
-              const tmp = bbn.cp.stringToTemplate(d.cfg.template, true);
+            if (node.cfg.template) {
+              const tmp = bbn.cp.stringToTemplate(node.cfg.template, true);
               Object.defineProperty(ele, 'bbnTpl', {
                 value: tmp.res,
                 writable: false,
@@ -527,14 +530,14 @@ class bbnCp {
 
       // Giving to all elements property bbnId
       Object.defineProperty(ele, 'bbnId', {
-        value: d.id,
+        value: node.id,
         writable: false,
         configurable: false
       });
 
       // Outer schema of the component, with the slots
       Object.defineProperty(ele, 'bbnSchema', {
-        value: d,
+        value: node,
         writable: true,
         configurable: true
       });
@@ -545,7 +548,7 @@ class bbnCp {
         configurable: false
       });
 
-      if (d.directives) {
+      if (node.directives) {
         Object.defineProperty(ele, 'bbnDirectives', {
           value: bbn.fn.createObject(),
           writable: false,
@@ -561,22 +564,36 @@ class bbnCp {
         });
       }
 
-      if (d.loopHash) {
+      if (node.loopHash) {
         Object.defineProperty(ele, 'bbnHash', {
-          value: d.loopHash,
+          value: node.loopHash,
           writable: false,
           configurable: false
         });
         Object.defineProperty(ele, 'bbnIndex', {
-          value: d.loopIndex,
+          value: node.loopIndex,
           writable: false,
           configurable: false
         });
       }
       if (isComponent) {
+        let realSlots;
+        if (tag === 'bbn-anon') {
+          realSlots = bbn.cp.retrieveSlots(ele.bbnTpl || node.items);
+        }
+        else {
+          realSlots = bbn.fn.clone(ele.constructor.bbnSlots)
+        }
+
+        if (!bbn.fn.numProperties(realSlots)) {
+          realSlots = bbn.fn.createObject({
+            default: []
+          });
+        }
+
         // Outer schema of the component, with the slots
         Object.defineProperty(ele, 'bbnRealSlots', {
-          value: tag === 'bbn-anon' ? bbn.cp.retrieveSlots(ele.bbnTpl || d.items) : bbn.fn.clone(ele.constructor.bbnSlots),
+          value: realSlots,
           writable: false,
           configurable: false
         });
@@ -591,7 +608,7 @@ class bbnCp {
     }
     else {
       ele = oldEle;
-      if (!bbn.fn.isSame(ele.bbnSchema.props,  d.props)) {
+      if (!bbn.fn.isSame(ele.bbnSchema.props,  node.props)) {
         ele.bbnSchema = d;
         if (isComponent && ele.bbn && ele.bbn.$isMounted) {
           ele.bbn.$forceUpdate();
@@ -599,11 +616,11 @@ class bbnCp {
       }
     }
 
-    if (!d.comment) {
-      cpSource.$updateElementFromProps(d, ele);
+    if (!node.comment) {
+      cpSource.$updateElementFromProps(node, ele);
 
-      if (d.pre) {
-        ele.innerHTML = d.pre;
+      if (node.pre) {
+        ele.innerHTML = node.pre;
       }
 
     }
@@ -613,14 +630,10 @@ class bbnCp {
     }
 
     if (target !== this.$el) {
-      this.$insertElement(ele, target, before, oldEle);
+      this.$insertElement(ele, target, prevElementIndex, oldEle);
     }
     else {
       this.$addToElements(ele);
-    }
-
-    if (!d.comment && d.directives) {
-      bbn.cp.insertDirectives(d.directives, ele);
     }
 
     return ele;
@@ -633,11 +646,11 @@ class bbnCp {
    * @param {HTMLElement} target 
    * @returns 
    */
-  $createText(d, target, loopInfo) {
-    const ele = document.createTextNode(d.text);
-    bbn.fn.checkType(d.id, String, "Boo");
+  $createText(node, target, loopInfo) {
+    const ele = document.createTextNode(node.text);
+    bbn.fn.checkType(node.id, String, "Boo");
     Object.defineProperty(ele, 'bbnId', {
-      value: d.id,
+      value: node.id,
       writable: false,
       configurable: false
     });
@@ -655,14 +668,14 @@ class bbnCp {
       });
     }
 
-    if (d.loopHash) {
+    if (node.loopHash) {
       Object.defineProperty(ele, 'bbnHash', {
-        value: d.loopHash,
+        value: node.loopHash,
         writable: false,
         configurable: false
       });
       Object.defineProperty(ele, 'bbnIndex', {
-        value: d.loopIndex,
+        value: node.loopIndex,
         writable: false,
         configurable: false
       });
@@ -671,7 +684,10 @@ class bbnCp {
     this.$addToElements(ele);
 
     if (bbn.cp.isComponent(target)) {
-      target.bbnSlots.default.push(ele);
+      if (target.bbnSlots?.default?.length || bbn.fn.removeExtraSpaces(ele.textContent)) {
+        target.bbnSlots.default.push(ele);
+      }
+
       if (target.bbn && target.bbn.$isMounted) {
         target.bbn.$tick();
       }
@@ -697,12 +713,12 @@ class bbnCp {
       this.$onBeforeDestroy();
       this.$el.dispatchEvent(beforeDestroy);
       
-      // Sending destroyed event through a timeout
-      setTimeout(() => {
-        const destroyed = new Event('destroyed');
-        this.$onDestroyed();
-        this.$el.dispatchEvent(destroyed);
+      Object.defineProperty(this, '$isDestroyed', {
+        value: true,
+        writable: false,
+        configurable: true
       });
+      // Sending destroyed event through a timeout
       // Deleting from elements prop
       while (this.$values.length) {
         let id = this.$values[this.$values.length -1];
@@ -728,6 +744,9 @@ class bbnCp {
         writable: false,
         configurable: true
       });
+      const destroyed = new Event('destroyed');
+      this.$onDestroyed();
+      this.$el.dispatchEvent(destroyed);
     }
   }
 
@@ -793,6 +812,12 @@ class bbnCp {
     });
 
     Object.defineProperty(this, '$isCreated', {
+      value: false,
+      writable: true, 
+      configurable: true
+    });
+
+    Object.defineProperty(this, '$isDestroyed', {
       value: false,
       writable: true, 
       configurable: true
@@ -956,7 +981,7 @@ class bbnCp {
      * Unique ID for each component, used for global registration
      */
     Object.defineProperty(this, '$origin', {
-      value: this.$el.bbnComponentId && (this.$el.bbnComponentId !== this.$cid) ? bbn.cp.getComponent(this.$el.bbnComponentId).bbn : this,
+      value: this.$el.bbnComponentId && (this.$el.bbnComponentId !== this.$cid) ? bbn.cp.getComponent(this.$el.bbnComponentId)?.bbn || this : this,
       writable: false,
       configurable: false
     });
@@ -1096,13 +1121,12 @@ class bbnCp {
    * Creates an element in the given target
    * @param {HTMLElement} d 
    * @param {HTMLElement} target 
+   * @param {HTMLElement} after 
    * @returns 
    */
-  $insertElement(ele, target, before, oldEle) {
+  $insertElement(ele, target, prevElementIndex, oldEle) {
     bbn.fn.checkType(target, HTMLElement, "The $insert function should have an HTMLElement as target");
-
-    const d = ele.bbnSchema;
-
+    const node = ele.bbnSchema;
     //bbn.fn.checkType(ele, HTMLElement);
     const isParentComponent = (target !== this.$el) && bbn.cp.isComponent(target);
     let replace = false;
@@ -1115,8 +1139,8 @@ class bbnCp {
           (isOldComment !== isComment)
           || (
             !isOldComment
-            && d.tag
-            && !bbn.cp.isTag(d.tag, oldEle)
+            && node.tag
+            && !bbn.cp.isTag(node.tag, oldEle)
           )
         )
       ) {
@@ -1129,7 +1153,7 @@ class bbnCp {
 
     if (replace) {
       //bbn.fn.log("REPLACE", ele);
-      if (isParentComponent && !ele.bbnSchema.comment) {
+      if (isParentComponent && !ele.bbnSchema?.comment) {
         //bbn.fn.log("IN CP " + target.tagName, ele);
         const slot = ele.getAttribute("slot") || 'default';
         if (target.bbnSlots?.[slot]) {
@@ -1175,7 +1199,7 @@ class bbnCp {
       this.$addToElements(ele);
     }
     else if (oldEle !== ele) {
-      //bbn.fn.log("INSERT", oldEle, ele);
+      //bbn.fn.log(["INSERT ", ele, oldEle]);
       if (isParentComponent) {
         const slot = ele.bbnSchema.props?.slot || 'default';
         if (target.bbnSlots?.[slot]) {
@@ -1200,13 +1224,12 @@ class bbnCp {
           else {
             target.bbnSlots[slot].push(ele);
           }
-
           this.$addToElements(ele);
         }
       }
       else {
-        if (before) {
-          target.insertBefore(ele, before);
+        if (target.childNodes[prevElementIndex]) {
+          target.childNodes[prevElementIndex].after(ele);
         }
         else {
           target.appendChild(ele);
@@ -1235,30 +1258,30 @@ class bbnCp {
     //bbn.fn.log(this, "REMOVING " + (ele.bbn ? ele.bbn.$options.name + ' ': '') + ele.bbnId);
     const id = ele.bbnId;
     const hash = ele.bbnHash;
-    const cpSource = ele.bbnComponentId && (ele.bbnComponentId !== this.$cid) ? bbn.cp.getComponent(ele.bbnComponentId).bbn : this;
-    // It won't have an ID if it's a bbn-text or bbn-html
+    const cpSource = ele.bbnComponentId && (ele.bbnComponentId !== this.$cid) ? bbn.cp.getComponent(ele.bbnComponentId)?.bbn || this : this;
+    // It won't have an ID if it's a bbn-text or bbn-html or creaated by an external component/widget
     if (id) {
       if (ele.bbnSlots) {
-        bbn.fn.iterate(ele.bbnSlots, slot => {
-          bbn.fn.each(slot.splice(0, slot.length), o => {
+        for (let n in ele.bbnSlots) {
+          let slot = ele.bbnSlots[n].splice(0, ele.bbnSlots[n].length);
+          for (let i = 0; i < slot.length; i++) {
+            let o = slot[i];
             //bbn.fn.log("REMOVE FROM SLOT", o);
-            let cp = o.bbnComponentId !== this.$cid ? bbn.cp.getComponent(o.bbnComponentId).bbn : this;
+            let cp = o.bbnComponentId !== this.$cid ? bbn.cp.getComponent(o.bbnComponentId)?.bbn || this : this;
             cp.$removeDOM(o);
-          });
-        });
+          }
+        }
       }
 
       if (ele.childNodes && ele.bbnSchema && !Object.hasOwn(ele.bbnSchema.props || {}, 'bbn-text') && !Object.hasOwn(ele.bbnSchema.props || {}, 'bbn-html') && (ele.bbnSchema.tag !== 'svg')) {
-        bbn.fn.each(Array.from(ele.childNodes), (node, i) => {
-          let cp = ele.bbnComponentId !== this.$cid ? bbn.cp.getComponent(ele.bbnComponentId).bbn : this;
+        while (ele.childNodes.length) {
+          let node = ele.childNodes[0];
+          let cp = ele.bbnComponentId !== this.$cid ? bbn.cp.getComponent(ele.bbnComponentId)?.bbn || this : this;
           cp.$removeDOM(node);
-        });
+        }
       }
 
       cpSource.$removeFromElements(id, hash);
-    }
-    else {
-      bbn.fn.log(["Impossible to remove element without ID", ele, typeof ele]);
     }
 
     if (ele.parentNode) {
@@ -1325,7 +1348,7 @@ class bbnCp {
       });
     }
     else if (this.$isBusy) {
-      return;
+      return this.$forceUpdate();
     }
     else {
       this.$isUpdating = true;
@@ -1340,12 +1363,21 @@ class bbnCp {
     const t1 = (new Date()).getTime();
     this.$lastLaunch = t1;
     this.$updateProps();
+    if (!this.$numBuild) {
+      bbn.fn.iterate(this.$watcher, (a, n) => {
+        this.$updateWatcher(n, bbn.fn.getProperty(this, n), true);
+      });
+    }
+
     //this.$updateAllComputed();
+    //bbn.fn.log(["EVALUATING", this.$options.name, this.$cid]);
+    if (this.$options.name === 'bbn-table') {
+      //debugger;
+    }
     const e = await this.$eval(this);
     const t2 = (new Date()).getTime();
     this.$numBuild++;
     this.$lastLaunch = t2;
-    //bbn.fn.warning("UPDATE COMPONENT " + this.$options.name + ' - ' + this.$cid + ' - ' + this.$id + ' - time: ' + (this.$lastLaunch/1000) + '(' + this.$numBuild + ')');
     if (this.$isCreating) {
       Object.defineProperty(this, '$isCreating', {
         writable: false,
@@ -1470,7 +1502,7 @@ class bbnCp {
             propName = bbn.cp.badCaseAttributes[name];
           }
 
-          const isAttr = (ele[propName] !== undefined) && bbn.fn.isPrimitive(this.$el[propName]);
+          const isAttr = (ele[propName] !== undefined);
           if (isAttr) {
             const attr = ele[propName];
             if (attr !== value) {
@@ -1551,9 +1583,52 @@ class bbnCp {
       }
 
       stl = bbn.cp.convertStyles(stl);
-      if (stl) {
-        this.$el.style.cssText = bbn.cp.convertStyles(stl);
+      if (stl && (stl !== this.$el.style.cssText)) {
+        this.$el.style.cssText = stl;
       }
+
+      for (let n in props) {
+        if (!['class', 'style'].includes(n)) {
+          let value = props[n];
+
+          if (Object.hasOwn(this.$props, n)) {
+            this.$setProp(n, value);
+          }
+
+          if (bbn.fn.isPrimitive(value)) {
+            let propName = n;
+            if (bbn.cp.badCaseAttributes[n]) {
+              propName = bbn.cp.badCaseAttributes[n];
+            }
+  
+            const isAttr = (this.$el[propName] !== undefined);
+            if (isAttr) {
+              const attr = this.$el[propName];
+              if (attr !== value) {
+                if (!value) {
+                  this.$el.removeAttribute(n);
+                  // for SVG
+                  if ({}.toString.apply(this.$el[propName]).substr(0, 7) !== '[object') {
+                    this.$el[propName] = '';
+                  }
+                }
+                else {
+                  this.$el.setAttribute(n, value);
+                  // for SVG
+                  if ({}.toString.apply(this.$el[propName]).substr(0, 7) !== '[object') {
+                    this.$el[n] = bbn.fn.isString(value) ? value : value?.toString() || '';
+                  }
+                  else {
+                    //bbn.fn.warning("SVG OBJ " +propName);
+                    //bbn.fn.log(this.$el[propName]);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      /*
       for (let n in props) {
         if (!['class', 'style'].includes(n)) {
           if (Object.hasOwn(this.$props, n)) {
@@ -1564,6 +1639,7 @@ class bbnCp {
           }
         }
       }
+      */
     }
   }
 
@@ -1575,52 +1651,24 @@ class bbnCp {
    * @returns {undefined}
    */
   $watch(name, a) {
-    if (this.$watcher) {
-      const cp = this;
-      const bits = name.split('.');
-      const realName = bits.shift();
-      if (!this.$watcher[realName]) {
-        this.$watcher[realName] = bbn.fn.createObject();
-      }
+    const cp = this;
 
-      let tmp = this.$watcher[realName];
-      if (bits.length) {
-        while (bits.length) {
-          let n = bits.shift();
-          if (!tmp.props) {
-            tmp.props = bbn.fn.createObject();
-          }
+    const val = bbn.fn.getProperty(cp, name);
+    let tmp = bbn.fn.createObject({
+      handler: (bbn.fn.isFunction(a) ? a : a.handler).bind(cp),
+      immediate: a.immediate || false,
+      deep: a.deep || false,
+      value: val,
+      hash: bbnData.hash(val),
+      num: 0
+    });
+    //bbn.fn.log(["WATCHING " + name, val, tmp])
 
-          tmp.props[n] = bbn.fn.createObject();
-          if (!bits.length) {
-            tmp.props[n].handler = bbn.fn.isFunction(a) ? a : a.handler;
-            tmp.props[n].immediate = a.immediate || false;
-            tmp.props[n].deep = a.deep || false;
-            tmp.props[n].value = undefined;
-            tmp.props[n].hash = undefined;
-            tmp.num = 0;
-          }
-          else {
-            tmp = tmp.props[n];
-          }
-        }
-      }
-      else {
-        tmp.handler = (bbn.fn.isFunction(a) ? a : a.handler).bind(this);
-        tmp.immediate = a.immediate || false;
-        tmp.deep = a.deep || false;
-        tmp.value = undefined;
-        tmp.num = 0;
-      }
+    cp.$watcher[name] = tmp;
 
-      if (!this.$watcher[name]) {
-        this.$watcher[name] = tmp;
-      }
-
-      // Returns a function to cancel the watcher
-      return () => {
-        delete cp.$watcher[name];
-      }
+    // Returns a function to cancel the watcher
+    return () => {
+      delete cp.$watcher[name];
     }
   }
 
@@ -1665,7 +1713,9 @@ class bbnCp {
       };
       Object.defineProperty(this, name, def);
       this.$addNamespace(name, 'data');
-      this.$updateWatcher(name, this.$dataValues[name], true);
+      if (this.$numBuild) {
+        this.$updateWatcher(name, this.$dataValues[name], true);
+      }
       if (this.$isMounted) {
         this.$tick();
       }
@@ -1674,21 +1724,30 @@ class bbnCp {
 
 
   $updateWatcher(name, v, init) {
-    if (init || this.$isInit) {
-      if (this.$watcher?.[name]?.handler) {
-        if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
-          throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
+    if ((init || this.$isInit) && this.$watcher?.[name]) {
+      let lev = 0;
+      const bits = name.split(".");
+      for (let i = bits.length - 1; i > -1; i--) {
+        let name = bits.join('.');
+        if (this.$watcher[name]?.handler) {
+          if (!bbn.fn.isFunction(this.$watcher[name].handler)) {
+            throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
+          }
+  
+          const hash = bbnData.hash(v);
+          if ((!lev || this.$watcher[name].deep) && (hash !== this.$watcher[name].hash)) {
+            let oldDataObj = bbnData.getObject(this.$watcher[name].value);
+            let oldV = oldDataObj ? oldDataObj.value : this.$watcher[name].value;
+            this.$watcher[name].value = lev ? bbn.fn.getProperty(this, name) : v;
+            this.$watcher[name].hash = bbnData.hash(this.$watcher[name].value);
+            this.$watcher[name].num++;
+            if (!init) {
+              this.$watcher[name].handler.apply(this, [this.$watcher[name].value, oldV]);
+            }
+          }
         }
-
-        const oldDataObj = bbnData.getObject(this.$watcher[name].value);
-        const oldV = oldDataObj ? oldDataObj.value : this.$watcher[name].value;
-        const oldHash = this.$watcher[name].hash;
-        this.$watcher[name].hash = bbnData.hash(v);
-        this.$watcher[name].value = v;
-        if (!init && (oldHash !== this.$watcher[name].hash)) {
-          this.$watcher[name].handler.apply(this, [v, oldV]);
-          this.$tick();
-        }
+        bits.pop();
+        lev++
       }
     }
   }
@@ -1716,7 +1775,7 @@ class bbnCp {
         }
         else {
           //bbn.fn.log(["REMOVING COMPONENT FROM DATA", this, oldV, v]);
-          oldDataObj.removeComponent(this);
+          oldDataObj.removeComponent(this, name);
         }
       }
 
@@ -1724,12 +1783,16 @@ class bbnCp {
         const newVal = bbnData.treatValue(v, this, name);
         this.$dataValues[name] = newVal;
         this.$updateWatcher(name, newVal);
+        this.$tick();
       }
     }
   }
 
   $setUpProp(name, cfg) {
-    name = bbn.fn.camelize(name);
+    if (!/[A-Z]/.test(name)) {
+      name = bbn.fn.camelize(name);
+    }
+
     if (Object.hasOwn(this.$cfg.props, name)) {
       if (!Object.hasOwn(this.$props, name)) {
         Object.defineProperty(this.$props, name, {
@@ -1745,7 +1808,6 @@ class bbnCp {
 
     const value = this.$checkPropValue(name, cfg);
     const isDefined = value !== undefined;
-    this.$updateWatcher(name, value, true);
     if (isDefined) {
       this.$realSetProp(name, value);
     }
@@ -1786,7 +1848,9 @@ class bbnCp {
    * Set properties of the initial component to the new web-component
    */
   $setProp(name, value) {
-    name = bbn.fn.camelize(name);
+    if (!/[A-Z]/.test(name)) {
+      name = bbn.fn.camelize(name);
+    }
     const cfg = this.$cfg.props[name];
     /*
     if (bbn.cp.possibleAttributes.includes(name)) {
@@ -1815,7 +1879,10 @@ class bbnCp {
 
 
   $realSetProp(name, value) {
-    name = bbn.fn.camelize(name);
+    if (!/[A-Z]/.test(name)) {
+      name = bbn.fn.camelize(name);
+    }
+
     const original = this.$props[name];
     if (!bbn.fn.isSame(value, original)) {
       const oldObj = bbnData.getObject(original);
@@ -1908,16 +1975,28 @@ class bbnCp {
   }
 
   $updateComputed(name, val) {
+    if (!this.$computed[name]) {
+      throw new Error(bbn._("The computed %s is not defined in %s", name, this.$options.name));
+    }
+
     const hash = bbnData.hash(val);
-    if (!bbn.fn.isSame(hash, this.$computed[name].hash)) {
+    if (!bbn.fn.isSame(this.$computed[name].hash, hash)) {
       const oldValue = this.$computed[name].val;
-      //bbn.fn.log(["UPDATING COMPUTED " + name, val, hash, bbn.fn.isFunction(hash), this.$computed[name].hash, oldValue]);
-      this.$computed[name].old = oldValue;
-      this.$computed[name].hash = hash;
-      this.$computed[name].num = this.$computed[name].num < this.$numBuild ? this.$numBuild + 1 : this.$computed[name].num + 1;
-      val = bbnData.treatValue(val, this, name);
-      this.$computed[name].val = val;
-      this.$updateWatcher(name, val);
+      /*
+      const newData = bbnData.getObject(val);
+      if (bbn.fn.isArray(val, oldValue) && !newData && !bbn.fn.isSame(val, oldValue)) {
+        const dataObj = bbnData.getObject(oldValue);
+        bbn.fn.mutateArray(dataObj?.data || oldValue, val);
+      }
+      else {*/
+        //bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue]);
+        this.$computed[name].old = oldValue;
+        this.$computed[name].hash = hash;
+        this.$computed[name].num = this.$computed[name].num < this.$numBuild ? this.$numBuild + 1 : this.$computed[name].num + 1;
+        val = bbnData.treatValue(val, this, name);
+        this.$computed[name].val = val;
+        this.$updateWatcher(name, val);
+      //}
       this.$tick();
       return true;
     }
@@ -1993,7 +2072,7 @@ class bbnCp {
     else if (_r[_name][_hash].state === 'TMP') {
       _r[_name][_hash].value = _res;
       const _o = bbnData.hash(_r[_name][_hash].value);
-      if (_r[_name][_hash].old !== _o) {
+      if (!bbn.fn.isSame(_r[_name][_hash].old, _o)) {
         _r[_name][_hash].state = 'MOD';
       }
       else {
@@ -2103,31 +2182,16 @@ class bbnCp {
    * Add delay before another function call
    */
   $tick() {
-    return new Promise(resolve => {
-      let row = bbn.fn.getRow(bbn.cp.queue, {cp: this});
-      if (!row) {
-        row = {cp: this, fns: []};
-        bbn.cp.queue.push(row);
-      }
-      row.fns.push(resolve);
-      //bbn.fn.warning("TICK");
-      //console.trace();
-      //bbn.fn.log(this, '--------------------')
-    });
+    let row = bbn.fn.getRow(bbn.cp.queue, {cp: this});
+    if (!row) {
+      row = {cp: this, fns: []};
+      bbn.cp.queue.push(row);
+    }
+    //bbn.fn.log("TICK");
+    //console.trace();
+    //bbn.fn.log(this, '--------------------')
 
   }
-  /*
-  $tick() {
-    return new Promise(resolve => {
-      if (!bbn.cp.$queue.length) {
-        bbn.cp.$queue.push([]);
-      }
-
-      this.$queue[0].push(resolve);
-    });
-  }
-  */
-
 
   /**
    * Check if there is no conflict between attributes/methods and
@@ -2138,6 +2202,10 @@ class bbnCp {
   $addNamespace(name, type) {
     if (!type) {
       throw new Error(bbn._("Type must be defined for %s", name));
+    }
+
+    if (bbn.var.reserved.includes(name)) {
+      throw new Error(bbn._("The name %s is reserved", name));
     }
 
     if (this.$namespaces[name] && (this.$namespaces[name] !== type)) {
@@ -2174,23 +2242,31 @@ class bbnCp {
    * @returns 
    */
   $set(obj, prop, value, writable = true, configurable = true) {
+    // Case where it's the prop or data of a component
     if (bbn.cp.isComponent(obj)) {
+      //  It already exists
       if (obj.$namespaces[prop]) {
+        // New treated value
         const dataObj = bbnData.treatValue(value, obj, prop);
+        // The value is different
         if (!bbn.fn.isSame(dataObj, obj[prop])) {
+          // It's a prop
           if (obj.$namespaces[prop] === 'props') {
             obj.$setProp(prop, value);
           }
+          // It's a data
           else {
             obj[prop] = value;
           }
         }
       }
+      // Creating a new data
       else {
         obj.$setUpData(prop, value);
       }
     }
     else {
+      // Creating or updating if possible a property to the given object
       Object.defineProperty(obj, prop, {
         value,
         writable,
@@ -2298,6 +2374,7 @@ class bbnCp {
     if (!bound) {
       bound = this;
     }
+
     bbn.fn.checkType(event, String, bbn._("Events must be strings for \$on in %s", this.$options.name));
     bbn.fn.checkType(handler, Function, bbn._("Events handlers must be functions for \$on in %s", this.$options.name));
     const fn = bbn.fn.analyzeFunction(handler);
@@ -2307,7 +2384,7 @@ class bbnCp {
     }
 
     if (!remove && this.$events[event][hash]) {
-      throw new Error(bbn._("The event %s is already set in %s", event, this.$options.name));
+      //throw new Error(bbn._("The event %s is already set in %s", event, this.$options.name));
     }
 
     this.$events[event][hash] = (ev) => {
@@ -2364,21 +2441,33 @@ class bbnCp {
   /**
    * Forcing executing tick (updateComponent) function by setting this.$tickLast to 0
    */
-  async $forceUpdate() {
+  async $forceUpdate(fn) {
     if (!this.$isBusy) {
-      return await this.$updateComponent();
+      const prom = this.$updateComponent();
+      if (fn) {
+        return prom.then(() => fn);
+      }
+
+      return prom;
     }
     else {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         let row = bbn.fn.getRow(bbn.cp.queue, {cp: this});
         if (!row) {
-          bbn.cp.queue.push({
+          row = {
             cp: this,
             fns: [resolve],
             force: true
-          });
+          };
+          bbn.cp.queue.push(row);
         }
-        else if (!row.force) {
+
+        row.fns.push(resolve);
+        if (fn && bbn.fn.isFunction(fn)) {
+          row.fns.push(fn);
+        }
+
+        if (!row.force) {
           row.force = true;
         }
       });
@@ -2629,4 +2718,3 @@ class bbnCp {
   }
 
 }
-

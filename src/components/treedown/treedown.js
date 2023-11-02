@@ -9,9 +9,7 @@
  *
  * @created 10/02/2017.
  */
-
-
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.input
@@ -461,3 +459,24 @@ return {
       }
     }
   };
+
+import cpHtml from './treedown.html';
+import cpStyle from './treedown.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./treedown.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-treedown',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

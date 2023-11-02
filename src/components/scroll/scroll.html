@@ -9,10 +9,7 @@
        @focus="isFocused = true"
        @blur="isFocused = false"
        :tabindex="scrollable ? '0' : '-1'">
-    <div :class="{
-          'bbn-scroll-content': true,
-          'bbn-w-100': !scrollable
-        }"
+    <div :class="'bbn-scroll-content' + (scrollable ? ' bbn-w-100' : '')"
          ref="scrollContent"
          :style="contentStyle">
       <slot/>

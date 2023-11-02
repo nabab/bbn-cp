@@ -44,7 +44,7 @@
                           'bbn-iblock': !isVertical,
                           'bbn-flex-fill': fill,
                           'bbn-c': fill,
-                          'bbn-tabs-static': !!tab.static,
+                          'bbn-tabs-fixed': !!tab.fixed,
                           'bbn-background-effect-internal': tabIndex === value,
                           'bbn-tabs-active': tabIndex === value,
                           'bbn-disabled': tab.disabled,
@@ -90,7 +90,7 @@
                      :ref="'selector-' + tabIndex"
                      v-if="tabIndex === value"
                      :style="{backgroundColor: selectedBarColor || altTextColor}"/>
-                <span v-if="!tab.static && !tab.pinned && closable"
+                <span v-if="!tab.fixed && !tab.pinned && closable"
                       class="bbn-p bbn-router-tab-close bbn-iblock bbn-top-right bbn-hxspadded"
                       tabindex="-1"
                       :ref="'closer-' + tabIndex"

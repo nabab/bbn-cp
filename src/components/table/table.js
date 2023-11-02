@@ -14,8 +14,7 @@
  *
  * @copyright BBN Solutions
  */
-
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.resizer
@@ -2686,7 +2685,7 @@ return {
        * @method resizeWidth
        * @returns {bbnCp}
        */
-      resizeWidth(){
+      resizeWidth() {
         let currentTot = this.groupCols[0].width + this.groupCols[1].width + this.groupCols[2].width,
             parentWidth = this.$el.offsetParent ? this.$el.offsetParent.getBoundingClientRect().width : this.lastKnownCtWidth,
             diff =  parentWidth - this.borderLeft - this.borderRight - currentTot,
@@ -2696,6 +2695,7 @@ return {
               ? (diff / (numDynCols || numStaticCols))
               : 0;
         if (newWidth) {
+          window.bbn.fn.log(['inside table', diff, newWidth, numDynCols, numStaticCols]);
           this.isResizingWidth = true;
           bbn.fn.each(this.groupCols, (groupCol, groupIdx) => {
             let sum = 0,
@@ -2814,6 +2814,7 @@ return {
             });
             this.allExpanded = false;
           }
+
           if (
             this.groupable &&
             (this.group !== false) &&
@@ -3824,3 +3825,25 @@ return {
       }
     }
   };
+
+import bbn from '@bbn/bbn';
+import cpHtml from './table.html';
+import cpStyle from './table.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./table.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-table',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

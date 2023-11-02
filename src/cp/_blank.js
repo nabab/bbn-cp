@@ -1,4 +1,0 @@
-(() => {
-  bbn.fn.autoExtend('cp', {
-  })
-})();

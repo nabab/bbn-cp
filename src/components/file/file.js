@@ -9,8 +9,9 @@
   *
   * @created 13/06/2017.
   */
+import FileDrop from 'filedrop';
 
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.input
@@ -227,7 +228,7 @@ return {
         */
         let widget = new FileDrop(this.getRef('zone'), {
           upload(){
-            bbn.fn.log("UPL<ADING", arguments);
+            bbn.fn.log("UPLOADING", arguments);
           },
           /* iframe: {
             url: this.saveUrl
@@ -255,7 +256,7 @@ return {
                 });
 
                 file.sendTo(this.saveUrl, { xRequestedWith: 'XMLHttpRequest'});
-                bbn.fn.log(file);
+                //bbn.fn.log("FROM FILE", file);
                 this.files.push(file);
               }
             });
@@ -292,3 +293,26 @@ return {
       }
     }
   };
+
+import cpHtml from './file.html';
+import cpStyle from './file.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./file.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+const def = {
+  name: 'bbn-file',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};
+
+export {def as default, FileDrop};

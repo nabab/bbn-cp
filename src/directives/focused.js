@@ -1,4 +1,4 @@
-(() => {
+export default function() {
   bbn.cp.directives['bbn-focused'] = bbn.fn.createObject({
     inserted(el, binding) {
       if (binding.value === false) {
@@ -14,4 +14,4 @@
       }, 250);
     }
   });
-})();
+}

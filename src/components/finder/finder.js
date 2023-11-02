@@ -1,8 +1,7 @@
 /**
  * Created by BBN on 15/08/2019.
  */
-
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.localStorage
@@ -41,6 +40,11 @@ return {
         json: 'nf nf-mdi-json bbn-red'
       },
       imageExt = ['jpeg', 'png', 'jpg', 'tiff', 'gif'];
+      return {
+        fields,
+        filesRules,
+        imageExt
+      }
     },
     props: {
       /**
@@ -414,7 +418,7 @@ return {
        * @return {Object}
        */
       mapTree(node){
-        bbn.fn.log(node);
+        //bbn.fn.log("NODE", node);
         let bits = node.text.split('.');
         let ext = bits[bits.length-1];
         if ( node.dir) {
@@ -488,7 +492,7 @@ return {
               this.copy(node)
             }
           }  
-        ]@
+        ];
         if ( n.data.dir ) {
           objContext.push({
             icon: 'nf nf-fa-paste',
@@ -550,7 +554,7 @@ return {
        */
       uploadSuccess(a, b, d){
         bbn.fn.happy('now')
-        bbn.fn.log(d.data, arguments,'args')
+        bbn.fn.log("FINDER", d.data, arguments,'args')
         if ( d.data.success ){
           if ( d.data.name ){
             appui.success(bbn._(d.data.name + ' ' +'successfully uploaded'));
@@ -665,11 +669,11 @@ return {
             }, d => {
               if ( d.success ){
                 bbn.fn.happy('pasted')
-                bbn.fn.log(n.tree.items)
+                //bbn.fn.log(n.tree.items)
                 bbn.fn.each(trees, (v, i) => {
-                  bbn.fn.log(n,( v.data.name === n.data.value ), v.data.name ,n.data.value )
+                  //bbn.fn.log(n,( v.data.name === n.data.value ), v.data.name ,n.data.value )
                   if ( v.data.name === n.data.value ){
-                    bbn.fn.log(v.source)
+                    //bbn.fn.log(v.source)
                     v.reload();
                   }  
                 });
@@ -861,7 +865,7 @@ return {
         });
       }
       
-    }
+    },
     watch: {
       /**
        * @watch isLoading
@@ -1024,3 +1028,24 @@ return {
       }
     }  
   };
+
+import cpHtml from './finder.html';
+import cpStyle from './finder.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./finder.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-finder',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

@@ -9,8 +9,7 @@
  *
  * @created 15/02/2017
  */
-
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.resizer 
@@ -127,3 +126,24 @@ return {
     }
 
   };
+
+import cpHtml from './loader.html';
+import cpStyle from './loader.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./loader.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-loader',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

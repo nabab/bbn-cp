@@ -7,7 +7,7 @@
  *
  * @author BBN Solutions
  */
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      */
@@ -112,3 +112,24 @@ return {
       }
     }
   };
+
+import cpHtml from './frame.html';
+import cpStyle from './frame.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./frame.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-frame',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

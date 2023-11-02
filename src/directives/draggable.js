@@ -1,4 +1,4 @@
-(() => {
+export default function() {
   var isDragging = false;
   var currentEle = false;
 
@@ -323,7 +323,7 @@
   };
 
   const inserted = (el, binding) => {
-    bbn.fn.warning("DRAGGABLE INSERTED");
+    //bbn.fn.warning("DRAGGABLE INSERTED");
     if (analyzeValue(el, binding)) {
       // Add the events listener to capture the long press click and start the drag
       let clickTimeout = 0,
@@ -533,4 +533,4 @@
       }
     }
   });
-})();
+};

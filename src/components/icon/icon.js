@@ -7,7 +7,7 @@
  *
  * @author Mirko Argentino
  */
-return {
+const cpDef = {
     name: 'bbn-icon',
     /**
      * @mixin bbn.cp.mixins.basic
@@ -65,3 +65,24 @@ return {
       }
     }
   };
+
+import cpHtml from './icon.html';
+import cpStyle from './icon.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./icon.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-icon',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

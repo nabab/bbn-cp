@@ -6,8 +6,7 @@
  * @author BBN Solutions
  * @created 10/02/2017
  */
-
-return {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.localStorage
@@ -2319,12 +2318,12 @@ return {
            * @memberof bbn-tree-node
            */
           isSelected(newVal){
-            bbn.fn.log(["WATCH UNSELECT", newVal]);
+            //bbn.fn.log(["WATCH UNSELECT", newVal]);
             if ( newVal ){
               this.addToSelected();
             }
             else {
-              bbn.fn.log("REMOVING FROM SELECTED - UNSE")
+              //bbn.fn.log("REMOVING FROM SELECTED - UNSE")
               this.removeFromSelected();
             }
           },
@@ -2355,3 +2354,23 @@ return {
     }
   };
   
+import cpHtml from './tree.html';
+import cpStyle from './tree.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./tree.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-tree',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

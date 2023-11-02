@@ -5,7 +5,7 @@
  * @author Mirko Argentino
  * @created 10/08/2020.
  */
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      */
@@ -226,3 +226,24 @@ return {
       }
     }
   };
+
+import cpHtml from './video.html';
+import cpStyle from './video.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./video.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-video',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

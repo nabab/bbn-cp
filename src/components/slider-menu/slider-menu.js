@@ -7,7 +7,7 @@
  *
  * @copyright BBN Solutions
  */
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.list
@@ -251,3 +251,24 @@ return {
     }
 
   };
+
+import cpHtml from './slider-menu.html';
+import cpStyle from './slider-menu.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./slider-menu.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-slider-menu',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

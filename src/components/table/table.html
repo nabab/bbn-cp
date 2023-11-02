@@ -184,7 +184,6 @@
             <tr v-for="(d, i) in items"
                 :key="d.rowKey"
                 @focusout="focusout(i)"
-                :index="i"
                 :class="[{
                   'bbn-alt': !groupable && (d.expanderIndex !== undefined) ?
                     !!(d.expanderIndex % 2) :

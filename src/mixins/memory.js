@@ -1,31 +1,22 @@
-(bbn => {
-  "use strict";
+const memory = {
+  props: {
+    /**
+     * The object memory or a function that returns the object.
+     * @prop {Object|Function} memory
+     * @memberof memoryComponent
+     */
+    memory: {
+      type: [Object, Function]
+    },
+  },
   /**
-   * Memory component
-   * @component memoryComponent
+   * Adds the class 'bbn-memory-component' to the component.
+   * @event created
+   * @memberof memoryComponent
    */
-  Object.defineProperty(bbn.cp.mixins, 'memory', {
-    configurable: false,
-    writable: false,
-    value: {
-      props: {
-        /**
-         * The object memory or a function that returns the object.
-         * @prop {Object|Function} memory
-         * @memberof memoryComponent
-         */
-        memory: {
-          type: [Object, Function]
-        },
-      },
-      /**
-       * Adds the class 'bbn-memory-component' to the component.
-       * @event created
-       * @memberof memoryComponent
-       */
-      created(){
-        this.componentClass.push('bbn-memory-component');
-      }
-    }
-  });
-})(bbn);
+  created(){
+    this.componentClass.push('bbn-memory-component');
+  }
+};
+
+export default memory;

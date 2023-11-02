@@ -7,7 +7,7 @@
  *
  * @author Mirko Argentino
  */
-return {
+const cpDef = {
     name: 'bbn-editable-content',
     /**
      * @mixin bbn.cp.mixins.basic
@@ -92,3 +92,24 @@ return {
       }
     }
   };
+
+import cpHtml from './editable-content.html';
+import cpStyle from './editable-content.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./editable-content.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-editable-content',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

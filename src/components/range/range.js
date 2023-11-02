@@ -4,7 +4,7 @@
  * @copyright BBN Solutions
  * @author BBN Solutions
  */
-return {
+const cpDef = {
     name: 'bbn-range',
     /**
      * @mixin bbn.cp.mixins.basic
@@ -259,3 +259,23 @@ return {
     }
   };
   
+import cpHtml from './range.html';
+import cpStyle from './range.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./range.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-range',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

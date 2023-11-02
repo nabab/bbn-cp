@@ -4,7 +4,7 @@
  * @copyright BBN Solutions
  * @author BBN Solutions
  */
-return {
+const cpDef = {
     name: 'bbn-router',
     statics() {
       // IndexedDb access for storing thumbnails in visual mode
@@ -535,7 +535,8 @@ return {
          * Becomes true once the pane splitter is mounted
          * @data {Boolean} visual
          */
-         splitterMounted: false
+         splitterMounted: false,
+         visualStyleContainer: bbn.fn.createObject()
       };
     },
     computed: {
@@ -873,8 +874,8 @@ return {
         let moreViewsThanSlots = this.numVisuals < bbn.fn.filter(this.views, {pane: false}).length;
         let numAvailableSlots = this.numVisuals - (moreViewsThanSlots ? 1 : 0);
         let order = this.visualShowAll ? 
-        {selected: 'asc', static: 'desc', pinned: 'desc', last: 'desc', idx: 'asc'}
-        : {selected: 'desc', last: 'desc', static: 'desc', pinned: 'desc', idx: 'asc'};
+        {selected: 'asc', fixed: 'desc', pinned: 'desc', last: 'desc', idx: 'asc'}
+        : {selected: 'desc', last: 'desc', fixed: 'desc', pinned: 'desc', idx: 'asc'};
         let idx = 0;
         return bbn.fn.map(
           bbn.fn.multiorder(
@@ -925,7 +926,7 @@ return {
       tabsList() {
         return bbn.fn.multiorder(
           this.splittable ? bbn.fn.filter(this.views, a => !a.pane) : this.views,
-          {static: 'desc', pinned: 'desc', idx: 'asc'}
+          {fixed: 'desc', pinned: 'desc', idx: 'asc'}
         );
       },
       hasVerticalTabs(){
@@ -938,7 +939,7 @@ return {
 
     methods: {
       /**
-       * @method visualStyleContainer
+       * @method updateVisualStyleContainer
        * @return {Object}
        */
       updateVisualStyleContainer() {
@@ -1381,14 +1382,14 @@ return {
         this.numRegistered++;
         this.urls[cp.url] = cp;
         if (this.isVisual) {
-          bbn.fn.log("VIEW ON VISUAL")
+          //bbn.fn.log("VIEW ON VISUAL")
           cp.$on('view', () => {
             this.visualShowAll = false;
           })
         }
         let idx = this.search(cp.url);
         if (idx === false) {
-          bbn.fn.log("ADDING BECAUSE CAN'T FIND", cp.url, this.views.map(a => a.url));
+          //bbn.fn.log("ADDING BECAUSE CAN'T FIND", cp.url, this.views.map(a => a.url));
           this.add(cp);
         }
         else {
@@ -1518,7 +1519,7 @@ return {
           help: null,
           imessages: [],
           script: null,
-          static: false,
+          fixed: false,
           pinned: false,
           url: null,
           current: null,
@@ -1828,7 +1829,8 @@ return {
           return;
         }
 
-        bbn.fn.log(
+        /*
+        bbn.fn.log([
           "changeURL",
           url,
           title,
@@ -1836,7 +1838,8 @@ return {
           this.parentContainer ? 
             ["FROM PQARENT", this.parentContainer.currentTitle, this.parentContainer.title]
             : this.currentTitle
-        );
+        ]);
+        */
         // Changing the current property of the view cascades on the container's currentURL
         if (
           this.views[this.selected] &&
@@ -1859,10 +1862,10 @@ return {
           }
           else if ( replace || (url !== bbn.env.path) ){
             if ( !replace ){
-              bbn.fn.log("NO REPLAACE", this.getFullBaseURL() + url, bbn.env.path);
+              //bbn.fn.log("NO REPLAACE", this.getFullBaseURL() + url, bbn.env.path);
             }
             if ( !replace && ((this.getFullBaseURL() + url).indexOf(bbn.env.path) === 0) ){
-              bbn.fn.log("REPLACING");
+              //bbn.fn.log("REPLACING");
               replace = true;
             }
             bbn.fn.setNavigationVars(this.getFullBaseURL() + url, this.currentTitle, {}, replace);
@@ -2310,7 +2313,7 @@ return {
                 cached: view.cached !== undefined ? view.cached : (this.single || !this.nav ? false : true),
                 pane: view.pane,
                 title: view.title,
-                static: view.static,
+                fixed: view.fixed,
                 pinned: view.pinned,
                 index: idx,
                 real: view.real || false,
@@ -2705,7 +2708,7 @@ return {
         let others    = false;
         let container = this.getContainer(idx);
         bbn.fn.each(this.views, (a, i) => {
-          if ( (i !== idx) && !a.static ){
+          if ( (i !== idx) && !a.fixed ){
             others = true;
             return false;
           }
@@ -2940,7 +2943,7 @@ return {
           });
         }
 
-        if (!this.views[idx].static && !this.views[idx].pane){
+        if (!this.views[idx].fixed && !this.views[idx].pane){
           if ( this.isBreadcrumb ){
             items.push({
               text: bbn._("Close"),
@@ -3095,7 +3098,7 @@ return {
           }
         }
 
-        if ( others && !this.views[idx].static && !this.views[idx].pane){
+        if ( others && !this.views[idx].fixed && !this.views[idx].pane){
           items.push({
             text: bbn._("Close All"),
             key: "close_all",
@@ -3160,7 +3163,7 @@ return {
               load: true,
               loaded: false,
               title: obj.title ? obj.title : bbn._('Untitled'),
-              static: !!obj.static,
+              fixed: !!obj.fixed,
               pinned: !!obj.pinned,
               pane: obj.pane || false,
               current: obj.current ? obj.current : obj.url,
@@ -3342,7 +3345,7 @@ return {
        */
       closeAll(force){
         for ( let i = this.views.length - 1; i >= 0; i-- ){
-          if ( !this.views[i].static && !this.views[i].pinned ){
+          if ( !this.views[i].fixed && !this.views[i].pinned ){
             this.close(i, force, true);
           }
         }
@@ -3356,7 +3359,7 @@ return {
        */
       closeAllBut(idx, force){
         for ( let i = this.views.length - 1; i >= 0; i-- ){
-          if ( !this.views[i].static && !this.views[i].pinned && (i !== idx) ){
+          if ( !this.views[i].fixed && !this.views[i].pinned && (i !== idx) ){
             this.close(i, force, true);
           }
         }
@@ -3797,8 +3800,8 @@ return {
           let idx = bbn.fn.search(tmp, {url: a.url});
           if ( idx > -1 ){
             // Static comes only from configuration
-            let isStatic = tmp[idx].static;
-            bbn.fn.extend(tmp[idx], a, {static: isStatic});
+            let isFixed = tmp[idx].fixed;
+            bbn.fn.extend(tmp[idx], a, {fixed: isFixed});
           }
           else{
             tmp.push(a);
@@ -4000,7 +4003,7 @@ return {
        */
       url(newVal){
         if (this.ready && newVal && (newVal !== this.currentURL)) {
-          bbn.fn.log("URL CHANGED FROM WATCHER TO " + newVal);
+          //bbn.fn.log("URL CHANGED FROM WATCHER TO " + newVal);
           this.route(newVal);
         }
       },
@@ -4075,8 +4078,8 @@ return {
           }
   
           // Setting current if URL starts with default URL
-          if (url && url.indexOf(a.url) === 0) {
-            a.current = url;
+          if (this.currentURL && this.currentURL.indexOf(a.url) === 0) {
+            a.current = this.currentURL;
           }
   
           //bbn.fn.warning(bbn._("ADDING %s ON WATCH", a.url));
@@ -4193,7 +4196,7 @@ return {
          :style="!isHover ? lastColors : {}">
       &nbsp;
     </div>
-    <div v-if="!source.view.static"
+    <div v-if="!source.view.fixed"
           class="bbn-vmiddle bbn-h-100 bbn-hpadded"
           @mousedown.prevent.stop="close"
           @mouseup.prevent.stop
@@ -4272,7 +4275,7 @@ return {
 <div class="bbn-router-search-result bbn-w-100 bbn-spadded bbn-default-alt-background bbn-p bbn-hover-effect-element"
      :style="{backgroundColor: source.bcolor, color: source.fcolor}">
   <div class="bbn-flex-width">
-    <div class="bbn-flex-fill bbn-nowrap">
+    <div class="bbn-flex-fill bbn-nowrap bbn-ellipsis">
       <span class="bbn-s bbn-badge bbn-bg-blue"
             v-text="source.score"/>
       <span v-text="_('Opened container')"/>
@@ -4296,3 +4299,23 @@ return {
     }
   };
   
+import cpHtml from './router.html';
+import cpStyle from './router.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./router.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-router',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

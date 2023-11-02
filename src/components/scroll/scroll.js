@@ -9,9 +9,9 @@
  *
  * @created 10/02/2017
  */
+import '../../cp.js';
 
-return {
-  name: 'bbn-scroll',
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.resizer
@@ -286,7 +286,8 @@ return {
       touchDirection: null,
       scrollTimeout: null,
       currentStepX: bbn.fn.isDom(this.stepX) ? this.stepX.clientHeight : this.stepX,
-      currentStepY: bbn.fn.isDom(this.stepY) ? this.stepY.clientHeight : this.stepY
+      currentStepY: bbn.fn.isDom(this.stepY) ? this.stepY.clientHeight : this.stepY,
+      inFloater: null
     };
   },
   computed: {
@@ -803,7 +804,7 @@ return {
         }
 
         let d = { width: content.offsetWidth, height: content.offsetHeight };
-        bbn.fn.log(["NAT DIM " + JSON.stringify(d)])
+        //bbn.fn.log(["NAT DIM " + JSON.stringify(d)])
         if (!d.width || !d.height) {
           if (sc && (sc.$el.clientWidth === this.$el.clientWidth) && (sc.$el.clientHeight === this.$el.clientHeight)) {
             sc.getNaturalDimensions();
@@ -862,13 +863,16 @@ return {
      * @fires onResize
      */
     async initSize() {
+      window.bbn.fn.log("initSize");
       //await this.$forceUpdate();
-      if (this.maxHeight || this.maxWidth) {
-        //throw new Error("BOOOOOO");
-        this.getNaturalDimensions();
-        if (!this.naturalWidth) {
-          return this.waitReady();
-        }
+      //throw new Error("BOOOOOO");
+      this.getNaturalDimensions();
+      if (this.inFloater === null) {
+        this.inFloater = !!this.closest('bbn-floater');
+      }
+
+      if (this.inFloater && !this.naturalWidth && !this.disabled) {
+        return this.waitReady();
       }
       //bbn.fn.log(bbn._("Init size from %s with ID %s", this.$options.name, this.$cid));
       this.scrollReady = true;
@@ -983,13 +987,14 @@ return {
      * @fires onResize
      */
     waitReady(ev) {
-      if (this.isResizing) {
+      if (this.isResizing || !this.$el.clientWidth || !bbn.fn.isInViewport(this.$el)) {
         return;
       }
 
 
       clearTimeout(this.readyTimeout);
       this.readyTimeout = setTimeout(() => {
+        window.bbn.fn.log("WAIT READY");
         this.initSize();
       }, this.latency)
     },
@@ -1157,4 +1162,26 @@ return {
       this.currentStepY = bbn.fn.isDom(val) ? val.clientHeight : val;
     }
   }
+};
+
+import cpHtml from './scroll.html';
+import cpStyle from './scroll.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./scroll.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+    
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-scroll',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
 };

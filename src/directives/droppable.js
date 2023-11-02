@@ -1,4 +1,4 @@
-(() => {
+export default function() {
   var dragOver = false;
   var mouseOver = false;
 
@@ -189,4 +189,4 @@
       }
     }
   });
-})();
+};

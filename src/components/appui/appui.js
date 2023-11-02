@@ -6,7 +6,7 @@
  * @ignore
  * @created 10/02/2017.
  */
-return {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.resizer
@@ -116,7 +116,7 @@ return {
           url: (this.plugins && this.plugins['appui-core'] ? this.plugins['appui-core'] : 'core') + '/home',
           title: bbn._("Dashboard"),
           load: true,
-          static: true,
+          fixed: true,
           icon: 'nf nf-fa-tachometer_alt'
         }*/];
       }
@@ -563,7 +563,7 @@ return {
             }
             if (message.data && message.data.disconnected) {
               //document.location.reload();
-              bbn.fn.log('DISCONNECTED', message.data);
+              bbn.fn.log("DISCONNECTED", message.data);
             }
             else if (message.data && message.data.data) {
 
@@ -582,11 +582,11 @@ return {
             this.$emit('swlog', message.data);
             break;
           case 'messageFromChannel':
-            bbn.fn.log('messageFromChannel', message);
+            bbn.fn.log("messageFromChannel", message);
             this.$emit(message.channel, message.type, message.data);
             break;
           case 'notificationClick':
-            bbn.fn.log('notificationClick', message.data);
+            bbn.fn.log("notificationClick", message.data);
             this.browserNotificationClick(message.data);
         }
       }
@@ -747,7 +747,6 @@ return {
     bbn.fn.defaultStartLoadingFunction = () => {
       if (window.appui?.status) {
         this.$nextTick(() => {
-          bbn.fn.log("UPDATE LOADBAR");
           const loadBar = this.getRef('loading');
           if (bbn.fn.isCp(loadBar)) {
             loadBar.$updateAllComputed();
@@ -764,7 +763,6 @@ return {
 
       if (window.appui?.status ){
         this.$nextTick(() => {
-          bbn.fn.log("UPDATE LOADBAR");
           const loadBar = this.getRef('loading');
           if (bbn.fn.isCp(loadBar)) {
             loadBar.$updateAllComputed();
@@ -1077,4 +1075,26 @@ return {
       }
     }
   }
+};
+
+import cpHtml from './appui.html';
+import cpStyle from './appui.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./appui.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+    
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-appui',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
 };

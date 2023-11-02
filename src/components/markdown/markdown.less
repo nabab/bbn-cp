@@ -1,18 +1,40 @@
 bbn-markdown{
-  .editor-toolbar{
-    a,a.active,a:hover{
-      //color: inherit !important;
+  display: block;
+  .editor-toolbar {
+    a, a.active, a:hover, button {
+      color: inherit;
     }
+    button.active, button:hover {
+      background: inherit !important;
+    }
+    .easymde-dropdown {
+      background: inherit !important;
+    }
+    .easymde-dropdown-content {
+      color: black;
+    }
+
   }
-  .editor-preview-side {
-    top: 0;
-    position: absolute
-  }
-  .CodeMirror-vscrollbar, .CodeMirror-hscrollbar {
-    display: none !important;
-  }
-  .CodeMirror-scroll {
-    margin: 0px;
-    padding: 0px;
+  .EasyMDEContainer {
+    width: 100%;
+    .editor-preview {
+      color: black;
+    }
+    .editor-preview-side {
+      color: black;
+      top: 0;
+      position: absolute
+    }
+    .editor-toolbar {
+      display: flex;
+      align-items: center;
+    }
+    .CodeMirror-vscrollbar, .CodeMirror-hscrollbar {
+      display: none !important;
+    }
+    .CodeMirror-scroll {
+      margin: 0px;
+      padding: 0px;
+    }
   }
 }

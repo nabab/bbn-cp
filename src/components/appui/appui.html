@@ -1,7 +1,7 @@
 <div :class="[componentClass, 'bbn-background', {
       'bbn-overlay': scrollable,
       'bbn-w-100': !scrollable,
-      'bbn-desktop': !isMobile
+      'bbn-desktop': !isMobile,
      }]"
      :style="{opacity: opacity}"
      @focusin="isFocused = true"
@@ -30,13 +30,13 @@
               'bbn-spadded': isMobile
              }
            ]">
-        <div class="bbn-h-100">
+        <div class="bbn-h-100 bbn-appui-headleft">
           <slot name="headleft"/>
         </div>
-        <div class="bbn-flex-fill bbn-hspadded bbn-middle bbn-h-100">
+        <div class="bbn-flex-fill bbn-hspadded bbn-middle bbn-h-100  bbn-appui-head">
           <slot name="head"/>
         </div>
-        <div class="bbn-h-100">
+        <div class="bbn-h-100 bbn-appui-headright">
           <slot name="headright"/>
         </div>
       </div>
@@ -45,7 +45,8 @@
     <!-- MAIN -->
     <div :class="{
       'bbn-flex-fill': scrollable,
-      'bbn-w-100': !scrollable
+      'bbn-w-100': !scrollable,
+      'bbn-appui-center': true
     }">
       <bbn-router :root="root"
                   :source="source"
@@ -98,7 +99,7 @@
                        bbn-if="loadbar"
                        :source="loaders"/>
         </div>
-        <div class="bbn-vmiddle bbn-xspadding">
+        <div class="bbn-vmiddle bbn-xspadding bbn-appui-status">
           <slot name="status"/>
         </div>
       </div>

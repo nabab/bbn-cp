@@ -4,7 +4,7 @@
  * @author BBN Solutions
  * @copyright BBN Solutions
  */
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      */
@@ -199,8 +199,6 @@ return {
     },
     watch: {
       element(v, oldV) {
-        bbn.fn.log(v, oldV);
-        alert("ELE");
         if (v && (v instanceof bbnCp)) {
           this.ready = true;
         }
@@ -224,3 +222,24 @@ return {
       }
     }
   };
+
+import cpHtml from './pager.html';
+import cpStyle from './pager.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./pager.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-pager',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

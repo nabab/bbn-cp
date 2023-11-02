@@ -5,8 +5,7 @@
  * @author Mirko Argentino
  * @created 11/10/2022
  */
-
-return {
+const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.list
@@ -229,3 +228,25 @@ return {
     }
   }
 };
+
+import cpHtml from './collapsable-columns.html';
+import cpStyle from './collapsable-columns.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./collapsable-columns.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-collapsable-columns',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};
+

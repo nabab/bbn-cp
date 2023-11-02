@@ -5,7 +5,7 @@
  * @copyright BBN Solutions
  * @created 13/11/2020
  */
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.resizer
@@ -1495,3 +1495,23 @@ return {
       }
     }
   };
+import cpHtml from './emoji.html';
+import cpStyle from './emoji.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./emoji.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-emoji',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

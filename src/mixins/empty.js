@@ -1,23 +1,13 @@
-(bbn => {
-  "use strict";
+const empty = {
+  template: '<template><slot></slot></template>',
   /**
-   * Basic Component.
-   *
-   * @component emptyComponent
+   * Adds the class 'bbn-empty-component' to the component's template.
+   * @event created
+   * @memberof emptyComponent
    */
-  Object.defineProperty(bbn.cp.mixins, 'empty', {
-    configurable: false,
-    writable: false,
-    value: {
-      template: '<template><slot></slot></template>',
-      /**
-       * Adds the class 'bbn-empty-component' to the component's template.
-       * @event created
-       * @memberof emptyComponent
-       */
-      created(){
-        this.componentClass.push('bbn-empty-component');
-      },
-    }
-  });
-})(bbn);
+  created(){
+    this.componentClass.push('bbn-empty-component');
+  },
+};
+
+export default empty;

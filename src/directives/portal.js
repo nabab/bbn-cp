@@ -1,4 +1,4 @@
-(() => {
+export default function() {
   const moveToTarget = (el, target) => {
     if (el.parentNode !== target) {
       target.appendChild(el);
@@ -43,4 +43,4 @@
       }
     }
   });
-})();
+}

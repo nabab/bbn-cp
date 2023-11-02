@@ -7,8 +7,7 @@
  *
  * @author BBN Solutions
  */
-
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      */
@@ -95,3 +94,24 @@ return {
       }
     }
   };
+
+import cpHtml from './tooltip.html';
+import cpStyle from './tooltip.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./tooltip.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-tooltip',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

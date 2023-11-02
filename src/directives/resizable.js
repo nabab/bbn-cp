@@ -1,4 +1,4 @@
-(() => {
+export default function() {
   var isDragging = false;
   var currentEle = false;
 
@@ -472,4 +472,4 @@
       }
     }
   });
-})();
+}

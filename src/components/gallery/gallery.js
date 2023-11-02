@@ -5,7 +5,7 @@
  * @copyright BBN Solutions
  * @author Mirko Argentino
  */
-return {
+const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.resizer
@@ -443,7 +443,7 @@ return {
         }
         this.searchTimeout = setTimeout(() => {
           let idx = bbn.fn.search(this.currentFilters.conditions, { field: this.searchName });
-          bbn.fn.log(idx)
+          bbn.fn.log("GALLERY", idx)
           if (idx > -1) {
             if (newVal) {
               this.currentFilters.conditions[idx].value == newVal;
@@ -921,3 +921,24 @@ return {
       }
     }
   };
+
+import cpHtml from './gallery.html';
+import cpStyle from './gallery.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./gallery.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-gallery',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};

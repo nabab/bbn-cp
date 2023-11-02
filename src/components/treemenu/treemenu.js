@@ -10,8 +10,7 @@
  *
  * @created 15/02/2017
  */
-
-return {
+const cpDef = {
     name: 'bbn-treemenu',
     /**
      * @mixin bbn.cp.mixins.basic
@@ -305,12 +304,31 @@ return {
        * @fires reset
        * @fires getRef
        */
-      currentMenu(val){
-        bbn.fn.log("WATCH ON TREE MENU")
+      currentMenu(val) {
         if (val !== null) {
-          bbn.fn.log("RESETTING")
           this.reset();
         }
       }
     }
   };
+
+import cpHtml from './treemenu.html';
+import cpStyle from './treemenu.less';
+let cpLang = {};
+if (bbn.env.lang) {
+  try {
+    cpLang = await import(`./treemenu.${bbn.env.lang}.lang`);
+    if (cpLang.default) {
+      cpLang = cpLang.default;
+    }
+  }
+  catch (err) {}
+}
+
+export default {
+  name: 'bbn-treemenu',
+  definition: cpDef,
+  template: cpHtml,
+  style: cpStyle,
+  lang: cpLang
+};
