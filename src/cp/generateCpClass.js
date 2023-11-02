@@ -70,7 +70,7 @@ export default function generateCpClass(publicClass, obj) {
           };
           if (obj.computed[n].set) {
             def.set = function (v) {
-              this.$computed[n].set(v);
+              obj.computed[n].set.bind(this)(v);
             }
           }
     
