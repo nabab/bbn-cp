@@ -5,7 +5,7 @@
 				 'bbn-w-100': isMobile && !isTablet,
 				 'bbn-c': isMobile && !isTablet
 			 }"
-			 v-if="element && element.pageable">
+			 v-if="element?.pageable">
 		<!-- 1ST BUTTON (FIRST) -->
 		<bbn-button icon="nf nf-fa-angle_double_left"
 								:notext="true"
@@ -90,7 +90,7 @@
 			<span v-text="itemName + ' ' + _('per') + ' ' + pageName"/>
 		</span>
 	</div>
-	<div v-if="extraControls"
+	<div v-if="element && extraControls"
 			 :class="{
 				 'bbn-block': !isMobile || isTablet,
 				 'bbn-flex-width': isMobile && !isTablet,
@@ -101,7 +101,7 @@
 				 float: !isMobile || isTablet ? 'right' : 'left',
 				 justifyContent: isMobile && !isTablet ? 'flex-end' : ''
 			 }">
-		<div v-if="element.limits.length &&
+		<div v-if="element.limits?.length &&
 							isMobile &&
 							!isTablet &&
 							element.pageable &&
