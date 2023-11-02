@@ -1,3 +1,5 @@
+import bbn from "@bbn/bbn";
+
 /**
 * Defines a component with the Object config and the HTML template
 * @param name The tag name of the component
@@ -68,11 +70,11 @@ export default function define(name, obj, tpl, css) {
   }
   // Generating a basic HTML class based on the component config
   //bbn.fn.log('generateHTMLClass', publicName, cls, '-------');
-  bbn.cp.generateHTMLClass(publicName, cls);
+  window[publicName] = bbn.cp.generateHTMLClass(publicName, (new Function(`return ${cls};`))());
   // Generating the code for the private class based on the component config
   //const privateClassCode = makePrivateClass(privateName, cpCfg);
   //bbn.fn.log('generateCpClass', publicName);
-  bbn.cp.generateCpClass(publicName, cpCfg);
+  window[publicName + 'Cp'] = bbn.cp.generateCpClass(publicName, cpCfg);
   //bbn.fn.log("fnCode", fnCode);
   //bbn.fn.log(makePrivateFunction(privateName, cpCfg));
   // Evaluating that code: defining the private class
@@ -80,7 +82,7 @@ export default function define(name, obj, tpl, css) {
 
   // Getting the class object from the Window (seems impossible otherwise)
   //bbn.fn.log(publicName);
-  const args = [name, (new Function(`return ${publicName};`))()];
+  const args = [name, window[publicName]];
   if (cpCfg.tag) {
     args.push({extends: cpCfg.tag});
   }
