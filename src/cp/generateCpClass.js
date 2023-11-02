@@ -124,12 +124,6 @@ export default function generateCpClass(publicClass, obj) {
   });
 
 
-  Object.defineProperty(newCpClass.prototype, '$watcher', {
-    value: obj.methods,
-    writable: false,
-    configurable: false
-  });
-
   if (obj.props) {
     for (let n in obj.props) {
       Object.defineProperty(newCpClass.prototype, n, {

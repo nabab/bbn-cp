@@ -90,6 +90,5 @@ export default function define(name, obj, tpl, css) {
   // Adding the newly defined component to the known array
   bbn.cp.known.push(name);
   // Assigning the public class to the component's tag
-  bbn.fn.log(args);
   customElements.define(...args);
 }
