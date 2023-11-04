@@ -722,7 +722,7 @@ export default class bbnCp {
       // Deleting from elements prop
       while (this.$values.length) {
         let id = this.$values[this.$values.length -1];
-        const data = bbn.cp.dataInventory.get(id);
+        const data = bbnData.retrieve(id);
         if (!data) {
           throw new Error(bbn._("Impossible to find a piece of data in %s", this.$options.name));
         }
@@ -1982,13 +1982,17 @@ export default class bbnCp {
     const hash = bbnData.hash(val);
     if (!bbn.fn.isSame(this.$computed[name].hash, hash)) {
       const oldValue = this.$computed[name].val;
-      /*
       const newData = bbnData.getObject(val);
-      if (bbn.fn.isArray(val, oldValue) && !newData && !bbn.fn.isSame(val, oldValue)) {
+      const oldData = bbnData.getObject(oldValue);
+      //bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue, newData]);
+      if (bbn.fn.isArray(val, oldValue) && oldData && !newData && (oldData.root === this) && !bbn.fn.isSame(val, oldValue)) {
         const dataObj = bbnData.getObject(oldValue);
         bbn.fn.mutateArray(dataObj?.data || oldValue, val);
       }
-      else {*/
+      else {
+        if (oldData) {
+          oldData.removeComponent(this, name);
+        }
         //bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue]);
         this.$computed[name].old = oldValue;
         this.$computed[name].hash = hash;
@@ -1996,7 +2000,7 @@ export default class bbnCp {
         val = bbnData.treatValue(val, this, name);
         this.$computed[name].val = val;
         this.$updateWatcher(name, val);
-      //}
+      }
       this.$tick();
       return true;
     }

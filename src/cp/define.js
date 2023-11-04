@@ -44,7 +44,7 @@ export default function define(name, obj, tpl, css) {
     models: bbn.cp.retrieveModels(tmp.res),
     slots: bbn.cp.retrieveSlots(tmp.res),
     tag: cpCfg.tag,
-  }), true);
+  }));
   if (!bbn.cp.statics[name].slots.default) {
     bbn.cp.statics[name].slots.default = [];
   }

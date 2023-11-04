@@ -15,7 +15,7 @@ export default function generateCpClass(publicClass, obj) {
     .concat(bbn.cp.possibleAttributes.map(a => ':' + a))
     .concat(Object.keys(obj.props))
     .concat(Object.keys(obj.props).map(a => ':' + a));
-  const newCpClass = class extends bbnCp {
+  window[`${proto}`] = class extends bbnCp {
     constructor(ele) {
       super(ele);
       const options = bbn.fn.createObject({
@@ -117,7 +117,7 @@ export default function generateCpClass(publicClass, obj) {
 
   };
 
-  Object.defineProperty(newCpClass.prototype, '$methods', {
+  Object.defineProperty(window[proto].prototype, '$methods', {
     value: obj.methods,
     writable: false,
     configurable: false
@@ -126,7 +126,7 @@ export default function generateCpClass(publicClass, obj) {
 
   if (obj.props) {
     for (let n in obj.props) {
-      Object.defineProperty(newCpClass.prototype, n, {
+      Object.defineProperty(window[proto].prototype, n, {
         get() {
           return this.$props[n];
         }
@@ -136,7 +136,7 @@ export default function generateCpClass(publicClass, obj) {
 
   if (obj.methods) {
     for (let n in obj.methods) {
-      Object.defineProperty(newCpClass.prototype, n, {
+      Object.defineProperty(window[proto].prototype, n, {
         get() {
           return this.$methods[n].bind(this);
         }
@@ -144,5 +144,5 @@ export default function generateCpClass(publicClass, obj) {
     }
   }
 
-  return newCpClass;
+  return window[proto];
 }

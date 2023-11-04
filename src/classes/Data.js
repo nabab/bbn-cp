@@ -3,7 +3,7 @@ import { bbn } from "@bbn/bbn";
 /**
  * Takes care of the data reactivity for non primitive values.
  */
-export default class bbnData {
+export default class bbnData extends EventTarget {
 
   /**
    * Returns a unique identifier from any type of value (hashes only simple objects and arrays)
@@ -24,30 +24,35 @@ export default class bbnData {
    */
   static immunizeValue(value, deep) {
     if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor)) {
+      // Removing data object if any
       if (value.__bbnData) {
-        const dataObj = bbnData.getObject(value);
+        const dataObj = this.getObject(value);
         if (dataObj) {
           dataObj.unset();
         }
       }
 
+      // Adding the special property
       Object.defineProperty(value, '__bbnNoData', {
         value: true,
         enumerable: false,
         configurable: false,
         writable: false
       });
+
+      if (deep) {
+        bbn.fn.iterate(value, (v, i) => {
+          try {
+            value[i] = this.immunizeValue(v, true);
+          }
+          catch (e) {
+            bbn.fn.warning("ERROR IN IMMUNIZE");
+            bbn.fn.log(e);
+          }
+        });
+      }
     }
       
-    if (deep) {
-      bbn.fn.iterate(value, (v, i) => {
-        try {
-          value[i] = bbnData.immunizeValue(v, true);
-        }
-        catch (e) {
-        }
-      });
-    }
 
     return value;
   }
@@ -55,7 +60,7 @@ export default class bbnData {
   /**
    * Gets the value stored in the bbnData object
    * @param {bbnData} obj 
-   * @param {Boolean} original 
+   * @param {Boolean} original if true returns the original value, no the proxy
    * @returns {Object} The reactive value or the original value
    */
   static getValue(obj, original) {
@@ -67,13 +72,23 @@ export default class bbnData {
   }
 
   /**
+   * Retrieves a bbnData object from its unique id
+   * 
+   * @param {Symbol} id 
+   * @returns 
+   */
+  static retrieve(id) {
+    return bbn.cp.dataInventory.get(id);
+  }
+
+  /**
    * Returns the bbnData object from a value
    * @param {Object} value 
    * @returns {bbnData|null}
    */
   static getObject(value) {
     if (value && (typeof value === 'object') && value.__bbnData) {
-      return bbn.cp.dataInventory.get(value.__bbnData);
+      return this.retrieve(value.__bbnData);
     }
 
     return null;
@@ -94,14 +109,14 @@ export default class bbnData {
 
     if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor) && !value.__bbnNoData) {
       if (value.__bbnData) {
-        if (!bbn.cp.dataInventory.has(value.__bbnData)) {
-          //throw new Error(bbn._("The data inventory does not contain the data object"));
+        const dataObj = this.retrieve(value.__bbnData);
+        if (!dataObj) {
           bbn.fn.log(value);
           bbn.fn.warning(bbn._("The data inventory does not contain the data object"));
+          throw new Error(bbn._("The data inventory does not contain the data object"));
           return value;
         }
 
-        const dataObj = bbn.cp.dataInventory.get(value.__bbnData);
         if (!parent) {
           dataObj.addComponent(component, path);
         }
@@ -129,10 +144,10 @@ export default class bbnData {
   static proxyPop(target) {
     return () => {
       // The bbnData object of the target array
-      const targetObj = bbnData.getObject(target);
+      const targetObj = this.getObject(target);
       const len = target.length;
       if (len) {
-        const subObj = bbnData.getObject(target[len - 1]);
+        const subObj = this.getObject(target[len - 1]);
         if (subObj) {
           subObj.unset();
         }
@@ -159,9 +174,9 @@ export default class bbnData {
   static proxyShift(target) {
     return () => {
       // The bbnData object of the target array
-      const targetObj = bbnData.getObject(target);
+      const targetObj = this.getObject(target);
       if (target.length) {
-        const subObj = bbnData.getObject(target[0]);
+        const subObj = this.getObject(target[0]);
         if (subObj) {
           subObj.unset();
         }
@@ -189,11 +204,11 @@ export default class bbnData {
   static proxyPush(target, component, path) {
     return (...args) => {
       // The bbnData object of the target array
-      const targetObj = bbnData.getObject(target);
+      const targetObj = this.getObject(target);
       let newArgs = [];
       bbn.fn.each(args, (a, i) => {
         const idx = target.length + i;
-        const newVal = bbnData.treatValue(a, component, idx, targetObj);
+        const newVal = this.treatValue(a, component, idx, targetObj);
         newArgs.push(newVal);
       });
       const res = target.push(...newArgs);
@@ -219,15 +234,15 @@ export default class bbnData {
   static proxyUnshift(target, component, path) {
     return (...args) => {
       // The bbnData object of the target array
-      const targetObj = bbnData.getObject(target);
+      const targetObj = this.getObject(target);
       let newArgs = [];
       bbn.fn.each(args, (a, i) => {
         const idx = target.length + i;
-        const newVal = bbnData.treatValue(a, component, idx, targetObj);
+        const newVal = this.treatValue(a, component, idx, targetObj);
         newArgs.push(newVal);
       });
       const res = target.unshift(...newArgs);
-      const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
+      const dataObj = this.retrieve(target.__bbnData);
       if (dataObj) {
         //bbn.fn.log([dataObj.path, path]);
         //bbn.fn.warning("UNSHIFT");
@@ -251,7 +266,7 @@ export default class bbnData {
   static proxyReverse(target) {
     return (...args) => {
       const res = target.reverse(...args);
-      const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
+      const dataObj = this.retrieve(target.__bbnData);
       if (dataObj) {
         dataObj.update();
       }
@@ -274,7 +289,7 @@ export default class bbnData {
   static proxySort(target) {
     return (...args) => {
       const res = target.sort(...args);
-      const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
+      const dataObj = this.retrieve(target.__bbnData);
       if (dataObj) {
         bbn.fn.warning("SORT");
         dataObj.update();
@@ -296,17 +311,17 @@ export default class bbnData {
    */
   static proxySplice(target, component, path) {
     return (index, numDelete, ...args) => {
-      const dataObj = bbn.cp.dataInventory.get(target.__bbnData);
+      const dataObj = this.retrieve(target.__bbnData);
       let newArgs = [];
       bbn.fn.each(args, (a, i) => {
         const idx = target.length + i;
-        const newVal = bbnData.treatValue(a, component, idx, dataObj);
+        const newVal = this.treatValue(a, component, idx, dataObj);
         newArgs.push(newVal);
       });
 
       const res = target.splice(index, numDelete, ...newArgs);
       bbn.fn.each(res, t => {
-        let subObj = bbnData.getObject(t);
+        let subObj = this.getObject(t);
         if (subObj) {
           subObj.unset();
         }
@@ -335,6 +350,8 @@ export default class bbnData {
       bbn.fn.log([component, path, targetObj]);
       throw new Error("Proxy cannot be initialized with a computed property");
     }
+
+    const t = this;
     return {
       get(target, key) {
         const realValue = target[key];
@@ -349,14 +366,14 @@ export default class bbnData {
           if (targetObj && targetObj.isArray && bbn.fn.isString(key)) {
             const fnName = bbn.fn.camelize('proxy-' + key);
             if (bbn.fn.isFunction(bbnData[fnName])) {
-              return bbnData[fnName](target, component, path);
+              return t[fnName](target, component, path);
             }
 
             return target[key];
           }
         }
         else if (realValue) {
-          const val = bbnData.treatValue(realValue, component, key, targetObj);
+          const val = t.treatValue(realValue, component, key, targetObj);
           return val;
         }
 
@@ -364,10 +381,10 @@ export default class bbnData {
       },
       set(target, key, value) {
         const oldValue = target[key];
-        const oldObj = bbnData.getObject(oldValue);
+        const oldObj = t.getObject(oldValue);
         let mod = false;
         if (oldObj && !oldObj.isSame(value)) {
-          const newObj = bbnData.getObject(value);
+          const newObj = t.getObject(value);
           //bbn.fn.log(["UNSET", key, oldValue, value, oldObj.path, newObj?.path, oldObj.parent?.value?.length, newObj?.parent?.value?.length]);
           oldObj.unset();
           mod = true;
@@ -377,9 +394,9 @@ export default class bbnData {
         }
         
         if (mod) {
-          const newVal = bbnData.treatValue(value, component, key, targetObj);
+          const newVal = t.treatValue(value, component, key, targetObj);
           target[key] = newVal;
-          const dataObj = bbnData.getObject(newVal);
+          const dataObj = t.getObject(newVal);
           /*
           if (key === 'loading') {
             bbn.fn.log(["SET LOADING", value, mod, target, targetObj]);
@@ -399,12 +416,12 @@ export default class bbnData {
       },
       defineProperty(target, key, description) {
         const oldValue = target[key];
-        const oldObj = bbnData.getObject(oldValue);
+        const oldObj = this.getObject(oldValue);
         if (oldObj) {
           oldObj.unset();
         }
         if (description.value) {
-          description.value = bbnData.treatValue(description.value, component, key, targetObj);
+          description.value = this.treatValue(description.value, component, key, targetObj);
         }
         Object.defineProperty(target, key, description);
         if (targetObj) {
@@ -417,7 +434,7 @@ export default class bbnData {
         return true;
       },
       deleteProperty(target, key) {
-        const dataObj = bbnData.getObject(target[key]);
+        const dataObj = this.getObject(target[key]);
         if (dataObj) {
           dataObj.unset();
         }
@@ -437,12 +454,11 @@ export default class bbnData {
    * @param {bbnData} parent If the data is a sub-object of another bbnData object, the parent object
    */
   constructor(data, component, path, parent) {
-    /*
+    super();
     if (path === 'computed') {
       bbn.fn.log([component, path, parent, data]);
       throw new Error("bbnData cannot be initialized with a computed property");
     }
-    */
 
     if (data instanceof bbnData) {
       throw new Error("bbnData cannot be initialized with a bbnData");
@@ -458,7 +474,7 @@ export default class bbnData {
     }
 
     if (data?.__bbnData) {
-      throw new Error("bbnData cannot be initialized with a bbnData");
+      throw new Error("bbnData cannot be initialized multiple times");
     }
 
     if (parent && !(parent instanceof bbnData)) {
@@ -533,7 +549,7 @@ export default class bbnData {
      * @var {Proxy} value The proxy of the data object
      */
     Object.defineProperty(this, 'value', {
-      value: new Proxy(this.data, bbnData.getProxyHandler(component, path, this)),
+      value: new Proxy(this.data, this.constructor.getProxyHandler(component, path, this)),
       writable: false,
       configurable: false
     });
@@ -564,16 +580,13 @@ export default class bbnData {
       writable: false,
       configurable: false
     });
-    if (!this.parent || !this.parent.hasComponent(component)) {
-      this.components[component.$cid] = {
-        component,
-        path: [path]
-      };
+    if (component.$values.indexOf(this.id) === -1) {
       component.$values.push(this.id);
     }
 
     // If the object has a parent, the current object is added to the parent's children
     if (this.parent) {
+      bbn.fn.log("ADDING CHILDREN " + JSON.stringify(this.data))
       this.parent.children.push(this);
     }
 
@@ -582,7 +595,7 @@ export default class bbnData {
 
     /*
     bbn.fn.each(this.value, (v, i) => {
-      bbnData.treatValue(v, component, i, this);
+      this.constructor.treatValue(v, component, i, this);
     })
     */
 
@@ -653,7 +666,7 @@ export default class bbnData {
       const cp = it.component;
       if (cp) {
         // Root will be taken care of later
-        if (!this.parent && (cp === this.root)) {
+        if (cp === this.root) {
           return;
         }
         
@@ -664,7 +677,7 @@ export default class bbnData {
         else if (cp.$isInit) {
           bbn.fn.warning(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
           bbn.fn.log(this, it);
-          //throw new Error(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
+          throw new Error(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
         }
         
         //cp.$tick();
@@ -779,14 +792,14 @@ export default class bbnData {
       throw new Error("bbnData hasComponent must be called with a bbn component");
     }
 
-    if (!this.components[component.$cid]) {
-      throw new Error("The component is not in the list of components");
-    }
-
     if ((component === this.root) && (!path || (path === this.path))) {
       this.unset();
     }
     else {
+      if (!this.components[component.$cid]) {
+        throw new Error("The component is not in the list of components");
+      }
+
       if (path) {
         let pathIdx = this.components[component.$cid].path.indexOf(path);
         if (pathIdx === -1) {
@@ -816,7 +829,7 @@ export default class bbnData {
     let lev = 0;
     if (this.isArray) {
       bbn.fn.each(this.value, (v, i) => {
-        const objData = bbnData.getObject(v);
+        const objData = this.constructor.getObject(v);
         if (objData && (i != objData.path)) {
           objData.path = i.toString();
         }
