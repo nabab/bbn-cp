@@ -32,7 +32,7 @@
   <bbn-numeric v-if="showNumeric"
               v-model="numericValue"
               class="bbn-left-sspace"
-              :style="'width: calc(1rem + ' + (currentMax ? currentMax.toString().length : 8) + 'em)'"
+              :style="'width: calc(1rem + ' + (currentMax ? currentMax.toString().length : 8) + 'rem)'"
               :min="currentMin"
               :max="currentMax"
               :step="currentStep"
@@ -44,5 +44,6 @@
                 v-model="currentUnit"
                 class="bbn-left-sspace bbn-narrow"
                 :readonly="readonly"
-                :disabled="isDisabled"/>
+                :disabled="isDisabled"
+                style="width: 6rem"/>
 </span>
