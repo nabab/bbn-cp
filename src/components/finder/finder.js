@@ -809,7 +809,7 @@ const cpDef = {
        */
       copy(n){
         bbn.fn.happy('copy')
-        bbn.fn.log(arguments)
+        bbn.fn.log("ON COPY", arguments)
         this.copied = false;
         this.confirm(bbn._('Do you want to copy') + ' ' + n.data.value + '?', () => {
           this.copied = n;

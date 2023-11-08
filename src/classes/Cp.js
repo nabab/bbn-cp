@@ -727,10 +727,11 @@ export default class bbnCp {
           throw new Error(bbn._("Impossible to find a piece of data in %s", this.$options.name));
         }
         else {
-          //bbn.fn.log('Removing data for ' + this.$cid + ' in ' + this.$options.name + ' / path: ' + data.path[0]);
+          //bbn.fn.log('Removing 1 loop data for ' + this.$cid + ' in ' + this.$options.name + ' / path: ' + data.path);
           data.removeComponent(this);
         }
       }
+
       bbn.cp.removeComponent(this.$el.bbnCid);
       /*
       this.$el.childNodes.forEach(node => {
@@ -1698,11 +1699,15 @@ export default class bbnCp {
     //return bbn.fn.makeReactive(obj, () => cp.$tick(), cp);
   }
 
+  $treatValue(value, name) {
+    return bbnData.treatValue(value, this, name);
+  }
+
 
   $setUpData(name, value) {
     if (!Object.hasOwn(this, name)) {
       // The data will remain the same if not simple Obj/Array
-      this.$dataValues[name] = bbnData.treatValue(value, this, name);
+      this.$dataValues[name] = this.$treatValue(value, name);
       const def = {
         get() {
           return this.$dataValues[name];
@@ -1780,7 +1785,7 @@ export default class bbnCp {
       }
 
       if (isMod) {
-        const newVal = bbnData.treatValue(v, this, name);
+        const newVal = this.$treatValue(v, name);
         this.$dataValues[name] = newVal;
         this.$updateWatcher(name, newVal);
         this.$tick();
@@ -1884,28 +1889,50 @@ export default class bbnCp {
     }
 
     const original = this.$props[name];
-    if (!bbn.fn.isSame(value, original)) {
-      const oldObj = bbnData.getObject(original);
-      if (oldObj) {
-        oldObj.unset();
+    const oldObj = bbnData.getObject(original);
+    const newObj = bbnData.getObject(value);
+    let todo = true;
+    // There are data objects and their hash is different
+    if (oldObj) {
+      if (newObj) {
+        if (newObj !== oldObj) {
+          //bbn.fn.log('Removing 4 data for ' + this.$cid + ' in ' + this.$options.name + ' / path: ' + name, this);
+          if (oldObj.hasComponent(this, name)) {
+            oldObj.removeComponent(this, name);
+          }
+
+          newObj.addComponent(this, name);
+        }
+      }
+      else {
+        //bbn.fn.log('Removing 5 data for ' + this.$cid + ' in ' + this.$options.name + ' / path: ' + name);
+        if (oldObj.hasComponent(this, name)) {
+          oldObj.removeComponent(this, name);
+        }
+
+        value = this.$treatValue(value, name);
       }
     }
-    else {
-      return;
+    else if (newObj) {
+      // The objects are different
+      newObj.addComponent(this, name);
+    }
+    else if (value) {
+      value = this.$treatValue(value, name);
     }
 
-    const newValue = bbnData.treatValue(value, this, name);
-    const dataObj = bbnData.getObject(newValue);
-    Object.defineProperty(this.$props, name, {
-      value: newValue,
-      writable: false,
-      configurable: true
-    });
+    if (original !== value) {
+      Object.defineProperty(this.$props, name, {
+        value: value,
+        writable: false,
+        configurable: true
+      });
+      this.$updateWatcher(name, value);
 
-    this.$updateWatcher(name, newValue);
+    }
 
     if (this.$isMounted) {
-      this.$emit('propchange', name, newValue, original);
+      this.$emit('propchange', name, value, original);
       //bbn.fn.log(["EMITTING PROPCHANGE", this.$options.name, this.$cid, name, newValue, original, hash, oldHash, JSON.stringify(value)]);
     }
   }
@@ -1980,27 +2007,45 @@ export default class bbnCp {
     }
 
     const hash = bbnData.hash(val);
-    if (!bbn.fn.isSame(this.$computed[name].hash, hash)) {
-      const oldValue = this.$computed[name].val;
-      const newData = bbnData.getObject(val);
+    const oldValue = this.$computed[name].val;
+    const oldHash = bbnData.hash(this.$computed[name].val);
+    let go = ((val !== oldValue) && !bbn.fn.isSame(oldHash, hash))
+              || !bbn.fn.isSame(this.$computed[name].hash, hash);
+    if (go) {
+      let newData = bbnData.getObject(val);
       const oldData = bbnData.getObject(oldValue);
-      //bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue, newData]);
-      if (bbn.fn.isArray(val, oldValue) && oldData && !newData && (oldData.root === this) && !bbn.fn.isSame(val, oldValue)) {
-        const dataObj = bbnData.getObject(oldValue);
-        bbn.fn.mutateArray(dataObj?.data || oldValue, val);
+      if (bbn.fn.isArray(val, oldValue)
+          && !newData
+          && oldData
+          && (oldData.root === this)
+          && (oldData.path === name)
+      ) {
+        if (val !== oldValue) {
+          bbn.fn.mutateArray(oldValue, val);
+        }
+
       }
-      else {
-        if (oldData) {
+      else if (oldValue !== val) {
+        if (oldData && oldData.hasComponent(this, name)) {
+          //bbn.fn.log('Removing 6 data for ' + this.$cid + ' in ' + this.$options.name + ' / path: ' + name);
           oldData.removeComponent(this, name);
         }
         //bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue]);
         this.$computed[name].old = oldValue;
-        this.$computed[name].hash = hash;
-        this.$computed[name].num = this.$computed[name].num < this.$numBuild ? this.$numBuild + 1 : this.$computed[name].num + 1;
-        val = bbnData.treatValue(val, this, name);
-        this.$computed[name].val = val;
-        this.$updateWatcher(name, val);
+        this.$computed[name].num = this.$numBuild;
+        this.$computed[name].val = this.$treatValue(val, name);
+        newData = bbnData.getObject(this.$computed[name].val);
+        if (newData) {
+          newData.addComponent(this, name);
+        }
       }
+
+      this.$computed[name].hash = hash;
+      if (newData) {
+        newData.update();
+      }
+      //bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, this.$computed[name].val]);
+      this.$updateWatcher(name, val);
       this.$tick();
       return true;
     }
@@ -2251,7 +2296,7 @@ export default class bbnCp {
       //  It already exists
       if (obj.$namespaces[prop]) {
         // New treated value
-        const dataObj = bbnData.treatValue(value, obj, prop);
+        const dataObj = obj.$treatValue(value, prop);
         // The value is different
         if (!bbn.fn.isSame(dataObj, obj[prop])) {
           // It's a prop

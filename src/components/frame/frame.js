@@ -82,7 +82,7 @@ const cpDef = {
           if (!ev.defaultPrevented) {
             let ct = this.closest('bbn-container');
             if (ct && ct.router && url && (ct.router.currentURL !== (ct.url + '/' + url))) {
-              bbn.fn.log(ct.router.currentURL, (ct.url + '/' + url));
+              bbn.fn.log("IN FRAME", ct.router.currentURL, (ct.url + '/' + url));
               ct.router.route(ct.url + '/' + url);
             }
           }

@@ -32,5 +32,5 @@ export default function setComputed(obj, name, getter, setter) {
     };
   }
   Object.defineProperty(obj, name, def);
-  obj.$updateWatcher(name, obj[name], true);
+  //obj.$updateWatcher(name, obj[name], true);
 }

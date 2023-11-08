@@ -27,7 +27,7 @@ export default function normalizeComponent(cfg, clsName) {
     }),
     extension: null,
     statics: [],
-    _bbnComponent: true
+    __bbnComponent: true
   }));
   //bbn.fn.log(["NORM", clsName, cfg, res]);
 
@@ -149,7 +149,7 @@ export default function normalizeComponent(cfg, clsName) {
         for (let originalName in cfg.components) {
           let componentName = bbn.fn.camelize(originalName);
           let indexName = bbn.fn.camelToCss(componentName);
-          bbn.fn.log(cfg.components);
+          //bbn.fn.log("COMPONENTS IN NORMALIZE", cfg.components);
           bbn.fn.checkType(cfg.components[originalName], 'object', bbn._("Components definitions must be objects (check %s in %s)", componentName, clsName));
           res.components[componentName] = bbn.cp.normalizeComponent(cfg.components[originalName], clsName);
           let subName = (clsName || 'bbnsub-' + bbn.fn.randomString(10, 20, 'nl')) + bbn.fn.substr(componentName, 0, 1).toUpperCase() + bbn.fn.camelize(bbn.fn.substr(componentName, 1));
@@ -240,7 +240,7 @@ export default function normalizeComponent(cfg, clsName) {
             res[name].push(fn);
           });
         }
-        else if (!["mixins", "componentNames", "name", "_bbnComponent"].includes(name)) {
+        else if (!["mixins", "componentNames", "name", "__bbnComponent"].includes(name)) {
           if (name.indexOf('__bbn') !== 0) {
             throw new Error(bbn._("Unrecognize index %s in the config object for %s", name, clsName));
           }
