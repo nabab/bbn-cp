@@ -517,7 +517,7 @@ export default function() {
   bbn.cp.directives['bbn-draggable'] = bbn.fn.createObject({
     inserted: inserted,
     update: (el, binding) => {
-      bbn.fn.warning("DRAGGABLE UPDATED");
+      //bbn.fn.warning("DRAGGABLE UPDATED");
       if ((binding.value !== false)
         && !el.classList.contains('bbn-undraggable')
       ) {

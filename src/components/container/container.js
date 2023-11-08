@@ -1099,7 +1099,7 @@ const cpDef = {
         let res;
 
         if (this.currentScript) {
-          console.log(this.currentScript);
+          //bbn.fn.log(this.currentScript);
           res = typeof this.currentScript === 'string' ? eval(this.currentScript) : this.currentScript;
           //bbn.fn.log("************************************", res);
           // if evaluating the script property returns a function that will be onMount
@@ -1773,6 +1773,7 @@ const cpDef = {
 
 };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './container.html';
 import cpStyle from './container.less';
 let cpLang = {};

@@ -545,7 +545,7 @@ const cpDef = {
           return bbn.fn.search(this.tabsList, {idx: this.selected})
         },
         set(v) {
-          bbn.fn.log("SETING SELECTED TAB");
+          //bbn.fn.log("SETING SELECTED TAB");
           let done = false;
           let i = v;
           while (i > -1) {
@@ -1054,7 +1054,7 @@ const cpDef = {
           /** @var {Event} onClose close event, cancelable only if not force */
           let onClose = new Event('close');
           this.$emit('beforeClose', idx, onBeforeClose);
-          bbn.fn.log("REMOVING " + this.views[idx].url)
+          //bbn.fn.log("REMOVING " + this.views[idx].url)
           if (force || !onBeforeClose.defaultPrevented) {
             if (
               !force &&
@@ -4071,7 +4071,6 @@ const cpDef = {
         })
       },
       source(v, ov) {
-        //bbn.fn.log("ROUTER SOURCE WATCHER", v, ov);
         bbn.fn.each(v, a => {
           if (!bbn.fn.isString(a.url)) {
             throw new Error(bbn._("The container must have a valid URL"));

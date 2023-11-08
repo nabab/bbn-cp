@@ -114,7 +114,6 @@ export default class bbnData extends EventTarget {
           bbn.fn.log(value);
           bbn.fn.warning(bbn._("The data inventory does not contain the data object"));
           throw new Error(bbn._("The data inventory does not contain the data object"));
-          return value;
         }
 
         if (!parent) {
@@ -123,7 +122,8 @@ export default class bbnData extends EventTarget {
 
         return dataObj.value;
       }
-      if (value._bbnComponent) {
+
+      if (value.__bbnComponent) {
         throw new Error(bbn._("The data object is a component definition"));
       }
 
@@ -201,7 +201,7 @@ export default class bbnData extends EventTarget {
    * @param {*} path 
    * @returns 
    */
-  static proxyPush(target, component, path) {
+  static proxyPush(target, component) {
     return (...args) => {
       // The bbnData object of the target array
       const targetObj = this.getObject(target);
@@ -231,7 +231,7 @@ export default class bbnData extends EventTarget {
    * @param {*} path 
    * @returns 
    */
-  static proxyUnshift(target, component, path) {
+  static proxyUnshift(target, component) {
     return (...args) => {
       // The bbnData object of the target array
       const targetObj = this.getObject(target);
@@ -242,11 +242,10 @@ export default class bbnData extends EventTarget {
         newArgs.push(newVal);
       });
       const res = target.unshift(...newArgs);
-      const dataObj = this.retrieve(target.__bbnData);
-      if (dataObj) {
+      if (targetObj) {
         //bbn.fn.log([dataObj.path, path]);
         //bbn.fn.warning("UNSHIFT");
-        dataObj.update();
+        targetObj.update();
       }
       else {
         bbn.fn.log(["Impossible to find the data object in unshift", target]);
@@ -266,9 +265,9 @@ export default class bbnData extends EventTarget {
   static proxyReverse(target) {
     return (...args) => {
       const res = target.reverse(...args);
-      const dataObj = this.retrieve(target.__bbnData);
-      if (dataObj) {
-        dataObj.update();
+      const targetObj = this.getObject(target);
+      if (targetObj) {
+        targetObj.update();
       }
       else {
         bbn.fn.log(["Impossible to find the data object in reverse", target]);
@@ -289,10 +288,10 @@ export default class bbnData extends EventTarget {
   static proxySort(target) {
     return (...args) => {
       const res = target.sort(...args);
-      const dataObj = this.retrieve(target.__bbnData);
-      if (dataObj) {
+      const targetObj = this.getObject(target);
+      if (targetObj) {
         bbn.fn.warning("SORT");
-        dataObj.update();
+        targetObj.update();
       }
       else {
         bbn.fn.log(["Impossible to find the data object in sort", target]);
@@ -309,13 +308,13 @@ export default class bbnData extends EventTarget {
    * @param {*} path 
    * @returns 
    */
-  static proxySplice(target, component, path) {
+  static proxySplice(target, component) {
     return (index, numDelete, ...args) => {
-      const dataObj = this.retrieve(target.__bbnData);
+      const targetObj = this.getObject(target);
       let newArgs = [];
       bbn.fn.each(args, (a, i) => {
         const idx = target.length + i;
-        const newVal = this.treatValue(a, component, idx, dataObj);
+        const newVal = this.treatValue(a, component, idx, targetObj);
         newArgs.push(newVal);
       });
 
@@ -326,9 +325,9 @@ export default class bbnData extends EventTarget {
           subObj.unset();
         }
       });
-      if (dataObj) {
+      if (targetObj) {
         //bbn.fn.log("SPLICE");
-        dataObj.update();
+        targetObj.update();
       }
       else {
         bbn.fn.log(["Impossible to find the data object in splice", target]);
@@ -355,11 +354,12 @@ export default class bbnData extends EventTarget {
     return {
       get(target, key) {
         const realValue = target[key];
-        if (key === '__bbnData') {
+        if (key?.indexOf && (key.indexOf('__bbn') === 0)) {
+          if (key === '__bbnProxy') {
+            return true;
+          }
+
           return realValue;
-        }
-        if (key === '__bbnProxy') {
-          return true;
         }
 
         if (bbn.fn.isFunction(realValue)) {
@@ -368,8 +368,6 @@ export default class bbnData extends EventTarget {
             if (bbn.fn.isFunction(bbnData[fnName])) {
               return t[fnName](target, component, path);
             }
-
-            return target[key];
           }
         }
         else if (realValue) {
@@ -380,6 +378,11 @@ export default class bbnData extends EventTarget {
         return realValue;
       },
       set(target, key, value) {
+        if (key?.indexOf && (key.indexOf('__bbn') === 0)) {
+          target[key] = newVal;
+          return true;
+        }
+
         const oldValue = target[key];
         const oldObj = t.getObject(oldValue);
         let mod = false;
@@ -404,10 +407,13 @@ export default class bbnData extends EventTarget {
 
           bbn.fn.log(["SET", targetObj, key, newVal, oldValue, target, '------']);
           */
-          targetObj.update(false, key);
+          
 
           if (dataObj) {
-            dataObj.update();
+            dataObj.update(false);
+          }
+          else {
+            targetObj.update(true, key);
           }
 
         }
@@ -415,14 +421,21 @@ export default class bbnData extends EventTarget {
         return true;
       },
       defineProperty(target, key, description) {
+        if (key.indexOf('__bbn') === 0) {
+          Object.defineProperty(target, key, description);
+          return true;
+        }
+
         const oldValue = target[key];
-        const oldObj = this.getObject(oldValue);
+        const oldObj = t.getObject(oldValue);
         if (oldObj) {
           oldObj.unset();
         }
+
         if (description.value) {
-          description.value = this.treatValue(description.value, component, key, targetObj);
+          description.value = t.treatValue(description.value, component, key, targetObj);
         }
+
         Object.defineProperty(target, key, description);
         if (targetObj) {
           targetObj.update(false, key);
@@ -434,7 +447,7 @@ export default class bbnData extends EventTarget {
         return true;
       },
       deleteProperty(target, key) {
-        const dataObj = this.getObject(target[key]);
+        const dataObj = t.getObject(target[key]);
         if (dataObj) {
           dataObj.unset();
         }
@@ -505,7 +518,7 @@ export default class bbnData extends EventTarget {
     Object.defineProperty(this, 'root', {
       writable: false,
       configurable: false,
-      value: parent?.root || component
+      value: component
     });
 
     /**
@@ -546,7 +559,7 @@ export default class bbnData extends EventTarget {
     });
 
     /**
-     * @var {Proxy} value The proxy of the data object
+     * @var {Proxy} value The proxy takes care of subreactivity
      */
     Object.defineProperty(this, 'value', {
       value: new Proxy(this.data, this.constructor.getProxyHandler(component, path, this)),
@@ -580,51 +593,51 @@ export default class bbnData extends EventTarget {
       writable: false,
       configurable: false
     });
+
     if (component.$values.indexOf(this.id) === -1) {
       component.$values.push(this.id);
     }
 
     // If the object has a parent, the current object is added to the parent's children
     if (this.parent) {
-      bbn.fn.log("ADDING CHILDREN " + JSON.stringify(this.data))
+      //bbn.fn.log(bbn._("ADDING CHILDREN for %s : %s", path.toString ? path.toString() : path || '<unknown>', JSON.stringify(this.data)))
       this.parent.children.push(this);
+    }
+    else if ((this.root.$cid !== component.$cid) || (this.path !== path)) {
+      this.components[component.$cid] = [path];
     }
 
     // The object is added to the data inventory
     bbn.cp.dataInventory.set(id, this);
 
-    /*
-    bbn.fn.each(this.value, (v, i) => {
-      this.constructor.treatValue(v, component, i, this);
-    })
-    */
-
   }
 
   // Returns the full path of a data object in a component
-  fullPath(component) {
-    if (!(component instanceof bbnCp)) {
-      throw new Error("bbnData must be initialized with a bbn component");
+  getImpactedPath(key) {
+    const seq = [];
+    if (key) {
+      seq.push(key);
     }
-
+    const fp = [];
     let dataObj = this;
-    const paths = [];
-    if (!this.parent && (this.root === component)) {
-      return this.path;
-    }
     while (dataObj) {
-      if (dataObj.components[component.$cid]) {
-        paths.unshift(dataObj.components[component.$cid].path[0]);
-        break;
+      bbn.fn.iterate(dataObj.components, (pathArr, cid) => {
+        const cp = bbn.cp.getComponent(cid).bbn;
+        bbn.fn.each(pathArr, p => {
+          fp.push({cp, path: [p, ...seq]});
+        });
+      });
+      seq.unshift(dataObj.path);
+      if (!dataObj.parent) {
+        fp.push({cp: dataObj.root, path: seq});
+        dataObj = false;
       }
       else {
-        paths.unshift(dataObj.path);
+        dataObj = dataObj.parent;
       }
-
-      dataObj = dataObj.parent;
     }
 
-    return paths.join('.');
+    return fp;
   }
 
   /**
@@ -655,32 +668,37 @@ export default class bbnData extends EventTarget {
    * Deletes all references to the data object and its children
    */
   unset(noParent) {
-    //bbn.fn.log("UNSET", this);
+    //bbn.fn.log("UNSET " + this.path + " ON " + this.root.$options.name, this);
     const id = this.id;
+
     // Unsetting the children
     bbn.fn.each(this.children, subObj => {
       subObj.unset(true);
     });
+    const done = [];
     // Unsetting the data in each component but the root
-    bbn.fn.iterate(this.components, (it, cid) => {
-      const cp = it.component;
-      if (cp) {
+    bbn.fn.iterate(this.components, (path, cid) => {
+      const cp = bbn.cp.getComponent(cid);
+      if (cp?.bbn) {
         // Root will be taken care of later
-        if (cp === this.root) {
+        if (cp.bbn === this.root) {
           return;
         }
         
-        let idx = cp.$values.indexOf(id);
+        let idx = cp.bbn.$values.indexOf(id);
         if (idx > -1) {
-          cp.$values.splice(idx, 1);
+          cp.bbn.$values.splice(idx, 1);
+          done.push(cid);
         }
-        else if (cp.$isInit) {
-          bbn.fn.warning(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
-          bbn.fn.log(this, it);
-          throw new Error(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
+        else if (!done.includes(cid) && cp.bbn.$isInit) {
+          bbn.fn.warning(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.bbn.$options.name, cid));
+          bbn.fn.log(this, cp.bbn, path);
+          throw new Error(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.bbn.$options.name, cid));
         }
         
-        //cp.$tick();
+        if (!cp.bbn.$isDestroyed) {
+          cp.bbn.$tick();
+        }
       }
       else {
         throw new Error(bbn._("Impossible to find the component %s", cid));
@@ -688,18 +706,17 @@ export default class bbnData extends EventTarget {
     });
     
     // Unsetting the data in the root component
-    if (!this.parent && this.root) {
-      let idx = this.root.$values.indexOf(id);
-      if (idx > -1) {
-        this.root.$values.splice(idx, 1);
-      }
-      else {
-        bbn.fn.log(this);
-        throw new Error(bbn._("Impossible to find the data object in the values of the component %s", dataObj.root.$options.name));
-      }
-      //bbn.fn.log(["TICK ON UNSET", this]);
-      this.root.$tick();
+    let idx = this.root.$values.indexOf(id);
+    if (idx > -1) {
+      this.root.$values.splice(idx, 1);
     }
+    else {
+      bbn.fn.log(this);
+      throw new Error(bbn._("Impossible to find the data object in the values of the component %s", dataObj.root.$options.name));
+    }
+    //bbn.fn.log(["TICK ON UNSET", this]);
+    this.root.$tick();
+
     if (this.parent) {
       let idx = this.parent.children.indexOf(this);
       if (idx > -1) {
@@ -711,14 +728,15 @@ export default class bbnData extends EventTarget {
       let dataObj = this;
       while (dataObj.parent) {
         dataObj = dataObj.parent;
-        bbn.fn.iterate(dataObj.components, it => {
-          //it.component.$tick();
+        bbn.fn.iterate(Object.keys(dataObj.components), cid => {
+          bbn.cp.getComponent(cid).bbn.$tick();
         });
+        dataObj.root.$tick();
       }
     }
 
-    delete this.data.__bbnData;
     bbn.cp.dataInventory.delete(id);
+    delete this.data.__bbnData;
   }
 
   /**
@@ -732,30 +750,20 @@ export default class bbnData extends EventTarget {
       throw new Error(bbn._("bbnData hasComponent must be called with a bbn component"));
     }
 
-    if (!this.hasComponent(component)) {
-      this.components[component.$cid] = {
-        component,
-        path: [path]
-      };
-      if (!component.$values.includes(this.id)) {
-        component.$values.push(this.id);
-        return true;
+    if ((this.root !== component) || (this.path !== path)) {
+      if (this.components[component.$cid] !== undefined) {
+        if (!this.components[component.$cid].includes(path)) {
+          this.components[component.$cid].push(path);
+        }
+      }
+      else {
+        this.components[component.$cid] = [path];
       }
     }
-    else if (!this.components[component.$cid]) {
-      this.components[component.$cid] = {
-        component,
-        path: [this.path, path]
-      };
-      return true;
-    }
-    else if (!this.components[component.$cid].path.includes(path)) {
-      this.components[component.$cid].path.push(path);
-      return true;
-    }
 
-    
-    return false;
+    if (!component.$values.includes(this.id)) {
+      component.$values.push(this.id);
+    }
   }
 
   /**
@@ -763,14 +771,24 @@ export default class bbnData extends EventTarget {
    * @param {bbnCp} component 
    * @returns 
    */
-  hasComponent(component) {
+  hasComponent(component, name) {
     if (!(component instanceof bbnCp)) {
       throw new Error("bbnData hasComponent must be called with a bbn component");
     }
 
     if (this.components[component.$cid] !== undefined) {
+      if (name) {
+        return this.components[component.$cid].includes(name);
+      }
+
       return true;
     }
+
+    return false;
+    if (this.components[component.$cid] !== undefined) {
+      return true;
+    }
+
     let obj = this;
     while (obj.parent) {
       if (obj.parent.components[component.$cid] !== undefined) {
@@ -797,18 +815,19 @@ export default class bbnData extends EventTarget {
     }
     else {
       if (!this.components[component.$cid]) {
+        bbn.fn.log(component, path, this);
         throw new Error("The component is not in the list of components");
       }
 
       if (path) {
-        let pathIdx = this.components[component.$cid].path.indexOf(path);
+        let pathIdx = this.components[component.$cid].indexOf(path);
         if (pathIdx === -1) {
           throw new Error("The path is not in the list of paths");
         }
-        this.components[component.$cid].path.splice(pathIdx, 1);
+        this.components[component.$cid].splice(pathIdx, 1);
       }
 
-      if (!path || !this.components[component.$cid].path.length) {
+      if (!path || !this.components[component.$cid].length) {
         let idx = component.$values.indexOf(this.id);
         if (idx > -1) {
           component.$values.splice(idx, 1);
@@ -824,9 +843,7 @@ export default class bbnData extends EventTarget {
    * @param {Boolean} deep 
    */
   update(noParent, key) {
-    //bbn.fn.log(["UPDATE", this, this.path + '/' + (key || "no key"), this.value]);
-    let data = this;
-    let lev = 0;
+    /*
     if (this.isArray) {
       bbn.fn.each(this.value, (v, i) => {
         const objData = this.constructor.getObject(v);
@@ -834,68 +851,61 @@ export default class bbnData extends EventTarget {
           objData.path = i.toString();
         }
       });
-      bbn.fn.each(this.children, obj => {
-
-      })
     }
+    */
     /*
     if (data.root) {
       bbn.fn.log(["UPDATEBBNDATA", data.root, data]);
     }
     */
-    while (data) {
-      bbn.fn.iterate(data.components, (it, cid) => {
-        if (!it?.component) {
-          throw new Error(bbn._("Impossible to find the component %s", cid));
-        }
-
-        if (it.component.$isInit) {
-          let name = this.fullPath(it.component);
-          if (!lev && key) {
-            name += '.' + key;
+    const impacted = this.getImpactedPath(key);
+    bbn.fn.each(impacted, it => {
+      if (it.cp.$isInit) {
+        let data = this;
+        let bits = it.path.slice();
+        let name = bits.join(".");
+        let lev = 0;
+        while (bits.length) {
+          if (it.cp.$watcher?.[name]) {
+            if (bits.length > 1) {
+              bits.shift();
+              //bbn.fn.log("WATCHER " + name, data.value, bits.join("."), '----')
+              it.cp.$updateWatcher(name, bbn.fn.getProperty(data.value, ...bits));
+            }
+            else {
+              //bbn.fn.log("WATCHER " + name, data.value, '----')
+              it.cp.$updateWatcher(name, data.value);
+            }
           }
-
-          let bits = name.split('.');
-          /*
-          if (!noParent) {
-            bbn.fn.log(['ON UPDATE', this, name, it.path, lev]);
-          }
-          */
-
-          while (bits.length) {
-            if (it.component.$watcher?.[name]) {
-              if (bits.length > 1) {
-                bits.shift();
-                it.component.$updateWatcher(name, bbn.fn.getProperty(data.value, bits.join(".")));
+          bits.pop();
+          if (bits.length) {
+            if (!key || lev) {
+              if (data.parent) {
+                data = data.parent;
               }
               else {
-                it.component.$updateWatcher(name, data.value);
+                bbn.fn.log(["NO PARENT", lev, name, data.path, this.path, key, data, this]);
+                bbn.fn.warning("NO PARENT");
+                throw new Error("Boooo!")
               }
             }
-            bits.pop();
             name = bits.join('.');
           }
-
-          //bbn.fn.log(["TICK on UPDATE", this]);
-          it.component.$tick()
+          else {
+            break;
+          }
+          lev++;
         }
-      });
+        it.cp.$tick()
 
-      if (data.root) {
-        //bbn.fn.log(["root", data.root]);
-        data.root.$tick();
-      }
-
-      if (!lev) {
-        this.updateChildren();
         if (noParent) {
           return;
         }
       }
 
-      data = data.parent;
-      lev++;
-    }
+    });
+    //          this.updateChildren();
+
   }
 
   updateChildren() {

@@ -846,7 +846,7 @@ const cpDef = {
         if ((old.width !== this.naturalWidth) || (old.height !== this.naturalHeight)) {
           if (old.width || old.height) {
             this.$emit('resizecontent');
-            bbn.fn.log({ w: this.naturalWidth, h: this.naturalHeight });
+            //bbn.fn.log({ w: this.naturalWidth, h: this.naturalHeight });
           }
         }
       }
@@ -863,7 +863,7 @@ const cpDef = {
      * @fires onResize
      */
     async initSize() {
-      window.bbn.fn.log("initSize");
+      //window.bbn.fn.log("initSize");
       //await this.$forceUpdate();
       //throw new Error("BOOOOOO");
       this.getNaturalDimensions();
@@ -994,7 +994,7 @@ const cpDef = {
 
       clearTimeout(this.readyTimeout);
       this.readyTimeout = setTimeout(() => {
-        window.bbn.fn.log("WAIT READY");
+        //window.bbn.fn.log("WAIT READY");
         this.initSize();
       }, this.latency)
     },

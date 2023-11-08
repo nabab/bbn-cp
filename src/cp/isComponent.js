@@ -12,7 +12,7 @@ export default function isComponent(node) {
     return true;
   }
 
-  if (bbn.fn.isObject(node) && node._bbnComponent) {
+  if (bbn.fn.isObject(node) && node.__bbnComponent) {
     return true;
   }
 

@@ -136,8 +136,9 @@ const treatLoop = (cp, node, hashName) => {
   // Ending the loop
   x(`}`);
   x(`Array.from(${parentName}.childNodes).forEach(a => {`);
-  x(`  if ((!a.bbnHash || (a.bbnHash.indexOf(${hashName}) === 0)) && (a.bbnId === "${node.id}") && (${listName}.indexOf(a.bbnHash) === -1)) {`);
-  x(`    $_this.$removeDOM(a);`);
+  // If the loop is on a template the ID won't be the same with the loop but will start by it
+  x(`  if ((!a.bbnHash || (a.bbnHash.indexOf(${hashName}) === 0)) && (a.bbnId.indexOf("${node.id}") === 0) && (!a.bbnLoopVars || ('${bbn.fn.escapeSquotes(node.loop.exp)}' === a.bbnLoopVars.exp)) && !${listName}.includes(a.bbnHash)) {`);
+  x(`    $_this.$removeDOM(a);bbn.fn.log("REMOVING NODE", a)`);
   x(`  }`);
   x(`});`);
   };

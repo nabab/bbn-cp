@@ -111,7 +111,7 @@ const cpDef = {
          * @param e
          */
         keydown(e){
-          bbn.fn.log(e)
+          bbn.fn.log("ON KEYDOWN BVROWSER", e)
         }
       }
     }

@@ -295,7 +295,6 @@ const cpDef = {
        * @fires resizeScroll
        */
       onResize(){
-        bbn.fn.log("RESIZE DASH");
         let ele = this.getRef('container');
         if (ele) {
           let actualWidth = parseInt(window.getComputedStyle(ele).width),
@@ -381,7 +380,6 @@ const cpDef = {
        * @emits sort
        */
       updateMenu(){
-        bbn.fn.log("UPDATE MENU");
         let tab = this.closest("bbn-container");
         if ( tab ){
           if ( this.selectable && this.menu && this.menu.length ){
@@ -606,7 +604,7 @@ const cpDef = {
        * @returns {Object}
        */
       add(obj, idx){
-        bbn.fn.log("ADD WIDGET");
+        //bbn.fn.log("ADD WIDGET");
         let checkIdx = bbn.fn.search(this.widgets, {key: obj.key});
         if ( checkIdx > -1 ){
           return this.widgets[checkIdx];
@@ -641,7 +639,7 @@ const cpDef = {
        * @fires getRef
        */
       resizeScroll(){
-        bbn.fn.log("RESIZE SCROLL");
+        //bbn.fn.log("RESIZE SCROLL");
         if ( this.scrollable && this.$refs.scroll ){
           this.getRef('scroll').onResize();
         }
@@ -679,7 +677,6 @@ const cpDef = {
        * @fires add
        */
       initWidgets(){
-        bbn.fn.log("INIT WIDGETS");
         this.widgets = [];
         bbn.fn.each(this.currentOrder, id => {
           let w = bbn.fn.getRow(this.originalSource, {key: id});

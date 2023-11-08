@@ -408,8 +408,7 @@ const cpDef = {
       /**
        * @method updateButtons
        */
-      updateButtons(){
-        bbn.fn.log("UPDATE BUTTONS");
+      updateButtons() {
         this.realButtonsLeft = bbn.fn.isFunction(this.buttonsLeft) ? this.buttonsLeft() : this.buttonsLeft;
         this.realButtonsRight = bbn.fn.isFunction(this.buttonsRight) ? this.buttonsRight() : this.buttonsRight;
       },
@@ -456,7 +455,7 @@ const cpDef = {
           };
           this.isLoading = true;
           this.$forceUpdate();
-          bbn.fn.log("LOADING", this.url, this.data);
+          //bbn.fn.log("LOADING", this.url, this.data);
           if ( this.limit && this.pageable ){
             params.limit = this.limit;
             params.start = this.currentStart;
