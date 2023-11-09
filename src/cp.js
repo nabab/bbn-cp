@@ -27,7 +27,6 @@ import queueComponent from "./cp/queueComponent.js";
 import realDefineComponent from "./cp/realDefineComponent.js";
 import removeComponent from "./cp/removeComponent.js";
 import removeSelfClosing from "./cp/removeSelfClosing.js";
-import repeatTick from "./cp/repeatTick.js";
 import retrieveModels from "./cp/retrieveModels.js";
 import retrieveSlots from "./cp/retrieveSlots.js";
 import setComputed from "./cp/setComputed.js";
@@ -184,7 +183,6 @@ const cpObj = bbn.fn.createObject({
   realDefineComponent,
   removeComponent,
   removeSelfClosing,
-  repeatTick,
   retrieveModels,
   retrieveSlots,
   setComputed,

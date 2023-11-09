@@ -92,7 +92,7 @@
               </span>
 
               <!-- The component if given -->
-              <bbn-anon bbn-if="!!component"
+              <component bbn-if="!!component"
                           :is="component"
                           :source="data"/>
 
@@ -120,7 +120,7 @@
                       } : false"
                       bbn-droppable:data="tree.selfDrop ? {node: _self} : false">
                   <!-- The item component if given -->
-                  <bbn-anon bbn-if="tree.itemComponent"
+                  <component bbn-if="tree.itemComponent"
                              :is="tree.itemComponent"
                              :source="source"/>
                   <!-- Or the default template -->

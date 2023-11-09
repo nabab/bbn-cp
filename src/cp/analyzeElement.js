@@ -294,20 +294,23 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
   
   let num = 0;
   let lastEmpty = false;
-  Array.from(childNodes).forEach(node => {
+  bbn.fn.each(childNodes, (node, i) => {
     if (node instanceof Comment) {
       return;
     }
 
     if (node && node.getAttributeNames) {
       let tmp = bbn.cp.analyzeElement(node, map, inlineTemplates, idx + '-' + num);
+      if (childNodes[i+1]?.getAttributeNames && childNodes[i+1]?.textContent && !bbn.fn.removeExtraSpaces(childNodes[i+1].textContent)) {
+        tmp.spaced = true;
+      }
       res.items.push(tmp.res);
       num++;
       lastEmpty = false;
     }
     // No text nodes in the slots
     else if (node.textContent) {
-      const checkEmpty = bbn.fn.removeExtraSpaces(node.textContent);
+      const isEmpty = !bbn.fn.removeExtraSpaces(node.textContent);
       const txt = node.textContent
                   // escaping dollars
                   //.replace(/\$/g, (_, g) => '\\$')
@@ -315,13 +318,13 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
                   .replace(/{{(.+?)}}/gs, (_, g1) => '${' + g1 + '}');
       let isDynamic = txt.indexOf('${') > -1;
       let hash = bbn.fn.hash(txt);
-      if (checkEmpty || !lastEmpty) {
-        lastEmpty = !checkEmpty;
+      if (!isEmpty || !lastEmpty) {
+        lastEmpty = isEmpty;
         const item = bbn.fn.createObject({
           id: idx + '-' + num,
           text: txt,
           hash: hash,
-          empty: !checkEmpty
+          empty: isEmpty
         });
         if (isDynamic) {
           item.exp = txt;
@@ -331,7 +334,7 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
         num++;
       }
       else {
-        lastEmpty = false;
+        lastEmpty = isEmpty;
       }
     }
     else {

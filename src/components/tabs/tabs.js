@@ -206,7 +206,6 @@ const cpDef = {
       source: {
         deep: true,
         handler() {
-          bbn.fn.log("CHANGING TABS SOURCE");
           this.$forceUpdate();
         }
       }

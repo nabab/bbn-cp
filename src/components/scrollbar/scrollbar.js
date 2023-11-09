@@ -567,7 +567,7 @@ const cpDef = {
         this.onResize();
         this.isInit = true;
         if ( !this.container && this.realScroller ){
-          bbn.fn.log("SCROLLBAR", this, this.orientation);
+          //bbn.fn.log(["SCROLLBAR", this, this.orientation]);
           this.realScroller.$on("resize", this.onResize, false, this);
           this.scrollTo(this.initial);
           this.realScroller.$on("scroll", this.adjustFromContainer, false, this);

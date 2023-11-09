@@ -1957,7 +1957,7 @@ export default class bbnCp {
         throw new Error(bbn._("A function must be used to return object default values in %s", name));
       }
 
-      v = bbn.fn.isFunction(cfg.default) ? cfg.default() : cfg.default;
+      v = bbn.fn.isFunction(cfg.default) ? cfg.default.bind(this)() : cfg.default;
       isDefined = true;
     }
 

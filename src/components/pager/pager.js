@@ -17,6 +17,7 @@ const cpDef = {
       element: {
         type: [Object, bbnCp],
         default() {
+          bbn.fn.log("ELEMENT ON TABLE", this);
           return this.$parent;
         }
       },
@@ -115,7 +116,6 @@ const cpDef = {
     },
     methods: {
       updatePager() {
-        bbn.fn.log("UPDATE PAGER");
       },
       /**
        * @method firstPage
@@ -223,6 +223,7 @@ const cpDef = {
     }
   };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './pager.html';
 import cpStyle from './pager.less';
 let cpLang = {};

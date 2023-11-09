@@ -2464,6 +2464,7 @@ const cpDef = {
             })));
           }
 
+          this.$forceUpdate();
           const pager = this.getRef('pager');
           if (pager) {
             pager.$forceUpdate();

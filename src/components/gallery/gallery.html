@@ -115,8 +115,8 @@
                   v-else-if="total">
           <div class="bbn-gallery-columns-container"
                :style="{margin: '0 auto', textAlign: align}">
-            <gallery-col v-for="(col, index) in cols"
-                        :key="'gallery-col-'+index"
+            <gallery-col v-for="index in cols"
+                        :key="'gallery-col-' + index"
                         :index="index"
                         :source="items.filter((it, i) => {
                             return i % cols === index;

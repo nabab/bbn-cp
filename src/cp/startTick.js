@@ -29,7 +29,6 @@ export default function startTick() {
                   }
                 });
               });
-              //await bbn.cp.repeatTick(queueElement.cp);
             }
             else {
               const queueElement = bbn.fn.getRow(bbn.cp.queue, {cp: queue[i].cp});

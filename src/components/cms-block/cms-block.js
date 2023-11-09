@@ -44,12 +44,12 @@ const cpDef = {
       title: {
         view: `<div @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"  :class="['component-container', 'bbn-block-title', {'has-hr': source.hr}, alignClass]":style="style">
                 <hr v-if="source.hr">
-                <bbn-anon :is="cpHTML(source.tag, 'title')" :source="source"></bbn-anon>
+                <component :is="cpHTML(source.tag, 'title')" :source="source"></component>
                 <hr v-if="source.hr">
                 </div>`,
         edit: `<div :class="['component-container','bbn-cms-block-edit' ,'bbn-block-title', 'bbn-flex-height', {'has-hr': source.hr}, alignClass]" :style="style">
                 <div class="edit-title bbn-w-100">
-                  <hr v-show="source.hr"><bbn-anon :is="cpHTML(source.tag,'title')" :source="source"></bbn-anon><hr v-if="source.hr">
+                  <hr v-show="source.hr"><component :is="cpHTML(source.tag,'title')" :source="source"></component><hr v-if="source.hr">
                 </div>
                 <div class="bbn-grid-fields bbn-vspadded bbn-w-100">
                   <label v-text="_('Title tag')"></label>

@@ -119,7 +119,7 @@ const treatLoop = (cp, node, hashName) => {
   x(`  if (${isArray}) {`);
   x(`    ${indexName} = parseInt(${indexName});`);
   x(`  }`);
-  x(`  let ${node.loop.item} = ${isNumber} ? ${indexName} : ${varName}[${indexName}];`);
+  x(`  let ${node.loop.item} = ${isNumber} ? parseInt(${indexName}) : ${varName}[${indexName}];`);
   x(`  const ${hash} = (${hashName} || '') + '${node.loop.hash}-${indexName}-' + (${node.attr?.key?.exp ? node.attr.key.exp : indexName});`);
   x(`  ${listName}.push(${hash});`);
   x(`  $_sr('${node.loop.item}', ${node.loop.item}, ${hash});`);
