@@ -1337,6 +1337,7 @@ export default class bbnCp {
    * @returns {Promise}
    */
   async $updateComponent(shadow) {
+    bbn.fn.log("UPDATE COMPONENT " + this.$options.name + ' / ' + this.$cid);
     if (!this.$isCreated || !this.$el.isConnected) {
       return;
     }
