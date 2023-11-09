@@ -1,6 +1,6 @@
 {
   "name": "@bbn/bbn-cp",
-  "version": "1.0.61",
+  "version": "1.0.62",
   "description": "A web component library with a VueJS API",
   "main": "dist/index.js",
   "files": [
