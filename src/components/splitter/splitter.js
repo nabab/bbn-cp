@@ -483,7 +483,11 @@ const cpDef = {
             this.resizers.splice(0, this.resizers.length);
           }
 
-          tmp.forEach((pane, idx) => {
+          bbn.fn.each(tmp, (pane, idx) => {
+            if (pane.hidden) {
+              return;
+            }
+
             let prev, next, prevc, nextc;
             if ( hasPanes && isResizable && pane.isResizable ){
               prev = this.getPrevResizable(idx, tmp);

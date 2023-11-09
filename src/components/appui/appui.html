@@ -69,6 +69,7 @@
                   @load="onLoad"
                   @change="$emit('change', $event)"
                   @shortcut="addShortcut"
+                  @route1="$emit('route1')"
                   :breadcrumb="isMobile"
                   :scroll-content="scrollable"
                   :component="component"

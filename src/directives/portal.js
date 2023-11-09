@@ -24,7 +24,7 @@ export default function() {
     }
   };
 
-  bbn.cp.directives['bbn-portal'] =  bbn.fn.createObject({
+  bbn.cp.directives['bbn-portal'] = bbn.fn.createObject({
     inserted: (el, binding) => {
       el.bbnDirectives.portal = bbn.fn.createObject({
         originalParent: el.parentNode

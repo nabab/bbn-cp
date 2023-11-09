@@ -137,8 +137,8 @@ const treatLoop = (cp, node, hashName) => {
   x(`}`);
   x(`Array.from(${parentName}.childNodes).forEach(a => {`);
   // If the loop is on a template the ID won't be the same with the loop but will start by it
-  x(`  if ((!a.bbnHash || (a.bbnHash.indexOf(${hashName}) === 0)) && (a.bbnId.indexOf("${node.id}") === 0) && (!a.bbnLoopVars || ('${bbn.fn.escapeSquotes(node.loop.exp)}' === a.bbnLoopVars.exp)) && !${listName}.includes(a.bbnHash)) {`);
-  x(`    $_this.$removeDOM(a);bbn.fn.log("REMOVING NODE", a)`);
+  x(`  if ((a.bbnHash && (a.bbnHash.indexOf(${hashName}) === 0)) && (a.bbnId.indexOf("${node.id}") === 0) && (!a.bbnLoopVars || ('${bbn.fn.escapeSquotes(node.loop.exp)}' === a.bbnLoopVars.exp)) && !${listName}.includes(a.bbnHash)) {`);
+  x(`    $_this.$removeDOM(a);bbn.fn.log("REMOVING NODE", a, a.bbnHash, ${listName})`);
   x(`  }`);
   x(`});`);
   };
@@ -292,6 +292,9 @@ const treatElement = function(cp, node, hashName) {
     x(`  if ($_par.at(-1) === $_this.$el) {`);
     x(`    $_final.push({ele: $_items['${node.id}'], position: $_num['-'] - 1});`);
     x(`  }`);
+    if (bbn.fn.numProperties(node.directives)) {
+      x(`  bbn.cp.insertDirectives($_items['${node.id}'].bbnSchema.directives, $_items['${node.id}']);`);
+    }
     x(`}`);
     x(`else {`);
 

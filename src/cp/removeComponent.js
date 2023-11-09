@@ -4,7 +4,6 @@ export default function removeComponent(cid) {
   }
 
   const cp = this.componentsIndex.get(cid);
-  //bbn.fn.log("REMOVING COMPONENT", cp);
   if (!cp) {
     bbn.fn.log(["The component is already removed", cid]);
     //throw new Error("The component is already removed")

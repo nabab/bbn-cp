@@ -116,8 +116,12 @@ const cpDef = {
   },
   watch:{
     collapsed(val){
-      this.currentHidden = val;
       this.isCollapsed = val;
+      this.splitter.init();
+    },
+    hidden(val) {
+      this.currentHidden = val;
+      this.splitter.init();
     }
   },
   created(){

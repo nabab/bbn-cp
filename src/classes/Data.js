@@ -117,7 +117,7 @@ export default class bbnData extends EventTarget {
         }
 
         if (!parent) {
-          dataObj.addComponent(component, path);
+          dataObj.addComponent(component, path, parent);
         }
 
         return dataObj.value;
@@ -594,6 +594,19 @@ export default class bbnData extends EventTarget {
       configurable: false
     });
 
+    Object.defineProperty(this, 'refs', {
+      value: [],
+      writable: false,
+      configurable: false
+    });
+
+    this.refs.push({
+      component,
+      path,
+      root: true,
+      parent: parent || null
+    });
+
     if (component.$values.indexOf(this.id) === -1) {
       component.$values.push(this.id);
     }
@@ -622,10 +635,16 @@ export default class bbnData extends EventTarget {
     let dataObj = this;
     while (dataObj) {
       bbn.fn.iterate(dataObj.components, (pathArr, cid) => {
-        const cp = bbn.cp.getComponent(cid).bbn;
-        bbn.fn.each(pathArr, p => {
-          fp.push({cp, path: [p, ...seq]});
-        });
+        const cp = bbn.cp.getComponent(cid)?.bbn;
+        if (!cp) {
+          bbn.fn.log(dataObj, this);
+          throw new Error(bbn._("Impossible to find the component %s", cid));
+        }
+        else {
+          bbn.fn.each(pathArr, p => {
+            fp.push({cp, path: [p, ...seq]});
+          });
+        }
       });
       seq.unshift(dataObj.path);
       if (!dataObj.parent) {
@@ -745,7 +764,7 @@ export default class bbnData extends EventTarget {
    * @param {String} path 
    * @returns {Boolean}
    */
-  addComponent(component, path) {
+  addComponent(component, path, parent) {
     if (!(component instanceof bbnCp)) {
       throw new Error(bbn._("bbnData hasComponent must be called with a bbn component"));
     }
@@ -824,6 +843,7 @@ export default class bbnData extends EventTarget {
         if (pathIdx === -1) {
           throw new Error("The path is not in the list of paths");
         }
+
         this.components[component.$cid].splice(pathIdx, 1);
       }
 

@@ -88,7 +88,7 @@ const cpDef = {
     data(){
       return {
         numericTimeout: false,
-        currentNumericPage:  this.element?.currentPage
+        currentNumericPage:  this.element?.currentPage || 1
       }
     },
     computed: {

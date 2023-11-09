@@ -2484,10 +2484,11 @@ const cpDef = {
                     if ((searchIndex !== false) && this.urls[this.views[searchIndex].url]) {
                       //this.remove(searchIndex);
                       //bbn.fn.warning("FOUND AND NOT REMOVED " + searchIndex);
-                      this.urls[this.views[searchIndex].url].isLoaded = true;
-                      this.urls[this.views[searchIndex].url].dirty = false;
-                      this.urls[this.views[searchIndex].url].ready = false;
-                      this.urls[this.views[searchIndex].url].init();
+                      idx = searchIndex;
+                      this.urls[this.views[idx].url].isLoaded = true;
+                      this.urls[this.views[idx].url].dirty = false;
+                      this.urls[this.views[idx].url].ready = false;
+                      this.urls[this.views[idx].url].init();
   
                     }
                     else {
@@ -2508,7 +2509,7 @@ const cpDef = {
                   })
 
                 }
-
+    
               },
               xhr => {
                 this.isLoading = false;
@@ -4298,6 +4299,7 @@ const cpDef = {
     }
   };
   
+import bbn from '@bbn/bbn';
 import cpHtml from './router.html';
 import cpStyle from './router.less';
 let cpLang = {};

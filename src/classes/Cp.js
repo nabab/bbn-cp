@@ -9,6 +9,8 @@ export default class bbnCp {
       writable: false,
       configurable: false
     });
+    // Adding itself to the global static #components
+    bbn.cp.addComponent(this.$el);
   }
 
   /**
@@ -109,7 +111,7 @@ export default class bbnCp {
   async $connectedCallback() {
     // Check we are in the DOm
     //bbn.fn.warning("CALLBACK ON " + this.$options.name + " / " + this.$el.bbnSchema.id + " INIT: " + this.$isInit + " MOUNTED: " + this.$isMounted);
-    if (!this.$el.isConnected || bbn.cp.getComponent(this.$el.bbnCid)) {
+    if (!this.$el.isConnected) {
       bbn.fn.log("CONNECTED CALLBACK: not connected or already initialized", this.$el.isConnected, bbn.cp.getComponent(this.$el.bbnCid));
       return;
     }
@@ -119,8 +121,6 @@ export default class bbnCp {
     }
 
     this.$init();
-    // Adding itself to the global static #components
-    bbn.cp.addComponent(this.$el);
 
     // Setting up $parent prop
     const parentNode = this.$el.parentNode;
@@ -707,6 +707,11 @@ export default class bbnCp {
   $disconnectedCallback() {
     //bbn.fn.log("Before disconnected callback from " + this.$el.tagName + ' / ' + this.$el.bbnSchema.id);
     if (!this.$el.isConnected) {
+      Object.defineProperty(this, '$isInit', {
+        value: false,
+        writable: false,
+        configurable: true
+      });
       //bbn.fn.log("Disconnected callback from " + this.$el.tagName);
       // Sending beforeDestroy event
       const beforeDestroy = new Event('beforedestroy');
@@ -740,11 +745,6 @@ export default class bbnCp {
       this.$removeFromElements(this.$el.bbnId, this.$el.bbnHash);
       */
       // Setting back $isinit
-      Object.defineProperty(this, '$isInit', {
-        value: false,
-        writable: false,
-        configurable: true
-      });
       const destroyed = new Event('destroyed');
       this.$onDestroyed();
       this.$el.dispatchEvent(destroyed);

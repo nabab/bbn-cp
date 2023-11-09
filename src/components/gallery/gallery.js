@@ -328,9 +328,9 @@ const cpDef = {
        * @return {Array}
        */
       items() {
-        let data = this.filteredData;
+        let data = this.filteredData.slice();
         if (this.sortable && !this.serverSorting) {
-          data = bbn.fn.order(data, 'data.' + this.sourceOrder, 'asc');
+          bbn.fn.order(data, 'data.' + this.sourceOrder, 'asc');
         }
         if (this.pageable
           && this.currentLimit
@@ -922,6 +922,7 @@ const cpDef = {
     }
   };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './gallery.html';
 import cpStyle from './gallery.less';
 let cpLang = {};
