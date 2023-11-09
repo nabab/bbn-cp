@@ -23,8 +23,8 @@
       </bbn-toolbar>
       <div v-else-if="typeof toolbar === 'function'"
            v-html="toolbar()"/>
-      <bbn-anon v-else
-                 :is="toolbar"/>
+      <componenrt v-else
+                  :is="toolbar"/>
     </div>
     <div :class="['bbn-w-100', 'bbn-table-container', {'bbn-flex-fill': scrollable}]">
       <div v-if="initStarted || isLoading"
