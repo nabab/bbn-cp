@@ -41,40 +41,7 @@ export default function generateCpClass(publicClass, obj) {
       });
       if (obj.computed) {
         for (let n in obj.computed) {
-          const def = {
-            get() {
-              if (!this.$isDataSet) {
-                return undefined;
-              }
-    
-              if (!Object.hasOwn(this.$computed, n)) {
-                this.$computed[n] = bbn.fn.createObject({
-                  old: undefined,
-                  val: undefined,
-                  hash: undefined,
-                  num: 0,
-                  update: () => {
-                    this.$updateComputed(
-                      n, obj.computed[n].get.bind(this)()
-                    );
-                  }
-                });
-              }
-          
-              if (this.$computed[n].num <= this.$numBuild) {
-                this.$computed[n].update();
-              }
-          
-              return bbnData.getValue(this.$computed[n].val);
-            }
-          };
-          if (obj.computed[n].set) {
-            def.set = (v) => {
-              obj.computed[n].set.bind(this)(v);
-            }
-          }
-    
-          Object.defineProperty(this, n, def);
+          bbn.cp.setComputed(this, n, obj.computed[n].get, obj.computed[n].set);
         }
       }
     

@@ -317,13 +317,16 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
                   // replacing double curly braces by dollar and single
                   .replace(/{{(.+?)}}/gs, (_, g1) => '${' + g1 + '}');
       let isDynamic = txt.indexOf('${') > -1;
-      let hash = bbn.fn.hash(txt);
-      if (!isEmpty || !lastEmpty) {
+      if (isEmpty && !num) {
+        return;
+      }
+
+      if (!isEmpty) {
         lastEmpty = isEmpty;
         const item = bbn.fn.createObject({
           id: idx + '-' + num,
-          text: txt,
-          hash: hash,
+          text: isEmpty ? ' ' : txt,
+          hash: isEmpty ? bbn.cp.spaceHash : bbn.fn.hash(txt),
           empty: isEmpty
         });
         if (isDynamic) {

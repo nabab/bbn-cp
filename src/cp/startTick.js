@@ -10,6 +10,7 @@ export default function startTick() {
         return;
       }
 
+      
       requestAnimationFrame(tst => {
         if ((tst !== lastUpdate) && bbn.cp.queue.length) {
           lastUpdate = tst;

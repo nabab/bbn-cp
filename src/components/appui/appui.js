@@ -780,46 +780,6 @@ const cpDef = {
       this.componentClass.push('bbn-resize-emitter', 'bbn-observer');
       this.cool = true;
 
-      /*
-      bbn.fn.each(this.plugins, (path, name) => {
-        bbn.cp.addPrefix(
-          name,
-          (tag, resolve, reject) => bbn.cp.queueComponent(
-            tag,
-            path + '/' + this.componentsPath + bbn.fn.replaceAll('-', '/', tag).substr(name.length + 1), null, resolve, reject
-          )
-        );
-      });
-  
-      if (this.prefix) {
-        bbn.cp.addPrefix(
-          this.prefix,
-          (tag, resolve, reject, mixins) => bbn.cp.queueComponent(
-            tag,
-            this.componentsPath + bbn.fn.replaceAll('-', '/', tag).substr((this.prefix + '-').length),
-            mixins,
-            resolve,
-            reject
-          ),
-          bbn.fn.extend(
-            true,
-            {},
-            {
-              methods: {
-                getTab(){
-                  return this.closest('bbn-container');
-                },
-                popup(){
-                  return this.getTab().popup.apply(this, arguments);
-                }
-              }
-            },
-            this.componentsMixin
-          )
-        );
-      }
-      */
-
       let preloaded = [
         'container',
         'router',

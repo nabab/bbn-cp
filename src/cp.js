@@ -23,7 +23,6 @@ import isTag from "./cp/isTag.js";
 import mapAttributes from "./cp/mapAttributes.js";
 import mapTemplate from "./cp/mapTemplate.js";
 import normalizeComponent from "./cp/normalizeComponent.js";
-import queueComponent from "./cp/queueComponent.js";
 import realDefineComponent from "./cp/realDefineComponent.js";
 import removeComponent from "./cp/removeComponent.js";
 import removeSelfClosing from "./cp/removeSelfClosing.js";
@@ -112,6 +111,7 @@ const cpObj = bbn.fn.createObject({
   defaults: bbn.fn.createObject(),
   dataInventory: new Map(),
   version: 1,
+  spaceHash: bbn.fn.hash(' '),
   queue: [],
   known: [],
   interval: null,
@@ -179,7 +179,6 @@ const cpObj = bbn.fn.createObject({
   mapAttributes,
   mapTemplate,
   normalizeComponent,
-  queueComponent,
   realDefineComponent,
   removeComponent,
   removeSelfClosing,

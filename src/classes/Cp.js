@@ -1337,7 +1337,6 @@ export default class bbnCp {
    * @returns {Promise}
    */
   async $updateComponent(shadow) {
-    bbn.fn.log("UPDATE COMPONENT " + this.$options.name + ' / ' + this.$cid);
     if (!this.$isCreated || !this.$el.isConnected) {
       return;
     }
@@ -1389,6 +1388,7 @@ export default class bbnCp {
       this.$emit('domcreated');
     }
 
+    bbn.fn.log("UPDATED COMPONENT " + this.$options.name + ' / ' + this.$cid + ' / ' + this.$numBuild + ' / ' + (t2 - t1) + 'ms', this);
     this.$isUpdating = false;
   }
 
@@ -2007,9 +2007,10 @@ export default class bbnCp {
       throw new Error(bbn._("The computed %s is not defined in %s", name, this.$options.name));
     }
 
+    //bbn.fn.log("UPDATING COMPUTED " + name + " IN " + this.$options.name, val);
     const hash = bbnData.hash(val);
     const oldValue = this.$computed[name].val;
-    const oldHash = bbnData.hash(this.$computed[name].val);
+    const oldHash = this.$computed[name].hash;
     let go = ((val !== oldValue) && !bbn.fn.isSame(oldHash, hash))
               || !bbn.fn.isSame(this.$computed[name].hash, hash);
     if (go) {
@@ -2033,7 +2034,6 @@ export default class bbnCp {
         }
         //bbn.fn.log(["UPDATING COMPUTED " + name + " IN " + this.$options.name, val, oldValue]);
         this.$computed[name].old = oldValue;
-        this.$computed[name].num = this.$numBuild;
         this.$computed[name].val = this.$treatValue(val, name);
         newData = bbnData.getObject(this.$computed[name].val);
         if (newData) {
@@ -2232,11 +2232,9 @@ export default class bbnCp {
    * Add delay before another function call
    */
   $tick() {
-    let row = bbn.fn.getRow(bbn.cp.queue, {cp: this});
-    if (!row) {
-      row = {cp: this, fns: []};
-      bbn.cp.queue.push(row);
-    }
+    let idx = bbn.fn.search(bbn.cp.queue, {cp: this});
+    let tmp = idx > -1 ? bbn.cp.queue.splice(idx, 1)[0] : {cp: this, fns: []};
+    bbn.cp.queue.push(tmp);
     //bbn.fn.log("TICK");
     //console.trace();
     //bbn.fn.log(this, '--------------------')
@@ -2502,24 +2500,30 @@ export default class bbnCp {
     }
     else {
       return new Promise(resolve => {
-        let row = bbn.fn.getRow(bbn.cp.queue, {cp: this});
-        if (!row) {
-          row = {
+        let idx = bbn.fn.search(bbn.cp.queue, {cp: this});
+        let tmp;
+        if (idx > -1) {
+          tmp = bbn.cp.queue.splice(idx, 1)[0];
+        }
+        else {
+          tmp = {
             cp: this,
-            fns: [resolve],
+            fns: [],
             force: true
           };
-          bbn.cp.queue.push(row);
         }
 
-        row.fns.push(resolve);
+        tmp.fns.push(resolve);
         if (fn && bbn.fn.isFunction(fn)) {
-          row.fns.push(fn);
+          tmp.fns.push(fn);
         }
 
-        if (!row.force) {
-          row.force = true;
+        if (!tmp.force) {
+          tmp.force = true;
         }
+
+        bbn.cp.queue.unshift(tmp);
+
       });
     }
   }

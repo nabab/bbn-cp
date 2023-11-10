@@ -186,7 +186,7 @@ const resizer = {
               if (entry.contentBoxSize?.[0]) {
                 this.onResize();
               }
-              //bbn.fn.log(bbn._("RESIZEOBS from %s", this.$options.name), entry.contentBoxSize, this.Cid);
+              //bbn.fn.log(bbn._("RESIZEOBS from %s", this.$options.name), entry.contentBoxSize);
             }
           }
         });

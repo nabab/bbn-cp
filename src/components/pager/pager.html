@@ -77,8 +77,7 @@
 					:style="{visibility: element.currentPage >= element.numPages - 1 ? 'hidden' : 'visible'}">
 			<i class="nf nf-fa-angle_double_right bbn-xl bbn-pager-mobile-icon"/>
 		</span>
-		<span v-if="!!element.limits &&
-								(element.limits.length > 1) &&
+		<span v-if="(element?.limits?.length > 1) &&
 								(!isMobile || isTablet) &&
 								!!limit"
 					class="bbn-hmargin">

@@ -37,6 +37,7 @@
       </div>
       <bbn-scroll v-else-if="currentColumns.length"
                   :scrollable="scrollable"
+                  :autoresize="false"
                   class="bbn-w-100"
                   ref="scroll"
                   :offset-y="$refs.thead ? [$refs.thead.getBoundingClientRect().height, 0] : [0,0]"

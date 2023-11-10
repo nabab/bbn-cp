@@ -3,7 +3,7 @@ import { bbn } from "@bbn/bbn";
 /**
  * Takes care of the data reactivity for non primitive values.
  */
-export default class bbnData extends EventTarget {
+export default class bbnData/* extends EventTarget*/ {
 
   /**
    * Returns a unique identifier from any type of value (hashes only simple objects and arrays)
@@ -467,7 +467,7 @@ export default class bbnData extends EventTarget {
    * @param {bbnData} parent If the data is a sub-object of another bbnData object, the parent object
    */
   constructor(data, component, path, parent) {
-    super();
+    //super();
     if (path === 'computed') {
       bbn.fn.log([component, path, parent, data]);
       throw new Error("bbnData cannot be initialized with a computed property");

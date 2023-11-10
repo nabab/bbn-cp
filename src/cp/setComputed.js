@@ -3,6 +3,7 @@ export default function setComputed(obj, name, getter, setter) {
     throw new Error(bbn._("The computed property %s already exists", name));
   }
 
+
   const def = {
     get() {
       if (!this.$isDataSet) {
@@ -13,15 +14,18 @@ export default function setComputed(obj, name, getter, setter) {
           old: undefined,
           val: undefined,
           hash: undefined,
-          num: 0,
+          num: -1,
           update: () => {
             this.$updateComputed(name, getter.bind(this)());
           }
         });
       }
-      this.$computed[name].update();
-
-      return this.$computed[name].val;
+      if (this.$computed[name].num < this.$numBuild) {
+        this.$computed[name].update();
+        this.$computed[name].num++;
+      }
+  
+      return bbnData.getValue(this.$computed[name].val);
     }
   };
   if (setter) {
@@ -32,5 +36,5 @@ export default function setComputed(obj, name, getter, setter) {
     };
   }
   Object.defineProperty(obj, name, def);
-  //obj.$updateWatcher(name, obj[name], true);
+  obj.$updateWatcher(name, obj[name], true);
 }

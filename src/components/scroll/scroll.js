@@ -185,6 +185,10 @@ const cpDef = {
     keepVisible: {
       type: Boolean,
       default: false
+    },
+    autoresize: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -987,6 +991,13 @@ const cpDef = {
      * @fires onResize
      */
     waitReady(ev) {
+      if (!this.autoresize) {
+        if (!this.ready) {
+          this.initSize()
+        }
+        return;
+      }
+
       if (this.isResizing || !this.$el.clientWidth || !bbn.fn.isInViewport(this.$el)) {
         return;
       }

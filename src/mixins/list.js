@@ -1,3 +1,4 @@
+import bbn from '@bbn/bbn';
 import bbnCp from '../classes/Cp.js';
 
 const list = {
@@ -613,9 +614,11 @@ const list = {
         return Math.ceil((this.start + 1) / this.currentLimit);
       },
       set(val) {
+        bbn.fn.log("SETTING PAGE1")
         if ( this.ready ) {
           this.start = val > 1 ? (val - 1) * this.currentLimit : 0;
           this.updateData(!this.serverPaging);
+          bbn.fn.log("SETTING PAGE2")
         }
       }
     },
@@ -728,9 +731,11 @@ const list = {
         data = this.currentData.slice();
       }
 
+      /*
       if (this.pageable && this.currentLimit && (this.currentLimit < data.length)) {
         data = data.splice(this.start, this.currentLimit);
       }
+      */
 
       return data;
     },
@@ -1082,6 +1087,7 @@ const list = {
               }
 
               this.total = d.total || this.filteredData.length;
+              this.currentTotal = d.total || this.filteredData.length;
               /** @todo Observer part to dissociate */
               if (d.observer && bbn.fn.isFunction(this.observerCheck) && this.observerCheck()) {
                 this._observerReceived = d.observer.value;
