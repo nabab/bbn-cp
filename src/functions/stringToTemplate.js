@@ -10,7 +10,7 @@ const parser = new DOMParser();
  * @param {String} str 
  * @returns {Array}
  */
-export default function stringToTemplate(str, withMap) {
+export default function stringToTemplate(str, withMap, name) {
   const map = bbn.fn.createObject();
   const inlineTemplates = bbn.fn.createObject();
 
@@ -51,6 +51,18 @@ export default function stringToTemplate(str, withMap) {
     num++;
     return tmp.res;
   });
+  if ((res.length > 1)
+    || res[0].attr?.['bbn-if']
+    || !res[0].attr?.['bbn-for']
+    || !res[0].attr?.['bbn-model']
+    || !res[0].attr?.['bbn-forget']
+    || (bbn.cp.isComponent(tpl[0]) && (res[0].tag !== name))
+  ) {
+    res = [{
+      tag: 'div',
+      items: res
+    }];
+  }
 
   if (withMap) {
     return {
