@@ -989,14 +989,22 @@ export default class bbnCp {
     });
 
     /**
-     * Unique ID for each component, used for global registration
+     * Object of DOM building functions indexed on the template ids
+     */
+    Object.defineProperty(this, '$fns', {
+      value: bbn.fn.createObject(),
+      writable: false,
+      configurable: false
+    });
+
+    /**
+     * The class constructor
      */
     Object.defineProperty(this, '$cls', {
       value: this.$el.constructor,
       writable: false,
       configurable: false
     });
-
     Object.defineProperty(this, '$attr', {
       value: bbn.fn.getAttributes(this.$el),
       writable: false,

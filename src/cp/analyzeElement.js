@@ -321,7 +321,7 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
         return;
       }
 
-      if (!isEmpty) {
+      if (!isEmpty || !lastEmpty) {
         lastEmpty = isEmpty;
         const item = bbn.fn.createObject({
           id: idx + '-' + num,
