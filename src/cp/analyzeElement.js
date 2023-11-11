@@ -230,7 +230,6 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
     }
     // Regular attributes
     else {
-      res.attr[name].hash = bbn.fn.hash(value);
       res.attr[name].value = value;
     }
   });
@@ -301,7 +300,7 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
 
     if (node && node.getAttributeNames) {
       let tmp = bbn.cp.analyzeElement(node, map, inlineTemplates, idx + '-' + num);
-      if (childNodes[i+1]?.getAttributeNames && childNodes[i+1]?.textContent && !bbn.fn.removeExtraSpaces(childNodes[i+1].textContent)) {
+      if (!childNodes[i+1]?.getAttributeNames && childNodes[i+1]?.textContent && !bbn.fn.removeExtraSpaces(childNodes[i+1].textContent)) {
         tmp.spaced = true;
       }
       res.items.push(tmp.res);
@@ -317,7 +316,7 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
                   // replacing double curly braces by dollar and single
                   .replace(/{{(.+?)}}/gs, (_, g1) => '${' + g1 + '}');
       let isDynamic = txt.indexOf('${') > -1;
-      if (isEmpty && !num) {
+      if (isEmpty) {
         return;
       }
 
@@ -380,8 +379,7 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
     res.conditionId = bbn.fn.randomString(32);
   }
 
-  map[idx] = bbn.fn.clone(res);
-  delete map[idx].items;
+  map[idx] = res;
   return {
     res,
     map,

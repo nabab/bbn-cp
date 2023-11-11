@@ -106,6 +106,7 @@ const treatCondition = (cp, node, arr, hashName) => {
     x(`}`);
   });
 };
+
 /**
  * Generates the code recursively for a loop
  * @param {bbnCp} node 
@@ -152,7 +153,7 @@ const treatLoop = (cp, node, hashName) => {
     [clone],
     hash
   );
-  x(`delete $_go['${node.id}'];`);
+  x(`delete $_go;`);
   x.lsp();
   // Ending the loop
   x(`}`);
@@ -162,7 +163,7 @@ const treatLoop = (cp, node, hashName) => {
   x(`    $_this.$removeDOM(a);//bbn.fn.log("REMOVING NODE", a, a.bbnHash, ${listName})`);
   x(`  }`);
   x(`});`);
-  };
+};
 
 const setProperties = function(node, hashName) {
     x(`$_props = bbn.fn.createObject();`);
@@ -170,8 +171,8 @@ const setProperties = function(node, hashName) {
   if (bbn.fn.numProperties(node.attr)) {
     if (node.attr['bbn-bind']) {
       x(`$_tmp1 = $_sr('${node.attr['bbn-bind'].hash}', ${node.attr['bbn-bind'].exp}, ${hashName}) || bbn.fn.createObject();`);
-      x(`if (!$_go['${node.id}'] && ($_gs('${node.attr['bbn-bind'].hash}', ${hashName}) !== "OK")) {`);
-      x(`  $_go['${node.id}'] = true;`);
+      x(`if (!$_go && ($_gs('${node.attr['bbn-bind'].hash}', ${hashName}) !== "OK")) {`);
+      x(`  $_go = true;`);
       x(`}`);
       x(`$_tmp2 = bbn.fn.createObject();`);
       for (let n in node.attr) {
@@ -200,8 +201,8 @@ const setProperties = function(node, hashName) {
       x(`  else {`);
       x(`    $_props[n] = val;`);
       x(`  }`);
-      x(`  if (!$_go['${node.id}'] && $_node.attr[n] && !Object.hasOwn($_node.attr[n], 'value') && $_node.attr[n].hash && ($_gs($_node.attr[n].hash, ${hashName}) !== "OK")) {`);
-      x(`    $_go['${node.id}'] = true;`);
+      x(`  if (!$_go && $_node.attr[n] && !Object.hasOwn($_node.attr[n], 'value') && $_node.attr[n].hash && ($_gs($_node.attr[n].hash, ${hashName}) !== "OK")) {`);
+      x(`    $_go = true;`);
       x(`  }`);
       x(`});`);
       //x(`bbn.fn.log(["PROPS", $_props, $_tmp1, $_tmp2, bbn.fn.unique(Object.keys($_tmp1).concat(Object.keys($_tmp2)))]);`);
@@ -226,8 +227,8 @@ const setProperties = function(node, hashName) {
             x(`  $_props['${n}'] = $_tmp1;`);
           }
           x(`}`);
-          x(`if (!$_go['${node.id}'] && $_node.attr['${n}'] && !Object.hasOwn($_node.attr['${n}'], 'value') && $_node.attr['${n}'].hash && ($_gs($_node.attr['${n}'].hash, ${hashName}) !== "OK")) {`);
-          x(`  $_go['${node.id}'] = true;`);
+          x(`if (!$_go && $_node.attr['${n}'] && !Object.hasOwn($_node.attr['${n}'], 'value') && $_node.attr['${n}'].hash && ($_gs($_node.attr['${n}'].hash, ${hashName}) !== "OK")) {`);
+          x(`  $_go = true;`);
           x(`}`);
         }
         else {
@@ -243,12 +244,12 @@ const setProperties = function(node, hashName) {
 };
 
 const treatElement = function(cp, node, hashName) {
-    if (node.tag) {
+  if (node.tag) {
     if (node.model) {
       bbn.fn.iterate(node.model, m => {
         x(`$_sr('${m.hash}', ${m.exp}, ${hashName});`);
-        x(`if (!$_go['${node.id}'] && ($_gs('${m.hash}', ${hashName}) !== "OK")) {`);
-        x(`  $_go['${node.id}'] = true;`);
+        x(`if (!$_go && ($_gs('${m.hash}', ${hashName}) !== "OK")) {`);
+        x(`  $_go = true;`);
         x(`}`);
       });
 
@@ -259,15 +260,15 @@ const treatElement = function(cp, node, hashName) {
       for (let n in node.directives) {
         if (node.directives[n].exp) {
           x(`$_sr('${node.directives[n].hash}', ${node.directives[n].exp}, ${hashName});`);
-          x(`if (!$_go['${node.id}'] && ($_gs('${node.directives[n].hash}', ${hashName}) !== "OK")) {`);
-          x(`  $_go['${node.id}'] = true;`);
+          x(`if (!$_go && ($_gs('${node.directives[n].hash}', ${hashName}) !== "OK")) {`);
+          x(`  $_go = true;`);
           x(`}`);
         }
       }
     }
 
     // Start if ($_go)
-    x(`if ($_go['${node.id}'] && !$_fgtn['${node.id}']?.[${hashName} || '$_root']) {`);
+    x(`if ($_go && !$_fgtn['${node.id}']?.[${hashName} || '$_root']) {`);
     x.msp();
     //x(`  bbn.fn.log("IN TODO " + $_this.$options.name);`);
     //x(`  bbn.fn.log("DOING ${node.id} ${node.tag}");`);
@@ -510,7 +511,7 @@ const treatElement = function(cp, node, hashName) {
 };
 
 const treatSlot = function(cp, node, hashName) {
-    if (node.tag === 'slot') {
+  if (node.tag === 'slot') {
     let slot = "'default'";
     if (node.attr?.name) {
       slot = node.attr.name.exp ? `${node.attr.name.exp}` : `'${node.attr.name.value}'`;
@@ -562,9 +563,9 @@ const treatSlot = function(cp, node, hashName) {
   };
 
 const treatText = function(node, hashName) {
-    if (node.text) {
+  if (node.text) {
     x(`$_sr('${node.hash}', \`${bbn.fn.escapeTicks(node.text)}\`, ${hashName});`);
-    x(`if ($_go['${node.id}'] || ($_gs('${node.hash}', ${hashName}) !== "OK")) {`);
+    x(`if ($_go || ($_gs('${node.hash}', ${hashName}) !== "OK")) {`);
     x(`  if ($_items['${node.id}'] && ($_items['${node.id}'].textContent !== $_gv('${node.hash}', ${hashName}))) {`);
     x(`    $_items['${node.id}'].textContent = $_gv('${node.hash}', ${hashName});`);
     x(`  }`);
@@ -593,7 +594,7 @@ const treatText = function(node, hashName) {
 };
 
 const treatItems = function(cp, node, hashName) {
-    if (node.items?.length) {
+  if (node.items?.length) {
     x(`if ($_items['${node.id}']) {`);
     x.msp();
     x(`$_par.push($_items['${node.id}']);`);
@@ -791,120 +792,144 @@ const nodesToFunction = function(cp, arr, hashName) {
       x.msp();
     }
     
-    x(`$_old = $_this.$retrieveElement("${node.id}", ${hashName});`);
-    x(`$_node = $_this.$currentMap['${node.id}'];`);
-    x(`$_items['${node.id}'] = $_old;`);
-    x(`if (!Object.hasOwn($_go, '${node.id}')) {`);
-    x(`  $_go['${node.id}'] = !$_old;`);
-    x(`}`);
-
-    // Setting $_fgtn variable
-    if (node.forget?.exp) {
-      x(`$_sr('${node.forget.hash}', ${node.forget.exp}, ${hashName});`);
-      x(`if (!$_fgtn['${node.id}']) {`);
-      x(`  $_fgtn['${node.id}'] = bbn.fn.createObject();`);
-      x(`}`);
-      x(`$_fgtn['${node.id}'][${hashName} || '$_root'] = $_gv('${node.forget.hash}', ${hashName});`);
-      x(`if ($_fgtn['${node.id}'][${hashName} || '$_root']) {`);
-      x(`  $_items['${node.id}'] = $_par.at(-1);`);
-      x(`  $_go['${node.id}'] = false;`);
-      x(`}`);
-      x(`else if (['NEW', 'MOD'].includes($_gs('${node.forget.hash}', ${hashName}))) {`);
-      x(`  $_go['${node.id}'] = true;`);
-      x(`}`);
-
-      x(``);
-      x(``);
-    }
-
-    let treatEle = true;
-    if ((!node.pre && (node.tag === 'template'))
-        || ('transition' === node.tag)
-    ) {
-      x(`$_items['${node.id}'] = $_par.at(-1);`);
-      x(`$_go['${node.id}'] = false;`);
-      treatEle = false;
-    }
-    else {
-      x(`if (!$_go['${node.id}'] && !$_items['${node.id}']) {`);
-      x(`  $_go['${node.id}'] = true;`);
-      x(`}`);
-    }
-    //x(`bbn.fn.log(["nodesToFunction", "${node.tag || 'no'}", $_go['${node.id}']]);`);
-
-    if (node.text) {
-      treatText(node, hashName);
-    }
-    else if (node.tag === 'slot') {
-      treatSlot(cp, node, hashName);
-    }
-    else if (node.tag) {
-
-      setProperties(node, hashName);
-      //c.text += setDirectives(node, hashName);
-      if (treatEle) {
-        treatElement(cp, node, hashName);
-      }
-        
-      if (node.forget?.exp) {
-        x(`if ($_gs('${node.forget.hash}', ${hashName}) === 'MOD') {`);
-        x(`  if ($_fgtn['${node.id}']?.[${hashName} || '$_root']) {`);
-        x(`    if ($_old) {`);
-        x(`      $_old.childNodes.forEach(o => {`);
-        x(`        $_par.at(-1).appendChild(o);`);
-        x(`      });`);
-        //x(`      bbn.fn.log("From here");`);
-        x(`      $_this.$removeDOM($_old);`);
-        x(`    }`);
-        x(`    // Ele is the current parent`);
-        x(`    $_items['${node.id}'] = $_par.at(-1);`);
-        x(`  }`);
-        x(`  else {`);
-        x(`    $_par.at(-1).childNodes.forEach(o => {`);
-        x(`      if (o.bbnId.indexOf('${node.id}' + "-") === 0) {`);
-        x(`        $_items['${node.id}'].appendChild(o);`);
-        x(`      }`);
-        x(`    });`);
-        x(`  }`);
-        x(`}`);
-        x(`else if ($_fgtn['${node.id}']?.[${hashName} || '$_root']) {`);
-        x(`  $_items['${node.id}'] = $_par.at(-1);`);
-        x(`}`);
-        
-
-        x(``);
-        x(``);
-      }
-
-
-      if (node.pre) {
-        x(`if ($_items['${node.id}']) {`);
-        x(`  $_items['${node.id}'].innerHTML = \`${bbn.fn.escapeTicks(node.pre)}\`;`);
-        x(`}`);
-
-        x(``);
-        x(``);
-      }
-      else {
-        treatItems(cp, node, hashName);
-      }
-      x(`if ($_items['${node.id}'] && ($_items['${node.id}'] !== $_this.$el)) {`);
-      x(`  if ($_this.$el === $_par.at(-1)) {`);
-      x(`    $_num['-']++;`);
-      x(`  }`);
-      x(`  if (!$_num[$_par.at(-1).bbnId]) {`);
-      x(`    $_num[$_par.at(-1).bbnId] = 0;`);
-      x(`  }`);
-      x(`  $_num[$_par.at(-1).bbnId]++;`);
-      x(`}`);
-
-
-    }
-
-    endCondition(node);
 
   });
 };
+
+
+const setUpEnvironment = function() {
+  // Setting the state of each element in $currentResult to TMP except DEL state, which remains
+  bbn.fn.iterate(this.$currentResult, a => {
+    bbn.fn.iterate(a, b => {
+      if (b.state !== 'DEL') {
+        b.state = 'TMP';
+      }
+    });
+  });
+  // Each element with namespace is set in $_data and is added to argNames and argValues
+  for (let n in this.$namespaces) {
+    argNames.push(n);
+    argValues.push(cp.$namespaces[n] === 'method' ? this[n].bind(this) : this[n]);
+  }
+};
+
+const buildNode = function(cp, node, hashName) {
+  if (node.id === '0') {
+
+  }
+
+  const $_old = $_this.$retrieveElement(node.id, hashName);
+  let $_go = !$_old;
+  let $_items = false;
+
+  if (node.forget?.exp) {
+
+    x(`$_sr('${node.forget.hash}', ${node.forget.exp}, ${hashName});`);
+    x(`if ($_gv('${node.forget.hash}', ${hashName})) {`);
+    x(`  $_go = false;`);
+    x(`}`);
+    x(`else if (['NEW', 'MOD'].includes($_gs('${node.forget.hash}', ${hashName}))) {`);
+    x(`  $_go = true;`);
+    x(`}`);
+  }
+
+  let treatEle = true;
+  if ((!node.pre && (node.tag === 'template'))
+      || ('transition' === node.tag)
+  ) {
+    x(`$_go = false;`);
+    treatEle = false;
+  }
+  else {
+    x(`if (!$_go) {`);
+    x(`  $_go = true;`);
+    x(`}`);
+  }
+  //x(`bbn.fn.log(["nodesToFunction", "${node.tag || 'no'}", $_go]);`);
+
+  x(`if ($_go) {`);
+  x.msp();
+  x(`if ($_old) {`);
+  x(`  $_old.bbnSchema = $_node;`);
+  x(`}`);
+  x(`else {`);
+  x(`  $_node.bbnSchema = $_node;`);
+  x(`}`);
+
+  if (node.text) {
+    treatText(node, hashName);
+  }
+  else if (node.tag === 'slot') {
+    treatSlot(cp, node, hashName);
+  }
+  else if (node.tag) {
+
+    setProperties(node, hashName);
+    //c.text += setDirectives(node, hashName);
+    if (treatEle) {
+      treatElement(cp, node, hashName);
+    }
+      
+    if (node.forget?.exp) {
+      x(`if ($_gs('${node.forget.hash}', ${hashName}) === 'MOD') {`);
+      x(`  if ($_fgtn['${node.id}']?.[${hashName} || '$_root']) {`);
+      x(`    if ($_old) {`);
+      x(`      $_old.childNodes.forEach(o => {`);
+      x(`        $_par.at(-1).appendChild(o);`);
+      x(`      });`);
+      //x(`      bbn.fn.log("From here");`);
+      x(`      $_this.$removeDOM($_old);`);
+      x(`    }`);
+      x(`    // Ele is the current parent`);
+      x(`    $_items['${node.id}'] = $_par.at(-1);`);
+      x(`  }`);
+      x(`  else {`);
+      x(`    $_par.at(-1).childNodes.forEach(o => {`);
+      x(`      if (o.bbnId.indexOf('${node.id}' + "-") === 0) {`);
+      x(`        $_items['${node.id}'].appendChild(o);`);
+      x(`      }`);
+      x(`    });`);
+      x(`  }`);
+      x(`}`);
+      x(`else if ($_fgtn['${node.id}']?.[${hashName} || '$_root']) {`);
+      x(`  $_items['${node.id}'] = $_par.at(-1);`);
+      x(`}`);
+      
+
+      x(``);
+      x(``);
+    }
+
+
+    if (node.pre) {
+      x(`if ($_items['${node.id}']) {`);
+      x(`  $_items['${node.id}'].innerHTML = \`${bbn.fn.escapeTicks(node.pre)}\`;`);
+      x(`}`);
+
+      x(``);
+      x(``);
+    }
+    x(`if ($_items['${node.id}'] && ($_items['${node.id}'] !== $_this.$el)) {`);
+    x(`  if ($_this.$el === $_par.at(-1)) {`);
+    x(`    $_num['-']++;`);
+    x(`  }`);
+    x(`  if (!$_num[$_par.at(-1).bbnId]) {`);
+    x(`    $_num[$_par.at(-1).bbnId] = 0;`);
+    x(`  }`);
+    x(`  $_num[$_par.at(-1).bbnId]++;`);
+    x(`}`);
+  }
+
+  x.lsp();
+  x(`}`);
+
+  x(`if ($_items) {`);
+  x.msp();
+  treatItems(cp, node, hashName);
+  x.lsp();
+  x(`}`);
+
+}
 
 /**
  * (Re)generates the whole component's vDOM and DOM if needed, picking the right root, shadow or not
@@ -915,46 +940,13 @@ const nodesToFunction = function(cp, arr, hashName) {
  * @param {Boolean} shadow The content will go to the shadow DOM if true
  * @returns {Promise}
  */
-export default function templateToFunction(cp, tpl, sp = 0) {
+export default function templateToFunctions(cp, tpl, sp = 0) {
   if (bbn.fn.numProperties(cp.$fns)) {
     throw new Error("The component's functions have already been generated");
   }
 
+
   let hashName = '$_hash';
-  x.msp();
-  x(`const $_res = $_this.$currentResult;`);
-  x(`let ${hashName} = '';`);
-  // Setting the state of each element in $currentResult to TMP except DEL state, which remains
-  x(`bbn.fn.iterate($_res, a => {`);
-  x(`  bbn.fn.iterate(a, b => {`);
-  x(`    if (b.state !== 'DEL') {`);
-  x(`      b.state = 'TMP';`);
-  x(`    }`);
-  x(`  });`);
-  x(`});`);
-  x(`const $_data = bbn.fn.createObject();`);
-  // Each element with namespace is set in $_data and is added to argNames and argValues
-  for (let n in cp.$namespaces) {
-    argNames.push(n);
-    argValues.push(cp.$namespaces[n] === 'method' ? `$_this['${n}'].bind($_this)` : `$_this['${n}']`);
-    if ((n.indexOf('$') !== 0) && !['method', 'props'].includes(cp.$namespaces[n]) && (n !== 'internal')) {
-      x(`$_data["${n}"] = $_this.${n};`);
-    }
-  }
-
-  // Calling the function with each element from namespace as named arguments
-  x(`await (async function (${argNames.join(', ')}) {`);
-  x.msp();
-
-  //x(`let ownProps = Object.getOwnPropertyNames($_this);`);
-  //x(`let n;`);
-  //x(`for (let i = 0; n = ownProps[i]; i++) {`);
-  //x(`  if ((n.indexOf('$') !== 0) && !$_this.$namespaces[n]) {`);
-  //x(`    bbn.fn.warning('var ' + n + ' = $_this["' + n + '"];');`);
-  //x(`    eval('var ' + n + ' = $_this["' + n + '"];');`);
-  //x(`  }`);
-  //x(`}`);
-  
   //x(` _setInternalResult`);
   x(`const $_sr = (_name, _exp, _hash) => {`);
   x(`  return $_this.$_setInternalResult($_res, _name, _exp, _hash);`);

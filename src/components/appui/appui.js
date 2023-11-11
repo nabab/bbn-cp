@@ -749,7 +749,7 @@ const cpDef = {
         this.$nextTick(() => {
           const loadBar = this.getRef('loading');
           if (bbn.fn.isCp(loadBar)) {
-            loadBar.$updateAllComputed();
+            loadBar.$forceUpdate();
           }
         });
       }
@@ -765,7 +765,7 @@ const cpDef = {
         this.$nextTick(() => {
           const loadBar = this.getRef('loading');
           if (bbn.fn.isCp(loadBar)) {
-            loadBar.$updateAllComputed();
+            loadBar.$forceUpdate();
           }
         });
       }

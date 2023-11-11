@@ -31,6 +31,7 @@
         // setup test helpers
         mocha.setup("bdd");
         const expect = chai.expect;
+        let app;
         let ele = document.getElementById("app");
         let cp;
         let index = 0;
@@ -43,33 +44,26 @@
           };
         };
 
+        bbn.isTesting = true;
+
         // your tests here
-        describe("test suite", function () {
-          describe('#constructor', () => {
-            it("should create an app", async function () {
-              const app = await bbn.cp.createApp(document.getElementById('app'), {
-                data: {
-                  foo: 'bar'
-                }
-              });
-              expect(app).to.be.an.instanceof(bbnCp);
+        describe("bbnData test suite", function () {
+          before(async function() {
+            app = await bbn.cp.createApp(document.getElementById('app'), {
+              data: {
+                foo: 'bar'
+              }
             });
-
-
-            it("bbn-anon should be an HTMLElement", function() {
-              expect(ele).to.be.an.instanceof(HTMLElement);
-            });
-
-            it("should be a bbn component", function(done) {
-              setTimeout(() => {
+            expect(app).to.be.an.instanceof(bbnCp);
+            expect(ele).to.be.an.instanceof(HTMLElement);
+              await setTimeout(() => {
                 ele = document.getElementById("app");
                 expect(ele).to.have.property('bbn');
                 cp = ele.bbn;
                 bbn.fn.log('?');
-                done()
-              }, 100);
             });
-
+          });
+          describe('#constructor', () => {
             it('should initialize correctly with valid data', () => {
               const value = cp.$treatValue({
                 foo: 'bar',
@@ -94,11 +88,13 @@
           describe('#hash', () => {
             it('should return consistent hash for same input', () => {
               const value1 = cp.$treatValue({
-                foo: 'bar'
+                foo: 'bar',
+                arr: [1, 3, 7]
               }, randomProp());
               const data1 = bbnData.getObject(value1);
               const value2 = cp.$treatValue({
-                foo: 'bar'
+                foo: 'bar',
+                arr: [1, 3, 7]
               }, randomProp());
               const data2 = bbnData.getObject(value2);
               expect(data1.hash).to.equal(data2.hash);
@@ -162,6 +158,49 @@
               const immunizedNestedObj = bbnData.immunizeValue(nestedObj, false);
               expect(immunizedNestedObj).to.have.property('__bbnNoData');
               expect(immunizedNestedObj.level1).to.not.have.property('__bbnNoData');
+            });
+
+            it("should prevent bbnData object creation", function() {
+              const nestedObj = { 
+                level1: { 
+                  level2: { 
+                    value: "test" 
+                  }
+                }
+              };
+              const immunizedNestedObj = bbnData.immunizeValue(nestedObj, false);
+              const treated = cp.$treatValue(immunizedNestedObj, randomProp());
+              expect(bbnData.getObject(treated)).to.be.null;
+              const untreated = cp.$treatValue(nestedObj, randomProp());
+              expect(bbnData.getObject(untreated)).to.be.null;
+            });
+            it("but should allow it on nested properties", function() {
+              const nestedObj = { 
+                level1: { 
+                  level2: { 
+                    value: "test" 
+                  }
+                }
+              };
+              const immunizedNestedObj = bbnData.immunizeValue(nestedObj, false);
+              const treated = cp.$treatValue(immunizedNestedObj, randomProp());
+              expect(bbnData.getObject(treated)).to.be.null;
+              const untreated = cp.$treatValue(immunizedNestedObj.level1, randomProp());
+              expect(bbnData.getObject(untreated)).to.be.an.instanceof(bbnData);
+            });
+            it("Except if it's deep", function() {
+              const nestedObj = { 
+                level1: { 
+                  level2: { 
+                    value: "test" 
+                  }
+                }
+              };
+              const immunizedNestedObj = bbnData.immunizeValue(nestedObj, true);
+              const treated = cp.$treatValue(immunizedNestedObj, randomProp());
+              expect(bbnData.getObject(treated)).to.be.null;
+              const untreated = cp.$treatValue(immunizedNestedObj.level1, randomProp());
+              expect(bbnData.getObject(untreated)).to.be.null;
             });
           });
 

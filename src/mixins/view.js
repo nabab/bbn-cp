@@ -1,4 +1,4 @@
-import bbnCp from '../classes/Cp.js';
+import bbnCp from '../lib/Cp.js';
 
 const view = {
   props: {

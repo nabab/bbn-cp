@@ -222,7 +222,7 @@ const setProperties = function(node, hashName) {
 };
 
 const treatElement = function(cp, node, hashName) {
-    if (node.tag) {
+  if (node.tag) {
     if (node.model) {
       bbn.fn.iterate(node.model, m => {
         x(`$_sr('${m.hash}', ${m.exp}, ${hashName});`);

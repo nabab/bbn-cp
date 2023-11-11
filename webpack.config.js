@@ -36,8 +36,7 @@ export default {
             }
             return `${chunkData.chunk.name}.js`;
         },
-        libraryTarget: 'global',
-        publicPath: '',
+        libraryTarget: 'global'
     },
 
     // Set up loaders

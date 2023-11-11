@@ -1,5 +1,5 @@
 import "../cp.js";
-import bbnData from '../classes/Data.js';
+import bbnData from '../lib/Data.js';
 
 /**
  * Check the config of the component (mixins, computed, props, ect...) if everything is valid

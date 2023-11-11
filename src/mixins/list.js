@@ -1,5 +1,5 @@
 import bbn from '@bbn/bbn';
-import bbnCp from '../classes/Cp.js';
+import bbnCp from '../lib/Cp.js';
 
 const list = {
   props: {

@@ -47,11 +47,6 @@ export default function generateCpClass(publicClass, obj) {
     
     }
 
-    $init(el) {
-      bbnCp.prototype.$init.apply(this, [el]);
-      return this;
-    }
-  
     $setUpProps() {
       for (let n in obj.props) {
         const cfg = obj.props[n];
