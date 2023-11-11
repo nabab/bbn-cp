@@ -24,11 +24,6 @@ const cpDef = {
     bbn.cp.mixins.serviceWorker,
     bbn.cp.mixins.browserNotification
   ],
-  statics() {
-    return {
-      registeredComponents: bbn.fn.createObject()
-    };
-  },
   props: {
     root: {
       type: String,
@@ -281,7 +276,8 @@ const cpDef = {
       showBookmarks: false,
       bookmarksLoaded: false,
       isLoading: false,
-      loadingText: bbn._('Loading')
+      loadingText: bbn._('Loading'),
+      registeredComponents: bbnData.immunizeValue(bbn.fn.createObject())
     };
     return d;
   },
@@ -403,31 +399,31 @@ const cpDef = {
       this.getRef('router').route(url, force)
     },
     register(name, cp){
-      if (bbnAppuiCp.registeredComponents[name]) {
+      if (this.registeredComponents[name]) {
         throw new Error(bbn._("%s is already registered", name));
       }
 
       if (cp) {
-        bbnAppuiCp.registeredComponents[name] = cp;
+        this.registeredComponents[name] = cp;
       }
       else{
         throw new Error(bbn._("The component that should be registered as %s does not exist", name));
       }
     },
     unregister(name, ignore) {
-      if (bbnAppuiCp.registeredComponents[name]) {
-        delete bbnAppuiCp.registeredComponents[name];
+      if (this.registeredComponents[name]) {
+        delete this.registeredComponents[name];
       }
       else if (!ignore) {
         throw new Error(bbn._("The component") + ' ' + name + ' ' + bbn._("is not registered"));
       }
     },
     getRegistered(name, ignore) {
-      if (bbnAppuiCp.registeredComponents[name]) {
-        return bbnAppuiCp.registeredComponents[name];
+      if (this.registeredComponents[name]) {
+        return this.registeredComponents[name];
       }
       if (name === undefined) {
-        return bbnAppuiCp.registeredComponents;
+        return this.registeredComponents;
       }
 
       if (!ignore) {

@@ -42,17 +42,16 @@ export default function stringToTemplate(str, withMap) {
   }
 
   let num = 0;
-  const res = Array.prototype.map.apply(
-    Array.prototype.filter.apply(
-      Array.from(doc.documentElement.querySelector('body').childNodes),
-      [n => n.tagName && (n.tagName.toLowerCase() !== 'script')]
-    ),
-    [a => {
-      const tmp = bbn.cp.analyzeElement(a, map, inlineTemplates, num.toString());
-      num++;
-      return tmp.res;
-    }]
-  );
+  const res = Array.from(
+    doc.documentElement.querySelector('body').childNodes
+  )
+  .filter(n => n.tagName && (n.tagName.toLowerCase() !== 'script'))
+  .map(a => {
+    const tmp = bbn.cp.analyzeElement(a, map, inlineTemplates, num.toString());
+    num++;
+    return tmp.res;
+  });
+
   if (withMap) {
     return {
       res,

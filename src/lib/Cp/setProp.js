@@ -11,7 +11,7 @@ bbnCp.prototype.$setProp = function (name, value) {
   }
   */
 
-  if (!this.$el.constructor.bbnFn.$acceptedAttributes.includes(name) && (name.indexOf('bbn') !== 0)) {
+  if (!this.$el.constructor.bbnFn.acceptedAttributes.includes(name) && (name.indexOf('bbn') !== 0)) {
     bbn.fn.warning(bbn._("The attribute %s in %s is not a property", name, this.$options.name));
     return;
   }

@@ -14,7 +14,7 @@ bbnCp.prototype.$attributeChange = function (name, oldValue, newValue) {
   const realName = name.indexOf(':') === 0 ? name.substr(1) : name;
 
   bbn.fn.log("ATTR------------>")
-  if (this.$acceptedAttributes.includes(realName)) {
+  if (this.acceptedAttributes.includes(realName)) {
     this.bbn.$attr[name] = newValue;
     this.bbn.$setProp(name, newValue);
     if (this.bbn.$isMounted) {

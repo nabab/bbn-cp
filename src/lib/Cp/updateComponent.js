@@ -61,6 +61,6 @@ bbnCp.prototype.$updateComponent = async function (shadow) {
     this.$emit('domcreated');
   }
 
-  bbn.fn.log("UPDATED COMPONENT " + this.$options.name + ' / ' + this.$cid + ' / ' + this.$numBuild + ' / ' + (t2 - t1) + 'ms', this);
+  //bbn.fn.log("UPDATED COMPONENT " + this.$options.name + ' / ' + this.$cid + ' / ' + this.$numBuild + ' / ' + (t2 - t1) + 'ms', this);
   this.$isUpdating = false;
 }

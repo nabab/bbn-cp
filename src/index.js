@@ -81,10 +81,17 @@ import "./lib/Cp/watch.js";
 import "./lib/Cp/_getInternalState.js";
 import "./lib/Cp/_getInternalValue.js";
 import "./lib/Cp/_setInternalResult.js";
-
-
-
-
+import bbnBuilder from "./lib/Builder.js";
+import "./lib/Builder/build.js";
+import "./lib/Builder/condition.js";
+import "./lib/Builder/element.js";
+import "./lib/Builder/environment.js";
+import "./lib/Builder/items.js";
+import "./lib/Builder/loop.js";
+import "./lib/Builder/props.js";
+import "./lib/Builder/root.js";
+import "./lib/Builder/slot.js";
+import "./lib/Builder/text.js";
 import bbnAnonCp from "./lib/AnonCp.js";
 import bbnAnon from "./lib/Anon.js";
 import "./cp.js";
@@ -97,6 +104,7 @@ export {
   bbn,
   bbnHTML,
   bbnAnon,
+  bbnBuilder,
   bbnButtonHTML,
   bbnCellHTML,
   bbnElementHTML,

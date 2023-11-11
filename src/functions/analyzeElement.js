@@ -2,6 +2,54 @@ import bbn from "@bbn/bbn";
 
 const eventInstructions = ['stop', 'prevent', 'passive'];
 const parser = new DOMParser();
+const noSpaceTags = [
+  'table',
+  'tr',
+  'td',
+  'th',
+  'thead',
+  'tbody',
+  'tfoot',
+  'ul',
+  'ol',
+  'li',
+  'dl',
+  'dt',
+  'dd',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'header',
+  'footer',
+  'section',
+  'article',
+  'aside',
+  'nav',
+  'main',
+  'div',
+  'hr',
+  'p',
+  'pre',
+  'blockquote',
+  'address',
+  'figure',
+  'figcaption',
+  'legend',
+  'caption',
+  'details',
+  'summary',
+  'menu',
+  'dialog',
+  'script',
+  'style',
+  'noscript',
+  'iframe',
+  'code'
+];
+
 
 /**
  * Create an object of the HTML element with all the VUE prefixes
@@ -293,6 +341,7 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
   
   let num = 0;
   let lastEmpty = false;
+  let prevTag;
   bbn.fn.each(childNodes, (node, i) => {
     if (node instanceof Comment) {
       return;
@@ -303,6 +352,8 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
       if (!childNodes[i+1]?.getAttributeNames && childNodes[i+1]?.textContent && !bbn.fn.removeExtraSpaces(childNodes[i+1].textContent)) {
         tmp.spaced = true;
       }
+
+      prevTag = tmp.res.tag;
       res.items.push(tmp.res);
       num++;
       lastEmpty = false;
@@ -316,11 +367,7 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
                   // replacing double curly braces by dollar and single
                   .replace(/{{(.+?)}}/gs, (_, g1) => '${' + g1 + '}');
       let isDynamic = txt.indexOf('${') > -1;
-      if (isEmpty) {
-        return;
-      }
-
-      if (!isEmpty || !lastEmpty) {
+      if (!isEmpty || (!lastEmpty && prevTag && !noSpaceTags.includes(prevTag))) {
         lastEmpty = isEmpty;
         const item = bbn.fn.createObject({
           id: idx + '-' + num,
@@ -346,6 +393,10 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
   });
   let isIf = false;
   let conditionId = null;
+  while (res.items.length && res.items[res.items.length - 1].empty) {
+    res.items.pop();
+  }
+
   for (let i = 0; i < res.items.length; i++) {
     let item = res.items[i];
     if (item.condition) {

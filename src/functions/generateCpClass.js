@@ -54,7 +54,7 @@ export default function generateCpClass(publicClass, obj) {
       }
     }
 
-    static $acceptedAttributes = acceptedAttr;
+    static acceptedAttributes = acceptedAttr;
 
     static {
       let res;
