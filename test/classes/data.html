@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base href="../../dist/">
+    <link rel="stylesheet"
+          href="../node_modules/@bbn/bbn-css/dist/css/bbn-css-black.css">
+    <!-- styling for the test results -->
+    <link rel="stylesheet"
+          href="../node_modules/mocha/mocha.css">
+  </head>
+  <body>
+    <!-- container that will display test results -->
+    <div id="mocha"></div>
+
+    <!-- mocha (test runner) -->
+    <script src="../node_modules/mocha/mocha.js"></script>
+
+    <!-- chai (assertion library) -->
+    <script src="../node_modules/chai/chai.js"></script>
+
+    <!-- bbn-cp -->
+    <script src="bbn-cp.js"></script>
+
+    <div id="app">
+      <h5>My component</h5>
+    </div>
+
+     <!-- You can load the test from source file or write the code-->
+     <!-- <script src="test.js"></script>-->
+     <script>
+        // setup test helpers
+        mocha.setup("bdd");
+        const expect = chai.expect;
+        let ele = document.getElementById("app");
+        let cp;
+        let index = 0;
+        const randomProp = () => bbn.fn.randomString();
+        const dummyObj = () => {
+          index++;
+          return {
+            id: index,
+            name: randomProp()
+          };
+        };
+
+        // your tests here
+        describe("test suite", function () {
+          describe('#constructor', () => {
+            it("should create an app", async function () {
+              const app = await bbn.cp.createApp(document.getElementById('app'), {
+                data: {
+                  foo: 'bar'
+                }
+              });
+              expect(app).to.be.an.instanceof(bbnCp);
+            });
+
+
+            it("bbn-anon should be an HTMLElement", function() {
+              expect(ele).to.be.an.instanceof(HTMLElement);
+            });
+
+            it("should be a bbn component", function(done) {
+              setTimeout(() => {
+                ele = document.getElementById("app");
+                expect(ele).to.have.property('bbn');
+                cp = ele.bbn;
+                bbn.fn.log('?');
+                done()
+              }, 100);
+            });
+
+            it('should initialize correctly with valid data', () => {
+              const value = cp.$treatValue({
+                foo: 'bar',
+              }, randomProp());
+              const data = bbnData.getObject(value);
+              expect(data).to.have.property('data');
+              expect(data.data).to.have.property('foo');
+              expect(data.data.foo).to.equal('bar');
+              expect(data.id).to.be.a('symbol');
+              expect(data.value).to.have.property('__bbnData');
+              expect(data.value.__bbnData).to.equal(data.id);
+            });
+
+            it('should throw an error with invalid data', () => {
+              const m = new Map();
+              expect(() => {
+                const data = new bbnData(m, cp, randomProp());
+              }).to.throw();
+            });
+          });
+
+          describe('#hash', () => {
+            it('should return consistent hash for same input', () => {
+              const value1 = cp.$treatValue({
+                foo: 'bar'
+              }, randomProp());
+              const data1 = bbnData.getObject(value1);
+              const value2 = cp.$treatValue({
+                foo: 'bar'
+              }, randomProp());
+              const data2 = bbnData.getObject(value2);
+              expect(data1.hash).to.equal(data2.hash);
+            });
+          });
+
+          describe('#Array functions', () => {
+            let array;
+
+            beforeEach(() => {
+              array = cp.$treatValue([], bbn.fn.randomString());
+            });
+
+            it('should test the proxyPush function', () => {
+              let o = dummyObj();
+              array.push(o);
+              expect(JSON.stringify(array[0])).to.equal(JSON.stringify(o));
+            });
+
+            it('should test the proxyPop function', () => {
+              let o = dummyObj();
+              array.push(o);
+              const popped = array.pop();
+              expect(JSON.stringify(popped)).to.equal(JSON.stringify(o));
+              expect(array.length).to.equal(0);
+            });
+
+            // Add more it blocks for other array functions you want to test
+          });
+
+          describe("#immunizeValue", function() {
+            it("should add __bbnNoData property to an object", function() {
+              const obj = { a: 1, b: 2 };
+              const immunizedObj = bbnData.immunizeValue(obj);
+              expect(immunizedObj).to.have.property('__bbnNoData');
+              expect(immunizedObj.__bbnNoData).to.be.true;
+            });
+
+            it("should handle deep nested objects correctly", function() {
+              const nestedObj = { 
+                level1: { 
+                  level2: { 
+                    value: "test" 
+                  }
+                }
+              };
+              const immunizedNestedObj = bbnData.immunizeValue(nestedObj, true);
+              expect(immunizedNestedObj).to.have.property('__bbnNoData');
+              expect(immunizedNestedObj.level1).to.have.property('__bbnNoData');
+              expect(immunizedNestedObj.level1.level2).to.have.property('__bbnNoData');
+            });
+
+            it("should not immunize if deep is false for nested objects", function() {
+              const nestedObj = { 
+                level1: { 
+                  level2: { 
+                    value: "test" 
+                  }
+                }
+              };
+              const immunizedNestedObj = bbnData.immunizeValue(nestedObj, false);
+              expect(immunizedNestedObj).to.have.property('__bbnNoData');
+              expect(immunizedNestedObj.level1).to.not.have.property('__bbnNoData');
+            });
+          });
+
+        });
+
+
+        // run tests
+        mocha.run();
+     </script>
+  </body>
+</html>

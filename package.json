@@ -11,7 +11,8 @@
     "build": "./node_modules/.bin/babel src -o dist/bbn-cp.js --source-type module",
     "pub": "npm version patch && npm publish",
     "pack": "./node_modules/.bin/webpack --config webpack.config.js",
-    "minify": "#./node_modules/.bin/minify ./dist/bbn-cp.js --out-file dist/bbn-cp.min.js --mangle.keepClassName"
+    "minify": "#./node_modules/.bin/minify ./dist/bbn-cp.js --out-file dist/bbn-cp.min.js --mangle.keepClassName",
+    "test": "mocha"
   },
   "author": "Thomas Nabet <thomas.nabet@gmail.com>",
   "license": "MIT",

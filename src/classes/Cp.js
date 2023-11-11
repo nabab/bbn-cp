@@ -343,6 +343,7 @@ export default class bbnCp {
         });
       }
 
+      this.$el.dispatchEvent(new CustomEvent('connected'));
       this.$start();
 
     });
