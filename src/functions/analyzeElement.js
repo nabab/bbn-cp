@@ -56,15 +56,12 @@ const noSpaceTags = [
  * replaced by BBN prefixes
  * @return {Object} res
  */
-export default function analyzeElement(ele, map, inlineTemplates, idx) {
+export default function analyzeElement(ele, inlineTemplates, idx) {
   if (!ele.getAttributeNames) {
     throw new Error("Only tags can be analyzed");
   }
 
   const attr = ele.getAttributeNames().sort();
-  if (!map) {
-    map = bbn.fn.createObject();
-  }
 
   if (!inlineTemplates) {
     inlineTemplates = bbn.fn.createObject();
@@ -348,7 +345,7 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
     }
 
     if (node && node.getAttributeNames) {
-      let tmp = bbn.cp.analyzeElement(node, map, inlineTemplates, idx + '-' + num);
+      let tmp = bbn.cp.analyzeElement(node, inlineTemplates, idx + '-' + num);
       if (!childNodes[i+1]?.getAttributeNames && childNodes[i+1]?.textContent && !bbn.fn.removeExtraSpaces(childNodes[i+1].textContent)) {
         tmp.spaced = true;
       }
@@ -379,7 +376,6 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
           item.exp = txt;
         }
         res.items.push(item);
-        map[idx + '-' + num] = item;
         num++;
       }
       else {
@@ -429,11 +425,8 @@ export default function analyzeElement(ele, map, inlineTemplates, idx) {
   if (res.condition) {
     res.conditionId = bbn.fn.randomString(32);
   }
-
-  map[idx] = res;
   return {
     res,
-    map,
     inlineTemplates
   };
 }

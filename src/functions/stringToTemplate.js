@@ -49,7 +49,7 @@ export default function stringToTemplate(str, withMap, name) {
   )
   .filter(n => n.tagName && (n.tagName.toLowerCase() !== 'script'))
   .map(a => {
-    const tmp = bbn.cp.analyzeElement(a, map, inlineTemplates, num.toString());
+    const tmp = bbn.cp.analyzeElement(a, inlineTemplates, num.toString());
     num++;
     return tmp.res;
   });
@@ -65,11 +65,17 @@ export default function stringToTemplate(str, withMap, name) {
     const appendRoot = ar => {
       bbn.fn.each(ar, a => {
         a.id = '0-' + a.id;
+        if (a.attr) {
+          bbn.fn.iterate(a.attr, (v, n) => {
+            v.id = '0-' + v.id;
+          });
+        }
         if (a.items) {
-          appendRoot(a.items);
+          a.items = appendRoot(a.items);
         }
       });
 
+      return ar;
     };
 
     res = [{
@@ -80,6 +86,17 @@ export default function stringToTemplate(str, withMap, name) {
   }
 
   if (withMap) {
+    const map = bbn.fn.createObject();
+    const createMap = items => {
+      bbn.fn.each(items, a => {
+        map[a.id] = a;
+        if (a.items) {
+          createMap(a.items);
+        }
+      });
+    };
+    createMap(res);
+
     return {
       res,
       map,
