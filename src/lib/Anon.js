@@ -2,7 +2,7 @@ import bbnHTML from "./Html.js";
 import bbnAnonCp from "./AnonCp.js";
 import "../cp.js";
 
-const tmp = bbn.cp.stringToTemplate('<slot/>', true);
+const tmp = bbn.cp.stringToTemplate('<slot/>', true, 'bbn-anon');
 
 export default class bbnAnon extends bbnHTML
 {

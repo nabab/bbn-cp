@@ -119,7 +119,7 @@ bbnCp.prototype.$createElement = async function (node, target, prevElementIndex,
             configurable: false
           });
           if (node.cfg.template) {
-            const tmp = bbn.cp.stringToTemplate(node.cfg.template, true);
+            const tmp = bbn.cp.stringToTemplate(node.cfg.template, true, node.cfg.tag || 'bbn-anon');
             Object.defineProperty(ele, 'bbnTpl', {
               value: tmp.res,
               writable: false,

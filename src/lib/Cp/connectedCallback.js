@@ -107,18 +107,10 @@ bbnCp.prototype.$connectedCallback = async function () {
     writable: false,
     configurable: false
   });
-  /**
-   * The highest component in the doocument's hierarchy
-   */
-  Object.defineProperty(this, '$attrMap', {
-    value: bbn.fn.clone(this.$el.bbnMap || this.$el.constructor.bbnMap),
-    writable: false,
-    configurable: false
-  });
   Object.defineProperty(this, '$currentMap', {
-    configurable: true,
-    writable: true,
-    value: bbn.fn.clone(this.$el.bbnMap || this.$cls.bbnMap)
+    get() {
+      return this.$el.bbnMap || this.$cls.bbnMap;
+    }
   });
   Object.defineProperty(this, '$currentResult', {
     configurable: false,

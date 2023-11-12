@@ -10,6 +10,7 @@
  * @author BBN Solutions
  */
 const cpDef = {
+  tag: 'form',
     /**
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.localStorage
@@ -421,7 +422,7 @@ const cpDef = {
        * @return {String}
        */
       currentClass(){
-        let st = this.componentClass.join(' ');
+        let st = '';
         if (this.isInit) {
           if (!this.window && (this.hasFooter || this.realButtons.length || this.footer) && (this.scrollable || this.fullSize) ){
             st += ' bbn-flex-height';

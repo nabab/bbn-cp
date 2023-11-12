@@ -1,3 +1,5 @@
+import bbn from "@bbn/bbn";
+
 /**
  * Create a new DOM parser and parse the given HTML string.
  * @return {HTMLElement}
@@ -42,7 +44,7 @@ export default function stringToTemplate(str, withMap, name) {
   }
 
   let num = 0;
-  const res = Array.from(
+  let res = Array.from(
     doc.documentElement.querySelector('body').childNodes
   )
   .filter(n => n.tagName && (n.tagName.toLowerCase() !== 'script'))
@@ -51,16 +53,29 @@ export default function stringToTemplate(str, withMap, name) {
     num++;
     return tmp.res;
   });
+
   if ((res.length > 1)
     || res[0].attr?.['bbn-if']
-    || !res[0].attr?.['bbn-for']
-    || !res[0].attr?.['bbn-model']
-    || !res[0].attr?.['bbn-forget']
-    || (bbn.cp.isComponent(tpl[0]) && (res[0].tag !== name))
+    || res[0].attr?.['bbn-for']
+    || res[0].attr?.['bbn-model']
+    || res[0].attr?.['bbn-forget']
+    || (bbn.cp.isComponent(res[0]) && (res[0].tag !== name))
+    || (!bbn.cp.isComponent(res[0]) && !['div', 'span', name].includes(res[0].tag))
   ) {
+    const appendRoot = ar => {
+      bbn.fn.each(ar, a => {
+        a.id = '0-' + a.id;
+        if (a.items) {
+          appendRoot(a.items);
+        }
+      });
+
+    };
+
     res = [{
+      id: '0',
       tag: 'div',
-      items: res
+      items: appendRoot(res)
     }];
   }
 

@@ -1,5 +1,6 @@
 import { bbn } from "@bbn/bbn";
 
+
 /**
  * Takes care of the data reactivity for non primitive values.
  */
@@ -26,6 +27,8 @@ export default class bbnBuilder/* extends EventTarget*/ {
       configurable: false
     });
     this.environment();
+    this.treat(tpl, cp.$fns);
+
 
     // If the element merges with its root, it happens here and the template will change
     const template = this.root(tpl);
@@ -46,6 +49,18 @@ export default class bbnBuilder/* extends EventTarget*/ {
   
   }
 
+  treat (nodes) {
+    bbn.fn.each(nodes, (a, i) => {
+      a.names = [];
+      if (a.attr) {
+      }
+      
+      if (a.items) {
+        this.treat(a.items);
+      }
+    });
+  }
+  
   // _setInternalResult
   sr(_name, _exp, _hash) {
     return $_this.$_setInternalResult($_res, _name, _exp, _hash);
