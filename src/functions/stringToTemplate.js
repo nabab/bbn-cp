@@ -5,6 +5,14 @@ import bbn from "@bbn/bbn";
  * @return {HTMLElement}
  */
 const parser = new DOMParser();
+const createMap = (map, items) => {
+  bbn.fn.each(items, a => {
+    map[a.id] = a;
+    if (a.items) {
+      createMap(map, a.items);
+    }
+  });
+};
 
 /**
  * Transforms a HTML string into a template array
@@ -87,15 +95,7 @@ export default function stringToTemplate(str, withMap, name) {
 
   if (withMap) {
     const map = bbn.fn.createObject();
-    const createMap = items => {
-      bbn.fn.each(items, a => {
-        map[a.id] = a;
-        if (a.items) {
-          createMap(a.items);
-        }
-      });
-    };
-    createMap(res);
+    createMap(map, res);
 
     return {
       res,

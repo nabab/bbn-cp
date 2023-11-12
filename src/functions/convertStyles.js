@@ -1,6 +1,6 @@
-const treatArguments = function() {
+const treatArguments = function(...args) {
   const final = bbn.fn.createObject();
-  bbn.fn.each(arguments, arg => {
+  bbn.fn.each(args, arg => {
     if (bbn.fn.isArray(arg)) {
       bbn.fn.extend(final, treatArguments(...arg));
     }
@@ -24,9 +24,9 @@ const treatArguments = function() {
 /**
  * Convert styles into a string
  */
-export default function convertStyles() {
+export default function convertStyles(...args) {
   let st = '';
-  const css = treatArguments(...arguments);
+  const css = treatArguments(...args);
   if (bbn.fn.isObject(css)) {
     for (let n in css) {
       let prop = bbn.fn.camelToCss(n);

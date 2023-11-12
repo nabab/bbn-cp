@@ -27,7 +27,63 @@ export default class bbnBuilder/* extends EventTarget*/ {
       configurable: false
     });
     this.environment();
-    this.treat(tpl, cp.$fns);
+    bbn.fn.log(this.argNames);
+    let current;
+    const loopVars = {};
+    const expToFn = (a, node) => {
+      if (a.exp) {
+        const deps = [];
+        bbn.fn.each(this.argNames, arg => {
+          if (a.exp.match(new RegExp('\\b' + bbn.fn.escapeRegExp(arg) + '\\b'))) {
+            deps.push(arg);
+          }
+        });
+        const args = deps.slice();
+        bbn.fn.iterate(loopVars, (v, k) => {
+          if (node.id.indexOf(k) === 0) {
+            args.push(...v);
+          }
+        });
+        a.fn = new Function(...args, 'return ' + a.exp);
+        a.args = args;
+        return args;
+      }
+    };
+
+    bbn.fn.iterate(cp.$currentMap, node => {
+      if (node.loop) {
+        loopVars[node.id] = [
+          ...node.loop.item ? [node.loop.item] : [],
+          ...node.loop.index ? [node.loop.index] : []
+        ];
+      }
+
+      node.dependencies = [];
+      if (node.loop) {
+        const args = expToFn(node.loop, node);
+        node.dependencies.push(...args);
+      }
+
+      if (node.condition) {
+        const args = expToFn(node.condition, node);
+        node.dependencies.push(...args);
+      }
+
+      if (node.attr) {
+        bbn.fn.iterate(node.attr, a => {
+          if (a.exp) {
+            const args = expToFn(a, node);
+            node.dependencies.push(...args);
+          }
+        });
+      }
+      else if (node.exp) {
+        const args = expToFn(node, node);
+        node.dependencies.push(...args);
+      }
+    });
+
+    return;
 
 
     // If the element merges with its root, it happens here and the template will change
@@ -49,10 +105,12 @@ export default class bbnBuilder/* extends EventTarget*/ {
   
   }
 
+
   treat (nodes) {
     bbn.fn.each(nodes, (a, i) => {
       a.names = [];
       if (a.attr) {
+
       }
       
       if (a.items) {

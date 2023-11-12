@@ -27,6 +27,7 @@ export default function generateHTMLClass(name, clsExtends = bbnHTML) {
     static get bbnFn() {
       return window[name + 'Cp'];
     }
+    static bbnMapped = false;
   }
 
   return newCpClass;

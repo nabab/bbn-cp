@@ -21,7 +21,7 @@ import initDefaults from "./functions/initDefaults.js";
 import insertDirectives from "./functions/insertDirectives.js";
 import isComponent from "./functions/isComponent.js";
 import isTag from "./functions/isTag.js";
-import mapAttributes from "./functions/mapAttributes.js";
+import mapDependencies from "./functions/mapDependencies.js";
 import mapTemplate from "./functions/mapTemplate.js";
 import normalizeComponent from "./functions/normalizeComponent.js";
 import realDefineComponent from "./functions/realDefineComponent.js";
@@ -187,7 +187,7 @@ const cpObj = bbn.fn.createObject({
   insertDirectives,
   isComponent,
   isTag,
-  mapAttributes,
+  mapDependencies,
   mapTemplate,
   normalizeComponent,
   realDefineComponent,

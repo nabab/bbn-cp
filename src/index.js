@@ -65,8 +65,6 @@ import "./lib/Cp/setProp.js";
 import "./lib/Cp/setRef.js";
 import "./lib/Cp/setUpData.js";
 import "./lib/Cp/setUpProp.js";
-import "./lib/Cp/start.js";
-import "./lib/Cp/stop.js";
 import "./lib/Cp/tick.js";
 import "./lib/Cp/treatValue.js";
 import "./lib/Cp/unregisterChild.js";

@@ -1,3 +1,4 @@
+import bbn from "@bbn/bbn";
 import bbnCp from "../Cp.js";
 
 /**
@@ -200,6 +201,7 @@ bbnCp.prototype.$connectedCallback = async function () {
     configurable: false
   });
 
+  bbn.cp.mapDependencies(this);
 
   // Sending created event
   if (!this.$isCreated) {
@@ -215,10 +217,6 @@ bbnCp.prototype.$connectedCallback = async function () {
 
   // Sets the current template schema and creates the DOM
   await this.$updateComponent().then(() => {
-    // Not going on if the element disappeared
-    if (!this.$el.isConnected) {
-      return;
-    }
 
     // registering current object to parent and setting root
     if (this.$parent) {
@@ -250,7 +248,5 @@ bbnCp.prototype.$connectedCallback = async function () {
     }
 
     this.$el.dispatchEvent(new CustomEvent('connected'));
-    this.$start();
-
   });
 }

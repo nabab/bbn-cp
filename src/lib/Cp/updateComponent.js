@@ -22,6 +22,7 @@ bbnCp.prototype.$updateComponent = async function (shadow) {
     });
   }
   else if (this.$isBusy) {
+    // Will add to the queue in priority
     return this.$forceUpdate();
   }
   else {
@@ -38,12 +39,12 @@ bbnCp.prototype.$updateComponent = async function (shadow) {
   this.$lastLaunch = t1;
   this.$updateProps();
   if (!this.$numBuild) {
+    // Init watchers
     bbn.fn.iterate(this.$watcher, (a, n) => {
       this.$updateWatcher(n, bbn.fn.getProperty(this, n), true);
     });
   }
 
-  //this.$updateAllComputed();
   //bbn.fn.log(["EVALUATING", this.$options.name, this.$cid]);
   if (this.$options.name === 'bbn-table') {
     //debugger;
@@ -61,6 +62,7 @@ bbnCp.prototype.$updateComponent = async function (shadow) {
     this.$emit('domcreated');
   }
 
-  //bbn.fn.log("UPDATED COMPONENT " + this.$options.name + ' / ' + this.$cid + ' / ' + this.$numBuild + ' / ' + (t2 - t1) + 'ms', this);
   this.$isUpdating = false;
+  //bbn.fn.log("UPDATED COMPONENT " + this.$options.name + ' / ' + this.$cid + ' / ' + this.$numBuild + ' / ' + (t2 - t1) + 'ms', this);
+
 }

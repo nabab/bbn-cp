@@ -134,7 +134,8 @@ export default async function createApp(ele, obj) {
       bbnTpl: cpTpl,
       bbnSlots: slots,
       bbnMap: cpMap,
-      bbnSchema: schema
+      bbnSchema: schema,
+      bbnMapped: false
     }
   );
   if (cls) {

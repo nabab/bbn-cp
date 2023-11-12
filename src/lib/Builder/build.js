@@ -10,8 +10,7 @@ import bbnBuilder from "../Builder.js";
  * @param {Array} done array that keeps track of variables that have already been defined to avoid re-definition
  * @returns {String}
  */
-bbnBuilder.prototype.build = function(node) {
-
+bbnBuilder.prototype.build = function(node, cp) {
   if (node.id === '0') {
     // Setting the state of each element in $currentResult to TMP except DEL state, which remains
     bbn.fn.iterate(cp.$currentResult, a => {
@@ -23,12 +22,13 @@ bbnBuilder.prototype.build = function(node) {
     });
     node = this.root();
   }
-
-  const $_old = $_this.$retrieveElement(node.id, hashName);
-  let $_go = !$_old;
+  
+  const oldCp = cp.$retrieveElement(node.id, hashName);
+  let go = !oldCp;
   let $_items = false;
+
   if (node.forget?.exp) {
-    $_sr(node.forget.hash, node.forget.exp, hashName);
+    this.sr(node.forget.hash, node.forget.exp, hashName);
     if ($_gv(node.forget.hash, hashName)) {
       $_go = false;
     }

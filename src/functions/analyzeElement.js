@@ -201,6 +201,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
 
           res.loop = bbn.fn.createObject({
             exp: valueExp,
+            id: 'loop-' + res.id,
             item: args.value,
             index: args.index || null,
             hash: bbn.fn.hash(valueExp),
@@ -218,6 +219,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
           let hash = bbn.fn.hash(value);
           res.condition = bbn.fn.createObject({
             type,
+            id: 'condition-' + res.id,
             exp: value,
             // Adding prefix as conditions can be set to false even when the expression is not
             hash: 'CONDITION' + idx.toString() + '-' + hash
@@ -229,6 +231,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
             res.model = bbn.fn.createObject();
           }
           res.model[modelValue] = bbn.fn.createObject({
+            id: 'model-' + modelValue + '-' + res.id,
             exp: value,
             hash: bbn.fn.hash(value),
             modifiers: modifiers
@@ -245,6 +248,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
           break;
         case 'bbn-forget':
           res.forget = bbn.fn.createObject({
+            id: 'forget-' + res.id,
             exp: value,
             hash: bbn.fn.hash(value)
           });
@@ -258,6 +262,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
             let directiveArg = attrName.match(new RegExp(/\:{1}([a-z]+)/g));
             let directiveMod = attrName.match(new RegExp(/\.{1}([a-z]+)/g));
             res.directives[a] = bbn.fn.createObject({
+              id: 'directive-' + a + '-' + res.id,
               exp: value,
               hash: bbn.fn.hash(value),
               modifiers: !!directiveMod ? bbn.fn.map(directiveMod, m => bbn.fn.substr(m, 1)) : [],

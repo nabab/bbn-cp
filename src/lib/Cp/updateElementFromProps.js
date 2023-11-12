@@ -14,6 +14,9 @@ bbnCp.prototype.$updateElementFromProps = function (node, ele) {
     return;
   }
 
+  if (node.id === '0') {
+    
+  }
   /** @constant {Object} props */
   const props = node.props || bbn.fn.createObject();
   /** @constant {Boolean} isComponent */
@@ -30,6 +33,7 @@ bbnCp.prototype.$updateElementFromProps = function (node, ele) {
   let isChanged = false;
   // Other normal props are prioritarian
   for (let n in props) {
+    let v = props[n];
     switch (n) {
       case 'ref':
         bbn.fn.checkType(props.ref, 'string', bbn._("Refs must be strings in %s", this.$options.name));
@@ -37,31 +41,30 @@ bbnCp.prototype.$updateElementFromProps = function (node, ele) {
         break;
       case 'class':
         if (!isComponent && (ele !== this.$el)) {
-          if (ele.className !== props['class']) {
-            ele.className = props['class'];
+          if (ele.className !== v) {
+            ele.className = v;
           }
         }
         break;
       case 'style':
         if (!isComponent && (ele !== this.$el)) {
-          if (props.style !== ele.style.cssText) {
-            ele.style.cssText = bbn.cp.convertStyles(props.style);
+          if (v !== ele.style.cssText) {
+            ele.style.cssText = bbn.cp.convertStyles(v);
           }
+        }
+        break;
+      case 'bbn-show':
+        if (v && (ele.style.display === 'none')) {
+          ele.style.removeProperty('display');
+        }
+        else if (!v && (ele.style.display !== 'none')) {
+          ele.style.display = 'none';
         }
         break;
       default:
         if (n.indexOf('bbn-') !== 0) {
           attr[n] = props[n];
         }
-    }
-  }
-
-  if (Object.hasOwn(props, 'bbn-show')) {
-    if (props['bbn-show'] && (ele.style.display === 'none')) {
-      ele.style.removeProperty('display');
-    }
-    else if (!props['bbn-show']) {
-      ele.style.display = 'none';
     }
   }
 

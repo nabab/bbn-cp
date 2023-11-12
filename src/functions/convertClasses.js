@@ -1,10 +1,10 @@
 /**
  * Convert the classes into a string
  */
-export default function convertClasses() {
+export default function convertClasses(...args) {
   let arr = [];
-  for (let i = 0; i < arguments.length; i++) {
-    let css = arguments[i];
+  for (let i = 0; i < args.length; i++) {
+    let css = args[i];
     if (!css) {
       continue;
     }
