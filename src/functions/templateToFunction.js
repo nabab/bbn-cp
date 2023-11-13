@@ -398,7 +398,7 @@ const treatElement = function(cp, node, hashName) {
           let ev = node.events[n];
           //x(`bbn.fn.log("SETTING EVENT ${n} ON " + $_this.$options.name, _ele, ${$_anew});`);
           x(`$_items['${node.id}'].addEventListener("${n}", _bbnEventObject => {`);
-          //x(`  bbn.fn.log("EXECUTING EVENT ${n} ${ev.action} ON ${node.tag}", _bbnEventObject.detail);`);
+          //x(`  bbn.fn.log("EXECUTING EVENT ${n} ${ev.exp} ON ${node.tag}", _bbnEventObject.detail);`);
           x(`  let $event = _bbnEventObject;`);
           if (ev.modifiers.length) {
             //x(`bbn.fn.log($event, "${n}");`);
@@ -429,12 +429,12 @@ const treatElement = function(cp, node, hashName) {
             x(`  $event.stopImmediatePropagation();`);
           }
 
-          if (ev.action) {
-            if ((ev.action.indexOf(';') > -1) || (ev.action.indexOf('if') === 0)){
-              x(`  ${ev.action};`);
+          if (ev.exp) {
+            if ((ev.exp.indexOf(';') > -1) || (ev.exp.indexOf('if') === 0)){
+              x(`  ${ev.exp};`);
             }
             else {
-              x(`  let $_action = (${ev.action});`);
+              x(`  let $_action = (${ev.exp});`);
               x(`  if (bbn.fn.isFunction($_action)) {`);
               x(`    const args = _bbnEventObject.detail?.args || [$event];`);
               x(`    args.push(_bbnEventObject);`);
@@ -641,7 +641,7 @@ const treatRoot = function(cp, tpl, hashName) {
           x.msp();
           //x(`bbn.fn.log("SETTING EVENT ${n} ON " + $_this.$options.name, _ele, ${$_anew});`);
           x(`$_items['-'].addEventListener("${n}", _bbnEventObject => {`);
-          //x(`  bbn.fn.log("EXECUTING EVENT ${n} ${ev.action} ON ${node.tag}", _bbnEventObject.detail);`);
+          //x(`  bbn.fn.log("EXECUTING EVENT ${n} ${ev.exp} ON ${node.tag}", _bbnEventObject.detail);`);
           if (ev.modifiers.length) {
             x(`  if (!_bbnEventObject.key || !${JSON.stringify(ev.modifiers)}.includes(_bbnEventObject.key.toLowerCase())) {`);
             x(`    return;`);
@@ -658,12 +658,12 @@ const treatRoot = function(cp, tpl, hashName) {
             x(`  $event.stopImmediatePropagation();`);
           }
 
-          if (ev.action) {
-            if ((ev.action.indexOf(';') > -1) || (ev.action.indexOf('if') === 0)){
-              x(`  ${ev.action};`);
+          if (ev.exp) {
+            if ((ev.exp.indexOf(';') > -1) || (ev.exp.indexOf('if') === 0)){
+              x(`  ${ev.exp};`);
             }
             else {
-              x(`  let $_action = (${ev.action});`);
+              x(`  let $_action = (${ev.exp});`);
               x(`  if (bbn.fn.isFunction($_action)) {`);
               x(`    const args = _bbnEventObject.detail?.args || [$event];`);
               x(`    args.push(_bbnEventObject);`);

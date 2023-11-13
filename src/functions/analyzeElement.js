@@ -121,7 +121,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
           o.modifiers.push(modifier);
         }
       });
-      o.action = value;
+      o.exp = value;
       let eventName = a.substr(1);
       if (main[1]) {
         eventName += ':' + main[1];

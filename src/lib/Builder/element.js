@@ -173,7 +173,7 @@ bbnBuilder.prototype.loop = async function(node, hashName) {
               let ev = node.events[n];
               //bbn.fn.log("SETTING EVENT n ON " + $_this.$options.name, _ele, $_anew);
               $_items[node.id].addEventListener(n, _bbnEventObject => {
-                //  bbn.fn.log("EXECUTING EVENT n ev.action ON node.tag", _bbnEventObject.detail);
+                //  bbn.fn.log("EXECUTING EVENT n ev.exp ON node.tag", _bbnEventObject.detail);
                 let $event = _bbnEventObject;
                 if (ev.modifiers.length) {
                   //bbn.fn.log($event, n);
@@ -204,12 +204,12 @@ bbnBuilder.prototype.loop = async function(node, hashName) {
                   $event.stopImmediatePropagation();
                 }
 
-                if (ev.action) {
-                  if ((ev.action.indexOf(';') > -1) || (ev.action.indexOf('if') === 0)) {
-                    ev.action;
+                if (ev.exp) {
+                  if ((ev.exp.indexOf(';') > -1) || (ev.exp.indexOf('if') === 0)) {
+                    ev.exp;
                   }
                   else {
-                    let $_action = (ev.action);
+                    let $_action = (ev.exp);
                     if (bbn.fn.isFunction($_action)) {
                       const args = _bbnEventObject.detail?.args || [$event];
                       args.push(_bbnEventObject);

@@ -1,8 +1,8 @@
-const expToFn = (cp, loopVars, a, node) => {
+const expToFn = (cp, loopVars, a, node, withReturn = true) => {
   if (a.exp) {
     const deps = [];
     bbn.fn.each(Object.keys(cp.$namespaces), arg => {
-      if (a.exp.match(new RegExp('\\b' + bbn.fn.escapeRegExp(arg) + '\\b'))) {
+      if (a.exp.match(new RegExp((arg.indexOf('$') === 0 ? '' : '\\b') + bbn.fn.escapeRegExp(arg) + '\\b'))) {
         deps.push(arg);
       }
     });
@@ -12,7 +12,7 @@ const expToFn = (cp, loopVars, a, node) => {
         args.push(...v);
       }
     });
-    a.fn = new Function(...args, 'return ' + a.exp);
+    a.fn = new Function(...args, withReturn ? 'return (' + a.exp + ')' : a.exp);
     a.args = args;
     return args;
   }
@@ -58,6 +58,24 @@ export default function mapDependencies(cp) {
       node.exp = '`' + node.exp + '`';
       const args = expToFn(cp, loopVars, node, node);
       deps.push(...args);
+    }
+
+    if (node.events) {
+      bbn.fn.iterate(node.events, a => {
+        if (a.exp) {
+          const args = expToFn(cp, loopVars, a, node, false);
+          deps.push(...args);
+        }
+      });
+    }
+
+    if (node.model) {
+      bbn.fn.iterate(node.model, a => {
+        if (a.exp) {
+          const args = expToFn(cp, loopVars, a, node);
+          deps.push(...args);
+        }
+      });
     }
 
     node.dependencies = bbn.fn.unique(deps);
