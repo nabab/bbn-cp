@@ -38,6 +38,7 @@ bbnCp.prototype.$updateComponent = async function (shadow) {
   const t1 = (new Date()).getTime();
   this.$lastLaunch = t1;
   this.$updateProps();
+  this.$updateFromSchema(this.$props);
   if (!this.$numBuild) {
     // Init watchers
     bbn.fn.iterate(this.$watcher, (a, n) => {

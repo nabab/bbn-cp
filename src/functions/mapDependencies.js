@@ -35,30 +35,32 @@ export default function mapDependencies(cp) {
       ];
     }
 
-    node.dependencies = [];
+    const deps = [];
     if (node.loop) {
       const args = expToFn(cp, loopVars, node.loop, node);
-      node.dependencies.push(...args);
+      deps.push(...args);
     }
 
     if (node.condition) {
       const args = expToFn(cp, loopVars, node.condition, node);
-      node.dependencies.push(...args);
+      deps.push(...args);
     }
 
     if (node.attr) {
       bbn.fn.iterate(node.attr, a => {
         if (a.exp) {
           const args = expToFn(cp, loopVars, a, node);
-          node.dependencies.push(...args);
+          deps.push(...args);
         }
       });
     }
     else if (node.exp) {
       node.exp = '`' + node.exp + '`';
       const args = expToFn(cp, loopVars, node, node);
-      node.dependencies.push(...args);
+      deps.push(...args);
     }
+
+    node.dependencies = bbn.fn.unique(deps);
   });
   Object.defineProperty(cp.$el.constructor, 'bbnMapped', {
     value: true,
