@@ -46,6 +46,11 @@ export default function mapDependencies(cp) {
       deps.push(...args);
     }
 
+    if (node.forget) {
+      const args = expToFn(cp, loopVars, node.forget, node);
+      deps.push(...args);
+    }
+
     if (node.attr) {
       bbn.fn.iterate(node.attr, a => {
         if (a.exp) {
