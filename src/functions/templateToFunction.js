@@ -394,86 +394,9 @@ const treatElement = function(cp, node, hashName) {
       }
 
       if (hasEvents) {
-        for (let n in node.events) {
-          let ev = node.events[n];
-          //x(`bbn.fn.log("SETTING EVENT ${n} ON " + $_this.$options.name, _ele, ${$_anew});`);
-          x(`$_items['${node.id}'].addEventListener("${n}", _bbnEventObject => {`);
-          //x(`  bbn.fn.log("EXECUTING EVENT ${n} ${ev.exp} ON ${node.tag}", _bbnEventObject.detail);`);
-          x(`  let $event = _bbnEventObject;`);
-          if (ev.modifiers.length) {
-            //x(`bbn.fn.log($event, "${n}");`);
-            if (n.indexOf('key') === 0) {
-              x(`  if (!_bbnEventObject.key || !${JSON.stringify(ev.modifiers)}.includes(_bbnEventObject.key.toLowerCase())) {`);
-              x(`    return;`);
-              x(`  }`);
-            }
-            else if (n.indexOf('mouse') === 0) {
-              if (ev.modifiers.includes('right')) {
-                x(`  if (_bbnEventObject.button !== 2) {`);
-                x(`    return;`);
-                x(`  }`);
-              }
-              else if (ev.modifiers.includes('left')) {
-                x(`  if (_bbnEventObject.button !== 0) {`);
-                x(`    return;`);
-                x(`  }`);
-              }
-            }
-          }
-
-          if (ev.prevent) {
-            x(`  $event.preventDefault();`);
-          }
-
-          if (ev.stop) {
-            x(`  $event.stopImmediatePropagation();`);
-          }
-
-          if (ev.exp) {
-            if ((ev.exp.indexOf(';') > -1) || (ev.exp.indexOf('if') === 0)){
-              x(`  ${ev.exp};`);
-            }
-            else {
-              x(`  let $_action = (${ev.exp});`);
-              x(`  if (bbn.fn.isFunction($_action)) {`);
-              x(`    const args = _bbnEventObject.detail?.args || [$event];`);
-              x(`    args.push(_bbnEventObject);`);
-              x(`    $_action.bind($_this.$origin)(...args);`);
-              x(`  }`);
-            }
-            x(`  bbn.fn.iterate($_data, ($_val, $_idx) => {`);
-            //x(`    bbn.fn.log(['$_val, $_idx', $_val, $_idx, eval($_idx), $_this[$_idx], '++++']);`);
-            x(`    if ($_val !== eval($_idx)) {`);
-            x(`      if ($_this[$_idx] !== undefined) {`);
-            x(`        $_this[$_idx] = eval($_idx);`);
-            x(`      }`);
-            x(`      $_data[$_idx] = $_this[$_idx];`);
-            x(`    }`);
-            x(`  });`);
-          }
-
-          //x(`  $_this.$tick();`);
-          let eventEnd = '}';
-          if (ev.once || ev.passive || ev.capture) {
-            eventEnd += ', {';
-            if (ev.once) {
-              eventEnd += `once: true,`;
-            }
-
-            if (ev.passive) {
-              eventEnd += `passive: true,`;
-            }
-
-            if (ev.capture) {
-              eventEnd += `capture: true,`;
-            }
-
-            eventEnd += '}';
-          }
-
-          eventEnd += ');';
-          x(eventEnd);
-        }
+        x(`if (!$_this.$numBuild) {`);
+        x(`  bbn.cp.setEvents($_this, $_items['${node.id}']);`);
+        x(`}`);
       }
 
       x.lsp();

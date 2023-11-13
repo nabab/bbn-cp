@@ -1,4 +1,4 @@
-const expToFn = (cp, loopVars, a, node, withReturn = true) => {
+const expToFn = (cp, loopVars, a, node, isEvent) => {
   if (a.exp) {
     const deps = [];
     bbn.fn.each(Object.keys(cp.$namespaces), arg => {
@@ -7,12 +7,13 @@ const expToFn = (cp, loopVars, a, node, withReturn = true) => {
       }
     });
     const args = deps.slice();
+    args.push('$event');
     bbn.fn.iterate(loopVars, (v, k) => {
       if (node.id.indexOf(k) === 0) {
         args.push(...v);
       }
     });
-    a.fn = new Function(...args, withReturn ? 'return (' + a.exp + ')' : a.exp);
+    a.fn = new Function(...args, isEvent ? a.exp : 'return (' + a.exp + ')');
     a.args = args;
     return args;
   }
@@ -22,7 +23,7 @@ const expToFn = (cp, loopVars, a, node, withReturn = true) => {
 
 
 export default function mapDependencies(cp) {
-  if (cp.$el.constructor.bbnMapped) {
+  if (cp.$el.constructor.bbnMapped && cp.$el.constructor !== bbnAnon) {
     return;
   }
 
@@ -68,7 +69,7 @@ export default function mapDependencies(cp) {
     if (node.events) {
       bbn.fn.iterate(node.events, a => {
         if (a.exp) {
-          const args = expToFn(cp, loopVars, a, node, false);
+          const args = expToFn(cp, loopVars, a, node, true);
           deps.push(...args);
         }
       });

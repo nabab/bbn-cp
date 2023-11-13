@@ -31,6 +31,7 @@ import retrieveModels from "./functions/retrieveModels.js";
 import retrieveSlots from "./functions/retrieveSlots.js";
 import setComputed from "./functions/setComputed.js";
 import setDefaults from "./functions/setDefaults.js";
+import setEvents from "./functions/setEvents.js";
 import startTick from "./functions/startTick.js";
 import stopTick from "./functions/stopTick.js";
 import stringToTemplate from "./functions/stringToTemplate.js";
@@ -197,6 +198,7 @@ const cpObj = bbn.fn.createObject({
   retrieveSlots,
   setComputed,
   setDefaults,
+  setEvents,
   startTick,
   stopTick,
   stringToTemplate,
