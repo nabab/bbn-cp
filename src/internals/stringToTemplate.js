@@ -1,4 +1,6 @@
 import bbn from "@bbn/bbn";
+import analyzeElement from './analyzeElement.js';
+import removeSelfClosing from "./removeSelfClosing.js";
 
 /**
  * Create a new DOM parser and parse the given HTML string.
@@ -41,7 +43,7 @@ export default function stringToTemplate(str, withMap, name) {
   }
   const doc = parser.parseFromString(
     // There shouldn't be self-closing in the embedded HTML except if in template
-    bbn.cp.removeSelfClosing(str),
+    removeSelfClosing(str),
     "text/html"
   );
   const errorNode = doc.querySelector("parsererror");
@@ -57,7 +59,7 @@ export default function stringToTemplate(str, withMap, name) {
   )
   .filter(n => n.tagName && (n.tagName.toLowerCase() !== 'script'))
   .map(a => {
-    const tmp = bbn.cp.analyzeElement(a, inlineTemplates, num.toString());
+    const tmp = analyzeElement(a, inlineTemplates, num.toString());
     num++;
     return tmp.res;
   });

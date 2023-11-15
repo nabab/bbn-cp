@@ -1,4 +1,5 @@
 import bbnCp from "../Cp.js";
+import removeComponent from "../../internals/removeComponent.js";
 
 /**
  * Shuts everything down
@@ -37,7 +38,7 @@ bbnCp.prototype.$disconnectedCallback = function () {
       }
     }
 
-    bbn.cp.removeComponent(this.$el.bbnCid);
+    removeComponent(this.$el.bbnCid);
     /*
     this.$el.childNodes.forEach(node => {
       this.$removeDOM(node);

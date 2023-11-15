@@ -27,9 +27,7 @@ bbnCp.prototype.$emit = function (eventName, ...args) {
     }
   });
 
-  if (!ok) {
-    return;
-  }
+  if (!ok) return;
 
   const option = bbn.fn.createObject({
     detail: {

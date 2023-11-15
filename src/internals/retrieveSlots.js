@@ -18,7 +18,7 @@ export default function retrieveSlots(tpl, res) {
       res[idx].id = node.id;
     }
     if (node.items) {
-      bbn.cp.retrieveSlots(node.items, res);
+      retrieveSlots(node.items, res);
     }
   });
 

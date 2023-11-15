@@ -1,4 +1,9 @@
 import bbn from "@bbn/bbn";
+import stringToTemplate from "../internals/stringToTemplate.js";
+import generateCpClass from "../internals/generateCpClass.js";
+import generateHTMLClass from "../internals/generateHTMLClass.js";
+import retrieveModels from "../internals/retrieveModels.js";
+import retrieveSlots from "../internals/retrieveSlots.js";
 
 /**
 * Defines a component with the Object config and the HTML template
@@ -17,7 +22,7 @@ export default function define(name, obj, tpl, css) {
   }
 
   // Template string becomes a DOM array
-  let tmp = bbn.cp.stringToTemplate(tpl, true, obj.tag || name);
+  let tmp = stringToTemplate(tpl, true, obj.tag || name);
   // Name of the class based on the tag name
   const publicName = bbn.fn.camelize(name);
   // The component config (= Vue-like object) that we freeze
@@ -37,8 +42,8 @@ export default function define(name, obj, tpl, css) {
     cls: publicName + 'HTML',
     fn: publicName + 'Cp',
     cfg: cpCfg,
-    models: bbn.cp.retrieveModels(tmp.res),
-    slots: bbn.cp.retrieveSlots(tmp.res),
+    models: retrieveModels(tmp.res),
+    slots: retrieveSlots(tmp.res),
     tag: cpCfg.tag,
   }));
   if (!bbn.cp.statics[name].slots.default) {
@@ -66,11 +71,11 @@ export default function define(name, obj, tpl, css) {
   }
   // Generating a basic HTML class based on the component config
   //bbn.fn.log('generateHTMLClass', publicName, cls, '-------');
-  window[publicName] = bbn.cp.generateHTMLClass(publicName, (new Function(`return ${cls};`))());
+  window[publicName] = generateHTMLClass(publicName, (new Function(`return ${cls};`))());
   // Generating the code for the private class based on the component config
   //const privateClassCode = makePrivateClass(privateName, cpCfg);
   //bbn.fn.log('generateCpClass', publicName);
-  window[publicName + 'Cp'] = bbn.cp.generateCpClass(publicName, cpCfg);
+  window[publicName + 'Cp'] = generateCpClass(publicName, cpCfg);
   //bbn.fn.log("fnCode", fnCode);
   //bbn.fn.log(makePrivateFunction(privateName, cpCfg));
   // Evaluating that code: defining the private class

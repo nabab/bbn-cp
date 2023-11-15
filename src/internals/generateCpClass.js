@@ -1,4 +1,6 @@
 import bbn from "@bbn/bbn";
+import setComputed from "./setComputed.js";
+
 
 /**
 * Create the bbn component private class based on the bbnComponentPrivate
@@ -41,7 +43,7 @@ export default function generateCpClass(publicClass, obj) {
       });
       if (obj.computed) {
         for (let n in obj.computed) {
-          bbn.cp.setComputed(this, n, obj.computed[n].get, obj.computed[n].set);
+          setComputed(this, n, obj.computed[n].get, obj.computed[n].set);
         }
       }
     

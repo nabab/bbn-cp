@@ -1,4 +1,5 @@
 import bbn from "@bbn/bbn";
+import removeSelfClosing from "./removeSelfClosing.js";
 
 const eventInstructions = ['stop', 'prevent', 'passive'];
 const parser = new DOMParser();
@@ -308,7 +309,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
     let before = '<body>';
     let after = '</body>';
     let target = 'body';
-    let tpl = bbn.cp.removeSelfClosing(ele.innerHTML);
+    let tpl = removeSelfClosing(ele.innerHTML);
     let tag1 = tpl.match(/<([a-zA-Z-]+)(>|.*?[^?]>)/s);
     if (tag1 && tag1[1]) {
       switch (tag1[1].toLowerCase()) {
@@ -350,7 +351,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
     }
 
     if (node && node.getAttributeNames) {
-      let tmp = bbn.cp.analyzeElement(node, inlineTemplates, idx + '-' + num);
+      let tmp = analyzeElement(node, inlineTemplates, idx + '-' + num);
       if (!childNodes[i+1]?.getAttributeNames && childNodes[i+1]?.textContent && !bbn.fn.removeExtraSpaces(childNodes[i+1].textContent)) {
         tmp.spaced = true;
       }

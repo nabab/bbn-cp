@@ -1,4 +1,5 @@
 import {bbn, axios, dayjs} from "@bbn/bbn";
+
 import bbnData from "./lib/Data.js";
 import "./lib/Data/addComponent.js";
 import "./lib/Data/getImpacted.js";
@@ -20,6 +21,7 @@ import "./lib/Data/treatValue.js";
 import "./lib/Data/unset.js";
 import "./lib/Data/update.js";
 import "./lib/Data/updateChildren.js";
+
 import bbnHTML from "./lib/Html.js";
 import bbnButtonHTML from "./lib/Button.js";
 import bbnCellHTML from "./lib/Cell.js";
@@ -27,9 +29,11 @@ import bbnElementHTML from "./lib/Element.js";
 import bbnFormHTML from "./lib/Form.js";
 import bbnListHTML from "./lib/List.js";
 import bbnRowHTML from "./lib/Row.js";
+
 import bbnCp from "./lib/Cp.js";
 import "./lib/Cp/addNamespace.js";
 import "./lib/Cp/addToElements.js";
+import "./lib/Cp/addUnknownComponent.js";
 import "./lib/Cp/attributeChange.js";
 import "./lib/Cp/checkPropValue.js";
 import "./lib/Cp/connectedCallback.js";
@@ -39,9 +43,11 @@ import "./lib/Cp/delete.js";
 import "./lib/Cp/destroy.js";
 import "./lib/Cp/disconnectedCallback.js";
 import "./lib/Cp/emit.js";
+import "./lib/Cp/fetchComponents.js";
 import "./lib/Cp/forceUpdate.js";
 import "./lib/Cp/get.js";
 import "./lib/Cp/getProp.js";
+import "./lib/Cp/has.js";
 import "./lib/Cp/init.js";
 import "./lib/Cp/insertElement.js";
 import "./lib/Cp/is.js";
@@ -79,6 +85,7 @@ import "./lib/Cp/watch.js";
 import "./lib/Cp/_getInternalState.js";
 import "./lib/Cp/_getInternalValue.js";
 import "./lib/Cp/_setInternalResult.js";
+
 import bbnBuilder from "./lib/Builder.js";
 import "./lib/Builder/build.js";
 import "./lib/Builder/condition.js";
@@ -90,8 +97,10 @@ import "./lib/Builder/props.js";
 import "./lib/Builder/root.js";
 import "./lib/Builder/slot.js";
 import "./lib/Builder/text.js";
+
 import bbnAnonCp from "./lib/AnonCp.js";
 import bbnAnon from "./lib/Anon.js";
+
 import "./cp.js";
 
 customElements.define('bbn-anon', bbnAnon);

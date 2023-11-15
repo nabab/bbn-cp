@@ -7,13 +7,21 @@ const expToFn = (cp, loopVars, a, node, isEvent) => {
       }
     });
     const args = deps.slice();
-    args.push('$event');
+    if (isEvent) {
+      args.push('$event');
+    }
+
     bbn.fn.iterate(loopVars, (v, k) => {
       if (node.id.indexOf(k) === 0) {
         args.push(...v);
       }
     });
-    a.fn = new Function(...args, isEvent ? a.exp : 'return (' + a.exp + ')');
+    if (isEvent) {
+      a.fn = new Function(...args, cp.$namespaces[a.exp] === 'method' ? a.exp + '($event)' : a.exp);
+    }
+    else {
+      a.fn = new Function(...args, 'return (' + (a.exp || (node.type === 'else' ? 'true' : '')) + ')');
+    }
     a.args = args;
     return args;
   }

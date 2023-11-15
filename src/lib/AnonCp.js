@@ -1,5 +1,6 @@
 import bbnCp from "./Cp.js";
 import "../cp.js";
+import setComputed from "../internals/setComputed.js";
 
 export default class bbnAnonCp extends bbnCp {
   $options = bbn.fn.createObject({
@@ -54,7 +55,7 @@ export default class bbnAnonCp extends bbnCp {
           throw new Error(bbn._("Properties starting with the dollar sign are reserved"));
         }
 
-        bbn.cp.setComputed(this, name, computed.get, computed.set);
+        setComputed(this, name, computed.get, computed.set);
       });
     }
 

@@ -262,7 +262,7 @@ const cpDef = {
     select(item, idx, dataIndex, ev){
       if (!this.isDisabled) {
         if (!ev) {
-          let ev = new Event('select', {cancelable: true});
+          ev = new Event('select', {cancelable: true});
         }
         this.$emit('select', ev, item, idx, dataIndex);
         if (!ev.defaultPrevented) {

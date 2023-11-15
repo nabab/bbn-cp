@@ -1,5 +1,6 @@
 import { bbn } from "@bbn/bbn";
 import "../cp.js";
+import addComponent from "../internals/addComponent.js";
 export default class bbnCp {
 
   constructor(el) {
@@ -10,7 +11,7 @@ export default class bbnCp {
       configurable: false
     });
     // Adding itself to the global static #components
-    bbn.cp.addComponent(this.$el);
+    addComponent(this.$el);
   }
 
   /**

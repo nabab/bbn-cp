@@ -7,6 +7,6 @@ import bbnCp from "../Cp.js";
  * @param {String} selector 
  * @return {Function}
  */
-bbnCp.prototype.$is = function(selector){
-    return this.$el.matches(selector);
-  }
+bbnCp.prototype.$is = function (selector) {
+  return this.$el.matches(selector);
+}

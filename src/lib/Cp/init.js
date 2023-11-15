@@ -330,6 +330,76 @@ bbnCp.prototype.$init = function (el) {
     })
   });
 
+  // Setting up $parent prop
+  const parentNode = this.$el.parentNode;
+  // host is for shadow DOM (not used)
+  const parent = parentNode.host ? parentNode.host.closest(".bbn-component") : parentNode.closest(".bbn-component");
+  /*
+  const cpSource = bbn.cp.getComponent(this.$el.bbnComponentId);
+  if (cpSource?.bbn && !cpSource.bbn.$retrieveElement(this.$el.bbnId)) {
+    cpSource.$addToElements(this.$el);
+  }
+  */
+
+  // $parent will always remain the same, it should only be null for root
+  Object.defineProperty(this, '$parent', {
+    value: parent ? parent.bbn : null,
+    writable: false,
+    configurable: false
+  });
+  /**
+   * The highest component in the document's hierarchy
+   */
+  Object.defineProperty(this, '$root', {
+    value: this.$parent?.$root || this,
+    writable: false,
+    configurable: false
+  });
+  
+  Object.defineProperty(this, '$queue', {
+    value: this.$root === this ? [] : this.$root.$queue,
+    writable: false,
+    configurable: false
+  });
+  /*
+  Object.defineProperty(this, '$queue', {
+    value: [],
+    writable: false,
+    configurable: false
+  });
+  */
+
+  if (this === this.$root) {
+    this.$fetchTimeout = null;
+    Object.defineProperty(this, '$unknownComponents', {
+      value: [],
+      writable: false,
+      configurable: false
+    });
+  }
+  Object.defineProperty(this, '$currentMap', {
+    get() {
+      return this.$el.bbnMap || this.$cls.bbnMap;
+    }
+  });
+  Object.defineProperty(this, '$currentResult', {
+    configurable: false,
+    writable: false,
+    value: bbn.fn.createObject()
+  });
+  Object.defineProperty(this, '$schema', {
+    configurable: false,
+    writable: false,
+    value: []
+  });
+  /**
+   * The latest timestamp of the last update launch
+   */
+  Object.defineProperty(this, '$lastLaunch', {
+    value: 0,
+    writable: true
+  });
+
   // Setting up available props for HTML templates
   this.$addNamespace('$props', 'internal');
   this.$addNamespace('$el', 'internal');

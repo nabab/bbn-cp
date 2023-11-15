@@ -1343,7 +1343,7 @@ const cpDef = {
     select(item, idx, dataIndex, ev){
       if (item && !item.disabled && !item[this.children]) {
         if (!ev) {
-          let ev = new Event('select', {cancelable: true});
+          ev = new Event('select', {cancelable: true});
         }
         if (this.onSelect) {
           this.onSelect(item, idx, dataIndex, ev, this);

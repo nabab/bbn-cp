@@ -1,4 +1,6 @@
 import bbnCp from "../Cp.js";
+import stringToTemplate from "../../internals/stringToTemplate.js";
+import retrieveSlots from "../../internals/retrieveSlots.js";
 
 /**
  * Creates an element in the given target
@@ -119,7 +121,7 @@ bbnCp.prototype.$createElement = async function (node, target, prevElementIndex,
             configurable: false
           });
           if (node.cfg.template) {
-            const tmp = bbn.cp.stringToTemplate(node.cfg.template, true, node.cfg.tag || 'bbn-anon');
+            const tmp = stringToTemplate(node.cfg.template, true, node.cfg.tag || 'bbn-anon');
             Object.defineProperty(ele, 'bbnTpl', {
               value: tmp.res,
               writable: false,
@@ -191,7 +193,7 @@ bbnCp.prototype.$createElement = async function (node, target, prevElementIndex,
     if (isComponent) {
       let realSlots;
       if (tag === 'bbn-anon') {
-        realSlots = bbn.cp.retrieveSlots(ele.bbnTpl || node.items);
+        realSlots = retrieveSlots(ele.bbnTpl || node.items);
       }
       else {
         realSlots = bbn.fn.clone(ele.constructor.bbnSlots)

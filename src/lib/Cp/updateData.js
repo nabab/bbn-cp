@@ -1,3 +1,4 @@
+import bbn from "@bbn/bbn";
 import bbnCp from "../Cp.js";
 
 /**
@@ -8,13 +9,13 @@ bbnCp.prototype.$updateData = function () {
     return;
   }
 
-  if (this.$dataSource.length) {
-    let tmp = bbn.fn.createObject(
-      bbn.fn.extend(bbn.fn.createObject(), ...this.$dataSource.map(a => a.apply(this)))
+  if (this.$cfg.data.length) {
+    bbn.fn.iterate(
+      bbn.fn.extend(bbn.fn.createObject(), ...this.$cfg.data.map(a => a.apply(this))),
+      (v, n) => {
+        this.$setUpData(n, v);
+      }
     );
-    bbn.fn.each(tmp, (v, n) => {
-      this.$setUpData(n, v);
-    })
   }
 
   Object.defineProperty(this, '$isDataSet', {

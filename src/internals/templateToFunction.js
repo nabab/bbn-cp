@@ -1,3 +1,8 @@
+//import treatArgument from "./treatArgument.js";
+//import treatElement from "./treatElement.js";
+//import treatItems from "./treatItems.js";
+//import treatEvents from "./treatEvents.js";
+//import treatProperties from "./treatProperties.js";
 const writer = function() {
   let text = '';
   let spaces = 0;
@@ -23,7 +28,7 @@ const x = new writer();
 const forbidden = ['bbn-forget', 'bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else'];
 
 const treatCondition = (cp, node, arr, hashName) => {
-    let tmp = arr.filter(a => (a.conditionId === node.conditionId));
+  let tmp = arr.filter(a => (a.conditionId === node.conditionId));
   if (!tmp.length || !node.conditionId) {
     bbn.fn.log("FINISHING HERE ",node.conditionId, node.condition);
     return;
@@ -123,6 +128,10 @@ const treatLoop = (cp, node, hashName) => {
   x(`  const ${hash} = (${hashName} || '') + '${node.loop.id}-${indexName}-' + (${node.attr?.key?.exp ? node.attr.key.exp : indexName});`);
   x(`  ${listName}.push(${hash});`);
   x(`  $_sr('${node.loop.item}', ${node.loop.item}, ${hash});`);
+  if (node.loop.index) {
+    x(`  $_sr('${node.loop.index}', ${indexName}, ${hash});`);
+  }
+
   //x(`  bbn.fn.log(${node.loop.item});`);
 
   x.msp();
@@ -144,7 +153,7 @@ const treatLoop = (cp, node, hashName) => {
   };
 
 const setProperties = function(node, hashName) {
-    x(`$_props = bbn.fn.createObject();`);
+  x(`$_props = bbn.fn.createObject();`);
   // Will GO if the element is new or modified and not forgotten
   if (bbn.fn.numProperties(node.attr)) {
     if (node.attr['bbn-bind']) {
@@ -251,6 +260,7 @@ const treatElement = function(cp, node, hashName) {
     //x(`  bbn.fn.log("IN TODO " + $_this.$options.name);`);
     //x(`  bbn.fn.log("DOING ${node.id} ${node.tag}");`);
     x(`$_tmp1 = bbn.fn.clone($_node);`);
+    x(`delete $_tmp1.items;`);
     x(`if (${hashName}) {`);
     x(`  $_tmp1.loopHash = ${hashName};`);
     x(`}`);
@@ -394,9 +404,7 @@ const treatElement = function(cp, node, hashName) {
       }
 
       if (hasEvents) {
-        x(`if (!$_this.$numBuild) {`);
-        x(`  bbn.cp.setEvents($_this, $_items['${node.id}']);`);
-        x(`}`);
+        x(`bbn.cp.treatEvents($_this, $_items['${node.id}']);`);
       }
 
       x.lsp();
@@ -532,7 +540,6 @@ const treatRoot = function(cp, tpl, hashName) {
         }
       }
       if (bbn.fn.numProperties(tpl[0].directives)) {
-
         for (let n in tpl[0].directives) {
           x(`if (!$_this.$el.bbnSchema.directives) {$_this.$el.bbnSchema.directives = bbn.fn.createObject();}`);
           x(`if (!$_this.$el.bbnSchema.directives['${n}']) {$_this.$el.bbnSchema.directives['${n}'] = bbn.fn.clone($_this.$tpl[0].directives['${n}']);}`);
@@ -546,90 +553,16 @@ const treatRoot = function(cp, tpl, hashName) {
         x(`if (!$_this.$numBuild) {`);
         x(`  bbn.cp.insertDirectives($_this.$el.bbnSchema.directives, $_this.$el);`);
         x(`}`);
+        x(`else {`);
         for (let n in tpl[0].directives) {
-          x(`if ($_this.$numBuild) {`);
           x(`  bbn.cp.updateDirectives({"${n}": $_this.$el.bbnSchema.directives['${n}']}, $_this.$el);`);
-          x(`}`);
-  
         }
+        x(`}`);
       }
       x(`$_this.$updateFromSchema($_props);`);
       if (tpl[0].events) {
         x(`if (!$_this.$numBuild) {`);
-        x.msp();
-        for (let n in tpl[0].events) {
-          let ev = tpl[0].events[n];
-
-          x(`if (!$_items['-'].bbnSchema?.events?.["${n}"]) {`);
-          x.msp();
-          //x(`bbn.fn.log("SETTING EVENT ${n} ON " + $_this.$options.name, _ele, ${$_anew});`);
-          x(`$_items['-'].addEventListener("${n}", _bbnEventObject => {`);
-          //x(`  bbn.fn.log("EXECUTING EVENT ${n} ${ev.exp} ON ${node.tag}", _bbnEventObject.detail);`);
-          if (ev.modifiers.length) {
-            x(`  if (!_bbnEventObject.key || !${JSON.stringify(ev.modifiers)}.includes(_bbnEventObject.key.toLowerCase())) {`);
-            x(`    return;`);
-            x(`  }`);
-          }
-
-          x(`  let $event = _bbnEventObject;`);
-
-          if (ev.prevent) {
-            x(`  $event.preventDefault();`);
-          }
-
-          if (ev.stop) {
-            x(`  $event.stopImmediatePropagation();`);
-          }
-
-          if (ev.exp) {
-            if ((ev.exp.indexOf(';') > -1) || (ev.exp.indexOf('if') === 0)){
-              x(`  ${ev.exp};`);
-            }
-            else {
-              x(`  let $_action = (${ev.exp});`);
-              x(`  if (bbn.fn.isFunction($_action)) {`);
-              x(`    const args = _bbnEventObject.detail?.args || [$event];`);
-              x(`    args.push(_bbnEventObject);`);
-              x(`    $_action.bind($_this.$origin)(...args);`);
-              x(`  }`);
-            }
-
-            x(`  bbn.fn.iterate($_data, ($_val, $_idx) => {`);
-            //x(`    bbn.fn.log(['$_val, $_idx', $_val, $_idx, eval($_idx), $_this[$_idx], '++++']);`);
-            x(`    if ($_val !== eval($_idx)) {`);
-            x(`      if ($_this[$_idx] !== undefined) {`);
-            x(`        $_this[$_idx] = eval($_idx);`);
-            x(`      }`);
-            x(`      $_data[$_idx] = $_this[$_idx];`);
-            x(`    }`);
-            x(`  });`);
-          }
-
-          //x(`  $_this.$forceUpdate();`);
-          let eventEnd = '}';
-          if (ev.once || ev.passive || ev.capture) {
-            eventEnd += ', {';
-            if (ev.once) {
-              eventEnd += `once: true,`;
-            }
-
-            if (ev.passive) {
-              eventEnd += `passive: true,`;
-            }
-
-            if (ev.capture) {
-              eventEnd += `capture: true,`;
-            }
-
-            eventEnd += '}';
-          }
-
-          eventEnd += ');';
-          x(eventEnd);
-          x.lsp();
-          x('}');
-        }
-        x.lsp();
+        x(`  bbn.cp.treatEvents($_this, $_this.$el);`);
         x(`}`);
       }
     }
@@ -742,7 +675,10 @@ const nodesToFunction = function(cp, arr, hashName) {
     }
     else if (node.tag) {
 
-      setProperties(node, hashName);
+      x(`$_tmp1 = bbn.cp.treatProperties($_this, "${node.id}", ${hashName}, $_go['${node.id}']);`);
+      x(`$_go['${node.id}'] = $_tmp1.go;`);
+      x(`$_props = $_tmp1.props;`);
+      //setProperties(node, hashName);
       //c.text += setDirectives(node, hashName);
       if (treatEle) {
         treatElement(cp, node, hashName);

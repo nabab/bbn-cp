@@ -1,5 +1,12 @@
-export default function setEvents (cp, ele) {
-  bbn.fn.iterate(cp.$currentMap[ele.bbnId].events, (ev, n) => {
+import bbn from "@bbn/bbn";
+
+export default function treatEvents (cp, ele) {
+  let id = ele.bbnId;
+  if (ele === cp.$el) {
+    id = '0';
+  }
+
+  bbn.fn.iterate(cp.$currentMap[id].events, (ev, n) => {
     let cfg = {};
     if (ev.once) {
       cfg.once = true;
@@ -14,9 +21,6 @@ export default function setEvents (cp, ele) {
     ele.addEventListener(n, e => {
       //  bbn.fn.log("EXECUTING EVENT n ev.exp ON node.tag", _bbnEventObject.detail);
       if (ev.modifiers.length) {
-        if (!e.key || !JSON.stringify(ev.modifiers).includes(e.key.toLowerCase())) {
-          return;
-        }
         if (n.indexOf('key') === 0) {
           if (!e.key || !ev.modifiers.includes(e.key.toLowerCase())) {
             return;
@@ -36,18 +40,25 @@ export default function setEvents (cp, ele) {
         }
       }
 
-      let $event = e;
-
       if (ev.prevent) {
-        $event.preventDefault();
+        e.preventDefault();
       }
 
       if (ev.stop) {
-        $event.stopImmediatePropagation();
+        e.stopImmediatePropagation();
       }
 
       if (ev.exp) {
-        ev.fn.bind(cp.$origin)(...(ev.args.map(a => a === '$event' ? e : (bbn.fn.isFunction(cp[a]) ? cp[a].bind(cp.$origin) : cp[a]))));
+        const args = [];
+        bbn.fn.each(ev.args, a => {
+          if (a === '$event') {
+            args.push(e);
+          }
+          else {
+            args.push(bbn.cp.treatArgument(a, cp, ele.bbnSchema.loopHash));
+          }
+        });
+        ev.fn.bind(cp)(...args);
       }
     }, cfg);
   });

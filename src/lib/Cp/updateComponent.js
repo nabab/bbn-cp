@@ -47,9 +47,6 @@ bbnCp.prototype.$updateComponent = async function (shadow) {
   }
 
   //bbn.fn.log(["EVALUATING", this.$options.name, this.$cid]);
-  if (this.$options.name === 'bbn-table') {
-    //debugger;
-  }
   const e = await this.$eval(this);
   const t2 = (new Date()).getTime();
   this.$numBuild++;

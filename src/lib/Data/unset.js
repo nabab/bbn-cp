@@ -22,9 +22,9 @@ bbnData.prototype.unset = function(noParent) {
         done.push(cp.$cid);
       }
       else if (!done.includes(cp.$cid) && cp.$isInit) {
-        bbn.fn.warning(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.bbn.$options.name, cid));
+        bbn.fn.warning(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
         bbn.fn.log(this, cp, path);
-        throw new Error(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.bbn.$options.name, cid));
+        throw new Error(bbn._("Impossible to find the data object in the values of the component %s with CID %s", cp.$options.name, cid));
       }
       
       if (it.parent) {

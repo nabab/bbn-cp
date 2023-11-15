@@ -1,4 +1,8 @@
 import "../cp.js";
+import createCid from "../internals/createCid.js";
+import connectedCallback from "../internals/connectedCallback.js";
+import disconnectedCallback from "../internals/disconnectedCallback.js";
+import attributeChangedCallback from "../internals/attributeChangedCallback.js";
 
 /**
  * Create the bbn component class which extends the HTMLElement class
@@ -10,25 +14,21 @@ export default class bbnHTML extends HTMLElement
   constructor() {
     super();
     Object.defineProperty(this, 'bbnCid', {
-      value: bbn.cp.createCid(),
+      value: createCid(),
       writable: false,
       configurable: false
     });
   }
 
   connectedCallback() {
-    return bbn.cp.connectedCallback(this);
+    return connectedCallback(this);
   } 
 
   disconnectedCallback() {
-    return bbn.cp.disconnectedCallback(this);
+    return disconnectedCallback(this);
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    return bbn.cp.attributeChangedCallback(this, name, oldValue, newValue);
-  }
-
-  bbnUpdate(newSchema) {
-    return bbn.cp.bbnUpdate(this, newSchema);
+    return attributeChangedCallback(this, name, oldValue, newValue);
   }
 }

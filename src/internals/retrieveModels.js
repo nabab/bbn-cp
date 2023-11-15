@@ -23,10 +23,10 @@ export default function retrieveModels(tpl, res) {
       });
     }
     if (node.items) {
-      bbn.cp.retrieveModels(node.items, res);
+      retrieveModels(node.items, res);
     }
     if (node.slots) {
-      bbn.cp.retrieveModels(node.slots, res);
+      retrieveModels(node.slots, res);
     }
   })
 

@@ -20,7 +20,7 @@ export default function convertClasses(...args) {
       }
     }
     else if (bbn.fn.isArray(css)) {
-      bbn.fn.each(css, cs => arr.push(...bbn.cp.convertClasses(cs).split(' ')));
+      bbn.fn.each(css, cs => arr.push(...convertClasses(cs).split(' ')));
     }
     else {
       bbn.fn.log(css);

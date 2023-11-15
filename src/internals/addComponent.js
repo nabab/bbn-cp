@@ -7,7 +7,7 @@ export default function addComponent(ele) {
     throw new Error("The component doesn't have a component ID")
   }
 
-  const cp = this.componentsIndex.get(cid);
+  const cp = bbn.cp.componentsIndex.get(cid);
   if (cp) {
     if (cp !== ele) {
       bbn.fn.log(ele, cp);
@@ -15,6 +15,6 @@ export default function addComponent(ele) {
     }
   }
   else {
-    this.componentsIndex.set(cid, ele);
+    bbn.cp.componentsIndex.set(cid, ele);
   }
 }

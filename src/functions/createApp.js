@@ -1,4 +1,6 @@
 import {bbn} from "@bbn/bbn/dist/index.js";
+import stringToTemplate from "../internals/stringToTemplate.js";
+import retrieveSlots from "../internals/retrieveSlots.js";
 
 /**
 * Init anon component
@@ -90,7 +92,7 @@ export default async function createApp(ele, obj) {
   // ele must be an HTMLElement
   bbn.fn.checkType(ele, HTMLElement, "The createApp function should be given a HTMLElement");
   // Its content is its template
-  let tmp = bbn.cp.stringToTemplate(ele.outerHTML, true, 'bbn-anon');
+  let tmp = stringToTemplate(ele.outerHTML, true, 'bbn-anon');
   const cpTpl = tmp.res;
   const cpMap = tmp.map;
   const schema = bbn.fn.clone(cpTpl[0]);
@@ -121,7 +123,7 @@ export default async function createApp(ele, obj) {
     }
   }
 
-  const slots = bbn.cp.retrieveSlots(cpTpl);
+  const slots = retrieveSlots(cpTpl);
   if (!slots.default) {
     slots.default = [];
   }
