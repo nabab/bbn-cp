@@ -1,7 +1,8 @@
 import bbn from "@bbn/bbn";
 import sr from "../internals/sr.js";
+import treatItems from "./treatItems.js";
 
-export default function treatSlot (node, cp, hash, parent) {
+export default async function treatSlot (cp, node, hash, parent) {
   if (node.tag === 'slot') {
     const res = new DocumentFragment();
     let slot = 'default';
@@ -36,6 +37,11 @@ export default function treatSlot (node, cp, hash, parent) {
       })
     }
 
-    treatItems(cp, node, hashName);
+    const f = await treatItems(cp, node, hash);
+    if (f) {
+      res.append(f);
+    }
+
+    return res;
   }
 }

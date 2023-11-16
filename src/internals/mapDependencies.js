@@ -41,6 +41,7 @@ const expToFn = (cp, loopVars, a, node, isEvent) => {
     else {
       a.fn = new Function(...args, 'return (' + (a.exp || (node.type === 'else' ? 'true' : '')) + ')');
     }
+
     a.args = args;
     return args;
   }

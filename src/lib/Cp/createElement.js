@@ -244,9 +244,6 @@ bbnCp.prototype.$createElement = async function (node, target, prevElementIndex,
   }
 
   if (target !== this.$el) {
-    this.$insertElement(ele, target, prevElementIndex, oldEle);
-  }
-  else {
     this.$addToElements(ele);
   }
 

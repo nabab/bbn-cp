@@ -11,11 +11,11 @@ import bbnCp from "../Cp.js";
 bbnCp.prototype.$build = function (obj, parent, data) {
   // If obj is the component's root updating the element based on schema and template
   if (obj.id === '0') {
-
+    
   }
   // Otherwise update should rely on attr
   else {
-
+    
   }
 
   const items = [];

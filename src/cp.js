@@ -15,9 +15,6 @@ import normalizeComponent from "./functions/normalizeComponent.js";
 import setDefaults from "./functions/setDefaults.js";
 import startTick from "./functions/startTick.js";
 import stopTick from "./functions/stopTick.js";
-import treatArgument from "./functions/treatArgument.js";
-import treatEvents from "./functions/treatEvents.js";
-import treatProperties from "./functions/treatProperties.js";
 import updateDirectives from "./functions/updateDirectives.js";
 
 
@@ -164,9 +161,6 @@ const cpObj = bbn.fn.createObject({
   isTag,
   normalizeComponent,
   setDefaults,
-  treatArgument,
-  treatEvents,
-  treatProperties,
   startTick,
   stopTick,
   updateDirectives,

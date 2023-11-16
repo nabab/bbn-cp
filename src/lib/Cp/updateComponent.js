@@ -1,4 +1,6 @@
+import bbn from "@bbn/bbn";
 import bbnCp from "../Cp.js";
+import treatItems from "../../internals/treatItems.js";
 
 /**
  * (Re)generates the whole component's vDOM and DOM if needed, picking the right root, shadow or not
@@ -46,8 +48,20 @@ bbnCp.prototype.$updateComponent = async function (shadow) {
     });
   }
 
-  //bbn.fn.log(["EVALUATING", this.$options.name, this.$cid]);
-  const e = await this.$eval(this);
+  // Setting the state of each element in $currentResult to TMP except DEL state, which remains
+  bbn.fn.iterate(this.$currentResult, a => {
+    bbn.fn.iterate(a, b => {
+      if (b.state !== 'DEL') {
+        b.state = 'TMP';
+      }
+    });
+  });
+  bbn.fn.log(["EVALUATING", this.$options.name, this.$tpl[0].items]);
+  const e = await treatItems(this, this.$tpl[0].items, this.$hash);
+  bbn.fn.log("TREAT ITEMS", e);
+  if (e && e.childNodes.length) {
+    this.$el.append(e);
+  }
   const t2 = (new Date()).getTime();
   this.$numBuild++;
   this.$lastLaunch = t2;

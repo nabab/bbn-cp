@@ -1,5 +1,6 @@
 import bbn from "@bbn/bbn";
 import sr from "../internals/sr.js";
+import treatElement from "./treatElement.js";
 
 export default async function treatItems (cp, items, hash) {
   const res = new DocumentFragment();
@@ -9,9 +10,9 @@ export default async function treatItems (cp, items, hash) {
   };
   const applyCondition = async (conditionValue, node) => {
     if (conditionValue) {
-      const ele = bbn.cp.treatElement(node, cp, hash, res, isChanged(node.loop.item, hash) || (node.loop.index && isChanged(node.loop.index, hash)));
+      const ele = treatElement(node, cp, hash, res, true);
       if (ele) {
-        res.appendChild(ele);
+        res.append(ele);
       }
     }
     else {
@@ -33,18 +34,18 @@ export default async function treatItems (cp, items, hash) {
           }
 
           ele = await cp.$createElement({
-            id: cond.id,
-            hash: cond.condition.hash,
+            id: node.id,
+            hash: node.condition.hash,
             loopHash: hash,
-            conditionId: cond.conditionId,
+            conditionId: node.conditionId,
             comment: true
-          }, res, data, cp.$currentMap[node.id]);
+          }, res, cp.$currentMap[node.id]);
         }
       }
     }
   };
 
-  const conditions = [];
+  let conditions = [];
   let conditionId = null;
   let isConditionTrue = true;
   let conditionValue = true;
@@ -76,7 +77,7 @@ export default async function treatItems (cp, items, hash) {
             throw new Error("The condition in a loop can only be of type 'if'");
           }
 
-          conditionValue = sr(node.condition, hash);
+          conditionValue = sr(cp, node.condition, hash);
         }
 
         applyCondition(conditionValue, node);
@@ -94,7 +95,7 @@ export default async function treatItems (cp, items, hash) {
             const cond = tmp[j];
             let go = false;
             // No need to check thge first as isConditionTrue has just been defined
-            const conditionValue = isConditionTrue ? false : sr(cond.condition, hash);
+            const conditionValue = isConditionTrue ? false : sr(cp, cond.condition, hash);
             if (!conditionValue) {
               cp.$_setInternalResult(cond.condition.id, false, hash);
             }
@@ -105,12 +106,12 @@ export default async function treatItems (cp, items, hash) {
           }
         }
 
-        if (cp.$_getInternalState(cond.condition.id, hash) !== 'OK') {
-          applyCondition(cp.$_getInternalValue(cond.condition.id, hash), node);
+        if (cp.$_getInternalState(node.condition.id, hash) !== 'OK') {
+          applyCondition(cp.$_getInternalValue(node.condition.id, hash), node);
         }
       }
       else {
-        const ele = bbn.cp.treatElement(node, cp, hash, res, isChanged(node.id, hash));
+        const ele = await treatElement(node, cp, hash, res, !cp.$numBuild);
         if (ele) {
           res.appendChild(ele);
         }

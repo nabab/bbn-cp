@@ -1,4 +1,5 @@
 import bbn from "@bbn/bbn";
+import treatArgument from "./treatArgument.js";
 
 export default function treatEvents (cp, ele) {
   let id = ele.bbnId;
@@ -55,7 +56,7 @@ export default function treatEvents (cp, ele) {
             args.push(e);
           }
           else {
-            args.push(bbn.cp.treatArgument(a, cp, ele.bbnSchema.loopHash));
+            args.push(treatArgument(a, cp, ele.bbnSchema.loopHash));
           }
         });
         ev.fn.bind(cp)(...args);
