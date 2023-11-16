@@ -1,3 +1,5 @@
+import bbn from "@bbn/bbn";
+
 const expToFn = (cp, loopVars, a, node, isEvent) => {
   if (a.exp) {
     const deps = [];
@@ -17,7 +19,24 @@ const expToFn = (cp, loopVars, a, node, isEvent) => {
       }
     });
     if (isEvent) {
-      a.fn = new Function(...args, cp.$namespaces[a.exp] === 'method' ? a.exp + '($event)' : a.exp);
+      let stFn = '';
+      if (cp.$namespaces[a.exp] === 'method') {
+        stFn += a.exp + '($event)';
+      }
+      else {
+        stFn += 'const $_bbnData = {';
+        bbn.fn.each(args, (arg, i) => {
+          stFn += `  ${arg}: bbn.fn.hash(${arg}),\n`;
+        });
+        stFn += `};\n`;
+        stFn += `${a.exp}\n`;
+        stFn += `bbn.fn.iterate($_bbnData, (v, n) => {\n`;
+        stFn += `  if (v !== bbn.fn.hash(v)) {\n`;
+        stFn += `    bbn.fn.log("MUST UPDATE IN EVENT");\n`;
+        stFn += `  }\n`;
+        stFn += `});\n`;
+      }
+      a.fn = new Function(...args, stFn);
     }
     else {
       a.fn = new Function(...args, 'return (' + (a.exp || (node.type === 'else' ? 'true' : '')) + ')');

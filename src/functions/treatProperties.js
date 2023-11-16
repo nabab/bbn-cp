@@ -1,23 +1,7 @@
 import bbn from "@bbn/bbn";
+import sr from "../internals/sr.js";
 
 export default function treatProperties (cp, id, hash, go = false) {
-  const sr = (attr, hash) => {
-    return cp.$_setInternalResult(
-      attr.id,
-      attr.fn.bind(cp)(...attr.args.map(a => {
-        let r;
-        try {
-          r = bbn.cp.treatArgument(a, cp, hash)
-        }
-        catch(e) {
-          bbn.fn.log(["ERROR IN TREAT ARGUMENT", e, a, cp, hash, attr])
-          throw e;
-        }
-        return r;
-      })),
-      hash
-    );
-  };
   const props = bbn.fn.createObject();
   const node = cp.$currentMap[id];
   // Will GO if the element is new or modified and not forgotten
@@ -25,7 +9,7 @@ export default function treatProperties (cp, id, hash, go = false) {
     let bindValue;
     if (node.attr['bbn-bind']) {
       const attr = node.attr['bbn-bind'];
-      bindValue = sr(attr, hash);
+      bindValue = sr(cp, attr, hash);
       if (cp.$_getInternalState(attr.id, hash) !== 'OK') {
         go = true;
       }
@@ -38,7 +22,7 @@ export default function treatProperties (cp, id, hash, go = false) {
       
       const attr = node.attr[n];
       if (attr.exp) {
-        let attrValue = sr(attr, hash);
+        let attrValue = sr(cp, attr, hash);
         if (attrValue !== undefined) {
           props[n] = attrValue;
         }

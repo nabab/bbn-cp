@@ -3,18 +3,19 @@
 //import treatItems from "./treatItems.js";
 //import treatEvents from "./treatEvents.js";
 //import treatProperties from "./treatProperties.js";
-const writer = function() {
+const writer = function() { 
   let text = '';
   let spaces = 0;
-const x = function(st) {
-      text += ' '.repeat(spaces) + st + '\n';
+  const x = function(st) {
+    text += ' '.repeat(spaces) + st + '\n';
   };
   x.get = function(clean) {
-  if (clean) {
-    const tmp = text;
+    if (clean) {
+      const tmp = text;
       text = '';
       return tmp;
     }
+
     return text;
   };
   x.clean = function() {text = ''; return x};
@@ -420,7 +421,7 @@ const treatElement = function(cp, node, hashName) {
 };
 
 const treatSlot = function(cp, node, hashName) {
-    if (node.tag === 'slot') {
+  if (node.tag === 'slot') {
     let slot = "'default'";
     if (node.attr?.name) {
       slot = node.attr.name.exp ? `${node.attr.name.exp}` : `'${node.attr.name.value}'`;
