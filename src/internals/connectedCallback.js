@@ -1,6 +1,10 @@
-export default function connectedCallback(cp) {
-  if (cp.bbnId && !cp.bbn) {
-    cp.bbn = new (cp.bbnFn || cp.constructor.bbnFn)(cp);
-    cp.bbn.$connectedCallback();
+/**
+ * Launches the component's connectedCallback
+ * @param {bbnCp} cp 
+ */
+export default function connectedCallback(ele) {
+  if (ele.bbnId && !ele.bbn) {
+    ele.bbn = new (ele.bbnFn || ele.constructor.bbnFn)(ele);
+    ele.bbn.$connected();
   }
 }

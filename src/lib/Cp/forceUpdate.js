@@ -1,8 +1,9 @@
 import bbnCp from "../Cp.js";
+import launch from "./private/launch.js";
 
 bbnCp.prototype.$forceUpdate = async function (fn) {
   if (!this.$isBusy) {
-    const prom = this.$updateComponent();
+    const prom = launch(this);
     if (fn) {
       return prom.then(() => fn);
     }

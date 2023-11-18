@@ -1,3 +1,4 @@
+import launch from '../lib/Cp/private/launch.js';
 export default function startTick() {
   if (bbn.cp.interval) {
     throw new Error(bbn._("The tick is already started"));
@@ -23,7 +24,7 @@ export default function startTick() {
             if (!queue[i].cp.$isBusy && (queue[i].force || (time - queue[i].cp.$lastLaunch > bbn.cp.tickDelay))) {
               //bbn.fn.log("UPDATING")
               const queueElement = queue.splice(i, 1)[0];
-              queueElement.cp.$updateComponent().then(() => {
+              launch(queueElement.cp).then(() => {
                 queueElement.fns.forEach(fn => {
                   if (fn) {
                     fn.bind(queueElement.cp)();

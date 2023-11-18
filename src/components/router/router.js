@@ -1079,10 +1079,6 @@ const cpDef = {
               this.$emit('close', idx, onClose);
               let url = this.views[idx].url;
               this.views.splice(idx, 1);
-              if (this.urls[url]) {
-                this.$removeDOM(this.urls[url].$el);
-              }
-
               this.$delete(this.urls, url);
               this.fixIndexes();
               this.$forceUpdate();

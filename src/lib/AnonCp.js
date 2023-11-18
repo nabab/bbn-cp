@@ -1,6 +1,8 @@
 import bbnCp from "./Cp.js";
 import "../cp.js";
-import setComputed from "../internals/setComputed.js";
+import setComputed from "./Cp/private/setComputed.js";
+import init from "./Cp/private/init.js";
+import setUpProp from "./Cp/private/setUpProp.js";
 
 export default class bbnAnonCp extends bbnCp {
   $options = bbn.fn.createObject({
@@ -26,10 +28,10 @@ export default class bbnAnonCp extends bbnCp {
       configurable: false
     });
 
-    this.$init();
+    init(this);
   }
 
-  async $connectedCallback() {
+  async $connected() {
     //bbn.fn.log("ANON!!! ",this.$el.bbnSchema.props?.is);
     if (!this.$el.bbnTpl) {
       this.$el.bbnTpl = bbnAnon.bbnTpl;
@@ -76,7 +78,7 @@ export default class bbnAnonCp extends bbnCp {
     }
 
     //bbn.fn.log("CONNCTRED CALLED IN ANON", this.$el);
-    await bbnCp.prototype.$connectedCallback.apply(this);
+    await bbnCp.prototype.$connected.apply(this);
   }
 
   get source() {
@@ -91,7 +93,7 @@ export default class bbnAnonCp extends bbnCp {
     }
 
     bbn.fn.each(this.$cfg.props, (prop, name) => {
-      this.$setUpProp(name, prop);
+      setUpProp(this, name, prop);
       Object.defineProperty(this, name, {
         get() {
           return this.$props[name];

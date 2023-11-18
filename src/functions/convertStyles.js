@@ -1,8 +1,8 @@
-const treatArguments = function(...args) {
+const treatStyleArguments = function(...args) {
   const final = bbn.fn.createObject();
   bbn.fn.each(args, arg => {
     if (bbn.fn.isArray(arg)) {
-      bbn.fn.extend(final, treatArguments(...arg));
+      bbn.fn.extend(final, treatStyleArguments(...arg));
     }
     else if (bbn.fn.isObject(arg) && bbn.fn.numProperties(arg)) {
       bbn.fn.extend(final, arg);
@@ -26,7 +26,7 @@ const treatArguments = function(...args) {
  */
 export default function convertStyles(...args) {
   let st = '';
-  const css = treatArguments(...args);
+  const css = treatStyleArguments(...args);
   if (bbn.fn.isObject(css)) {
     for (let n in css) {
       let prop = bbn.fn.camelToCss(n);

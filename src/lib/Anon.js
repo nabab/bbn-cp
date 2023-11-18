@@ -2,7 +2,6 @@ import bbnHTML from "./Html.js";
 import bbnAnonCp from "./AnonCp.js";
 import connectedCallback from "../internals/connectedCallback.js";
 import disconnectedCallback from "../internals/disconnectedCallback.js";
-import attributeChangedCallback from "../internals/attributeChangedCallback.js";
 import stringToTemplate from "../internals/stringToTemplate.js";
 import "../cp.js";
 
@@ -20,10 +19,6 @@ export default class bbnAnon extends bbnHTML
 
   disconnectedCallback() {
     return disconnectedCallback(this);
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    return attributeChangedCallback(this, name, oldValue, newValue);
   }
 
   static bbnFn = bbnAnonCp;

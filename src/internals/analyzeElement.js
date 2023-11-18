@@ -53,9 +53,11 @@ const noSpaceTags = [
 
 
 /**
- * Create an object of the HTML element with all the VUE prefixes
- * replaced by BBN prefixes
- * @return {Object} res
+ * Creates a template object based on the HTML element
+ * @var {HTMLElement} ele - The HTML element to analyze
+ * @var {Object} inlineTemplates - An object passing inline templates
+ * @var {String} idx - The unique index of the element
+ * @return {Object} res - An object representing the node
  */
 export default function analyzeElement(ele, inlineTemplates, idx) {
   if (!ele.getAttributeNames) {

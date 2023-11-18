@@ -1,5 +1,7 @@
 /**
  * Adds a new component to the static global #components property
+ * @var {HTMLElement} ele
+ * @return void
  */
 export default function addComponent(ele) {
   const cid = ele.bbnCid;

@@ -287,11 +287,11 @@ const cpDef = {
        * @method onResize
        * @fires getOrientation
        */
-      onResize(){
+      onResize() {
         if ( !this.isResizing ){
           this.isResizing = true;
-          this.setContainerMeasures();
-          this.setResizeMeasures();
+          const c = this.setContainerMeasures();
+          const r = this.setResizeMeasures();
           if ( this.orientation === 'auto' ){
             let o = this.getOrientation();
             if ( o !== this.currentOrientation ){
@@ -299,16 +299,25 @@ const cpDef = {
             }
           }
           /** @todo so far only fuckin way to make it re-render the right dimensions */
+          /*
           let w = this.$el.style.width;
           let h = this.$el.style.height;
-          this.$el.style.width = '100%';
-          this.$el.style.height = '100%';
           setTimeout(() => {
             this.$el.style.width = w;
             this.$el.style.height = h;
-            this.isResizing = false;
             this.$emit('resize');
           }, 100)
+          */
+          if (c || r) {
+            this.$el.style.width = '100%';
+            this.$el.style.height = '100%';
+            let w = this.$el.style.width;
+            let h = this.$el.style.height;
+            this.$el.style.width = w;
+            this.$el.style.height = h;
+            this.$emit('resize');
+          }
+          this.isResizing = false;
         }
       },
       /**

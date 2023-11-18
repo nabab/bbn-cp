@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base href="../../dist/">
+    <link rel="stylesheet"
+          href="../node_modules/@bbn/bbn-css/dist/css/bbn-css-black.css">
+    <!-- styling for the test results -->
+    <link rel="stylesheet"
+          href="../node_modules/mocha/mocha.css">
+  </head>
+  <body>
+    <!-- container that will display test results -->
+    <div id="mocha"></div>
+
+    <!-- mocha (test runner) -->
+    <script src="../node_modules/mocha/mocha.js"></script>
+
+    <!-- chai (assertion library) -->
+    <script src="../node_modules/chai/chai.js"></script>
+
+    <!-- bbn-cp -->
+    <script src="bbn-cp.js"></script>
+
+    <div id="app">
+      <h5>My component</h5>
+    </div>
+
+     <!-- You can load the test from source file or write the code-->
+     <!-- <script src="test.js"></script>-->
+     <script>
+        import treatArgument from '../../src/internals/treatArgument.js';
+        // setup test helpers
+        mocha.setup("bdd");
+        const expect = chai.expect;
+        let app;
+        let ele = document.getElementById("app");
+        let cp;
+        let index = 0;
+        const randomProp = () => bbn.fn.randomString();
+        const dummyObj = () => {
+          index++;
+          return {
+            id: index,
+            name: randomProp()
+          };
+        };
+
+        bbn.isTesting = true;
+
+        // your tests here
+        describe("Internal test suite", function () {
+          before(async function() {
+            app = await bbn.cp.createApp(document.getElementById('app'), {
+              data: {
+                foo: 'bar'
+              }
+            });
+            expect(app).to.be.an.instanceof(bbnCp);
+            expect(ele).to.be.an.instanceof(HTMLElement);
+              await setTimeout(() => {
+                ele = document.getElementById("app");
+                expect(ele).to.have.property('bbn');
+                cp = ele.bbn;
+                bbn.fn.log('?');
+            });
+          });
+          describe('treatArgument', () => {
+            it('should throw an error if the data does not exist', () => {
+              expect(treatArgument('otherVar', app)).to.throw();
+            });
+          });
+
+        });
+
+
+        // run tests
+        mocha.run();
+     </script>
+  </body>
+</html>

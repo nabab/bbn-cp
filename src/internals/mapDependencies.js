@@ -57,17 +57,14 @@ export default function mapDependencies(cp) {
 
   const loopVars = {};
   bbn.fn.iterate(cp.$currentMap, node => {
-    if (node.loop) {
-      loopVars[node.id] = [
-        ...node.loop.item ? [node.loop.item] : [],
-        ...node.loop.index ? [node.loop.index] : []
-      ];
-    }
-
     const deps = [];
     if (node.loop) {
       const args = expToFn(cp, loopVars, node.loop, node);
       deps.push(...args);
+      loopVars[node.id] = [
+        ...node.loop.item ? [node.loop.item] : [],
+        ...node.loop.index ? [node.loop.index] : []
+      ];
     }
 
     if (node.condition) {
@@ -105,6 +102,15 @@ export default function mapDependencies(cp) {
 
     if (node.model) {
       bbn.fn.iterate(node.model, a => {
+        if (a.exp) {
+          const args = expToFn(cp, loopVars, a, node);
+          deps.push(...args);
+        }
+      });
+    }
+
+    if (node.directives) {
+      bbn.fn.iterate(node.directives, a => {
         if (a.exp) {
           const args = expToFn(cp, loopVars, a, node);
           deps.push(...args);

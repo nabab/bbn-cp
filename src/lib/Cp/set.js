@@ -1,41 +1,43 @@
 import bbnCp from "../Cp.js";
+import setProp from "./private/setProp.js";
+import setUpData from "./private/setUpData.js";
 
 /**
- * Sets the given property on the given object using static method
- * @param {Object} obj 
+ * Sets the given property on the given cpect using static method
+ * @param {bbnCp} cp 
  * @param {String} prop 
  * @param {*} value 
  * @param {Boolean} writable 
  * @param {Boolean} configurable 
  * @returns 
  */
-bbnCp.prototype.$set = function (obj, prop, value, writable = true, configurable = true) {
+bbnCp.prototype.$set = function (cp, prop, value, writable = true, configurable = true) {
   // Case where it's the prop or data of a component
-  if (bbn.cp.isComponent(obj)) {
+  if (bbn.cp.isComponent(cp)) {
     //  It already exists
-    if (obj.$namespaces[prop]) {
+    if (cp.$namespaces[prop]) {
       // New treated value
-      const dataObj = obj.$treatValue(value, prop);
+      const dataObj = cp.$treatValue(value, prop);
       // The value is different
-      if (!bbn.fn.isSame(dataObj, obj[prop])) {
+      if (!bbn.fn.isSame(dataObj, cp[prop])) {
         // It's a prop
-        if (obj.$namespaces[prop] === 'props') {
-          obj.$setProp(prop, value);
+        if (cp.$namespaces[prop] === 'props') {
+          setProp(cp, prop, value);
         }
         // It's a data
         else {
-          obj[prop] = value;
+          cp[prop] = value;
         }
       }
     }
     // Creating a new data
     else {
-      obj.$setUpData(prop, value);
+      setUpData(cp, prop, value);
     }
   }
   else {
-    // Creating or updating if possible a property to the given object
-    Object.defineProperty(obj, prop, {
+    // Creating or updating if possible a property to the given cpect
+    Object.defineProperty(cp, prop, {
       value,
       writable,
       configurable

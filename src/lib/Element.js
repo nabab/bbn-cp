@@ -2,7 +2,6 @@ import "../cp.js";
 import createCid from "../internals/createCid.js";
 import connectedCallback from "../internals/connectedCallback.js";
 import disconnectedCallback from "../internals/disconnectedCallback.js";
-import attributeChangedCallback from "../internals/attributeChangedCallback.js";
 
 /**
  * Create the bbn component class which extends the HTMLElement class
@@ -26,10 +25,6 @@ export default class bbnElementHTML extends HTMLLIElement
 
   disconnectedCallback() {
     return disconnectedCallback(this);
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    return attributeChangedCallback(this, name, oldValue, newValue);
   }
 
 }

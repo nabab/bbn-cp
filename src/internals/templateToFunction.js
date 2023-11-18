@@ -338,7 +338,7 @@ const treatElement = function(cp, node, hashName) {
         }
       }
     }
-    x(`  $_this.$updateElementFromProps($_tmp1, $_items['${node.id}']);`);
+    x(`  $_this.$applyPropsOnElement($_tmp1, $_items['${node.id}']);`);
     x(`}`);
     x(`if ($_par.at(-1) === $_this.$el) {`);
     x(`  $_num['-']++;`);
@@ -560,7 +560,7 @@ const treatRoot = function(cp, tpl, hashName) {
         }
         x(`}`);
       }
-      x(`$_this.$updateFromSchema($_props);`);
+      x(`$_this.$applySchemaOnComponent($_props);`);
       if (tpl[0].events) {
         x(`if (!$_this.$numBuild) {`);
         x(`  bbn.cp.treatEvents($_this, $_this.$el);`);
@@ -568,12 +568,12 @@ const treatRoot = function(cp, tpl, hashName) {
       }
     }
     else {
-      x(`$_this.$updateFromSchema();`);
+      x(`$_this.$applySchemaOnComponent();`);
     }
 
     return tpl[0].items;
   }
-  x(`$_this.$updateFromSchema();`);
+  x(`$_this.$applySchemaOnComponent();`);
   return tpl;
 };
 

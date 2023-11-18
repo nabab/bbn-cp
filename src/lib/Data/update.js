@@ -1,4 +1,5 @@
 import bbnData from "../Data.js";
+import updateWatcher from "../Cp/private/updateWatcher.js";
 
 /**
  * Update all the components linked to the data object
@@ -31,11 +32,11 @@ bbnData.prototype.update = function(noParent, key) {
         if (bits.length > 1) {
           bits.shift();
           //bbn.fn.log("WATCHER " + name, data.value, bits.join("."), '----')
-          it.cp.$updateWatcher(name, bbn.fn.getProperty(data.value, ...bits));
+          updateWatcher(it.cp, name, bbn.fn.getProperty(data.value, ...bits));
         }
         else {
           //bbn.fn.log("WATCHER " + name, data.value, '----')
-          it.cp.$updateWatcher(name, data.value);
+          updateWatcher(it.cp, name, data.value);
         }
       }
       bits.pop();

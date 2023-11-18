@@ -10,9 +10,9 @@ export default function retrieveSlots(tpl, res) {
         throw new Error(bbn._("Invalid slot name"));
       }
 
-      if (res[idx]) {
-        //throw new Error("A same slot can't appear twice in the template");
-      }
+      /*if (res[idx]) {
+        throw new Error("A same slot can't appear twice in the template");
+      }*/
 
       res[idx] = [];
       res[idx].id = node.id;
