@@ -63,13 +63,10 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
   if (!ele.getAttributeNames) {
     throw new Error("Only tags can be analyzed");
   }
+  bbn.fn.checkType(inlineTemplates, 'object', "Inline templates must be an object");
+  bbn.fn.checkType(idx, 'string', "The index must be a string");
 
   const attr = ele.getAttributeNames().sort();
-
-  if (!inlineTemplates) {
-    inlineTemplates = bbn.fn.createObject();
-  }
-
   let res = bbn.fn.createObject({
     id: idx,
     tag: ele.tagName.toLowerCase(),

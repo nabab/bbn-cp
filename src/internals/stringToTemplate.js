@@ -7,14 +7,6 @@ import removeSelfClosing from "./removeSelfClosing.js";
  * @return {HTMLElement}
  */
 const parser = new DOMParser();
-const createMap = (map, items) => {
-  bbn.fn.each(items, a => {
-    map[a.id] = a;
-    if (a.items) {
-      createMap(map, a.items);
-    }
-  });
-};
 
 /**
  * Transforms a HTML string into a template array
@@ -22,7 +14,7 @@ const createMap = (map, items) => {
  * @param {String} str 
  * @returns {Array}
  */
-export default function stringToTemplate(str, withMap, name) {
+export default function stringToTemplate(str, name) {
   const map = bbn.fn.createObject();
   const inlineTemplates = bbn.fn.createObject();
 
@@ -95,16 +87,7 @@ export default function stringToTemplate(str, withMap, name) {
     }];
   }
 
-  if (withMap) {
-    const map = bbn.fn.createObject();
-    createMap(map, res);
-
-    return {
-      res,
-      map,
-      inlineTemplates
-    }
-  }
+  res['0'].inlineTemplates = inlineTemplates;
 
   return res;
 }

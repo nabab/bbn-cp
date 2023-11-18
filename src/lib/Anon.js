@@ -3,9 +3,12 @@ import bbnAnonCp from "./AnonCp.js";
 import connectedCallback from "../internals/connectedCallback.js";
 import disconnectedCallback from "../internals/disconnectedCallback.js";
 import stringToTemplate from "../internals/stringToTemplate.js";
+import templateToMap from "../internals/templateToMap.js";
 import "../cp.js";
 
-const tmp = stringToTemplate('<slot/>', true, 'bbn-anon');
+const tpl = stringToTemplate('<slot/>', 'bbn-anon');
+const map = templateToMap(tpl);
+
 
 export default class bbnAnon extends bbnHTML
 {
@@ -25,9 +28,9 @@ export default class bbnAnon extends bbnHTML
 
   static bbnCls = 'bbnAnon';
 
-  static bbnTpl = tmp.res;
+  static bbnTpl = tpl;
 
-  static bbnMap = tmp.map;
+  static bbnMap = map;
 
   static bbnCfg = bbn.cp.normalizeComponent({
     mixins: [bbn.cp.mixins.basic],

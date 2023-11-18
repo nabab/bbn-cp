@@ -6,3 +6,9 @@ const createMap = (map, items) => {
     }
   });
 };
+
+export default function templateToMap(tpl) {
+  const map = bbn.fn.createObject();
+  createMap(map, tpl);
+  return map;
+}
