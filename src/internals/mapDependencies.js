@@ -25,16 +25,21 @@ const expToFn = (cp, loopVars, a, node, isEvent) => {
       }
       else {
         stFn += 'const $_bbnData = {';
-        bbn.fn.each(args, (arg, i) => {
+        bbn.fn.each(args, arg => {
           stFn += `  ${arg}: bbn.fn.hash(${arg}),\n`;
         });
         stFn += `};\n`;
         stFn += `${a.exp}\n`;
-        stFn += `bbn.fn.iterate($_bbnData, (v, n) => {\n`;
-        stFn += `  if (v !== bbn.fn.hash(v)) {\n`;
-        stFn += `    bbn.fn.log("MUST UPDATE IN EVENT");\n`;
-        stFn += `  }\n`;
-        stFn += `});\n`;
+        bbn.fn.each(args, arg => {
+          stFn += `if ($_bbnData['${arg}'] !== bbn.fn.hash(${arg})) {\n`;
+          if (loopVars[arg]) {
+          }
+          else if (Object.hasOwn(cp, arg)) {
+            stFn += `  this['${arg}'] = ${arg};\n`;
+            stFn += `bbn.fn.log("SEEMS TO WORK", "${arg}", ${arg});\n`;
+          }
+          stFn += `}\n`;
+        });
       }
       a.fn = new Function(...args, stFn);
     }

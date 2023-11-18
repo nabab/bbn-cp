@@ -1,5 +1,6 @@
 import bbn from "@bbn/bbn";
 import sr from "./sr.js";
+import setInternalResult from "./setInternalResult.js";
 import treatProperties from "./treatProperties.js";
 import treatEvents from "./treatEvents.js";
 import treatItems from "./treatItems.js";
@@ -240,7 +241,7 @@ export default async function treatElement(cp, a, hash, parent, data, go = true)
     // Handle 'pre' directive or process child items.
     if (node.pre) {
       if (ele) {
-        let preVal = cp.$_getInternalResult(node.id, `${node.pre}`, hash);
+        let preVal = setInternalResult(cp, node.id, `${node.pre}`, hash);
         if (ele.innerHTML !== preVal) {
           ele.innerHTML = preVal;
         }
