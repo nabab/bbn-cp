@@ -48,7 +48,7 @@ export default async function treatElement(cp, a, hash, parent, data, go = true)
   }
   // Special handling for 'transition' and 'template' tags.
   else if (!node.pre && ['transition', 'template'].includes(node.tag)) {
-    if (ele && a.items) {
+    if (a.items) {
       for (let i = 0; i < a.items.length; i++) {
         let e = await treatElement(cp, a.items[i], hash, parent, data, go);
         if (e) {

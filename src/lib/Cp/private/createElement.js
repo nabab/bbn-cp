@@ -1,4 +1,6 @@
 import retrieveSlots from "../../../internals/retrieveSlots.js";
+import stringToTemplate from "../../../internals/stringToTemplate.js";
+import templateToMap from "../../../internals/templateToMap.js";
 import applyPropsOnElement from "./applyPropsOnElement.js";
 import fetchComponents from "./fetchComponents.js";
 //import addToElements from "./addToElements.js";
@@ -125,19 +127,21 @@ export default async function createElement (cp, node, target, prevElementIndex,
             configurable: false
           });
           if (node.cfg.template) {
-            const tmp = stringToTemplate(node.cfg.template, true, node.cfg.tag || 'bbn-anon');
+            const tpl = stringToTemplate(node.cfg.template, true, node.cfg.tag || 'bbn-anon');
+            const map = templateToMap(tpl);
+
             Object.defineProperty(ele, 'bbnTpl', {
-              value: tmp.res,
+              value: tpl,
               writable: false,
               configurable: false
             });
             Object.defineProperty(ele, 'bbnMap', {
-              value: tmp.map,
+              value: map,
               writable: false,
               configurable: false
             });
             Object.defineProperty(ele, 'bbnInlineTemplates', {
-              value: tmp.inlineTemplates,
+              value: tpl[0].inlineTemplates,
               writable: false,
               configurable: false
             });
