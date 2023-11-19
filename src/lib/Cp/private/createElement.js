@@ -1,7 +1,7 @@
 import retrieveSlots from "../../../internals/retrieveSlots.js";
 import applyPropsOnElement from "./applyPropsOnElement.js";
 import fetchComponents from "./fetchComponents.js";
-import addToElements from "./addToElements.js";
+//import addToElements from "./addToElements.js";
 import addUnknownComponent from "./addUnknownComponent.js";
 import bbn from "@bbn/bbn";
 
@@ -247,7 +247,7 @@ export default async function createElement (cp, node, target, prevElementIndex,
     return oldEle;
   }
 
-  addToElements(cp, ele);
+  //addToElements(cp, ele);
 
   return ele;
 }

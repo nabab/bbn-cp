@@ -220,7 +220,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
           res.condition = bbn.fn.createObject({
             type,
             id: 'condition-' + res.id,
-            exp: value,
+            exp: a === 'bbn-else' ? 'true' : value,
             // Adding prefix as conditions can be set to false even when the expression is not
             hash: 'CONDITION' + idx.toString() + '-' + hash
           });
@@ -380,6 +380,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
         if (isDynamic) {
           item.exp = txt;
         }
+ 
         res.items.push(item);
         num++;
       }

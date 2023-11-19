@@ -23,15 +23,14 @@ export default function stringToTemplate(str, name) {
   }
 
   if (!str) {
-    if (withMap) {
-      return {
-        res: [],
-        map,
-        inlineTemplates
-      }
-    }
-
-    return [];
+    return [
+      bbn.fn.createObject({
+        id: '0',
+        tag: 'div',
+        items: [],
+        inlineTemplates: bbn.fn.createObject()
+      })
+    ];
   }
   const doc = parser.parseFromString(
     // There shouldn't be self-closing in the embedded HTML except if in template
@@ -87,7 +86,7 @@ export default function stringToTemplate(str, name) {
     }];
   }
 
-  res['0'].inlineTemplates = inlineTemplates;
+  res[0].inlineTemplates = inlineTemplates;
 
   return res;
 }

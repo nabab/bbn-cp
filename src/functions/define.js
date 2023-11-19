@@ -28,7 +28,7 @@ export default function define(name, obj, tplSt, css) {
   // Name of the class based on the tag name
   const publicName = bbn.fn.camelize(name);
   // The component config (= Vue-like object) that we freeze
-  bbn.fn.iterate(tpl['0'].inlineTemplates, (itpl, tag) => {
+  bbn.fn.iterate(tpl[0].inlineTemplates, (itpl, tag) => {
     if (!obj.components[tag]) {
       bbn.fn.log(Object.keys(cpCfg.components).join(", "));
       throw new Error("Impossible to find the sub component %s", tag);

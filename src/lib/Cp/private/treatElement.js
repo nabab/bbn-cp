@@ -11,15 +11,16 @@ import applyPropsOnElement from "./applyPropsOnElement.js";
 import getInternalState from "./getInternalState.js";
 import getInternalValue from "./getInternalValue.js";
 import createElement from "./createElement.js";
-import setProp from "./setProp.js";0
+import setProp from "./setProp.js";
+import addToElements from "./addToElements.js";
 
 /**
  * Processes an element in the virtual DOM of a web component.
  * It handles the creation and updating of elements, binding properties and events,
  * processing slots, text nodes, and more.
  * 
+ * @param {Object} cp - The component instance containing methods and properties.
  * @param {Object} a - The virtual DOM node to be processed.
- * @param {Object} cp - The context provider (component instance) containing methods and properties.
  * @param {string} hash - A unique identifier used in conjunction with cp for state management.
  * @param {HTMLElement} parent - The parent element where the processed element will be appended.
  * @param {Object} data - Additional data that might be required for processing the element.
@@ -185,12 +186,10 @@ export default async function treatElement(cp, a, hash, parent, data, go = true)
                       else {
                         cp[modelVarRoot] = eventValue;
                       }
-  
-                      modelVarRoot = eventValue;
-                      //bbn.fn.log("FROM MODEL " + _bbnRealName, cp.$options.name, cp.$cfg.props, _bbnEventValue, ${modelVarRoot}, "${modelVarRoot}", Object.hasOwn(cp.$cfg.props, "${modelVarRoot}"));
                     }
                     else {
-                      modelVarName = eventValue;
+                      const obj = bbn.fn.getProperty(cp, ...modelVarBits.slice(0, -1));
+                      obj[modelVarBits[modelVarBits.length - 1]] = eventValue;
                     }
                   }
                 });
@@ -263,7 +262,117 @@ export default async function treatElement(cp, a, hash, parent, data, go = true)
 
     // Append the processed element to the parent.
     if (ele) {
-      parent.append(ele);      
+      const isParentComponent = (parent !== cp.$el) && bbn.cp.isComponent(parent);
+      let replace = false;
+      const isComment = bbn.fn.isComment(ele);
+      if (old) {
+        const isOldComment = bbn.fn.isComment(old);
+        if (
+          (old !== cp.$el)
+          && (
+            (isOldComment !== isComment)
+            || (
+              !isOldComment
+              && node.tag
+              && !bbn.cp.isTag(node.tag, old)
+            )
+          )
+        ) {
+          replace = true;
+        }
+        else {
+          ele = old;
+        }
+      }
+    
+      if (replace) {
+        //bbn.fn.log("REPLACE", ele);
+        if (isParentComponent && !ele.bbnSchema?.comment) {
+          //bbn.fn.log("IN CP " + parent.tagName, ele);
+          const slot = ele.getAttribute("slot") || 'default';
+          if (parent.bbnSlots?.[slot]) {
+            let search = {bbnId: old.bbnId};
+            if (ele.bbnHash) {
+              search.bbnHash = ele.bbnHash;
+            }
+            let idx = bbn.fn.search(parent.bbnSlots[slot], search);
+            if (idx > -1) {
+              /*
+              const mounted = !!parent.bbnSlots[slot][idx].parentNode;
+              if (mounted) {
+                old.parentNode.replaceChild(ele, old);
+              }
+              */
+    
+              parent.bbnSlots[slot].splice(idx, 1, ele);
+              if (parent.bbn && parent.bbn.$isMounted) {
+                parent.bbn.$tick();
+              }
+            }
+          }
+        }
+        else {
+          if (old.parentNode) {
+            try {
+              old.parentNode.replaceChild(ele, old);
+            }
+            catch (e) {
+              bbn.fn.log("ERROR IN REPLACE", e, ele, old);
+            }
+          }
+          else {
+            try {
+              parent.appendChild(ele);
+            }
+            catch (e) {
+              bbn.fn.log("ERROR IN APPEND", e, ele, old);
+            }
+          }
+        }
+    
+        addToElements(cp, ele);
+      }
+      else if (old !== ele) {
+        //bbn.fn.log(["INSERT ", ele, old]);
+        if (isParentComponent) {
+          const slot = ele.bbnSchema.props?.slot || 'default';
+          if (parent.bbnSlots?.[slot]) {
+            if (!ele.bbnSchema && !bbn.fn.removeExtraSpaces(ele.textContent)) {
+              return;
+            }
+    
+            let search = {bbnId: ele.bbnId};
+            if (ele.bbnHash) {
+              search.bbnHash = ele.bbnHash;
+            }
+    
+            let idx = bbn.fn.search(parent.bbnSlots[slot], search);
+            if (idx > -1) {
+              const mounted = !!parent.bbnSlots[slot][idx].parentNode;
+              if (mounted) {
+                parent.bbnSlots[slot][idx].parentNode.replaceChild(ele, parent.bbnSlots[slot][idx]);
+              }
+    
+              parent.bbnSlots[slot].splice(idx, 1, ele);
+            }
+            else {
+              parent.bbnSlots[slot].push(ele);
+            }
+            addToElements(cp, ele);
+          }
+        }
+        else {
+          /*
+          if (parent.childNodes[prevElementIndex]) {
+            parent.childNodes[prevElementIndex].after(ele);
+          }
+          else {*/
+            parent.appendChild(ele);
+          //}
+    
+          addToElements(cp, ele);
+        }
+      }
     }
 
     return ele;

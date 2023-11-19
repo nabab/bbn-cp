@@ -134,9 +134,11 @@ export default async function treatItems(cp, items, hash, parent, data) {
         if (isArray) {
           j = parseInt(j);
         }
+
+        
         let key = j;
         if (node.attr?.key?.exp) {
-          key = sr(cp, node.attr.key, hash, data);
+          key = sr(cp, node.attr.key, hash, bbn.fn.extend({}, data, {[node.loop.item]: loopValue[j]}));
         }
 
         hash = oHash + node.loop.id + '-' + j + '-' + key;
@@ -159,7 +161,7 @@ export default async function treatItems(cp, items, hash, parent, data) {
         }
 
         // Apply the condition to the current node.
-        applyCondition(cp, conditionValue, node, hash, parent, data);
+        await applyCondition(cp, conditionValue, node, hash, parent, data);
       }
 
       // Restore previous loop item and index values if they were overwritten.
@@ -167,10 +169,16 @@ export default async function treatItems(cp, items, hash, parent, data) {
         data[node.loop.item] = prevLoopItemValue;
         hadLoopItemDefined = null;
       }
+      else {
+        delete data[node.loop.item];
+      }
 
       if (hadLoopIndexDefined) {
         data[node.loop.index] = prevLoopIndexValue;
         hadLoopIndexDefined = null;
+      }
+      else if (node.loop.index) {
+        delete data[node.loop.index];
       }
     }
     // Handle non-loop nodes.
@@ -199,7 +207,7 @@ export default async function treatItems(cp, items, hash, parent, data) {
 
         // Apply the condition to the current node.
         if (getInternalState(cp, node.condition.id, hash) !== 'OK') {
-          applyCondition(cp, getInternalValue(cp, node.condition.id, hash), node, hash, parent, data);
+          await applyCondition(cp, getInternalValue(cp, node.condition.id, hash), node, hash, parent, data);
         }
       }
       // Process nodes without conditions.
