@@ -2,14 +2,12 @@ import bbn from "@bbn/bbn";
 import sr from "./sr.js";
 import setInternalResult from "./setInternalResult.js";
 import treatProperties from "./treatProperties.js";
-import treatEvents from "./treatEvents.js";
 import treatItems from "./treatItems.js";
 import applyPropsOnElement from "./applyPropsOnElement.js";
 import getInternalState from "./getInternalState.js";
 import getInternalValue from "./getInternalValue.js";
 import createElement from "./createElement.js";
 import addToElements from "./addToElements.js";
-import treatModel from "./treatModel.js";
 
 /**
  * Processes an element in the virtual DOM of a web component.
@@ -38,14 +36,6 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
     }
 
     const props = tmp.props;
-    if (node.model) {
-      bbn.fn.iterate(node.model, m => {
-        sr(cp, m, hash, data);
-        if (!go && (getInternalState(cp, m.id, hash) !== "OK")) {
-          go = true;
-        }
-      });
-    }
 
     if (bbn.fn.numProperties(node.directives)) {
       for (let n in node.directives) {
@@ -87,7 +77,6 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
       }
 
       if (anew) {
-        bbn.fn.log(["ANEW", anew, cp.$numBuild, ele, bbn.cp.isTag(tmp.tag, node), tmp.tag, node.tag]);
         if (bbn.fn.numProperties(node.directives)) {
           for (let n in node.directives) {
             if (node.directives[n].exp) {

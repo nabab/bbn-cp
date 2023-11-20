@@ -82,6 +82,16 @@ export default function treatProperties(cp, id, hash, data, go = false) {
     }
   }
 
+  if (node.model) {
+    bbn.fn.iterate(node.model, (m, name) => {
+      props[name] = sr(cp, m, hash, data);
+      if (!go && (getInternalState(cp, m.id, hash) !== "OK")) {
+        go = true;
+      }
+    });
+  }
+
+
   // Return the flag indicating if an update is needed and the processed properties.
   return {go, props};
 }
