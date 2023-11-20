@@ -73,6 +73,7 @@ export default function treatEvents(cp, ele) {
             args.push(treatArgument(cp, a, ele.bbnSchema.loopHash));
           }
         });
+        bbn.fn.log(['on Event', ev, args]);
         // Bind the event handler to the component and execute it with the processed arguments.
         ev.fn.bind(cp)(...args);
       }

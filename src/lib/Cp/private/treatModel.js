@@ -55,7 +55,6 @@ export default async function treatModel(cp, node, hash, ele, data) {
       ele.addEventListener(eventName, e => {
         let eventValue = e.detail?.args ? e.detail.args[0] : e.target?.value;
         let oldValue = modelValue;
-        //bbn.fn.log(["ON MODEL CHANGE", _bbnEventName, oldValue, "${modelVarRoot}", _bbnEventValue, cp.$options.name]);
         if (oldValue !== eventValue) {
           if (modelVarRoot === modelVarName) {
             if (Object.hasOwn(data, modelVarRoot)) {
@@ -77,8 +76,9 @@ export default async function treatModel(cp, node, hash, ele, data) {
             const obj = bbn.fn.getProperty(cp, ...modelVarBits.slice(0, -1));
             obj[modelVarBits[modelVarBits.length - 1]] = eventValue;
           }
-
           modelValue = eventValue;
+
+          cp.$forceUpdate();
         }
       });
     }

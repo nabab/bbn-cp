@@ -63,7 +63,6 @@ export default async function launch (cp, shadow) {
   });
   bbn.fn.warning("EVALUATING " + cp.$options.name);
   const e = await treatItems(cp, cp.$tpl[0].items, cp.$hash, cp.$el);
-  bbn.fn.log("TREAT ITEMS", e);
   const t2 = (new Date()).getTime();
   cp.$numBuild++;
   cp.$lastLaunch = t2;

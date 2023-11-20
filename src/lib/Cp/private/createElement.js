@@ -3,6 +3,8 @@ import stringToTemplate from "../../../internals/stringToTemplate.js";
 import templateToMap from "../../../internals/templateToMap.js";
 import applyPropsOnElement from "./applyPropsOnElement.js";
 import fetchComponents from "./fetchComponents.js";
+import treatEvents from "./treatEvents.js";
+import treatModel from "./treatModel.js";
 //import addToElements from "./addToElements.js";
 import addUnknownComponent from "./addUnknownComponent.js";
 import bbn from "@bbn/bbn";
@@ -14,7 +16,7 @@ import bbn from "@bbn/bbn";
  * @param {HTMLElement} target 
  * @returns 
  */
-export default async function createElement (cp, node, target, prevElementIndex, loopInfo) {
+export default async function createElement (cp, node, parent, data) {
   // Components have an hyphen
   let isComponent = !node.comment && cp.$isComponent(node);
   /** @constant {Array} todo A list of function to apply once the element will ne created */
@@ -178,9 +180,9 @@ export default async function createElement (cp, node, target, prevElementIndex,
       });
     }
 
-    if (loopInfo) {
+    if (data && bbn.fn.numProperties(data)) {
       Object.defineProperty(ele, 'bbnLoopVars', {
-        value: loopInfo,
+        value: data,
         writable: false,
         configurable: false
       });
@@ -226,6 +228,16 @@ export default async function createElement (cp, node, target, prevElementIndex,
         }
       });
 
+    }
+
+    if (bbn.fn.numProperties(node.directives)) {
+      bbn.cp.insertDirectives(ele.bbnSchema.directives, ele);
+    }
+    if (node.model) {
+      treatModel(cp, node, ele.bbnHash, ele, data);
+    }
+    else if (Object.keys(node.events || {}).length) {
+      treatEvents(cp, ele, data);
     }
   }
   else {

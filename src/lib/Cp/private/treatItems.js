@@ -104,6 +104,7 @@ export default async function treatItems(cp, items, hash, parent, data) {
 
   // Iterate over each item in the items array.
   for (let i = 0; i < items.length; i++) {
+    bbn.fn.log(i);
     const node = items[i];
 
     // Handle loop structures within the node.
@@ -139,22 +140,21 @@ export default async function treatItems(cp, items, hash, parent, data) {
 
         
         let key = j;
-        if (node.attr?.key?.exp) {
-          const loopData = bbn.fn.extend({}, data, {[node.loop.item]: loopValue[j]});
-          if (node.loop.index) {
-            loopData[node.loop.index] = j;
-          }
+        const loopData = bbn.fn.createObject(data, {[node.loop.item]: loopValue[j]});
+        if (node.loop.index) {
+          loopData[node.loop.index] = j;
+        }
 
+        if (node.attr?.key?.exp) {
           key = sr(cp, node.attr.key, hash, loopData);
         }
 
         hash = oHash + node.loop.id + '-' + j + '-' + key;
 
         // Set loop item and index in the data.
-        data[node.loop.item] = setInternalResult(cp, node.loop.item, loopValue[j], hash);
+        setInternalResult(cp, node.loop.item, loopValue[j], hash);
         if (node.loop.index) {
           setInternalResult(cp, node.loop.index, j, hash);
-          data[node.loop.index] = j;
         }
 
         // Evaluate the condition for the current loop iteration.
@@ -162,13 +162,13 @@ export default async function treatItems(cp, items, hash, parent, data) {
           if (node.condition.type !== 'if') {
             throw new Error("The condition in a loop can only be of type 'if'");
           }
-          conditionValue = sr(cp, node.condition, hash, data);
+          conditionValue = sr(cp, node.condition, hash, loopData);
         } else {
           conditionValue = true;
         }
 
         // Apply the condition to the current node.
-        await applyCondition(cp, conditionValue, node, hash, parent, data);
+        await applyCondition(cp, conditionValue, node, hash, parent, loopData);
       }
 
       // Restore previous loop item and index values if they were overwritten.

@@ -36,7 +36,7 @@ const expToFn = (cp, loopVars, a, node, isEvent) => {
           }
           else if (Object.hasOwn(cp, arg)) {
             stFn += `  this['${arg}'] = ${arg};\n`;
-            stFn += `bbn.fn.log("SEEMS TO WORK", "${arg}", ${arg});\n`;
+            stFn += `bbn.fn.log(["SEEMS TO WORK", "${arg}", ${arg}]);\n`;
           }
           stFn += `}\n`;
         });
@@ -55,6 +55,11 @@ const expToFn = (cp, loopVars, a, node, isEvent) => {
 };
 
 
+/**
+ * Go once through the template and add functions and needed arguments' names for resolving dynamic values
+ * @param {bbnCp} cp 
+ * @returns {void} 
+ */
 export default function mapDependencies(cp) {
   if (cp.$el.constructor.bbnMapped && cp.$el.constructor !== bbnAnon) {
     return;

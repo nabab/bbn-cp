@@ -2,7 +2,6 @@ import bbn from "@bbn/bbn";
 import sr from "./sr.js";
 import setInternalResult from "./setInternalResult.js";
 import treatProperties from "./treatProperties.js";
-import treatEvents from "./treatEvents.js";
 import treatItems from "./treatItems.js";
 import applyPropsOnElement from "./applyPropsOnElement.js";
 import getInternalState from "./getInternalState.js";
@@ -66,9 +65,7 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
       //bbn.fn.log("IN TODO " + cp.$options.name);
       //bbn.fn.log("DOING ${node.id} ${node.tag}");
       const tmp = old ? old.bbnSchema : bbn.fn.clone(node);
-      if (!old) {
-        delete tmp.items;
-      }
+      delete tmp.items;
 
       if (hash && (tmp.loopHash !== hash)) {
         tmp.loopHash = hash;
@@ -100,18 +97,7 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
           }
         }
 
-        ele = await createElement(cp, tmp, parent);
-        if (bbn.fn.numProperties(node.directives)) {
-          bbn.cp.insertDirectives(ele.bbnSchema.directives, ele);
-        }
-
-        if (node.model) {
-          treatModel(cp, tmp, hash, ele, data);
-        }
-        else if (Object.keys(node.events || {}).length) {
-          treatEvents(cp, ele, data);
-        }
-    
+        ele = await createElement(cp, tmp, parent, data);
       }
       else {
         if (node.model) {
