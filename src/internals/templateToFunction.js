@@ -302,7 +302,7 @@ const treatElement = function(cp, node, hashName) {
     if (node.model) {
       x(`  $_tmp1.model = $_items['${node.id}'].bbnSchema.model;`);
       for (let n in node.model) {
-        if (n === '$_default') {
+        if (n === '_default_') {
           x(`  if ($_this.$isComponent($_items['${node.id}'])) {`)
           x(`    let modelProp = $_items['${node.id}'].bbnCfg?.model?.prop || $_items['${node.id}'].constructor?.bbnCfg?.model?.prop || 'value';`);
           x(`    $_tmp1.model[modelProp].value = $_tmp1.props[modelProp] = $_sr($_node.model['${n}'].id, ${node.model[n].exp}, ${hashName});`);
@@ -354,12 +354,12 @@ const treatElement = function(cp, node, hashName) {
           const eventName = m.modifiers.includes('lazy') ? 'change' : 'input';
           x(`let _bbnEventName = '${eventName}';`);
           x(`let _bbnRealName = '${name}';`);
-          if (name === '$_default') {
+          if (name === '_default_') {
             x(`let _bbnModelCfg = $_this.$isComponent($_items['${node.id}']) ? $_items['${node.id}'].bbnCfg?.model || $_items['${node.id}'].constructor?.bbnCfg?.model : {prop: 'value', event: _bbnEventName};`);
             x(`_bbnRealName = _bbnModelCfg.prop;`);
             x(`_bbnEventName = _bbnModelCfg.event;`);
-            x(`_bbnCurrentElement.bbnSchema.model[_bbnRealName] = _bbnCurrentElement.bbnSchema.model.$_default;`);
-            x(`delete _bbnCurrentElement.bbnSchema.model.$_default;`);
+            x(`_bbnCurrentElement.bbnSchema.model[_bbnRealName] = _bbnCurrentElement.bbnSchema.model._default_;`);
+            x(`delete _bbnCurrentElement.bbnSchema.model._default_;`);
             if (node.tag === 'bbn-checkbox') {
               x(`bbn.fn.warning(_bbnRealName)`);
             }

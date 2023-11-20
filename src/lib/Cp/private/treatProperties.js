@@ -95,6 +95,17 @@ export default function treatProperties(cp, id, hash, data, go = false) {
     });
   }
 
+  if (bbn.fn.numProperties(node.directives)) {
+    for (let n in node.directives) {
+      if (node.directives[n].exp) {
+        sr(cp, node.directives[n], hash, data);
+        if (!go && (getInternalState(cp, node.directives[n].id, hash) !== "OK")) {
+          go = true;
+        }
+      }
+    }
+  }
+
 
   // Return the flag indicating if an update is needed and the processed properties.
   return {go, props};

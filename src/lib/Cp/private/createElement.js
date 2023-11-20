@@ -71,24 +71,9 @@ export default async function createElement (cp, node, parent, data) {
   if (node.model) {
     for (let n in node.model) {
       if (n === '$_default') {
-        x(`  if ($_this.$isComponent($_items['${node.id}'])) {`)
-        x(`    let modelProp = $_items['${node.id}'].bbnCfg?.model?.prop || $_items['${node.id}'].constructor?.bbnCfg?.model?.prop || 'value';`);
-        x(`    $_tmp1.model[modelProp].value = $_tmp1.props[modelProp] = $_sr($_node.model['${n}'].id, ${node.model[n].exp}, ${hashName});`);
-        x(`  }`);
-        x(`  else {`);
-        x(`    $_tmp1.model.value.value = $_tmp1.props.value = $_sr($_node.model['${n}'].id, ${node.model[n].exp}, ${hashName});`);
-        x(`  }`);
-      }
-      else {
-        x(`  $_tmp1.model['${n}'].value = $_tmp1.props['${n}'] = $_sr($_node.model['${n}'].id, ${node.model[n].exp}, ${hashName});`);
-      }
-    }
-
-    for (let n in node.model) {
-      if (n === '$_default') {
         if (isComponent) {
           let modelProp = cp.$cfg?.model?.prop || 'value';
-          node.props[modelProp].value = node.props.$_default.value;
+          node.model[modelProp].value = node.props.$_default.value;
         }
         else {
           node.model.value.value = node.model.$_default.value;

@@ -37,16 +37,6 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
 
     const props = tmp.props;
 
-    if (bbn.fn.numProperties(node.directives)) {
-      for (let n in node.directives) {
-        if (node.directives[n].exp) {
-          sr(cp, node.directives[n], hash, data);
-          if (!go && (getInternalState(cp, node.directives.id, hash) !== "OK")) {
-            go = true;
-          }
-        }
-      }
-    }
 
     // Start if ($_go)
     if (go) {
@@ -109,7 +99,7 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
         if (bbn.fn.numProperties(node.directives)) {
           for (let n in node.directives) {
             if (node.directives[n].exp) {
-              if ($getInternalState(cp, node.directives[n].id, hash) !== "OK") {
+              if (getInternalState(cp, node.directives[n].id, hash) !== "OK") {
                 node.directives[n].value = getInternalValue(cp, node.directives[n].id, hash);
                 ele.bbnSchema.directives[n].value = node.directives[n].value;
                 bbn.cp.updateDirectives({[n]: node.directives[n]}, ele);
