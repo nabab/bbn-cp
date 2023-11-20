@@ -44,6 +44,7 @@ export default async function treatModel(cp, node, hash, ele, data) {
         m.value = node.props[name] = getInternalValue(cp, m.id, hash);
       }
 
+      bbn.fn.log("VALUE: " + m.value)
       if (name === '_default_') {
         let modelCfg = cp.$isComponent(ele) ? ele.bbnCfg?.model || ele.constructor?.bbnCfg?.model : {prop: 'value', event: eventName};
         let realName = modelCfg.prop;

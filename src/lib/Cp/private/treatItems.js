@@ -104,7 +104,6 @@ export default async function treatItems(cp, items, hash, parent, data) {
 
   // Iterate over each item in the items array.
   for (let i = 0; i < items.length; i++) {
-    bbn.fn.log(i);
     const node = items[i];
 
     // Handle loop structures within the node.

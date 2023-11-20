@@ -180,7 +180,7 @@ export default async function createElement (cp, node, parent, data) {
       });
     }
 
-    if (data && bbn.fn.numProperties(data)) {
+    if (data) {
       Object.defineProperty(ele, 'bbnLoopVars', {
         value: data,
         writable: false,
@@ -229,16 +229,6 @@ export default async function createElement (cp, node, parent, data) {
       });
 
     }
-
-    if (bbn.fn.numProperties(node.directives)) {
-      bbn.cp.insertDirectives(ele.bbnSchema.directives, ele);
-    }
-    if (node.model) {
-      treatModel(cp, node, ele.bbnHash, ele, data);
-    }
-    else if (Object.keys(node.events || {}).length) {
-      treatEvents(cp, ele, data);
-    }
   }
   else {
     ele = oldEle;
@@ -264,6 +254,16 @@ export default async function createElement (cp, node, parent, data) {
   }
 
   //addToElements(cp, ele);
+  if (bbn.fn.numProperties(node.directives)) {
+    bbn.cp.insertDirectives(ele.bbnSchema.directives, ele);
+  }
+
+  if (node.model) {
+    treatModel(cp, node, ele.bbnHash, ele, data);
+  }
+  if (Object.keys(node.events || {}).length) {
+    treatEvents(cp, ele, data);
+  }
 
   return ele;
 }

@@ -2,6 +2,7 @@ import bbn from "@bbn/bbn";
 import sr from "./sr.js";
 import setInternalResult from "./setInternalResult.js";
 import treatProperties from "./treatProperties.js";
+import treatEvents from "./treatEvents.js";
 import treatItems from "./treatItems.js";
 import applyPropsOnElement from "./applyPropsOnElement.js";
 import getInternalState from "./getInternalState.js";
@@ -32,9 +33,6 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
     ele = old;
     // Process properties and determine if an update is needed.
     const tmp = treatProperties(cp, id, hash, data, go);
-    if (node.model) {
-      bbn.fn.log("PROPS", tmp.props);
-    }
     if (!go) {
       go = tmp.go;
     }
@@ -84,11 +82,12 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
       }
 
       let anew = false;
-      if ((ele !== cp.$el) && (!ele || bbn.fn.isComment(ele) || !bbn.cp.isTag(tmp.tag, node))) {
+      if ((ele !== cp.$el) && (!ele || bbn.fn.isComment(ele) || (tmp.tag !== node.tag))) {
         anew = true;
       }
 
       if (anew) {
+        bbn.fn.log(["ANEW", anew, cp.$numBuild, ele, bbn.cp.isTag(tmp.tag, node), tmp.tag, node.tag]);
         if (bbn.fn.numProperties(node.directives)) {
           for (let n in node.directives) {
             if (node.directives[n].exp) {
