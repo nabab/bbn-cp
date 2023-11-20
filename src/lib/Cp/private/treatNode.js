@@ -64,10 +64,6 @@ export default async function treatNode(cp, a, hash, parent, data, go = true) {
       go = true;
     }
 
-    if (forgotten) {
-      bbn.fn.log(["FORGOTTEN " + node.id, go]);
-    }
-
     if (go) {
       ele = await treatElement(cp, node, hash, parent, data, go);
     }

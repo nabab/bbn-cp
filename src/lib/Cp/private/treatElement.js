@@ -41,7 +41,7 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
     }
 
     const props = tmp.props;
-    if (go && node.model) {
+    if (node.model) {
       bbn.fn.iterate(node.model, m => {
         sr(cp, m, hash, data);
         if (!go && (getInternalState(cp, m.id, hash) !== "OK")) {
@@ -65,9 +65,12 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
     if (go) {
       //bbn.fn.log("IN TODO " + cp.$options.name);
       //bbn.fn.log("DOING ${node.id} ${node.tag}");
-      const tmp = bbn.fn.clone(node);
-      delete tmp.items;
-      if (hash) {
+      const tmp = old ? old.bbnSchema : bbn.fn.clone(node);
+      if (!old) {
+        delete tmp.items;
+      }
+
+      if (hash && (tmp.loopHash !== hash)) {
         tmp.loopHash = hash;
       }
 
@@ -82,19 +85,13 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
           tmp.tag = bbn.fn.camelToCss(props.is);
         }
       }
+
       let anew = false;
       if ((ele !== cp.$el) && (!ele || bbn.fn.isComment(ele) || !bbn.cp.isTag(tmp.tag, node))) {
         anew = true;
       }
 
       if (anew) {
-
-        if (node.model) {
-          for (let n in node.model) {
-            tmp.model[n].value = tmp.props[n];
-          }
-        }
-
         if (bbn.fn.numProperties(node.directives)) {
           for (let n in node.directives) {
             if (node.directives[n].exp) {
@@ -102,6 +99,7 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
             }
           }
         }
+
         ele = await createElement(cp, tmp, parent);
         if (bbn.fn.numProperties(node.directives)) {
           bbn.cp.insertDirectives(ele.bbnSchema.directives, ele);

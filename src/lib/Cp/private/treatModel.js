@@ -1,6 +1,7 @@
 import bbn from "@bbn/bbn";
 import sr from "./sr.js";
 import setProp from "./setProp.js";
+import getInternalValue from "./getInternalValue.js";
 
 /**
  * Processes an element in the virtual DOM of a web component.
@@ -17,10 +18,8 @@ import setProp from "./setProp.js";
  */
 export default async function treatModel(cp, node, hash, ele, data) {
   if (node.model) {
-    bbn.fn.log(["TREAT MODEL", node, ele, cp.$currentMap[node.id]]);
-    const models = cp.$currentMap[node.id].model;
     for (let name in node.model) {
-      let m = models[name];
+      let m = node.model[name];
       const modelVarName = m.exp;
       const modelVarBits = bbn.fn.removeEmpty(modelVarName
               .replace(/\[([^\[\]]*)\]/g, '.$1.')
@@ -30,37 +29,39 @@ export default async function treatModel(cp, node, hash, ele, data) {
       const eventName = m.modifiers.includes('lazy') ? 'change' : 'input';
       //let _bbnEventName = '${eventName}';
       //let _bbnRealName = '${name}';
-      node.model = ele.bbnSchema.model;
       if (name === '_default_') {
         if (cp.$isComponent(ele)) {
           let modelProp = ele.bbnCfg?.model?.prop || ele.constructor?.bbnCfg?.model?.prop || 'value';
-          node.model[modelProp].value = node.props[modelProp] = sr(cp, m, hash, data);
+          m = node.model[modelProp];
+          m.value = node.props[modelProp] = getInternalValue(cp, m.id, hash);
         }
         else {
-          node.model.value.value = node.props.value = sr(cp, node.model.value, hash, data);
+          m = node.model.value;
+          m.value = node.props.value = getInternalValue(cp, m.id, hash);
         }
       }
       else {
-        m.value = node.props[name] = sr(cp, m, hash);
+        m.value = node.props[name] = getInternalValue(cp, m.id, hash);
       }
 
       if (name === '_default_') {
         let modelCfg = cp.$isComponent(ele) ? ele.bbnCfg?.model || ele.constructor?.bbnCfg?.model : {prop: 'value', event: eventName};
         let realName = modelCfg.prop;
         ele.bbnSchema.model[realName] = ele.bbnSchema.model._default_;
-        bbn.fn.log(["TREAT MODEL2", name, realName, node.props, ele.bbnSchema.model, cp]);
         delete ele.bbnSchema.model._default_;
-        if (node.tag === 'bbn-checkbox') {
-          bbn.fn.warning(name)
-        }
       }
+
+      let modelValue = m.value;
       ele.addEventListener(eventName, e => {
         let eventValue = e.detail?.args ? e.detail.args[0] : e.target?.value;
-        let oldValue = bbn.fn.isPrimitive(modelVarName ? sr(cp, m, hash, data) : modelVarName);
+        let oldValue = modelValue;
         //bbn.fn.log(["ON MODEL CHANGE", _bbnEventName, oldValue, "${modelVarRoot}", _bbnEventValue, cp.$options.name]);
         if (oldValue !== eventValue) {
           if (modelVarRoot === modelVarName) {
-            if (Object.hasOwn(node.props, modelVarRoot)) {
+            if (Object.hasOwn(data, modelVarRoot)) {
+              data[modelVarRoot] = eventValue;
+            }
+            else if (Object.hasOwn(node.props, modelVarRoot)) {
               //bbn.fn.log("IS A PROP " + _bbnRealName, cp.$options.name, "${modelVarRoot}", _bbnEventValue);
               setProp(cp, modelVarRoot, eventValue);
             }
@@ -68,10 +69,16 @@ export default async function treatModel(cp, node, hash, ele, data) {
               cp[modelVarRoot] = eventValue;
             }
           }
-          else {
+          else if (Object.hasOwn(data, modelVarRoot)) {
+            const obj = bbn.fn.getProperty(data, ...modelVarBits.slice(0, -1));
+            obj[modelVarBits[modelVarBits.length - 1]] = eventValue;
+          }
+          else if (Object.hasOwn(cp, modelVarRoot)) {
             const obj = bbn.fn.getProperty(cp, ...modelVarBits.slice(0, -1));
             obj[modelVarBits[modelVarBits.length - 1]] = eventValue;
           }
+
+          modelValue = eventValue;
         }
       });
     }

@@ -89,7 +89,7 @@ export default async function treatItems(cp, items, hash, parent, data) {
 
   let firstGo = false;
   if (!parent) {
-    firstGo = !cp.$numBuild
+    firstgo =!cp.$numBuild
     parent = firstGo ? new DocumentFragment() : cp.$el;
   }
 
@@ -140,7 +140,12 @@ export default async function treatItems(cp, items, hash, parent, data) {
         
         let key = j;
         if (node.attr?.key?.exp) {
-          key = sr(cp, node.attr.key, hash, bbn.fn.extend({}, data, {[node.loop.item]: loopValue[j]}));
+          const loopData = bbn.fn.extend({}, data, {[node.loop.item]: loopValue[j]});
+          if (node.loop.index) {
+            loopData[node.loop.index] = j;
+          }
+
+          key = sr(cp, node.attr.key, hash, loopData);
         }
 
         hash = oHash + node.loop.id + '-' + j + '-' + key;
