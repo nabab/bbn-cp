@@ -330,7 +330,7 @@ export default function init(cp) {
   /*
   const cpSource = bbn.cp.getComponent(cp.$el.bbnComponentId);
   if (cpSource?.bbn && !cpSource.bbn.$retrieveElement(cp.$el.bbnId)) {
-    cpSource.$addToElements(cp.$el);
+    addToElements(cpSource, cp.$el);
   }
   */
 

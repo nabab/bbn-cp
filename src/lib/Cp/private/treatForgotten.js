@@ -1,8 +1,6 @@
 import bbn from "@bbn/bbn";
 import sr from "./sr.js";
-import treatElement from "./treatElement.js";
 import removeDOM from "./removeDOM.js";
-import createElement from "./createElement.js";
 import getInternalState from "./getInternalState.js";
 
 /**
@@ -18,7 +16,7 @@ import getInternalState from "./getInternalState.js";
  * @param {boolean} [go=false] - A flag indicating whether the element needs to be updated.
  * @returns {HTMLElement|null} The processed element or null if the element is forgotten.
  */
-export default async function treatForgotten(cp, a, hash, parent, data) {
+export default function treatForgotten(cp, a, hash, parent, data) {
   // Check if the 'forget' directive exists and is an expression.
   if (a.forget?.exp) {
     // Retrieve the existing element based on the node ID and hash.
@@ -31,21 +29,18 @@ export default async function treatForgotten(cp, a, hash, parent, data) {
     if (getInternalState(cp, a.forget.id, hash) !== 'OK') {
       // If the condition is true, process the children without rendering the parent element.
       if (forgotten) {
-        if (ele && a.items) {
-          for (let i = 0; i < a.items.length; i++) {
-            let e = await treatElement(cp, a.items[i], hash, parent, data);
-            if (e) {
-              parent.append(e);
-            }
-          }
-
+        if (ele) {
+          Array.from(ele.childNodes).forEach(node => {
+            parent.insertBefore(node, ele);
+          });
           // Remove the existing element from the DOM.
           removeDOM(cp, ele);
         }
 
-        return true;
       }
     }
+
+    return forgotten;
   }
 
   return false;

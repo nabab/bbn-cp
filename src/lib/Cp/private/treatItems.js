@@ -1,6 +1,6 @@
 import bbn from "@bbn/bbn";
 import sr from "./sr.js";
-import treatElement from "./treatElement.js";
+import treatNode from "./treatNode.js";
 import removeDOM from "./removeDOM.js";
 import createElement from "./createElement.js";
 import getInternalValue from "./getInternalValue.js";
@@ -26,7 +26,7 @@ const applyCondition = async (cp, conditionValue, node, hash, parent, data) => {
 
   // If the condition is true, treat the element.
   if (conditionValue) {
-    ele = await treatElement(cp, node, hash, parent, data, true);
+    ele = await treatNode(cp, node, hash, parent, data, true);
   }
   // If the condition is false, delete the element if it exists.
   else {
@@ -87,8 +87,10 @@ export default async function treatItems(cp, items, hash, parent, data) {
     data = bbn.fn.createObject();
   }
 
+  let firstGo = false;
   if (!parent) {
-    parent = new DocumentFragment();
+    firstGo = !cp.$numBuild
+    parent = firstGo ? new DocumentFragment() : cp.$el;
   }
 
   // Variables for handling conditions and loops.
@@ -212,9 +214,13 @@ export default async function treatItems(cp, items, hash, parent, data) {
       }
       // Process nodes without conditions.
       else {
-        await treatElement(cp, node, hash, parent, data);
+        await treatNode(cp, node, hash, parent, data);
       }
     }
+  }
+
+  if (firstGo) {
+    cp.$el.appendChild(parent);
   }
 
   return parent;

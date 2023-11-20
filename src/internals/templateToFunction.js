@@ -1,5 +1,5 @@
 //import treatArgument from "./treatArgument.js";
-//import treatElement from "./treatElement.js";
+//import treatNode from "./treatNode.js";
 //import treatItems from "./treatItems.js";
 //import treatEvents from "./treatEvents.js";
 //import treatProperties from "./treatProperties.js";
@@ -231,7 +231,7 @@ const setProperties = function(node, hashName) {
   }
 };
 
-const treatElement = function(cp, node, hashName) {
+const treatNode = function(cp, node, hashName) {
   if (node.tag) {
     if (node.model) {
       bbn.fn.iterate(node.model, m => {
@@ -682,7 +682,7 @@ const nodesToFunction = function(cp, arr, hashName) {
       //setProperties(node, hashName);
       //c.text += setDirectives(node, hashName);
       if (treatEle) {
-        treatElement(cp, node, hashName);
+        treatNode(cp, node, hashName);
       }
         
       if (node.forget?.exp) {
