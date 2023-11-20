@@ -30,7 +30,7 @@ export default async function treatModel(cp, node, hash, ele, data) {
       //let _bbnEventName = '${eventName}';
       //let _bbnRealName = '${name}';
       /*
-      if (name === '_default_') {
+      if (name === '$_default') {
         if (cp.$isComponent(ele)) {
           let modelProp = ele.bbnCfg?.model?.prop || ele.constructor?.bbnCfg?.model?.prop || 'value';
           m = node.model[modelProp];
@@ -48,11 +48,11 @@ export default async function treatModel(cp, node, hash, ele, data) {
 
       /*
       bbn.fn.log("VALUE: " + m.value + " (" + name + ")")
-      if (name === '_default_') {
+      if (name === '$_default') {
         let modelCfg = cp.$isComponent(ele) ? ele.bbnCfg?.model || ele.constructor?.bbnCfg?.model : {prop: 'value', event: eventName};
         let realName = modelCfg.prop;
-        ele.bbnSchema.model[realName] = ele.bbnSchema.model._default_;
-        delete ele.bbnSchema.model._default_;
+        ele.bbnSchema.model[realName] = ele.bbnSchema.model.$_default;
+        delete ele.bbnSchema.model.$_default;
       }
       */
 

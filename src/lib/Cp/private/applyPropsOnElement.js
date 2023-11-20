@@ -71,7 +71,7 @@ export default function applyPropsOnElement(cp, node, ele) {
 
   if (node.model) {
     for (let n in node.model) {
-      if (n === '_default_') {
+      if (n === '$_default') {
         continue;
       }
       let isC = false;

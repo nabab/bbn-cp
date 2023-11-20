@@ -92,7 +92,7 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
         if (node.model) {
           tmp.model = ele.bbnSchema.model;
           for (let n in node.model) {
-            if (n === '_default_') {
+            if (n === '$_default') {
               if (cp.$isComponent(ele)) {
                 let modelProp = ele.bbnCfg?.model?.prop || ele.constructor?.bbnCfg?.model?.prop || 'value';
                 tmp.model[modelProp].value = tmp.props[modelProp];

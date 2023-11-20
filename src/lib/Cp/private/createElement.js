@@ -70,7 +70,7 @@ export default async function createElement (cp, node, parent, data) {
 
   if (node.model) {
     for (let n in node.model) {
-      if (n === '_default_') {
+      if (n === '$_default') {
         x(`  if ($_this.$isComponent($_items['${node.id}'])) {`)
         x(`    let modelProp = $_items['${node.id}'].bbnCfg?.model?.prop || $_items['${node.id}'].constructor?.bbnCfg?.model?.prop || 'value';`);
         x(`    $_tmp1.model[modelProp].value = $_tmp1.props[modelProp] = $_sr($_node.model['${n}'].id, ${node.model[n].exp}, ${hashName});`);
@@ -85,13 +85,13 @@ export default async function createElement (cp, node, parent, data) {
     }
 
     for (let n in node.model) {
-      if (n === '_default_') {
+      if (n === '$_default') {
         if (isComponent) {
           let modelProp = cp.$cfg?.model?.prop || 'value';
-          node.props[modelProp].value = node.props._default_.value;
+          node.props[modelProp].value = node.props.$_default.value;
         }
         else {
-          node.model.value.value = node.model._default_.value;
+          node.model.value.value = node.model.$_default.value;
         }
       }
     }

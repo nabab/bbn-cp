@@ -1,21 +1,15 @@
-//import treatArgument from "./treatArgument.js";
-//import treatNode from "./treatNode.js";
-//import treatItems from "./treatItems.js";
-//import treatEvents from "./treatEvents.js";
-//import treatProperties from "./treatProperties.js";
-const writer = function() { 
+const writer = function() {
   let text = '';
   let spaces = 0;
-  const x = function(st) {
-    text += ' '.repeat(spaces) + st + '\n';
+const x = function(st) {
+      text += ' '.repeat(spaces) + st + '\n';
   };
   x.get = function(clean) {
-    if (clean) {
-      const tmp = text;
+  if (clean) {
+    const tmp = text;
       text = '';
       return tmp;
     }
-
     return text;
   };
   x.clean = function() {text = ''; return x};
@@ -29,7 +23,7 @@ const x = new writer();
 const forbidden = ['bbn-forget', 'bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else'];
 
 const treatCondition = (cp, node, arr, hashName) => {
-  let tmp = arr.filter(a => (a.conditionId === node.conditionId));
+    let tmp = arr.filter(a => (a.conditionId === node.conditionId));
   if (!tmp.length || !node.conditionId) {
     bbn.fn.log("FINISHING HERE ",node.conditionId, node.condition);
     return;
@@ -129,10 +123,6 @@ const treatLoop = (cp, node, hashName) => {
   x(`  const ${hash} = (${hashName} || '') + '${node.loop.id}-${indexName}-' + (${node.attr?.key?.exp ? node.attr.key.exp : indexName});`);
   x(`  ${listName}.push(${hash});`);
   x(`  $_sr('${node.loop.item}', ${node.loop.item}, ${hash});`);
-  if (node.loop.index) {
-    x(`  $_sr('${node.loop.index}', ${indexName}, ${hash});`);
-  }
-
   //x(`  bbn.fn.log(${node.loop.item});`);
 
   x.msp();
@@ -154,7 +144,7 @@ const treatLoop = (cp, node, hashName) => {
   };
 
 const setProperties = function(node, hashName) {
-  x(`$_props = bbn.fn.createObject();`);
+    x(`$_props = bbn.fn.createObject();`);
   // Will GO if the element is new or modified and not forgotten
   if (bbn.fn.numProperties(node.attr)) {
     if (node.attr['bbn-bind']) {
@@ -231,7 +221,7 @@ const setProperties = function(node, hashName) {
   }
 };
 
-const treatNode = function(cp, node, hashName) {
+const treatElement = function(cp, node, hashName) {
   if (node.tag) {
     if (node.model) {
       bbn.fn.iterate(node.model, m => {
@@ -261,7 +251,6 @@ const treatNode = function(cp, node, hashName) {
     //x(`  bbn.fn.log("IN TODO " + $_this.$options.name);`);
     //x(`  bbn.fn.log("DOING ${node.id} ${node.tag}");`);
     x(`$_tmp1 = bbn.fn.clone($_node);`);
-    x(`delete $_tmp1.items;`);
     x(`if (${hashName}) {`);
     x(`  $_tmp1.loopHash = ${hashName};`);
     x(`}`);
@@ -313,7 +302,7 @@ const treatNode = function(cp, node, hashName) {
     if (node.model) {
       x(`  $_tmp1.model = $_items['${node.id}'].bbnSchema.model;`);
       for (let n in node.model) {
-        if (n === '_default_') {
+        if (n === '$_default') {
           x(`  if ($_this.$isComponent($_items['${node.id}'])) {`)
           x(`    let modelProp = $_items['${node.id}'].bbnCfg?.model?.prop || $_items['${node.id}'].constructor?.bbnCfg?.model?.prop || 'value';`);
           x(`    $_tmp1.model[modelProp].value = $_tmp1.props[modelProp] = $_sr($_node.model['${n}'].id, ${node.model[n].exp}, ${hashName});`);
@@ -338,7 +327,7 @@ const treatNode = function(cp, node, hashName) {
         }
       }
     }
-    x(`  $_this.$applyPropsOnElement($_tmp1, $_items['${node.id}']);`);
+    x(`  $_this.$updateElementFromProps($_tmp1, $_items['${node.id}']);`);
     x(`}`);
     x(`if ($_par.at(-1) === $_this.$el) {`);
     x(`  $_num['-']++;`);
@@ -365,12 +354,12 @@ const treatNode = function(cp, node, hashName) {
           const eventName = m.modifiers.includes('lazy') ? 'change' : 'input';
           x(`let _bbnEventName = '${eventName}';`);
           x(`let _bbnRealName = '${name}';`);
-          if (name === '_default_') {
+          if (name === '$_default') {
             x(`let _bbnModelCfg = $_this.$isComponent($_items['${node.id}']) ? $_items['${node.id}'].bbnCfg?.model || $_items['${node.id}'].constructor?.bbnCfg?.model : {prop: 'value', event: _bbnEventName};`);
             x(`_bbnRealName = _bbnModelCfg.prop;`);
             x(`_bbnEventName = _bbnModelCfg.event;`);
-            x(`_bbnCurrentElement.bbnSchema.model[_bbnRealName] = _bbnCurrentElement.bbnSchema.model._default_;`);
-            x(`delete _bbnCurrentElement.bbnSchema.model._default_;`);
+            x(`_bbnCurrentElement.bbnSchema.model[_bbnRealName] = _bbnCurrentElement.bbnSchema.model.$_default;`);
+            x(`delete _bbnCurrentElement.bbnSchema.model.$_default;`);
             if (node.tag === 'bbn-checkbox') {
               x(`bbn.fn.warning(_bbnRealName)`);
             }
@@ -405,7 +394,86 @@ const treatNode = function(cp, node, hashName) {
       }
 
       if (hasEvents) {
-        x(`bbn.cp.treatEvents($_this, $_items['${node.id}']);`);
+        for (let n in node.events) {
+          let ev = node.events[n];
+          //x(`bbn.fn.log("SETTING EVENT ${n} ON " + $_this.$options.name, _ele, ${$_anew});`);
+          x(`$_items['${node.id}'].addEventListener("${n}", _bbnEventObject => {`);
+          //x(`  bbn.fn.log("EXECUTING EVENT ${n} ${ev.exp} ON ${node.tag}", _bbnEventObject.detail);`);
+          x(`  let $event = _bbnEventObject;`);
+          if (ev.modifiers.length) {
+            //x(`bbn.fn.log($event, "${n}");`);
+            if (n.indexOf('key') === 0) {
+              x(`  if (!_bbnEventObject.key || !${JSON.stringify(ev.modifiers)}.includes(_bbnEventObject.key.toLowerCase())) {`);
+              x(`    return;`);
+              x(`  }`);
+            }
+            else if (n.indexOf('mouse') === 0) {
+              if (ev.modifiers.includes('right')) {
+                x(`  if (_bbnEventObject.button !== 2) {`);
+                x(`    return;`);
+                x(`  }`);
+              }
+              else if (ev.modifiers.includes('left')) {
+                x(`  if (_bbnEventObject.button !== 0) {`);
+                x(`    return;`);
+                x(`  }`);
+              }
+            }
+          }
+
+          if (ev.prevent) {
+            x(`  $event.preventDefault();`);
+          }
+
+          if (ev.stop) {
+            x(`  $event.stopImmediatePropagation();`);
+          }
+
+          if (ev.exp) {
+            if ((ev.exp.indexOf(';') > -1) || (ev.exp.indexOf('if') === 0)){
+              x(`  ${ev.exp};`);
+            }
+            else {
+              x(`  let $_action = (${ev.exp});`);
+              x(`  if (bbn.fn.isFunction($_action)) {`);
+              x(`    const args = _bbnEventObject.detail?.args || [$event];`);
+              x(`    args.push(_bbnEventObject);`);
+              x(`    $_action.bind($_this.$origin)(...args);`);
+              x(`  }`);
+            }
+            x(`  bbn.fn.iterate($_data, ($_val, $_idx) => {`);
+            //x(`    bbn.fn.log(['$_val, $_idx', $_val, $_idx, eval($_idx), $_this[$_idx], '++++']);`);
+            x(`    if ($_val !== eval($_idx)) {`);
+            x(`      if ($_this[$_idx] !== undefined) {`);
+            x(`        $_this[$_idx] = eval($_idx);`);
+            x(`      }`);
+            x(`      $_data[$_idx] = $_this[$_idx];`);
+            x(`    }`);
+            x(`  });`);
+          }
+
+          //x(`  $_this.$tick();`);
+          let eventEnd = '}';
+          if (ev.once || ev.passive || ev.capture) {
+            eventEnd += ', {';
+            if (ev.once) {
+              eventEnd += `once: true,`;
+            }
+
+            if (ev.passive) {
+              eventEnd += `passive: true,`;
+            }
+
+            if (ev.capture) {
+              eventEnd += `capture: true,`;
+            }
+
+            eventEnd += '}';
+          }
+
+          eventEnd += ');';
+          x(eventEnd);
+        }
       }
 
       x.lsp();
@@ -421,7 +489,7 @@ const treatNode = function(cp, node, hashName) {
 };
 
 const treatSlot = function(cp, node, hashName) {
-  if (node.tag === 'slot') {
+    if (node.tag === 'slot') {
     let slot = "'default'";
     if (node.attr?.name) {
       slot = node.attr.name.exp ? `${node.attr.name.exp}` : `'${node.attr.name.value}'`;
@@ -541,6 +609,7 @@ const treatRoot = function(cp, tpl, hashName) {
         }
       }
       if (bbn.fn.numProperties(tpl[0].directives)) {
+
         for (let n in tpl[0].directives) {
           x(`if (!$_this.$el.bbnSchema.directives) {$_this.$el.bbnSchema.directives = bbn.fn.createObject();}`);
           x(`if (!$_this.$el.bbnSchema.directives['${n}']) {$_this.$el.bbnSchema.directives['${n}'] = bbn.fn.clone($_this.$tpl[0].directives['${n}']);}`);
@@ -554,26 +623,100 @@ const treatRoot = function(cp, tpl, hashName) {
         x(`if (!$_this.$numBuild) {`);
         x(`  bbn.cp.insertDirectives($_this.$el.bbnSchema.directives, $_this.$el);`);
         x(`}`);
-        x(`else {`);
         for (let n in tpl[0].directives) {
+          x(`if ($_this.$numBuild) {`);
           x(`  bbn.cp.updateDirectives({"${n}": $_this.$el.bbnSchema.directives['${n}']}, $_this.$el);`);
+          x(`}`);
+  
         }
-        x(`}`);
       }
-      x(`$_this.$applySchemaOnComponent($_props);`);
+      x(`$_this.$updateFromSchema($_props);`);
       if (tpl[0].events) {
         x(`if (!$_this.$numBuild) {`);
-        x(`  bbn.cp.treatEvents($_this, $_this.$el);`);
+        x.msp();
+        for (let n in tpl[0].events) {
+          let ev = tpl[0].events[n];
+
+          x(`if (!$_items['-'].bbnSchema?.events?.["${n}"]) {`);
+          x.msp();
+          //x(`bbn.fn.log("SETTING EVENT ${n} ON " + $_this.$options.name, _ele, ${$_anew});`);
+          x(`$_items['-'].addEventListener("${n}", _bbnEventObject => {`);
+          //x(`  bbn.fn.log("EXECUTING EVENT ${n} ${ev.exp} ON ${node.tag}", _bbnEventObject.detail);`);
+          if (ev.modifiers.length) {
+            x(`  if (!_bbnEventObject.key || !${JSON.stringify(ev.modifiers)}.includes(_bbnEventObject.key.toLowerCase())) {`);
+            x(`    return;`);
+            x(`  }`);
+          }
+
+          x(`  let $event = _bbnEventObject;`);
+
+          if (ev.prevent) {
+            x(`  $event.preventDefault();`);
+          }
+
+          if (ev.stop) {
+            x(`  $event.stopImmediatePropagation();`);
+          }
+
+          if (ev.exp) {
+            if ((ev.exp.indexOf(';') > -1) || (ev.exp.indexOf('if') === 0)){
+              x(`  ${ev.exp};`);
+            }
+            else {
+              x(`  let $_action = (${ev.exp});`);
+              x(`  if (bbn.fn.isFunction($_action)) {`);
+              x(`    const args = _bbnEventObject.detail?.args || [$event];`);
+              x(`    args.push(_bbnEventObject);`);
+              x(`    $_action.bind($_this.$origin)(...args);`);
+              x(`  }`);
+            }
+
+            x(`  bbn.fn.iterate($_data, ($_val, $_idx) => {`);
+            //x(`    bbn.fn.log(['$_val, $_idx', $_val, $_idx, eval($_idx), $_this[$_idx], '++++']);`);
+            x(`    if ($_val !== eval($_idx)) {`);
+            x(`      if ($_this[$_idx] !== undefined) {`);
+            x(`        $_this[$_idx] = eval($_idx);`);
+            x(`      }`);
+            x(`      $_data[$_idx] = $_this[$_idx];`);
+            x(`    }`);
+            x(`  });`);
+          }
+
+          //x(`  $_this.$forceUpdate();`);
+          let eventEnd = '}';
+          if (ev.once || ev.passive || ev.capture) {
+            eventEnd += ', {';
+            if (ev.once) {
+              eventEnd += `once: true,`;
+            }
+
+            if (ev.passive) {
+              eventEnd += `passive: true,`;
+            }
+
+            if (ev.capture) {
+              eventEnd += `capture: true,`;
+            }
+
+            eventEnd += '}';
+          }
+
+          eventEnd += ');';
+          x(eventEnd);
+          x.lsp();
+          x('}');
+        }
+        x.lsp();
         x(`}`);
       }
     }
     else {
-      x(`$_this.$applySchemaOnComponent();`);
+      x(`$_this.$updateFromSchema();`);
     }
 
     return tpl[0].items;
   }
-  x(`$_this.$applySchemaOnComponent();`);
+  x(`$_this.$updateFromSchema();`);
   return tpl;
 };
 
@@ -676,13 +819,10 @@ const nodesToFunction = function(cp, arr, hashName) {
     }
     else if (node.tag) {
 
-      x(`$_tmp1 = bbn.cp.treatProperties($_this, "${node.id}", ${hashName}, $_go['${node.id}']);`);
-      x(`$_go['${node.id}'] = $_tmp1.go;`);
-      x(`$_props = $_tmp1.props;`);
-      //setProperties(node, hashName);
+      setProperties(node, hashName);
       //c.text += setDirectives(node, hashName);
       if (treatEle) {
-        treatNode(cp, node, hashName);
+        treatElement(cp, node, hashName);
       }
         
       if (node.forget?.exp) {
