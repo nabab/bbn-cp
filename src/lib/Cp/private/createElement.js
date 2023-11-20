@@ -71,18 +71,27 @@ export default async function createElement (cp, node, parent, data) {
   if (node.model) {
     for (let n in node.model) {
       if (n === '_default_') {
+        x(`  if ($_this.$isComponent($_items['${node.id}'])) {`)
+        x(`    let modelProp = $_items['${node.id}'].bbnCfg?.model?.prop || $_items['${node.id}'].constructor?.bbnCfg?.model?.prop || 'value';`);
+        x(`    $_tmp1.model[modelProp].value = $_tmp1.props[modelProp] = $_sr($_node.model['${n}'].id, ${node.model[n].exp}, ${hashName});`);
+        x(`  }`);
+        x(`  else {`);
+        x(`    $_tmp1.model.value.value = $_tmp1.props.value = $_sr($_node.model['${n}'].id, ${node.model[n].exp}, ${hashName});`);
+        x(`  }`);
+      }
+      else {
+        x(`  $_tmp1.model['${n}'].value = $_tmp1.props['${n}'] = $_sr($_node.model['${n}'].id, ${node.model[n].exp}, ${hashName});`);
+      }
+    }
+
+    for (let n in node.model) {
+      if (n === '_default_') {
         if (isComponent) {
-          let modelProp = bbn.cp.statics[tag]?.cfg?.model?.prop || 'value';
-          node.props[modelProp] = node.props._default_;
-          delete node.props._default_;
-          node.model[modelProp] = node.model._default_;
-          //delete node.model._default_;
+          let modelProp = cp.$cfg?.model?.prop || 'value';
+          node.props[modelProp].value = node.props._default_.value;
         }
         else {
-          node.model.value = node.model._default_;
-          //delete node.model._default_;
-          node.props.value = node.props._default_;
-          delete node.props._default_;
+          node.model.value.value = node.model._default_.value;
         }
       }
     }

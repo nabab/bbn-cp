@@ -84,7 +84,11 @@ export default function treatProperties(cp, id, hash, data, go = false) {
 
   if (node.model) {
     bbn.fn.iterate(node.model, (m, name) => {
-      props[name] = sr(cp, m, hash, data);
+      const value = sr(cp, m, hash, data);
+      if (props[name] !== value) {
+        props[name] = value;
+      }
+
       if (!go && (getInternalState(cp, m.id, hash) !== "OK")) {
         go = true;
       }

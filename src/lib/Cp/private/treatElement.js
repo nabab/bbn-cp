@@ -85,6 +85,7 @@ export default async function treatElement(cp, node, hash, parent, data, go = tr
           }
         }
 
+
         ele = await createElement(cp, tmp, parent, data);
       }
       else {

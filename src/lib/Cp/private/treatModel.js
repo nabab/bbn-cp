@@ -29,6 +29,7 @@ export default async function treatModel(cp, node, hash, ele, data) {
       const eventName = m.modifiers.includes('lazy') ? 'change' : 'input';
       //let _bbnEventName = '${eventName}';
       //let _bbnRealName = '${name}';
+      /*
       if (name === '_default_') {
         if (cp.$isComponent(ele)) {
           let modelProp = ele.bbnCfg?.model?.prop || ele.constructor?.bbnCfg?.model?.prop || 'value';
@@ -43,6 +44,7 @@ export default async function treatModel(cp, node, hash, ele, data) {
       else {
         m.value = node.props[name];
       }
+      */
 
       /*
       bbn.fn.log("VALUE: " + m.value + " (" + name + ")")
