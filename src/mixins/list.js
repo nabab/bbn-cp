@@ -978,145 +978,124 @@ const list = {
     },
     async updateData(preventLoad) {
       if (this.beforeUpdate() !== false) {
-        this._dataPromise = new Promise(resolve => {
-          let prom;
-          let loadingRequestID;
+        let prom;
+        let loadingRequestID;
+        let d;
+        if (this.isAjax) {
+          if (this.loadingRequestID) {
+            bbn.fn.abort(this.loadingRequestID);
+            return await this.updateData();
+          }
+
+          if (this._1strun && (preventLoad === true)) {
+            d = {
+              data: this.currentData,
+              total: this.currentTotal
+            };
+          }
+          else {
+            this.isLoading = true;
+            this.$emit('startloading');
+            let data = this.getData();
+            loadingRequestID = bbn.fn.getRequestId(this.source, data);
+            this.loadingRequestID = loadingRequestID;
+            d = await this.post(this.source, data);
+          }
+        }
+        else{
+          let data = [];
+          if ( bbn.fn.isArray(this.source) ){
+            data = this.source;
+          }
+          else if ( bbn.fn.isFunction(this.source) ){
+            data = this.source(this.sourceIndex, this.data);
+          }
+          else if ( bbn.fn.isObject(this.source) ){
+            bbn.fn.iterate(this.source, (a, n) => {
+              let o = {};
+              bbn.fn.setProperty(o, this.sourceValue, n);
+              bbn.fn.setProperty(o, this.sourceText, a);
+              data.push(o);
+            });
+          }
+          d = {
+            data: data,
+            total: data.length
+          };
+        }
+
+        if (d) {
           if (this.isAjax) {
-            if (this.loadingRequestID) {
-              bbn.fn.abort(this.loadingRequestID);
-              setTimeout(() => {
-                this.loadingRequestID = false;
-                this.updateData().then(() => {
-                  resolve();
-                })
-              }, 50);
+            if (!this.loadingRequestID || (this.loadingRequestID !== loadingRequestID)) {
+              this.isLoading = false;
+              this.loadingRequestID = false;
+              throw new Error("No loading request");
+            }
+
+            this.isLoading = false;
+            this.loadingRequestID = false;
+
+            if ( !d ){
               return;
             }
 
-            if (this._1strun && (preventLoad === true)) {
-              prom = new Promise((resolve) => {
-                setTimeout(() => {
-                  resolve({
-                    data: this.currentData,
-                    total: this.currentTotal
-                  })
-                })
-              })
-
+            if ( d.status !== 200 ){
+              d.data = undefined;
             }
-            else {
-              this.isLoading = true;
-              this.$emit('startloading');
-              let data = this.getData();
-              loadingRequestID = bbn.fn.getRequestId(this.source, data);
-              this.loadingRequestID = loadingRequestID;
-              prom = this.post(this.source, data);
+            else{
+              d = d.data;
             }
 
+            this.$emit('datareceived', d);
           }
-          else{
-            prom = new Promise((resolve2) => {
-              let data = [];
-              if ( bbn.fn.isArray(this.source) ){
-                data = this.source;
-              }
-              else if ( bbn.fn.isFunction(this.source) ){
-                data = this.source(this.sourceIndex, this.data);
-              }
-              else if ( bbn.fn.isObject(this.source) ){
-                bbn.fn.iterate(this.source, (a, n) => {
-                  let o = {};
-                  bbn.fn.setProperty(o, this.sourceValue, n);
-                  bbn.fn.setProperty(o, this.sourceText, a);
-                  data.push(o);
-                });
-              }
-              resolve2({
-                data: data,
-                total: data.length
+
+          if (bbn.fn.isArray(d.data)) {
+            if (d.data.length && d.data[0]._bbn){
+              this.currentData = d.data;
+              this.updateIndexes();
+            }
+            else{
+              this.currentData = this.treatData(d.data);
+            }
+            if (d.query) {
+              this.currentQuery = d.query;
+              this.currentQueryValues = d.queryValues || {};
+            }
+            if (d.order) {
+              this.currentOrder.splice(0, this.currentOrder.length);
+              this.currentOrder.push({
+                field: d.order,
+                dir: (d.dir || '').toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
               });
-            });
-          }
-          if (!prom) {
-            return;
-          }
-
-          prom.then(d => {
-            if (this.isAjax) {
-              if (!this.loadingRequestID || (this.loadingRequestID !== loadingRequestID)) {
-                this.isLoading = false;
-                this.loadingRequestID = false;
-                throw new Error("No loading request");
-              }
-
-              this.isLoading = false;
-              this.loadingRequestID = false;
-
-              if ( !d ){
-                return;
-              }
-
-              if ( d.status !== 200 ){
-                d.data = undefined;
-              }
-              else{
-                d = d.data;
-              }
-
-              this.$emit('datareceived', d);
             }
 
-            if ( d && bbn.fn.isArray(d.data) ){
-              if (d.data.length && d.data[0]._bbn){
-                this.currentData = d.data;
-                this.updateIndexes();
-              }
-              else{
-                this.currentData = this.treatData(d.data);
-              }
-              if (d.query) {
-                this.currentQuery = d.query;
-                this.currentQueryValues = d.queryValues || {};
-              }
-              if (d.order) {
-                this.currentOrder.splice(0, this.currentOrder.length);
-                this.currentOrder.push({
-                  field: d.order,
-                  dir: (d.dir || '').toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
-                });
-              }
-
-              this.total = d.total || this.filteredData.length;
-              this.currentTotal = d.total || this.filteredData.length;
-              /** @todo Observer part to dissociate */
-              if (d.observer && bbn.fn.isFunction(this.observerCheck) && this.observerCheck()) {
-                this._observerReceived = d.observer.value;
-                this.observerID = d.observer.id;
-                this.observerValue = d.observer.value;
-                if ( !this._1strun ){
-                  this.observerWatch();
-                }
-              }
+            this.total = d.total || this.filteredData.length;
+            this.currentTotal = d.total || this.filteredData.length;
+            /** @todo Observer part to dissociate */
+            if (d.observer && bbn.fn.isFunction(this.observerCheck) && this.observerCheck()) {
+              this._observerReceived = d.observer.value;
+              this.observerID = d.observer.id;
+              this.observerValue = d.observer.value;
               if ( !this._1strun ){
-                this._1strun = true;
-                this.$emit('firstrun');
+                this.observerWatch();
               }
             }
-            this.afterUpdate();
-            resolve(this.currentData);
-            if (!this.isLoaded) {
-              this.isLoaded = true;
+            if ( !this._1strun ){
+              this._1strun = true;
+              this.$emit('firstrun');
             }
+          }
+          this.afterUpdate();
+          if (!this.isLoaded) {
+            this.isLoaded = true;
+          }
+          
+          this.$forceUpdate();
+          this.$emit('dataloaded', d);
+          return this.currentData;
+        }
 
-            this.$forceUpdate();
-            this.$emit('dataloaded', d);
-          });
-        }).catch(e => {
-          bbn.fn.log("Better catching should be done here");
-          this.isLoading = false;
-          this.loadingRequestID = false;
-        });
-        return this._dataPromise;
+        throw new Error("No data received");
       }
     },
     updateIndexes(){

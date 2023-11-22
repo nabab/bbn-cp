@@ -98,6 +98,13 @@ export default async function createApp(ele, obj) {
   const schema = bbn.fn.clone(cpTpl[0]);
   delete schema.slots;
   delete schema.inlineTemplates;
+  delete schema.items;
+  schema.props = bbn.fn.createObject();
+  bbn.fn.iterate(schema.attr, (v, n) => {
+    if (Object.hasOwn(v, 'value')) {
+      schema.props[n] = v.value;
+    }
+  });
   const placeholder = document.createComment("bbn-component placeholder");
   const parent = ele.parentNode;
   let cls = ele.style.cssText;

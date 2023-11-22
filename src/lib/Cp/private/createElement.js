@@ -29,7 +29,7 @@ export default async function createElement (cp, node, parent, data) {
   if (oldEle) {
     const isComment = bbn.fn.isComment(oldEle);
     if (
-      (oldEle !== cp.$el)
+      (oldEle !== cpSource.$el)
       && (
         (!!node.comment !== isComment)
         || (
@@ -51,7 +51,7 @@ export default async function createElement (cp, node, parent, data) {
   let tag = node.tag;
   let originalTag = node.tag;
   if (tag && cp.$cfg.componentNames[tag]) {
-    tag = cp.$cfg.componentNames[tag];
+    tag = cpSource.$cfg.componentNames[tag];
     isComponent = true;
   }
   /** 
@@ -68,20 +68,6 @@ export default async function createElement (cp, node, parent, data) {
     }
   }
 
-  if (node.model) {
-    for (let n in node.model) {
-      if (n === '$_default') {
-        if (isComponent) {
-          let modelProp = cp.$cfg?.model?.prop || 'value';
-          node.model[modelProp].value = node.props.$_default.value;
-        }
-        else {
-          node.model.value.value = node.model.$_default.value;
-        }
-      }
-    }
-  }
-
   if (!oldEle || replace) {
     if (node.comment) {
       ele = document.createComment(" ***_BBN_*** ");
@@ -91,14 +77,15 @@ export default async function createElement (cp, node, parent, data) {
       ele.innerHTML = node.content;
     }
     else {
-      /** 
-       * @todo Add the possibility to change the tag using Customized built-in elements 
-       * See createElement
-       */
       if (isComponent) {
         if (replace && oldEle?.tagName && (tag === oldEle.tagName.toLowerCase())) {
           replace = false;
         }
+      }
+      // If it's not a component the default model is replaced by value
+      else if (node.model?.$_default) {
+        node.model.value = node.model.$_default;
+        delete node.model.$_default;
       }
 
       /** @constant {HTMLElement} ele */
@@ -159,6 +146,9 @@ export default async function createElement (cp, node, parent, data) {
       writable: true,
       configurable: true
     });
+    if (node.tag === 'bbn-input') {
+      bbn.fn.log("INPUT", JSON.stringify(node.props));
+    }
 
     Object.defineProperty(ele, 'bbnComponentId', {
       value: cpSource.$cid,
@@ -226,6 +216,9 @@ export default async function createElement (cp, node, parent, data) {
   }
   else {
     ele = oldEle;
+    if (node.tag === 'bbn-input') {
+      bbn.fn.log("INPUT 2", JSON.stringify(node.props));
+    }
     if (!bbn.fn.isSame(ele.bbnSchema.props, node.props)) {
       ele.bbnSchema = node;
       if (isComponent && ele.bbn && ele.bbn.$isMounted) {
@@ -235,7 +228,7 @@ export default async function createElement (cp, node, parent, data) {
   }
 
   if (!node.comment) {
-    applyPropsOnElement(cp, node, ele);
+    applyPropsOnElement(cpSource, node, ele);
 
     if (node.pre) {
       ele.innerHTML = node.pre;
@@ -253,10 +246,10 @@ export default async function createElement (cp, node, parent, data) {
   }
 
   if (node.model) {
-    treatModel(cp, node, ele.bbnHash, ele, data);
+    treatModel(cpSource, node, ele.bbnHash, ele, data);
   }
   if (Object.keys(node.events || {}).length) {
-    treatEvents(cp, ele, data);
+    treatEvents(cpSource, ele, data);
   }
 
   return ele;

@@ -64,8 +64,9 @@ export default async function treatNode(cp, a, hash, parent, data, go = true) {
       go = true;
     }
 
+    // Only for showable elements (no template, transition, forget, etc.)
     if (go) {
-      ele = await treatElement(cp, node, hash, parent, data, go);
+      ele = await treatElement(cp, node, hash, parent, data);
     }
 
     // Handle 'pre' directive or process child items.

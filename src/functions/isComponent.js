@@ -1,9 +1,15 @@
+import bbnCp from '../lib/Cp.js';
+/**
+ * Returns true if the given argument is component, under the form of a bbnSchema object, an HTML element or directly a component
+ * @param {Object} node 
+ * @returns 
+ */
 export default function isComponent(node) {
   if (!node) {
     return false;
   }
 
-  if (node.$options && node.$options._componentTag) {
+  if (node instanceof bbnCp) {
     return true;
   }
 

@@ -15,7 +15,7 @@ import addToElements from "./addToElements.js";
  * processing slots, text nodes, and more.
  * 
  * @param {Object} cp - The component instance containing methods and properties.
- * @param {Object} node - The virtual DOM node to be processed.
+ * @param {Object} node - The virtual DOM node from the template to be processed (needs to be cloned for use).
  * @param {string} hash - A unique identifier used in conjunction with cp for state management.
  * @param {HTMLElement} parent - The parent element where the processed element will be appended.
  * @param {Object} data - Additional data that might be required for processing the element.
@@ -23,93 +23,122 @@ import addToElements from "./addToElements.js";
  * @returns {HTMLElement|null} The processed element or null if no element is processed.
  */
 export default async function treatElement(cp, node, hash, parent, data, go = true) {
-  // Default parent to a DocumentFragment if not provided.
+  /** @var {null, HTMLElement} ele The element  */
   let ele = null;
+  // Elements must be tags
   if (node.tag) {
     const id = node.id;
+    // The existing element or null
     const old = cp.$retrieveElement(id, hash);
+    // For the time being ele is the old element or null
     ele = old;
-    // Process properties and determine if an update is needed.
-    const tmp = treatProperties(cp, id, hash, data, go);
-    if (!go) {
-      go = tmp.go;
+
+    const cpSource = ele ? bbn.cp.getComponent(ele.bbnComponentId)?.bbn || cp : cp;
+    // Process properties, models and directives and determine if an update is needed.
+    const properties = treatProperties(cpSource, id, hash, data, go);
+    // If no element we must go on
+    if (!old) {
+      go = true;
     }
-
-    const props = tmp.props;
-
-
-    // Start if ($_go)
+    // Otherwise we check what the properties say
+    else if (!go) {
+      go = properties.go;
+    }
+    
+    // Take care of the element if go is true
     if (go) {
-      //bbn.fn.log("IN TODO " + cp.$options.name);
-      //bbn.fn.log("DOING ${node.id} ${node.tag}");
-      const tmp = old ? old.bbnSchema : bbn.fn.clone(node);
-      delete tmp.items;
-
-      if (hash && (tmp.loopHash !== hash)) {
-        tmp.loopHash = hash;
+      // Setting properties
+      const props = properties.props;
+      if (node.tag === 'bbn-input') {
+        bbn.fn.log(["GO", props]);
       }
-
-      tmp.props = props;
-      
-      if (node.tag === 'component') {
-        if (bbn.fn.isObject(props.is)) {
-          tmp.tag = props.name ? bbn.fn.camelToCss(props.name) : 'bbn-anon';
-          tmp.cfg = bbn.cp.normalizeComponent(props.is);
+      // Either the element exists and te object is its bbnSchema or we clone the node
+      const eleNode = old ? old.bbnSchema : bbn.fn.clone(node);
+      // And in this case remove its items
+      if (!old) {
+        delete eleNode.items;
+        // And set the props on the new object
+        eleNode.props = props;
+        if (eleNode.model?.$_default) {
+          eleNode.model[eleNode.model.modelProp || 'value'] = eleNode.model.$_default;
+          delete eleNode.model.$_default;
         }
-        else {
-          tmp.tag = bbn.fn.camelToCss(props.is);
-        }
-      }
-
-      let anew = false;
-      if ((ele !== cp.$el) && (!ele || bbn.fn.isComment(ele) || (tmp.tag !== node.tag))) {
-        anew = true;
-      }
-
-      if (anew) {
-        if (bbn.fn.numProperties(node.directives)) {
-          for (let n in node.directives) {
-            if (node.directives[n].exp) {
-              tmp.directives[n].value = sr(cp, node.directives[n], hash, data);
-            }
-          }
-        }
-
-
-        ele = await createElement(cp, tmp, parent, data);
       }
       else {
-        if (node.model) {
-          tmp.model = ele.bbnSchema.model;
-          for (let n in node.model) {
-            if (n === '$_default') {
-              if (cp.$isComponent(ele)) {
-                let modelProp = ele.bbnCfg?.model?.prop || ele.constructor?.bbnCfg?.model?.prop || 'value';
-                tmp.model[modelProp].value = tmp.props[modelProp];
-              }
-              else {
-                tmp.model.value.value = tmp.props.value;
-              }
-            }
-            else {
-              tmp.model[n].value = tmp.props[n];
-            }
+        // Setting the new properties only when needed
+        bbn.fn.iterate(props, (v, n) => {
+          if (!bbn.fn.isSame(eleNode.props[n], v)) {
+            eleNode.props[n] = v;
+          }
+        });
+      }
+
+      // Updating the hash
+      if (hash && (eleNode.loopHash !== hash)) {
+        eleNode.loopHash = hash;
+      }
+
+      // With the custom node we update the props and model.value
+      if (eleNode.model) {
+        for (let n in eleNode.model) {
+          let v = getInternalValue(cp, eleNode.model[n].id, hash);
+          if (!bbn.fn.isSame(eleNode.model[n].value, v)) {
+            eleNode.model[n].value = eleNode.props[n];
           }
         }
+      }
+
+      // Updating also the directives
+      if (bbn.fn.numProperties(node.directives)) {
+        for (let n in node.directives) {
+          if (node.directives[n].exp) {
+            eleNode.directives[n].value = getInternalValue(cp, node.directives[n].id, hash);
+          }
+        }
+      }
+    
+      if (node.tag === 'bbn-input') {
+        bbn.fn.log(["PROPS", JSON.stringify(eleNode.props, null, 2)]);
+      }
+      
+      // 'component' tag is a special case
+      if (node.tag === 'component') {
+        if (bbn.fn.isObject(props.is)) {
+          eleNode.tag = props.name ? bbn.fn.camelToCss(props.name) : 'bbn-anon';
+          eleNode.cfg = bbn.cp.normalizeComponent(props.is);
+        }
+        else {
+          eleNode.tag = bbn.fn.camelToCss(props.is);
+        }
+      }
+
+      /** @var {Boolean} anew If true the element needs to be created */
+      let anew = false;
+      // True if the element doesn't exist, is a comment, or has a different tag
+      if ((ele !== cpSource.$el) && (!ele || bbn.fn.isComment(ele) || (eleNode.tag !== node.tag))) {
+        anew = true;
+      }
+ 
+      // Create the element if needed
+      if (anew) {
+        ele = await createElement(cpSource, eleNode, parent, data);
+      }
+      // Or update the element
+      else {
         if (bbn.fn.numProperties(node.directives)) {
-          for (let n in node.directives) {
-            if (node.directives[n].exp) {
-              if (getInternalState(cp, node.directives[n].id, hash) !== "OK") {
-                node.directives[n].value = getInternalValue(cp, node.directives[n].id, hash);
-                ele.bbnSchema.directives[n].value = node.directives[n].value;
-                bbn.cp.updateDirectives({[n]: node.directives[n]}, ele);
+          for (let n in eleNode.directives) {
+            if (eleNode.directives[n].exp) {
+              if (getInternalState(cp, eleNode.directives[n].id, hash) !== "OK") {
+                eleNode.directives[n].value = getInternalValue(cp, eleNode.directives[n].id, hash);
+                ele.bbnSchema.directives[n].value = eleNode.directives[n].value;
+                bbn.cp.updateDirectives({[n]: eleNode.directives[n]}, ele);
               }
             }
           }
         }
       }
 
-      applyPropsOnElement(cp, tmp, ele);
+      applyPropsOnElement(cp, eleNode, ele);
     }
 
     // Handle 'pre' directive or process child items.

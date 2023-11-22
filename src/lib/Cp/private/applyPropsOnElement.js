@@ -1,5 +1,8 @@
+import { schemaCompletionSource } from '@codemirror/lang-sql';
+import getInternalState from './getInternalState.js';
 import setProp from './setProp.js';
 import setRef from './setRef.js';
+import bbn from '@bbn/bbn';
 
 /**
  * (Re)generates the whole component's vDOM and DOM if needed, picking the right root, shadow or not
@@ -30,10 +33,32 @@ export default function applyPropsOnElement(cp, node, ele) {
     return;
   }
   /** @var {Object} attr The attributes of the element to be built */
-  const attr = bbn.fn.createObject();
   let isChanged = false;
   // Other normal props are prioritarian
   for (let n in props) {
+    if (n === '$_default') {
+      continue;
+    }
+
+    let isNotExp = false;
+    let id;
+    if (node.model?.[n]) {
+      id = node.model[n].id;
+    }
+    else if (node.attr?.[n]) {
+      id = node.attr[n].id;
+      if (!node.attr[n].exp) {
+        isNotExp = true;
+      }
+    }
+    else if (node.attr['bbn-bind']) {
+      id = node.attr['bbn-bind'].id;
+    }
+    else {
+      bbn.fn.log(ele, node);
+      throw new Error("Impossible to find the id of the property " + n);
+    }
+
     let v = props[n];
     switch (n) {
       case 'ref':
@@ -62,85 +87,58 @@ export default function applyPropsOnElement(cp, node, ele) {
           ele.style.display = 'none';
         }
         break;
+      case 'bbn-html':
+        if (ele.innerHTML !== v) {
+          ele.innerHTML = v;
+        }
+        break;
+      case 'bbn-text':
+        if (ele.innerText !== v) {
+          ele.innerText = v;
+        }
+        break;
       default:
         if (n.indexOf('bbn-') !== 0) {
-          attr[n] = props[n];
-        }
-    }
-  }
-
-  if (node.model) {
-    for (let n in node.model) {
-      if (n === '$_default') {
-        continue;
-      }
-      let isC = false;
-      if (isComponent) {
-        if (Object.hasOwn(ele.bbnSchema.props || {}, n) && (ele.bbnSchema.props?.[n] !== node.model[n].value)) {
-          ele.bbnSchema.props[n] = node.model[n].value;
-          isChanged = true;
-          isC = true;
-        }
-      }
-      else if ((ele[n] !== undefined) && (ele[n] !== (bbn.fn.isString(node.model[n].value) ? node.model[n].value : (node.model[n].value?.toString ? node.model[n].value.toString() : '')))) {
-        isChanged = true;
-        isC = true;
-        ele[n] = node.model[n].value;
-      }
-    }
-  }
-  else if (Object.hasOwn(props, 'bbn-html') && (ele.innerHTML !== props['bbn-html'])) {
-    ele.innerHTML = props['bbn-html'];
-    isChanged = true;
-  }
-  else if (Object.hasOwn(props, 'bbn-text') && (ele.innerText !== props['bbn-text'])) {
-    ele.innerText = props['bbn-text'];
-    isChanged = true;
-  }
-
-  // Setting up attributes
-  bbn.fn.iterate(attr, (value, name) => {
-    if (!isComponent) {
-      if (bbn.fn.isPrimitive(value)) {
-        let propName = name;
-        if (bbn.cp.badCaseAttributes[name]) {
-          propName = bbn.cp.badCaseAttributes[name];
-        }
-
-        const isAttr = (ele[propName] !== undefined);
-        if (isAttr) {
-          const attr = ele[propName];
-          if (attr !== value) {
-            if (!value) {
-              ele.removeAttribute(name);
-              // for SVG
-              if ({}.toString.apply(ele[propName]).substr(0, 7) !== '[object') {
-                ele[propName] = '';
+          if (!isComponent) {
+            if (bbn.fn.isPrimitive(v)) {
+              let propName = n;
+              if (bbn.cp.badCaseAttributes[n]) {
+                propName = bbn.cp.badCaseAttributes[n];
               }
-            }
-            else {
-              ele.setAttribute(name, value);
-              // for SVG
-              if ({}.toString.apply(ele[propName]).substr(0, 7) !== '[object') {
-                ele[propName] = value;
+      
+              const isAttr = (ele[propName] !== undefined);
+              if (isAttr) {
+                const attr = ele[propName];
+                if (attr !== v) {
+                  if (!v) {
+                    ele.removeAttribute(n);
+                    // for SVG
+                    if ({}.toString.apply(ele[propName]).substr(0, 7) !== '[object') {
+                      ele[propName] = '';
+                    }
+                  }
+                  else {
+                    ele.setAttribute(n, v);
+                    // for SVG
+                    if ({}.toString.apply(ele[propName]).substr(0, 7) !== '[object') {
+                      ele[propName] = v;
+                    }
+                  }
+                }
               }
             }
           }
+          else if (!isNotExp && (getInternalState(cp, id, ele.bbnHash) !== 'OK')) {
+            isChanged = true;
+          }
         }
-      }
-    }
-    else if (ele.bbnSchema.props[name] !== value) {
-      ele.bbnSchema.props[name] = value;
-      if (ele.bbn?.$isInit) {
-        setProp(cp, name, value);
-      }
 
-      isChanged = true;
+        break;
     }
-  });
+  }
 
   if (isChanged) {
-    if (isComponent && ele.bbn?.$isMounted) {
+    if (isComponent && ele.bbn) {
       ele.bbn.$tick();
     }
   }

@@ -105,6 +105,15 @@ export default function init(cp) {
     configurable: false
   });
 
+  // Adjusting properties and model for the default model if used
+  if (cp.$el.bbnSchema.model?.$_default) {
+    cp.$el.bbnSchema.modelProp = cp.$cfg.model?.prop || 'value';
+    cp.$el.bbnSchema.model[cp.$el.bbnSchema.modelProp] = cp.$el.bbnSchema.model?.$_default;
+    delete cp.$el.bbnSchema.model?.$_default;
+    cp.$el.bbnSchema.props[cp.$el.bbnSchema.modelProp] = cp.$el.bbnSchema.props.$_default;
+    delete cp.$el.bbnSchema.props.$_default;
+  }
+
   /**
    * Template array
   */
