@@ -546,11 +546,15 @@ const cpDef = {
     v-droppable="!!col.gallery.isSorting && !!col.gallery.uid"
     @drop="changeOrder">
   <span :class="{
-          'bbn-spadded': !loaded,
-          'bbn-c': !loaded
+          'bbn-spadded': !loaded || ((source.data.is_image !== undefined) && !source.data.is_image),
+          'bbn-c': !loaded || ((source.data.is_image !== undefined) && !source.data.is_image)
         }"
         style="display: block">
-    <img :src="imgSrc"
+    <i v-if="(source.data.is_image !== undefined) && !source.data.is_image"
+       :class="['nf nf-fa-file', 'bbn-xxxl', {'bbn-bottom-lspace': !!showOverlay}]"
+       style="display: block"/>
+    <img v-else
+         :src="imgSrc"
          @load="loaded = true"
          @error="error = true"
          :class="{
@@ -610,14 +614,14 @@ const cpDef = {
                  * @data {Boolean} [false] loaded
                  * @memberof gallery-item
                  */
-                loaded: false,
+                loaded: (this.source.data.is_image !== undefined) && !this.source.data.is_image,
                 /**
                  * The element to which the context menu is attached
                  * @data {HTMLElement} [undefined] buttonMenuElement
                  * @memberof gallery-item
                  */
                 buttonMenuElement: undefined,
-                error: false,
+                error: false
               }
             },
             computed: {
@@ -844,7 +848,11 @@ const cpDef = {
 <div class="bbn-rel">
   <i class="bbn-top-right nf nf-fa-close bbn-red bbn-vxspadded bbn-hspadded bbn-lg bbn-p"
      @click="unselect"/>
-  <img :src="imgSrc"
+  <i v-if="(itemData.is_image !== undefined) && !itemData.is_image"
+     class="bbn-gallery-selected-file nf nf-fa-file bbn-xxxl bbn-radius bbn-bordered bbn-spadded bbn-c"
+     style="display: block"/>
+  <img v-else
+       :src="imgSrc"
        class="bbn-radius bbn-bordered"
        :alt="altSrc">
 </div>
@@ -885,18 +893,14 @@ const cpDef = {
            */
           imgSrc() {
             if (this.gallery) {
-              let data = {},
-                src = '';
-              if (!!this.gallery.uid) {
-                data = bbn.fn.getRow(this.gallery.currentSelectedData, this.gallery.uid, this.source);
-              }
-              if (bbn.fn.isString(data)) {
-                src = data;
+              let src = '';
+              if (bbn.fn.isString(this.itemData)) {
+                src = this.itemData;
               }
               else {
                 let prop = this.gallery.pathName || 'thumb' || 'content';
-                if (data[prop]) {
-                  src = data[prop];
+                if (this.itemData[prop]) {
+                  src = this.itemData[prop];
                 }
               }
 
@@ -905,6 +909,12 @@ const cpDef = {
               }
             }
             return null;
+          },
+          itemData(){
+            if (this.gallery && !!this.gallery.uid) {
+              return bbn.fn.getRow(this.gallery.currentSelectedData, this.gallery.uid, this.source);
+            }
+            return {};
           }
         },
         methods: {
