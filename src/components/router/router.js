@@ -3293,7 +3293,7 @@ const cpDef = {
      * @return {String}
      */
     getFontColor(idx) {
-      return this.views[idx].fcolor || '';
+      return this.views[idx]?.fcolor || '';
       //this.views[idx].fcolor = window.getComputedStyle(el.$el ? el.$el : el).color;
     },
     /**s
