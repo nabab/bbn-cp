@@ -1,3 +1,19 @@
+## 6.5.6 (2024-02-07)
+
+### Bug fixes
+
+Make `highlightSelectionMatches` include whitespace in the selection in its matches.
+
+Fix a bug that caused `SearchCursor` to return invalid ranges when matching astral chars that the the normalizer normalized to single-code-unit chars.
+
+## 6.5.5 (2023-11-27)
+
+### Bug fixes
+
+Fix a bug that caused codes like `\n` to be unescaped in strings inserted via replace placeholders like `$&`.
+
+Use the keybinding Mod-Alt-g for `gotoLine` to the search keymap, to make it usable for people whose keyboard layout uses Alt/Option-g to type some character.
+
 ## 6.5.4 (2023-09-20)
 
 ### Bug fixes

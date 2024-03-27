@@ -15,7 +15,7 @@
   \**********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Close\":\"Chiudi\",\"Menu\":\"Menù\",\"There is no available data\":\"Non ci sono dati disponibili\",\"Reload\":\"Ricarica\",\"Items\":\"Elementi\",\"Limit\":\"Limite\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/widget/widget.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Close\":\"Chiudi\",\"Menu\":\"Menù\",\"There is no available data\":\"Non ci sono dati disponibili\",\"Reload\":\"Ricarica\",\"Items\":\"Elementi\",\"Limit\":\"Limite\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/widget/widget.it.lang?");
 
 /***/ })
 

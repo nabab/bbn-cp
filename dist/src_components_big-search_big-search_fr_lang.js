@@ -15,7 +15,7 @@
   \******************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"%s takes a function as argument\":\"%s prend une fonction comme argument\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/big-search/big-search.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"%s takes a function as argument\":\"%s prend une fonction comme argument\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/big-search/big-search.fr.lang?");
 
 /***/ })
 

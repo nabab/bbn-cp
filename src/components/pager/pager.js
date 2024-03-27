@@ -223,7 +223,6 @@ const cpDef = {
     }
   };
 
-import bbn from '@bbn/bbn';
 import cpHtml from './pager.html';
 import cpStyle from './pager.less';
 let cpLang = {};

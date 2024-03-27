@@ -1,5 +1,5 @@
 <div :class="componentClass">
-  <bbn-floater v-for="(it, idx) in items"
+  <bbn-floater bbn-for="(it, idx) in items"
                :ref="'it' + it.id"
                :key="it.id"
                :focused="false"
@@ -31,25 +31,25 @@
         'bbn-bg-blue': it.content && (it.type === 'info')
     }">
       <span class="bbn-notification-icon bbn-iblock bbn-lg"
-            v-if="it.icon">
+            bbn-if="it.icon">
         <i :class="[it.icon, it.type ? 'bbn-white' : 'bbn-black']"/>
       </span>
-      <span v-if="it.content"
+      <span bbn-if="it.content"
             class="bbn-iblock"
-            v-html="it.content"/>
-      <span v-else-if="it.type === 'success'"
+            bbn-html="it.content"/>
+      <span bbn-elseif="it.type === 'success'"
             class="bbn-iblock"
-            v-html="successMessage"/>
-      <span v-else-if="it.type === 'warning'"
+            bbn-html="successMessage"/>
+      <span bbn-elseif="it.type === 'warning'"
             class="bbn-iblock"
-            v-html="warningMessage"/>
-      <span v-else-if="it.type === 'error'"
+            bbn-html="warningMessage"/>
+      <span bbn-elseif="it.type === 'error'"
             class="bbn-iblock"
-            v-html="errorMessage"/>
-      <div v-if="it.num > 1"
+            bbn-html="errorMessage"/>
+      <div bbn-if="it.num > 1"
            class="bbn-iblock bbn-top-left bbn-hsmargin bbn-vxsmargin">
         <span class="bbn-badge bbn-small bbn-bg-red"
-              v-text="it.num"/>
+              bbn-text="it.num"/>
       </div>
       <div :class="{
           'bbn-notification-closer': true,

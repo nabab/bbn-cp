@@ -7,14 +7,14 @@
               @hook:mounted="maskedMounted = true"
               @blur="inputChanged"
               @keydown.enter="inputChanged"
-              v-model="inputValue"
+              bbn-model="inputValue"
               class="bbn-flex-fill"
               :autosize="autosize"
               :inputmode="inputmode"
               :placeholder="placeholder"/>
-  <div v-if="isNullable && !readonly && !isDisabled"
+  <div bbn-if="isNullable && !readonly && !isDisabled"
        class="bbn-block bbn-h-100 bbn-input-nullable-container">
-    <i v-if="hasValue" class="nf nf-fa-times_circle bbn-p"
+    <i bbn-if="hasValue" class="nf nf-fa-times_circle bbn-p"
        @mousedown.prevent.stop="clear"/>
   </div>
   <bbn-button icon="nf nf-fa-calendar"
@@ -26,7 +26,7 @@
               @click="showTime"
               :disabled="isDisabled || readonly"
               class="bbn-datetimepicker-clock bbn-button-right bbn-no-vborder"/>
-  <bbn-floater v-if="isCalendarOpened && !isDisabled && !readonly"
+  <bbn-floater bbn-if="isCalendarOpened && !isDisabled && !readonly"
                :element="$el"
                :auto-hide="1000"
                ref="calendarFloater"
@@ -45,7 +45,7 @@
                   :items-range="datesRange"
                   :element-width="false"/>
   </bbn-floater>
-  <bbn-floater v-if="isTimeOpened && !isDisabled && !readonly"
+  <bbn-floater bbn-if="isTimeOpened && !isDisabled && !readonly"
                :element="$el"
                ref="timeFloater"
                @close="isTimeOpened = false"

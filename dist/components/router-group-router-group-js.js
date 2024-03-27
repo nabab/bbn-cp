@@ -48,7 +48,7 @@ eval("\n\nmodule.exports = function (i) {\n  return i[1];\n};\n\n//# sourceURL=w
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = \"<div :class=\\\"[componentClass, {\\n       'bbn-invisible': !ready,\\n       'bbn-overlay': true\\n     }]\\\">\\n  <bbn-splitter :orientation=\\\"orientation\\\" :resizable=\\\"true\\\">\\n    <bbn-pane v-for=\\\"router in routers\\\">\\n      <bbn-router v-bind=\\\"router\\\"></bbn-router>\\n    </bbn-pane>\\n  </bbn-splitter>\\n</div>\";\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/router-group/router-group.html?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = \"<div :class=\\\"[componentClass, {\\n       'bbn-invisible': !ready,\\n       'bbn-overlay': true\\n     }]\\\">\\n  <bbn-splitter :orientation=\\\"orientation\\\" :resizable=\\\"true\\\">\\n    <bbn-pane bbn-for=\\\"router in routers\\\">\\n      <bbn-router bbn-bind=\\\"router\\\"></bbn-router>\\n    </bbn-pane>\\n  </bbn-splitter>\\n</div>\";\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/router-group/router-group.html?");
 
 /***/ }),
 

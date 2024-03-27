@@ -1,7 +1,7 @@
 <component :is="tag"
            :class="componentClass"
            @mouseenter="currentVisible = true">
-  <bbn-floater v-if="currentVisible"
+  <bbn-floater bbn-if="currentVisible"
                :tag="tag"
                ref="floater"
                tabindex="-1"
@@ -18,7 +18,7 @@
     <slot></slot>
     <span class="bbn-p bbn-tooltip-icon bbn-left-xsspace"
           ref="helper"
-          v-if="icon">
+          bbn-if="icon">
       <i :class="[icon, 'bbn-m']"/>
     </span>
   </bbn-floater>

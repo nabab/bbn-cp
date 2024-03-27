@@ -15,7 +15,7 @@
   \******************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"%s takes a function as argument\":\"%s accetta una funzione come argomento\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/big-search/big-search.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"%s takes a function as argument\":\"%s accetta una funzione come argomento\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/big-search/big-search.it.lang?");
 
 /***/ })
 

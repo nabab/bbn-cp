@@ -344,23 +344,11 @@ const cpDef = {
         return s;
       },
       /**
-       * The parent list in a hierarchical system
-       * @computed parentList
-       * @fires closest
-       * @returns {bbnCp|Boolean}
-       */
-      parentList(){
-        let list = this.closest('bbn-list');
-        return list ? (list.level < this.level ? list : false) : false;
-      }
-    },
-    methods: {
-      /**
-       * @method _setFilteredData
+       * @computed filteredData
        * @fires _checkConditionsOnItem
        * @returns {Array}
        */
-      _setFilteredData() {
+      filteredData(){
         let data = this.currentData;
         if (this.currentData.length
           && this.currentFilters
@@ -390,8 +378,20 @@ const cpDef = {
           bbn.fn.each(Object.values(grouped), g => data.push(...g));
           data.push(...ungrouped);
         }
-        this.filteredData = data;
+        return data;
       },
+      /**
+       * The parent list in a hierarchical system
+       * @computed parentList
+       * @fires closest
+       * @returns {bbnCp|Boolean}
+       */
+      parentList(){
+        let list = this.closest('bbn-list');
+        return list ? (list.level < this.level ? list : false) : false;
+      }
+    },
+    methods: {
       /**
        * Manages the icon of the items.
        * @method _updateIconSituation
@@ -486,7 +486,7 @@ const cpDef = {
       select(idx) {
         let item = this.filteredData[idx] || null;
         if ( item && item.data && !item.data.disabled ) {
-          let ev = new Event('select', {cancelable: true});
+          let ev = new CustomEvent('select', {cancelable: true});
           this.currentIndex = idx;
           if ( item.data[this.children] && item.data[this.children].length ){
             this.isOpened = !this.isOpened;
@@ -494,8 +494,6 @@ const cpDef = {
           else{
             let v = item.data[this.sourceValue];
             this.$emit(this.isSelected(idx) ? "unselect" : "select", item.data, idx, item.index, ev);
-            bbn.fn.log("SELECT " + idx, ev.defaultPrevented, this.mode, item.data, idx, item.index, this.isSelected(idx));
-
             if (!ev.defaultPrevented) {
               if ( (this.mode === 'selection') && !item.selected ){
                 let prev = bbn.fn.getRow(this.filteredData, "selected", true);
@@ -644,11 +642,8 @@ const cpDef = {
       overIdx(newVal) {
         this.keepCool(() => {
           if (this.hasScroll && (newVal !== -1) && !this.isOver) {
-            let sc = this.closest('bbn-scroll');
-            if (sc) {
-              sc.scrollTo(null, this.getRef('li' + newVal));
-            }
-          }
+            this.closest('bbn-scroll').scrollTo(null, this.getRef('li' + newVal));
+                      }
         }, 'overIdx', 50)
       },
       /**
@@ -687,6 +682,7 @@ const cpDef = {
 
   };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './list.html';
 import cpStyle from './list.less';
 let cpLang = {};

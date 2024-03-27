@@ -11,12 +11,12 @@
   <div :class="['bbn-rel', 'bbn-autocomplete-container', 'bbn-flex-width', 'bbn-vmiddle', currentItemCls, {
     'bbn-autocomplete-container-native': native
   }]">
-    <div v-if="sourceIcon && hasValue && !!currentItemIcon"
+    <div bbn-if="sourceIcon && hasValue && !!currentItemIcon"
          class="bbn-left-xspadded">
       <i :class="currentItemIcon"
          @click.stop="click" />
     </div>
-    <div v-if="sourceImg && hasValue && !!currentItemImg"
+    <div bbn-if="sourceImg && hasValue && !!currentItemImg"
          class="bbn-left-xspadded">
       <img :src="currentItemImg"
            @click.stop="click"
@@ -38,12 +38,12 @@
                :nullable="isNullable"
                :force-nullable="isNullable"
                @focus="_setInputVisible"
-               v-show="!inputIsVisible"/>
-    <bbn-input v-if="!isDisabled && !readonly"
-               v-show="inputIsVisible"
+               bbn-show="!inputIsVisible"/>
+    <bbn-input bbn-if="!isDisabled && !readonly"
+               bbn-show="inputIsVisible"
                 :tabindex="0"
                 class="bbn-no-border bbn-i"
-                v-model="filterString"
+                bbn-model="filterString"
                 ref="input"
                 @focus="selectText"
                 @blur="inputIsVisible = false"
@@ -64,10 +64,10 @@
                 :force-nullable="isNullable"/>
   </div>
   <input type="hidden"
-         v-model="value"
+         bbn-model="value"
          ref="element"
          :name="name">
-  <bbn-floater v-if="!popup
+  <bbn-floater bbn-if="!popup
                   && filteredData.length
                   && !isDisabled
                   && !readonly

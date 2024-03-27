@@ -9,7 +9,7 @@
      @keydown.escape="hide"
      :style="currentStyle">
   <slot></slot>
-  <div v-if="closeButton"
+  <div bbn-if="closeButton"
        :class="{
          'bbn-abs': true,
          'bbn-top-right': !['bottom-right', 'bottom-left', 'top-left'].includes(closeButton),

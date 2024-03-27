@@ -664,7 +664,6 @@ const cpDef = {
        */
       resizeDrag(e){
         if ( this.isResizing && this.resizeCfg && this.resizeCfg.panes ){
-          e.preventDefault();
           e.stopImmediatePropagation();
           let diff = (e['client' + this.currentAxis.toUpperCase()] || (e.touches.length ? e.touches[0] : e.changedTouches[0])['page' + this.currentAxis.toUpperCase()]) - this.resizeCfg[this.currentOffsetType];
           if ( diff >= this.resizeCfg.max ){

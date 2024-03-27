@@ -1,6 +1,6 @@
 <div :class="[componentClass, 'bbn-iblock']"
      :style="currentStyle">
-  <svg v-if="isLoading"
+  <svg bbn-if="isLoading"
        xmlns="http://www.w3.org/2000/svg"
        viewBox="0 0 100 100"
        preserveAspectRatio="xMidYMid"
@@ -25,11 +25,11 @@
       </animateTransform>
     </circle>
   </svg>
-  <div v-else-if="currentContent"
-       v-html="currentContent"
+  <div bbn-elseif="currentContent"
+       bbn-html="currentContent"
        class="bbn-iblock"
        :style="currentStyle"/>
-  <svg v-else
+  <svg bbn-else
        xmlns="http://www.w3.org/2000/svg"
        x="0px"
        y="0px"

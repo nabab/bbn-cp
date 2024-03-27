@@ -15,7 +15,7 @@
   \************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Select\":\"Sélectionner\",\"Upload\":\"Envoyer\",\"Download\":\"Télécharger\",\"Delete\":\"Supprimer\",\"Cancel\":\"Annuler\",\"Filter\":\"Filtre\",\"Search\":\"Recherche\",\"Are you sure you want to download these photos?\":\"Êtes-vous sûr de vouloir télécharger ces images?\",\"Are you sure you want to delete these photos?\":\"Êtes-vous sûr de vouloir supprimer ces images?\",\"Order\":\"Ordre\",\"Ok\":\"Ok\",\"Loading\":\"Chargement\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/gallery/gallery.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Select\":\"Sélectionner\",\"Upload\":\"Envoyer\",\"Download\":\"Télécharger\",\"Delete\":\"Supprimer\",\"Cancel\":\"Annuler\",\"Filter\":\"Filtre\",\"Search\":\"Recherche\",\"Are you sure you want to download these photos?\":\"Êtes-vous sûr de vouloir télécharger ces images?\",\"Are you sure you want to delete these photos?\":\"Êtes-vous sûr de vouloir supprimer ces images?\",\"Order\":\"Ordre\",\"Ok\":\"Ok\",\"Loading\":\"Chargement\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/gallery/gallery.fr.lang?");
 
 /***/ })
 

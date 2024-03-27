@@ -15,7 +15,7 @@
   \**********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Impossible to get an orientation for the slider\":\"Impossbile d\\'avoir une orientation pour le slider\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/slider/slider.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Impossible to get an orientation for the slider\":\"Impossbile d\\'avoir une orientation pour le slider\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/slider/slider.fr.lang?");
 
 /***/ })
 

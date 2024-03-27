@@ -1,41 +1,27 @@
 import {bbn} from "@bbn/bbn";
-import addComponent from "./functions/addComponent.js";
 import addPrefix from "./functions/addPrefix.js";
-import analyzeElement from "./functions/analyzeElement.js";
+import addUrlAsPrefix from "./functions/addUrlAsPrefix.js";
 import attributeChangedCallback from "./functions/attributeChangedCallback.js";
-import connectedCallback from "./functions/connectedCallback.js";
 import convertClasses from "./functions/convertClasses.js";
 import convertStyles from "./functions/convertStyles.js";
 import createApp from "./functions/createApp.js";
-import createCid from "./functions/createCid.js";
 import define from "./functions/define.js";
-import disconnectedCallback from "./functions/disconnectedCallback.js";
 import executeQueueItem from "./functions/executeQueueItem.js";
 import executeQueueItems from "./functions/executeQueueItems.js";
 import executeTemplate from "./functions/executeTemplate.js";
 import fetchComponents from "./functions/fetchComponents.js";
-import generateCpClass from "./functions/generateCpClass.js";
-import generateHTMLClass from "./functions/generateHTMLClass.js";
 import getComponent from "./functions/getComponent.js";
 import initDefaults from "./functions/initDefaults.js";
 import insertDirectives from "./functions/insertDirectives.js";
 import isComponent from "./functions/isComponent.js";
 import isTag from "./functions/isTag.js";
-import mapDependencies from "./functions/mapDependencies.js";
 import mapTemplate from "./functions/mapTemplate.js";
 import normalizeComponent from "./functions/normalizeComponent.js";
 import realDefineComponent from "./functions/realDefineComponent.js";
-import removeComponent from "./functions/removeComponent.js";
-import removeSelfClosing from "./functions/removeSelfClosing.js";
-import retrieveModels from "./functions/retrieveModels.js";
-import retrieveSlots from "./functions/retrieveSlots.js";
 import setComputed from "./functions/setComputed.js";
 import setDefaults from "./functions/setDefaults.js";
 import startTick from "./functions/startTick.js";
 import stopTick from "./functions/stopTick.js";
-import stringToTemplate from "./functions/stringToTemplate.js";
-import templateToFunction from "./functions/templateToFunction.js";
-import templateToString from "./functions/templateToString.js";
 import updateDirectives from "./functions/updateDirectives.js";
 import basic from "./mixins/basic.js";
 import browserNotification from "./mixins/browserNotification.js";
@@ -165,43 +151,29 @@ const cpObj = bbn.fn.createObject({
   forbidden: ['bbn-forget', 'bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else'],
   /** @var {Object} components All the components in the DOM are referenced in this object through their CID */
   componentsIndex: new Map(),
-  addComponent,
   addPrefix,
-  analyzeElement,
+  addUrlAsPrefix,
   attributeChangedCallback,
-  connectedCallback,
   convertClasses,
   convertStyles,
   createApp,
-  createCid,
   define,
-  disconnectedCallback,
   executeQueueItem,
   executeQueueItems,
   executeTemplate,
   fetchComponents,
-  generateCpClass,
-  generateHTMLClass,
   getComponent,
   initDefaults,
   insertDirectives,
   isComponent,
   isTag,
-  mapDependencies,
   mapTemplate,
   normalizeComponent,
   realDefineComponent,
-  removeComponent,
-  removeSelfClosing,
-  retrieveModels,
-  retrieveSlots,
   setComputed,
   setDefaults,
   startTick,
   stopTick,
-  stringToTemplate,
-  templateToFunction,
-  templateToString,
   updateDirectives,
 });
 

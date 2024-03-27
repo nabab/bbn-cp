@@ -15,7 +15,7 @@
   \************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Full screen\":\"Schermo intero\",\"Close\":\"Chiudi\",\"Wrong min/max width/height set in the properties\":\"Larghezza/altezza minima/massima impostata erroneamente nelle proprietà\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/floater/floater.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Full screen\":\"Schermo intero\",\"Close\":\"Chiudi\",\"Wrong min/max width/height set in the properties\":\"Larghezza/altezza minima/massima impostata erroneamente nelle proprietà\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/floater/floater.it.lang?");
 
 /***/ })
 

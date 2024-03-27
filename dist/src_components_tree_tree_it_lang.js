@@ -15,7 +15,7 @@
   \******************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Node\":\"Nodo\",\"Close\":\"Chiudi\",\"Open\":\"Apri\",\"Refresh\":\"Aggiorna\",\"Loading\":\"Caricamento\",\"No items\":\"Nessun elemento\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/tree/tree.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Node\":\"Nodo\",\"Close\":\"Chiudi\",\"Open\":\"Apri\",\"Refresh\":\"Aggiorna\",\"Loading\":\"Caricamento\",\"No items\":\"Nessun elemento\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/tree/tree.it.lang?");
 
 /***/ })
 

@@ -15,7 +15,7 @@
   \****************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Untitled\":\"Senza titolo\",\"Widgets\":\"Widget\",\"Show every widget\":\"Mostra tutti i widget\",\"Hide every widget\":\"Nascondi tutti i widget\",\"Reset widgets order\":\"Reimposta l\\'ordine dei widget\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/dashboard/dashboard.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Untitled\":\"Senza titolo\",\"Widgets\":\"Widget\",\"Show every widget\":\"Mostra tutti i widget\",\"Hide every widget\":\"Nascondi tutti i widget\",\"Reset widgets order\":\"Reimposta l\\'ordine dei widget\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/dashboard/dashboard.it.lang?");
 
 /***/ })
 

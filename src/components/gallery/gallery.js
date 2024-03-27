@@ -479,7 +479,7 @@ const cpDef = {
         template: `
 <div :style="colStyle">
   <component :is="gallery.itemComponent || 'gallery-item'"
-             v-for="(item, idx) in source"
+             bbn-for="(item, idx) in source"
              :source="item"
              :key="'gallery-item-'+index+'-'+idx"/>
 </div>`,
@@ -537,23 +537,23 @@ const cpDef = {
           galleryItem: {
             name: 'gallery-item',
             template: `
-<a v-if="!col.gallery.isLoading"
+<a bbn-if="!col.gallery.isLoading"
     :class="['bbn-gallery-item', 'bbn-box', {'bbn-primary': isSelected, 'bbn-p': !!col.gallery.zoomable}]"
     @click="action"
     @contextmenu="onContext"
     :style="aStyle"
-    v-draggable="!!col.gallery.isSorting && !!col.gallery.uid"
-    v-droppable="!!col.gallery.isSorting && !!col.gallery.uid"
+    bbn-draggable="!!col.gallery.isSorting && !!col.gallery.uid"
+    bbn-droppable="!!col.gallery.isSorting && !!col.gallery.uid"
     @drop="changeOrder">
   <span :class="{
           'bbn-spadded': !loaded || ((source.data.is_image !== undefined) && !source.data.is_image),
           'bbn-c': !loaded || ((source.data.is_image !== undefined) && !source.data.is_image)
         }"
         style="display: block">
-    <i v-if="(source.data.is_image !== undefined) && !source.data.is_image"
+    <i bbn-if="(source.data.is_image !== undefined) && !source.data.is_image"
        :class="['nf nf-fa-file', 'bbn-xxxl', {'bbn-bottom-lspace': !!showOverlay}]"
        style="display: block"/>
-    <img v-else
+    <img bbn-else
          :src="imgSrc"
          @load="loaded = true"
          @error="error = true"
@@ -566,15 +566,15 @@ const cpDef = {
          :alt="(source.caption ? source.caption + ' - ' : '') + (source.text ? source.text + ' - ' : '') + (source.tags || []).join(' | ')"
          :draggable="!col.gallery.isSorting">
     <bbn-loadicon class="bbn-gallery-item-loading bbn-c"
-                  v-if="!loaded && !error"/>
-    <i v-else-if="error && !loaded" class="bbn-red nf nf-mdi-image_off"/>
-    <span v-if="showOverlay && loaded"
+                  bbn-if="!loaded && !error"/>
+    <i bbn-elseif="error && !loaded" class="bbn-red nf nf-mdi-image_off"/>
+    <span bbn-if="showOverlay && loaded"
           class="bbn-gallery-overlay bbn-widget bbn-ellipsis bbn-radius-bottom bbn-hxspadded"
-          v-text="source.data[col.gallery.overlayName]"
+          bbn-text="source.data[col.gallery.overlayName]"
           :title="source.data[col.gallery.overlayName]"/>
-    <i v-if="col.gallery.zoomable && loaded && !col.gallery.isSelecting && !col.gallery.isSorting"
+    <i bbn-if="col.gallery.zoomable && loaded && !col.gallery.isSelecting && !col.gallery.isSorting"
        class="bbn-gallery-zoverlay nf nf-fa-search"/>
-    <bbn-context v-if="showOverlay && !!col.gallery.buttonMenu && loaded && !col.gallery.isSelecting && !col.gallery.isSorting"
+    <bbn-context bbn-if="showOverlay && !!col.gallery.buttonMenu && loaded && !col.gallery.isSelecting && !col.gallery.isSorting"
                  tag="div"
                  class="bbn-block bbn-top-left bbn-top-smargin bbn-left-smargin"
                  :source="!!col.gallery.buttonMenu
@@ -592,8 +592,8 @@ const cpDef = {
         </div>
     </bbn-context>
   </span>
-  <div v-if="col.gallery.sortable && col.gallery.isSorting && col.gallery.sourceOrder"
-        v-text="source.data[col.gallery.sourceOrder]"
+  <div bbn-if="col.gallery.sortable && col.gallery.isSorting && col.gallery.sourceOrder"
+        bbn-text="source.data[col.gallery.sourceOrder]"
         class="bbn-b bbn-gallery-item-position bbn-lg"/>
 </a>
             `,
@@ -632,7 +632,7 @@ const cpDef = {
                * @return {bbnCp}
                */
               col() {
-                return this.closest('gallery-col');
+                return this.$parent;
               },
               /**
                * The style object of the item.
@@ -848,10 +848,10 @@ const cpDef = {
 <div class="bbn-rel">
   <i class="bbn-top-right nf nf-fa-close bbn-red bbn-vxspadded bbn-hspadded bbn-lg bbn-p"
      @click="unselect"/>
-  <i v-if="(itemData.is_image !== undefined) && !itemData.is_image"
+  <i bbn-if="(itemData.is_image !== undefined) && !itemData.is_image"
      class="bbn-gallery-selected-file nf nf-fa-file bbn-xxxl bbn-radius bbn-bordered bbn-spadded bbn-c"
      style="display: block"/>
-  <img v-else
+  <img bbn-else
        :src="imgSrc"
        class="bbn-radius bbn-bordered"
        :alt="altSrc">
@@ -932,7 +932,6 @@ const cpDef = {
     }
   };
 
-import bbn from '@bbn/bbn';
 import cpHtml from './gallery.html';
 import cpStyle from './gallery.less';
 let cpLang = {};

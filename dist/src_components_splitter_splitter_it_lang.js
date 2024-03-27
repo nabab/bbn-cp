@@ -15,7 +15,7 @@
   \**************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"In a resizable splitter, if a pane has a percentage measure, at least one pane must be meausreless or set at \\\\\"auto\\\\\"\":\"In uno splitter ridimensionabile, se un riquadro ha una misura percentuale, almeno un riquadro deve essere senza misura o impostato su \\\\\"auto\\\\\"\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/splitter/splitter.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"In a resizable splitter, if a pane has a percentage measure, at least one pane must be meausreless or set at \\\\\"auto\\\\\"\":\"In uno splitter ridimensionabile, se un riquadro ha una misura percentuale, almeno un riquadro deve essere senza misura o impostato su \\\\\"auto\\\\\"\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/splitter/splitter.it.lang?");
 
 /***/ })
 

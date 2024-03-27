@@ -15,7 +15,7 @@
   \************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Loading\":\"Caricamento\",\"Requests\\' history\":\"Cronologia richieste\",\"Are you sure you want to abort this request?\":\"Sei sicuro di voler abortire questa richiesta?\",\"Copy URL\":\"Copia URL\",\"Copied\":\"Copiato\",\"abort\":\"Abortisci\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/loadbar/loadbar.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Loading\":\"Caricamento\",\"Requests\\' history\":\"Cronologia richieste\",\"Are you sure you want to abort this request?\":\"Sei sicuro di voler abortire questa richiesta?\",\"Copy URL\":\"Copia URL\",\"Copied\":\"Copiato\",\"abort\":\"Abortisci\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/loadbar/loadbar.it.lang?");
 
 /***/ })
 

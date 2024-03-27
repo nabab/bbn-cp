@@ -15,7 +15,7 @@
   \**************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Bold\":\"Gras\",\"Italic\":\"Italique\",\"Heading\":\"Titre\",\"Quote\":\"Citation\",\"Generic List\":\"Liste générique\",\"Numbered List\":\"Liste numérotée\",\"Create Link\":\"Créer un lien\",\"Insert Image\":\"Insérer une image\",\"Toggle Preview\":\"Activer l\\'aperçu\",\"Toggle Side by Side\":\"Activer l\\'un à côté de l\\'autre\",\"Toggle Fullscreen\":\"Activer le plein écran\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/markdown/markdown.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Bold\":\"Gras\",\"Italic\":\"Italique\",\"Heading\":\"Titre\",\"Quote\":\"Citation\",\"Generic List\":\"Liste générique\",\"Numbered List\":\"Liste numérotée\",\"Create Link\":\"Créer un lien\",\"Insert Image\":\"Insérer une image\",\"Toggle Preview\":\"Activer l\\'aperçu\",\"Toggle Side by Side\":\"Activer l\\'un à côté de l\\'autre\",\"Toggle Fullscreen\":\"Activer le plein écran\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/markdown/markdown.fr.lang?");
 
 /***/ })
 

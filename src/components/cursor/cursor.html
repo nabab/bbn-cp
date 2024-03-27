@@ -1,10 +1,10 @@
 <div :class="[componentClass, 'bbn-w-100']">
-  <label v-text="label"
+  <label bbn-text="label"
          class="bbn-cursor-label bbn-nowrap"/>
   <input :focused="true"
-          v-bind:value="parseInt(value)"
+          bbn-bind:value="parseInt(value)"
           placeholder="Type your text here!"
-          v-on:input="$emit('input', $event.target.value + unit)"
+          bbn-on:input="$emit('input', $event.target.value + unit)"
           type="range"
           :min="min" 
           :max="max" 

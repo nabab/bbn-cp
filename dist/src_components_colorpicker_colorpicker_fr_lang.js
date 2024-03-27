@@ -15,7 +15,7 @@
   \********************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Save\":\"Enregistrer\",\"Close\":\"Fermer\",\"Empty\":\"Vider\",\"Show palette\":\"Afficher la palette\",\"Close palette\":\"Fermer la palette\",\"Confirm\":\"Confirmer\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/colorpicker/colorpicker.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Save\":\"Enregistrer\",\"Close\":\"Fermer\",\"Empty\":\"Vider\",\"Show palette\":\"Afficher la palette\",\"Close palette\":\"Fermer la palette\",\"Confirm\":\"Confirmer\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/colorpicker/colorpicker.fr.lang?");
 
 /***/ })
 

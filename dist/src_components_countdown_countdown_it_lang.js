@@ -15,7 +15,7 @@
   \****************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"years\":\"anni\",\"year\":\"anno\",\"months\":\"mesi\",\"month\":\"mese\",\"days\":\"giorni\",\"day\":\"giorno\",\"hours\":\"ore\",\"hour\":\"ora\",\"minutes\":\"minuti\",\"minute\":\"minuto\",\"seconds\":\"secondi\",\"second\":\"secondo\",\"milliseconds\":\"millisecondi\",\"millisecond\":\"millisecondo\",\"The precision is incorrect\":\"La precisione non è corretta\",\"The scale is incorrect\":\"La scala non è corretta\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/countdown/countdown.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"years\":\"anni\",\"year\":\"anno\",\"months\":\"mesi\",\"month\":\"mese\",\"days\":\"giorni\",\"day\":\"giorno\",\"hours\":\"ore\",\"hour\":\"ora\",\"minutes\":\"minuti\",\"minute\":\"minuto\",\"seconds\":\"secondi\",\"second\":\"secondo\",\"milliseconds\":\"millisecondi\",\"millisecond\":\"millisecondo\",\"The precision is incorrect\":\"La precisione non è corretta\",\"The scale is incorrect\":\"La scala non è corretta\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/countdown/countdown.it.lang?");
 
 /***/ })
 

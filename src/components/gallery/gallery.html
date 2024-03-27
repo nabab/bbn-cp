@@ -1,68 +1,68 @@
 <div :class="[componentClass, {'bbn-flex-height': scrollable, 'bbn-gallery-sorting': isSorting}]">
-  <div v-if="toolbar"
+  <div bbn-if="toolbar"
        class="bbn-l bbn-widget bbn-gallery-toolbar bbn-spadded bbn-vmiddle">
-    <component v-if="isObject(toolbar) || isComponent(toolbar)"
+    <component bbn-if="isObject(toolbar) || isComponent(toolbar)"
                :is="toolbar"/>
-    <template v-else>
+    <template bbn-else>
       <div class="bbn-flex-width bbn-vmiddle">
         <div class="bbn-flex-fill">
           <div class="bbn-flex-width bbn-vmiddle">
-            <bbn-button v-if="toolbarButtons && toolbarButtons.length"
-                        v-for="(btn, idx) in toolbarButtons"
+            <bbn-button bbn-if="toolbarButtons && toolbarButtons.length"
+                        bbn-for="(btn, idx) in toolbarButtons"
                         :disabled="isSelecting || isSorting"
-                        v-bind="btn"
+                        bbn-bind="btn"
                         :key="idx"/>
             <bbn-button :text="_('Select')"
                         icon="nf nf-mdi-vector_selection"
                         @click="setSelecting('selection')"
                         :notext="buttonsNoText"
                         :disabled="isSelecting || isSorting"
-                        v-if="!!selection"/>
+                        bbn-if="!!selection"/>
             <bbn-button :text="_('Upload')"
                         icon="nf nf-fa-upload"
                         @click="$emit('upload')"
-                        v-if="uploadable"
+                        bbn-if="uploadable"
                         :notext="buttonsNoText"
                         :disabled="isSelecting || isSorting"/>
             <bbn-button :text="_('Download')"
                         icon="nf nf-fa-download"
                         @click="setSelecting('download')"
-                        v-if="downloadable"
+                        bbn-if="downloadable"
                         :disabled="isSelecting || !total || isSorting"
                         :notext="buttonsNoText"
                         class="bbn-left-xsspace"/>
             <bbn-button :text="_('Delete')"
                         icon="nf nf-fa-trash"
                         @click="setSelecting('delete')"
-                        v-if="deletable"
+                        bbn-if="deletable"
                         :disabled="isSelecting || !total || isSorting"
                         :notext="buttonsNoText"
                         class="bbn-left-xsspace"/>
             <bbn-button :text="_('Order')"
                         icon="nf nf-fa-sort_numeric_asc"
                         @click="isSorting = !isSorting"
-                        v-if="sortable && !!uid"
+                        bbn-if="sortable && !!uid"
                         :disabled="isSelecting || !total"
                         :notext="buttonsNoText"
                         :class="['bbn-left-xsspace', {'bbn-primary': isSorting}]"/>
             <bbn-button :text="_('Ok')"
                         icon="nf nf-fa-check"
                         @click="emitAction()"
-                        v-if="isSelecting"
+                        bbn-if="isSelecting"
                         :disabled="!currentSelected.length"
                         :notext="buttonsNoText"
                         class="bbn-left-space"/>
             <bbn-button :text="_('Cancel')"
                         icon="nf nf-fa-times"
                         @click="setSelecting(false)"
-                        v-if="isSelecting"
+                        bbn-if="isSelecting"
                         :notext="buttonsNoText"
                         class="bbn-left-xsspace"/>
-            <div v-if="filterable"
+            <div bbn-if="filterable"
                   class="bbn-flex-fill bbn-hmargin">
               <div class="bbn-flex-width">
                 <bbn-input :placeholder="_('Search')"
-                           v-model="currentSearch"
+                           bbn-model="currentSearch"
                            class="bbn-flex-fill"
                            ref="search"
                            :button-right="!!currentSearch ? 'nf nf-fa-times' : 'nf nf-fa-search'"
@@ -78,9 +78,9 @@
           </div>
         </div>
         <div class="bbn-vmiddle">
-          <bbn-range v-if="resizable"
+          <bbn-range bbn-if="resizable"
                      class="bbn-vmiddle"
-                     v-model="currentItemWidth"
+                     bbn-model="currentItemWidth"
                      :min="currentMinItemWidth"
                      :max="currentMaxItemWidth"
                      :disabled="isLoading"/>
@@ -90,11 +90,11 @@
   </div>
   <div :class="{'bbn-flex-fill': scrollable}">
     <div :class="['bbn-flex-width', {'bbn-overlay': scrollable}]">
-      <div v-if="!!currentSelected && currentSelected.length && !!uid"
+      <div bbn-if="!!currentSelected && currentSelected.length && !!uid"
            class="bbn-gallery-selected-panel bbn-rel bbn-hxsspace">
         <bbn-scroll>
           <div class="bbn-gallery-selected-panel-grid">
-            <gallery-selected v-for="(sel, idx) in currentSelected"
+            <gallery-selected bbn-for="(sel, idx) in currentSelected"
                               :source="sel"
                               :key="idx"/>
           </div>
@@ -102,20 +102,20 @@
       </div>
       <div ref="gallery"
            class="bbn-flex-fill">
-        <div v-if="isLoading"
+        <div bbn-if="isLoading"
             :class="['bbn-background', 'bbn-middle', 'bbn-padded', {
               'bbn-overlay': scrollable,
             }]">
           <bbn-loadicon class="bbn-vmiddle"
                         :size="24"/>
           <span class="bbn-xl bbn-b bbn-left-sspace"
-                v-text="_('Loading') + '...'"/>
+                bbn-text="_('Loading') + '...'"/>
         </div>
         <component :is="scrollable ? 'bbn-scroll' : 'div'"
-                  v-else-if="total">
+                  bbn-elseif="total">
           <div class="bbn-gallery-columns-container"
                :style="{margin: '0 auto', textAlign: align}">
-            <gallery-col v-for="index in cols"
+            <gallery-col bbn-for="index in cols"
                         :key="'gallery-col-' + index"
                         :index="index"
                         :source="items.filter((it, i) => {
@@ -129,8 +129,8 @@
   <bbn-pager class="bbn-gallery-pager"
               :element="_self"
               ref="pager"
-              v-if="(pageable || isAjax) && !!pager"/>
-  <bbn-floater v-if="showFloater"
+              bbn-if="(pageable || isAjax) && !!pager"/>
+  <bbn-floater bbn-if="showFloater"
               :title="false"
               :top="0"
               @close="showFloater = false"

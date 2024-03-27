@@ -3,7 +3,7 @@
  * Every instance of bbnComponentObject is registered through its
  * unique ID in the static #components property
  * @param {Symbol} id 
- * @returns 
+ * @returns {bbnCp|null} 
  */
 export default function getComponent(id) {
   return this.componentsIndex.get(id) || null;

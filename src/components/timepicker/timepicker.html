@@ -1,5 +1,5 @@
 <span :class="[componentClass, 'bbn-textbox', {'bbn-input-nullable': isNullable}]">
-  <bbn-masked v-model="inputValue"
+  <bbn-masked bbn-model="inputValue"
               ref="element"
               :disabled="isDisabled"
               :readonly="readonly"
@@ -12,9 +12,9 @@
               :autosize="autosize"
               :inputmode="inputmode"
               :placeholder="placeholder"/>
-  <div v-if="isNullable && !readonly && !isDisabled"
+  <div bbn-if="isNullable && !readonly && !isDisabled"
        class="bbn-block bbn-h-100 bbn-input-nullable-container">
-    <i v-if="hasValue" class="nf nf-fa-times_circle bbn-p"
+    <i bbn-if="hasValue" class="nf nf-fa-times_circle bbn-p"
        @mousedown.prevent.stop="clear"/>
   </div>
   <bbn-button icon="nf nf-fa-clock_o"
@@ -22,7 +22,7 @@
               :disabled="isDisabled || readonly"
               tabindex="-1"
               class="bbn-button-right bbn-no-vborder"/>
-  <bbn-floater v-if="isOpened && !isDisabled && !readonly"
+  <bbn-floater bbn-if="isOpened && !isDisabled && !readonly"
                :element="$el"
                ref="floater"
                @close="isOpened = false"

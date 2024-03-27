@@ -324,6 +324,9 @@ const cpDef = {
       };
     },
     computed: {
+      componentOptions() {
+        return bbn.fn.numProperties(this.options) ? this.options : {source: this.source}
+      },
       /**
        * @computed contentPadding
        * @return {String|Boolean}

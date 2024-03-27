@@ -207,7 +207,7 @@ const cpDef = {
       dots: {
         template: `
           <div class="bbn-splashscreen-dots bbn-c">
-            <i v-for="idx in indexes"
+            <i bbn-for="idx in indexes"
                @click="select(idx)"
                :class="['bbn-padded', 'bbn-p', 'nf nf-fa-circle', {
                  ' bbn-primary-text': value !== idx,

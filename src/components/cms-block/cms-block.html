@@ -5,15 +5,15 @@
         {'bbn-cms-block-over': over || edit}
       ]"
       @mouseenter="over = true">
-  <!--bbn-rte v-if="editable && type === 'html'"
-           v-model="source.content"
+  <!--bbn-rte bbn-if="editable && type === 'html'"
+           bbn-model="source.content"
   >
   </bbn-rte>
-  <div v-else-if="type === 'html'" 
-       v-html="source.content"
+  <div bbn-elseif="type === 'html'" 
+       bbn-html="source.content"
   >
-  </div-->
-  <component v-if="ready" 
+  </dibbn-->
+  <component bbn-if="ready" 
             :is="component(type)"
             :source="source"
             :class="['bbn-cms-block-component', {'edit-block' : over || edit}]"/>
@@ -21,26 +21,26 @@
     <div class="bbn-nowrap bbn-block">
       <i class="bbn-p nf nf-fa-edit inline bbn-xlarge bbn-white"
           @click="editMode" 
-          v-if="isAdmin && editing && !edit"></i>
+          bbn-if="isAdmin && editing && !edit"></i>
       <i class="bbn-p nf nf-fa-check inline bbn-xlarge bbn-white"
           @click="editBlock" 
-          v-if="changed"></i>
+          bbn-if="changed"></i>
       <i class="bbn-p nf nf-fa-close inline bbn-xlarge bbn-white"
           @click="cancelEdit"
-          v-if="changed"></i>
+          bbn-if="changed"></i>
     </div>
     <div class="bbn-overlay bbn-modal"></div>
     <div class="bbn-overlay bbn-vmiddle">
       <div class="bbn-nowrap bbn-block">
         <i class="bbn-p nf nf-fa-edit inline bbn-xlarge bbn-white"
            @click="editMode" 
-           v-if="isAdmin && editing && !edit"></i>
+           bbn-if="isAdmin && editing && !edit"></i>
         <i class="bbn-p nf nf-fa-check inline bbn-xlarge bbn-white"
            @click="editBlock" 
-           v-if="changed"></i>
+           bbn-if="changed"></i>
         <i class="bbn-p nf nf-fa-close inline bbn-xlarge bbn-white"
            @click="cancelEdit"
-           v-if="changed"></i>
+           bbn-if="changed"></i>
       </div>
     </div>
   </div>  

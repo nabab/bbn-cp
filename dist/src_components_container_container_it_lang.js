@@ -15,7 +15,7 @@
   \****************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"bbn-container cannot be rendered without a bbn-router\":\"bbn-container non può essere visualizzato senza un bbn-router\",\"Container menu\":\"Menù contenitore\",\"Close\":\"Chiudi\",\"Impossible to take the screenshot of\":\"Impossibile fare lo screenshot di\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/container/container.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"bbn-container cannot be rendered without a bbn-router\":\"bbn-container non può essere visualizzato senza un bbn-router\",\"Container menu\":\"Menù contenitore\",\"Close\":\"Chiudi\",\"Impossible to take the screenshot of\":\"Impossibile fare lo screenshot di\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/container/container.it.lang?");
 
 /***/ })
 

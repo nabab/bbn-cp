@@ -1,8 +1,11 @@
 import bbnHTML from "./Html.js";
 import bbnAnonCp from "./AnonCp.js";
 import "../cp.js";
+import stringToTemplate from "../internals/stringToTemplate.js";
+import connectedCallback from "../internals/connectedCallback.js";
+import disconnectedCallback from "../internals/disconnectedCallback.js";
 
-const tmp = bbn.cp.stringToTemplate('<slot/>', true, 'bbn-anon');
+const tmp = stringToTemplate('<slot/>', true, 'bbn-anon');
 
 export default class bbnAnon extends bbnHTML
 {
@@ -11,11 +14,11 @@ export default class bbnAnon extends bbnHTML
   }
 
   connectedCallback() {
-    return bbn.cp.connectedCallback(this);
+    return connectedCallback(this);
   } 
 
   disconnectedCallback() {
-    return bbn.cp.disconnectedCallback(this);
+    return disconnectedCallback(this);
   }
 
   attributeChangedCallback(name, oldValue, newValue) {

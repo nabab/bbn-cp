@@ -4,7 +4,7 @@
        height: height,
        aspectRatio: aspectRatio
      }">
-  <div v-if="title && (titlePosition === 'top')"
+  <div bbn-if="title && (titlePosition === 'top')"
        :class="['bbn-c', {
          'bbn-header': skin,
          'bbn-radius-top': skin,
@@ -12,14 +12,14 @@
          'bbn-no-border-left': skin,
          'bbn-no-border-right': skin,
        }, titleCls]"
-       v-html="title"
+       bbn-html="title"
        :style="{
          background: titleBackground,
          color: titleColor
        }">
   </div>
   <div class="bbn-flex-fill">
-    <div v-if="(isYoutube || isVimeo) && !!poster && showPoster"
+    <div bbn-if="(isYoutube || isVimeo) && !!poster && showPoster"
          class="bbn-overlay bbn-video-poster">
       <img :src="poster">
       <div class="bbn-overlay bbn-middle">
@@ -27,7 +27,7 @@
            @click="showPoster = false"/>
       </div>
     </div>
-    <iframe v-else-if="isYoutube || isVimeo"
+    <iframe bbn-elseif="isYoutube || isVimeo"
             width="100%"
             height="100%"
             :src="videoSource"
@@ -36,7 +36,7 @@
             :class="cls"
             allowfullscreen>
     </iframe>
-    <video v-else
+    <video bbn-else
            :autoplay="autoplay"
            :controls="controls"
            :loop="loop"
@@ -52,13 +52,13 @@
              'bbn-bordered-right': skin,
              'bbn-radius-bottom': skin
            }]">
-      <source v-if="videoSource"
+      <source bbn-if="videoSource"
               :src="videoSource"
               :type="type">
       {{browserMessage}}
     </video>
   </div>
-  <div v-if="title && (titlePosition === 'bottom')"
+  <div bbn-if="title && (titlePosition === 'bottom')"
        :class="['bbn-c', {
          'bbn-header': skin,
          'bbn-radius-bottom': skin,
@@ -66,7 +66,7 @@
          'bbn-no-border-left': skin,
          'bbn-no-border-right': skin,
        }, titleCls]"
-       v-html="title"
+       bbn-html="title"
        :style="{
          background: titleBackground,
          color: titleColor

@@ -15,7 +15,7 @@
   \******************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Untitled\":\"Sanza titolo\",\"Loading\":\"Caricamento\",\"Impossible to find the container for URL\":\"Impossibile trovare il contenitore per l\\'URL\",\"Untitled site\":\"Sito senza titolo\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/split-tabs/split-tabs.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Untitled\":\"Sanza titolo\",\"Loading\":\"Caricamento\",\"Impossible to find the container for URL\":\"Impossibile trovare il contenitore per l\\'URL\",\"Untitled site\":\"Sito senza titolo\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/split-tabs/split-tabs.it.lang?");
 
 /***/ })
 

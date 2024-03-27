@@ -657,9 +657,7 @@ const cpDef = {
               menu.push({
                 text: a.text,
                 icon: a.icon ? a.icon : '',
-                action: a.action ? () => {
-                  a.action(node)
-                } : false
+                action: a.action
               });
             })
           }
@@ -857,7 +855,6 @@ const cpDef = {
         }
         return false;
       },
-  
       /**
        * Unselects the currently selected node.
        * @method unselect
@@ -1214,7 +1211,7 @@ const cpDef = {
                delete this.currentState[uid];
               }
             })
-          }, 250);
+          }, 50);
         }
       },
       /**
@@ -1230,10 +1227,8 @@ const cpDef = {
         ) {
           return this.updateData().then(() => {
             this.isInit = true;
-            this.$forceUpdate().then(() => {
-              this.initState();
-            })
-          });
+                          this.initState();
+                      });
         }
         else {
           this.isInit = true;
@@ -1253,13 +1248,16 @@ const cpDef = {
        * @fires initState
        */
       afterUpdate(){
-        /*
         if (!this.isLoaded && this.ready && !this.tree.autobind) {
           this.$once('dataloaded', () => {
             this.$nextTick(this.initState);
           });
         }
-        */
+      },
+      clickMenuItem(node, item, ev) {
+        if (item.action) {
+          item.action.bind(this.tree.$origin)(node, ev);
+        }
       }
     },
     /**
@@ -1272,7 +1270,7 @@ const cpDef = {
      * @emits load
      * @fires closest
      */
-    created(){
+    created() {
       this.$on('beforeupdate', e => {
         if ( this.isAjax && (this.tree.isLoading || this.isLoading) ){
           e.preventDefault();
@@ -1482,6 +1480,11 @@ const cpDef = {
         data(){
           return {
             ready: false,
+/**
+           * @data {Boolean} [false] doubleClk
+           * @memberof bbn-tree-node
+           */
+          doubleClk: false,
                         /**
              * The parent tree
              * @data {Boolean} [false] parent
@@ -1578,6 +1581,14 @@ const cpDef = {
             }
             return style;
           },
+/**
+         * @computed menu
+         * @return {Array}
+         * @memberof bbn-tree-node
+         */
+        menu(){
+          return this.getMenu()
+        },
           textFromText() {
             if (this.source.data.text) {
               return bbn.fn.html2text(this.source.data.text)
@@ -1932,6 +1943,9 @@ const cpDef = {
             // if the current node isn't already selected
             if ( !this.tree.currentSelected.includes(this) ){
               let sameParent = this.tree.selectedNode && (this.tree.selectedNode.parent === this.parent);
+if ( (this.tree.selectedNode && !this.tree.multiple) || (sameParent && !this.parent.multiple) ){
+              this.tree.selectedNode.isSelected = false;
+            }
                             // initializing and calling the event beforeSelect
               let ev = new Event('beforeSelect', {cancelable: true});
               if (emit) {
@@ -1939,12 +1953,7 @@ const cpDef = {
               }
 
               if ( !ev.defaultPrevented ){
-                if (this.tree.selectedNode && (!this.multiple || (sameParent && !this.parent.multiple))) {
-                  bbn.fn.log(["UNSELECT NODE", this.tree.selectedNode, this.tree.currentSelected[this.tree.currentSelected.length - 1]])
-                  this.tree.currentSelected[this.tree.currentSelected.length - 1].isSelected = false;
-                  this.tree.selectedNode.$tick();
-                }
-                // adding the node to selected
+                                // adding the node to selected
                 this.tree.currentSelected.push(this);
                 // call the event select
                 if ( emit ){
@@ -2209,7 +2218,11 @@ const cpDef = {
             if (!this.tree.realDragging && this.tree.selectable) {
               this.isSelected = !this.isSelected;
             }
-          }
+          },
+          clickMenuItem(item, idx, dataIdx, ev) {
+            this.$emit('selectmenu', this, item, ev);
+            ev.preventDefault();
+          },
         },
         /**
          * Defines the props tree and parent of the node
@@ -2277,7 +2290,19 @@ const cpDef = {
           }
         },
         watch: {
-                    /**
+          /**
+           * @watch doubleClk
+           * @param {Boolean} newVal
+           * @memberof bbn-tree-node
+           */
+          doubleClk(newVal){
+            if ( newVal ){
+              setTimeout(() => {
+                this.doubleClk = false
+              }, 500);
+            }
+          },
+          /**
            * Beware it's a computed, use tree.currentData[idx].expanded to change it.
            *
            * @watch isExpanded
@@ -2318,13 +2343,11 @@ const cpDef = {
            * @memberof bbn-tree-node
            */
           isSelected(newVal){
-            //bbn.fn.log(["WATCH UNSELECT", newVal]);
-            if ( newVal ){
+                        if ( newVal ){
               this.addToSelected();
             }
             else {
-              //bbn.fn.log("REMOVING FROM SELECTED - UNSE")
-              this.removeFromSelected();
+                            this.removeFromSelected();
             }
           },
           /**
@@ -2354,6 +2377,7 @@ const cpDef = {
     }
   };
   
+import bbn from '@bbn/bbn';
 import cpHtml from './tree.html';
 import cpStyle from './tree.less';
 let cpLang = {};

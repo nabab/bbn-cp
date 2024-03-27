@@ -7,17 +7,17 @@
               @click="showWindow=!showWindow"
               ref="button"/>
   <bbn-floater :title="false"
-               v-if="showWindow"
+               bbn-if="showWindow"
                @close="showWindow=false"
                :auto-hide="true"
                :scrollable="false"
                :element="buttonElement">
     <div class="bbn-grid-configuration-container bbn-grid"
          :style="{gridTemplateRows: 'repeat(' + rows + ', ' + realCellSize + ')'}">
-      <div v-for="rowidx in rows"
+      <div bbn-for="rowidx in rows"
            class="bbn-grid-configuration-container bbn-grid"
            :style="{gridTemplateColumns: 'repeat(' + cols + ', ' + realCellSize + ')'}">
-        <div v-for="colidx in cols"
+        <div bbn-for="colidx in cols"
              :class="['bbn-bordered', {'bbn-state-selected': (currentRow >= rowidx) && (currentCol >= colidx)}]"
              @mouseenter="mouseEnter(colidx, rowidx)"
              @mouseleave="mouseLeave()"

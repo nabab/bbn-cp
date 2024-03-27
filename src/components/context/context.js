@@ -113,7 +113,7 @@ const cpDef = {
        * @memberof listComponent
        */
       sourceAction: {
-        type: [String, Function],
+        type: [String, Function, Boolean],
         default: 'action'
       },
       /**
@@ -155,6 +155,23 @@ const cpDef = {
       };
     },
     methods: {
+      select(item, idx, dataIndex, ev) {
+        const ev2 = this.$emit('select', item, idx, dataIndex, ev);
+        if (!ev2.defaultPrevented && this.sourceAction) {
+          const action = bbn.fn.isFunction(this.sourceAction) ? this.sourceAction(item) : this.sourceAction;
+          if (action && item[action]) {
+            const fn = item[action];
+            if (bbn.fn.isFunction(fn)) {
+              bbn.fn.log(['select on context', item.action.toString(), this.$origin, item, idx, dataIndex, ev])
+              fn.bind(this.$origin)(item, idx, dataIndex, ev);
+              bbn.fn.log(['after select on context'])
+            }
+          }
+        }
+        else {
+          this.getRef('floater').closeAll();
+        }
+      },
       /**
        * Based on the type of event and on the property context, shows or hides the floating element of the menu.
        * @method clickItem
@@ -162,6 +179,7 @@ const cpDef = {
        * @fires updateData
        */
       clickItem(e){
+        bbn.fn.log("click item context");
         if (
           !this.disabled
           && (
@@ -171,12 +189,12 @@ const cpDef = {
           )
         ){
           //bbn.fn.log("CLICK ITEM", e.target, this.currentData);
-          if (e.preventDefault) {
-            e.preventDefault();
-            e.stopPropagation();
-          }
           // Don't execute if in the floater
           if (!e.target.closest('.bbn-floater-context-' + this.bbnUid)) {
+            if (e.preventDefault) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
             if (!this.showFloater && !this.attach) {
               if (e.pageX > bbn.env.width / 2) {
                 this.currentLeft = null;
@@ -218,6 +236,7 @@ const cpDef = {
        * @method toggle
        */
       toggle(){
+        bbn.fn.log("CONTEXT TOGGLE")
         if (!this.showFloater) {
           this.updateData().then(() => {
             this.showFloater = !this.showFloater;
@@ -266,6 +285,7 @@ const cpDef = {
     }
   };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './context.html';
 import cpStyle from './context.less';
 let cpLang = {};

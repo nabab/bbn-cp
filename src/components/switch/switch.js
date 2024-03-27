@@ -157,33 +157,27 @@ const cpDef = {
         default: false
       }
     },
+    data() {
+      let state = this.checked;
+      if (state
+        && ((!this.strict && (this.modelValue != this.value))
+          || (this.strict && (this.modelValue !== this.value)))
+      ) {
+        state = false;
+      }
+      else if ((this.strict && (this.modelValue === this.value))
+        || (!this.strict && (this.modelValue == this.value))
+      ) {
+        state = true;
+      }
+  
+      return {state};
+    },
     model: {
       prop: 'modelValue',
       event: 'input'
     },
     computed: {
-      /**
-       * Gives information about the state of the switch
-       * @computed state
-       * @return {Boolean}
-       */
-      state(){
-        if (this.modelValue === undefined) {
-          return this.checked;
-        }
-        if (this.checked
-          && ((!this.strict && (this.modelValue != this.value))
-            || (this.strict && (this.modelValue !== this.value)))
-        ) {
-          return false;
-        }
-        if ((this.strict && (this.modelValue === this.value))
-          || (!this.strict && (this.modelValue == this.value))
-        ) {
-          return true;
-        }
-        return this.checked;
-      },
       /**
        * If the prop noIcon is set to false returns the icon basing on the component's state.
        * @computed currentIcon
@@ -201,11 +195,51 @@ const cpDef = {
        * @emits input
        * @emits change
        */
-      toggle(){
+      toggle(ev) {
         if (!this.isDisabled && !this.readonly) {
-          let emitVal = !this.state ? this.value : this.novalue;
-          this.$emit('input', emitVal);
-          this.$emit('change', emitVal, this);
+          this.$emit('beforechange', ev, this.state);
+          if (!ev?.defaultPrevented) {
+            let emitVal;
+            if (this.modelValue !== undefined) {
+              emitVal = this.state ? this.novalue : this.value;
+            }
+            else {
+              emitVal = this.state ? this.novalue : this.value;
+            }
+            
+            this.$emit('input', emitVal);
+            this.$emit('change', emitVal, this);
+            this.state = !this.state;
+            // This is mandatory for string, I don't know why!
+            this.$forceUpdate();
+          }
+        }
+      },
+      /**
+       * Prevents the event action if the component is disabled or readonly
+       * @method onClick
+       * @fires click
+       */
+      onClick(ev){
+        if (this.isDisabled || this.readonly) {
+          ev.preventDefault();
+        }
+        else {
+          this.toggle();
+        }
+      },
+      /**
+       * Prevents the event action if the component is disabled or readonly
+       * @method onKeyDown
+       * @fires keydown
+       */
+      onKeyDown(ev){
+        if ((this.isDisabled || this.readonly) && (ev.keyCode === 32)) {
+          ev.preventDefault()
+        }
+        else {
+          //bbn.fn.log("KEYDOWN");
+          this.keydown(ev);
         }
       }
     },
@@ -219,9 +253,11 @@ const cpDef = {
       if (this.checked && !this.state) {
         this.toggle();
       }
+      /*
       if (!this.checked && !this.state) {
         this.$emit('input', this.novalue);
       }
+      */
     },
     watch: {
       /**

@@ -1386,7 +1386,7 @@ const cpDef = {
    * @fires router.register
    */
   mounted() {
-    //bbn.fn.log("MOUNTED CONTAINER " + this.url);
+    bbn.fn.log("MOUNTED CONTAINER " + this.url);
     if ( !this.router ){
       throw new Error(bbn._("bbn-container cannot be rendered without a bbn-router"));
     }
@@ -1401,10 +1401,12 @@ const cpDef = {
       });
     }
     else{
-      //bbn.fn.warning("ROUTER REGISTERING");
+      bbn.fn.warning("ROUTER REGISTERING FOR " + this.url);
       this.router.register(this);
       this.$nextTick(() => {
-        this.init();
+        this.$nextTick(() => {
+          this.init();
+        })
       })
     }
     this.$el.title = '';
@@ -1652,7 +1654,7 @@ const cpDef = {
         this.currentURL = this.url;
       }
       // Routing if the router has different info
-      else if (this.currentView && (this.currentView.current !== newVal)) {
+      else if (this.router && this.router.$isInit && this.currentView && (this.currentView.current !== newVal)) {
         this.router.route(newVal)
       }
     },
@@ -1773,7 +1775,6 @@ const cpDef = {
 
 };
 
-import bbn from '@bbn/bbn';
 import cpHtml from './container.html';
 import cpStyle from './container.less';
 let cpLang = {};

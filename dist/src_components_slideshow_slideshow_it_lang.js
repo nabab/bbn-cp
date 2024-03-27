@@ -15,7 +15,7 @@
   \****************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Summary\":\"Riepilogo\",\"Untitled\":\"Senza titolo\",\"Previous\":\"Precedente\",\"Next\":\"Seguente\",\"Don\\'t show it again\":\"Non mostrare nuovamente\",\"Loading\":\"Caricamento\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/slideshow/slideshow.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Summary\":\"Riepilogo\",\"Untitled\":\"Senza titolo\",\"Previous\":\"Precedente\",\"Next\":\"Seguente\",\"Don\\'t show it again\":\"Non mostrare nuovamente\",\"Loading\":\"Caricamento\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/slideshow/slideshow.it.lang?");
 
 /***/ })
 

@@ -16,7 +16,7 @@
          @click="openCloseFloater">
       <div class="bbn-flex-fill bbn-right-xsspace bbn-radius bbn-colorpicker-input-color bbn-middle bbn-bordered"
            :style="{backgroundColor: value || ''}">
-        <i v-if="!value"
+        <i bbn-if="!value"
            class="nf nf-fae-thin_close bbn-s bbn-red"/>
       </div>
       <div class="bbn-colorpicker-icon">
@@ -28,7 +28,7 @@
                :element="$el"
                hpos="right"
                :auto-hide="200"
-               v-if="!!showFloater && !isDisabled && !readonly"
+               bbn-if="!!showFloater && !isDisabled && !readonly"
                ref="floater"
                @close="showFloater = false"
                @hook:mounted="init"
@@ -43,9 +43,9 @@
                ref="picker"
                @dblclick.prevent.stop=""
           ></div>
-          <bbn-scroll v-if="showPalette || onlyPalette" class="bbn-background">
+          <bbn-scroll bbn-if="showPalette || onlyPalette" class="bbn-background">
             <div class="bbn-c bbn-vsmargin">
-              <div v-for="p in palette"
+              <div bbn-for="p in palette"
                    class="bbn-iblock bbn-colorpicker-palette bbn-bordered bbn-smargin bbn-p"
                    :style="{backgroundColor: p}"
                    @click="setColor(p)"/>
@@ -58,10 +58,10 @@
           <div class="bbn-colorpicker-details">
             <div class="bbn-colorpicker-preview bbn-bottom-space bbn-box bbn-middle"
                  :style="{backgroundColor: currentValue}">
-              <i v-if="!currentValue"
+              <i bbn-if="!currentValue"
                  class="nf nf-fae-thin_close bbn-red"/>
             </div>
-            <div v-if="showCodes"
+            <div bbn-if="showCodes"
                  class="bbn-colorpicker-details-inputs bbn-grid bbn-bottom-space">
               <span class="bbn-vmiddle">HEX</span>
               <span class="bbn-vmiddle">
@@ -97,12 +97,12 @@
               </div>
             </div>
             <div class="bbn-flex-width">
-              <div v-if="palette.length">
+              <div bbn-if="palette.length">
                 <bbn-button :icon="!showPalette ? 'nf nf-fae-palette_color' : 'nf nf-fa-adjust'"
                             :notext="true"
                             :text="!showPalette ? _('Show palette') : _('Close palette')"
                             @click="showPalette = !showPalette"
-                            v-if="!onlyPalette"/>
+                            bbn-if="!onlyPalette"/>
               </div>
               <div class="bbn-flex-fill bbn-r">
                 <bbn-button icon="nf nf-fa-close"
@@ -113,7 +113,7 @@
                             :notext="true"
                             :text="_('Empty')"
                             @click="empty"
-                            v-if="emptyButton"/>
+                            bbn-if="emptyButton"/>
                 <bbn-button icon="nf nf-fa-check"
                             :text="_('Confirm')"
                             @click="save"/>

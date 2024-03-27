@@ -1,17 +1,17 @@
-<component v-if="mode === 'write'"
+<component bbn-if="mode === 'write'"
            :is="renderedComponent"
-           v-bind="renderedOptions"
-           v-model="currentValue"
+           bbn-bind="renderedOptions"
+           bbn-model="currentValue"
            :class="componentClass"
            @input="$emit('input', currentValue)"
 
 >
-  <div v-if="renderedContent" v-html="renderedContent"></div>
+  <div bbn-if="renderedContent" bbn-html="renderedContent"></div>
 </component>
-<component v-else
+<component bbn-else
            :is="renderedComponent"
-           v-bind="renderedOptions"
+           bbn-bind="renderedOptions"
            :class="componentClass"
 >
-  <div v-if="renderedContent" v-html="renderedContent"></div>
+  <div bbn-if="renderedContent" bbn-html="renderedContent"></div>
 </component>

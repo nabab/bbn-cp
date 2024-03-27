@@ -15,7 +15,7 @@
   \********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Yes\":\"Si\",\"No\":\"No\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/radio/radio.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Yes\":\"Si\",\"No\":\"No\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/radio/radio.it.lang?");
 
 /***/ })
 

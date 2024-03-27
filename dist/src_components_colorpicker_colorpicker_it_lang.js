@@ -15,7 +15,7 @@
   \********************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Close\":\"Chiudi\",\"Empty\":\"Vuoto\",\"Show palette\":\"Mostra tavolozza\",\"Close palette\":\"Chiudi tavolozza\",\"Confirm\":\"Conferma\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/colorpicker/colorpicker.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Close\":\"Chiudi\",\"Empty\":\"Vuoto\",\"Show palette\":\"Mostra tavolozza\",\"Close palette\":\"Chiudi tavolozza\",\"Confirm\":\"Conferma\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/colorpicker/colorpicker.it.lang?");
 
 /***/ })
 

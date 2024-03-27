@@ -1,5 +1,5 @@
 <div :class="[componentClass, 'bbn-background']">
-  <div v-if="splitter"
+  <div bbn-if="splitter"
        :class="{
     'bbn-overlay': splitter.fullSize && !isCollapsed,
     'bbn-w-100': ((isCollapsed && title) || !splitter.fullSize) && ((splitter.panes.length === 1) || !isHorizontal),
@@ -7,7 +7,7 @@
     'bbn-flex-height': splitter.fullSize && title && !isHorizontal && !isCollapsed,
     'bbn-flex-width': splitter.fullSize && title && isHorizontal && !isCollapsed
   }">
-    <div v-if="title"
+    <div bbn-if="title"
          :class="['bbn-light bbn-c bbn-header bbn-block bbn-pane-title bbn-m bbn-spadding', {
            'bbn-w-100': !isHorizontal,
            'bbn-h-100': isHorizontal
@@ -16,7 +16,7 @@
            writingMode: isHorizontal ? 'vertical-rl' : null,
            textOrientation: isHorizontal ? 'upright' : null,
          }"
-         v-html="title"/>
+         bbn-html="title"/>
     <div :class="{
       'bbn-hidden': isCollapsed,
       'bbn-overlay': splitter.fullSize && !title && !isCollapsed,
@@ -24,7 +24,7 @@
       'bbn-w-100': !splitter.fullSize && ((splitter.panes.length === 1) || !isHorizontal),
       'bbn-h-100': !splitter.fullSize && (splitter.panes.length > 1) && isHorizontal,
     }"
-         v-show="!isCollapsed">
+         bbn-show="!isCollapsed">
       <component :is="scrollable ? 'bbn-scroll' : 'div'"
                      :class="{'bbn-overlay': splitter.fullSize, 'bbn-w-100': !scrollable && splitter.fullSize}"
                      ref="scroll">

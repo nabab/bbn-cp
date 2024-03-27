@@ -15,7 +15,7 @@
   \**************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Search\":\"Ricerca\",\"Create a shortcut\":\"Crea una scorciatoia\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/treemenu/treemenu.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Search\":\"Ricerca\",\"Create a shortcut\":\"Crea una scorciatoia\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/treemenu/treemenu.it.lang?");
 
 /***/ })
 

@@ -34,7 +34,7 @@ const cpDef = {
             template: `
               <bbn-dropdown class="bbn-rte-style"
                             :source="styles"
-                            v-model="currentStyle"
+                            bbn-model="currentStyle"
                             :writable="false"
                             @change="setStyle"
                             :clear-html="true"/>
@@ -99,7 +99,7 @@ const cpDef = {
             template: `
               <bbn-dropdown class="bbn-rte-fontsize"
                             :source="sizes"
-                            v-model="currentSize"
+                            bbn-model="currentSize"
                             :writable="false"
                             @change="setSize"
                             :clear-html="true"
@@ -237,7 +237,7 @@ const cpDef = {
             name: 'bbn-rte-align',
             template: `
               <bbn-radiobuttons :disabled="!!isDisabled || !!isReadOnly"
-                                v-model="currentAlign"
+                                bbn-model="currentAlign"
                                 :source="buttons"
                                 :notext="true"
                                 style="width: auto"
@@ -303,7 +303,7 @@ const cpDef = {
                     }]">
                 <i class="nf nf-mdi-format_color_text bbn-hxsspace"/>
                 <bbn-colorpicker @change="setColor"
-                                 v-model="currentColor"
+                                 bbn-model="currentColor"
                                  :disabled="isDisabled"
                                  :readonly="isReadOnly"/>
               </span>
@@ -351,7 +351,7 @@ const cpDef = {
                   }]">
                 <i class="nf nf-mdi-format_color_fill bbn-hxsspace bbn-lg"/>
                 <bbn-colorpicker @change="setColor"
-                                 v-model="currentColor"
+                                 bbn-model="currentColor"
                                  :disabled="isDisabled"
                                  :readonly="isReadOnly"/>
               </span>

@@ -1,4 +1,4 @@
-import bbnBuilder from "../lib/Builder.js";
+import bbnBuilder from "../lib/Builder/Builder.js";
 
 /**
  * (Re)generates the whole component's vDOM and DOM if needed, picking the right root, shadow or not

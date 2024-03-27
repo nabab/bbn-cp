@@ -13,7 +13,7 @@
     'bbn-flex-width' : (buttonLeft || buttonRight || nullable),
     'bbn-nowrap': true
   }">
-    <bbn-button v-if="buttonLeft"
+    <bbn-button bbn-if="buttonLeft"
           :icon="buttonLeft" 
           @click="currentActionLeft"
           tabindex="-1"
@@ -25,10 +25,10 @@
               'bbn-disabled': buttonLeftDisabled
             }
           ]"/>
-    <div v-if="prefix"
+    <div bbn-if="prefix"
          class="bbn-block bbn-h-100 bbn-vmiddle bbn-nowrap"
-         v-text="prefix"/>
-    <input :value="currentValue"
+         bbn-text="prefix"/>
+    <input bbn-model="currentValue"
           :type="currentType"
           :name="name"
           ref="element"
@@ -61,9 +61,9 @@
           :style="{
             paddingLeft: prefix ? 0 : null
           }">
-    <bbn-loadicon v-if="loading"
+    <bbn-loadicon bbn-if="loading"
                   class="bbn-top-right bbn-vmiddle bbn-h-100 bbn-right-xspadded"/>
-    <div v-else-if="isNullable && (!readonly || forceNullable) && !isDisabled"
+    <div bbn-elseif="isNullable && (!readonly || forceNullable) && !isDisabled"
          class="bbn-input-nullable-container bbn-vmiddle"
          :style="{
            positions: 'absolute',
@@ -75,7 +75,7 @@
       <i class="nf nf-fa-times_circle bbn-p"
          @mousedown.prevent.stop="clear"></i>
     </div>
-    <bbn-button v-if="buttonRight"
+    <bbn-button bbn-if="buttonRight"
                 :icon="buttonRight"
                 tabindex="-1"
                 @click="currentActionRight"

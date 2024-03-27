@@ -1,7 +1,7 @@
 <div :class="componentClass">
   <bbn-splitter :orientation="orientation"
                 :resizable="resizable">
-    <bbn-pane v-for="(tn, i) in source"
+    <bbn-pane bbn-for="(tn, i) in source"
               :key="i"
               :resizable="resizable"
               @focusin="currentPane = i">

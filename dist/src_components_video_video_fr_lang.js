@@ -15,7 +15,7 @@
   \********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video.\":\"Pour voir cette vidéo, veuillez autoriser l\\'execution de JavaScript, et envisagez de passer à un navigateur Web qui prend en charge la vidéo HTML5.\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/video/video.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video.\":\"Pour voir cette vidéo, veuillez autoriser l\\'execution de JavaScript, et envisagez de passer à un navigateur Web qui prend en charge la vidéo HTML5.\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/video/video.fr.lang?");
 
 /***/ })
 

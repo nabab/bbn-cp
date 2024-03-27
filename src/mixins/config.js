@@ -1,3 +1,5 @@
+import bbn from "@bbn/bbn";
+
 const config = {
   statics(iface) {
     if (!iface.config || !iface.config.name || !iface.config.props || !iface.config.data) {
@@ -10,6 +12,7 @@ const config = {
   beforeCreate() {
     if (this.$slots.default) {
       bbn.fn.each(this.$slots.default, a => {
+        //bbn.fn.log(['config mixin', a.tagName])
         if ((a.tagName === this.constructor.config.name.toUpperCase()) && a.bbnSchema) {
           this[this.constructor.config.data].push(a.bbnSchema.props);
         }

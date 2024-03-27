@@ -9,12 +9,12 @@
       }]" 
      tabindex="-1"
 >
-  <span v-if="k === 'tab'">
+  <span bbn-if="k === 'tab'">
     Tab <i class="bbn-lg nf nf-mdi-keyboard_tab"></i>
   </span>
-  <span v-else-if="isArrow">
+  <span bbn-elseif="isArrow">
     <i :class="'bbn-lg ' + arrowClass"></i>
   </span>
-  <span v-else v-html="rendered"></span>
+  <span bbn-else bbn-html="rendered"></span>
 
 </div>

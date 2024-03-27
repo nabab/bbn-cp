@@ -213,26 +213,7 @@ const cpDef = {
         this.currentSelected.splice(0, this.currentSelected.length);
       }
     },
-    /**
-     * @event mounted
-     * @fires getRef
-     * @fires $nextTick
-     */
-    mounted(){
-      this.currentComponent = this.realComponent;
-      if (!this.component && !this.template && this.$slots.default) {
-        let tpl = this.getRef('slot').innerHTML;
-        if (tpl) {
-          this.currentTemplate = tpl;
-          this.currentComponent = {
-            props: ['source'],
-            data(){
-              return this.source;
-            },
-            template: this.currentTemplate
-          };
-        }
-      }
+    mounted() {
       this.$nextTick(() => {
         if (this.$parent.$options && (this.$parent.$options._componentTag === 'bbn-scroll')) {
           this.hasScroll = true;

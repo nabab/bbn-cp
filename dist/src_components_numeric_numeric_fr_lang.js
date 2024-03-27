@@ -15,7 +15,7 @@
   \************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Increase value\":\"Augmenter la valeur\",\"Decrease value\":\"Diminuer la valeur\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/numeric/numeric.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Increase value\":\"Augmenter la valeur\",\"Decrease value\":\"Diminuer la valeur\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/numeric/numeric.fr.lang?");
 
 /***/ })
 

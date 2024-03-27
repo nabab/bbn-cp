@@ -15,7 +15,7 @@
   \**********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Loading\":\"Caricamento\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/loader/loader.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Loading\":\"Caricamento\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/loader/loader.it.lang?");
 
 /***/ })
 

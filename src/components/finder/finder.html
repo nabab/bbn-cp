@@ -1,10 +1,10 @@
 <div :class="[componentClass, 'bbn-overlay']">
   <bbn-scroll axis="x" :class="componentClass" ref="scroll">
     <!-- Each tree pane -->
-    <div v-for="(p, i) in dirs"
+    <div bbn-for="(p, i) in dirs"
           class="bbn-flex-height bbn-finder-pane bbn-bordered-right">
 
-      <div v-if="uploading === p.path"
+      <div bbn-if="uploading === p.path"
           class="bbn-flex-fill" 
       >
         <div class="bbn-right">
@@ -15,7 +15,7 @@
                       class="bbn-xs"
           ></bbn-button>
         </div>
-        <bbn-upload v-model="uploaded" 
+        <bbn-upload bbn-model="uploaded" 
                     ref='upload'
                     :data="{
                       origin: origin, 
@@ -28,7 +28,7 @@
                     }"
         ></bbn-upload>
       </div>
-      <div class="bbn-flex-fill" v-else>
+      <div class="bbn-flex-fill" bbn-else>
         <div class="bbn-overlay">
           <bbn-tree :source="source"
                     :data="getData(p)"
@@ -63,26 +63,26 @@
                 <bbn-button class="bbn-xs" @click="context" :title="_('New Folder/Add files to this folder')" icon="nf nf-fa-plus"></bbn-button>
               </bbn-context>
             </div>
-            <div v-text="_('Number of childs')" v-if="p.num_dirs || p.num_files"></div>
-            <div v-text="p.num_dirs + p.num_files" v-if="p.num_dirs || p.num_files"></div>
+            <div bbn-text="_('Number of childs')" bbn-if="p.num_dirs || p.num_files"></div>
+            <div bbn-text="p.num_dirs + p.num_files" bbn-if="p.num_dirs || p.num_files"></div>
 
-            <div v-text="_('Directories')" v-if="p.num_dirs"></div>
-            <div v-text="p.num_dirs" v-if="p.num_dirs"></div>
+            <div bbn-text="_('Directories')" bbn-if="p.num_dirs"></div>
+            <div bbn-text="p.num_dirs" bbn-if="p.num_dirs"></div>
 
-            <div v-text="_('Files')" v-if="p.num_files"></div>
-            <div v-text="p.num_files" v-if="p.num_files"></div>
+            <div bbn-text="_('Files')" bbn-if="p.num_files"></div>
+            <div bbn-text="p.num_files" bbn-if="p.num_files"></div>
 
-            <div v-text="_('Size')"></div>
-            <div v-if="!p.size">
+            <div bbn-text="_('Size')"></div>
+            <div bbn-if="!p.size">
               <bbn-button icon="nf nf-mdi-scale"
                           class="bbn-xs"
                           @click="get_size(p)" 
                           :title="_('Get dir size')"
               ></bbn-button>         
             </div>
-            <span v-text="p.size" v-else style="text-align:right!important"></span>
+            <span bbn-text="p.size" bbn-else style="text-align:right!important"></span>
 
-            <div class="bbn-grid-full bbn-c" v-if="isLoading && (i === (numCols - 1))">
+            <div class="bbn-grid-full bbn-c" bbn-if="isLoading && (i === (numCols - 1))">
               <bbn-button icon="nf nf-fa-hand_paper" 
                           @click="abortRequest(i)"
                           :text="_('Abort request')"
@@ -94,28 +94,28 @@
       </div>
     </div>
     <!-- File detail / Image preview -->
-    <div v-if="preview && currentFile"               
+    <div bbn-if="preview && currentFile"               
           class="bbn-finder-info-file-container bbn-flex-height"
     >
       <div class="bbn-grid-fields bbn-header bbn-widget bbn-spadded">
-        <span v-text="_('Filename')"></span>
-        <span v-text="currentFile ? currentFile.node.data.value : ''"></span>
-        <span v-if="currentFile.info && currentFile.info.size" v-text="_('Size')"></span>
-        <span v-text="(currentFile.info && currentFile.info.size) ? currentFile.info.size : ''"></span>
-        <span v-if="(currentFile.info && currentFile.info.width)" v-text="_('Width')"></span>
-        <span v-if="(currentFile.info && currentFile.info.width)" v-text="currentFile.info.width + 'px'"></span>
-        <span v-if="(currentFile.info && currentFile.info.height)" v-text="_('Height')"></span>
-        <span v-if="(currentFile.info && currentFile.info.height)" v-text="currentFile.info.height + 'px'"></span>
-        <!--span v-if="currentFile.info && currentFile.info.creation" v-text="_('Creation')"></span>
-        <span-- v-text="(currentFile.info && currentFile.info.creation) ? currentFile.info.creation : ''"></span-->
-        <span v-if="currentFile.info && currentFile.info.mtime" v-text="_('Last modification')"></span>
-        <span v-text="(currentFile.info && currentFile.info.mtime) ? currentFile.info.mtime : ''"></span>
+        <span bbn-text="_('Filename')"></span>
+        <span bbn-text="currentFile ? currentFile.node.data.value : ''"></span>
+        <span bbn-if="currentFile.info && currentFile.info.size" bbn-text="_('Size')"></span>
+        <span bbn-text="(currentFile.info && currentFile.info.size) ? currentFile.info.size : ''"></span>
+        <span bbn-if="(currentFile.info && currentFile.info.width)" bbn-text="_('Width')"></span>
+        <span bbn-if="(currentFile.info && currentFile.info.width)" bbn-text="currentFile.info.width + 'px'"></span>
+        <span bbn-if="(currentFile.info && currentFile.info.height)" bbn-text="_('Height')"></span>
+        <span bbn-if="(currentFile.info && currentFile.info.height)" bbn-text="currentFile.info.height + 'px'"></span>
+        <!--span bbn-if="currentFile.info && currentFile.info.creation" bbn-text="_('Creation')"></span>
+        <span-- bbn-text="(currentFile.info && currentFile.info.creation) ? currentFile.info.creation : ''"></span-->
+        <span bbn-if="currentFile.info && currentFile.info.mtime" bbn-text="_('Last modification')"></span>
+        <span bbn-text="(currentFile.info && currentFile.info.mtime) ? currentFile.info.mtime : ''"></span>
         <div class="bbn-grid-full bbn-right">
           <bbn-button icon="nf nf-fa-hand_paper_o"
                       @click="abortRequest('file')"
                       :text="_('Abort request')"
                       :title="_('Cancel the current request')"
-                      v-if="isLoading"
+                      bbn-if="isLoading"
                         
           ></bbn-button>
           <bbn-button icon="nf nf-fa-close"
@@ -126,22 +126,22 @@
         </div>
       </div>
       <bbn-code class="bbn-flex-fill" 
-                v-if="currentFile.info && currentFile.info.content && !isImage && !isLoading"
+                bbn-if="currentFile.info && currentFile.info.content && !isImage && !isLoading"
                 :value="currentFile.info.content"
       ></bbn-code>
-      <div v-else-if="isImage && !isLoading" 
+      <div bbn-elseif="isImage && !isLoading" 
             class="bbn-flex-fill bbn-c bbn-padded"
       >
         <!--need of origin for the filesystem to recognize the environment-->
         <img :src="root + 'actions/finder/image/' +  encodedURL + '/' + origin" style="max-width:80%">
       </div>
-      <div v-else-if="currentFile.info && !currentFile.info.content && !isImage && !isLoading"
+      <div bbn-elseif="currentFile.info && !currentFile.info.content && !isImage && !isLoading"
             class="bbn-padded bbn-medium bbn-b"
-            v-text="_('The content of this file cannot be shown')">
+            bbn-text="_('The content of this file cannot be shown')">
       </div>
-      <div v-else-if="isLoading" 
+      <div bbn-elseif="isLoading" 
             class="bbn-padded bbn-medium bbn-b"
-            v-text="_('Loading file infos..')">
+            bbn-text="_('Loading file infos..')">
       </div>
     </div>
   </bbn-scroll>

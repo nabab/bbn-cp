@@ -108,16 +108,19 @@
   </div>
   <slot name="after"/>
   <!-- POPUPS -->
-  <bbn-popup v-if="!popup"
+  <bbn-popup bbn-if="!popup"
             :source="popups"
             ref="popup"
             :z-index="13"/>
   <!-- LOADING MODAL -->
-  <div v-if="isLoading"
+  <div bbn-if="isLoading"
        class="bbn-fixed bbn-pos-top bbn-pos-right bbn-pos-bottom bbn-pos-left"
        style="z-index: 10000">
     <bbn-loader :text="loadingText"
                 class="bbn-modal"/>
   </div>
+  <component bbn-if="cfg"
+             :is="cfg"
+             ref="app"/>
 </div>
 

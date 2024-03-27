@@ -15,7 +15,7 @@
   \****************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"years\":\"ans\",\"year\":\"an\",\"months\":\"mois\",\"month\":\"mois\",\"days\":\"jours\",\"day\":\"jour\",\"hours\":\"heures\",\"hour\":\"heure\",\"minutes\":\"minutes\",\"minute\":\"minute\",\"seconds\":\"secondes\",\"second\":\"seconde\",\"milliseconds\":\"millisecondes\",\"millisecond\":\"milliseconde\",\"The precision is incorrect\":\"La précision est incorrecte\",\"The scale is incorrect\":\"L\\'échelle est incorrecte\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/countdown/countdown.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"years\":\"ans\",\"year\":\"an\",\"months\":\"mois\",\"month\":\"mois\",\"days\":\"jours\",\"day\":\"jour\",\"hours\":\"heures\",\"hour\":\"heure\",\"minutes\":\"minutes\",\"minute\":\"minute\",\"seconds\":\"secondes\",\"second\":\"seconde\",\"milliseconds\":\"millisecondes\",\"millisecond\":\"milliseconde\",\"The precision is incorrect\":\"La précision est incorrecte\",\"The scale is incorrect\":\"L\\'échelle est incorrecte\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/countdown/countdown.fr.lang?");
 
 /***/ })
 

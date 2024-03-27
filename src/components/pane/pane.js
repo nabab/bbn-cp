@@ -144,6 +144,7 @@ const cpDef = {
 };
 
 
+import bbn from '@bbn/bbn';
 import cpHtml from './pane.html';
 import cpStyle from './pane.less';
 let cpLang = {};

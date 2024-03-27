@@ -15,7 +15,7 @@
   \************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"The shortcut has failed to be inserted\":\"une erreur est survenue durant la création du raccourci\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/fisheye/fisheye.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"The shortcut has failed to be inserted\":\"une erreur est survenue durant la création du raccourci\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/fisheye/fisheye.fr.lang?");
 
 /***/ })
 

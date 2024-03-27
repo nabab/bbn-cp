@@ -15,7 +15,7 @@
   \******************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"uploading\":\"caricamento\",\"Upload a file\":\"Carica un file\",\"Or click here to\":\"O clicca qui per\",\"Drop files here\":\"Rilascia i file qui\",\"Processing dropped files\":\"Processando i file rilasciati\",\"Retry\":\"Riprova\",\"Edit filename\":\"Modifica il nome del file\",\"Delete\":\"Elimina\",\"Pause\":\"Pausa\",\"Continue\":\"Riprendi\",\"Close\":\"Chiudi\",\"No\":\"No\",\"Yes\":\"Si\",\"Cancel\":\"Annulla\",\"OK\":\"OK\",\"Browse\":\"Sfoglia\",\"This type of file is not allowed, only files of type\":\"Questo tipo di file non è consentito, solo file di tipo\",\"The file si too big, the maximum size is\":\"Il file è troppo grande, la dimensione massima è\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/file/file.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"uploading\":\"caricamento\",\"Upload a file\":\"Carica un file\",\"Or click here to\":\"O clicca qui per\",\"Drop files here\":\"Rilascia i file qui\",\"Processing dropped files\":\"Processando i file rilasciati\",\"Retry\":\"Riprova\",\"Edit filename\":\"Modifica il nome del file\",\"Delete\":\"Elimina\",\"Pause\":\"Pausa\",\"Continue\":\"Riprendi\",\"Close\":\"Chiudi\",\"No\":\"No\",\"Yes\":\"Si\",\"Cancel\":\"Annulla\",\"OK\":\"OK\",\"Browse\":\"Sfoglia\",\"This type of file is not allowed, only files of type\":\"Questo tipo di file non è consentito, solo file di tipo\",\"The file si too big, the maximum size is\":\"Il file è troppo grande, la dimensione massima è\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/file/file.it.lang?");
 
 /***/ })
 

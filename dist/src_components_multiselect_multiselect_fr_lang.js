@@ -15,7 +15,7 @@
   \********************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Filter tree\":\"Arborescence des filtres\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/multiselect/multiselect.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Filter tree\":\"Arborescence des filtres\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/multiselect/multiselect.fr.lang?");
 
 /***/ })
 

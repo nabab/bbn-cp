@@ -15,7 +15,7 @@
   \******************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"The source of the tree must be an array or the object property must be set to true if it is an object\":\"La source de bbn-tree doit être un tableau sinon la propriété `object` doit être mise à \\'true\\'\",\"Node\":\"Élément\",\"Close\":\"Fermer\",\"Open\":\"Ouvrir\",\"Refresh\":\"Actualiser\",\"Loading\":\"Chargement\",\"No items\":\"Pas d\\'éléments\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/tree/tree.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"The source of the tree must be an array or the object property must be set to true if it is an object\":\"La source de bbn-tree doit être un tableau sinon la propriété `object` doit être mise à \\'true\\'\",\"Node\":\"Élément\",\"Close\":\"Fermer\",\"Open\":\"Ouvrir\",\"Refresh\":\"Actualiser\",\"Loading\":\"Chargement\",\"No items\":\"Pas d\\'éléments\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/tree/tree.fr.lang?");
 
 /***/ })
 

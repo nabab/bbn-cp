@@ -8,12 +8,10 @@
       @touchmove.passive="touchmove"
       @touchend.passive="touchend">
   <slot></slot>
-  <bbn-floater v-if="showFloater && !disabled"
+  <bbn-floater bbn-if="showFloater && !disabled"
               :element="attach || null"
               bbn-portal="portal"
               :source="source"
-              :source-action="sourceAction"
-              :source-url="sourceUrl"
               :class="'bbn-floater-context-' + bbnUid"
               ref="floater"
               :width="width"
@@ -36,5 +34,5 @@
               @open="$emit('open')"
               :item-component="itemComponent"
               :position="position"
-              @select="(item, idx, dataIndex, ev, floater) => $emit('select', item, idx, dataIndex, ev, floater)"/>
+              @select="select"/>
 </div>

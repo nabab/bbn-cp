@@ -15,7 +15,7 @@
   \******************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Untitled\":\"Sans titre\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/breadcrumb/breadcrumb.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Untitled\":\"Sans titre\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/breadcrumb/breadcrumb.fr.lang?");
 
 /***/ })
 

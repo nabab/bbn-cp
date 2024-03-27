@@ -15,7 +15,7 @@
   \****************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Are you sure you want to discard the changes you made in this form?\":\"Êtes-vous sûr de vouloir fermer ce formulaire sans prendre en compte les changement effectués?\",\"Are you sure you want to leave?\":\"Êtes-vous sûr de vouloir quitter ?\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/multipart/multipart.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Are you sure you want to discard the changes you made in this form?\":\"Êtes-vous sûr de vouloir fermer ce formulaire sans prendre en compte les changement effectués?\",\"Are you sure you want to leave?\":\"Êtes-vous sûr de vouloir quitter ?\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/multipart/multipart.fr.lang?");
 
 /***/ })
 

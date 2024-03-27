@@ -1,35 +1,35 @@
 <div :class="[componentClass, 'bbn-bordered', 'bbn-radius', 'bbn-alt-background', full ? 'full' : '']"
-     v-droppable.data="!!sortable ? {data: {widget: _self}} : false">
+     bbn-droppable.data="!!sortable ? {data: {widget: _self}} : false">
   <!-- HEADER -->
   <div class="bbn-header bbn-no-border bbn-bordered-bottom bbn-unselectable"
-       v-if="title">
+       bbn-if="title">
     <div class="bbn-flex-width bbn-vxspadded bbn-vmiddle">
       <!-- BUTTONS LEFT -->
       <div class="bbn-header-buttons bbn-widget-button-left bbn-hxspadded">
-        <i v-if="isClosable"
+        <i bbn-if="isClosable"
             :title="_('Close')"
             @click="close"
             class="nf nf-fa-times"/>
-        <bbn-context v-if="hasMenu"
+        <bbn-context bbn-if="hasMenu"
                       :source="finalMenu">
           <i :title="_('Menu')"
               class="nf nf-fa-caret_down"/>
         </bbn-context>
-        <i v-for="(b, idx) in realButtonsLeft"
+        <i bbn-for="(b, idx) in realButtonsLeft"
             :title="b.text"
             @click="actionButton(b.action, uid)"
             :class="b.icon"/>
       </div>
       <!-- TITLE -->
       <div :class="['bbn-widget-title', 'bbn-flex-fill', 'bbn-hpadded', {'bbn-middle': !!icon}]">
-        <i v-if="icon" :class="[icon, 'bbn-right-sspace']"/>
+        <i bbn-if="icon" :class="[icon, 'bbn-right-sspace']"/>
         <h3 :style="dashboard && dashboard.sortable ? 'cursor: move' : ''"
             :class="['bbn-no-margin', {'bbn-iblock': !!icon}]"
-            v-html="title"
+            bbn-html="title"
             @dragstart="$emit('sortstart', $event)"
             @dragend="$emit('dragend', $event)"
-            v-if="ready"
-            v-draggable.helper.container.data="!!sortable ? {
+            bbn-if="ready"
+            bbn-draggable.helper.container.data="!!sortable ? {
               helper: $el,
               container: $el.parentElement,
               data: {widget: _self}
@@ -37,7 +37,7 @@
       </div>
       <!-- BUTTONS RIGHT -->
       <div class="bbn-header-buttons bbn-widget-button-right bbn-hxspadded">
-        <i v-for="(b, idx) in realButtonsRight"
+        <i bbn-for="(b, idx) in realButtonsRight"
             :title="b.text"
             @click="actionButton(b.action, uid)"
             :class="[b.icon]"/>
@@ -52,54 +52,54 @@
          minHeight: isLoading && (!currentItems || !currentItems.length) ? '15em' : null
        }">
     <!-- COMPONENT -->
-    <component v-if="component"
+    <component bbn-if="component"
                 :is="component"
                 @hook:mounted="$emit('loaded')"
-                v-bind="options || {source: currentSource}"
+                bbn-bind="componentOptions"
                 class="bbn-widget-content"/>
     <!-- HTML CONTENT -->
-    <div v-else-if="content"
-         v-html="content"
+    <div bbn-elseif="content"
+         bbn-html="content"
          class="bbn-widget-content"/>
     <!-- LIST OF ITEMS -->
-    <slot v-else-if="currentItems === undefined"/>
-    <ul v-else-if="currentItems.length"
+    <slot bbn-elseif="currentItems === undefined"/>
+    <ul bbn-elseif="currentItems.length"
         class="bbn-widget-list bbn-widget-content">
-      <template v-for="(it, idx) in currentItems">
+      <template bbn-for="(it, idx) in currentItems">
         <li :class="itemClass"
-            v-if="limit ? idx < limit : true"
+            bbn-if="limit ? idx < limit : true"
             :style="itemStyle"
             :key="uid ? it[uid] : idx">
-          <component v-if="itemComponent"
+          <component bbn-if="itemComponent"
                       :is="itemComponent"
-                      v-bind="options"
+                      bbn-bind="options"
                       :source="it"
                       :key="!!options && !!options.uid ? it[options.uid] : idx"/>
-          <a v-else-if="it && it.text && it.url" :href="it.url" v-html="it.text"/>
-          <span v-else-if="it && it.text" v-html="it.text"/>
-          <span v-else
-                v-html="it"/>
+          <a bbn-elseif="it && it.text && it.url" :href="it.url" bbn-html="it.text"/>
+          <span bbn-elseif="it && it.text" bbn-html="it.text"/>
+          <span bbn-else
+                bbn-html="it"/>
         </li>
-        <div v-if="(limit ? idx < limit : true) && separator && currentItems[idx+1]"
-             v-html="separator"/>
+        <div bbn-if="(limit ? idx < limit : true) && separator && currentItems[idx+1]"
+             bbn-html="separator"/>
       </template>
     </ul>
     <!-- NO DATA MESSAGE -->
-    <component v-else-if="noDataComponent"
+    <component bbn-elseif="noDataComponent"
                :is="noDataComponent"/>
-    <div v-else>
+    <div bbn-else>
       <slot>
-        <div v-html="noData" class="bbn-widget-content bbn-w-100 bbn-c bbn-padded"/>
+        <div bbn-html="noData" class="bbn-widget-content bbn-w-100 bbn-c bbn-padded"/>
       </slot>
     </div>
     <!-- GO FULL PAGE -->
-    <div v-if="zoomable && currentItems && currentItems.length"
+    <div bbn-if="zoomable && currentItems && currentItems.length"
           class="content-buttons zoom bbn-unselectable">
       <i class="nf nf-fa-arrows_alt"
           @click="zoom"/>
     </div>
     <!-- NAVIGATION IN LIST -->
-    <div v-if="currentPage && pageable"
+    <div bbn-if="currentPage && pageable"
           class="nav bbn-unselectable bbn-bottom-spadding">
       <i class="nf nf-md-chevron_double_left bbn-p bbn-reactive-text"
           @click="nav('first')"
@@ -108,7 +108,7 @@
           @click="nav('prev')"
           :style="{visibility: currentStart > 0 ? 'visible' : 'hidden'}"/>
 
-      <span v-text="currentPage + '/' + totalPages"></span>
+      <span bbn-text="currentPage + '/' + totalPages"></span>
 
       <i class="nf nf-md-chevron_right bbn-p bbn-reactive-text"
           @click="nav('next')"
@@ -118,7 +118,7 @@
           :style="{visibility: currentStart < (currentTotal-limit) ? 'visible' : 'hidden'}"/>
     </div>
     <!-- LOADING -->
-    <div v-if="isLoading" class="bbn-overlay" style="opacity: 0.5">
+    <div bbn-if="isLoading" class="bbn-overlay" style="opacity: 0.5">
       <bbn-loader text=""
                   type="swing"/>
     </div>

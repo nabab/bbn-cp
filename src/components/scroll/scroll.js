@@ -1010,7 +1010,7 @@ const cpDef = {
       }, this.latency)
     },
     setObserver() {
-      if (!this.scrollObserver) {
+      if (false && !this.scrollObserver) {
         this.scrollObserver = new MutationObserver(mutations_list => {
           let mutated = false;
           mutations_list.forEach(mutation => {
@@ -1020,7 +1020,7 @@ const cpDef = {
           });
         });
       }
-      this.scrollObserver.observe(this.getRef('scrollContent'), { subtree: true, childList: true });
+      //this.scrollObserver.observe(this.getRef('scrollContent'), { subtree: true, childList: true });
     },
     unsetObserver() {
       if (this.scrollObserver) {

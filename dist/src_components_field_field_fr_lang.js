@@ -15,7 +15,7 @@
   \********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"No\":\"Non\",\"Yes\":\"Oui\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/field/field.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"No\":\"Non\",\"Yes\":\"Oui\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/field/field.fr.lang?");
 
 /***/ })
 

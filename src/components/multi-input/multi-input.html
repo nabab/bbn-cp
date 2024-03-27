@@ -12,7 +12,7 @@
     'bbn-w-100': (!buttonLeft && !buttonRight && !nullable),
     'bbn-flex-width' : (buttonLeft || buttonRight || nullable)
   }">
-    <bbn-button v-if="buttonLeft"
+    <bbn-button bbn-if="buttonLeft"
           :icon="buttonLeft" 
           @click="$emit('clickLeftButton')"
           tabindex="-1"
@@ -50,13 +50,13 @@
           :min="min"
           :max="max"
     >
-    <bbn-loadicon v-if="loading"></bbn-loadicon>
-    <div v-else-if="isNullable && hasValue && !readonly && !disabled"
+    <bbn-loadicon bbn-if="loading"></bbn-loadicon>
+    <div bbn-elseif="isNullable && hasValue && !readonly && !disabled"
          class="bbn-block bbn-h-100 bbn-input-nullable-container">
       <i class="nf nf-fa-times_circle bbn-p"
          @mousedown.prevent.stop="clear"></i>
     </div>
-    <bbn-button v-if="buttonRight"
+    <bbn-button bbn-if="buttonRight"
                 :icon="buttonRight"
                 tabindex="-1"
                 @click="$emit('clickRightButton')"

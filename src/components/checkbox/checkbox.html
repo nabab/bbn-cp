@@ -13,14 +13,13 @@
          tabindex="0"
          style="display: none">
   <label class="bbn-checkbox-label bbn-iflex bbn-vmiddle"
-         :for="id"
-         @click.stop="onClick">
-    <component v-if="component"
+         :for="id">
+    <component bbn-if="component"
                :is="component"
-               v-bind="componentOptions"
+               bbn-bind="componentOptions"
                class="bbn-left-spadded"/>
-    <span v-else-if="label"
+    <span bbn-elseif="label"
           class="bbn-left-spadded"
-          v-html="label"/>
+          bbn-html="label"/>
   </label>
 </span>

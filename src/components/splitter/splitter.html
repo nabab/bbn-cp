@@ -11,9 +11,9 @@
      ]"
      :style="splitterStyle"
      @scroll.prevent.stop="preventScroll"
-     v-show="panes.length">
+     bbn-show="panes.length">
   <slot></slot>
-  <div v-for="(rs, i) in resizers"
+  <div bbn-for="(rs, i) in resizers"
        :class="[
          'bbn-unselectable',
          'bbn-middle',
@@ -35,10 +35,10 @@
         }"
        @mousedown.prevent.stop="resizeStart($event, rs)"
        @touchstart.passive="resizeStart($event, rs)">
-    <div v-if="areCollapsible(rs.panec1, rs.panec2)"
+    <div bbn-if="areCollapsible(rs.panec1, rs.panec2)"
          class="bbn-splitter-collapser"
          :style="{fontSize: (resizerSize * 0.8) + 'px'}">
-      <div v-if="isCollapsiblePrev(rs.panec1, rs.panec2)"
+      <div bbn-if="isCollapsiblePrev(rs.panec1, rs.panec2)"
            :class="{
              'bbn-w-100': isHorizontal,
              'bbn-h-100': !isHorizontal,
@@ -52,7 +52,7 @@
             @click.stop="collapse(rs.panec1, rs.panec2)"
         ></i>
       </div>
-      <div v-if="isCollapsibleNext(rs.panec1, rs.panec2)"
+      <div bbn-if="isCollapsibleNext(rs.panec1, rs.panec2)"
            :class="{
              'bbn-w-100': isHorizontal,
              'bbn-h-100': !isHorizontal,
@@ -66,7 +66,7 @@
            @click.stop="collapse(rs.panec2, rs.panec1)"
         ></i>
       </div>
-      <div v-if="isFullyCollapsiblePrev(rs.panec1, rs.panec2, i)"
+      <div bbn-if="isFullyCollapsiblePrev(rs.panec1, rs.panec2, i)"
            :class="{
              'bbn-w-100': isHorizontal,
              'bbn-h-100': !isHorizontal,
@@ -80,7 +80,7 @@
            @click.stop="collapse(rs.panec1, rs.panec2, true)"
         ></i>
       </div>
-      <div v-if="isFullyCollapsibleNext(rs.panec1, rs.panec2, i)"
+      <div bbn-if="isFullyCollapsibleNext(rs.panec1, rs.panec2, i)"
            :class="{
              'bbn-w-100': isHorizontal,
              'bbn-h-100': !isHorizontal,

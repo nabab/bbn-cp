@@ -1,21 +1,21 @@
 <div :class="[componentClass, 'bbn-w-100']"
-     v-show="ready"
+     bbn-show="ready"
 >
-  <div v-if="showLoading && isLoading"
+  <div bbn-if="showLoading && isLoading"
        class="bbn-overlay bbn-middle bbn-xl bbn-white bbn-modal bbn-abs"
-       v-text="_('Loading')"
+       bbn-text="_('Loading')"
        style="z-index: 1"
   ></div>
   <div :class="['bbn-widget', 'bbn-flex-height', {'bbn-overlay': type === 'weeks'}]">
     <div class="bbn-calendar-header bbn-header bbn-xspadded bbn-no-border-left bbn-no-border-right bbn-no-border-top">
-      <component v-if="headerComponent"
+      <component bbn-if="headerComponent"
                  :is="headerComponent"
       ></component>
-      <div v-else
+      <div bbn-else
            class="bbn-flex-width bbn-vmiddle"
       >
-        <template v-if="arrows && arrowsButtons">
-          <bbn-button v-if="currentCfg.stepSkip"
+        <template bbn-if="arrows && arrowsButtons">
+          <bbn-button bbn-if="currentCfg.stepSkip"
                       icon="nf nf-fa-angle_double_left"
                       @click="prev(true)"
                       :title="_('Previous') + ' ' + currentCfg.stepSkipText"
@@ -28,8 +28,8 @@
                       :notext="true"
           ></bbn-button>
         </template>
-        <template v-else-if="arrows && !arrowsButtons">
-          <i v-if="currentCfg.stepSkip"
+        <template bbn-elseif="arrows && !arrowsButtons">
+          <i bbn-if="currentCfg.stepSkip"
              class="nf nf-fa-angle_double_left bbn-p bbn-hsmargin"
              @click="prev(true)"
              :title="_('Previous') + ' ' + currentCfg.stepSkipText"
@@ -43,18 +43,18 @@
           <span @click="!!titleAction ? titleAction(_self) : false"
                 :class="{'bbn-p': !!titleAction}"
           >
-            <i v-if="titleIcon"
+            <i bbn-if="titleIcon"
                :class="[titleIcon, 'bbn-hsmargin', 'bbn-large']"></i>
-            <strong v-text="title"></strong>
+            <strong bbn-text="title"></strong>
           </span>
         </div>
-        <template v-if="arrows && arrowsButtons">
+        <template bbn-if="arrows && arrowsButtons">
           <bbn-button icon="nf nf-fa-angle_right"
                       @click="next(false)"
                       :title="_('Next') + ' ' + currentCfg.stepText"
                       :notext="true"
           ></bbn-button>
-          <bbn-button v-if="currentCfg.stepSkip"
+          <bbn-button bbn-if="currentCfg.stepSkip"
                       icon="nf nf-fa-angle_double_right"
                       @click="next(true)"
                       :title="_('Next') + ' ' + currentCfg.stepSkipText"
@@ -62,12 +62,12 @@
                       class="bbn-left-xsspace"
           ></bbn-button>
         </template>
-        <template v-else-if="arrows && !arrowsButtons">
+        <template bbn-elseif="arrows && !arrowsButtons">
           <i class="nf nf-fa-angle_right bbn-p bbn-hsmargin"
              @click="next(false)"
              :title="_('Next') + ' ' + currentCfg.stepText"
           ></i>
-          <i v-if="currentCfg.stepSkip"
+          <i bbn-if="currentCfg.stepSkip"
              class="nf nf-fa-angle_double_right bbn-p bbn-hsmargin"
              @click="next(true)"
              :title="_('Next') + ' ' + currentCfg.stepSkipText"
@@ -82,13 +82,13 @@
            :style="gridStyle"
       >
         <div class="bbn-calendar-labels"
-            v-if="labels && currentLabels"
-            v-for="(label, i) in currentLabels"
-            v-html="label"
+            bbn-if="labels && currentLabels"
+            bbn-for="(label, i) in currentLabels"
+            bbn-html="label"
             ref="label"
         ></div>
-        <template v-for="item in items">
-          <div v-if="!item.hidden"
+        <template bbn-for="item in items">
+          <div bbn-if="!item.hidden"
               :class="['bbn-calendar-item-box', 'bbn-box', {
                 'bbn-p': selection && !item.disabled,
                 'bbn-spadded': !itemDetails && itemPadding,
@@ -110,7 +110,7 @@
               @click="!item.disabled ? select(item.value) : false"
               :title="typeof itemTitle === 'function' ? itemTitle(item) : itemTitle"
           >
-            <div v-if="item.events && item.events.length && itemDetails"
+            <div bbn-if="item.events && item.events.length && itemDetails"
                 class="bbn-flex-height"
                 style="position: relative"
             >
@@ -120,25 +120,25 @@
               }]"
                   style="margin-right: .2rem"
               >
-                <span v-text="item.text"></span>
+                <span bbn-text="item.text"></span>
               </div>
-              <component v-if="itemComponent"
+              <component bbn-if="itemComponent"
                         :is="itemComponent"
                         :source="item"
                         :selected="currentValue"
                         class="bbn-flex-fill"
               ></component>
             </div>
-            <template v-else>
-              <i v-if="item.events && item.events.length && eventIcon"
+            <template bbn-else>
+              <i bbn-if="item.events && item.events.length && eventIcon"
                 :class="[eventIcon, 'bbn-unselectable', 'bbn-calendar-item-icon']"
               ></i>
               <div :class="['bbn-100', 'bbn-middle', 'bbn-unselectable', 'bbn-calendar-item', {'bbn-tertiary-text': item.colored && !item.extra}]">
-                <span v-text="item.text"></span>
+                <span bbn-text="item.text"></span>
               </div>
             </template>
           </div>
-          <div v-else class="bbn-calendar-item-box bbn-box bbn-o bbn-alt-background"></div>
+          <div bbn-else class="bbn-calendar-item-box bbn-box bbn-o bbn-alt-background"></div>
         </template>
       </div>
     </div>

@@ -64,21 +64,21 @@ const cpDef = {
   <div class="bbn-w-100">
     <div class="bbn-flex-width">
       <div class="bbn-block">
-        <span v-if="ssl" class="bbn-green">
+        <span bbn-if="ssl" class="bbn-green">
           <i class="nf nf-fa-lock"></i>
         </span>
-        <span v-else class="bbn-red">
+        <span bbn-else class="bbn-red">
           <i class="nf nf-fa-unlock"></i>
         </span>
       </div>
       <div class="bbn-flex-fill">
-        <bbn-input v-model="url" class="bbn-w-100" @keydown="keydown"></bbn-input>
+        <bbn-input bbn-model="url" class="bbn-w-100" @keydown="keydown"></bbn-input>
       </div>
     </div>
   </div>
   <div class="bbn-flex-fill">
-    <iframe v-if="realURL" class="bbn-overlay" src="rawURL"></iframe>
-    <div v-else class="bbn-overlay">
+    <iframe bbn-if="realURL" class="bbn-overlay" src="rawURL"></iframe>
+    <div bbn-else class="bbn-overlay">
 
     </div>
   </div>

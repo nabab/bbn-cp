@@ -67,8 +67,7 @@ const cpDef = {
      * @prop {String|Boolean|Number} [undefined] modelValue
      */
     modelValue: {
-      type: [String, Boolean, Number],
-      default: undefined
+      type: [String, Boolean, Number]
     },
     /**
      * Set to true to have required checkbox selection.
@@ -124,34 +123,25 @@ const cpDef = {
       default: false
     }
   },
+  data() {
+    let state = this.checked;
+    if (state
+      && ((!this.strict && (this.modelValue != this.value))
+        || (this.strict && (this.modelValue !== this.value)))
+    ) {
+      state = false;
+    }
+    else if ((this.strict && (this.modelValue === this.value))
+      || (!this.strict && (this.modelValue == this.value))
+    ) {
+      state = true;
+    }
+
+    return {state};
+  },
   model: {
     prop: 'modelValue',
     event: 'input'
-  },
-  computed: {
-    /**
-     * Returns the state of the checkbox.
-     *
-     * @computed state
-     * @return {Boolean}
-     */
-    state(){
-      if (this.checked && (this.modelValue === undefined)) {
-        return true;
-      }
-      if (this.checked
-        && ((!this.strict && (this.modelValue != this.value))
-          || (this.strict && (this.modelValue !== this.value)))
-      ) {
-        return false;
-      }
-      if ((this.strict && (this.modelValue === this.value))
-        || (!this.strict && (this.modelValue == this.value))
-      ) {
-        return true;
-      }
-      return this.checked;
-    },
   },
   methods: {
     /**
@@ -163,10 +153,22 @@ const cpDef = {
      */
     toggle() {
       if (!this.isDisabled && !this.readonly) {
-        //bbn.fn.log("TOGGLE");
-        let emitVal = !this.state ? this.value : this.novalue;
-        this.$emit('input', emitVal);
-        this.$emit('change', emitVal, this);
+        this.$emit('beforechange', ev, this.state);
+        if (!ev.defaultPrevented) {
+          let emitVal;
+          if (this.modelValue !== undefined) {
+            emitVal = this.state ? this.novalue : this.value;
+          }
+          else {
+            emitVal = this.state ? this.novalue : this.value;
+          }
+          
+          this.$emit('input', emitVal);
+          this.$emit('change', emitVal, this);
+          this.state = !this.state;
+          // This is mandatory for string, I don't know why!
+          this.$forceUpdate();
+        }
       }
     },
     /**
@@ -179,11 +181,7 @@ const cpDef = {
         ev.preventDefault();
       }
       else {
-        this.$emit('beforechange', ev, this.state);
-        if (!ev.defaultPrevented) {
-          //bbn.fn.log("ONCLICK");
-          this.click(ev);
-        }
+        this.toggle();
       }
     },
     /**
@@ -231,6 +229,7 @@ const cpDef = {
   }
 };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './checkbox.html';
 
 export default {

@@ -3,18 +3,18 @@
      @mouseenter="over = true"
      @mouseleave="over = false"
      >
-  <component v-if="isEditing && component"
+  <component bbn-if="isEditing && component"
             :is="component"
-            v-model="currentValue"
-            v-bind="componentOptions"/>
-  <component v-else-if="isEditing"
+            bbn-model="currentValue"
+            bbn-bind="componentOptions"/>
+  <component bbn-elseif="isEditing"
             :is="componentObject"
-            v-model="currentValue"
+            bbn-model="currentValue"
             :source="source"
             :class="{'edit-block' : isEditing}"/>
-  <component v-else
+  <component bbn-else
              :is="componentObject"
-             v-model="currentValue"
+             bbn-model="currentValue"
              :source="source"
              :class="{'edit-block' : isEditing}"/>
   <div :style="{
@@ -28,15 +28,15 @@
     }">
     <i :class="'bbn-p inline ' + editIcon"
       @click.stop="edit"
-      v-if="!isEditing"
+      bbn-if="!isEditing"
     ></i>
     <i :class="'bbn-p inline ' + cancelIcon"
       @click.stop="onCancel"
-      v-if="isEditing" 
+      bbn-if="isEditing" 
     ></i>
     <i :class="'bbn-p inline ' + saveIcon"
       @click.stop="save"
-      v-if="isEditing" 
+      bbn-if="isEditing" 
     ></i>
   </div>
 </div>

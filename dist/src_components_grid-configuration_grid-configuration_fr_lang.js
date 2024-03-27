@@ -15,7 +15,7 @@
   \**********************************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Open selector\":\"Ouvrir le sélecteur\",\"Row\":\"Ligne\",\"Col\":\"Colonne\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/grid-configuration/grid-configuration.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Open selector\":\"Ouvrir le sélecteur\",\"Row\":\"Ligne\",\"Col\":\"Colonne\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/grid-configuration/grid-configuration.fr.lang?");
 
 /***/ })
 

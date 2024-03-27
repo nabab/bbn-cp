@@ -22,18 +22,18 @@ const cpDef = {
    * @mixin bbn.cp.mixins.dropdown
    * @mixin bbn.cp.mixins.localStorage
     */
-  mixins: 
-  [
-    bbn.cp.mixins.basic,
-    bbn.cp.mixins.events,
-    bbn.cp.mixins.input,
-    bbn.cp.mixins.resizer,
-    bbn.cp.mixins.list,
-    bbn.cp.mixins.keynav,
-    bbn.cp.mixins.url,
-    bbn.cp.mixins.dropdown,
-    bbn.cp.mixins.localStorage
-  ],
+  mixins:
+    [
+      bbn.cp.mixins.basic,
+      bbn.cp.mixins.events,
+      bbn.cp.mixins.input,
+      bbn.cp.mixins.resizer,
+      bbn.cp.mixins.list,
+      bbn.cp.mixins.keynav,
+      bbn.cp.mixins.url,
+      bbn.cp.mixins.dropdown,
+      bbn.cp.mixins.localStorage
+    ],
   props: {
     /**
      * @prop {Boolean} [false] notext
@@ -46,7 +46,7 @@ const cpDef = {
   data() {
     return {
       startingTmpValue: '',
-      startingTmpTimeout: null      
+      startingTmpTimeout: null
     };
   },
   /**
@@ -75,8 +75,8 @@ const cpDef = {
      * @fires resetDropdown
      * @fires keynav
      */
-    keydown(e){
-      if ( this.commonKeydown(e) ){
+    keydown(e) {
+      if (this.commonKeydown(e)) {
         return;
       }
       else if (this.isOpened && (e.key === 'Escape')) {
@@ -101,48 +101,56 @@ const cpDef = {
         this.selectOver();
       }
     },
-    paste(){
+    paste() {
       //alert("PASTE");
     },
     keyup(e) {
-      if ( e.key.match(/^[A-z0-9\s]{1}$/)) {
+      if (e.key.match(/^[A-z0-9\s]{1}$/)) {
         this.startingTmpValue += e.key;
         if (!this.isOpened) {
           this.isOpened = true;
         }
       }
     },
-    selectOnNative(ev){
+    selectOnNative(ev) {
       if (!ev.defaultPrevented) {
-        let idx = bbn.fn.search(this.filteredData, 'data.' + this.sourceValue, ev.target.value);
-        if (idx > -1) {
-          let item = this.filteredData[idx].data;
-          if (this.sourceAction && item[this.sourceAction] && bbn.fn.isFunction(item[this.sourceAction])) {
-            item[this.sourceAction](item);
-          }
-          else if ((this.sourceUrl !== undefined) && item[this.sourceUrl]) {
-            bbn.fn.link(item[this.sourceUrl]);
-          }
-          else if (item[this.uid || this.sourceValue] !== undefined) {
-            this.emitInput(item[this.uid || this.sourceValue]);
-            this.$emit('change', item[this.uid || this.sourceValue], idx, this.filteredData[idx].index, ev);
+        if (ev.target.value === '') {
+          this.emitInput(this.isNullable ? null : '');
+          this.$emit('change', this.isNullable ? null : '', -1, -1, ev);
+        }
+        else {
+          let idx = bbn.fn.search(this.filteredData, 'data.' + this.sourceValue, ev.target.value);
+          if (idx > -1) {
+            let item = this.filteredData[idx].data;
+            if (this.sourceAction && item[this.sourceAction] && bbn.fn.isFunction(item[this.sourceAction])) {
+              item[this.sourceAction](item);
+            }
+            else if ((this.sourceUrl !== undefined) && item[this.sourceUrl]) {
+              bbn.fn.link(item[this.sourceUrl]);
+            }
+            else if (item[this.uid || this.sourceValue] !== undefined) {
+              this.emitInput(item[this.uid || this.sourceValue]);
+              this.$emit('change', item[this.uid || this.sourceValue], idx, this.filteredData[idx].index, ev);
+              bbn.fn.log('yes', item[this.uid || this.sourceValue], idx, this.filteredData[idx].index, ev)
+            }
           }
         }
       }
       this.isOpened = false;
-    },
+    }
   },
   /**
    * @event created
    */
-  created(){
+  beforeCreate() {
     this.$on('dataloaded', () => {
       if ((this.value !== undefined) && !this.currentText.length) {
         let row = bbn.fn.getRow(this.currentData, a => {
           return a.data[this.sourceValue] === this.value;
         });
-        if ( row ){
+        if (row) {
           this.currentText = this.clearHtml ? bbn.fn.html2text(row.data[this.sourceText]) : row.data[this.sourceText];
+          //bbn.fn.log(["CHANGIN CURRENT TEXT", this.currentText]);
         }
       }
     })
@@ -153,9 +161,6 @@ const cpDef = {
       fl.$destroy();
       fl.$el.parentNode.removeChild(fl.$el);
     }
-  },
-  mounted() {
-    this.ready = true;
   },
   watch: {
     startingTmpValue(v) {
@@ -176,17 +181,9 @@ const cpDef = {
       }
     },
     /**
-    * @watch  isActive
-    */
-    isActive(v){
-      if (!v && this.filterString) {
-        this.currentText = this.currentTextValue || '';
-      }
-    },
-    /**
      * @watch  isOpened
      */
-    isOpened(val){
+    isOpened(val) {
       if (this.popup && val && !this.native) {
         this.popupComponent.open({
           title: false,
@@ -204,7 +201,7 @@ const cpDef = {
           onClose: () => {
             this.isOpened = false;
           },
-          source: this.filteredData.map(a => bbn.fn.extend({value: a.data.text}, a.data)),
+          source: this.filteredData.map(a => bbn.fn.extend({ value: a.data.text }, a.data)),
           sourceAction: this.sourceAction,
           sourceText: this.sourceText,
           sourceValue: this.sourceValue
@@ -218,7 +215,7 @@ const cpDef = {
     /**
      * @watch  currentText
      */
-    currentText(newVal){
+    currentText(newVal) {
       if (this.ready) {
         if (!newVal && this.value) {
           this.emitInput(this.isNullable && (this.nullable !== null) ? this.nullValue : '');
@@ -232,12 +229,12 @@ const cpDef = {
     /**
      * @watch  currentSelectValue
      */
-      currentSelectValue(newVal){
+    currentSelectValue(newVal) {
       if (this.ready && (newVal !== this.value)) {
         this.emitInput(newVal);
       }
     },
-    filterString(v){
+    filterString(v) {
       let args = [0, this.currentFilters.conditions.length ? 1 : 0];
       if (v && this.isActive) {
         args.push({
@@ -249,8 +246,15 @@ const cpDef = {
       this.currentFilters.conditions.splice(...args);
     },
     value(v) {
-      this.currentSelectValue = v;
-      this.currentText = this.currentTextValue || '';
+      if (v !== this.currentSelectValue) {
+        this.currentSelectValue = v;
+      }
+
+      bbn.fn.log(["DROPDOWN SELECT " + v, this.$el, this.currentTextValue]);
+      if (this.currentText !== (this.currentTextValue || '')) {
+        this.currentText = this.currentTextValue || '';
+      }
+
       if (this.storage) {
         if (v) {
           this.setStorage(v);
@@ -263,6 +267,7 @@ const cpDef = {
   }
 };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './dropdown.html';
 import cpStyle from './dropdown.less';
 
@@ -274,7 +279,7 @@ if (bbn.env.lang) {
       cpLang = cpLang.default;
     }
   }
-  catch (err) {}
+  catch (err) { }
 }
 
 export default {

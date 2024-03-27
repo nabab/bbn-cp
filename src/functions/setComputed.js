@@ -1,3 +1,6 @@
+import updateWatcher from "../lib/Cp/private/updateWatcher.js";
+import updateComputed from "../lib/Cp/private/updateComputed.js";
+
 export default function setComputed(obj, name, getter, setter) {
   if (Object.hasOwn(obj, name)) {
     throw new Error(bbn._("The computed property %s already exists", name));
@@ -16,13 +19,13 @@ export default function setComputed(obj, name, getter, setter) {
           hash: undefined,
           num: -1,
           update: () => {
-            this.$updateComputed(name, getter.bind(this)());
+            updateComputed(this, name, getter.bind(this)());
           }
         });
       }
-      if (this.$computed[name].num < this.$numBuild) {
+      if (this.$computed[name].num <= this.$numBuild) {
         this.$computed[name].update();
-        this.$computed[name].num++;
+        this.$computed[name].num = this.$numBuild + 1;
       }
   
       return bbnData.getValue(this.$computed[name].val);
@@ -36,5 +39,5 @@ export default function setComputed(obj, name, getter, setter) {
     };
   }
   Object.defineProperty(obj, name, def);
-  obj.$updateWatcher(name, obj[name], true);
+  updateWatcher(obj, name, obj[name], true);
 }

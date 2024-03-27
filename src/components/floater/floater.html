@@ -8,19 +8,19 @@
         },
         componentClass
       ]"
-      v-show="isVisible"
+      bbn-show="isVisible"
       @mouseleave="onFloaterLeave"
       @mouseenter="isOver = true"
-      @keydown.esc.prevent.stop="close()"
+      @keydown.esc.prevent.stop="close"
       :style="currentStyle"
-      v-resizable:container.left.right.bottom="ready && resizable ? $el.parentElement : false">
-  <div v-if="arrow"
+      bbn-resizable:container.left.right.bottom="ready && resizable ? $el.parentElement : false">
+  <div bbn-if="arrow"
        :class="['bbn-floater-arrow', position]"/>
   <div :style="containerStyle"
        class="bbn-flex-height">
-    <div v-if="modal"
+    <div bbn-if="modal"
          class="bbn-overlay bbn-modal"/>
-    <header v-if="title"
+    <header bbn-if="title"
             ref="header"
             :class="{
               'bbn-header': headerTitle,
@@ -28,10 +28,10 @@
               'bbn-unselectable': true,
               'bbn-w-100': !isResizing
             }"
-            v-draggable.mode.helper.container="!!draggable && ready ? {mode: 'move', helper: $el, container: $el.parentElement} : false">
-      <div v-if="title"
+            bbn-draggable.mode.helper.container="!!draggable && ready ? {mode: 'move', helper: $el, container: $el.parentElement} : false">
+      <div bbn-if="title"
           class="bbn-w-100 bbn-vxspadded">
-        <h3 v-html="title"
+        <h3 bbn-html="title"
             class="bbn-no-margin bbn-c"
             :style="{
               paddingLeft: maximizable || closable ? '3.6rem' : 'var(--space)',
@@ -40,14 +40,14 @@
             ref="title"/>
       </div>
       <div class="bbn-top-right bbn-p bbn-h-100">
-        <div v-if="maximizable !== false"
+        <div bbn-if="maximizable !== false"
             class="bbn-h-100 bbn-middle bbn-reactive"
             @click.stop.prevent="isMaximized = !isMaximized"
             tabindex="0"
             :title="_('Full screen')">
           <i :class="'nf nf-mdi-window_' + (isMaximized ? 'restore' : 'maximize')"/>
         </div>
-        <div v-if="closable !== false"
+        <div bbn-if="closable !== false"
             class="bbn-h-100 bbn-middle bbn-reactive"
             @click.stop.prevent="close()"
             tabindex="0"
@@ -62,7 +62,7 @@
           'bbn-w-100': true,
           'bbn-flex-height': pageable
         }">
-      <div v-if="pageable && ready">
+      <div bbn-if="pageable && ready">
         <bbn-pager class="bbn-table-footer bbn-no-border-right bbn-no-border-left bbn-no-border-bottom"
                   :element="pagerElement || _self"
                   @click.stop
@@ -84,16 +84,16 @@
                     :max-height="isMaximized ? '100%' : scrollMaxHeight || null"
                     :min-width="currentMinWidth || null"
                     :min-height="currentMinHeight > outHeight ? currentMinHeight - outHeight : null">
-          <component v-if="component"
+          <component bbn-if="component"
                     ref="component"
                     :is="component"
-                    v-bind="realComponentOptions"/>
-          <slot v-else-if="$slots.default.length"/>
-          <div v-else-if="!!content"
-              v-html="content"
+                    bbn-bind="realComponentOptions"/>
+          <slot bbn-elseif="$slots.default.length"/>
+          <div bbn-elseif="!!content"
+              bbn-html="content"
               :class="scrollable ? 'bbn-block' : 'bbn-overlay'"
               :style="HTMLStyle"/>
-          <bbn-list v-else-if="filteredData.length"
+          <bbn-list bbn-elseif="filteredData.length"
                     :mode="mode"
                     ref="list"
                     :suggest="suggest"
@@ -106,7 +106,7 @@
                     :scroll-hidden="scrollHidden"
                     :class="'bbn-floater-list bbn-menulist ' + mode"
                     origin="floater"
-                    @select.prevent.stop="select"
+                    @select="select"
                     :source-value="sourceValue"
                     :source-text="sourceText"
                     :source-url="sourceUrl"
@@ -117,10 +117,10 @@
                     :group-style="groupStyle"
                     :pageable="pageable"
                     :pager-element="pagerElement"/>
-          <h3 v-else v-text="noData"/>
+          <h3 bbn-else bbn-text="noData"/>
         </bbn-scroll>
       </div>
-      <div v-if="pageable && ready">
+      <div bbn-if="pageable && ready">
         <bbn-pager class="bbn-table-footer bbn-no-border-right bbn-no-border-left bbn-no-border-bottom"
                   :element="_self"
                   @click.stop
@@ -131,11 +131,11 @@
                   :extra-controls="false"/>
       </div>
       <component is="style"
-                v-if="css"
+                bbn-if="css"
                 scoped="scoped"
-                v-html="css"/>
+                bbn-html="css"/>
     </div>
-    <div v-if="!title && closable">
+    <div bbn-if="!title && closable">
       <div :class="{
         'bbn-top-right': true,
         'bbn-spadded': true,
@@ -147,18 +147,18 @@
            @click="close()"/>
       </div>
     </div>
-    <footer v-if="footer"
-            v-html="footer"
+    <footer bbn-if="footer"
+            bbn-html="footer"
             class="bbn-w-100"
             ref="footer"/>
-    <footer v-else-if="currentButtons.length"
+    <footer bbn-elseif="currentButtons.length"
             class="bbn-w-100 bbn-button-group"
             ref="buttons">
-      <bbn-button v-for="(b, i) in shownButtons"
+      <bbn-button bbn-for="(b, i) in shownButtons"
                   :key="i"
                   :ref="'button' + i"
                   @ready="t => focusable = t"
-                  v-bind="b"/>
+                  bbn-bind="b"/>
     </footer>
   </div>
 </div>

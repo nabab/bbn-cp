@@ -15,7 +15,7 @@
   \**************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Bold\":\"Grassetto\",\"Italic\":\"Italico\",\"Heading\":\"Intestazione\",\"Quote\":\"Citazione\",\"Generic List\":\"Elenco Generico\",\"Numbered List\":\"Elenco Numerato\",\"Create Link\":\"Crea Collegamento\",\"Insert Image\":\"Inserisci Immagine\",\"Toggle Preview\":\"Attiva/Disattiva Anteprima\",\"Toggle Side by Side\":\"Attiva/Disattiva Fianco a Fianco\",\"Toggle Fullscreen\":\"Attiva/Disattiva Schermo Intero\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/markdown/markdown.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Bold\":\"Grassetto\",\"Italic\":\"Italico\",\"Heading\":\"Intestazione\",\"Quote\":\"Citazione\",\"Generic List\":\"Elenco Generico\",\"Numbered List\":\"Elenco Numerato\",\"Create Link\":\"Crea Collegamento\",\"Insert Image\":\"Inserisci Immagine\",\"Toggle Preview\":\"Attiva/Disattiva Anteprima\",\"Toggle Side by Side\":\"Attiva/Disattiva Fianco a Fianco\",\"Toggle Fullscreen\":\"Attiva/Disattiva Schermo Intero\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/markdown/markdown.it.lang?");
 
 /***/ })
 

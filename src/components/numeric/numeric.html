@@ -4,7 +4,7 @@
     <div class="bbn-flex-fill">
       <input tabindex="0"
              autocomplete="off"
-             v-model="currentValue"
+             bbn-model="currentValue"
              :name="name"
              ref="element"
              :disabled="isDisabled"
@@ -16,7 +16,7 @@
              @mouseenter="over"
              @mouseleave="out"
              @change="_change"
-             v-show="editMode"
+             bbn-show="editMode"
              :size="currentInputSize"
              :style="{'paddingRight': spinners ? '0.5rem !important' : ''}"
              :inputmode="inputmode">
@@ -30,7 +30,7 @@
              @focus="_focus"
              @mouseenter="over"
              @mouseleave="out"
-             v-show="!editMode"
+             bbn-show="!editMode"
              ref="formatted"
              :size="currentInputSize"
              :style="{'paddingRight': spinners ? '0.5rem !important' : ''}"
@@ -38,7 +38,7 @@
       <input type="hidden"
              :value="value">
     </div>
-    <div v-if="spinners"
+    <div bbn-if="spinners"
          :class="['bbn-numeric-buttons', 'bbn-radius-top-right', 'bbn-radius-bottom-right', {'bbn-disabled' : !!readonly || isDisabled}]">
       <div :class="[
             'bbn-reactive-block',

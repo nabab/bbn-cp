@@ -1,5 +1,5 @@
 <div :class="componentClass">
-  <div v-if="master"
+  <div bbn-if="master"
        :class="['bbn-breadcrumb-container', {'bbn-flex-height': content}]"
   >
     <div class="bbn-h-100 bbn-alt bbn-bordered-bottom bbn-no-border-top bbn-no-border-right bbn-vmiddle bbn-hspadded"
@@ -24,25 +24,25 @@
                      :context="true"
         >
           <span class="bbn-hxspadded">
-            <i v-if="isNumber(selected) && source[selected] && !!source[selected].icon"
+            <i bbn-if="isNumber(selected) && source[selected] && !!source[selected].icon"
                :class="[source[selected].icon]"
             ></i>
-            <span v-text="isNumber(selected) && source[selected] && !!source[selected].title ? source[selected].title : _('Untitled')"
+            <span bbn-text="isNumber(selected) && source[selected] && !!source[selected].title ? source[selected].title : _('Untitled')"
                   :class="{'bbn-b': !currents.length}"
             ></span>
-            <i v-if="isNumber(selected) && source[selected] && !source[selected].fixed"
+            <i bbn-if="isNumber(selected) && source[selected] && !source[selected].fixed"
                class="nf nf-fa-times bbn-p bbn-abs bbn-breadcrumb-icons bbn-breadcrumb-icons-close"
                @click.prevent.stop="close(selected)"
             ></i>
-            <i v-if="getMenuFn(selected).length"
+            <i bbn-if="getMenuFn(selected).length"
                class="nf nf-fa-caret_down bbn-p bbn-abs bbn-breadcrumb-icons bbn-breadcrumb-icons-menu"
                @click.prevent.stop="openMenu($event)"
             ></i>
           </span>
         </bbn-context>
       </bbn-context>
-      <template v-if="currents.length"
-                v-for="(sn, isn) in currents"
+      <template bbn-if="currents.length"
+                bbn-for="(sn, isn) in currents"
       >
         <span :style="{color: fontColor}">
           <i class="nf nf-fa-angle_right bbn-hsmargin bbn-large bbn-breadcrumb-arrow"></i>
@@ -68,17 +68,17 @@
                   }"
                   class="bbn-hxspadded"
             >
-              <i v-if="isNumber(sn.selected) && sn.source[sn.selected] && !!sn.source[sn.selected].icon"
+              <i bbn-if="isNumber(sn.selected) && sn.source[sn.selected] && !!sn.source[sn.selected].icon"
                  :class="sn.source[sn.selected].icon"
               ></i>
-              <span v-text="isNumber(sn.selected) && sn.source[sn.selected] && !!sn.source[sn.selected].title ? sn.source[sn.selected].title : _('Untitled')"
+              <span bbn-text="isNumber(sn.selected) && sn.source[sn.selected] && !!sn.source[sn.selected].title ? sn.source[sn.selected].title : _('Untitled')"
                     :class="{'bbn-b': !currents[isn+1]}"
               ></span>
-              <i v-if="isNumber(sn.selected) && sn.source[sn.selected] && !sn.source[sn.selected].fixed"
+              <i bbn-if="isNumber(sn.selected) && sn.source[sn.selected] && !sn.source[sn.selected].fixed"
                  class="nf nf-fa-times bbn-p bbn-abs bbn-breadcrumb-icons bbn-breadcrumb-icons-close"
                  @click.prevent.stop="sn.close(sn.selected)"
               ></i>
-              <i v-if="sn.getMenuFn(sn.selected).length"
+              <i bbn-if="sn.getMenuFn(sn.selected).length"
                  class="nf nf-fa-caret_down bbn-p bbn-abs bbn-breadcrumb-icons bbn-breadcrumb-icons-menu"
                  @click.prevent.stop="openMenu($event)"
               ></i>
@@ -87,9 +87,9 @@
         </bbn-context>
       </template>
     </div>
-    <div v-if="content && isNumber(selected)"
+    <div bbn-if="content && isNumber(selected)"
          class="bbn-flex-fill"
-         v-html="source[selected] && source[selected].content ? source[selected].content : ''"
+         bbn-html="source[selected] && source[selected].content ? source[selected].content : ''"
          ref="content"
     ></div>
   </div>

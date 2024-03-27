@@ -18,7 +18,7 @@
       <slot/>
     </div>
   </div>
-  <bbn-scrollbar v-if="scrollReady && hasScrollX"
+  <bbn-scrollbar bbn-if="scrollReady && hasScrollX"
                  :hidden="isResizing || hiddenX"
                  orientation="horizontal"
                  ref="xScroller"
@@ -28,7 +28,7 @@
                  @scroll="scrollHorizontal"
                  :offset="offsetX"
                  :keep-visible="keepVisible"/>
-  <bbn-scrollbar v-if="scrollReady && hasScrollY"
+  <bbn-scrollbar bbn-if="scrollReady && hasScrollY"
                  :hidden="isResizing || hiddenY"
                  orientation="vertical"
                  ref="yScroller"

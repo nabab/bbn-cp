@@ -5,21 +5,21 @@
             @show="isOpened = true"
             @hide="isOpened = false">
   <div class="bbn-h-100 bbn-flex-height bbn-clipboard-container">
-    <div class="bbn-xl bbn-c bbn-w-100 bbn-hspadding bbn-top-lmargin bbn-vpadding" v-if="!items.length && !search.length">
+    <div class="bbn-xl bbn-c bbn-w-100 bbn-hspadding bbn-top-lmargin bbn-vpadding" bbn-if="!items.length && !search.length">
       <i class="nf nf-fa-clipboard bbn-right-smargin"/>
-      <span v-text="_('Clipboard is empty')"/>
+      <span bbn-text="_('Clipboard is empty')"/>
     </div>
-    <div class="bbn-large bbn-c bbn-w-100 bbn-vpadded" v-else>
+    <div class="bbn-large bbn-c bbn-w-100 bbn-vpadded" bbn-else>
       <bbn-input :placeholder="_('Search clipboard')"
                  :button-right="(search === '') ? 'nf nf-fa-search' : 'nf nf-fa-close'"
-                 v-model="search"
+                 bbn-model="search"
                  ref="search"
                  :focused="true"
                  @clickRightButton="unsearch"/>
     </div>
     <div class="bbn-w-100 bbn-p bbn-hpadded"
-         v-if="items.length">
-      <bbn-button v-if="!search.length"
+         bbn-if="items.length">
+      <bbn-button bbn-if="!search.length"
                   @click="clear"
                   :text="_('Clear all')"/>
       <textarea class="bbn-invisible"
@@ -33,7 +33,7 @@
                   uid="uid"
                   ref="list"
                   @remove="remove">
-          <div v-pre>
+          <div bbn-pre>
             <div class="bbn-w-100 bbn-flex-width">
               <div :title="text"
                   class="bbn-clipboard-text bbn-block-left bbn-flex-fill">
@@ -59,7 +59,7 @@
                 ]">
                   <i class="nf nf-mdi-dots_vertical"/>
                 </bbn-context>
-                <span v-text="text"/>
+                <span bbn-text="text"/>
               </div>
               <div :class="{
                     'bbn-block-right': true,
@@ -73,7 +73,7 @@
                     'bbn-darkgrey': stype === 'text',
                     'bbn-pink': stype && (stype.indexOf('image/') === 0)
                   }"
-                    v-text="stype"/>
+                    bbn-text="stype"/>
             </div>
           </div>
         </bbn-list>

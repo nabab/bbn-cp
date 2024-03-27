@@ -2,41 +2,41 @@
      @keydown.right="next"
      @keyup.left="prev"
      :tabindex="!!keyboard ? 0 : -1"
-     v-focused="!!keyboard">
-  <div v-if="ready"
+     bbn-focused="!!keyboard">
+  <div bbn-if="ready"
        :class="{'bbn-w-100': !fullSlide, 'bbn-overlay': fullSlide, 'bbn-padded' : !fullSlide}">
     <!-- position aboslute -->
     <div class="bbn-l bbn-slideshow-count bbn-abs"
-         v-if="showCount">
+         bbn-if="showCount">
       <span class="bbn-xl"
-            v-text="(currentIndex+1) + '/' + items.length"/>
+            bbn-text="(currentIndex+1) + '/' + items.length"/>
     </div>
 
     <div :class="['bbn-flex-width', {'bbn-w-100': !fullSlide, 'bbn-100': !!fullSlide}]">
       <!-- SUMMARY -->
-      <div v-if="summary && items.length"
+      <div bbn-if="summary && items.length"
            class="first bbn-flex-fill bbn-slide"
            :style="{display: currentIndex === 0 ? 'block' : 'none'}">
-        <h2 v-text="_('Summary')"></h2>
+        <h2 bbn-text="_('Summary')"></h2>
         <ol class="bbn-l bbn-lg">
-          <li v-for="(it, i) in items">
+          <li bbn-for="(it, i) in items">
             <a href="javascript:;"
                @click="currentIndex = i+1"
-               v-text="it.title ? it.title : _('Untitled')"/>
+               bbn-text="it.title ? it.title : _('Untitled')"/>
           </li>
         </ol>
       </div>
 
       <div class="bbn-flex-fill bbn-iflex-height">
         <div class="bbn-flex-fill">
-          <div v-if="arrowsPosition.startsWith('top')"
+          <div bbn-if="arrowsPosition.startsWith('top')"
                class="bbn-flex bbn-bottom-sspace"
                :style="arrowsStyle">
-            <i v-show="showArrowLeft"
+            <i bbn-show="showArrowLeft"
                :class="[leftArrowClass, 'bbn-p', 'bbn-lg']"
                @click="prev"
                :style="{visibility: (currentIndex === 0 && !loop)? 'hidden' : 'visible'}"/>
-            <i v-show="showArrowRight"
+            <i bbn-show="showArrowRight"
                @click="next"
                :class="[
                  rightArrowClass,
@@ -47,11 +47,11 @@
           </div>
           <div :class="[{'bbn-w-100': !fullSlide, 'bbn-overlay': fullSlide}, 'bbn-flex-width']">
             <!--Left arrow-->
-            <div v-if="arrows && (arrowsPosition === 'default') && (items.length > 1)"
+            <div bbn-if="arrows && (arrowsPosition === 'default') && (items.length > 1)"
                  class="bbn-middle bbn-padded bbn-slideshow-arrow-left"
                  @mouseover="arrowsPreview('prev', true)"
                  @mouseleave="arrowsPreview('prev', false)">
-              <i v-show="showArrowLeft"
+              <i bbn-show="showArrowLeft"
                  :class="[leftArrowClass, 'bbn-p', 'bbn-lg']"
                  @click="prev"
                  :style="{visibility: (currentIndex === 0 && !loop)? 'hidden' : 'visible'}"/>
@@ -60,7 +60,7 @@
               <div :class="{'bbn-w-100': !fullSlide, 'bbn-overlay': fullSlide}"
                    ref="slideContainer">
                 <!-- Items-->
-                <div v-for="(it, i) in items"
+                <div bbn-for="(it, i) in items"
                      :class="[
                       'bbn-w-100',
                       'bbn-slideshow-slide',
@@ -70,7 +70,7 @@
                      ]"
                      :id="name + (summary ? i : i + 1).toString()"
                      :style="{display: currentIndex === (summary ? i + 1 : i) ? 'block' : 'none'}">
-                  <div v-if="it.type === 'text'"
+                  <div bbn-if="it.type === 'text'"
                        :ref="'slide' + i.toString()"
                        :class="[
                          'bbn-slideshow-content',
@@ -82,28 +82,28 @@
                          'bbn-lg',
                          {'bbn-h-100': fullSlide, 'bbn-abs': fullSlide}
                        ]">
-                    <component v-if="it.component"
+                    <component bbn-if="it.component"
                                :is="it.component"
                                :data="it.data || {}"
-                               v-bind="it.attributes"
+                               bbn-bind="it.attributes"
                                :key="i"
                                @clickitem="itemClickable ? $emit('clickitem', it) : false"/>
-                    <component v-else-if="component"
+                    <component bbn-elseif="component"
                                :is="component"
                                :content="it.content || ''"
                                :data="it.data || {}"
                                @clickitem="itemClickable ? $emit('clickitem', it) : false"/>
-                    <div v-else-if="it.content"
+                    <div bbn-elseif="it.content"
                          :ref="'slide' + i.toString()"
                          :class="[(it.animation ? 'bbn-slideshow-effect-' + it.animation : ''), 'bbn-w-100']">
-                      <bbn-scroll v-if="scrollable">
-                        <div v-html="it.content"/>
+                      <bbn-scroll bbn-if="scrollable">
+                        <div bbn-html="it.content"/>
                       </bbn-scroll>
-                      <div v-else v-html="it.content"/>
+                      <div bbn-else bbn-html="it.content"/>
                     </div>
                   </div>
                   <!--only image-->
-                  <div v-else-if="it.type === 'img'" :ref="'slide' + i.toString()"
+                  <div bbn-elseif="it.type === 'img'" :ref="'slide' + i.toString()"
                     :class="[(it.animation ? 'bbn-slideshow-effect-' + it.animation : ''), {'bbn-w-100': !fullSlide, 'bbn-overlay': fullSlide}, 'bbn-middle']">
                     <div :class="[{'bbn-w-100': !fullSlide, 'bbn-overlay': fullSlide}, 'bbn-middle']">
                       <img :src="it.content"
@@ -123,17 +123,17 @@
                            @click="itemClickable ? $emit('clickitem', it) : false">
                     </div>
                   </div>
-                  <bbn-checkbox v-if="checkbox && it.checkable" v-model="valuesCB[i]" :value="true" :novalue="false"
+                  <bbn-checkbox bbn-if="checkbox && it.checkable" bbn-model="valuesCB[i]" :value="true" :novalue="false"
                     :strict="true" :label="(typeof checkbox === 'string') ? checkbox : defaultTextCB"
                     class="bbn-slideshow-showagain"/>
                 </div>
               </div>
-              <div v-if="ctrl" class="bbn-w-100 bbn-middle">
+              <div bbn-if="ctrl" class="bbn-w-100 bbn-middle">
                 <!-- Commands-->
                 <div class="bbn-primary-text-alt bbn-slideshow-commands bbn-middle"
                      @mouseover="ctrlPreview(true)"
                      @mouseleave="ctrlPreview(false)">
-                  <i v-show="showCtrl"
+                  <i bbn-show="showCtrl"
                      :class="[{
                         'nf nf-fa-pause': !!scrollInterval,
                         'nf nf-fa-play': !scrollInterval,
@@ -143,11 +143,11 @@
               </div>
             </div>
             <!-- Right arrow-->
-            <div v-if="arrows && (arrowsPosition === 'default') && (items.length > 1)"
+            <div bbn-if="arrows && (arrowsPosition === 'default') && (items.length > 1)"
                  class="bbn-middle bbn-padded bbn-slideshow-arrow-right"
                  @mouseover="arrowsPreview('next', true)"
                  @mouseleave="arrowsPreview('next', false)">
-              <i v-show="showArrowRight"
+              <i bbn-show="showArrowRight"
                  @click="next"
                  :class="[
                    rightArrowClass,
@@ -157,14 +157,14 @@
                  :style="{visibility: (currentIndex >= items.length - 1) && !loop ? 'hidden' : 'visible'}"/>
             </div>
           </div>
-          <div v-if="arrowsPosition.startsWith('bottom')"
+          <div bbn-if="arrowsPosition.startsWith('bottom')"
                class="bbn-flex bbn-top-sspace"
                :style="arrowsStyle">
-            <i v-show="showArrowLeft"
+            <i bbn-show="showArrowLeft"
                :class="[leftArrowClass, 'bbn-p', 'bbn-lg']"
                @click="prev"
                :style="{visibility: (currentIndex === 0 && !loop)? 'hidden' : 'visible'}"/>
-            <i v-show="showArrowRight"
+            <i bbn-show="showArrowRight"
                @click="next"
                :class="[
                  rightArrowClass,
@@ -174,11 +174,11 @@
                :style="{visibility: (currentIndex >= items.length - 1) && !loop ? 'hidden' : 'visible'}"/>
           </div>
         </div>
-        <div v-if="showInfo && items[currentIndex] && items[currentIndex][sourceInfo] && items[currentIndex][sourceInfo].length"
+        <div bbn-if="showInfo && items[currentIndex] && items[currentIndex][sourceInfo] && items[currentIndex][sourceInfo].length"
              class="bbn-middle bbn-padded bbn-slideshow-info"
-             v-html="items[currentIndex][sourceInfo]"/>
+             bbn-html="items[currentIndex][sourceInfo]"/>
         <!-- Miniatures -->
-        <div v-if=" [true, 'image', 'circle'].includes(preview)" :class="[
+        <div bbn-if=" [true, 'image', 'circle'].includes(preview)" :class="[
                'bbn-block',
                'bbn-middle',
                'bbns-gallery-miniature',
@@ -188,7 +188,7 @@
              :style="{'min-height': typeof(dimensionPreview)=== 'Number' ? dimensionPreview + 'px': dimensionPreview}"
              @mouseover="miniaturePreview(true)"
              @mouseleave="miniaturePreview(false)">
-          <component v-show="showMiniature"
+          <component bbn-show="showMiniature"
                      :is="$options.components.miniature"
                      :items="items"
                      :type="preview"
@@ -200,9 +200,9 @@
     </div>
 
     <!--old arrows-->
-    <div v-if="items.length && !arrows && (preview === false) && navigation" class="bbn-slideshow-navigation">
+    <div bbn-if="items.length && !arrows && (preview === false) && navigation" class="bbn-slideshow-navigation">
       <div class="bbn-100">
-        <a href="javascript:;" v-if="summary" :title="_('Summary')" @click="currentIndex = 0"
+        <a href="javascript:;" bbn-if="summary" :title="_('Summary')" @click="currentIndex = 0"
           :style="{visibility: currentIndex === 0 ? 'hidden' : 'visible'}" class="bbn-slideshow-summary">
           <i class="nf nf-fa-align_justify"/>
         </a>
@@ -218,11 +218,11 @@
       </div>
     </div>
   </div>
-  <div v-else class="bbn-vmiddle">
+  <div bbn-else class="bbn-vmiddle">
     <bbn-loadicon class="bbn-vmiddle"
                   :size="24"/>
     <span class="bbn-xl bbn-b bbn-left-sspace"
-          v-text="_('Loading') + '...'"/>
+          bbn-text="_('Loading') + '...'"/>
   </div>
   <div class="bbn-hidden" ref="slot">
     <slot></slot>

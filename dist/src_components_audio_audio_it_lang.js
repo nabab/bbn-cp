@@ -15,7 +15,7 @@
   \********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Your browser does not support the audio tag.\":\"Il tuo browser non supporta il tag audio.\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/audio/audio.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Your browser does not support the audio tag.\":\"Il tuo browser non supporta il tag audio.\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/audio/audio.it.lang?");
 
 /***/ })
 

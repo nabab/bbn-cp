@@ -15,7 +15,7 @@
   \**********************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Untitled\":\"Sans titre\",\"Loading\":\"Chargement\",\"Impossible to find the container for URL\":\"Impossible de trrouver un conteneur correspondant à cette URL\",\"Untitled site\":\"Site sans titre\",\"You have unsaved data, are you sure you want to leave?\":\"Vous avez des données non sauvegardées, êtes-vous sûr de vouloir quitter?\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/router-group/router-group.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Untitled\":\"Sans titre\",\"Loading\":\"Chargement\",\"Impossible to find the container for URL\":\"Impossible de trrouver un conteneur correspondant à cette URL\",\"Untitled site\":\"Site sans titre\",\"You have unsaved data, are you sure you want to leave?\":\"Vous avez des données non sauvegardées, êtes-vous sûr de vouloir quitter?\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/router-group/router-group.fr.lang?");
 
 /***/ })
 

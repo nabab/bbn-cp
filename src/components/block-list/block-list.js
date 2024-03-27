@@ -54,7 +54,12 @@ const cpDef = {
       return res;
     }
   },
-  mounted(){
+  methods: {
+    onResize() {
+      this.windowWidth = window.innerWidth;
+    }
+  },
+  mounted() {
     this.ready = true;
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
@@ -84,14 +89,10 @@ const cpDef = {
         }
       }
     }
-  },
-  methods: {
-    onResize() {
-      this.windowWidth = window.innerWidth;
-    }
   }
 };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './block-list.html';
 import cpStyle from './block-list.less';
 let cpLang = {};

@@ -15,7 +15,7 @@
   \**************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Previous\":\"Précédent\",\"Next\":\"Suivant\",\"day\":\"jour\",\"month\":\"mois\",\"week\":\"semaine\",\"year\":\"année\",\"decade\":\"décennie\",\"Loading\":\"Chargement\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/calendar/calendar.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Previous\":\"Précédent\",\"Next\":\"Suivant\",\"day\":\"jour\",\"month\":\"mois\",\"week\":\"semaine\",\"year\":\"année\",\"decade\":\"décennie\",\"Loading\":\"Chargement\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/calendar/calendar.fr.lang?");
 
 /***/ })
 

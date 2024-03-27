@@ -15,7 +15,7 @@
   \**************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Title tag\":\"Tag title\",\"Title text\":\"Testo titolo\",\"Title alignment\":\"Allineamento titolo\",\"Line\":\"Linea\",\"Upload your image\":\"Carica la tua immagine\",\"Image size\":\"Dimensione immagine\",\"Image alignment\":\"Allineamento immagine\",\"Upload your images\":\"Carica le tue immagini\",\"Video source\":\"Sorgente video\",\"Mute the video\":\"Silenzia il video\",\"Autoplay\":\"Riproduci in automatico\",\"Block changed\":\"Blocco cambiato\",\"Image correctly uploaded\":\"Immagine caricata correttamente\",\"An error occurred while uploading the image\":\"Si è verificato un errore durante il caricamento dell\\'immagine\",\"Align left\":\"Allinea a sinistra\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/editable/editable.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Title tag\":\"Tag title\",\"Title text\":\"Testo titolo\",\"Title alignment\":\"Allineamento titolo\",\"Line\":\"Linea\",\"Upload your image\":\"Carica la tua immagine\",\"Image size\":\"Dimensione immagine\",\"Image alignment\":\"Allineamento immagine\",\"Upload your images\":\"Carica le tue immagini\",\"Video source\":\"Sorgente video\",\"Mute the video\":\"Silenzia il video\",\"Autoplay\":\"Riproduci in automatico\",\"Block changed\":\"Blocco cambiato\",\"Image correctly uploaded\":\"Immagine caricata correttamente\",\"An error occurred while uploading the image\":\"Si è verificato un errore durante il caricamento dell\\'immagine\",\"Align left\":\"Allinea a sinistra\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/editable/editable.it.lang?");
 
 /***/ })
 

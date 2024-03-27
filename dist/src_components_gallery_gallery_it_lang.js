@@ -15,7 +15,7 @@
   \************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Select\":\"Seleziona\",\"Upload\":\"Carica\",\"Download\":\"Scarica\",\"Delete\":\"Elimina\",\"Cancel\":\"Annulla\",\"Filter\":\"Filtra\",\"Search\":\"Ricerca\",\"Are you sure you want to download these photos?\":\"Sei sicuro di voler scaricare queste foto?\",\"Are you sure you want to delete these photos?\":\"Sei sicuro di voler eliminare queste foto?\",\"Order\":\"Ordina\",\"Ok\":\"Ok\",\"Loading\":\"Caricamento\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/gallery/gallery.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Select\":\"Seleziona\",\"Upload\":\"Carica\",\"Download\":\"Scarica\",\"Delete\":\"Elimina\",\"Cancel\":\"Annulla\",\"Filter\":\"Filtra\",\"Search\":\"Ricerca\",\"Are you sure you want to download these photos?\":\"Sei sicuro di voler scaricare queste foto?\",\"Are you sure you want to delete these photos?\":\"Sei sicuro di voler eliminare queste foto?\",\"Order\":\"Ordina\",\"Ok\":\"Ok\",\"Loading\":\"Caricamento\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/gallery/gallery.it.lang?");
 
 /***/ })
 

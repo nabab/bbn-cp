@@ -15,10 +15,10 @@
               :placeholder="filterString ? '' : placeholder"
               :tabindex="autocomplete || isDisabled || readonly ? -1 : 0"
               :value="filterString">
-      <input v-if="autocomplete && !isDisabled && !readonly"
+      <input bbn-if="autocomplete && !isDisabled && !readonly"
               tabindex="0"
               class="bbn-textbox bbn-no-border"
-              v-model="filterString"
+              bbn-model="filterString"
               ref="filter"
               @focus="selectText"
               autocomplete="off"
@@ -38,10 +38,10 @@
     </div>
   </div>
   <input type="hidden"
-         v-model="value"
+         bbn-model="value"
          ref="element"
          :name="name">
-  <bbn-floater v-if="!isDisabled && !readonly && isOpened"
+  <bbn-floater bbn-if="!isDisabled && !readonly && isOpened"
                :element="$el"
                :max-height="maxHeight"
                :min-width="currentWidth"

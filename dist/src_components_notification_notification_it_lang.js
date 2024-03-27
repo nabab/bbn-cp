@@ -15,7 +15,7 @@
   \**********************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Success\":\"Successo\",\"Warning\":\"Attenzione\",\"Error\":\"Errore\",\"Info\":\"Informazione\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/notification/notification.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Success\":\"Successo\",\"Warning\":\"Attenzione\",\"Error\":\"Errore\",\"Info\":\"Informazione\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/notification/notification.it.lang?");
 
 /***/ })
 

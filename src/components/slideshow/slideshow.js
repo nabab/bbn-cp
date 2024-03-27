@@ -793,8 +793,8 @@ const cpDef = {
                       ref="scroll"
                       @ready="init">
             <div class="bbn-w-100 bbn-middle">
-              <template  v-for="(it, i) in items">
-                <i v-if="type === 'circle'"
+              <template  bbn-for="(it, i) in items">
+                <i bbn-if="type === 'circle'"
                     @click= "clickMiniature(it , i)"
                     :class="[
                       (mainComponent.currentIndex === i ? 'nf nf-fa-dot_circle_o' : 'nf nf-fa-circle'),
@@ -805,7 +805,7 @@ const cpDef = {
                     ]"
                     ref="items"
                 ></i>
-                <div v-else
+                <div bbn-else
                      @click= "clickMiniature(it , i)"
                      :class="['bbn-slideshow-zoom', 'bbn-bordered-internal', {
                        'bbn-primary-border': mainComponent.currentIndex === i,
@@ -820,11 +820,11 @@ const cpDef = {
                      }"
                      ref="items"
                 >
-                  <div v-if="it.type === 'text'"
-                      v-html="it.content"
+                  <div bbn-if="it.type === 'text'"
+                      bbn-html="it.content"
                       class="bbn-slideshow-content"
                   ></div>
-                  <img v-else-if="it.type === 'img'"
+                  <img bbn-elseif="it.type === 'img'"
                       :src="getImgSrc(it.content)"
                       :alt="it.caption || it.text || ''"
                       width="100%"

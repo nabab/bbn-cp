@@ -15,7 +15,7 @@
   \****************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Full screen\":\"Plein écran\",\"Close\":\"Fermer\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/key/key.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Full screen\":\"Plein écran\",\"Close\":\"Fermer\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/key/key.fr.lang?");
 
 /***/ })
 

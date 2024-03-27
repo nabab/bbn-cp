@@ -15,7 +15,7 @@
   \**********************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Yes\":\"Oui\",\"No\":\"Non\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/radiobuttons/radiobuttons.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Yes\":\"Oui\",\"No\":\"Non\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/radiobuttons/radiobuttons.fr.lang?");
 
 /***/ })
 

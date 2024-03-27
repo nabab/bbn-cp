@@ -5,7 +5,7 @@
          bbn-forget="!scrollable">
       <div :class="{'bbn-flex-width': !isVertical, 'bbn-flex-height': isVertical}"
            bbn-forget="!scrollable">
-        <div v-if="scrollable"
+        <div bbn-if="scrollable"
             class="bbn-tabs-button bbn-tabs-button-prev bbn-p">
           <div class="bbn-100 bbn-middle"
               @click="scrollTabs('left')">
@@ -20,17 +20,17 @@
         }">
           <bbn-scroll bbn-forget="!scrollable"
                       ref="horizontal-scroll"
-                      v-bind="scrollCfg"
+                      bbn-bind="scrollCfg"
                       style="height: 100%"
                       @ready="onScrollReady">
             <ul ref="tabgroup"
                 :class="['bbn-alt', 'bbn-tabs-tabs', 'bbn-bordered-bottom', 'bbn-flex-fill', {
                   'bbn-flex-width': fill
                 }]">
-              <li v-for="(tab, tabIndex) in source"
+              <li bbn-for="(tab, tabIndex) in source"
                   @click="clickLi(tabIndex)"
                   :ref="'tab-' + tabIndex"
-                  v-show="!tab.hidden"
+                  bbn-show="!tab.hidden"
                   :style="{
                           backgroundColor: tab.bcolor || null,
                           color: tab.fcolor || null
@@ -51,13 +51,13 @@
                           'bbn-tabs-alarm': tab.alarm
                           }, tab.cls || '']">
                 <div class="bbn-tabs-badge-container bbn-middle"
-                    v-if="numProperties(tab.events)">
+                    bbn-if="numProperties(tab.events)">
                   <span class="bbn-badge bbn-small bbn-bg-red"
-                        v-text="numProperties(tab.events)"/>
+                        bbn-text="numProperties(tab.events)"/>
                 </div>
                 <div class="bbn-tabs-tab-loader bbn-border-text"
                     :style="{borderColor: tab.fcolor || null}"
-                    v-if="tab.loading"/>
+                    bbn-if="tab.loading"/>
                 <bbn-context :context="true"
                              @keydown.space.enter.prevent.stop="tabIndex !== selected ? emitInput(tabIndex) : false"
                              @keydown.right.down.prevent.stop="getRef('menu-' + tabIndex) ? getRef('menu-' + tabIndex).$el.focus() : (getRef('closer-' + tabIndex) ? getRef('closer-' + tabIndex).focus() : null)"
@@ -76,21 +76,21 @@
                                     color: tab.fcolor ? tab.fcolor : null
                                      }"
                              tabindex="0">
-                  <span v-if="tab.icon"
+                  <span bbn-if="tab.icon"
                         :title="tab.title"
                         :class="'bbn-tabs-main-icon bbn-iblock bbn-right-smargin ' + (tab.notext ? 'bbn-lg' : 'bbn-m')">
                     <i :class="tab.icon"/>
                   </span>
-                  <span v-if="!tab.notext && tab.title"
+                  <span bbn-if="!tab.notext && tab.title"
                         class="bbn-router-tab-text"
                         :title="getTabTitle(tab)"
-                        v-html="tab.title.length > maxTitleLength ? cutTitle(tab.title) : tab.title"/>
+                        bbn-html="tab.title.length > maxTitleLength ? cutTitle(tab.title) : tab.title"/>
                 </bbn-context>
                 <div class="bbn-tabs-selected"
                      :ref="'selector-' + tabIndex"
-                     v-if="tabIndex === value"
+                     bbn-if="tabIndex === value"
                      :style="{backgroundColor: selectedBarColor || altTextColor}"/>
-                <span v-if="!tab.fixed && !tab.pinned && closable"
+                <span bbn-if="!tab.fixed && !tab.pinned && closable"
                       class="bbn-p bbn-router-tab-close bbn-iblock bbn-top-right bbn-hxspadded"
                       tabindex="-1"
                       :ref="'closer-' + tabIndex"
@@ -99,7 +99,7 @@
                       @click.stop.prevent="$emit('close', tabIndex)">
                   <i class="nf nf-fa-times bbn-xs"/>
                 </span>
-                <bbn-context v-if="(tab.menu !== false) && (tabIndex === value)"
+                <bbn-context bbn-if="(tab.menu !== false) && (tabIndex === value)"
                              class="bbn-iblock bbn-router-tab-menu bbn-p bbn-bottom-right bbn-hxspadded"
                              tabindex="-1"
                              min-width="10rem"
@@ -114,7 +114,7 @@
             </ul>
           </bbn-scroll>
         </div>
-        <div v-if="scrollable"
+        <div bbn-if="scrollable"
             class="bbn-tabs-button bbn-tabs-button-next bbn-p">
           <div class="bbn-100 bbn-middle"
               @click="scrollTabs('right')">

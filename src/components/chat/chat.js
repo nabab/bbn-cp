@@ -1333,7 +1333,7 @@ const cpDef = {
   ></bbn-initial>
 </div>
 <div class="bbn-ellipsis bbn-w-100"
-      v-text="source.text"
+      bbn-text="source.text"
 ></div>
 <div class="bbn-middle" style="min-width: 1.5rem">
   <i :class="{
@@ -1380,26 +1380,26 @@ const cpDef = {
   <bbn-initial :user-name="participantsFormatted"
                 :width="16"
                 :height="16"
-                v-if="!isGroup && !source.info.title"
+                bbn-if="!isGroup && !source.info.title"
   ></bbn-initial>
-  <i v-else
+  <i bbn-else
       class="nf nf-oct-organization"></i>
 </div>
 <div class="bbn-ellipsis bbn-w-100"
-      v-text="source.info.title || participantsFormatted"
+      bbn-text="source.info.title || participantsFormatted"
 ></div>
 <div class="bbn-middle">
-  <span v-if="source.unread"
+  <span bbn-if="source.unread"
         class="bbn-xs bbn-badge bbn-primary"
-        v-text="source.unread">
+        bbn-text="source.unread">
   </span>
 </div>
 <div class="bbn-middle" style="min-width: 1.5rem">
-  <i v-if="cp.currentOnline && (online.length === participants.length)"
+  <i bbn-if="cp.currentOnline && (online.length === participants.length)"
       class="nf nf-fa-circle bbn-green"
       :title="onlineFormatted"
   ></i>
-  <i v-else-if="cp.currentOnline && isGroup && online.length"
+  <i bbn-elseif="cp.currentOnline && isGroup && online.length"
       class="nf nf-fa-circle bbn-orange"
       :title="onlineFormatted"
   ></i>
@@ -1489,26 +1489,26 @@ const cpDef = {
     info: {
       template: `
 <div class="bbn-spadded">
-<div v-if="(participants.length > 1) || info.title || titleVisible"
+<div bbn-if="(participants.length > 1) || info.title || titleVisible"
       class="bbn-header bbn-c"
 >` + bbn._('TITLE') + `</div>
-<div v-if="(participants.length > 1) || info.title || titleVisible"
+<div bbn-if="(participants.length > 1) || info.title || titleVisible"
       class="bbn-flex-width bbn-vmiddle bbn-top-sspace"
 >
   <bbn-input class="bbn-flex-fill bbn-right-sspace"
-            v-model="currentTitle"
+            bbn-model="currentTitle"
             :readonly="!isAdmin"
   ></bbn-input>
   <bbn-button icon="nf nf-fa-save"
               :notext="true"
               @click="saveTitle"
-              v-if="isAdmin && chatId && currentTitle"
+              bbn-if="isAdmin && chatId && currentTitle"
   ></bbn-button>
 </div>
 <div class="bbn-header bbn-top-sspace bbn-vmiddle">
   <div class="bbn-flex-fill bbn-c">` + bbn._('PARTICIPANTS') + `</div>
   <div class="bbn-hsmargin">
-    <i v-if="isAdmin"
+    <i bbn-if="isAdmin"
         class="bbn-p nf nf-fa-plus"
         @click="onAddUserClick"
     ></i>
@@ -1517,7 +1517,7 @@ const cpDef = {
 <div class="bbn-spadded bbn-bordered bbn-grid bbn-no-border-top"
     style="grid-template-columns: max-content auto max-content"
 >
-  <template v-for="p in currentParticipants">
+  <template bbn-for="p in currentParticipants">
     <div class="bbn-middle"
         style="min-width: 1.5rem"
     >
@@ -1527,17 +1527,17 @@ const cpDef = {
       ></bbn-initial>
     </div>
     <div class="bbn-ellipsis bbn-w-100"
-        v-text="p.text"
+        bbn-text="p.text"
     ></div>
     <div class="bbn-middle"
         style="min-width: 1.5rem"
     >
-      <template v-if="isAdmin">
-        <i v-if="!admins.includes(p.value) || isCreator"
+      <template bbn-if="isAdmin">
+        <i bbn-if="!admins.includes(p.value) || isCreator"
           class="bbn-p nf nf-fa-trash bbn-red bbn-left-sspace"
           @click="removeUser(p.value)"
         ></i>
-        <i v-if="isCreator"
+        <i bbn-if="isCreator"
           :class="['bbn-p', 'nf nf-fa-star', 'bbn-left-sspace', {
             'bbn-primary-text-alt': admins.includes(p.value)
           }]"
@@ -1934,7 +1934,7 @@ const cpDef = {
               :height="16"
 ></bbn-initial>
 <span class="bbn-left-sspace"
-      v-text="source.text"
+      bbn-text="source.text"
 ></span>
 </span>
               `,

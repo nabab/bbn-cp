@@ -2,20 +2,18 @@
   <div class="bbn-flex-height">
 
     <div class="bbn-block bbn-w-100 bbn-vpadded bbn-c"
-         v-if="menus && menus.length">
-      <bbn-dropdown v-model="currentMenu"
+         bbn-if="menus && menus.length">
+      <bbn-dropdown bbn-model="currentMenu"
                     :source="menus"
                     :storage="!!storageName"
                     :storage-full-name="storageName"
                     style="width: 80%"
-                    @mousedown.stop
-                    @mouseup.stop
-                    @click.stop
-                    ref="dropdown"/>
+                    ref="dropdown"
+      ></bbn-dropdown>
     </div>
-    <div class="bbn-block bbn-w-100 bbn-bottom-padded bbn-c" v-if="search">
+    <div class="bbn-block bbn-w-100 bbn-bottom-padded bbn-c" bbn-if="search">
       <bbn-input name="search"
-                 v-model="searchExp"
+                 bbn-model="searchExp"
                  style="width: 80%"
                  ref="search"
                  autocomplete="off"
@@ -33,7 +31,7 @@
                   @load="resizeScroll"
                   :quick-filter="searchExp"
                   :excluded-section-filter="true"
-                  @select="go"
+                  @nodeClick="go"
                   :menu="getMenu"
                   @ready="readyTree"/>
       </div>

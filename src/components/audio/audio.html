@@ -3,7 +3,7 @@
        height: currentHeight,
        width: currentWidth
      }">
-  <div v-if="title && (titlePosition === 'top')"
+  <div bbn-if="title && (titlePosition === 'top')"
        :class="['bbn-c', 'bbn-audio-title', 'bbn-xspadded', {
          'bbn-header': skin,
          'bbn-radius-top': skin,
@@ -11,7 +11,7 @@
          'bbn-no-border-left': skin,
          'bbn-no-border-right': skin,
        }, titleCls]"
-       v-html="title"
+       bbn-html="title"
        :style="{
          background: titleBackground,
          color: titleColor
@@ -32,13 +32,13 @@
            :class="cls"
            @play="onPlay"
            @pause="onPause">
-      <source v-if="source"
+      <source bbn-if="source"
               :src="source"
               :type="type"/>
-      <p v-text="browserMessage"/>
+      <p bbn-text="browserMessage"/>
     </audio>
   </div>
-  <div v-if="title && (titlePosition === 'bottom')"
+  <div bbn-if="title && (titlePosition === 'bottom')"
        :class="['bbn-c', 'bbn-audio-title', 'bbn-xspadded', {
          'bbn-header': skin,
          'bbn-radius-bottom': skin,
@@ -46,7 +46,7 @@
          'bbn-no-border-left': skin,
          'bbn-no-border-right': skin,
        }, titleCls]"
-       v-html="title"
+       bbn-html="title"
        :style="{
          background: titleBackground,
          color: titleColor

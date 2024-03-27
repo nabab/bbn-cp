@@ -1,14 +1,8 @@
-import bbnCp from '../lib/Cp.js';
+import bbnCp from '../lib/Cp/Cp.js';
 
 const dropdown = {
   props: {
-    /**
-     * @prop {Boolean} [true] writable
-     * */
-    writable: {
-      type: Boolean,
-      default: false
-    },
+
     /**
      * The text corresponding to the value of the component.
      * @memberof dropdownComponent
@@ -150,7 +144,7 @@ const dropdown = {
      * @prop {Boolean} [false] groupable
      * @memberof dropdownComponent
      */
-      groupable: {
+    groupable: {
       type: Boolean,
       default: false
     },
@@ -194,7 +188,7 @@ const dropdown = {
       default: 'disabled'
     }
   },
-  data(){
+  data() {
     return {
       /**
        * True when the user's mouse is over the dropdown element or its list
@@ -261,7 +255,7 @@ const dropdown = {
     };
   },
   computed: {
-    popupComponent(){
+    popupComponent() {
       if (this.popup) {
         if (this.popup === true) {
           return this.getPopup();
@@ -278,11 +272,11 @@ const dropdown = {
      * @returns {String}
      */
     currentTextValue() {
-      if ( (this.value !== undefined) && !bbn.fn.isNull(this.value) && this.sourceValue && this.sourceText && this.currentData?.length ){
+      if ((this.value !== undefined) && !bbn.fn.isNull(this.value) && this.sourceValue && this.sourceText && this.currentData?.length) {
         let idx = bbn.fn.search(this.currentData, a => {
           return a.data[this.sourceValue] === this.value;
         });
-        if ( idx > -1 ){
+        if (idx > -1) {
           if (this.clearHtml) {
             return bbn.fn.html2text(this.currentData[idx].data[this.sourceText]);
           }
@@ -299,7 +293,7 @@ const dropdown = {
      * @memberof dropdownComponent
      * @return {Boolean}
      */
-    isSearching(){
+    isSearching() {
       return this.currentText !== this.currentTextValue;
     },
     /**
@@ -307,7 +301,7 @@ const dropdown = {
      * @memberof dropdownComponent
      * @return {Boolean}
      */
-    asMobile(){
+    asMobile() {
       return this.isMobile && this.mobile;
     },
     /**
@@ -315,9 +309,9 @@ const dropdown = {
      * @memberof dropdownComponent
      * @return {String}
      */
-      currentIcon(){
+    currentIcon() {
       return this.isOpened && !this.isDisabled && !this.readonly && this.filteredData.length ?
-          this.iconUp : this.iconDown;
+        this.iconUp : this.iconDown;
     }
   },
   methods: {
@@ -326,15 +320,15 @@ const dropdown = {
      * @method selectText
      * @memberof dropdownComponent
      */
-    selectText(){
+    selectText() {
       this.getRef('input').selectText();
     },
-      /**
-     * Handles the resize of the component
-     * @method onResize
-     * @memberof dropdownComponent
-     */
-    onResize(){
+    /**
+   * Handles the resize of the component
+   * @method onResize
+   * @memberof dropdownComponent
+   */
+    onResize() {
       this.currentWidth = this.$el.offsetWidth;
       this.currentHeight = this.$el.offsetHeight;
     },
@@ -343,22 +337,9 @@ const dropdown = {
      * @method click
      * @memberof dropdownComponent
      */
-    click(){
+    click() {
       if (!this.disabled && !this.readonly && !this.native && this.filteredData.length && bbn.fn.isDom(this.$el)) {
-        const popup = this.getRef('list');
-        if (popup) {
-          if (popup.isVisible) {
-            popup.hide();
-          }
-          else {
-            popup.show();
-          }
-        }
-        else {
-          this.isOpened = !this.isOpened;
-        }
-
-        this.$forceUpdate();
+        this.isOpened = !this.isOpened;
         if (this.writable) {
           this.$el.querySelector('input:not([type=hidden])').focus();
         }
@@ -375,15 +356,15 @@ const dropdown = {
      * @emit change
      * @memberof dropdownComponent
      */
-    select(item, idx, dataIndex, e) {
-      bbn.fn.log(["SLECT DD", e.defaultPrevented, item, item[this.sourceAction], item[this.uid || this.sourceValue]]);
+    onSelect(item, idx, dataIndex, e) {
+      bbn.fn.log(["SELECT FROM DROPDOWN", item, idx, dataIndex, e])
       if (item && (!e || !e.defaultPrevented)) {
         if (this.sourceAction && item[this.sourceAction] && bbn.fn.isFunction(item[this.sourceAction])) {
           item[this.sourceAction](item);
         }
         else if (item[this.uid || this.sourceValue] !== undefined) {
-          this.emitInput(item[this.uid || this.sourceValue]);
-          this.$emit('change', item[this.uid || this.sourceValue], idx, dataIndex, e);
+          bbn.fn.log(["SELECT 2 FROM DROPDOWN", item, idx, dataIndex, e])
+          this.currentSelectValue = item[this.sourceValue];
         }
       }
 
@@ -452,10 +433,10 @@ const dropdown = {
      * @method resetDropdown
      * @memberof dropdownComponent
      */
-    resetDropdown(){
+    resetDropdown() {
       this.currentText = this.currentTextValue;
       this.unfilter();
-      if ( this.isOpened ){
+      if (this.isOpened) {
         this.isOpened = false;
       }
     },
@@ -464,7 +445,7 @@ const dropdown = {
      * @method afterUpdate
      * @memberof dropdownComponent
      */
-    afterUpdate(){
+    afterUpdate() {
       if (!this.ready) {
         this.ready = true;
       }
@@ -474,7 +455,7 @@ const dropdown = {
      * @method unfilter
      * @memberof dropdownComponent
      */
-    unfilter(){
+    unfilter() {
       this.currentFilters.conditions.splice(0, this.currentFilters.conditions.length);
       if (this.currentFilters.logic && (this.currentFilters.logic.toLowerCase() === 'or')) {
         this.currentFilters.logic = 'AND';
@@ -486,7 +467,7 @@ const dropdown = {
      * @memberof dropdownComponent
      * @return {Array}
      */
-    getRealButtons(){
+    getRealButtons() {
       let btns = [];
       if (bbn.fn.isArray(this.buttons)) {
         bbn.fn.each(this.buttons, btn => {
@@ -513,7 +494,7 @@ const dropdown = {
      * @method updateButtons
      * @memberof dropdownComponent
      */
-    updateButtons(){
+    updateButtons() {
       this.realButtons.splice(0, this.realButtons.length, ...this.getRealButtons());
     },
     onFocusOut() {
@@ -535,7 +516,9 @@ const dropdown = {
      * @memberof dropdownComponent
      */
     value() {
-      this.currentText = this.currentTextValue;
+      this.$nextTick(() => {
+        this.currentText = this.currentTextValue;
+      });
     },
     /**
      * Closes the floater menu of the component.
@@ -544,14 +527,13 @@ const dropdown = {
      * @memberof dropdownComponent
      */
     isOverDropdown(v) {
-      bbn.fn.log("IS OVER DROPDOWN : " + (v ? "YES" : "NO"));
       if (v) {
         clearTimeout(this.closeTimeout);
       }
       else {
         this.closeTimeout = setTimeout(() => {
           let lst = this.getRef('list');
-          if ( lst ){
+          if (lst) {
             bbn.fn.log("SHOULD CLOSE");
             lst.close(true);
           }
@@ -562,7 +544,7 @@ const dropdown = {
       * @watch ready
       * @memberof dropdownComponent
       */
-    ready(v){
+    ready(v) {
       if (v && this.suggest && !this.value && this.filteredData.length) {
         this.emitInput(this.filteredData[0].data[this.sourceValue]);
       }
@@ -571,13 +553,11 @@ const dropdown = {
       * @watch source
       * @memberof dropdownComponent
       */
-    source(){
+    source() {
       this.updateData().then(() => {
-        /*
-        if ( this.filteredData.length ) {
+        if (this.filteredData.length) {
           this.onResize();
         }
-        */
       });
     },
     /**
@@ -586,7 +566,7 @@ const dropdown = {
       */
     buttons: {
       deep: true,
-      handler(){
+      handler() {
         this.updateButtons();
       }
     }

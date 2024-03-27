@@ -1,8 +1,8 @@
 <div :class="[componentClass]"
      tabindex="-1">
   <div class="bbn-w-100">
-    <bbn-input v-if="mode === 'input'"
-               v-model="currentInput"
+    <bbn-input bbn-if="mode === 'input'"
+               bbn-model="currentInput"
               :readonly="!!readonly || (max && (value.length > max))"
               :disabled="isDisabled"
               @keydown="keydown"
@@ -15,14 +15,14 @@
               button-right="nf nf-fa-plus"
               :button-right-disabled="(!!max && (value.length >= max)) || isDisabled || !!readonly"
               :button-right-title="_('Add')"/>
-    <div v-else-if="mode === 'dropdown'"
+    <div bbn-elseif="mode === 'dropdown'"
          class="bbn-bordered bbn-radius bbn-flex-width">
       <bbn-dropdown :source="source"
                     :readonly="!!readonly || (max && (value.length > max))"
                     :disabled="isDisabled"
                     ref="input"
                     :placeholder="max && (value.length > max) ? _('Max number of') + ' ' + max : (this.placeholder || _('Value'))"
-                    v-model="currentInput"
+                    bbn-model="currentInput"
                     class="bbn-values-dropdown bbn-no-border bbn-flex-fill"/>
       <bbn-button class="bbn-values-dropdown-button bbn-no-vborder bbn-no-right-border"
                   :notext="true"
@@ -32,10 +32,10 @@
     </div>
   </div>
   <div class="bbn-w-100">
-    <div v-for="(v, idx) in value"
+    <div bbn-for="(v, idx) in value"
          class="bbn-vxspadding bbn-hspadding bbn-iblock">
       <span class="bbn-right-xshmargin"
-            v-text="getText(v)"/>
+            bbn-text="getText(v)"/>
       <i :class="['nf nf-fa-times_circle', 'bbn-p', {'bbn-state-disabled': isDisabled || readonly}]"
          @click="remove(idx)"
          tabindex="0"
@@ -44,9 +44,9 @@
          :style="{'background-color': isDisabled || readonly ? 'transparent !important' : ''}"/>
     </div>
   </div>
-  <bbn-floater v-if="(mode === 'input') && ready && !isDisabled && !readonly && filteredData.length && currentInput.length"
+  <bbn-floater bbn-if="(mode === 'input') && ready && !isDisabled && !readonly && filteredData.length && currentInput.length"
                :element="$refs.input.$el"
-               v-show="isOpened"
+               bbn-show="isOpened"
                :min-width="$refs.input.$el.clientWidth"
                :width="undefined"
                :height="undefined"

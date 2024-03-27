@@ -15,7 +15,7 @@
   \****************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Cancel\":\"Annulla\",\"Confirm\":\"Conferma\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/timewheel/timewheel.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Cancel\":\"Annulla\",\"Confirm\":\"Conferma\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/timewheel/timewheel.it.lang?");
 
 /***/ })
 

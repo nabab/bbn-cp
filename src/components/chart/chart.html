@@ -4,8 +4,8 @@
        height: height
      }"
 >
-  <h4 v-if="title"
-      v-html="title"
+  <h4 bbn-if="title"
+      bbn-html="title"
       class="bbn-middle"
   ></h4>
   <div class="bbn-flex-fill bbn-rel"
@@ -14,7 +14,7 @@
      <div class="bbn-overlay"
           ref="container"
      >
-       <div v-if="ready"
+       <div bbn-if="ready"
             ref="chart"
             class="bbn-chart-widget"
        ></div>

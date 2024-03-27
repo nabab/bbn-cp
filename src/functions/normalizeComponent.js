@@ -1,18 +1,22 @@
+import bbn from "@bbn/bbn";
 import "../cp.js";
-import bbnData from '../lib/Data.js';
+import bbnData from '../lib/Data/Data.js';
 
 /**
- * Check the config of the component (mixins, computed, props, ect...) if everything is valid
- * and add them to their respective namespaces
+ * Normalizes the configuration of a component, ensuring it adheres to the expected structure and types.
+ * This function also merges configuration from mixins and adds additional properties necessary for the component's lifecycle.
+ * @param {Object} cfg - The Vue-like configuration object for the component.
+ * @param {string} clsName - The class name of the component (for logging and error messages).
+ * @returns {Object} The normalized configuration object for the component.
  */
 export default function normalizeComponent(cfg, clsName) {
-  //bbn.fn.warning("NORMALIZE " + clsName);
+  // Check if the configuration object is valid.
   if (!bbn.fn.isObject(cfg)) {
     bbn.fn.log(cfg, clsName);
     throw new Error("Components definition must be objects");
   }
 
-  //alert("normalize " + clsName);
+  // Initialize the result object with standard component properties.
   const res = bbnData.immunizeValue(bbn.fn.createObject({
     props: bbn.fn.createObject(),
     data: [],
@@ -27,53 +31,50 @@ export default function normalizeComponent(cfg, clsName) {
     }),
     extension: null,
     statics: [],
-    __bbnComponent: true
+    __bbnComponent: true // Internal flag to mark as a bbn component.
   }));
-  //bbn.fn.log(["NORM", clsName, cfg, res]);
 
-
+  // Process mixins to merge their configurations into the component.
   if (cfg.mixins) {
-    //bbn.fn.log("MIXINS", cfg);
     bbn.fn.checkType(cfg.mixins, 'array', bbn._("The mixins property must be an array in %s", clsName));
     cfg.mixins.forEach(mixin => {
       bbn.fn.checkType(mixin, 'object', bbn._("A mixin should be an object in %s", clsName));
       let cp = bbn.cp.normalizeComponent(mixin);
+      // Merge each property of the mixin into the component config.
       bbn.fn.each(Object.keys(cp).sort(), name => {
+        // Handle array properties like data and statics.
         if (bbn.fn.isArray(cp[name]) && ['data', 'statics', ...bbn.cp.hooks].includes(name)) {
-          if (!res[name]) {
-            res[name] = [];
-          }
-
+          res[name] = res[name] || [];
           res[name].push(...cp[name]);
         }
+        // Merge object properties.
         else if ((bbn.fn.isObject(cp[name]) && bbn.fn.numProperties(cp[name])) || (bbn.fn.isArray(cp[name]) && cp[name].length)) {
-          if (!res[name]) {
-            res[name] = bbn.fn.createObject();
-          }
-
-          // Assigning each category of the mixin to the component
+          res[name] = res[name] || bbn.fn.createObject();
           Object.assign(res[name], cp[name]);
         }
       });
     });
   }
 
+  // Process and validate each property of the component configuration.
   bbn.fn.each(Object.keys(cfg).sort(), name => {
     switch (name) {
       case 'props':
-        // Starting from the defined props
+        // Normalize and validate props.
         let props = bbn.fn.clone(cfg.props);
+        // Convert array of prop names to object format.
         if (bbn.fn.isArray(props)) {
           let tmp = props;
           props = bbn.fn.createObject();
           tmp.forEach(a => {
             props[a] = bbn.fn.createObject();
-          })
+          });
         }
 
         bbn.fn.checkType(props, 'object', bbn._("The props property must be an object in %s", clsName));
+        // Process each prop.
         for (let propName in props) {
-          // If it's just an array or a constructor it's the type
+          // Normalize shorthand prop types to object format.
           if (bbn.fn.isArray(props[propName]) || bbn.fn.isFunction(props[propName])) {
             // We transform it into an object
             props[propName] = bbn.fn.createObject({
@@ -82,7 +83,7 @@ export default function normalizeComponent(cfg, clsName) {
           }
           // Now the prop should be an object
           bbn.fn.checkType(props[propName], 'object', `The prop ${propName} for ${clsName} is a ${typeof props[propName]}`);
-          // Type must be an array
+          // Ensure type is an array.
           if (props[propName].type && !bbn.fn.isArray(props[propName].type)) {
             props[propName].type = [props[propName].type];
           }
@@ -93,27 +94,29 @@ export default function normalizeComponent(cfg, clsName) {
         break;
 
       case 'data':
+        // Normalize and validate data.
         if (!bbn.fn.isArray(cfg[name])) {
           cfg[name] = [cfg[name]];
         }
-        bbn.fn.each(cfg[name], (cf, i) => {
+        bbn.fn.each(cfg[name], (cf) => {
+          // Convert object format to function format.
           if (!bbn.fn.isFunction(cf)) {
             bbn.fn.checkType(cf, 'object', bbn._("The data must be an object or a function in %s", clsName));
             let tmp = cf;
-            cf = function() {
+            cf = function () {
               return tmp;
             };
           }
-
           bbn.fn.checkType(cf, 'function', bbn._("The data must be an object or a function in %s", clsName));
           res[name].push(cf);
-        })
+        });
         break;
 
       case 'computed':
+        // Validate computed properties.
         bbn.fn.checkType(cfg.computed, 'object', bbn._("The computed must be an object in %s", clsName));
         for (let computedName in cfg.computed) {
-          if ((typeof(cfg.computed[computedName]) !== 'function') && !cfg.computed[computedName]?.get) {
+          if ((typeof (cfg.computed[computedName]) !== 'function') && !cfg.computed[computedName]?.get) {
             throw new Error(bbn._("The computed must be a single function or an object with at least a get function (check %s in %s)", computedName, clsName));
           }
 
@@ -126,39 +129,52 @@ export default function normalizeComponent(cfg, clsName) {
         break;
 
       case 'methods':
+        // Validate methods.
         bbn.fn.checkType(cfg[name], 'object', bbn._("The methods must be an object in %s", clsName));
         for (let methName in cfg[name]) {
           bbn.fn.checkType(cfg[name][methName], 'function', bbn._("Methods must be functions, check %s in %s", methName, clsName));
           res[name][methName] = cfg[name][methName];
         }
-
         break;
 
       case 'watch':
+        // Validate watchers.
         bbn.fn.checkType(cfg.watch, 'object', bbn._("The watch must be an object in %s", clsName));
         for (let watchName in cfg.watch) {
           const tmp = cfg.watch[watchName];
           bbn.fn.checkType(tmp?.handler || tmp, 'function', bbn._("Watchers must be functions, see %s in %s", watchName, clsName));
           res.watch[watchName] = tmp;
         }
-
         break;
 
       case 'components':
+        // Check if 'components' in the config is an object.
         bbn.fn.checkType(cfg.components, 'object', bbn._("The components must be an object in %s", clsName));
+
+        // Iterate over each component defined in the 'components' section.
         for (let originalName in cfg.components) {
+          // Generate a camelCase version of the component name for internal use.
           let componentName = bbn.fn.camelize(originalName);
+          // Convert the camelCase name to kebab-case for use in templates and registration.
           let indexName = bbn.fn.camelToCss(componentName);
-          //bbn.fn.log("COMPONENTS IN NORMALIZE", cfg.components);
+
+          // Validate that each component's definition is an object.
           bbn.fn.checkType(cfg.components[originalName], 'object', bbn._("Components definitions must be objects (check %s in %s)", componentName, clsName));
+
+          // Normalize the component configuration recursively.
           res.components[componentName] = bbn.cp.normalizeComponent(cfg.components[originalName], clsName);
+
+          // Generate a unique tag name for the sub-component.
           let subName = (clsName || 'bbnsub-' + bbn.fn.randomString(10, 20, 'nl')) + bbn.fn.substr(componentName, 0, 1).toUpperCase() + bbn.fn.camelize(bbn.fn.substr(componentName, 1));
           let subTag = bbn.fn.camelToCss(subName);
+
+          // Store the generated tag name in componentNames for reference.
           res.componentNames[indexName] = subTag;
           if (indexName !== componentName) {
             res.componentNames[componentName] = subTag;
           }
 
+          // Ensure all variations of the component name point to the same tag.
           if (![indexName, componentName].includes(originalName)) {
             res.componentNames[originalName] = subTag;
           }
@@ -167,6 +183,7 @@ export default function normalizeComponent(cfg, clsName) {
         break;
 
       case 'model':
+        // Validate model configuration.
         if (cfg.model) {
           bbn.fn.checkType(cfg.model, 'object', bbn._("Model configuration must be objects, check %s", clsName));
           if (!['input', 'change'].includes(cfg.model.event) || !bbn.fn.isString(cfg.model.prop)) {
@@ -174,28 +191,30 @@ export default function normalizeComponent(cfg, clsName) {
           }
           res.model = cfg.model;
         }
-
         break;
 
       case 'extension':
+        // Validate extension.
         if (cfg.extension) {
           bbn.fn.checkType(cfg.extension, 'object', bbn._("Extensions must be objects, check %s", clsName));
           res.extension = cfg.extension;
         }
-
         break;
 
       case 'render':
+        // Validate render function.
         bbn.fn.checkType(cfg.render, 'function', bbn._("Render property must be a function, check %s", clsName));
         res.render = cfg.render;
         break;
 
       case 'template':
+        // Validate template string.
         bbn.fn.checkType(cfg.template, 'string', bbn._("The template must be a string, check %s", clsName));
         res.template = cfg.template;
         break;
 
       case 'statics':
+        // Validate and process static properties.
         if (cfg.statics) {
           if (!bbn.fn.isArray(cfg.statics)) {
             cfg.statics = [cfg.statics];
@@ -211,7 +230,7 @@ export default function normalizeComponent(cfg, clsName) {
 
       case 'iface':
         if (cfg.iface) {
-          bbn.fn.checkType(cfg.iface, ['object', 'function'], bbn._("The ifaceace property must be an object or a function in %s", clsName));
+          bbn.fn.checkType(cfg.iface, ['object', 'function'], bbn._("The iface property must be an object or a function in %s", clsName));
           res.iface = cfg.iface;
         }
 
@@ -242,7 +261,7 @@ export default function normalizeComponent(cfg, clsName) {
         }
         else if (!["mixins", "componentNames", "name", "__bbnComponent"].includes(name)) {
           if (name.indexOf('__bbn') !== 0) {
-            throw new Error(bbn._("Unrecognize index %s in the config object for %s", name, clsName));
+            throw new Error(bbn._("Unrecognized index %s in the config object for %s", name, clsName));
           }
         }
 

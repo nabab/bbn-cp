@@ -1,5 +1,5 @@
 import bbn from '@bbn/bbn';
-import bbnCp from '../lib/Cp.js';
+import bbnCp from '../lib/Cp/Cp.js';
 
 const list = {
   props: {
@@ -27,7 +27,7 @@ const list = {
      */
     limits: {
       type: Array,
-      default(){
+      default() {
         return [10, 25, 50, 100, 250, 500];
       },
     },
@@ -110,7 +110,7 @@ const list = {
      */
     order: {
       type: [Array, Object],
-      default () {
+      default() {
         return [];
       }
     },
@@ -121,7 +121,7 @@ const list = {
      */
     filters: {
       type: Object,
-      default () {
+      default() {
         return {
           logic: 'AND',
           conditions: []
@@ -135,7 +135,7 @@ const list = {
      */
     selected: {
       type: Array,
-      default(){
+      default() {
         return [];
       }
     },
@@ -172,7 +172,7 @@ const list = {
      */
     data: {
       type: [Object, Function],
-      default () {
+      default() {
         return {};
       }
     },
@@ -184,7 +184,7 @@ const list = {
     noData: {
       type: String,
       default: bbn._('No data') + '...'
-    }, 
+    },
     /**
      * The uid of the list.
      * @prop {String} uid
@@ -199,7 +199,7 @@ const list = {
      */
     source: {
       type: [Array, Object, String, Function],
-      default(){
+      default() {
         return [];
       }
     },
@@ -355,7 +355,7 @@ const list = {
       default: 'startswith'
     }
   },
-  data(){
+  data() {
     let order = this.order;
     if (this.sortable && this.order && (typeof this.order === 'object') && !Array.isArray(this.order)) {
       order = [];
@@ -545,15 +545,15 @@ const list = {
      * @computed currentLimits
      * @memberof listComponent
      */
-    currentLimits(){
+    currentLimits() {
       if (!this.pageable) {
         return [];
       }
 
       let pass = false;
-      return bbn.fn.filter(this.limits.slice().sort(), a => {
-        if ( a > this.total ){
-          if ( !pass ){
+      return bbn.fn.filter(this.limits.sort(), a => {
+        if (a > this.total) {
+          if (!pass) {
             pass = true;
             return true;
           }
@@ -567,7 +567,7 @@ const list = {
      * @computed hasComponent
      * @memberof listComponent
      */
-    hasComponent(){
+    hasComponent() {
       return (bbn.fn.isString(this.component) || (bbn.fn.isObject(this.component) && Object.keys(this.component).length)) || this.currentTemplate ? true : false;
     },
     /**
@@ -575,12 +575,12 @@ const list = {
      * @computed realComponent
      * @memberof listComponent
      */
-    realComponent(){
+    realComponent() {
       let cp = bbn.fn.isString(this.component) || (bbn.fn.isObject(this.component) && Object.keys(this.component).length) ? this.component : null;
       if (!cp && this.currentTemplate) {
         cp = bbn.cp.normalizeComponent({
           props: ['source'],
-          data(){
+          data() {
             return this.source;
           },
           template: this.currentTemplate
@@ -614,44 +614,56 @@ const list = {
         return Math.ceil((this.start + 1) / this.currentLimit);
       },
       set(val) {
-        bbn.fn.log("SETTING PAGE1")
-        if ( this.ready ) {
+        if (this.ready) {
           this.start = val > 1 ? (val - 1) * this.currentLimit : 0;
           this.updateData(!this.serverPaging);
-          bbn.fn.log("SETTING PAGE2")
         }
       }
     },
-    filteredTotal(){
+    filteredData() {
+      if (this.currentData.length && this.currentFilters &&
+        this.currentFilters.conditions &&
+        this.currentFilters.conditions.length &&
+        (!this.serverFiltering || !this.isAjax)
+      ) {
+        return bbn.fn.filter(this.currentData, a => {
+          return this._checkConditionsOnItem(this.currentFilters, a.data);
+        });
+      }
+      else {
+        return this.currentData;
+      }
+    },
+    filteredTotal() {
       return this.filteredData.length;
     },
     /** @todo Remove: no sense and not used in any component */
-    valueIndex(){
-      if ( this.value || (this.selected && this.selected.length) ){
+    valueIndex() {
+      if (this.value || (this.selected && this.selected.length)) {
         let v = this.value || this.selected[0];
-        if ( this.uid ){
+        if (this.uid) {
           return bbn.fn.search(this.filteredData, a => {
             return a.data[this.uid] === v;
           });
         }
-        else if ( this.sourceValue ){
+        else if (this.sourceValue) {
           return bbn.fn.search(this.filteredData, a => {
-            return bbn.fn.getProperty(a.data, this.sourceValue) === v;
+            return a.data[this.sourceValue] === v;
           });
         }
       }
       return -1;
     },
-    isAutobind(){
+    isAutobind() {
       if (
         (this.autobind === false) ||
         (this.isAjax && this.autocomplete && (this.filterString.length < this.minLength))
-      ){
+      ) {
         return false;
       }
       return true;
     },
-    hashCfg(){
+    hashCfg() {
       return bbn.fn.md5(JSON.stringify(this.currentFilters) + JSON.stringify(this.currentLimit) + JSON.stringify(this.start) + JSON.stringify(this.currentOrder));
     },
     /**
@@ -665,7 +677,7 @@ const list = {
         && !bbn.fn.isNull(this.value)
         && this.sourceValue
         && this.currentData.length
-      ){
+      ) {
         let idx = bbn.fn.search(this.currentData, a => {
           return bbn.fn.getProperty(a.data, this.sourceValue) === this.value;
         });
@@ -695,7 +707,7 @@ const list = {
      * @memberof listComponent
      * @return {String}
      */
-    currentItemImg(){
+    currentItemImg() {
       if (this.currentItem && this.sourceImg) {
         return this.currentItem[this.sourceImg];
       }
@@ -708,37 +720,13 @@ const list = {
      * @memberof listComponent
      * @return {String}
      */
-    currentItemCls(){
+    currentItemCls() {
       if (this.currentItem && this.sourceCls) {
         return this.currentItem[this.sourceCls];
       }
 
       return '';
-    },
-    filteredData() {
-      //bbn.fn.warning("FILTERING DATA")
-      let data;
-      if (this.currentData.length && this.currentFilters &&
-        this.currentFilters.conditions &&
-        this.currentFilters.conditions.length &&
-        (!this.serverFiltering || !this.isAjax)
-      ) {
-        data = bbn.fn.filter(this.currentData, a => {
-          return this._checkConditionsOnItem(this.currentFilters, a.data);
-        });
-      }
-      else{
-        data = this.currentData.slice();
-      }
-
-      /*
-      if (this.pageable && this.currentLimit && (this.currentLimit < data.length)) {
-        data = data.splice(this.start, this.currentLimit);
-      }
-      */
-
-      return data;
-    },
+    }
   },
   methods: {
     /**
@@ -751,8 +739,8 @@ const list = {
         if ( data.length && !bbn.fn.isObject(data[0]) && !bbn.fn.isArray(data[0]) && this.sourceValue && this.sourceText ){
           data = data.map(a => {
             let o = {};
-            bbn.fn.setProperty(o, this.sourceValue, a);
-            bbn.fn.setProperty(o, this.sourceText, a);
+            o[this.sourceValue] = a;
+                o[this.sourceText] = a;
             return o;
           });
         }
@@ -806,8 +794,7 @@ const list = {
     /**
       * @method select
       */
-    select(){
-      bbn.fn.log("SLECT LIST");
+    select() {
       //this.$emit('select', this.currentIndex);
     },
     /**
@@ -911,14 +898,14 @@ const list = {
         }
       }
     },
-    getPostData(){
-      if ( this.data ){
+    getPostData() {
+      if (this.data) {
         return bbn.fn.isFunction(this.data) ? this.data() : this.data;
       }
       return {};
     },
-    beforeUpdate(){
-      let e = new Event('beforeupdate', {cancelable: true});
+    beforeUpdate() {
+      let e = new Event('beforeupdate', { cancelable: true });
       this.$emit('beforeupdate', e);
       return e.defaultPrevented ? false : true;
     },
@@ -931,13 +918,13 @@ const list = {
         start: this.start,
         data: this.getPostData()
       };
-      if ( this.sortable ){
+      if (this.sortable) {
         data.order = this.currentOrder;
       }
-      if ( this.isFilterable ){
+      if (this.isFilterable) {
         data.filters = this.currentFilters;
       }
-      if ( this.showable ){
+      if (this.showable) {
         data.fields = this.shownFields;
       }
       return data;
@@ -965,12 +952,12 @@ const list = {
         if (this.children && a[this.children] && a[this.children].length) {
           o.opened = true;
         }
-        if (this.hasSelection){
-          if ( this.uid ){
+        if (this.hasSelection) {
+          if (this.uid) {
             o.selected = this.selected.includes(a[this.uid]);
           }
           else if ( this.sourceValue ){
-            o.selected = this.selected.includes(bbn.fn.getProperty(a, this.sourceValue));
+            o.selected = this.selected.includes(a[this.sourceValue]);
           }
         }
         return o;
@@ -1014,20 +1001,20 @@ const list = {
             }
 
           }
-          else{
+          else {
             prom = new Promise((resolve2) => {
               let data = [];
-              if ( bbn.fn.isArray(this.source) ){
+              if (bbn.fn.isArray(this.source)) {
                 data = this.source;
               }
-              else if ( bbn.fn.isFunction(this.source) ){
+              else if (bbn.fn.isFunction(this.source)) {
                 data = this.source(this.sourceIndex, this.data);
               }
-              else if ( bbn.fn.isObject(this.source) ){
+              else if (bbn.fn.isObject(this.source)) {
                 bbn.fn.iterate(this.source, (a, n) => {
                   let o = {};
-                  bbn.fn.setProperty(o, this.sourceValue, n);
-                  bbn.fn.setProperty(o, this.sourceText, a);
+                  o[this.sourceValue] = n;
+                      o[this.sourceText] = a;
                   data.push(o);
                 });
               }
@@ -1037,10 +1024,6 @@ const list = {
               });
             });
           }
-          if (!prom) {
-            return;
-          }
-
           prom.then(d => {
             if (this.isAjax) {
               if (!this.loadingRequestID || (this.loadingRequestID !== loadingRequestID)) {
@@ -1052,26 +1035,26 @@ const list = {
               this.isLoading = false;
               this.loadingRequestID = false;
 
-              if ( !d ){
+              if (!d) {
                 return;
               }
 
-              if ( d.status !== 200 ){
+              if (d.status !== 200) {
                 d.data = undefined;
               }
-              else{
+              else {
                 d = d.data;
               }
 
               this.$emit('datareceived', d);
             }
 
-            if ( d && bbn.fn.isArray(d.data) ){
-              if (d.data.length && d.data[0]._bbn){
+            if (d && bbn.fn.isArray(d.data)) {
+              if (d.data.length && d.data[0]._bbn) {
                 this.currentData = d.data;
                 this.updateIndexes();
               }
-              else{
+              else {
                 this.currentData = this.treatData(d.data);
               }
               if (d.query) {
@@ -1085,19 +1068,17 @@ const list = {
                   dir: (d.dir || '').toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
                 });
               }
-
               this.total = d.total || this.filteredData.length;
-              this.currentTotal = d.total || this.filteredData.length;
               /** @todo Observer part to dissociate */
               if (d.observer && bbn.fn.isFunction(this.observerCheck) && this.observerCheck()) {
                 this._observerReceived = d.observer.value;
                 this.observerID = d.observer.id;
                 this.observerValue = d.observer.value;
-                if ( !this._1strun ){
+                if (!this._1strun) {
                   this.observerWatch();
                 }
               }
-              if ( !this._1strun ){
+              if (!this._1strun) {
                 this._1strun = true;
                 this.$emit('firstrun');
               }
@@ -1108,7 +1089,6 @@ const list = {
               this.isLoaded = true;
             }
 
-            this.$forceUpdate();
             this.$emit('dataloaded', d);
           });
         }).catch(e => {
@@ -1119,7 +1099,7 @@ const list = {
         return this._dataPromise;
       }
     },
-    updateIndexes(){
+    updateIndexes() {
       if (this.currentData.length) {
         bbn.fn.each(this.currentData, (a, i) => {
           if (a.index !== i) {
@@ -1220,7 +1200,7 @@ const list = {
       */
     deleteItem(index, confirm) {
       if (this.filteredData[index]) {
-        let ev = new Event('delete', {cancelable: true});
+        let ev = new Event('delete', { cancelable: true });
         this.$emit('beforedelete', index, this.filteredData[index].data, this, ev);
         if (!ev.defaultPrevented) {
           if (confirm === undefined) {
@@ -1247,7 +1227,7 @@ const list = {
     },
     getIndex(filter) {
       if (!bbn.fn.isObject(filter) && this.uid) {
-        filter = {[this.uid]: filter};
+        filter = { [this.uid]: filter };
       }
       let fltr = bbn.fn.filterToConditions(filter);
       let idx = -1;
@@ -1267,36 +1247,26 @@ const list = {
       */
     remove(where) {
       let idx;
-      if (bbn.fn.isNumber(where)) {
-        idx = where;
+      while ((idx = bbn.fn.search(this.filteredData, a => {
+        return bbn.fn.compareConditions(a.data, where);
+      })) > -1) {
         this.realDelete(this.filteredData[idx].index, 1);
       }
-      else {
-        while ((idx = bbn.fn.search(this.filteredData, a => {
-          return bbn.fn.compareConditions(a.data, where);
-        })) > -1) {
-          this.realDelete(this.filteredData[idx].index, 1);
-        }
-      }
-
       this.$forceUpdate();
     },
-    listOnBeforeMount(){
-      if ( this.isAutobind ){
+    listOnBeforeMount() {
+      if (this.isAutobind) {
         this.updateData();
       }
     }
   },
-  beforeMount(){
+  beforeMount() {
     this.listOnBeforeMount();
   },
-  mounted() {
-    if (!this.component && !this.template && this.$slots.default?.length) {
-      let tpl = this.getRef('slot');
-      if (tpl) {
-        this.currentTemplate = tpl.innerHTML;
-        //bbn.fn.warning("BLOCK TEMPLATE FOUND");
-        //bbn.fn.log(this.currentTemplate);
+  created() {
+    if (!this.component && !this.template && this.$slots.default.length) {
+      if (this.$slots.default[0].bbnSchema.pre) {
+        this.currentTemplate = this.$slots.default[0].bbnSchema.pre;
       }
     }
 
@@ -1304,8 +1274,9 @@ const list = {
   },
   watch: {
     filters: {
-      handler(v) {
-        this.$set(this, 'currentFilters', v);
+      deep: true,
+      handler() {
+        this.currentFilters = bbn.fn.clone(this.filters)
       }
     },
     /**
@@ -1313,7 +1284,7 @@ const list = {
       * @fires setConfig
       */
     currentLimit() {
-      if ( this.ready && bbn.fn.isFunction(this.setConfig) ){
+      if (this.ready && bbn.fn.isFunction(this.setConfig)) {
         this.setConfig(true);
       }
     },
@@ -1335,7 +1306,7 @@ const list = {
             this.updateData();
           }
 
-          if ( bbn.fn.isFunction(this.setConfig) ){
+          if (bbn.fn.isFunction(this.setConfig)) {
             this.setConfig(true);
           }
         }
@@ -1349,10 +1320,20 @@ const list = {
       deep: true,
       handler() {
         if (this.ready) {
-          if ( bbn.fn.isFunction(this.setConfig) ){
+          if (bbn.fn.isFunction(this.setConfig)) {
             this.setConfig(true);
           }
           this.$forceUpdate();
+        }
+      }
+    },
+    source: {
+      deep: true,
+      handler() {
+        if (this.ready && !this.editable) {
+          /*
+          this.updateData();
+          */
         }
       }
     },
@@ -1375,7 +1356,7 @@ const list = {
           }
           else {
             bbn.fn.each(this.cols, a => {
-              if (a.field && !bbn.fn.getRow(cond, {field: a.field})) {
+              if (a.field && !bbn.fn.getRow(cond, { field: a.field })) {
                 cond.push({
                   field: a.field,
                   operator: 'contains',

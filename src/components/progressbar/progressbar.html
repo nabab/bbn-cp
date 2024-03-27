@@ -10,23 +10,23 @@
   >
     <div :class="['bbn-overlay', barClass]"
          :style="style"
-         v-if="type !== 'chunk'"
+         bbn-if="type !== 'chunk'"
     ></div>
-    <div v-else class="chunk bbn-overlay"
+    <div bbn-else class="chunk bbn-overlay"
          :style="chunkStyle"
     >
       <div :class="['block', {
              'bbn-background-effect-primary': !barColor.length && ( ((!reverse) && (n <= selectedChunks)) || ((reverse) && (n > chunknumber - selectedChunks)))
            }]"
            :style="barColor.length && ( ((!reverse) && (n <= selectedChunks)) || ((reverse) && (n > chunknumber - selectedChunks))) ? 'background-color:'+ barColor : ''"
-           v-for="n in chunknumber"
+           bbn-for="n in chunknumber"
       ></div>
     </div>
     <div :class="['bbn-wrap', realValuePosition, 'bbn-no-border']"
         style="height: 100%"
     >
     <div :class="['bbn-progress-status', {'bbn-hspadded': (orientation === 'horizontal')}]"
-          v-text="(showValue ? (value + ( showUnit ? unit : '' ) ) : '') + (!!text ? ( showValue ? ' ' : '') + '(' + text + ')' : '')"
+          bbn-text="(showValue ? (value + ( showUnit ? unit : '' ) ) : '') + (!!text ? ( showValue ? ' ' : '') + '(' + text + ')' : '')"
           :style="textColor.length ? 'color: '+ textColor + '!important' : ''"
     ></div>
     </div>

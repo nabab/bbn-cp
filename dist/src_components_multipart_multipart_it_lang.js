@@ -15,7 +15,7 @@
   \****************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Are you sure you want to discard the changes you made in this form?\":\"Sei sicuro di voler eliminare le modifiche apportate in questo modulo?\",\"Are you sure you want to leave?\":\"Sei sicuro di voler abbandonare?\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/multipart/multipart.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Are you sure you want to discard the changes you made in this form?\":\"Sei sicuro di voler eliminare le modifiche apportate in questo modulo?\",\"Are you sure you want to leave?\":\"Sei sicuro di voler abbandonare?\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/multipart/multipart.it.lang?");
 
 /***/ })
 

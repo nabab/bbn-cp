@@ -6,7 +6,7 @@
     <bbn-loadicon/> <span bbn-text="_('Loading')"/>...
   </div>
   <!-- The container: a scroll if root and scrollable, a div otherwise -->
-  <bbn-scroll bbn-else-if="isInit && isLoaded"
+  <bbn-scroll bbn-elseif="isInit && isLoaded"
              bbn-forget="!isRoot || !scrollable"
              ref="scroll">
     <div class="bbn-tree-helper-container"
@@ -39,6 +39,7 @@
                         :quick-filter="quickFilter"
                         :sortable="it.sortable !== undefined ? it.sortable : sortable"
                         :uid="uid"
+                        @selectmenu="clickMenuItem"
                         :tree-state="uid !== undefined ? _getTreeState(it.data[uid]) : {}">
           <li :class="['bbn-tree-node', 'bbn-vxxspadded', 'bbn-unselectable', {
                         'bbn-state-active': (isActive && !isSelected) || (tree.draggable && tree.dragging && (tree.dragging === _self)),
@@ -99,12 +100,13 @@
               <!-- Or the default context -->
               <bbn-context bbn-else
                             :context="true"
+                            :source-action="false"
                             :source="getMenu"
+                            @select="clickMenuItem"
                             @open="isActive = true"
                             @close="isActive = false"
                             style="cursor: unset">
-                <span :class="['bbn-tree-node-block-selectable', {'bbn-p': !!selectable}]"
-                      @dblclick="dblClickOnNode"
+                <span @dblclick="dblClickOnNode"
                       @click="clickOnNode"
                       @dragstart="startDrag"
                       @dragover="drag"
@@ -200,7 +202,7 @@
         </node>
       </ul>
       </component>
-  <h2 bbn-else-if="isRoot"
+  <h2 bbn-elseif="isRoot"
       bbn-html="_('No items') + '...'"
   ></h2>
 </div>

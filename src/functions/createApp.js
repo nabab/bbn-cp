@@ -1,14 +1,29 @@
-import {bbn} from "@bbn/bbn/dist/index.js";
+import { bbn } from "@bbn/bbn";
+import stringToTemplate from "../internals/stringToTemplate.js";
+import retrieveSlots from "../internals/retrieveSlots.js";
 
 /**
-* Init anon component
+* Initializes an anonymous component with given element and configuration object.
+ * 
+ * Considerations:
+ * - Asynchronous Nature: The function is asynchronous, allowing for dynamic imports and AJAX requests. Ensure that consumers of this function handle its asynchronous nature correctly.
+ * - Error Handling: Robust error handling is important, especially in AJAX requests and dynamic imports.
+ * - Performance: Consider the performance implications of dynamic imports and AJAX requests, especially if createApp is called frequently.
+ * - Component Lifecycle Management: Ensure that the lifecycle of components (especially dynamic ones) is well-managed to avoid memory leaks or dangling references.
+ * - Testing: Extensive testing, especially in different environments and with various component configurations, will be crucial for reliability.
+ * 
+ * @param {HTMLElement|string} ele - The target element or its selector for the app creation.
+ * @param {Object} obj - The configuration object for the app.
+ * @returns {Object} The initialized component.
 */
 export default async function createApp(ele, obj) {
+  // Dynamically import CSS based on the theme.
   if (!bbn.isTesting) {
     await import('@bbn/bbn-css/dist/css/bbn-css-' + (bbn.env.theme || 'default') + '.css');
   }
-  //bbn.fn.log("CP?", bbn.cp);
-  bbn.cp.startTick();
+  
+  // Add prefix handling for component names.
+  // Define how to handle 'bbn-' prefixed components.
   bbn.cp.addPrefix('bbn-', async components => {
     const res = bbn.fn.createObject({
       components: []
@@ -39,6 +54,7 @@ export default async function createApp(ele, obj) {
   });
 
 
+  /*
   bbn.cp.addPrefix('appui-', async components => {
     const urlPrefix = 'components/';
     const url = urlPrefix + components.join('/') + '?v=3280&test=1&lang=fr';
@@ -71,26 +87,17 @@ export default async function createApp(ele, obj) {
 
     return res;
   });
+  */
 
-
+  // If 'ele' is a string, find the corresponding HTML element.
   if (bbn.fn.isString(ele)) {
     ele = document.body.querySelector(ele);
   }
 
-  /*
-  bbn.cp.addPrefix('bbn', async tag => {
-    const pUrl = bbn.env.cdn + 'lib/bbn-vue/master/src/components/?components=';
-    const url = pUrl + tag.substr(4) + '&v=3280&test=1&lang=fr';
-    // Request
-    const d = await bbn.fn.ajax(url, 'text').then(r => r);
-    return d;
-  });
-  */
-      
-  // ele must be an HTMLElement
+  // Check if 'ele' is a valid HTMLElement.
   bbn.fn.checkType(ele, HTMLElement, "The createApp function should be given a HTMLElement");
   // Its content is its template
-  let tmp = bbn.cp.stringToTemplate(ele.outerHTML, true, 'bbn-anon');
+  let tmp = stringToTemplate(ele.outerHTML, true, 'bbn-anon');
   const cpTpl = tmp.res;
   const cpMap = tmp.map;
   const schema = bbn.fn.clone(cpTpl[0]);
@@ -99,11 +106,12 @@ export default async function createApp(ele, obj) {
   const parent = ele.parentNode;
   let cls = ele.style.cssText;
   if (cls) {
-    cls = cls.trim()
+    cls = cls.trim();
   }
 
   parent.replaceChild(placeholder, ele);
-  // Adding basicComponent mixin
+  
+  // Ensure basicComponent mixin is included.
   if (!obj.mixins) {
     obj.mixins = [];
   }
@@ -111,21 +119,23 @@ export default async function createApp(ele, obj) {
     obj.mixins.push(bbn.cp.mixins.basic);
   }
 
-  // The component config (= Vue-like object) that we freeze
+  // Freeze the component configuration.
   const cpCfg = Object.freeze(bbn.cp.normalizeComponent(obj, 'bbnCpRoot'));
 
-  // If subcomponents are defined we init them too
+  // Initialize subcomponents if defined.
   if (cpCfg.components) {
     for (let n in cpCfg.components) {
       bbn.cp.define(cpCfg.componentNames[n], cpCfg.components[n], cpCfg.components[n].template);
     }
   }
 
-  const slots = bbn.cp.retrieveSlots(cpTpl);
+  // Retrieve slots from the template.
+  const slots = retrieveSlots(cpTpl);
   if (!slots.default) {
     slots.default = [];
   }
 
+  // Create the bbn-anon element and set up its properties.
   const cp = Object.assign(
     document.createElement("bbn-anon"),
     {
@@ -142,11 +152,18 @@ export default async function createApp(ele, obj) {
     cp.style.cssText = cls;
   }
 
+// Replace the placeholder with the new component.
   parent.replaceChild(cp, placeholder);
   /*
   bbn.fn.each(ele.childNodes, node => {
     cp.appendChild(node);
   });*/
+
+  // Start the tick process for component updates.
+  bbn.cp.startTick();
+
+  // Return the bbn property of the component.
+  cp.bbn.$connected();
   return cp.bbn;
   
 }

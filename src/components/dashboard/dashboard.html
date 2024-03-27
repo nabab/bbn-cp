@@ -2,7 +2,7 @@
      @mouseleave="sortTargetIndex = null; isSorting = false">
   <bbn-scroll :scrollable="scrollable"
               ref="scroll"
-              v-bind="scrollable ? {axis: 'y'} : {}"
+              bbn-bind="scrollable ? {axis: 'y'} : {}"
               @ready="onResize"
               :class="{
                 'bbn-overlay': !scrollable
@@ -14,9 +14,9 @@
               '-webkit-column-count': numCols,
               'column-count': numCols
             }">
-      <template v-for="w in widgets">
+      <template bbn-for="w in widgets">
         <bbn-widget :ref="'widget_' + w.key"
-                    v-if="!w.hidden"
+                    bbn-if="!w.hidden"
                     :key="w.uid"
                     @loaded="resizeScroll"
                     :options="w.options"
@@ -66,7 +66,7 @@
                     @sortstart="isSorting = true; sortOriginIndex = w.index; sortTargetIndex = null; isDragging = true;"
                     />
       </template>
-      <slot v-if="!widgets.length"/>
+      <slot bbn-if="!widgets.length"/>
     </div>
   </bbn-scroll>
 </div>

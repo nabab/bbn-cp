@@ -19,74 +19,74 @@ const cpDef = {
     ],
     statics() {
       const titleTemplates = {
-        h1: `<h1 v-text="currentValue"></h1>`,
-        h2: `<h2 v-text="currentValue"></h2>`,
-        h3: `<h3 v-text="currentValue"></h3>`,
-        h4: `<h4 v-text="currentValue"></h4>`,
-        h5: `<h5 v-text="currentValue"></h5>`,
+        h1: `<h1 bbn-text="currentValue"></h1>`,
+        h2: `<h2 bbn-text="currentValue"></h2>`,
+        h3: `<h3 bbn-text="currentValue"></h3>`,
+        h4: `<h4 bbn-text="currentValue"></h4>`,
+        h5: `<h5 bbn-text="currentValue"></h5>`,
       };
     
       const htmlTemplates = {
-        p: `<p v-html="currentValue"></p>`,
-        span: `<span v-html="currentValue"></span>`
+        p: `<p bbn-html="currentValue"></p>`,
+        span: `<span bbn-html="currentValue"></span>`
     
       };
     
       const templates = {
         text: {
-          view: '<div v-text="currentValue"></div>',
-          edit: '<bbn-input v-model="currentValue"></bbn-input>'
+          view: '<div bbn-text="currentValue"></div>',
+          edit: '<bbn-input bbn-model="currentValue"></bbn-input>'
         },
         multilines: {
-          view: '<div v-text="currentValue" style="white-space: pre-wrap; word-break: break-word"></div>',
-          edit: '<bbn-textarea v-model="currentValue" class="bbn-100"></bbn-textarea>'
+          view: '<div bbn-text="currentValue" style="white-space: pre-wrap; word-break: break-word"></div>',
+          edit: '<bbn-textarea bbn-model="currentValue" class="bbn-100"></bbn-textarea>'
         },
         inline: {
-          view: '<div v-text="value"></div>',
-          edit: '<bbn-inline-editor v-model="currentValue"></bbn-inline-editor>'
+          view: '<div bbn-text="value"></div>',
+          edit: '<bbn-inline-editor bbn-model="currentValue"></bbn-inline-editor>'
         },
         component: {
-          view: '<div v-text="currentValue" style="white-space: pre-wrap; word-break: break-word"></div>',
-          edit: '<div class="bbn-100"><component :is="component" v-bind="componentOptions" v-model="currentValue"></component></div>'
+          view: '<div bbn-text="currentValue" style="white-space: pre-wrap; word-break: break-word"></div>',
+          edit: '<div class="bbn-100"><component :is="component" bbn-bind="componentOptions" bbn-model="currentValue"></component></div>'
         },
         html: {
           view: `<div  @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"
                       :class="['component-container', 'bbn-block-html', alignClass]"
-                      v-html="currentValue"
+                      bbn-html="currentValue"
                       :style="style">
     
                 </div>`,
           edit: `<div :class="['component-container', 'bbn-block-html', alignClass ]">
-                  <bbn-rte v-model="currentValue">
+                  <bbn-rte bbn-model="currentValue">
                   </bbn-rte>
                 </div>`
         },
         title: {
           view: `<div @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"  :class="['component-container', 'bbn-block-title', {'has-hr': source.hr}, alignClass]":style="style">
-                  <hr v-if="source.hr">
+                  <hr bbn-if="source.hr">
                   <component :is="cpHTML(source.tag, 'title')" :source="source"></component>
-                  <hr v-if="source.hr">
+                  <hr bbn-if="source.hr">
                  </div>`,
           edit: `<div :class="['component-container','bbn-cms-block-edit' ,'bbn-block-title', 'bbn-flex-height', {'has-hr': source.hr}, alignClass]" :style="style">
                   <div class="edit-title bbn-w-100">
-                    <hr v-show="source.hr"><component :is="cpHTML(source.tag,'title')" :source="source"></component><hr v-if="source.hr">
+                    <hr bbn-show="source.hr"><component :is="cpHTML(source.tag,'title')" :source="source"></component><hr bbn-if="source.hr">
                   </div>
                   <div class="bbn-grid-fields bbn-vspadded bbn-w-100">
-                    <label v-text="_('Title tag')"></label>
+                    <label bbn-text="_('Title tag')"></label>
                     <div>
-                      <bbn-dropdown :source="tags" v-model="source.tag"></bbn-dropdown>
+                      <bbn-dropdown :source="tags" bbn-model="source.tag"></bbn-dropdown>
                     </div>
-                    <label v-text="_('Title text')"></label>
-                    <bbn-input v-model="currentValue"></bbn-input>
+                    <label bbn-text="_('Title text')"></label>
+                    <bbn-input bbn-model="currentValue"></bbn-input>
                     <label>Title color</label>
                       <div>
                         <bbn-colorpicker @change="setColor"
                         ></bbn-colorpicker>
                       </div>
-                    <label v-text="_('Title alignment')"></label>
+                    <label bbn-text="_('Title alignment')"></label>
                     <bbn-block-align-buttons></bbn-block-align-buttons>
-                    <label v-text="_('Line')"></label>
-                    <bbn-checkbox v-model="source.hr"></bbn-checkbox>
+                    <label bbn-text="_('Line')"></label>
+                    <bbn-checkbox bbn-model="source.hr"></bbn-checkbox>
                   </div>
                 </div>`
         },
@@ -94,77 +94,77 @@ const cpDef = {
           //taglia originale 100% width,width 50% 33% 25%
           view: `
           <div class="component-container bbn-block-image" :class="alignClass">
-            <a v-if="source.href" target="_self" :href="$parent.linkURL + source.href" class="bbn-c">
+            <a bbn-if="source.href" target="_self" :href="$parent.linkURL + source.href" class="bbn-c">
               <img :src="$parent.path + source.src"
                     style="heigth:500px;width:100%"
                    :style="style"
                    :alt="source.alt ? source.alt : ''"
               >
             </a>
-            <img v-else
+            <img bbn-else
                  :src="$parent.path + source.src"
                  :style="style"
                  :alt="source.alt ? source.alt : ''"
             >
             <p class="image-caption bbn-l bbn-s bbn-vsmargin"
-               v-if="source.caption"
-               v-html="source.caption"
+               bbn-if="source.caption"
+               bbn-html="source.caption"
             ></p>
             <!--error when using decodeuricomponent on details of home image-->
             <a class="image-details-title bbn-l bbn-vsmargin bbn-w-100"
-               v-if="source.details_title"
-               v-html="(source.details_title)"
+               bbn-if="source.details_title"
+               bbn-html="(source.details_title)"
                :href="source.href"
                target="_blank"
             ></a>
             <p class="image-details bbn-l bbn-vsmargin"
-               v-if="source.details"
-               v-html="(source.details)"
+               bbn-if="source.details"
+               bbn-html="(source.details)"
             ></p>
           </div>`,
           edit:     `
           <div class="component-container bbn-block-image" :class="alignClass">
             <div class="bbn-padded">
               <div class="bbn-grid-fields bbn-vspadded">
-                <label v-text="_('Upload your image')"></label>
+                <label bbn-text="_('Upload your image')"></label>
                 <bbn-upload :save-url="'upload/save/' + ref"
                             remove-url="test/remove"
                             :json="true"
                             :paste="true"
                             :multiple="false"
-                            v-model="image"
+                            bbn-model="image"
                             @success="imageSuccess"
                 ></bbn-upload>
     
-                <label v-text="_('Image size')"></label>
-                <bbn-cursor v-model="source.style['width']"
+                <label bbn-text="_('Image size')"></label>
+                <bbn-cursor bbn-model="source.style['width']"
                             unit="%"
                             :min="0"
                             :max="100"
                             :step="20"
                 ></bbn-cursor>
     
-                <label v-text="_('Image alignment')"></label>
+                <label bbn-text="_('Image alignment')"></label>
                 <bbn-block-align-buttons></bbn-block-align-buttons>
               </div>
             </div>
             <img :src="$parent.path + source.src" :style="style">
-            <p class="image-caption bbn-l bbn-s bbn-vsmargin" v-if="source.caption" v-html="source.caption"></p>
+            <p class="image-caption bbn-l bbn-s bbn-vsmargin" bbn-if="source.caption" bbn-html="source.caption"></p>
           </div>
                     `
         },
         carousel: {
           view: `
-          <div :class="['component-container', 'bbn-block-carousel', 'bbn-w-100',  alignClass]" :style="style" v-if="show">
-            <div v-for="(group, idx) in carouselSource"
-                 v-if="idx === currentCarouselIdx"
+          <div :class="['component-container', 'bbn-block-carousel', 'bbn-w-100',  alignClass]" :style="style" bbn-if="show">
+            <div bbn-for="(group, idx) in carouselSource"
+                 bbn-if="idx === currentCarouselIdx"
             >
               <bbn-cms-carousel-control :source="idx"
                                         :key="idx"
-                                        v-if="carouselSource.length > 3"
+                                        bbn-if="carouselSource.length > 3"
               ></bbn-cms-carousel-control>
               <div :class="['bbn-w-100',carouselCols]">
-                <bbn-cms-block-gallery-item v-for="(image, imgIdx) in group" :source="image" :key="imgIdx" :index="imgIdx"></bbn-cms-block-gallery-item>
+                <bbn-cms-block-gallery-item bbn-for="(image, imgIdx) in group" :source="image" :key="imgIdx" :index="imgIdx"></bbn-cms-block-gallery-item>
               </div>
             </div>
           </div>
@@ -173,30 +173,30 @@ const cpDef = {
         },
         gallery: {
           view: `
-          <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="style" v-if="show">
-            <bbn-cms-block-gallery-item v-for="(image, idx) in source.source" :source="image" :key="idx" :index="idx"></bbn-cms-block-gallery-item>
+          <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="style" bbn-if="show">
+            <bbn-cms-block-gallery-item bbn-for="(image, idx) in source.source" :source="image" :key="idx" :index="idx"></bbn-cms-block-gallery-item>
           </div>
           `,
           edit: `
           <div>
-            <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="style" v-if="show">
+            <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="style" bbn-if="show">
               <!-- GIVE HREF TO VIEW FULL IMAGE -->
-              <bbn-cms-block-gallery-item v-for="(image, idx) in currentValue" :source="image" :key="idx" :index="idx"></bbn-cms-block-gallery-item>
+              <bbn-cms-block-gallery-item bbn-for="(image, idx) in currentValue" :source="image" :key="idx" :index="idx"></bbn-cms-block-gallery-item>
             </div>
             <div class="bbn-grid-fields bbn-padded">
               <label>Columns number</label>
               <div>
-                <bbn-dropdown v-model="source.columns"
+                <bbn-dropdown bbn-model="source.columns"
                               :source="tinyNumbers"
                 ></bbn-dropdown>
               </div>
-              <label v-text="_('Upload your images')"></label>
+              <label bbn-text="_('Upload your images')"></label>
               <bbn-upload :save-url="'upload/save/' + ref"
                           remove-url="test/remove"
                           :data="{gallery: true}"
                           :paste="true"
                           :multiple="true"
-                          v-model="currentValue"
+                          bbn-model="currentValue"
                           @success="imageSuccess"
               ></bbn-upload>
     
@@ -227,8 +227,8 @@ const cpDef = {
           edit: `
           <div class="component-container" id="video-container">
             <div class="bbn-grid-fields bbn-padded">
-              <label v-text="_('Video source')"></label>
-              <bbn-input v-model="currentValue"></bbn-input>
+              <label bbn-text="_('Video source')"></label>
+              <bbn-input bbn-model="currentValue"></bbn-input>
               <label>Muted</label>
               <div>
                 <bbn-button :notext="true"
@@ -251,7 +251,7 @@ const cpDef = {
               <bbn-block-align-buttons></bbn-block-align-buttons>
               <label>Video width</label>
               <div>
-                <bbn-cursor v-model="source.style['width']"
+                <bbn-cursor bbn-model="source.style['width']"
                             :min="100"
                             :max="1000"
                             :step="10"
@@ -260,7 +260,7 @@ const cpDef = {
               </div>
               <label>Video height</label>
               <div>
-                <bbn-cursor v-model="source.style['height']"
+                <bbn-cursor bbn-model="source.style['height']"
                             :min="100"
                             :max="1000"
                             :step="10"
@@ -289,7 +289,7 @@ const cpDef = {
                     <div class="bbn-grid-fields bbn-vspadded">
                       <label>Line width</label>
                       <div>
-                        <bbn-cursor v-model="source.style['width']"
+                        <bbn-cursor bbn-model="source.style['width']"
                                     :min="0"
                                     :max="100"
                                     unit="%"
@@ -297,7 +297,7 @@ const cpDef = {
                       </div>
                       <label>Line height</label>
                       <div>
-                        <bbn-cursor v-model="source.style['border-width']"
+                        <bbn-cursor bbn-model="source.style['border-width']"
                                     :min="1"
                                     :max="10"
                                     unit="px"
@@ -305,14 +305,14 @@ const cpDef = {
                       </div>
                       <label>Line style</label>
                       <div>
-                        <bbn-dropdown v-model="source.style['border-style']"
+                        <bbn-dropdown bbn-model="source.style['border-style']"
                                       :source="borderStyle"
                         ></bbn-dropdown>
                       </div>
     
                       <label>Line color</label>
                       <div>
-                        <bbn-colorpicker v-model="source.style['border-color']"
+                        <bbn-colorpicker bbn-model="source.style['border-color']"
                         ></bbn-colorpicker>
                       </div>
                       <label>Line alignment</label>
@@ -328,7 +328,7 @@ const cpDef = {
           edit: `
               <div class="component-container" :style="style">
                 <div :style="style" class="block-space-edit">
-                  <bbn-cursor v-model="source.style.height"
+                  <bbn-cursor bbn-model="source.style.height"
                               unit="px"
                               :min="0"
                               :step="50"
@@ -942,23 +942,23 @@ const cpDef = {
                 <a  target="_self" @click="selectImg">
                   <!--TO TAKE IMAGE FROM THE INDEX-->
                   <img :src="path + source.src" :alt="source.alt ? source.alt : ''" :style="$parent.source.style">
-                  <div v-if="source.caption || (source.title && (type === 'carousel'))"
+                  <div bbn-if="source.caption || (source.title && (type === 'carousel'))"
                        :class="['bbn-block-gallery-caption',$parent.alignClass]"
-                       v-html="(source.caption && (type === 'gallery')) ? source.caption : source.title"
+                       bbn-html="(source.caption && (type === 'gallery')) ? source.caption : source.title"
                   ></div>
-                  <div v-if="source.details_title"
+                  <div bbn-if="source.details_title"
                        :class="['image-details-title',$parent.alignClass]"
-                       v-html="source.details_title"
+                       bbn-html="source.details_title"
                   ></div>
-                  <div v-if="source.details"
+                  <div bbn-if="source.details"
                        :class="['image-details',$parent.alignClass]"
-                       v-html="source.details"
+                       bbn-html="source.details"
                   ></div>
-                  <div v-if="source.price"
+                  <div bbn-if="source.price"
                        :class="['image-price',$parent.alignClass]"
-                       v-text="source.price"
+                       bbn-text="source.price"
                   ></div>
-                  <time v-if="source.time" v-text="source.time" :class="$parent.alignClass"></time>
+                  <time bbn-if="source.time" bbn-text="source.time" :class="$parent.alignClass"></time>
                 </a>
                 `
 

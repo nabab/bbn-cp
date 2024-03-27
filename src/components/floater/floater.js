@@ -1270,6 +1270,7 @@ const cpDef = {
      * @fires afterClose
      */
     close(force, confirm = false) {
+      bbn.fn.log("Close by floater");
       if (force !== true) {
         if (!this.closable && !this.autoHide && !force) {
           return;
@@ -1298,13 +1299,13 @@ const cpDef = {
         }
       }
 
-      let popup = this.$parent?.bbnSchema?.tag === 'bbn-popup' ? this.$parent : null;
+      let popup = this.$parent?.$options?.name === 'bbn-popup' ? this.$parent : null;
       if (this.forms.length && !confirm) {
         //bbn.fn.log("The form should have closed the floater");
         this.forms[0].closePopup(force);
       }
       else if (popup && this.uid) {
-        //bbn.fn.log("The popup should have closed the floater");
+        bbn.fn.log("The popup should have closed the floater");
         let idx = popup.getIndexByUID(this.uid);
         popup.close(idx, true);
       }
@@ -1340,10 +1341,10 @@ const cpDef = {
      * @fires closeAll
      * @emits select
      */
-    select(item, idx, dataIndex, ev){
-      if (item && !item.disabled && !item[this.children]) {
+    select(item, idx, dataIndex, ev) {
+      if (!ev?.defaultPrevented && item && !item.disabled && !item[this.children]) {
         if (!ev) {
-          let ev = new Event('select', {cancelable: true});
+          ev = new CustomEvent('select', {cancelable: true});
         }
         if (this.onSelect) {
           this.onSelect(item, idx, dataIndex, ev, this);
@@ -1607,6 +1608,7 @@ const cpDef = {
 
 };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './floater.html';
 import cpStyle from './floater.less';
 let cpLang = {};

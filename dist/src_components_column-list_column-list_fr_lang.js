@@ -15,7 +15,7 @@
   \********************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Expand\":\"Étendre\",\"Collapse\":\"Réduire\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/column-list/column-list.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Expand\":\"Étendre\",\"Collapse\":\"Réduire\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/column-list/column-list.fr.lang?");
 
 /***/ })
 

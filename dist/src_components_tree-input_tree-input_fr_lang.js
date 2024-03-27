@@ -15,7 +15,7 @@
   \******************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Selector\":\"Sélecteur\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/tree-input/tree-input.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Selector\":\"Sélecteur\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/tree-input/tree-input.fr.lang?");
 
 /***/ })
 

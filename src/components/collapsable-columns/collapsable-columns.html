@@ -4,7 +4,7 @@
              ref="scroll">
     <div :class="['bbn-collapsable-columns-container', 'bbn-grid', 'bbn-padded', {'bbn-h-100': !!scrollable}]"
          :style="{'grid-auto-rows': !!scrollable ? '100%': ''}">
-      <bbn-column-list  v-for="(col, idx) in filteredData"
+      <bbn-column-list  bbn-for="(col, idx) in filteredData"
                         :source="col.data[children]"
                         :data="data"
                         :children="children"

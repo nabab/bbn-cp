@@ -68,35 +68,6 @@ const cpDef = {
         currentType: this.type
       }
     },
-    mounted(){
-      if ( this.bgColor ){
-        this.$el.style.backgroundColor = this.bgColor;
-      }
-    },
-    methods: {
-      //@todo not used
-      /*onResize(){
-        this.height = $(this.$el).height();
-        //bbn.fn.log("HEIGHT", this.height);
-        let currentFont = this.fontClass,
-            currentMinHeight = this.minHeight;
-        if( this.height >= 500 ){
-          this.minHeight = true;
-          this.fontClass = 'bbn-xxl';
-        }
-        else if (  this.height > 250 && this.height < 500 ){
-          this.minHeight = true;
-          this.fontClass = 'bbn-medium'
-        }
-        else if ( this.height <= 250 ){
-          this.minHeight = false;
-          this.fontClass = 'bbn-small'
-        }
-        if ( (currentFont !== this.fontClass) || (currentMinHeight !== this.minHeight) ){
-          this.$forceUpdate();
-        }
-      }*/
-    },
     computed: {
       /**
        * The css class corresponding to the prop fontSize

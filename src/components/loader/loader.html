@@ -1,13 +1,12 @@
 <div :class="['bbn-overlay', 'bbn-padded', 'bbn-middle', componentClass, 'bbn-alt-background']"
-     :style="'background-color:' + bgColor"   
->
+     :style="'background-color:' + bgColor">
   <div class="loader-animation">
     <div class="bbn-block bbn-nl">
     <div class="sk-plane"
-          v-if="currentType === 'plane'"/>
+          bbn-if="currentType === 'plane'"/>
 
       <div class="sk-chase"
-          v-else-if="currentType === 'chase'">
+          bbn-elseif="currentType === 'chase'">
         <div class="sk-chase-dot"/>
         <div class="sk-chase-dot"/>
         <div class="sk-chase-dot"/>
@@ -17,13 +16,13 @@
       </div>
 
       <div class="sk-bounce"
-          v-else-if="currentType === 'bounce'">
+          bbn-elseif="currentType === 'bounce'">
         <div class="sk-bounce-dot"/>
         <div class="sk-bounce-dot"/>
       </div>
 
       <div class="sk-wave"
-          v-else-if="currentType === 'wave'">
+          bbn-elseif="currentType === 'wave'">
         <div class="sk-wave-rect"/>
         <div class="sk-wave-rect"/>
         <div class="sk-wave-rect"/>
@@ -32,23 +31,23 @@
       </div>
 
       <div class="sk-pulse"
-          v-else-if="currentType === 'pulse'"/>
+          bbn-elseif="currentType === 'pulse'"/>
 
       <div class="sk-flow"
-          v-else-if="currentType === 'flow'">
+          bbn-elseif="currentType === 'flow'">
         <div class="sk-flow-dot"/>
         <div class="sk-flow-dot"/>
         <div class="sk-flow-dot"/>
       </div>
 
       <div class="sk-swing"
-          v-else-if="currentType === 'swing'">
+          bbn-elseif="currentType === 'swing'">
         <div class="sk-swing-dot"/>
         <div class="sk-swing-dot"/>
       </div>
 
       <div class="sk-circle"
-          v-else-if="currentType === 'circle'">
+          bbn-elseif="currentType === 'circle'">
         <div class="sk-circle-dot"/>
         <div class="sk-circle-dot"/>
         <div class="sk-circle-dot"/>
@@ -64,7 +63,7 @@
       </div>
 
       <div class="sk-circle-fade"
-          v-else-if="currentType === 'circle_fade'">
+          bbn-elseif="currentType === 'circle_fade'">
         <div class="sk-circle-fade-dot"/>
         <div class="sk-circle-fade-dot"/>
         <div class="sk-circle-fade-dot"/>
@@ -80,7 +79,7 @@
       </div>
 
       <div class="sk-grid"
-          v-else-if="currentType === 'grid'">
+          bbn-elseif="currentType === 'grid'">
         <div class="sk-grid-cube"/>
         <div class="sk-grid-cube"/>
         <div class="sk-grid-cube"/>
@@ -93,7 +92,7 @@
       </div>
 
       <div class="sk-fold"
-          v-else-if="currentType === 'fold'">
+          bbn-elseif="currentType === 'fold'">
         <div class="sk-fold-cube"/>
         <div class="sk-fold-cube"/>
         <div class="sk-fold-cube"/>
@@ -101,7 +100,7 @@
       </div>
 
       <div class="sk-wander"
-          v-else-if="currentType === 'wander'">
+          bbn-elseif="currentType === 'wander'">
         <div class="sk-wander-cube"/>
         <div class="sk-wander-cube"/>
         <div class="sk-wander-cube"/>
@@ -109,8 +108,8 @@
       </div>
 
       <div class="sk-cube-grid"
-          v-else
-          v-show="minHeight">
+          bbn-else
+          bbn-show="minHeight">
         <div class="sk-cube sk-cube1"/>
         <div class="sk-cube sk-cube2"/>
         <div class="sk-cube sk-cube3"/>
@@ -122,9 +121,9 @@
         <div class="sk-cube sk-cube9"/>
       </div>
     </div>
-    <h1 v-if="text"
+    <h1 bbn-if="text"
         :class="'dots ' + fontClass">
-      <span v-text="text"/><span>.</span><span>.</span><span>.</span>
+      <span bbn-text="text"/><span>.</span><span>.</span><span>.</span>
     </h1>
 
   </div>

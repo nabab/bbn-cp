@@ -1856,12 +1856,12 @@ const cpDef = {
               template: `
 <div class="bbn-block bbn-spadded">
   <h3 @click="showValues = !showValues"
-      v-text="showValues ? _('Hide the values') : _('Show the values')"
+      bbn-text="showValues ? _('Hide the values') : _('Show the values')"
       class="bbn-p"></h3>
-  <ol class="bbn-space-bottom" v-if="showValues">
-    <li v-for="v in source.values" v-text="v"></li>
+  <ol class="bbn-space-bottom" bbn-if="showValues">
+    <li bbn-for="v in source.values" bbn-text="v"></li>
   </ol>
-  <pre v-text="source.query"></pre>
+  <pre bbn-text="source.query"></pre>
 </div>
               `,
               props: ['source'],
@@ -2076,7 +2076,7 @@ const cpDef = {
         this.getPopup({
           title: bbn._('Multiple filters'),
           component: {
-            template: `<bbn-scroll><bbn-filter v-bind="source" @change="changeConditions" :multi="true"></bbn-filter></bbn-scroll>`,
+            template: `<bbn-scroll><bbn-filter bbn-bind="source" @change="changeConditions" :multi="true"></bbn-filter></bbn-scroll>`,
             props: ['source'],
             methods: {
               changeConditions(o) {
@@ -2163,16 +2163,16 @@ const cpDef = {
             :prefilled="true"
             @success="applyColumnsShown">
     <div class="bbn-padded">
-      <ul v-if="source.titleGroups">
-        <li v-for="(tg, idx) in source.titleGroups">
+      <ul bbn-if="source.titleGroups">
+        <li bbn-for="(tg, idx) in source.titleGroups">
           <h3>
             <bbn-checkbox :checked="allVisible(tg.value)"
                           @change="checkAll(tg.value)"
                           :label="tg.text"/>
           </h3>
           <ul>
-            <li v-for="(col, i) in source.cols"
-                v-if="!col.fixed && (col.group === tg.value) && (col.showable !== false) && (col.title || col.ftitle)">
+            <li bbn-for="(col, i) in source.cols"
+                bbn-if="!col.fixed && (col.group === tg.value) && (col.showable !== false) && (col.title || col.ftitle)">
               <bbn-checkbox :checked="shownCols[i]"
                             @change="check(col, i)"
                             :label="col.ftitle || col.title"
@@ -2181,9 +2181,9 @@ const cpDef = {
           </ul>
         </li>
       </ul>
-      <ul v-else>
-        <li v-for="(col, i) in source.cols"
-            v-if="!col.fixed && (col.showable !== false) && (col.title || col.ftitle)">
+      <ul bbn-else>
+        <li bbn-for="(col, i) in source.cols"
+            bbn-if="!col.fixed && (col.showable !== false) && (col.title || col.ftitle)">
           <bbn-checkbox :checked="shownCols[i]"
                         @change="check(col, i)"
                         :label="col.ftitle || col.title"
@@ -3287,6 +3287,11 @@ const cpDef = {
         }
         return res;
       },
+      updatePager() {
+        if (this.hasPager) {
+          this.getRef('pager').$forceUpdate();
+        }
+      },
       /**
        * Returns the html element of the given row index.
        * @method getTr
@@ -3755,6 +3760,12 @@ const cpDef = {
         ) {
           this.resizeWidth();
         }
+      },
+      currentPage() {
+        this.updatePager();
+      },
+      numPages() {
+        this.updatePager();
       }
     },
     components: {
@@ -3828,7 +3839,6 @@ const cpDef = {
     }
   };
 
-import bbn from '@bbn/bbn';
 import cpHtml from './table.html';
 import cpStyle from './table.less';
 let cpLang = {};

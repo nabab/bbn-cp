@@ -15,7 +15,7 @@
   \**************************************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Hour\":\"Heure\",\"Minute\":\"Minute\",\"Second\":\"Seconde\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/datetimepicker/datetimepicker.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Hour\":\"Heure\",\"Minute\":\"Minute\",\"Second\":\"Seconde\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/datetimepicker/datetimepicker.fr.lang?");
 
 /***/ })
 

@@ -1,24 +1,32 @@
-import bbn from "@bbn/bbn";
+import stringToTemplate from "../internals/stringToTemplate.js";
+import generateCpClass from "../internals/generateCpClass.js";
+import generateHTMLClass from "../internals/generateHTMLClass.js";
+import retrieveModels from "../internals/retrieveModels.js";
+import retrieveSlots from "../internals/retrieveSlots.js";
 
 /**
-* Defines a component with the Object config and the HTML template
-* @param name The tag name of the component
-* @param obj The Vue-like configuration object
-* @param tpl The template as string or array from stringToTemplate
+* Defines a component with the Object config and the HTML template.
+* @param {string} name - The tag name of the component.
+* @param {Object} obj - The Vue-like configuration object for the component.
+* @param {string|array} tplSt - The template as a string or an array from stringToTemplate.
+ * @param {string} [css] - Optional CSS string for the component.
 */
-export default function define(name, obj, tpl, css) {
+export default function define(name, obj, tplSt, css) {
+  // Prevent redefinition if the component is already known.
   if (bbn.cp.known.includes(name)) {
     return;
   }
+
+  // Mandatory check for the component name.
   if (!name) {
     bbn.fn.warning("BOO");
     bbn.fn.log(obj);
     throw new Error("The name of the component is mandatory");
   }
 
-  // Template string becomes a DOM array
-  let tmp = bbn.cp.stringToTemplate(tpl, true, obj.tag || name);
-  // Name of the class based on the tag name
+  // Convert the template string to a DOM array.
+  let tmp = stringToTemplate(tplSt, true, obj.tag || name);
+  // Generate a public class name based on the component tag.
   const publicName = bbn.fn.camelize(name);
   // The component config (= Vue-like object) that we freeze
   bbn.fn.iterate(tmp.inlineTemplates, (tpl, tag) => {
@@ -30,21 +38,28 @@ export default function define(name, obj, tpl, css) {
   });
   const cpCfg = bbn.cp.normalizeComponent(obj, publicName);
   Object.freeze(cpCfg);
+
+  // Determine the class to use based on the tag name.
   const cls = cpCfg.tag && bbn.cp.tagExtensions[cpCfg.tag] ? bbn.cp.tagExtensions[cpCfg.tag] : 'bbnHTML';
+
+  // Store component configuration in bbn.cp.statics.
   bbn.cp.statics[name] = bbnData.immunizeValue(bbn.fn.createObject({
     tpl: tmp.res,
     map: tmp.map,
     cls: publicName + 'HTML',
     fn: publicName + 'Cp',
     cfg: cpCfg,
-    models: bbn.cp.retrieveModels(tmp.res),
-    slots: bbn.cp.retrieveSlots(tmp.res),
+    models: retrieveModels(tmp.res),
+    slots: retrieveSlots(tmp.res),
     tag: cpCfg.tag,
   }));
+
+  // Handle default slot initialization.
   if (!bbn.cp.statics[name].slots.default) {
     bbn.cp.statics[name].slots.default = [];
   }
 
+// Inject component-specific CSS if provided.
   if (css) {
     const styleSheet = document.createElement('style');
     const old = document.getElementById(name + "-bbn-css");
@@ -57,33 +72,32 @@ export default function define(name, obj, tpl, css) {
     document.head.append(styleSheet);
   }
 
-  // If subcomponents are defined we init them too
+  // Initialize subcomponents if defined.
   if (cpCfg.components) {
     for (let n in cpCfg.components) {
       bbn.cp.define(cpCfg.componentNames[n], cpCfg.components[n], cpCfg.components[n].template || '');
       //cpProto.$options.components[n] = cpCfg.components[n];
     }
   }
-  // Generating a basic HTML class based on the component config
-  //bbn.fn.log('generateHTMLClass', publicName, cls, '-------');
-  window[publicName] = bbn.cp.generateHTMLClass(publicName, (new Function(`return ${cls};`))());
+  
+  // Generate and globally expose HTML and Cp classes.
+  window[publicName] = generateHTMLClass(publicName, (new Function(`return ${cls};`))());
   // Generating the code for the private class based on the component config
   //const privateClassCode = makePrivateClass(privateName, cpCfg);
   //bbn.fn.log('generateCpClass', publicName);
-  window[publicName + 'Cp'] = bbn.cp.generateCpClass(publicName, cpCfg);
+  window[publicName + 'Cp'] = generateCpClass(publicName, cpCfg);
   //bbn.fn.log("fnCode", fnCode);
   //bbn.fn.log(makePrivateFunction(privateName, cpCfg));
   // Evaluating that code: defining the private class
   // Retrieving the class object
 
-  // Getting the class object from the Window (seems impossible otherwise)
-  //bbn.fn.log(publicName);
+  // Define arguments for custom element registration.
   const args = [name, window[publicName]];
   if (cpCfg.tag) {
     args.push({extends: cpCfg.tag});
   }
 
-  // Adding the newly defined component to the known array
+  // Register the component and add it to the known components list.
   bbn.cp.known.push(name);
   // Assigning the public class to the component's tag
   customElements.define(...args);

@@ -11,19 +11,19 @@
   <div :class="['bbn-rel', 'bbn-search-container', 'bbn-flex-width', 'bbn-vmiddle', currentItemCls, {
     'bbn-search-container-native': native
   }]">
-    <div v-if="sourceIcon && hasValue && !!currentItemIcon"
+    <div bbn-if="sourceIcon && hasValue && !!currentItemIcon"
          class="bbn-left-xspadded">
       <i :class="currentItemIcon"
          @click.stop="click" />
     </div>
-    <div v-if="sourceImg && hasValue && !!currentItemImg"
+    <div bbn-if="sourceImg && hasValue && !!currentItemImg"
          class="bbn-left-xspadded">
       <img :src="currentItemImg"
            @click.stop="click">
     </div>
     <bbn-input :tabindex="0"
                class="bbn-no-border bbn-i"
-               v-model="filterString"
+               bbn-model="filterString"
                ref="input"
                @focus="selectText"
                @blur="inputIsVisible = false"
@@ -40,7 +40,7 @@
                :nullable="true"
                :placeholder="placeholder"/>
   </div>
-  <bbn-floater v-if="!popup
+  <bbn-floater bbn-if="!popup
                   && filteredData.length
                   && !isDisabled
                   && !native

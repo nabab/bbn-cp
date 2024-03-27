@@ -108,7 +108,7 @@
 2653                                                   ; fully-qualified     # ♓ E0.6 Pisces
 26CE                                                   ; fully-qualified     # ⛎ E0.6 Ophiuchus
 
-# subgroup: av-symbol
+# subgroup: abbn-symbol
 1F500                                                  ; fully-qualified     # 🔀 E1.0 shuffle tracks button
 1F501                                                  ; fully-qualified     # 🔁 E1.0 repeat button
 1F502                                                  ; fully-qualified     # 🔂 E1.0 repeat single button

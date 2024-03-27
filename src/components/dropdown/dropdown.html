@@ -11,20 +11,20 @@
   <div :class="['bbn-rel', 'bbn-dropdown-container', 'bbn-flex-width', 'bbn-vmiddle', currentItemCls, {
     'bbn-dropdown-container-native': native
   }]">
-    <div v-if="sourceIcon && hasValue && !!currentItemIcon"
+    <div bbn-if="sourceIcon && hasValue && !!currentItemIcon"
          class="bbn-left-xspadded">
       <i :class="currentItemIcon"
          @click.stop="click" />
     </div>
-    <div v-if="sourceImg && hasValue && !!currentItemImg"
+    <div bbn-if="sourceImg && hasValue && !!currentItemImg"
          class="bbn-left-xspadded">
       <img :src="currentItemImg"
            @click.stop="click">
     </div>
-    <bbn-input v-if="!native"
+    <bbn-input bbn-if="!native && _1strun"
                ref="input"
                class="bbn-no-border bbn-flex-fill"
-               v-model="notext ? placeholder : currentText"
+               bbn-model="notext ? placeholder : currentText"
                @keydown="keydown"
                @keyup="keyup"
                @click.stop="click"
@@ -45,8 +45,13 @@
                :ellipsis="true"
                @focus="focus"
                @blur="blur"/>
-    <template v-else>
-      <select v-model="currentSelectValue"
+    <template bbn-elseif="_1strun">
+      <bbn-button :icon="currentIcon"
+                  tabindex="-1"
+                  :class="['bbn-dropdown-select-button', 'bbn-button-right', 'bbn-no-vborder', 'bbn-m', 'bbn-top-right', {
+                    'bbn-disabled': !filteredData.length || !!isDisabled || !!readonly
+                  }]"/>
+      <select bbn-model="currentSelectValue"
               class="bbn-textbox bbn-no-border bbn-flex-fill bbn-p"
               :required="required"
               ref="input"
@@ -55,34 +60,29 @@
               @focus="ev => {isOpened = true; focus(ev)}"
               @click="isOpened = true"
               :disabled="!!isDisabled || !!readonly">
-        <option value=""
-                v-html="placeholder"
+        <option :value="isNullable ? null : ''"
+                bbn-html="isNullable && !((value === '') || (value === null)) ? _('Clear') : placeholder"
                 :disabled="!isNullable"
-                :selected="!value"/>
-        <option v-for="d in filteredData"
+                :selected="(value === '') || (value === null)"/>
+        <option bbn-for="d in filteredData"
                 :value="d.data[sourceValue]"
-                v-html="d.data[sourceText]"
+                bbn-html="d.data[sourceText]"
                 :disabled="!!d.data[sourceDisabled]"/>
       </select>
-      <bbn-button :icon="currentIcon"
-                  tabindex="-1"
-                  :class="['bbn-dropdown-select-button', 'bbn-button-right', 'bbn-no-vborder', 'bbn-m', 'bbn-top-right', {
-                    'bbn-disabled': !filteredData.length || !!isDisabled || !!readonly
-                  }]"/>
     </template>
   </div>
   <input type="hidden"
-         v-model="value"
+         :value="value"
          ref="element"
          :name="name">
-  <bbn-floater v-if="!popup
+  <bbn-floater bbn-if="!popup
                     && filteredData.length
                     && !isDisabled
                     && !readonly
                     && ready
                     && !native
                     && (isOpened || preload)"
-              v-show="isOpened"
+              bbn-show="isOpened"
               bbn-portal="portalSelector && !isInsideFloater ? portalSelector : false"
               :element="asMobile ? undefined : $el"
               :max-height="asMobile ? undefined : maxHeight"
@@ -90,17 +90,16 @@
               :width="asMobile ? '100%' : undefined"
               :height="asMobile ? '100%' : undefined"
               ref="list"
-              @mouseover="isOverDropdown = true"
-              @mouseenter="isOverDropdown = true"
-              @mouseleave="isOverDropdown = false"
               :uid="sourceValue"
               :item-component="realComponent"
               @ready="attachList"
-              @select.prevent="select"
+              @select="onSelect"
               :children="null"
               :suggest="true"
+              @mouseenter="isOverDropdown = true"
+              @mouseleave="isOverDropdown = false"
               :selected="value ? [value] : []"
-              @hide="isOpened = false"
+              @close="isOpened = false"
               :source="filteredData"
               :source-text="sourceText"
               :source-value="sourceValue"

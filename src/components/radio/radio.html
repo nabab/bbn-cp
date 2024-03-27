@@ -5,7 +5,7 @@
          :disabled="isDisabled"
          :required="required">
   <div :style="getStyle()">
-    <div v-for="(d, idx) in source"
+    <div bbn-for="(d, idx) in source"
          :class="{
             'bbn-iblock': !vertical,
             'bbn-right-space': !vertical && !separator && source[idx+1],
@@ -23,21 +23,21 @@
              style="display: none">
       <label class="bbn-radio-label bbn-iflex bbn-vmiddle"
              :for="id + '_' + idx">
-        <component v-if="d.component"
+        <component bbn-if="d.component"
                    :is="d.component"
-                   v-bind="d.componentOptions"
+                   bbn-bind="d.componentOptions"
                    class="bbn-left-sspace"/>
-        <span v-else
+        <span bbn-else
                class="bbn-left-sspace"
-               v-html="render ? render(d) : d[sourceText]"/>
+               bbn-html="render ? render(d) : d[sourceText]"/>
       </label>
-      <br v-if="!vertical && step && ((idx+1) % step === 0)">
-      <div v-if="(source[idx+1] !== undefined) && !!separator"
+      <br bbn-if="!vertical && step && ((idx+1) % step === 0)">
+      <div bbn-if="(source[idx+1] !== undefined) && !!separator"
            :class="{
             'bbn-w-100': vertical,
             'bbn-iblock': !vertical
            }"
-           v-html="separator"/>
+           bbn-html="separator"/>
     </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 <div :class="[componentClass, 'bbn-radius', {'collapsed': collapsed}]"
       :key="index"
       :style="{width: !collapsed ? width : '', height: scrollable ? '100%' : 'auto'}"
-      v-show="isVisible">
+      bbn-show="isVisible">
   <div :class="['bbn-column-list-container', 'bbn-radius', 'bbn-background', 'bbn-rel', {
           'bbn-flex-height': !!scrollable
         }]"
@@ -14,8 +14,8 @@
            'bbn-flex-width': !collapsed,
            'bbn-flex-height': collapsed
          }]"
-         v-if="headerVisible">
-      <bbn-button v-if="collapsable && collapsed"
+         bbn-if="headerVisible">
+      <bbn-button bbn-if="collapsable && collapsed"
                   class="bbn-no-border"
                   :notext="true"
                   :text="_('Expand')"
@@ -30,28 +30,28 @@
              'verticaltext': collapsed,
              'bbn-flex-fill': !toolbar
            }]"
-           v-text="title"
+           bbn-text="title"
            :title="title"
            :style="{
              color: !!fontColor ? (fontColor + ' !important') : '',
              maxHeight: isMobile && collapsed ? '20rem' : '',
              letterSpacing: collapsed ? (isMobile ? '' : '-0.2rem') : ''
            }"
-           v-if="title !== undefined"/>
+           bbn-if="title !== undefined"/>
       <div class="bbn-column-list-toolbar bbn-alt-background bbn-vmiddle bbn-xspadded bbn-radius bbn-flex-fill"
           :style="{
             'min-height': !collapsed ? '2rem' : '4rem',
             'justify-content': 'flex-end',
             'align-items': collapsed ? 'flex-end': ''
           }"
-          v-if="toolbar">
+          bbn-if="toolbar">
         <component :is="toolbar"
                    :source="toolbarSource || (!isAjax ? source : undefined)"
                    :total="total"
                    class="bbn-vmiddle"
                    :style="{'flex-direction': collapsed ? 'column': ''}"/>
       </div>
-      <bbn-button v-if="collapsable && !collapsed"
+      <bbn-button bbn-if="collapsable && !collapsed"
                   class="bbn-no-border bbn-left-space"
                   :notext="true"
                   :text="_('Collapse')"
@@ -59,14 +59,14 @@
                   @click="collapse"
                   style="height: 100%; width: auto; aspect-ratio: 1"/>
     </div>
-    <div v-if="!collapsed"
+    <div bbn-if="!collapsed"
         :class="['bbn-column-list-main', 'bbn-vpadded', 'bbn-rel', {'bbn-flex-fill': !!scrollable}]"
         style="width: 100%">
       <div class="bbn-rel"
            style="width: 100%; height: 100%">
-        <bbn-loader v-if="isLoading"
+        <bbn-loader bbn-if="isLoading"
                     class="bbn-column-list-loader bbn-margin bbn-background"/>
-        <component v-else
+        <component bbn-else
                    :is="scrollable ? 'bbn-scroll' : 'div'"
                    axis="y"
                    ref="scroll">
@@ -74,8 +74,8 @@
                  'bbn-overlay': !!scrollable,
                  'bbn-middle': !!scrollable && !items.length
                 }]">
-            <template v-if="items.length">
-              <div v-for="(item, itemIdx) in items"
+            <template bbn-if="items.length">
+              <div bbn-for="(item, itemIdx) in items"
                   :class="[
                     'bbn-column-list-item',
                     'bbn-radius',
@@ -87,18 +87,18 @@
                 <component :is="component"
                            :source="item.data"
                            :index="item.index"
-                           v-bind="componentOptions"
+                           bbn-bind="componentOptions"
                            :key="!!uid && item.data && (item.data[uid] !== undefined) ? item.data[uid] : itemIdx"/>
               </div>
             </template>
-            <div v-else-if="isLoaded && !!noData"
+            <div bbn-elseif="isLoaded && !!noData"
                  class="bbn-c bbn-background bbn-radius bbn-spadded"
-                 v-text="noData"/>
+                 bbn-text="noData"/>
           </div>
         </component>
       </div>
     </div>
-    <div v-if="!collapsed && pageable"
+    <div bbn-if="!collapsed && pageable"
           class="bbn-column-list-footer">
       <bbn-pager :element="_self"
                  :limit="false"/>

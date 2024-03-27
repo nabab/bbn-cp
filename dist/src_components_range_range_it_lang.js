@@ -15,7 +15,7 @@
   \********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Reset\":\"Ripristina\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/range/range.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Reset\":\"Ripristina\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/range/range.it.lang?");
 
 /***/ })
 

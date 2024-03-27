@@ -433,15 +433,15 @@ const cpDef = {
 <span class="bbn-w-100 bbn-vxspadded bbn-hspadded">
 <span class="bbn-flex-width bbn-vmiddle">
   <span class="text bbn-flex-fill">
-    <template v-for="p in source.parents">
+    <template bbn-for="p in source.parents">
       <span :style="{
               backgroundColor: p.source[p.selected].bcolor || false,
               color: p.source[p.selected].fcolor || false
             }"
             class="bbn-hxspadded">
-        <i v-if="p.source[p.selected].icon"
+        <i bbn-if="p.source[p.selected].icon"
             :class="p.source[p.selected].icon"/>
-        <span v-html="p.source[p.selected].title || '` + bbn._('Untitled') + `'"/>
+        <span bbn-html="p.source[p.selected].title || '` + bbn._('Untitled') + `'"/>
       </span>
       <i class="nf nf-fa-angle_right bbn-hsmargin bbn-large bbn-breadcrumb-arrow"/>
     </template>
@@ -450,24 +450,24 @@ const cpDef = {
             color: source.fcolor || false
           }"
           class="bbn-hxspadded">
-      <i v-if="source.icon"
+      <i bbn-if="source.icon"
           class="source.icon"/>
-      <span v-html="source.text || '` + bbn._('Untitled') + `'"/>
+      <span bbn-html="source.text || '` + bbn._('Untitled') + `'"/>
     </span>
-    <template v-for="(c, i) in source.children">
+    <template bbn-for="(c, i) in source.children">
       <i class="nf nf-fa-angle_right bbn-hsmargin bbn-large bbn-breadcrumb-arrow"/>
       <span :style="{
               backgroundColor: c.source[c.selected].bcolor || false,
               color: c.source[c.selected].fcolor || false
             }"
             :class="['bbn-hxspadded', {'bbn-b': !!source.children[i+1]}]">
-        <i v-if="c.source[c.selected].icon"
+        <i bbn-if="c.source[c.selected].icon"
             class="c.source[c.selected].icon"/>
-        <span v-html="c.source[c.selected].title || '` + bbn._('Untitled') + `'"></span>
+        <span bbn-html="c.source[c.selected].title || '` + bbn._('Untitled') + `'"></span>
       </span>
     </template>
   </span>
-  <span v-if="!source.fixed"
+  <span bbn-if="!source.fixed"
         class="space"
         style="text-align: right"
         @click.prevent.stop="close">

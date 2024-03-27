@@ -1,6 +1,6 @@
 <div :class="[componentClass, {'bbn-textbox': !floating}, 'bbn-no-padding']"
 		 :style="{height: currentHeight}">
-	<div v-if="floating"
+	<div bbn-if="floating"
 	     class="bbn-iflex-height"
 			 ref="container"
 			 style="min-height: 100%; width: 100%; overflow: visible">
@@ -15,7 +15,7 @@
 		<bbn-floater :scrollable="false"
 								ref="floater"
 								:distance="50"
-								v-if="isEditing"
+								bbn-if="isEditing"
 								:visible="true"
 								@focus.stop
 								@focusin="isEditing = true"
@@ -31,7 +31,7 @@
 		</bbn-floater>
 
 	</div>
-	<div v-else
+	<div bbn-else
 	     class="bbn-iflex-height"
 			 style="min-height: 100%; width: 100%;">
 		<bbn-toolbar :source="currentButtons"
@@ -53,8 +53,8 @@
 				     ref="content">
 					<slot></slot>
 				</div>
-				<bbn-code v-model="currentValue"
-				          v-if="showSource"
+				<bbn-code bbn-model="currentValue"
+				          bbn-if="showSource"
 									class="bbn-overlay"
 									style="min-height: max(4rem, 100%)"
 									mode="html"/>

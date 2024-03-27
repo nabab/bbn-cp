@@ -3,9 +3,9 @@
 >
   <bbn-form :scrollable="false" ref="form" :buttons="false" @submit="add">
     <div class="bbn-grid-fields" style="grid-template-columns: minmax(auto,max-content) auto 3rem">
-      <template v-for="v in items">
-        <div v-text="v.key" :key="v.key"/>
-        <div v-text="v.value"/>
+      <template bbn-for="v in items">
+        <div bbn-text="v.key" :key="v.key"/>
+        <div bbn-text="v.value"/>
         <div>
           <bbn-button icon="nf nf-fa-minus"
                       @click="remove(v.key)"
@@ -14,12 +14,12 @@
                       :notext="true"/>
         </div>
       </template>
-      <template v-if="!max || (items.length <= max)">
+      <template bbn-if="!max || (items.length <= max)">
         <div>
-          <bbn-input v-model="currentKey" :required="true" ref="key" :placeholder="_('key')"/>
+          <bbn-input bbn-model="currentKey" :required="true" ref="key" :placeholder="_('key')"/>
         </div>
         <div>
-          <bbn-input v-model="currentValue" :required="true" :placeholder="_('value')"/>
+          <bbn-input bbn-model="currentValue" :required="true" :placeholder="_('value')"/>
         </div>
         <div>
           <bbn-button icon="nf nf-fa-plus"

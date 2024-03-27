@@ -286,7 +286,7 @@ const cpDef = {
           res.backgroundColor = this.color;
         }
         if (this.isOverContent) {
-          res.opacity = '0.15';
+          res.opacity = '0.35';
         }
       }
       return res;

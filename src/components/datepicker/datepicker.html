@@ -1,5 +1,5 @@
 <div :class="[componentClass, 'bbn-textbox', {'bbn-input-nullable': isNullable}]">
-  <bbn-button v-if="buttonPosition === 'left'"
+  <bbn-button bbn-if="buttonPosition === 'left'"
               icon="nf nf-fa-calendar"
               @click="isOpened = !isOpened"
               :disabled="isDisabled || readonly"
@@ -13,24 +13,24 @@
               @hook:mounted="maskedMounted = true"
               @blur="inputChanged"
               @keydown.enter="inputChanged"
-              v-model="inputValue"
+              bbn-model="inputValue"
               class="bbn-flex-fill"
               :autosize="autosize"
               :inputmode="inputmode"
               :placeholder="placeholder"/>
-  <div v-if="isNullable && !readonly && !isDisabled"
+  <div bbn-if="isNullable && !readonly && !isDisabled"
        class="bbn-block bbn-h-100 bbn-input-nullable-container">
-    <i v-if="hasValue"
+    <i bbn-if="hasValue"
        class="nf nf-fa-times_circle bbn-p"
        @mousedown.prevent.stop="clear"/>
   </div>
-  <bbn-button v-if="buttonPosition === 'right'"
+  <bbn-button bbn-if="buttonPosition === 'right'"
               icon="nf nf-fa-calendar"
               @click="isOpened = !isOpened"
               :disabled="isDisabled || readonly"
               tabindex="-1"
               class="bbn-button-right bbn-no-vborder"/>
-  <bbn-floater v-if="isOpened && !isDisabled && !readonly"
+  <bbn-floater bbn-if="isOpened && !isDisabled && !readonly"
                :element="$el"
                ref="floater"
                :auto-hide="1000"

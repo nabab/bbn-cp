@@ -15,7 +15,7 @@
   \**********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Max number of\":\"Massimo numero di\",\"Value\":\"Valore\",\"Add\":\"Aggiungi\",\"Delete\":\"Elimina\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/values/values.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Max number of\":\"Massimo numero di\",\"Value\":\"Valore\",\"Add\":\"Aggiungi\",\"Delete\":\"Elimina\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/values/values.it.lang?");
 
 /***/ })
 

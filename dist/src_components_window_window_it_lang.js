@@ -15,7 +15,7 @@
   \**********************************************/
 /***/ ((module) => {
 
-eval("module.exports = JSON.parse('{\"Untitled\":\"Senza titolo\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/window/window.it.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Untitled\":\"Senza titolo\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/window/window.it.lang?");
 
 /***/ })
 

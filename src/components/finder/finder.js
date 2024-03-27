@@ -92,7 +92,7 @@ const cpDef = {
          */
         // takes the value of the path when the upload is clicked from the context menu - used to show / hide bbn-upload
         uploading: false,
-        //v-model of bbn-upload
+        //bbn-model of bbn-upload
         /**
          * @data {Array} [[]] uploaded
          */
@@ -955,14 +955,14 @@ const cpDef = {
           <div class="bbn-grid-fields bbn-l bbn-padded">
             <label>`+ bbn._('Name') +`</label>
             <div>
-              <bbn-input v-if="!source.new" 
+              <bbn-input bbn-if="!source.new" 
                          class="bbn-w-100" 
-                         v-model="source.node.value"
+                         bbn-model="source.node.value"
                          
               ></bbn-input>
-              <bbn-input v-else 
+              <bbn-input bbn-else 
                          class="bbn-w-100" 
-                         v-model="source.newDir"
+                         bbn-model="source.newDir"
               >
               </bbn-input>
             </div>

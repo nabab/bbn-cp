@@ -14,23 +14,23 @@
         :disabled="isDisabled"
         :title="titleString"
         :style="currentStyle"
-        v-focused="focused">
-  <span v-if="icon && (iconPosition === 'left')"
+        bbn-focused="focused">
+  <span bbn-if="icon && (iconPosition === 'left')"
         :class="['bbn-button-icon', {'bbn-middle': notext}]">
     <i :class="icon"/>
   </span>
-  <span v-if="!notext && text"
-        v-html="text"
+  <span bbn-if="!notext && text"
+        bbn-html="text"
         :style="{
           paddingLeft: icon && (iconPosition === 'left') ? (secondary ? '1rem' : '0.3rem') : '',
           paddingRight: icon && (iconPosition === 'right') ? (secondary ? '1rem' : '0.3rem') : ''
         }"
         :class="{'bbn-ellipsis': ellipsis}"/>
-  <span v-else-if="!notext"><slot/></span>
-  <span v-if="icon && (iconPosition === 'right')" class="bbn-iblock bbn-m">
+  <span bbn-elseif="!notext"><slot/></span>
+  <span bbn-if="icon && (iconPosition === 'right')" class="bbn-iblock bbn-m">
     <i :class="icon"/>
   </span>
-  <div v-if="secondary"
+  <div bbn-if="secondary"
        class="bbn-overlay">
     <div class="bbn-abs"
          :style="{

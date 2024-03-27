@@ -6,8 +6,7 @@
          :required="required"
          :disabled="isDisabled"
          :checked="state"
-         ref="element"
-  >
+         ref="element">
   <span :class="['bbn-switch-slider', 'bbn-primary', cls, {
           'bbn-switch-round': !!radius,
           'bbn-switch-squared': !!squared
@@ -18,8 +17,7 @@
         @blur="blur"
         @keyup="keyup"
         @keydown.space="toggle"
-        @click="toggle"
-  >
+        @click="toggle">
     <span :class="['bbn-switch-slider-button', 'bbn-middle', sliderCls]">
 			<i :class="currentIcon"></i>
 		</span>

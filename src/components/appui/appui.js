@@ -16,14 +16,14 @@ const cpDef = {
    * @mixin bbn.cp.mixins.browserNotification
    */
   mixins:
-  [
-    bbn.cp.mixins.basic,
-    bbn.cp.mixins.resizer,
-    bbn.cp.mixins.localStorage,
-    bbn.cp.mixins.observer,
-    bbn.cp.mixins.serviceWorker,
-    bbn.cp.mixins.browserNotification
-  ],
+    [
+      bbn.cp.mixins.basic,
+      bbn.cp.mixins.resizer,
+      bbn.cp.mixins.localStorage,
+      bbn.cp.mixins.observer,
+      bbn.cp.mixins.serviceWorker,
+      bbn.cp.mixins.browserNotification
+    ],
   props: {
     root: {
       type: String,
@@ -68,7 +68,7 @@ const cpDef = {
      */
     options: {
       type: Object,
-      default(){
+      default() {
         return {}
       }
     },
@@ -77,7 +77,7 @@ const cpDef = {
      */
     shortcuts: {
       type: Array,
-      default(){
+      default() {
         return []
       }
     },
@@ -86,7 +86,7 @@ const cpDef = {
      */
     plugins: {
       type: Object,
-      default(){
+      default() {
         return {}
       }
     },
@@ -95,7 +95,7 @@ const cpDef = {
      */
     cfg: {
       type: Object,
-      default(){
+      default() {
         return {
           tag: 'span'
         }
@@ -106,7 +106,7 @@ const cpDef = {
      */
     source: {
       type: Array,
-      default(){
+      default() {
         return [/*{
           url: (this.plugins && this.plugins['appui-core'] ? this.plugins['appui-core'] : 'core') + '/home',
           title: bbn._("Dashboard"),
@@ -121,7 +121,7 @@ const cpDef = {
      */
     searchBar: {
       type: [Object, Boolean],
-      default(){
+      default() {
         return {}
       }
     },
@@ -195,7 +195,7 @@ const cpDef = {
      * Sets if the router and the ocntainers inside it should be themselves scrollable or part of the global scroll.
      * @prop {Boolean} [false] scrollContent
      */
-     scrollContent: {
+    scrollContent: {
       type: Boolean,
       default: true
     },
@@ -213,13 +213,31 @@ const cpDef = {
 
     },
     nav: {
-      
+
     },
     status: {
 
+    },
+    definition: {
+      type: Object
+    },
+    users: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
+    groups: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
+    user: {
+      type: Object
     }
   },
-  data(){
+  data() {
     let isMobile = bbn.fn.isMobile();
     let isTablet = bbn.fn.isTabletDevice();
 
@@ -252,11 +270,7 @@ const cpDef = {
       poller: false,
       debug: false,
       isOverDebug: false,
-      app: {
-        user: {
-          isAdmin: true
-        }
-      },
+      app: null,
       cool: false,
       searchString: '',
       observerTimeout: false,
@@ -282,24 +296,27 @@ const cpDef = {
     return d;
   },
   computed: {
+    userGroup() {
+      return this.getUserGroup(this.user.id_group);
+    },
     isDev() {
       return bbn.env.isDev;
     },
-    appComponent(){
+    appComponent() {
       return 'span';
       return bbn.fn.extend({
-        render(createElement){
+        render(createElement) {
           return createElement();
         }
       }, this.cfg)
     },
-    headerComponent(){
+    headerComponent() {
       return this.header && bbn.fn.isObject(this.header) ? this.header : false;
     },
-    footerComponent(){
+    footerComponent() {
       return this.footer && bbn.fn.isObject(this.footer) ? this.footer : false;
     },
-    appMode(){
+    appMode() {
       if (this.mode === 'dev') {
         return bbn._("Application in development mode");
       }
@@ -315,7 +332,7 @@ const cpDef = {
   },
   methods: {
     fdate: bbn.fn.fdate,
-    onCopy(){
+    onCopy() {
       let cpb = this.getRef('clipboardButton');
       //bbn.fn.log("AWATCH", cpb);
       if (cpb) {
@@ -331,11 +348,11 @@ const cpDef = {
         this.hasBigMessage = true;
         setTimeout(() => {
           this.closeBigMessage();
-        }, timeout < 100 ? timeout*1000 : timeout);
+        }, timeout < 100 ? timeout * 1000 : timeout);
       }, 50);
 
     },
-    closeBigMessage(){
+    closeBigMessage() {
       this.hasBigMessage = false;
       setTimeout(() => {
         this.bigMessage = false;
@@ -346,13 +363,13 @@ const cpDef = {
       if (bbn.env.isDev) {
         let plugin;
         bbn.fn.iterate(this.plugins, (a, n) => {
-          if (tab.url.indexOf(a+'/') === 0) {
+          if (tab.url.indexOf(a + '/') === 0) {
             plugin = n;
             return false;
           }
         });
         let url = this.plugins['appui-project'] + '/router/' + bbn.env.appName + '/ide/editor/file/';
-        if (plugin){
+        if (plugin) {
           url += 'lib/' + plugin + '/mvc' + bbn.fn.substr(tab.url, this.plugins[plugin].length);
         }
         else {
@@ -372,7 +389,7 @@ const cpDef = {
             {
               text: bbn._('Open in editor'),
               icon: 'nf nf-fa-edit',
-              action(){
+              action() {
                 bbn.fn.link(url);
               }
             }, {
@@ -395,10 +412,10 @@ const cpDef = {
     onRoute(path) {
       this.$emit('route', path)
     },
-    route(url, force){
+    route(url, force) {
       this.getRef('router').route(url, force)
     },
-    register(name, cp){
+    register(name, cp) {
       if (this.registeredComponents[name]) {
         throw new Error(bbn._("%s is already registered", name));
       }
@@ -406,7 +423,7 @@ const cpDef = {
       if (cp) {
         this.registeredComponents[name] = cp;
       }
-      else{
+      else {
         throw new Error(bbn._("The component that should be registered as %s does not exist", name));
       }
     },
@@ -431,13 +448,13 @@ const cpDef = {
       }
     },
     getField: bbn.fn.getField,
-    toggleDebug(){
+    toggleDebug() {
       let debug = this.getRef('debug');
-      if ( debug ){
+      if (debug) {
         debug.toggle();
       }
     },
-    getPopup(){
+    getPopup() {
       let popup = this.popup || this.getRef('popup');
       if (arguments.length) {
         return popup.open(...arguments);
@@ -446,19 +463,28 @@ const cpDef = {
       return popup;
     },
 
-    loadPopup(obj){
+    loadPopup(obj) {
       return this.getPopup().load.apply(this, arguments);
     },
 
-    userName(d){
-      return bbn.fn.getField(this.users, "text", "value", bbn.fn.isObject(d) && d.id ? d.id : d);
+    getUserName: function(id){
+      return bbn.fn.getField(this.users, "text", "value", id);
     },
 
-    userGroup(d){
-      return bbn.fn.getField(this.users, "id_group", "value", bbn.fn.isObject(d) && d.id ? d.id : d);
+    getUserGroup: function(id){
+      return bbn.fn.getField(this.users, "id_group", "value", id);
     },
 
-    notify(obj, type, timeout){
+    getActiveUsers() {
+      if ( bbn.fn.isArray(this.users) ){
+        return bbn.fn.order(this.users.filter(user => {
+          return !!user.active;
+        }), 'text', 'ASC');
+      }
+      return [];
+    },
+
+    notify(obj, type, timeout) {
       let notification = this.getRef('notification');
       if (notification) {
         return notification.show(obj, type, timeout);
@@ -466,33 +492,33 @@ const cpDef = {
       bbn.fn.log("NOTIFICATION: " + type, obj);
     },
 
-    error(obj, timeout){
+    error(obj, timeout) {
       return this.notify(obj, "error", timeout);
     },
 
-    warning(obj, timeout){
+    warning(obj, timeout) {
       return this.notify(obj, "warning", timeout);
     },
 
-    success(obj, timeout){
+    success(obj, timeout) {
       return this.notify(obj, "success", timeout || 5);
     },
 
-    info(obj, timeout){
+    info(obj, timeout) {
       return this.notify(obj, "info", timeout || 30);
     },
 
-    confirm(){
+    confirm() {
       let p = appui.getPopup();
       return p.confirm.apply(p, arguments);
     },
 
-    alert(){
+    alert() {
       let p = appui.getPopup();
       return p.alert.apply(p, arguments);
     },
 
-    measure(){
+    measure() {
       /*
       let w = $(this.$el).width(),
           h = $(this.$el).height();
@@ -504,52 +530,12 @@ const cpDef = {
       */
     },
 
-    /*
-    userName(d, force){
-      let type = (typeof(d)).toLowerCase();
-      if ( type === 'object' ){
-        if ( d.full_name ){
-          return d.full_name;
-        }
-        if ( d.login ){
-          return d.login;
-        }
-        return bbn.lng.unknown + (d.id ? " (" + d.id + ")" : "");
-      }
-      else {
-        if ( bbn.users !== undefined ){
-          return bbn.fn.getField(bbn.users, "text", "value", d);
-        }
-      }
-      if ( force ){
-        return bbn._('Unknown');
-      }
-      return false;
-    },
-
-    userGroup(d){
-      let type = (typeof(d)).toLowerCase();
-      if ( type === 'object' ){
-        d = d.id_group;
-        type = (typeof(d)).toLowerCase();
-      }
-      if ( (type === 'number') ){
-        if ( bbn.usergroups !== undefined ){
-          return bbn.fn.getField(bbn.usergroups, "text", "value", id);
-        }
-        return bbn.lng.unknown + " (" + d + ")";
-      }
-      return bbn.lng.unknown;
-    },
-    */
-
-
 
     /**
      * Get messages from service worker
      * @param {Object} message
      */
-    receive(message){
+    receive(message) {
       //bbn.fn.log("RECEIVING", message, message.type);
       if (message.type !== undefined) {
         switch (message.type) {
@@ -564,7 +550,7 @@ const cpDef = {
             else if (message.data && message.data.data) {
 
             }
-            if ( message.data && message.data.plugins && Object.keys(message.data.plugins).length ){
+            if (message.data && message.data.plugins && Object.keys(message.data.plugins).length) {
               bbn.fn.iterate(message.data.plugins, (d, i) => {
                 if ('serviceWorkers' in d) {
                   this.$set(this.pollerObject, i, bbn.fn.extend(true, this.pollerObject[i], d.serviceWorkers));
@@ -587,8 +573,8 @@ const cpDef = {
         }
       }
     },
-    poll(data){
-      if ( this.pollable && this.pollerPath ){
+    poll(data) {
+      if (this.pollable && this.pollerPath) {
         if (!data) {
           data = {
             'appui-core': {
@@ -601,18 +587,18 @@ const cpDef = {
         }
       }
     },
-    onChatMounted(){
+    onChatMounted() {
       this.pollerObject['appui-chat'].online = this.app?.user?.chat;
       if (this.ready) {
         this.poll();
       }
     },
-    getCurrentContainer(){
+    getCurrentContainer() {
       let router = this.getRef('router'),
-          container = !!router ? router.searchContainer(bbn.env.path, true) : false;
+        container = !!router ? router.searchContainer(bbn.env.path, true) : false;
       return container || this;
     },
-    searchBarBlur(){
+    searchBarBlur() {
       setTimeout(() => {
         this.searchIsActive = false
       }, 500)
@@ -700,19 +686,19 @@ const cpDef = {
     },
     onLoad() {
       this.$emit('load', ...arguments);
-},
-    startLoading(text){
+    },
+    startLoading(text) {
       this.loadingText = text === false ? '' : text || bbn._('Loading');
       this.isLoading = true;
     },
-    stopLoading(){
+    stopLoading() {
       this.isLoading = false;
     }
   },
-  beforeCreate(){
+  beforeCreate() {
     bbn.fn.defaultAjaxErrorFunction = (jqXHR, textStatus, errorThrown) => {
       /** @todo */
-      if (window.appui?.status ){
+      if (window.appui?.status) {
         this.$nextTick(() => {
           const loadBar = this.getRef('loading');
           if (bbn.fn.isCp(loadBar)) {
@@ -720,7 +706,7 @@ const cpDef = {
           }
         });
       }
-      appui.error({title: textStatus, content: errorThrown}, 4);
+      appui.error({ title: textStatus, content: errorThrown }, 4);
       return false;
     };
     bbn.fn.defaultPreLinkFunction = url => {
@@ -757,7 +743,7 @@ const cpDef = {
         return;
       }
 
-      if (window.appui?.status ){
+      if (window.appui?.status) {
         this.$nextTick(() => {
           const loadBar = this.getRef('loading');
           if (bbn.fn.isCp(loadBar)) {
@@ -767,7 +753,7 @@ const cpDef = {
       }
     };
   },
-  created(){
+  created() {
     if (window.appui) {
       throw new Error("Impossible to have 2 bbn-appui components on a same page. bbn-appui is meant to hold a whole web app");
     }
@@ -892,7 +878,7 @@ const cpDef = {
             obs => bbn.fn.each(
               bbn.fn.filter(
                 this.observers,
-                {id: obs.id}
+                { id: obs.id }
               ),
               o => this.observerEmit(obs.result, o)
             )
@@ -932,7 +918,7 @@ const cpDef = {
       if (!this.pollerObject.token) {
         this.pollerObject.token = bbn.env.token;
       }
-      if (this.plugins['appui-chat']){
+      if (this.plugins['appui-chat']) {
         this.$set(this.pollerObject, 'appui-chat', {
           online: null,
           usersHash: false,
@@ -940,7 +926,7 @@ const cpDef = {
         })
       }
       if (this.plugins['appui-notification']) {
-        this.$set(this.pollerObject, 'appui-notification', {unreadHash: false});
+        this.$set(this.pollerObject, 'appui-notification', { unreadHash: false });
       }
     }
   },
@@ -954,8 +940,8 @@ const cpDef = {
     }
 
   },
-  mounted(){
-    if ( this.cool ){
+  mounted() {
+    if (this.cool) {
       if (this.$refs.app) {
         this.app = this.$refs.app;
       }
@@ -967,7 +953,7 @@ const cpDef = {
       });
       if (!this.single) {
         this.registerChannel('appui', true);
-        if (this.plugins['appui-chat']){
+        if (this.plugins['appui-chat']) {
           this.registerChannel('appui-chat');
         }
         if (this.plugins['appui-notification']) {
@@ -986,7 +972,7 @@ const cpDef = {
             type: 'initCompleted'
           });
           this.registerChannel('appui', true);
-          if (this.plugins['appui-chat']){
+          if (this.plugins['appui-chat']) {
             this.registerChannel('appui-chat');
           }
           if (this.plugins['appui-notification']) {
@@ -1016,8 +1002,8 @@ const cpDef = {
     },
     observers: {
       deep: true,
-      handler(){
-        if ( this.observerTimeout ){
+      handler() {
+        if (this.observerTimeout) {
           clearTimeout(this.observerTimeout);
         }
         this.observerTimeout = setTimeout(() => {
@@ -1025,7 +1011,7 @@ const cpDef = {
         }, 1000);
       }
     },
-    isLoading(newVal){
+    isLoading(newVal) {
       if (!newVal) {
         this.loadingText = bbn._('Loading');
       }
@@ -1042,9 +1028,9 @@ if (bbn.env.lang) {
     if (cpLang.default) {
       cpLang = cpLang.default;
     }
-    
+
   }
-  catch (err) {}
+  catch (err) { }
 }
 
 export default {
