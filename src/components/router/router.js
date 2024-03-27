@@ -3303,7 +3303,7 @@ const cpDef = {
      * @return {String}
      */
     getBackgroundColor(idx) {
-      return this.views[idx].bcolor || '';
+      return this.views[idx]?.bcolor || '';
       /*
       if (this.$isMounted && this.views[idx]) {
         if (!this.views[idx].bcolor) {
