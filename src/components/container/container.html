@@ -4,6 +4,7 @@
   'bbn-w-100': !router?.scrollContent && !router?.visualShowAll
 }]"
      @subready.stop
+     :style="visual ? visualStyle : {}"
      bbn-portal="portal"
      bbn-show="(!router?.isVisual && isVisible) || isVisualVisible || isPane">
   <div :class="{
