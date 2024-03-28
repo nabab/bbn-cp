@@ -10,6 +10,52 @@
  * @created 15/02/2017
  */
 
+import {
+  setCurrent,
+  setTitle,
+  setIcon,
+  setColor,
+  setLoaded,
+} from './_setters.js';
+
+import {
+  show,
+  close,
+  pin,
+  unpin,
+} from './_manipulate.js';
+
+import {
+  setScreenshot,
+  unsetScreenshot,
+  saveScreenshot,
+  takeScreenshot,
+  updateScreenshot,
+} from './_screenshot.js';
+
+import {
+  addMenu,
+  deleteMenu,
+  showMenu,
+} from './_menu.js';
+
+import {
+  init,
+  reload,
+  registerRouter,
+  unregisterRouter,
+} from './_2change.js';
+
+import {
+  getFullCurrentURL,
+  getFullURL,
+  randomName,
+  popup,
+  getComponent,
+  enter,
+  onResize
+} from './_misc.js';
+
 /**
  * @component
  * @param {string} url - The URL on which the tabNav will be initialized.
@@ -830,536 +876,39 @@ const cpDef = {
   },
 
   methods: {
-    /**
-     * Returns the full current url.
-     * 
-     * @method getFullCurrentURL
-     * @return {String}
-     */
-    getFullCurrentURL(){
-      return this.router.getFullBaseURL() + this.currentURL;
-    },
-      /**
-     * Returns the full url.
-     * 
-     * @method getFullURL
-     * @return {String}
-     */
-    getFullURL(){
-      return this.router.getFullBaseURL() + this.url;
-    },
-    /**
-     * Sets the value of the property loaded to the given val.
-     * 
-     * @method setLoaded
-     * @param {Boolean} val 
-     */
-    setLoaded(val){
-      this.isLoaded = !!val;
-    },
-    /**
-     * Generates a random name used for the component.
-     * 
-     * @method randomName
-     * @return {String}
-     */
-    randomName(){
-      let n = bbn.fn.randomString(20, 15).toLowerCase();
-      while (bbnContainerCp.componentsList.indexOf(n) > -1 ){
-        n = bbn.fn.randomString(20, 15).toLowerCase();
-      }
-      return n;
-    },
-    /**
-     * Shows the container.
-     * 
-     * @method show
-     */
-    show() {
-      if (!this.isPane) {
-        this.router.selected = this.currentIndex;
-        if (this.visual && this.router.visualShowAll) {
-          this.router.visualShowAll = false;
-        }
-      }
-    },
-    close() {
-      if (!this.isPane) {
-        this.router.close(this.currentIndex);
-      }
-    },
-    /**
-     * Sets the current url.
-     * 
-     * @method setCurrent
-     * @param {String} url 
-     */
-    setCurrent(url){
-      if ( url.indexOf(this.url) === 0 ){
-        this.currentURL = url;
-        return true;
-      }
+    setCurrent,
+    setTitle,
+    setIcon,
+    setColor,
+    setLoaded,
 
-      return false;
-    },
-    /**
-     * Sets the title of the container.
-     * 
-     * @method setTitle
-     * @param {String} title 
-     */
-    setTitle(title){
-      if ( this.router ){
-        if (!this.real) {
-          this.router.views[this.currentIndex].title = title;
-        }
-        else {
-          this.currentTitle = title;
-        }
-      }
-    },
-    /**
-     * Sets the icon of the container.
-     * 
-     * @method setIcon
-     * @param {String} title 
-     */
-    setIcon(icon){
-      if ( this.router ){
-        if (!this.real) {
-          this.router.views[this.currentIndex].icon = icon;
-        }
-        else {
-          this.currentIcon = icon;
-        }
-      }
-    },
-    /**
-     * Sets the color.
-     * 
-     * @method setColor
-     * @param {String} bcolor 
-     * @param {String} fcolor 
-     */
-    setColor(bcolor, fcolor){
-      if ( this.router ){
-        let view = this.router.getView(this.url);
-        if (view) {
-          if ( bcolor ){
-            this.router.$set(view, "bcolor", bcolor);
-          }
-          if ( fcolor ){
-            this.router.$set(view, "fcolor", fcolor);
-          }
-        }
-      }
-    },
-    /**
-     * Gets the popup object.
-     *  
-     * @method popup
-     * @return {Object}
-     */
-    popup(){
-      let popup = this.getPopup();
-      return arguments.length ? popup.open.apply(popup, arguments) : popup;
-    },
-    /**
-     * Gets the child component.
-     * 
-     * @method getComponent
-     * @return {Object|Boolean}
-     */
-    getComponent(){
-      return this.getRef('component');
-    },
-    /**
-     * Fires the parent's method enter.
-     * 
-     * @method enter
-     * @fires router.enter
-     */
-    enter(){
-      this.router.enter(this);
-    },
-    pin() {
-      this.router.pin(this.currentIndex);
-    },
-    unpin() {
-      this.router.unpin(this.currentIndex);
-    },
-    /**
-     * Fires the parent's method reload.
-     * 
-     * @method reload
-     * @fires router.reload
-     */
-    reload(){
-      this.popups.splice(0);
-      this.$nextTick(() => {
-        this.router.reload(this.currentIndex);
-      });
-    },
-    /**
-     * Handles the configuration of the container's menu.
-     * 
-     * @param {Object} obj 
-     */
-    addMenu(obj){
-      if (
-        (this.currentIndex > -1) &&
-        obj.text &&
-        this.router.views &&
-        this.router.views[this.currentIndex]
-      ){
-        if ( this.router.views[this.currentIndex].menu === undefined ){
-          this.router.views[this.currentIndex].menu = [];
-        }
-        let menu = this.router.views[this.currentIndex].menu || [],
-            idx = bbn.fn.isFunction(menu) ? -1 : bbn.fn.search(menu || [], {text: obj.text});
-        if (idx === -1) {
-          if (bbn.fn.isFunction(menu) ){
-            this.router.views[this.currentIndex].menu = () => {
-              let items = menu() || [];
-              if ( bbn.fn.search(items, obj) === -1 ){
-                if ( !obj.key ){
-                  obj.key = bbn.fn.randomInt(99999,99999999999);
-                }
-                items.push(obj);
-              }
-              return items;
-            };
-          }
-          else{
-            if ( !obj.key ){
-              obj.key = bbn.fn.randomInt(99999,99999999999);
-            }
-            menu.push(obj);
-          }
-        }
-        else{
-          obj.key = menu[idx].key;
-          menu.splice(idx, 1, obj);
-        }
-        this.router.views[this.currentIndex].menu = menu;
-        return obj.key;
-      }
-      return false;
-    },
-    /**
-     * Deletes the given key from the container's menu.
-     * 
-     * @method deleteMenu
-     * @param {String} key 
-     */
-    deleteMenu(key){
-      if (
-        (this.currentIndex > -1) &&
-        this.router.views &&
-        this.router.views[this.currentIndex]
-      ){
-        let menu = this.router.views[this.currentIndex].menu || [];
-        if (bbn.fn.isFunction(menu) ){
-          menu = () => {
-            let items = menu() || [];
-            let idx = bbn.fn.search(items, "key", key);
-            if ( idx > -1 ){
-              items.splice(idx, 1);
-              this.router.views[this.currentIndex].menu = items;
-              //this.router.$forceUpdate();
-              return true;
-            }
-          };
-        }
-        else{
-          let idx = bbn.fn.search(menu, "key", key);
-          if ( idx > -1 ){
-            menu.splice(idx, 1);
-            this.router.views[this.currentIndex].menu = menu;
-            //this.router.$forceUpdate();
-            return true;
-          }
-        }
-      }
-      return false;
-    },
-    onResize(){
-      if (this.isVisible && this.ready) {
-        return bbn.cp.mixins.resizer.methods.onResize.apply(this);
-      }
-    },
-    /**
-     * Initializes the component.
-     * 
-     * @method init
-     */
-    init() {
-      if (this.isVisible && (this.real || (this.isLoaded && !this.ready))) {
-        //bbn.fn.log("INIT " + this.currentURL, this.real,this.currentScript, this.currentView )
-        let res;
+    show,
+    close,
+    pin,
+    unpin,
 
-        if (this.currentScript) {
-          //bbn.fn.log(this.currentScript);
-          res = typeof this.currentScript === 'string' ? eval(this.currentScript) : this.currentScript;
-          //bbn.fn.log("************************************", res);
-          // if evaluating the script property returns a function that will be onMount
-          if (bbn.fn.isFunction(res) ){
-            this.onMount = res;
-            this.isComponent = false;
-          }
-          // Otherwise if it's an object we assume it is a component
-          else if (res && (typeof(res) === 'object')) {
-            if (!res.props) {
-              res.props = bbn.fn.createObject();
-            }
-            if (!res.props.source) {
-              res.props.source = {
-                type: Object
-              };
-            }
-            if (!res.mixins) {
-              res.mixins = [];
-            }
-            if (!res.mixins.includes(bbn.cp.mixins.basic)) {
-              res.mixins.push(bbn.cp.mixins.basic);
-            }
+    setScreenshot,
+    unsetScreenshot,
+    saveScreenshot,
+    takeScreenshot,
+    updateScreenshot,
+  
+    addMenu,
+    deleteMenu,
+    showMenu,
 
-            this.componentDefinition = bbn.cp.normalizeComponent(res, 'bbn-container-' + this.getFullURL());
+    init,
+    reload,
+    registerRouter,
+    unregisterRouter,
 
-            //bbn.fn.log("YUUUU", res, this.componentDefinition, this.currentContent)
-            this.componentDefinition.template = this.currentContent;
-            this.isComponent = true;
-          }
-        }
-        else if ( this.currentContent ){
-          this.isComponent = false;
-        }
-
-        if (this.isComponent) {
-          // We create a local component with a random name,
-          // the content as template
-          // and the object returned as component definition
-          // Adding also a few funciton to interact with the tab
-          let cont = this;
-          const definition = bbn.fn.extend(true, res ? res : {}, {
-            template: '<div class="' + (this.router.scrollContent ? '' : 'bbn-w-100') + '">' + this.currentView.content + '</div>',
-            methods: {
-              getContainer(){
-                if (!this._bbn_container) {
-                  this._bbn_container = this.closest('bbn-container');
-                }
-                return this._bbn_container;
-              },
-              getTab(){
-                return this.getContainer();
-              },
-              addMenu(){
-                return this.getContainer().addMenu.apply(this.router, arguments)
-              },
-              deleteMenu(){
-                return this.getContainer().deleteMenu.apply(this.router, arguments)
-              }
-            },
-            props: {
-              source: {
-                type: Object
-              }
-            }
-          });
-          if (!definition.props) {
-            definition.props = bbn.fn.createObject();
-          }
-          if (!definition.props.source) {
-            definition.props.source = {
-              type: Object
-            };
-          }
-
-          if (!definition.mixins) {
-            definition.mixins = [];
-          }
-          if (!definition.mixins.includes(bbn.cp.mixins.basic)) {
-            definition.mixins.push(bbn.cp.mixins.basic);
-          }
-          this.$el.bbnCfg = bbn.cp.normalizeComponent(definition, 'bbn-container-' + this.getFullURL());
-          // The local anon component gets defined
-          this.$options.components[this.componentName] = this.$el.bbnCfg;
-        }
-        else {
-          this.isComponent = false;
-        }
-
-        if (bbn.env.url.indexOf('#')) {
-          let scroll = this.getRef('scroll');
-          /**
-           * @todo  Does it mean the scroll manage the hash? Check it out
-           */
-          if (scroll && (scroll.currentY || scroll.currentX)) {
-            return;
-          }
-          let hash = bbn.env.url.split('#')[1];
-          if (hash) {
-            hash = '#' + hash;
-            location.hash = null;
-            location.hash = hash;
-          }
-          
-        }
-        if (this.visual) {
-          this.setScreenshot();
-        }
-
-        this.ready = true;
-      }
-    },
-    showMenu() {
-      return this.router.getMenuFn(this.currentIndex);
-    },
-    setScreenshot() {
-      if (!this._screenshotInterval && this.router.isVisual && this.router.db && !this.isPane) {
-        let url = this.getFullURL();
-        this.router.db.selectOne('containers', 'time', {url: url}).then(time => {
-          // Checking if we have a screenshot of less than an hour
-          if ((bbn.fn.timestamp() - (time || 0)) >= this.currentScreenshotDelay) {
-            this.saveScreenshot(0.1, 10000);
-          }
-        }).catch(() => {
-          this.saveScreenshot(0.1, 10000);
-        });
-
-        this._screenshotInterval = setInterval(() => {
-          this.saveScreenshot(0.1);
-        }, this.currentScreenshotDelay);
-      }
-    },
-    unsetScreenshot() {
-      if (this._screenshotInterval) {
-        clearInterval(this._screenshotInterval);
-        this._screenshotInterval = false;
-        if (this._screenshotTimeout) {
-          clearTimeout(this._screenshotTimeout);
-          this._screenshotTimeout = false;
-        }
-      }
-    },
-    async saveScreenshot(scale = 0.1, timeout = 0) {
-      if (this.router.db && (this.currentView.idx === this.router.selected) && !this.isPane) {
-        let img       = await this.takeScreenshot(scale, timeout, true);
-        let num_tries = 0;
-        while (!img && (num_tries < 5)) {
-          num_tries++;
-          img = await this.takeScreenshot(scale, 5000);
-        }
-        if (!img) {
-          bbn.fn.log(bbn._("Impossible to take the screenshot of") + ' ' + this.getFullCurrentURL());
-          return;
-          //throw new Error(bbn._("Impossible to take the screenshot of " + this.getFullCurrentURL()));
-        }
-        this.thumbnail = img.src;
-        // This is in fact an insert/update
-        this.router.db.insert('containers', {
-          url: this.getFullURL(),
-          image: img.src,
-          time: bbn.fn.timestamp()
-        });
-      }
-    },
-    takeScreenshot(scale = 1, timeout = 0, image = false, force = false) {
-      return new Promise(resolve => {
-        if (this._screenshotTimeout) {
-          if (force) {
-            clearTimeout(this._screenshotTimeout);
-          }
-          else {
-            resolve(false);
-          }
-        }
-
-        this._screenshotTimeout = setTimeout(() => {
-          let exit = () => {
-            this._screenshotTimeout = false;
-            resolve(false);
-          };
-          if ((this.currentIndex === this.router.selected)
-              && this.isVisible
-              && window.html2canvas
-              && bbn.fn.isActiveInterface(600)
-              && !this.router.visualShowAll
-          ) {
-            let scroll = this.getRef('scroll');
-            if (!scroll) {
-              return exit();
-            }
-
-            if (scroll.$el) {
-              scroll = scroll.$el;
-            }
-
-            let w  = scroll.clientWidth;
-            let h  = scroll.clientHeight;
-            let s = Math.min(w, h);
-            let ct = this.getRef('canvasSource');
-            if (!ct || !s) {
-              return exit();
-            }
-
-            ct.style.width = s + 'px !important';
-            ct.style.height = s + 'px !important';
-            html2canvas(ct, {
-              width: s,
-              height: s,
-              scale: scale
-            }).then(canvas => {
-              ct.style.width = null;
-              ct.style.height = null;
-              this._screenshotTimeout = false;
-              if (!image) {
-                resolve(canvas);
-                return;
-              }
-              let img   = bbn.fn.canvasToImage(canvas);
-              let ctx   = canvas.getContext('2d');
-              let size  = Math.min(canvas.width, canvas.height);
-              let num   = Math.min(this.router.numVisualCols, this.router.numVisualRows);
-              let msize = Math.ceil(size / num);
-              ctx.drawImage(img, 0, 0, size, size, 0, 0, msize, msize);
-              resolve(img);
-            });
-          }
-          else {
-            exit();
-          }
-        }, timeout)
-      })
-    },
-    updateScreenshot() {
-      if (this.visual && this.router.db) {
-        let url = this.getFullURL();
-        this.router.db.selectOne('containers', 'image', {url: url}).then(res => {
-          if (res) {
-            this.thumbnail = res;
-          }
-        });
-      }
-    },
-    /**
-     * @method registerRouter
-     * @param {Object} bc
-     * @param {String} url
-     */
-    registerRouter(router) {
-      this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)] = router;
-      this.router.registerRouter(router);
-    },
-    /**
-     * @method unregisterRouter
-     * @param {Object} bc
-     * @param {String} url
-     */
-    unregisterRouter(router){
-      delete this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)];
-      this.router.unregisterRouter(router);
-    },
+    getFullCurrentURL,
+    getFullURL,
+    randomName,
+    popup,
+    getComponent,
+    enter,
+    onResize
   },
   /**
    * @event created 

@@ -5,126 +5,20 @@
  * @author BBN Solutions
  */
 
-import {
-  getVue,
-  getContainer,
-  getDOMContainer,
-  getSubRouter,
-  getFinalContainer,
-  getRealVue
-} from './_elements.js';
-
-import {
-  getRoute,
-  formatBaseURL,
-  getDefaultView,
-  route,
-  realRoute,
-  next,
-  prev,
-  activate,
-  changeURL,
-  getBaseURL,
-  getFullBaseURL,
-  getFullURL,
-  getCurrentURL,
-  getFullCurrentURL,
-  parseURL,
-  isValidIndex,
-  activateDefault,
-  activateIndex,
-  callRouter
-} from './_navigation.js';
-
-import {
-  register,
-  unregister,
-  registerRouter,
-  unregisterRouter
-} from './_registration.js';
-
-import {
-  getPane,
-  addPane,
-  selectPaneTab,
-  removePane,
-  addToPane,
-  removeFromPane,
-} from './_panes.js';
-
-import {
-  remove,
-  add,
-  move,
-  close,
-  closeAll,
-  closeAllBut,
-  closeTab,
-  pin,
-  unpin
-} from './_manipulate.js';
-
-import {
-  setConfig,
-  getConfig,
-  unsetConfig,
-} from './_config.js';
-
-import {
-  getPortalSelector,
-  selectClosest,
-  getIndex,
-  fixIndexes,
-  search,
-  searchForString,
-  searchContainer,
-} from './_search.js';
-
-import {
-  getMenuFn
-} from './_menu.js';
-
-import {
-  getDefaultURL,
-  getTitle,
-  getFullTitle,
-  getFontColor,
-  getBackgroundColor,
-  getTab,
-  getList,
-  getParents,
-  getView,
-} from './_getters.js';
-
-import {
-  registerBreadcrumb,
-  unregisterBreadcrumb,
-  getBreadcrumbs,
-} from './_breadcrumb.js';
-
-import {
-  observerEmit,
-  observerClear,
-} from './_observers.js';
-
-import {
-  load,
-  realInit,
-  checkLoaded,
-  reload,
-} from './_2move.js';
-
-import {
-  updateVisualStyleContainer,
-  init,
-  retrieveDirtyContainers,
-  onEscape,
-  enter,
-  cutTitle,
-  onResize,
-  slashToHyphen,
-} from './_misc.js';
-
+import elements from './_mixins/elements.js';
+import navigation from './_mixins/navigation.js';
+import registration from './_mixins/registration.js';
+import panes from './_mixins/panes.js';
+import manipulate from './_mixins/manipulate.js';
+import config from './_mixins/config.js';
+import search from './_mixins/search.js';
+import menu from './_mixins/menu.js';
+import getters from './_mixins/getters.js';
+import breadcrumb from './_mixins/breadcrumb.js';
+import observers from './_mixins/observers.js';
+import useless from './_mixins/2move.js';
+import visual from './_mixins/visual.js';
+import misc from './_mixins/misc.js';
 
 const cpDef = {
   name: 'bbn-router',
@@ -181,15 +75,28 @@ const cpDef = {
    * @mixin bbn.cp.mixins.observer
    * @mixin bbn.cp.mixins.resizer
    */
-  mixins:
-    [
-      bbn.cp.mixins.basic,
-      bbn.cp.mixins.localStorage,
-      bbn.cp.mixins.close,
-      bbn.cp.mixins.observer,
-      bbn.cp.mixins.resizer,
-      bbn.cp.mixins.keepCool
-    ],
+  mixins: [
+    bbn.cp.mixins.basic,
+    bbn.cp.mixins.localStorage,
+    bbn.cp.mixins.close,
+    bbn.cp.mixins.observer,
+    bbn.cp.mixins.resizer,
+    bbn.cp.mixins.keepCool,
+    elements,
+    navigation,
+    registration,
+    panes,
+    manipulate,
+    config,
+    search,
+    menu,
+    getters,
+    breadcrumb,
+    observers,
+    useless,
+    visual,
+    misc,
+  ],
   props: {
     /**
      * Routes automatically after mount.
@@ -259,14 +166,6 @@ const cpDef = {
       default: false
     },
     /**
-     * Set it to true if you want to see the visual navigation bar
-     * @prop {Boolean} [false] visual
-     */
-    visual: {
-      type: Boolean,
-      default: false
-    },
-    /**
      * Sets if the views' titles will be scrollable in case they have a greater width than the page (true), or if they will be shown multilines (false, default).
      * @prop {Boolean} [false] scrollable
      */
@@ -315,22 +214,6 @@ const cpDef = {
       default: function () {
         return [];
       }
-    },
-    /**
-     * Set it to true if you want to show the breadcrumb instead of the tabs.
-     * @prop {Boolean} [false] breadcrumb
-     */
-    breadcrumb: {
-      type: Boolean,
-      default: false
-    },
-    /**
-     * Set it to true if you want to set this nav as a master.
-     * @prop {Boolean} [false] master
-     */
-    master: {
-      type: Boolean,
-      default: false
     },
     /**
      * Set it to true if you want to send the variable _baseUrl.
@@ -385,29 +268,6 @@ const cpDef = {
       default: false
     },
     /**
-     * The size of every grid cell on which is based the visual view
-     * @prop {Number} [180] visualSize
-     */
-    visualSize: {
-      type: Number,
-      default() {
-        return Math.max(60, Math.min(120, Math.round(Math.min(bbn.env.width, bbn.env.height) / 7)))
-      }
-    },
-    /**
-     * The position of the visual mini containers
-     * @prop {Number} [180] visualSize
-     */
-    orientation: {
-      type: String,
-      default() {
-        return 'auto'
-      },
-      validator(v) {
-        return !!bbn.fn.getRow(bbnRouterCp.possibleOrientations, { name: v })
-      }
-    },
-    /**
      * The default background color for the title bar
      * @prop {String} [#666] bcolor
      */
@@ -424,46 +284,12 @@ const cpDef = {
       default: '#EEE'
     },
     /**
-     * A list of panes used by default if splittable is true
-     * @prop {Array} [[]] panes
-     */
-    panes: {
-      type: Array,
-      default() {
-        return []
-      }
-    },
-    /**
      * Decides if real bbn-container are shown before or after the ones in the config or fake container 9bbns-container)
      * @prop {String} ['real] first
      */
     first: {
       type: String,
       default: 'real'
-    },
-    /**
-     * If true another tab can be opened aside
-     * @prop {Boolean} [false] splittable
-     */
-    splittable: {
-      type: Boolean,
-      default: false
-    },
-    /**
-     * If true when splittable the extra panes can be collapsed
-     * @prop {Boolean} [false] collapsible
-     */
-    collapsible: {
-      type: Boolean,
-      default: true
-    },
-    /**
-     * If true when splittable the extra panes can be resized
-     * @prop {Boolean} [false] resizable
-     */
-    resizable: {
-      type: Boolean,
-      default: true
     },
     disabled: {
       type: Boolean,
@@ -607,58 +433,10 @@ const cpDef = {
        */
       iconsReady: false,
       /**
-       * Shows if the navigation mode is set to breacrumb.
-       * @data {Boolean} isBreadcrumb
-       */
-      isBreadcrumb: !!this.breadcrumb,
-      /**
-       * itsMaster.isBreadcrumb watcher.
-       * @data {Boolean} breadcrumbWatcher
-       */
-      breadcrumbWatcher: false,
-      /**
-       * List of breadcrumbs
-       * @data {Array} breadcrumbsList
-       */
-      breadcrumbsList: [],
-      /**
-       * If true and visual will show all the containers as icons.
-       * Starts at true for better updating when displays changes
-       * @data {Boolean} visualShowAll
-       */
-      visualShowAll: false,
-      /**
-       * In visual mode the side on which the thumbnails are shown.
-       * If auto (default) the bar will be top if H > W, left otherwise
-       * @data {String} ['auto'] visualOrientation
-       */
-      visualOrientation: this.orientation !== 'auto' ? this.orientation : null,
-      /**
-       * If true the auto orientation won't be taken into account.
-       * @data {Boolean} lockedOrientation
-       */
-      lockedOrientation: false,
-      /**
-       * If true visual mode is used for nav (instead of tabs or breadcrumbs)
-       * @data {Boolean} visual
-       */
-      isVisual: this.visual,
-      /**
-       * The panes for when splittable is true
-       * @data {Array} currentPanes
-       */
-      currentPanes: this.panes.slice(),
-      /**
        * If true the configuration will be shown
        * @data {Boolean} visual
        */
       showRouterCfg: false,
-      /**
-       * Becomes true once the pane splitter is mounted
-       * @data {Boolean} visual
-       */
-      splitterMounted: false,
-      visualStyleContainer: bbn.fn.createObject()
     };
   },
   computed: {
@@ -696,45 +474,6 @@ const cpDef = {
         }
       }
     },
-    isSplittable() {
-      return this.splittable && !this.single;
-    },
-    visualContainerStyle() {
-      if (!this.isVisual) {
-        return {};
-      }
-
-      let coord = [1, this.numVisualCols + 1, 1, this.numVisualRows + 1];
-      if (this.views.length > 1) {
-        switch (this.visualOrientation) {
-          case 'top':
-            coord[2] = 2;
-            break;
-          case 'bottom':
-            coord[3] = coord[3] - 1;
-            break;
-          case 'left':
-            coord[0] = 2;
-            break;
-          case 'right':
-            coord[1] = coord[1] - 1;
-            break;
-        }
-      }
-
-      return {
-        position: 'relative',
-        top: null,
-        left: null,
-        right: null,
-        bottom: null,
-        gridColumnStart: coord[0],
-        gridColumnEnd: coord[1],
-        gridRowStart: coord[2],
-        gridRowEnd: coord[3],
-        zoom: 1
-      };
-    },
     /**
      * Not only the baseURL but a combination of all the parent's baseURLs.
      * @computed fullBaseURL
@@ -760,49 +499,6 @@ const cpDef = {
      */
     isDirty() {
       return !!this.dirtyContainers.length;
-    },
-    /**
-     * The master bbn-router of this one.
-     * @computed itsMaster
-     * @return {bbnCp}
-     */
-    itsMaster() {
-      let r = this;
-      if (this.master) {
-        return r;
-      }
-
-      if (this.parents.length) {
-        let i = 0;
-        while (this.parents[i] && this.parents[i].isBreadcrumb) {
-          r = this.parents[i];
-          i++;
-          if (r.master) {
-            break;
-          }
-        }
-      }
-      return r;
-    },
-    isBreadcrumbMaster() {
-      if (this.isBreadcrumb) {
-        return this.itsMaster === this;
-      }
-
-      return false;
-    },
-    /**
-     * Returns the bbn-tabs component of this router.
-     * @todo Kill this function, there is no anymore tabs component
-     * @computed itsTabs
-     * @fires getRef
-     * @return {Vue|Boolean}
-     */
-    itsTabs() {
-      if (!this.isBreadcrumb) {
-        return this.getRef('tabs');
-      }
-      return false;
     },
 
     /**
@@ -831,216 +527,6 @@ const cpDef = {
     },
 
     /**
-     * Returns the breadcrumbs array
-     * @computed breadcrumbs
-     * @return {Array}
-     */
-    breadcrumbs() {
-      let res = [];
-      if (this.isBreadcrumb) {
-        res.push(this)
-      }
-      if (this.breadcrumbsList.length) {
-        res.push(...this.getBreadcrumbs(this.selected))
-      }
-      return res;
-    },
-
-    /**
-     * The grid style for showing the router in visual mode
-     * @computed visualStyle
-     * @return {Object} 
-     */
-    visualStyle() {
-      if (!this.isVisual) {
-        return {};
-      }
-
-      return {
-        minHeight: '100%',
-        display: 'grid',
-        gridColumnGap: '0.5rem',
-        gridRowGap: '0.5rem',
-        gridTemplateRows: 'repeat(' + this.numVisualRows + ', 1fr)',
-        gridTemplateColumns: 'repeat(' + this.numVisualCols + ', 1fr)'
-      }
-    },
-
-    /**
-     * Returns true if the visual blocks are on top or bottom of the selected container
-     * @computed visualIsOnHeight
-     * @return {Boolean} 
-     */
-    visualIsOnHeight() {
-      if (this.isVisual) {
-        return ['top', 'bottom'].includes(this.visualOrientation);
-      }
-
-      return false;
-    },
-
-    /**
-     * The ratio between height and width for each block
-     * @computed visualRatio
-     * @return {Object} 
-     */
-    visualRatio() {
-      if (!this.isVisual) {
-        return 1;
-      }
-
-      let diffW = this.visualIsOnHeight ? 0 : this.visualSize;
-      let diffH = this.visualIsOnHeight ? this.visualSize : 0;
-      let ratio = (this.lastKnownWidth - diffW) / (this.lastKnownHeight - diffH);
-      if (ratio > 2) {
-        return 2;
-      }
-
-      return Math.max(0.5, ratio);
-    },
-
-    /**
-     * The number of columns (width) for the visual mode
-     * @computed numVisualCols
-     * @return {Number} 
-     */
-    numVisualCols() {
-      if (this.isVisual && this.ready) {
-        // Width greater or equal to height
-        let w = this.lastKnownWidth - (this.visualIsOnHeight ? 0 : this.visualSize);
-        if (this.splitterMounted) {
-          let splitter = this.getRef('splitter');
-          if (splitter.$el.clientWidth < w) {
-            w -= splitter.$el.clientWidth;
-          }
-        }
-        if (this.visualRatio >= 1) {
-          return Math.floor(w / this.visualSize);
-        }
-        else {
-          return Math.floor(w / (this.visualSize * 1));
-        }
-      }
-
-      return 1;
-    },
-
-    /**
-     * The number of rows (height) for the visual mode
-     * @computed numVisualRows
-     * @return {Number} 
-     */
-    numVisualRows() {
-      if (this.isVisual && this.ready) {
-        let h = this.lastKnownHeight - (this.visualIsOnHeight ? this.visualSize : 0);
-        if (this.splitterMounted) {
-          let splitter = this.getRef('splitter');
-          if (splitter.$el.clientHeight < h) {
-            h -= splitter.$el.clientHeight;
-          }
-        }
-        if (this.visualRatio > 1) {
-          return Math.floor(h / this.visualSize * 1);
-        }
-        else {
-          return Math.floor(h / this.visualSize);
-        }
-      }
-
-      return 1;
-    },
-
-    /**
-     * The number of cells on the side where the thumbnails are shown in the visual mode
-     * @computed numVisuals
-     * @return {Number} 
-     */
-    numVisuals() {
-      if (this.isVisual) {
-        if (['left', 'right'].includes(this.visualOrientation)) {
-          return this.numVisualRows;
-        }
-        else {
-          return this.numVisualCols;
-        }
-      }
-
-      return 0;
-    },
-
-
-    /**
-     * The number of cells on the side where the thumbnails are shown in the visual mode
-     * @computed numVisualReals
-     * @return {Number} 
-     */
-    numVisualReals() {
-      if (this.isVisual) {
-        return bbn.fn.filter(this.visualList, a => (a.view.idx !== this.selected) && !a.view.pane).length;
-      }
-
-      return 0;
-    },
-
-
-    /**
-     * The views to show, in a specific different order, for the visual mode
-     * @computed visualList
-     * @return {Array} 
-     */
-    visualList() {
-      if (!this.isVisual) {
-        return [];
-      }
-
-      let moreViewsThanSlots = this.numVisuals < bbn.fn.filter(this.views, { pane: false }).length;
-      let numAvailableSlots = this.numVisuals - (moreViewsThanSlots ? 1 : 0);
-      let order = this.visualShowAll ?
-        { selected: 'asc', fixed: 'desc', pinned: 'desc', last: 'desc', idx: 'asc' }
-        : { selected: 'desc', last: 'desc', fixed: 'desc', pinned: 'desc', idx: 'asc' };
-      let idx = 0;
-      return bbn.fn.map(
-        bbn.fn.multiorder(
-          this.views,
-          order
-        ),
-        a => {
-          let visible = false;
-          if (this.visualShowAll || (idx <= numAvailableSlots) || (this.selected === a.idx)) {
-            visible = true;
-            if (!a.pane) {
-              idx++;
-            }
-          }
-          else if (a.pane) {
-            visible = true;
-          }
-          return {
-            view: a,
-            visible: visible
-          }
-        }
-      );
-    },
-
-    /**
-     * The number of tabs which are not in a pane
-     * 
-     * @returns {Number}
-     */
-    numOutOfPane() {
-      return bbn.fn.filter(this.views, { pane: false }).length;
-    },
-
-    /**
-     * The number of panes displayed
-     * @computed numPanes
-     * @return {Number} 
-     */
-    numPanes() {
-      return this.currentPanes.length;
-    },
-    /**
      * The views to show in the tabs, without the ones in the pane if splittable
      * @computed tabsList
      * @return {Array} 
@@ -1060,99 +546,6 @@ const cpDef = {
   },
 
   methods: {
-    getVue,
-    getContainer,
-    getDOMContainer,
-    getSubRouter,
-    getFinalContainer,
-    getRealVue,
-
-    getRoute,
-    formatBaseURL,
-    getDefaultView,
-    route,
-    realRoute,
-    next,
-    prev,
-    activate,
-    changeURL,
-    getBaseURL,
-    getFullBaseURL,
-    getFullURL,
-    getCurrentURL,
-    getFullCurrentURL,
-    parseURL,
-    isValidIndex,
-    activateDefault,
-    activateIndex,
-    callRouter,
-
-    register,
-    unregister,
-    registerRouter,
-    unregisterRouter,
-  
-    getPane,
-    addPane,
-    selectPaneTab,
-    removePane,
-    addToPane,
-    removeFromPane,
-
-    remove,
-    add,
-    move,
-    close,
-    closeAll,
-    closeAllBut,
-    closeTab,
-    pin,
-    unpin,
-
-    setConfig,
-    getConfig,
-    unsetConfig,
-
-    getPortalSelector,
-    selectClosest,
-    getIndex,
-    fixIndexes,
-    search,
-    searchForString,
-    searchContainer,
-
-    getMenuFn,
-
-    getDefaultURL,
-    getTitle,
-    getFullTitle,
-    getFontColor,
-    getBackgroundColor,
-    getTab,
-    getList,
-    getParents,
-    getView,
-  
-    registerBreadcrumb,
-    unregisterBreadcrumb,
-    getBreadcrumbs,
-
-    observerEmit,
-    observerClear,
-
-    load,
-    realInit,
-    checkLoaded,
-    reload,
-
-    updateVisualStyleContainer,
-    init,
-    retrieveDirtyContainers,
-    onEscape,
-    enter,
-    cutTitle,
-    onResize,
-    slashToHyphen,
   
     /**
      * Alias of bbn.fn.isNumber
@@ -1173,29 +566,6 @@ const cpDef = {
    */
   created() {
     this.componentClass.push('bbn-resize-emitter');
-    /**
-   * @event route
-   * @fires setconfig
-   */
-    this.$on('route', url => {
-      if (this.nav) {
-        this.setConfig();
-        let i = this.history.indexOf(url);
-        if (i > -1) {
-          this.history.splice(i, 1);
-        }
-        this.history.unshift(url);
-        while (this.history.length > this.historyMaxLength) {
-          this.history.pop();
-        }
-      }
-    });
-    let storage = !this.single && this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
-    if (storage && storage.panes) {
-      bbn.fn.each(storage.panes, a => {
-        this.addPane(a.id);
-      })
-    }
   },
   /**
    * @event mounted
@@ -1247,26 +617,8 @@ const cpDef = {
       });
     }
 
-    let tmp = [];
-
-    //bbn.fn.warning("BEFORE MOUNT ROUTER")
-
-    //Get config from the storage
     let storage = !this.single && this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
-    if (storage) {
-      if (storage.breadcrumb !== undefined) {
-        this.isBreadcrumb = storage.breadcrumb;
-      }
-
-      if (storage.visual !== undefined) {
-        this.isVisual = storage.visual;
-      }
-
-      if (storage.orientation) {
-        this.visualOrientation = storage.orientation;
-        this.lockedOrientation = true;
-      }
-    }
+    let tmp = [];
 
     // ---- ADDED 16/12/20 (Mirko) ----
     // Adding bbns-container from the slot
@@ -1352,67 +704,8 @@ const cpDef = {
       this.add(a);
     });
 
-    if (this.splittable) {
-      if (storage && storage.panes) {
-        bbn.fn.each(storage.panes, pane => {
-          bbn.fn.each(pane.tabs, tab => {
-            let view = bbn.fn.getRow(this.views, { url: tab });
-            let realPane = bbn.fn.getRow(this.currentPanes, { id: pane.id });
-            if (view && realPane) {
-              if (!view.pane) {
-                view.pane = pane.id;
-              }
-              realPane.tabs.push(view);
-            }
-          });
-        })
-      }
 
-      bbn.fn.each(this.views, a => {
-        if (a.pane) {
-          let pane = bbn.fn.getRow(this.currentPanes, { id: a.pane });
-          if (pane && !bbn.fn.getRow(pane.tabs, { url: a.url })) {
-            pane.tabs.push(a);
-          }
-        }
-      });
 
-      bbn.fn.each(this.currentPanes, pane => {
-        let done = false;
-        if (storage && storage.panes) {
-          let p = bbn.fn.getRow(storage.panes, { id: pane.id });
-          if (p && pane.tabs[p.selected]) {
-            pane.selected = p.selected;
-            done = true;
-          }
-
-        }
-        if (!done) {
-          pane.selected = pane.tabs.length ? 0 : -1;
-        }
-      })
-    }
-
-    //Breadcrumb
-    if (!this.master && this.parent && this.parentContainer) {
-      this.parent.registerBreadcrumb(this);
-      bbn.fn.log("VIEW ON BREADCUMB")
-      this.parentContainer.$on('view', () => {
-        this.parent.registerBreadcrumb(this);
-      }, true);
-      this.parentContainer.$on('unview', () => {
-        this.parent.unregisterBreadcrumb(this);
-      }, true);
-      if (this.parentContainer.isVisible) {
-        this.parent.registerBreadcrumb(this);
-      }
-    }
-
-    if (this.parentContainer) {
-      this.parentContainer.registerRouter(this);
-    }
-
-    this.updateVisualStyleContainer();
     this.ready = true;
     this.$forceUpdate();
 
@@ -1434,29 +727,7 @@ const cpDef = {
     });
 
   },
-  /**
-   * @event beforeDestroy
-   */
-  beforeDestroy() {
-    if (!this.master && this.parent) {
-      this.parent.unregisterBreadcrumb(this);
-    }
-    if (this.parentContainer) {
-      this.parentContainer.unregisterRouter(this);
-    }
-  },
   watch: {
-    numVisuals() {
-      this.onResize();
-    },
-    numPanes() {
-      this.onResize();
-    },
-    visualShowAll(v) {
-      if (v && this.isVisual) {
-        this.getRef('visualRouter').focus();
-      }
-    },
     selected(idx) {
       if (this.views[idx]) {
         //bbn.fn.log("In selected watcher " + idx, bbn.fn.filter(this.views, {selected: true}));
@@ -1488,105 +759,12 @@ const cpDef = {
       }
     },
     /**
-     * @watch currentURL
-     * @fires changeURL
-     * @fires search
-     * @emit change
-     * @emit route
-     */
-    currentURL(newVal, oldVal) {
-      if (this.ready) {
-        let idx = this.search(newVal);
-        if (idx !== false) {
-          let v = this.views[idx];
-          let ct = this.urls[v.url];
-          if (!v.pane) {
-            this.selected = idx;
-            if (ct) {
-              this.changeURL(newVal, ct.title);
-            }
-            else if (this.isLoading) {
-              this.changeURL(newVal, bbn._("Loading"));
-            }
-          }
-        }
-
-        this.$emit('change', newVal);
-        this.$emit('route', newVal);
-      }
-    },
-    /**
-     * @watch url
-     * @fires route
-     */
-    url(newVal) {
-      if (this.ready && newVal && (newVal !== this.currentURL)) {
-        //bbn.fn.log("URL CHANGED FROM WATCHER TO " + newVal);
-        this.route(newVal);
-      }
-    },
-    /**
      * @watch dirty
      */
     isDirty(v) {
       if (this.parentContainer) {
         this.parentContainer.dirty = v;
       }
-    },
-    /**
-     * @watch itsMaster
-     * @fires breadcrumbWatcher
-     */
-    itsMaster(newVal, oldVal) {
-      if (this.nav && (newVal !== oldVal)) {
-        this.isBreadcrumb = newVal ? newVal.isBreadcrumb : this.breadcrumb;
-        if (this.breadcrumbWatcher) {
-          this.breadcrumbWatcher();
-        }
-        if (newVal) {
-          /**
-           * @watch itsMaster.isBreadcrumb
-           */
-          this.breadcrumbWatcher = this.$watch('itsMaster.isBreadcrumb', isB => {
-            this.isBreadcrumb = isB;
-          });
-        }
-      }
-    },
-    currentPanes: {
-      deep: true,
-      handler() {
-        if (this.ready) {
-          this.setConfig();
-        }
-      }
-    },
-    breadcrumb(v) {
-      this.isBreadcrumb = v;
-    },
-    /**
-     * @watch isBreadcrumb
-     * @fires setConfig
-     */
-    isBreadcrumb(newVal) {
-      this.$nextTick(() => {
-        if (this.ready) {
-          this.setConfig();
-          this.onResize();
-        }
-      })
-    },
-    /**
-     * @watch isVisual
-     * @fires setConfig
-     */
-    isVisual(v) {
-      this.$nextTick(() => {
-        if (this.ready) {
-          this.setConfig();
-          this.onResize();
-        }
-      })
     },
     source(v, ov) {
       bbn.fn.each(v, a => {
