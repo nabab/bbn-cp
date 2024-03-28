@@ -265,7 +265,7 @@ import cpStyle from './button.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./button.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/button.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

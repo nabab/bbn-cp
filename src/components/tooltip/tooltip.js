@@ -100,7 +100,7 @@ import cpStyle from './tooltip.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./tooltip.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/tooltip.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

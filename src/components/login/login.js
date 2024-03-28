@@ -362,7 +362,7 @@ import cpStyle from './login.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./login.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/login.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

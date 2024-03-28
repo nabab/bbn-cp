@@ -674,7 +674,7 @@ import cpStyle from './widget.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./widget.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/widget.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

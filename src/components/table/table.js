@@ -3844,7 +3844,7 @@ import cpStyle from './table.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./table.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/table.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

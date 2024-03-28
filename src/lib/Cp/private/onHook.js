@@ -1,5 +1,7 @@
-export default function onHook(cp, hook) {
+export default async function onHook(cp, hook) {
   if (cp.$cfg[hook]?.length) {
-    cp.$cfg[hook].forEach(fn => fn.bind(cp)());
+    for (let i = 0; i < cp.$cfg[hook].length; i++) {
+      await cp.$cfg[hook][i].bind(cp)();
+    }
   }
 }

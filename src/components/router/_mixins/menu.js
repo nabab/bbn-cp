@@ -1,5 +1,17 @@
 
 export default {
+  props: {
+    /**
+     * @todo Integrates Boolean to have a default with no menu
+     * @prop {Array|Function} [[]] menu
+     */
+    menu: {
+      type: [Array, Function],
+      default: function () {
+        return [];
+      }
+    },
+  },
   methods: {
     /**
      * @method getMenuFn

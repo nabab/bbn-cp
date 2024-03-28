@@ -1,4 +1,23 @@
 export default {
+  data() {
+    return {
+      /**
+      * Number of conatainers registered - as they say it.
+      * @data {Number} [0] numRegistered
+      */
+      numRegistered: 0,
+      /**
+       * Real containers are the bbn-container in the slot.
+       * @data {Boolean} [false] hasRealContainers
+       */
+      hasRealContainers: false,
+      /**
+       * Fake containers are the bbns-container in the slot.
+       * @data {Boolean} [false] hasFakeContainers
+       */
+      hasFakeContainers: false,
+    }
+  },
   methods: {
     /**
      * used by container to make themselves known when they are mounted.

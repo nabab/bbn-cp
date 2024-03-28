@@ -328,7 +328,7 @@ import cpStyle from './multipart.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./multipart.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/multipart.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

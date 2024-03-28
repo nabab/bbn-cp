@@ -54,7 +54,7 @@ import cpStyle from './map.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./map.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/map.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

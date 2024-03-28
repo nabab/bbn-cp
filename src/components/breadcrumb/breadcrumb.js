@@ -87,10 +87,6 @@ const cpDef = {
        */
       selected: false,
       /**
-       * @data {Boolean} [false] iconsReady
-       */
-      iconsReady: false,
-      /**
        * The parents breadcrumbs list.
        * @data {Array} [[]] parents
        */
@@ -384,10 +380,6 @@ const cpDef = {
       }
     })
     this.ready = true;
-    setTimeout(() => {
-      // bugfix for rendering some nf-mdi icons
-      this.iconsReady = true;
-    }, 1000);
   },
   /**
    * @event beforeDestroy
@@ -505,7 +497,7 @@ import cpStyle from './breadcrumb.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./breadcrumb.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/breadcrumb.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

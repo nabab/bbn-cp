@@ -219,7 +219,7 @@ import cpStyle from './combo.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./combo.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/combo.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

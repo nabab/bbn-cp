@@ -267,7 +267,7 @@ import cpStyle from './autocomplete.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./autocomplete.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/autocomplete.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

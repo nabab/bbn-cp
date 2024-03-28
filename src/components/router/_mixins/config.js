@@ -1,5 +1,14 @@
 
 export default {
+  data() {
+    return {
+      /**
+       * If true the configuration will be shown
+       * @data {Boolean} visual
+       */
+      showRouterCfg: false,
+    }
+  },
   methods: {
     /**
      * @method setconfig

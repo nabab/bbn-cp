@@ -343,7 +343,7 @@ import cpStyle from './fisheye.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./fisheye.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/fisheye.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

@@ -520,7 +520,7 @@ import cpStyle from './big-search.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./big-search.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/big-search.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

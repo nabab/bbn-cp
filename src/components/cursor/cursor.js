@@ -83,7 +83,7 @@ import cpStyle from './cursor.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./cursor.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/cursor.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

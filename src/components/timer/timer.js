@@ -445,7 +445,7 @@ import cpHtml from './timer.html';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./timer.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/timer.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

@@ -1,4 +1,14 @@
 export default {
+  props: {
+    /**
+     * The confirm message when you close an unsaved container.
+     * @prop {(Boolean|String|Function)} ['Are you sure you want to discard the changes you made in this tab?'] confirmLeave
+     */
+    confirmLeave: {
+      type: [Boolean, String, Function],
+      default: bbn._("Are you sure you want to discard the changes you made in this page?")
+    },
+  },
   methods: {
     /**
      * @method load

@@ -299,7 +299,7 @@ import cpStyle from './file.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./file.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/file.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

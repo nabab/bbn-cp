@@ -98,7 +98,7 @@ import cpStyle from './editable-content.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./editable-content.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/editable-content.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

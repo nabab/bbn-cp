@@ -121,7 +121,7 @@ import cpStyle from './radiobuttons.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./radiobuttons.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/radiobuttons.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

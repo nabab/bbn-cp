@@ -251,7 +251,7 @@ import cpHtml from './message.html';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./message.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/message.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

@@ -317,7 +317,7 @@ import cpStyle from './treemenu.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./treemenu.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/treemenu.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

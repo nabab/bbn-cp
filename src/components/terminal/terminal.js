@@ -46,7 +46,7 @@ import cpHtml from './terminal.html';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./terminal.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/terminal.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

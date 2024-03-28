@@ -1,4 +1,240 @@
 export default {
+  props: {
+    /**
+     * Set it to true if you want to see the navigation bar (tabs, breadcrumb, or visual).
+     * @prop {Boolean} [false] nav
+     */
+    nav: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * Routes automatically after mount.
+     * @prop {Boolean} [true] auto
+     */
+    auto: {
+      type: Boolean,
+      default: true
+    },
+    /**
+     * The URL on which the router will be initialized.
+     * @prop {String} ['] url
+     */
+    url: {
+      type: String,
+      default: ''
+    },
+    /**
+     * Defines if the container will be automatically loaded based on URLs.
+     * @prop {Boolean} [true] autoload
+     */
+    autoload: {
+      type: Boolean,
+      default: true
+    },
+    /**
+     * The root URL of the router, will be only taken into account for the top parents' router, will be automatically calculated for the children.
+     * @prop {String} ['] root
+     */
+    root: {
+      type: String,
+      default: ''
+    },
+    /**
+     * @prop {String} def
+     */
+    def: {
+      type: String
+    },
+    /**
+     * @prop {Boolean} [false] single
+     */
+    single: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * @prop {Boolean} [true] urlNavigation
+     */
+    urlNavigation: {
+      type: Boolean,
+      default: true
+    },
+    /**
+     * Set it to true if you want to send the variable _baseUrl.
+     * @prop {Boolean} [true] postBaseUrl
+     */
+    postBaseUrl: {
+      type: Boolean,
+      default: true
+    },
+    /**
+     * The max length of the history.
+     * @prop {Number} [10] historyMaxLength
+     */
+    historyMaxLength: {
+      type: Number,
+      default: 10
+    },
+  },
+  data() {
+    return {
+      /**
+       * IndexedDb connection (Used by containers)
+       * @return {Object} 
+       */
+      db: null,
+      /**
+       * The index of the currently selected view.
+       * @data {Number} [null] selected
+       */
+      selected: null,
+      /**
+       * Set to true each time the router is loading (can only load once at a time).
+       * @data {Boolean} [false] isLoading
+       */
+      isLoading: false,
+      /**
+       * This will remain false until the first routing.
+       * @data {Boolean} [false] routed
+       */
+      routed: false,
+      /**
+       * True while the component is in the action of routing.
+       * @data {Boolean} [false] isRouting
+       */
+      isRouting: false,
+      /**
+       * True if one of the initial containers' URL is an empty string.
+       * @data {Boolean} [false] hasEmptyURL
+       */
+      hasEmptyURL: false,
+      /**
+       * The array of containers defined in the source.
+       * @data {Array} cfgViews
+       */
+      cfgViews: [].concat(this.source),
+      /**
+       * The views from the slot.
+       * @data {Array} [[]] slotViews
+       */
+      slotViews: [],
+      /**
+       * All the views.
+       * @data {Array} [[]] views
+      */
+      views: [],
+      /**
+       * All the URLS of the views.
+       * @data {Object} [{}] urls
+       */
+      urls: {},
+      /**
+       * Current URL of the router.
+       * @data {String} currentURL
+       */
+      currentURL: this.url || '',
+      /**
+       * Relative root of the router (set by user or by parent router).
+       * @data {String} baseURL
+       */
+      baseURL: this.formatBaseURL(this.root),
+      /**
+       * The currently visible container.
+       * @data {bbnCp} [null] activeContainer
+       */
+      activeContainer: null,
+      /**
+       * The navigation history.
+       * @data {Array} [[]] history
+       */
+      history: [],
+      /**
+       * The current title of the selected tab
+       * @data {String} [''] routers
+       */
+      currentTitle: '',
+      /**
+      * An array of the parents router.
+      * @data {Array} [[]] parents
+      */
+      parents: [],
+      /**
+      * An object with each mounted children router.
+      * @data {Object} [{}] routers
+      */
+      routers: {},
+      /**
+     * The direct parent router if there is one.
+     * @data {bbnCp} [null] parent
+     */
+      parent: null,
+      /**
+       * The root router or the current one it's the same.
+       * @data {bbnCp} [null] router
+       */
+      router: null,
+      /**
+       * The container having the router in if there is one.
+       * @data {bbnCp} [null] parentContainer
+       */
+      parentContainer: null,
+    }
+  },
+  computed: {
+    selectedTab: {
+      get() {
+        return bbn.fn.search(this.tabsList, { idx: this.selected })
+      },
+      set(v) {
+        //bbn.fn.log("SETING SELECTED TAB");
+        let done = false;
+        let i = v;
+        while (i > -1) {
+          if (this.tabsList[i]) {
+            this.selected = this.tabsList[i].idx;
+            done = true;
+            break;
+          }
+          i--;
+        }
+
+        if (!done) {
+          i = v;
+          while (i < this.tabsList.length) {
+            if (this.tabsList[i]) {
+              this.selected = this.tabsList[i].idx;
+              done = true;
+              break;
+            }
+            i++;
+          }
+        }
+
+        if (!done) {
+          this.selected = null;
+        }
+      }
+    },
+    /**
+     * Not only the baseURL but a combination of all the parent's baseURLs.
+     * @computed fullBaseURL
+     * @return {String}
+     */
+    fullBaseURL() {
+      let vm = this,
+        base = '',
+        tmp;
+      while (tmp = vm.baseURL) {
+        base = tmp + base;
+        if (!vm.parents.length) {
+          break;
+        }
+        vm = vm.parents[0];
+      }
+      return base;
+    },
+  },
   methods: {
     /**
      * Given a URL returns the existing path of a corresponding view or false, or the default view if forced.
@@ -580,10 +816,105 @@ export default {
       else {
         await this.realRoute(url, st, true);
       }
-    }
+    },
 
+    navigationInit() {
+      // All routers above (which constitute the fullBaseURL)
+      this.parents = this.ancestors('bbn-router');
+      // The closest
+      this.parent = this.parents.length ? this.parents[0] : false;
+      // The root
+      this.router = this.parents.length ? this.parents[this.parents.length - 1] : this;
+      // Case where the rooter is not at the root level
+
+      if (this.parent) {
+        this.parentContainer = this.closest('bbn-container');
+        let uri = this.parentContainer.url;
+        if (this.root && (uri !== this.root) && (this.root.indexOf(uri) === 0)) {
+          uri = this.root;
+        }
+        this.baseURL = this.formatBaseURL(uri);
+      }
+      // Case where the rooter is at root level
+      else {
+        // Opening the database for the visual mode multiview
+        if (!this.single && bbnRouterCp.db) {
+          bbn.db.open('bbn').then(r => {
+            this.db = r;
+          }, err => {
+            bbn.fn.log("Connection error in router", err);
+          });
+        }
+
+        window.addEventListener("beforeunload", e => {
+          e = e || window.event;
+          //if ( $(".bbn-tabnabbn-unsaved").length ){
+          if (this.isDirty) {
+            // doesn't use that string but a default string...
+            let st = bbn._('You have unsaved data, are you sure you want to leave?');
+            // For IE and Firefox prior to version 4
+            if (e) {
+              e.returnValue = st;
+            }
+            // For Safari
+            return st;
+          }
+        });
+      }
+    },
+
+    navigationCreated() {
+      /**
+       * @event route
+       * @fires setconfig
+       */
+      this.$on('route', url => {
+        if (this.nav) {
+          this.setConfig();
+          let i = this.history.indexOf(url);
+          if (i > -1) {
+            this.history.splice(i, 1);
+          }
+          this.history.unshift(url);
+          while (this.history.length > this.historyMaxLength) {
+            this.history.pop();
+          }
+        }
+      });
+
+    },
   },
   watch: {
+    currentTitle(v) {
+      if (!this.parent) {
+        document.title = v + ' - ' + bbn.env.siteTitle;
+      }
+    },
+    selected(idx) {
+      if (this.views[idx]) {
+        //bbn.fn.log("In selected watcher " + idx, bbn.fn.filter(this.views, {selected: true}));
+        bbn.fn.map(bbn.fn.filter(this.views, { selected: true }), a => {
+          if (a.idx !== idx) {
+            a.selected = false;
+            if (this.urls[a.url]) {
+              this.urls[a.url].$tick();
+            }
+          }
+        });
+        if (!this.views[idx].selected && !this.views[idx].pane) {
+          this.views[idx].selected = true;
+        }
+
+        this.views[idx].last = bbn.fn.timestamp();
+        if (this.currentURL !== this.views[idx].current) {
+          //bbn.fn.log("CHANGING URL " + this.currentURL + " TO " + this.views[idx].current);
+          this.route(this.views[idx].current);
+        }
+      }
+      else {
+        throw new Error("The view with index " + idx + " doesn't exist");
+      }
+    },
     /**
      * @watch currentURL
      * @fires changeURL
@@ -623,24 +954,4 @@ export default {
       }
     },
   },
-  created() {
-    /**
-   * @event route
-   * @fires setconfig
-   */
-    this.$on('route', url => {
-      if (this.nav) {
-        this.setConfig();
-        let i = this.history.indexOf(url);
-        if (i > -1) {
-          this.history.splice(i, 1);
-        }
-        this.history.unshift(url);
-        while (this.history.length > this.historyMaxLength) {
-          this.history.pop();
-        }
-      }
-    });
-
-  }
 }

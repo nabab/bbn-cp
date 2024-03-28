@@ -49,7 +49,7 @@ bbnCp.prototype.$connected = async function () {
 
   // Sending beforeCreate event
   const beforeCreate = new Event('hook:beforecreate');
-  onHook(this, 'beforeCreate');
+  await onHook(this, 'beforeCreate');
   this.$el.dispatchEvent(beforeCreate);
 
   // Setting up the config
@@ -120,7 +120,7 @@ bbnCp.prototype.$connected = async function () {
   // Sending created event
   if (!this.$isCreated) {
     const created = new Event('hook:created');
-    onHook(this, 'created');
+    await onHook(this, 'created');
     this.$el.dispatchEvent(created);
     Object.defineProperty(this, '$isCreated', {
       value: true,
@@ -130,37 +130,36 @@ bbnCp.prototype.$connected = async function () {
   }
 
   // Sets the current template schema and creates the DOM
-  await launch(this).then(() => {
+  await launch(this);
 
-    // registering current object to parent and setting root
-    if (this.$parent) {
-      registerChild(this.$parent, this);
-    }
+  // registering current object to parent and setting root
+  if (this.$parent) {
+    registerChild(this.$parent, this);
+  }
 
-    // Sending beforeMount event
-    const beforeMount = new Event('hook:beforemount');
-    onHook(this, 'beforeMount');
-    this.$el.dispatchEvent(beforeMount);
+  // Sending beforeMount event
+  const beforeMount = new Event('hook:beforemount');
+  await onHook(this, 'beforeMount');
+  this.$el.dispatchEvent(beforeMount);
 
-    // $isInit, defined in constructor  is made writable before being set to true
-    Object.defineProperty(this, '$isInit', {
-      value: true,
-      writable: false,
-      configurable: true
-    });
-
-    if (!this.$isMounted) {
-      // Sending mounted event
-      const mounted = new Event('hook:mounted');
-      onHook(this, 'mounted');
-      this.$el.dispatchEvent(mounted);
-      Object.defineProperty(this, '$isMounted', {
-        value: true,
-        writable: false, 
-        configurable: false
-      });
-    }
-
-    this.$el.dispatchEvent(new CustomEvent('connected'));
+  // $isInit, defined in constructor  is made writable before being set to true
+  Object.defineProperty(this, '$isInit', {
+    value: true,
+    writable: false,
+    configurable: true
   });
+
+  if (!this.$isMounted) {
+    // Sending mounted event
+    const mounted = new Event('hook:mounted');
+    await onHook(this, 'mounted');
+    this.$el.dispatchEvent(mounted);
+    Object.defineProperty(this, '$isMounted', {
+      value: true,
+      writable: false, 
+      configurable: false
+    });
+  }
+
+  this.$el.dispatchEvent(new CustomEvent('connected'));
 }

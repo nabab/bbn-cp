@@ -1,4 +1,75 @@
 export default {
+  props: {
+    /**
+     * Sets if the views' titles will be scrollable in case they have a greater width than the page (true), or if they will be shown multilines (false, default).
+     * @prop {Boolean} [false] scrollable
+     */
+    scrollable: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * Sets if the router and the ocntainers inside it should be themselves scrollable or part of the global scroll.
+     * @prop {Boolean} [false] scrollContent
+     */
+    scrollContent: {
+      type: Boolean,
+      default: true
+    },
+    /**
+     * The name used for the storage.
+     * @prop {String} ['__ROOT__'] storageName
+     */
+    storageName: {
+      type: String,
+      default: '__ROOT__'
+    },
+    /**
+     * The max length for the titles
+     * @prop {Number} [20] maxTitleLength
+     */
+    maxTitleLength: {
+      type: Number,
+      default: 20
+    },
+    /**
+     * The default background color for the title bar
+     * @prop {String} [#666] bcolor
+     */
+    bcolor: {
+      type: String,
+      default: '#666'
+    },
+    /**
+     * The default text color for the title bar
+     * @prop {String} [#EEE] fcolor
+     */
+    fcolor: {
+      type: String,
+      default: '#EEE'
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      /**
+       * False until the first routing.
+       * @data {Boolean} [false] isInit
+       */
+      isInit: false,
+    }
+  },
+  computed: {
+    hasVerticalTabs() {
+      return !this.isVisual
+        && !this.isBreadcrumb
+        && ((this.orientation === 'left')
+          || (this.orientation === 'right'));
+    },
+  },
   methods: {
     /**
      * @method updateVisualStyleContainer
@@ -88,23 +159,6 @@ export default {
           await this.route(url, true);
         }
       }
-    },
-
-
-    /**
-     * Sets the 'dirtyContainers' property with the list of unsaved views
-     * @method retrieveDirtyContainers
-     */
-    retrieveDirtyContainers() {
-      this.dirtyContainers.splice(0, this.dirtyContainers.length);
-      bbn.fn.iterate(this.urls, v => {
-        if (v.dirty) {
-          this.dirtyContainers.push({
-            idx: v.currentIndex,
-            url: v.url
-          });
-        }
-      });
     },
 
 

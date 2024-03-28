@@ -67,7 +67,7 @@ import cpStyle from './grid-configuration.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./grid-configuration.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/grid-configuration.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

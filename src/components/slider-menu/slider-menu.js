@@ -238,7 +238,7 @@ import cpStyle from './slider-menu.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./slider-menu.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/slider-menu.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

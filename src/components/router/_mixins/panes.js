@@ -184,18 +184,18 @@ export default {
           }
         }
       }
-    }
-  },
-  /**
-   * @event created
-   */
-  created() {
-    let storage = !this.single && this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
-    if (storage && storage.panes) {
-      bbn.fn.each(storage.panes, a => {
-        this.addPane(a.id);
-      })
-    }
+    },
+    /**
+     * @event created
+     */
+    panesCreated() {
+      let storage = !this.single && this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
+      if (storage && storage.panes) {
+        bbn.fn.each(storage.panes, a => {
+          this.addPane(a.id);
+        })
+      }
+    },
   },
   /**
    * @event mounted

@@ -229,7 +229,7 @@ import cpStyle from './router-config.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./router-config.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/router-config.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

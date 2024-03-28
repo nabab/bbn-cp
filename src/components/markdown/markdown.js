@@ -271,7 +271,7 @@ import cpStyle from './markdown.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./markdown.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/markdown.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

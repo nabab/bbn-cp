@@ -129,7 +129,7 @@ import cpStyle from './keyboard.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./keyboard.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/keyboard.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

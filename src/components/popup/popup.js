@@ -612,7 +612,7 @@ import cpStyle from './popup.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./popup.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/popup.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

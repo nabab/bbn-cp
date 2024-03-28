@@ -234,7 +234,7 @@ import cpStyle from './collapsable-columns.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./collapsable-columns.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/collapsable-columns.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

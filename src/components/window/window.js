@@ -355,7 +355,7 @@ import cpStyle from './window.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./window.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/window.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

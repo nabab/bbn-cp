@@ -372,7 +372,7 @@ import cpHtml from './countdown.html';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./countdown.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/countdown.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }
