@@ -1,4 +1,3 @@
-import bbn from "@bbn/bbn";
 import bbnData from "../Data.js";
 
 /**

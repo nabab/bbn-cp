@@ -52,6 +52,8 @@ class bbnData/* extends EventTarget*/ {
      * @var {Symbol} id The unique id of the bbnData object
      */
     const id = Symbol();
+    // The object is added to the data inventory
+    bbn.cp.dataInventory.set(id, this);
     Object.defineProperty(this, 'id', {
       writable: false,
       configurable: false,
@@ -144,8 +146,6 @@ class bbnData/* extends EventTarget*/ {
       //bbn.fn.log(bbn._("ADDING CHILDREN for %s : %s", path.toString ? path.toString() : path || '<unknown>', JSON.stringify(this.data)))
       parent.children.push(this);
     }
-    // The object is added to the data inventory
-    bbn.cp.dataInventory.set(id, this);
 
   }
 }

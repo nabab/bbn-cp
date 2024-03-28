@@ -17,7 +17,7 @@ bbnData.proxy = function(component, path, targetObj) {
   return {
     get(target, key) {
       const realValue = target[key];
-      if (key?.indexOf && !key.indexOf('__bbn')) {
+      if (key?.indexOf && (key.indexOf('__bbn') === 0)) {
         if (key === '__bbnProxy') {
           return true;
         }

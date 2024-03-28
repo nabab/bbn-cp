@@ -1,0 +1,22 @@
+"use strict";
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["components/router-_registration-js"],{
+
+/***/ "./src/components/router/_registration.js":
+/*!************************************************!*\
+  !*** ./src/components/router/_registration.js ***!
+  \************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   register: () => (/* binding */ register),\n/* harmony export */   registerRouter: () => (/* binding */ registerRouter),\n/* harmony export */   unregister: () => (/* binding */ unregister),\n/* harmony export */   unregisterRouter: () => (/* binding */ unregisterRouter)\n/* harmony export */ });\n/**\n * Function used by container to make themselves known when they are mounted.\n * @method register\n * @param {bbnCp} cp\n * @param {Boolean} fake\n * @fires add\n * @fires search\n * @fires route\n * @fires getDefaultURL\n */\nfunction register(cp, fake) {\n  if (fake) {\n    bbn.fn.log(\"ADDING FAKE\", cp);\n    this.add(cp);\n    return;\n  }\n  if (!bbn.fn.isString(cp.url)) {\n    bbn.fn.log(cp);\n    throw Error(bbn._('The component bbn-container must have a URL defined'));\n  }\n  //bbn.fn.log(\"REGISRTE\", cp.$el.bbnId, cp.url, this.urls[cp.url] ? this.urls[cp.url].$el.bbnId : \"NO\")\n  if (this.urls[cp.url]) {\n    bbn.fn.log([\"It exists\", this.urls[cp.url].$numBuild, this.numRegistered, this.views[0].real]);\n    if (cp !== this.urls[cp.url]) {\n      this.urls[cp.url].$el.parentNode.removeChild(this.urls[cp.url].$el);\n      ///throw Error(bbn._('Two containers cannot have the same URL defined (' + cp.url + ')'));\n    }\n\n    //return;\n  }\n  bbn.fn.log(\"REGISTERING \" + cp.url);\n  this.numRegistered++;\n  this.urls[cp.url] = cp;\n  if (this.isVisual) {\n    //bbn.fn.log(\"VIEW ON VISUAL\")\n    cp.$on('view', () => {\n      this.visualShowAll = false;\n    });\n  }\n  let idx = this.search(cp.url);\n  if (idx === false) {\n    bbn.fn.log(\"ADDING BECAUSE CAN'T FIND\", cp.url, this.views.map(a => a.url));\n    this.add(cp);\n  } else {\n    cp.currentIndex = idx;\n  }\n\n  //bbn.fn.log(this.numRegistered + \" OUT OF \" + this.numOutOfPane, cp.currentView.pane)\n  if (this.numRegistered === this.numOutOfPane) {\n    this.init(this.getDefaultURL());\n  }\n  this.$emit('registered', cp.url);\n}\n\n/**\n * Function used by container to make themselves known when they are destroyed\n * @method unregister\n * @fires search\n * @fires remove\n * @param {bbnCp} cp\n */\nfunction unregister(cp) {\n  bbn.fn.log(\"UNREGISTERING \" + cp.url);\n  if (!bbn.fn.isString(cp.url)) {\n    throw Error(bbn._('The component bbn-container must have a URL defined'));\n  }\n  this.numRegistered--;\n  let idx = this.search(cp.url),\n    dataObj = this.postBaseUrl ? {\n      _bbn_baseURL: this.fullBaseURL\n    } : {},\n    requestID = bbn.fn.getRequestId(cp.url, dataObj);\n  if (bbn.fn.getLoader(requestID)) {\n    bbn.fn.abort(requestID);\n  }\n  if (this.urls[cp.url] !== undefined) {\n    delete this.urls[cp.url];\n  }\n  if (idx !== false) {\n    //this.remove(idx);\n  }\n}\n\n/**\n * @method registerRouter\n * @param {bbnCp} bc\n * @param {String} url\n */\nfunction registerRouter(router) {\n  this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)] = router;\n}\n\n/**\n * @method unregisterRouter\n * @param {bbnCp} bc\n * @param {String} url\n */\nfunction unregisterRouter(router) {\n  delete this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)];\n}\n\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/router/_registration.js?");
+
+/***/ })
+
+}]);
