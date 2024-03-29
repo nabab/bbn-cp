@@ -84,10 +84,9 @@ export default {
 
       if (nv && this.router) {
         if (!this.isLoaded && !this.isLoading) {
-          this.router.load(this.currentURL, true)
+          this.getView(this.currentURL, true)
         }
-
-        if (!this.ready) {
+        else if (!this.ready) {
           this.$nextTick(() => {
             this.onResize();
             this.init();

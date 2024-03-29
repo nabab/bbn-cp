@@ -7,22 +7,26 @@ export default function setComputed(obj, name, getter, setter) {
   }
 
 
+  if (Object.hasOwn(obj.$computed, name)) {
+    throw new Error(bbn._("The computed property %s already exists", name));
+  }
+
+  obj.$computed[name] = bbn.fn.createObject({
+    old: undefined,
+    val: undefined,
+    hash: undefined,
+    num: 0,
+    update: () => {
+      updateComputed(obj, name, getter.bind(obj)());
+    }
+  });
+
   const def = {
     get() {
       if (!this.$isDataSet) {
         return undefined;
       }
-      if (!Object.hasOwn(this.$computed, name)) {
-        this.$computed[name] = bbn.fn.createObject({
-          old: undefined,
-          val: undefined,
-          hash: undefined,
-          num: -1,
-          update: () => {
-            updateComputed(this, name, getter.bind(this)());
-          }
-        });
-      }
+
       if (this.$computed[name].num <= this.$numBuild) {
         this.$computed[name].update();
         this.$computed[name].num = this.$numBuild + 1;

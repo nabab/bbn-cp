@@ -8,6 +8,7 @@ import bbnData from "../Data.js";
  * @param {*} parent 
  * @returns {*} The original value or the reactive value
  */
+const sourcesAPST = [];
 bbnData.treatValue = function(value, component, path, parent) {
   if (component.$isDestroyed) {
     return value;
@@ -26,6 +27,11 @@ bbnData.treatValue = function(value, component, path, parent) {
         dataObj.addComponent(component, path, parent);
       }
 
+      if (value.actionnaires && !sourcesAPST.includes(component.$cid + '-' + path)) {
+        bbn.fn.log(["APST AGAIN", value, component, path, dataObj]);
+        sourcesAPST.push(component.$cid + '-' + path);
+      }
+
       return dataObj.value;
     }
 
@@ -34,6 +40,12 @@ bbnData.treatValue = function(value, component, path, parent) {
     }
 
     const dataObj = new bbnData(value, component, path, parent);
+
+    if (value.actionnaires && !sourcesAPST.includes(component.$cid + '-' + path)) {
+      bbn.fn.log(["APST", value, component, path, dataObj]);
+      sourcesAPST.push(component.$cid + '-' + path);
+    }
+
     return dataObj.value;
   }
 

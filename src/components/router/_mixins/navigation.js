@@ -425,8 +425,24 @@ export default {
             //bbn.fn.log("SAME URL END ROUTING");
             return;
           }
-          else if (url && ((!st && this.autoload) || (this.urls[st] && this.urls[st].load && !this.urls[st].isLoaded))) {
-            this.load(url);
+          else if (url && !st && this.autoload) {
+            this.add({
+              url: url,
+              title: bbn._('Loading'),
+              load: true,
+              loading: true,
+              real: false,
+              pane: false,
+              scrollable: !this.single,
+              current: url,
+              error: false,
+              loaded: false,
+              hidden: false,
+              last: bbn.fn.timestamp()
+            });
+          }
+          else if (this.urls[st]) {
+            this.urls[st].show();
           }
           // Otherwise the container is activated ie made visible
           else {

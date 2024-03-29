@@ -54,6 +54,14 @@ export default function generateCpClass(publicClass, obj) {
         configurable: false
       });
 
+      /**
+       * Object of all elements with bbn-model prop.
+       * Indexed by element's id with bbn-model's value as value
+       */
+      Object.defineProperty(this, '$computed', {
+        value: bbn.fn.createObject()
+      });
+
       // Set up computed properties.
       if (obj.computed) {
         for (let n in obj.computed) {

@@ -25,7 +25,13 @@ export default class bbnAnonCp extends bbnCp {
       writable: false,
       configurable: false
     });
-  }
+    Object.defineProperty(this, '$computed', {
+      value: bbn.fn.createObject(),
+      writable: false,
+      configurable: false
+    });
+
+}
 
   async $connected() {
     //bbn.fn.log("ANON!!! ",this.$el.bbnSchema.props?.is);
