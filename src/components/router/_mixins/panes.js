@@ -113,10 +113,10 @@ export default {
         let paneIndex = bbn.fn.search(this.currentPanes, { id: paneId });
         let pane = this.currentPanes[paneIndex];
         if (!pane) {
-          throw new Error(bbn._("Impossible to find the pane with ID %s", paneId));
+          throw Error(bbn._("Impossible to find the pane with ID %s", paneId));
         }
         if (pane.tabs.length) {
-          throw new Error(bbn._("Impossible to remove the pane with ID %s as it has still containers inside", paneId));
+          throw Error(bbn._("Impossible to remove the pane with ID %s as it has still containers inside", paneId));
         }
 
         this.currentPanes.splice(paneIndex, 1);
@@ -132,7 +132,7 @@ export default {
     addToPane(containerIdx, paneId) {
       let view = this.views[containerIdx];
       if (!view) {
-        throw new Error(bbn._("Impossible to find the view with index") + ' ' + containerIdx);
+        throw Error(bbn._("Impossible to find the view with index") + ' ' + containerIdx);
       }
 
       if (view.dirty) {

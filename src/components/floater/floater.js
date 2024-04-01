@@ -739,7 +739,7 @@ const cpDef = {
       this.currentMaxHeight = Math.min(...maxHeight);
       this.currentMaxWidth = Math.min(...maxWidth);
       if ((maxHeight < minHeight) || (maxHeight < minHeight)) {
-        throw new Error(bbn._("Wrong min/max width/height set in the properties"));
+        throw Error(bbn._("Wrong min/max width/height set in the properties"));
       }
       if (this.width || this.height) {
         tmp = this.getDimensions(this.width, this.height);
@@ -990,7 +990,7 @@ const cpDef = {
 
       if (parent && (width || height)) {
         if (!parent.insertAdjacentElement) {
-          throw new Error("Impossible to insert adjacent element to calculate dimensions");
+          throw Error("Impossible to insert adjacent element to calculate dimensions");
         }
 
         let el = document.createElement('div');

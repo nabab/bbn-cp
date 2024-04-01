@@ -1,3 +1,5 @@
+import bbn from "@bbn/bbn";
+
 export default {
   data() {
     return {
@@ -19,6 +21,9 @@ export default {
     }
   },
   methods: {
+    filterIsContainer(ele) {
+      return ele?.tagName === 'BBN-CONTAINER';
+    },
     /**
      * used by container to make themselves known when they are mounted.
      * @method register
@@ -30,51 +35,42 @@ export default {
      * @fires getDefaultURL
      */
     register(cp, fake) {
-      if (fake) {
-        bbn.fn.log("ADDING FAKE", cp);
-        this.add(cp);
-        return;
-      }
-
-      if (!bbn.fn.isString(cp.url)) {
-        bbn.fn.log(cp);
-        throw Error(bbn._('The component bbn-container must have a URL defined'));
-      }
-      //bbn.fn.log("REGISRTE", cp.$el.bbnId, cp.url, this.urls[cp.url] ? this.urls[cp.url].$el.bbnId : "NO")
-      if (this.urls[cp.url]) {
-        bbn.fn.log(["It exists", this.urls[cp.url].$numBuild, this.numRegistered, this.views[0].real]);
-        if (cp !== this.urls[cp.url]) {
-          this.urls[cp.url].$el.parentNode.removeChild(this.urls[cp.url].$el);
-          ///throw Error(bbn._('Two containers cannot have the same URL defined (' + cp.url + ')'));
+      bbn.fn.checkType(cp, bbnContainerCp);
+      if (cp.isRegistered) {
+        bbn.fn.log(["It exists", this.urls[cp.routerUid].$numBuild, this.numRegistered, this.views[0].real]);
+        if (this.urls[cp.routerUid]) {
+          //this.urls[cp.url].$el.parentNode.removeChild(this.urls[cp.url].$el);
+          throw Error(bbn._('Two containers cannot have the same URL defined (' + cp.url + ')'));
         }
-
-        //return;
+        else {
+          throw Error(bbn._("The container shouldn't register twice"));
+        }
       }
 
-      bbn.fn.log("REGISTERING " + cp.url);
-      this.numRegistered++;
-      this.urls[cp.url] = cp;
-      if (this.isVisual) {
-        //bbn.fn.log("VIEW ON VISUAL")
-        cp.$on('view', () => {
-          this.visualShowAll = false;
-        })
-      }
       let idx = this.search(cp.url);
       if (idx === false) {
-        bbn.fn.log("ADDING BECAUSE CAN'T FIND", cp.url, this.views.map(a => a.url));
-        this.add(cp);
-      }
-      else {
-        cp.currentIndex = idx;
+        throw Error(bbn._('Impossible to find the view for URL %s', cp.url));
       }
 
-      //bbn.fn.log(this.numRegistered + " OUT OF " + this.numOutOfPane, cp.currentView.pane)
-      if (this.numRegistered === this.numOutOfPane) {
-        this.init(this.getDefaultURL());
+      cp.isRegistered = true;
+      if (!cp.routerUid) {
+        cp.routerUid = this.views[idx].uid;
       }
 
-      this.$emit('registered', cp.url)
+      this.numRegistered++;
+      this.urls[cp.routerUid] = cp;
+      //bbn.fn.log("VIEW ON VISUAL")
+      cp.$on('view', () => {
+        if (this.isVisual) {
+          this.visualShowAll = false;
+        }
+      });
+
+      this.$emit('registered', cp);
+      if (!this.isInit && (this.numRegistered === this.numOutOfPane)) {
+        this.init();
+      }
+
     },
 
 
@@ -97,34 +93,14 @@ export default {
       if (bbn.fn.getLoader(requestID)) {
         bbn.fn.abort(requestID);
       }
-      if (this.urls[cp.url] !== undefined) {
-        delete this.urls[cp.url];
+      if (this.urls[cp.routerUid] !== undefined) {
+        delete this.urls[cp.routerUid];
       }
 
       if (idx !== false) {
         //this.remove(idx);
       }
     },
-
-    /**
-     * @method registerRouter
-     * @param {bbnCp} bc
-     * @param {String} url
-     */
-    registerRouter(router) {
-      this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)] = router;
-    },
-
-
-    /**
-     * @method unregisterRouter
-     * @param {bbnCp} bc
-     * @param {String} url
-     */
-    unregisterRouter(router) {
-      delete this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)];
-    }
-
   },
   beforeMount() {
     if (this.parentContainer) {

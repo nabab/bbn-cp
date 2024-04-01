@@ -11,7 +11,7 @@ export default {
   },
   methods: {
     realInit(url) {
-      //bbn.fn.log("REAL INIT", url, this.urls, this.views)
+      bbn.fn.log("REAL INIT", url, this.urls, this.views)
       if (this.urls[url]) {
         this.urls[url].setLoaded(true);
         // Otherwise the changes we just did on the props wont be taken into account at container level
@@ -22,7 +22,7 @@ export default {
       }
       else {
         //bbn.fn.log(url, this.views[0].loading, this.views[0].url, JSON.stringify(Object.keys(this.urls), null, 2));
-        //throw new Error(bbn._("Impossible to find the container for URL") + ' ' + url);
+        //throw Error(bbn._("Impossible to find the container for URL") + ' ' + url);
       }
     },
 
@@ -31,8 +31,8 @@ export default {
       return this.views[idx] &&
         //!this.views[idx].real &&
         this.views[idx].load &&
-        this.urls[this.views[idx].url] &&
-        this.urls[this.views[idx].url].isLoaded;
+        this.urls[this.views[idx].uid] &&
+        this.urls[this.views[idx].uid].isLoaded;
     },
 
 
@@ -52,17 +52,17 @@ export default {
           this.confirm(this.confirmLeave, () => {
             if (this.checkLoaded(idx)) {
               // Looking for dirty ones in registered forms of each container
-              let forms = this.urls[this.views[idx].url].forms;
+              let forms = this.urls[this.views[idx].uid].forms;
               if (Array.isArray(forms) && forms.length) {
                 bbn.fn.each(forms, (f, k) => {
                   f.reset();
                 });
               }
-              if (this.urls[this.views[idx].url]
-                && this.urls[this.views[idx].url].popups
-                && this.urls[this.views[idx].url].popups.length
+              if (this.urls[this.views[idx].uid]
+                && this.urls[this.views[idx].uid].popups
+                && this.urls[this.views[idx].uid].popups.length
               ) {
-                this.urls[this.views[idx].url].popups.splice(0);
+                this.urls[this.views[idx].uid].popups.splice(0);
               }
               this.load(url, true, idx);
             }

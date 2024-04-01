@@ -120,8 +120,9 @@ const cpDef = {
   /**
    * @event created
    */
-  created() {
+  async created() {
     this.componentClass.push('bbn-resize-emitter');
+    await this.viewsInit();
     this.panesCreated();
     this.navigationCreated();
   },
@@ -131,9 +132,10 @@ const cpDef = {
    * @fires getDefaultURL
    * @fires add
    */
-  async beforeMount() {
+  async mounted() {
+    this.ready = true;
+    await this.$forceUpdate();
     this.navigationInit()
-    await this.viewsInit();
   },
   components: {
     listItem,

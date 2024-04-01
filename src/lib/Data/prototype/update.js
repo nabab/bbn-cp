@@ -28,42 +28,23 @@ bbnData.prototype.update = function(noParent, key) {
     if (it.cp.$isInit) {
       let data = this;
       let bits = it.path.slice();
-      let name = bits.join(".");
       let lev = 0;
-      if (it.cp.$watcher?.[name]) {
-        //bbn.fn.log(["WATCHER " + name, data, JSON.stringify({name: it.cp.$options.name, cid: it.cp.$cid, path: it.path.join('.'), num: it.cp.$numBuild})])
-        if (bits.length > 1) {
-          bits.shift();
-          updateWatcher(it.cp, name, bbn.fn.getProperty(data.value, name));
+      while (bits.length) {
+        let name = bits.join(".");
+        if (it.cp.$watcher?.[name]) {
+          if (!lev || it.cp.$watcher[name].deep) {
+            updateWatcher(it.cp, name, bbn.fn.getProperty(data.value, name));
+          }
         }
-        else {
-          updateWatcher(it.cp, name, data.value);
-        }
-      }
-      else {
-        if (cpToUpdate.indexOf(it.cp) === -1) {
-          cpToUpdate.push(it.cp);
-        }
+
+        lev++;
+        bits.pop();
       }
 
-      if (noParent) {
-        return false;
-      }
-
-      bits.pop();
-      if (bits.length) {
-        if (!key || lev) {
-          bbn.fn.each(data.refs, rf => {
-            if (rf.parent && (this.constructor.getObject(rf.component[rf.path]) === rf.parent)) {
-              bbn.fn.log(["UPDATING PARENT", rf.parent])
-              rf.parent.update()
-            }
-          })
-        }
-        name = bits.join('.');
+      if (cpToUpdate.indexOf(it.cp) === -1) {
+        cpToUpdate.push(it.cp);
       }
     }
-
   });
   cpToUpdate.forEach(cp => cp.$tick());
   //this.updateChildren();

@@ -13,6 +13,39 @@ class bbnData/* extends EventTarget*/ {
    */
   static hash = bbn.fn.hash;
 
+  static inventory = new Map();
+
+  static watchSequence = [];
+
+  static isWatching = false;
+
+  static watchStarted = false;
+
+  static startWatching() {
+    this.isWatching = true;
+  }
+
+  static stoptWatching() {
+    this.isWatching = false;
+  }
+
+  static getLastUsed(noStop) {
+    const res = this.watchSequence[this.watchSequence.length - 1];
+    if (!noStop) {
+      this.stoptWatching();
+    }
+
+    return res;
+  }
+
+  static addSequence(cp, name, data) {
+    if (bbnData.watchStarted && (bbn.fn.isString(name) || bbn.fn.isInt(name))) {
+      bbnData.watchSequence.push({cp, name, data});
+    }
+
+  }
+
+
   /**
    * Constructor
    * @param {Object} data A regular object or array i.e. it mustn't be a class instance
@@ -24,28 +57,28 @@ class bbnData/* extends EventTarget*/ {
     //super();
     if (path === 'computed') {
       bbn.fn.log([component, path, parent, data]);
-      throw new Error("bbnData cannot be initialized with a computed property");
+      throw Error("bbnData cannot be initialized with a computed property");
     }
 
     if (data instanceof bbnData) {
-      throw new Error("bbnData cannot be initialized with a bbnData");
+      throw Error("bbnData cannot be initialized with a bbnData");
     }
 
     if (!(component instanceof bbnCp)) {
-      throw new Error("bbnData must be initialized with a bbn component");
+      throw Error("bbnData must be initialized with a bbn component");
     }
 
     if (!data || (typeof data !== 'object') || ![undefined, Object, Array].includes(data.constructor)) {
       bbn.fn.log(data);
-      throw new Error("The object given is not compatible with bbnData");
+      throw Error("The object given is not compatible with bbnData");
     }
 
     if (data?.__bbnData) {
-      throw new Error("bbnData cannot be initialized multiple times");
+      throw Error("bbnData cannot be initialized multiple times");
     }
 
     if (parent && !(parent instanceof bbnData)) {
-      throw new Error("parent must be a bbnData");
+      throw Error("parent must be a bbnData");
     }
 
     /**
@@ -53,7 +86,7 @@ class bbnData/* extends EventTarget*/ {
      */
     const id = Symbol();
     // The object is added to the data inventory
-    bbn.cp.dataInventory.set(id, this);
+    bbnData.inventory.set(id, this);
     Object.defineProperty(this, 'id', {
       writable: false,
       configurable: false,

@@ -74,7 +74,7 @@ const cpDef = {
     let isJSON = this.value && bbn.fn.isString(this.value);
     let value = this.value ? (isJSON ? JSON.parse(this.value) : bbn.fn.clone(this.value)) : [];
     if (!bbn.fn.isArray(value)) {
-      throw new Error("The value of bbn-values must be an array");
+      throw Error("The value of bbn-values must be an array");
     }
     return {
       isJSON: isJSON,

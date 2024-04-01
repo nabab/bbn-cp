@@ -1,3 +1,4 @@
+import bbn from '@bbn/bbn';
 import treatArgument from './treatArgument.js';
 
 /**
@@ -9,7 +10,7 @@ import treatArgument from './treatArgument.js';
  * @param {string} [hash='_root'] - The hash associated with this result, defaults to '_root' if not provided.
  * @returns {*} The updated result value.
  */
-export default function setExpResult(cp, attr, hash, data) {
+export default function setExpResult(cp, attr, hash, data, force) {
   const r = cp.$expResults;
   // Ensure the existence of a result object for the given name.
   if (!r[attr.hash]) {
@@ -21,45 +22,44 @@ export default function setExpResult(cp, attr, hash, data) {
     hash = '_root';
   }
 
-  const v = () => attr.fn.bind(cp)(...attr.args.map(a => {
-    let res;
-    try {
-      // Process each argument using treatArgument.
-      res = treatArgument(cp, a, hash, data);
-    }
-    catch(e) {
-      // Log and rethrow any errors encountered during argument processing.
-      bbn.fn.log(["ERROR IN TREAT ARGUMENT", e, a, cp, hash, attr, data]);
-      throw e;
-    }
+  if (!r[attr.hash][hash] || force || (r[attr.hash][hash].num <= cp.$numBuild)) {
+    const v = () => {
+      const args = attr.args ? attr.args.map(a => {
+        let res;
+        try {
+          // Process each argument using treatArgument.
+          res = treatArgument(cp, a, hash, data);
+        }
+        catch(e) {
+          // Log and rethrow any errors encountered during argument processing.
+          bbn.fn.log(["ERROR IN TREAT ARGUMENT", e, a, cp, hash, attr, data]);
+          throw e;
+        }
+    
+        return res; // Return the processed argument.
+      }) : [];
 
-    return res; // Return the processed argument.
-  }));
-
-  // If the result for the given name and hash doesn't exist, create it.
-  if (!r[attr.hash][hash]) {
+      return attr.fn.bind(cp)(...args);
+    };
     const expValue = v();
-    r[attr.hash][hash] = bbn.fn.createObject({
-      state: 'NEW', // Mark the state as new.
-      value: expValue,   // Set the provided result.
-      num: cp.$numBuild + 1, // Set the build number.
-      old: bbnData.hash(expValue) // Store a hash of the value for comparison purposes.
-    });
-    cp.$tick();
-  }
-  else if (r[attr.hash][hash].num <= cp.$numBuild) {
-    const expValue = v();
+    // If the result for the given name and hash doesn't exist, create it.
+    if (!r[attr.hash][hash]) {
+      r[attr.hash][hash] = bbn.fn.createObject({
+        state: 'NEW', // Mark the state as new.
+        value: expValue,   // Set the provided result.
+        old: bbnData.hash(expValue), // Store a hash of the value for comparison purposes.
+      });
+      cp.$tick();
+    }
     // If the existing state is 'DEL', update the value and mark as new.
-    if (r[attr.hash][hash].state === 'DEL') {
+    else if (r[attr.hash][hash].state === 'DEL') {
       r[attr.hash][hash].value = expValue;
       r[attr.hash][hash].state = 'NEW';
-      r[attr.hash][hash].num = cp.$numBuild + 1;
       cp.$tick();
     }
     // If the state is 'TMP', update the value and determine if it has been modified.
     else if (r[attr.hash][hash].state === 'TMP') {
       r[attr.hash][hash].value = expValue;
-      r[attr.hash][hash].num = cp.$numBuild + 1;
       const _o = bbnData.hash(expValue);
       // Check if the value has changed since the last update.
       if (!bbn.fn.isSame(r[attr.hash][hash].old, _o)) {
@@ -73,6 +73,9 @@ export default function setExpResult(cp, attr, hash, data) {
       }
 
     }
+
+    r[attr.hash][hash].num = cp.$numBuild + 1;
+    //r[attr.hash][hash].dependencies = dependencies;
   }
 
   // Return the updated result value.

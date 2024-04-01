@@ -11,7 +11,7 @@ export default function applySchemaOnComponent (cp, props) {
   if (props) {
     bbn.fn.checkType(props, "object", "Props must be an object in applySchemaOnComponent");
     if (props.bbn) {
-      throw new Error("Props cannot contain a bbn property in applySchemaOnComponent");
+      throw Error("Props cannot contain a bbn property in applySchemaOnComponent");
     }
   }
 
@@ -57,9 +57,11 @@ export default function applySchemaOnComponent (cp, props) {
     for (let n in cp.$el.bbnSchema?.props || {}) {
       if (!['class', 'style'].includes(n)) {
         let value = cp.$el.bbnSchema.props[n];
+        let isProp = false;
 
         if (Object.hasOwn(cp.$props, n)) {
           setProp(cp, n, value);
+          isProp = true;
         }
 
         if (bbn.fn.isPrimitive(value)) {
@@ -69,7 +71,7 @@ export default function applySchemaOnComponent (cp, props) {
           }
 
           const isAttr = (cp.$el[propName] !== undefined);
-          if (isAttr) {
+          if (isAttr && !cp.$tpl[0].attr?.[n]) {
             const attr = cp.$el[propName];
             if (attr !== value) {
               if (!value) {
@@ -97,13 +99,11 @@ export default function applySchemaOnComponent (cp, props) {
     }
 
     for (let n in props) {
-      if (!['class', 'style'].includes(n) && !Object.hasOwn(cp.$el?.bbnSchema?.props || {}, n)) {
-        if (Object.hasOwn(cp.$props, n)) {
-          setProp(cp, n, props[n]);
-        }
-        else if (cp.$el[n] !== undefined) {
-          cp.$el[n] = bbn.fn.isString(props[n]) ? props[n] : props[n]?.toString() || '';
-        }
+      if (!['class', 'style'].includes(n)
+          && Object.hasOwn(cp.$el?.bbnSchema?.props || {}, n)
+          && (cp.$el[n] !== undefined)
+      ) {
+        cp.$el[n] = bbn.fn.isString(props[n]) ? props[n] : props[n]?.toString() || '';
       }
     }
   }

@@ -25,7 +25,7 @@ bbnData.prototype.unset = function(noParent) {
         bbn.fn.warning(bbn._(err, cp.$options.name, cp.$cid));
         bbn.fn.log([this, cp, it]);
         return;
-        //throw new Error(bbn._(err, cp.$options.name, cp.$cid));
+        //throw Error(bbn._(err, cp.$options.name, cp.$cid));
       }
       
       if (it.parent) {
@@ -42,7 +42,7 @@ bbnData.prototype.unset = function(noParent) {
       }
     }
     else {
-      throw new Error(bbn._("Impossible to find the component %s", cp.$cid));
+      throw Error(bbn._("Impossible to find the component %s", cp.$cid));
     }
   });
 
@@ -60,7 +60,7 @@ bbnData.prototype.unset = function(noParent) {
   }
   */
 
-  bbn.cp.dataInventory.delete(id);
+  bbnData.inventory.delete(id);
   delete this.data.__bbnData;
 };
 

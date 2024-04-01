@@ -60,7 +60,7 @@ const noSpaceTags = [
  */
 export default function analyzeElement(ele, inlineTemplates, idx) {
   if (!ele.getAttributeNames) {
-    throw new Error("Only tags can be analyzed");
+    throw Error("Only tags can be analyzed");
   }
 
   bbn.fn.checkType(inlineTemplates, 'object', "Inline templates must be an object");
@@ -97,7 +97,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
     const modifiers = main[0].split('.');
     const modelValue = main.length > 1 ? main[1] : '_default_';
     if (main[1] === '_default_') {
-      throw new Error("The name '_default_' is reserved for the default value of the model");
+      throw Error("The name '_default_' is reserved for the default value of the model");
     }
 
     let a = bbn.fn.camelToCss(modifiers.splice(0, 1)[0]);
@@ -161,13 +161,13 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
       switch (a) {
         case 'bbn-for':
           if (attr['bbn-elseif'] || attr['bbn-else']) {
-            throw new Error(bbn._("bbn-for can't be used with bbn-else-if or bbn-else"));
+            throw Error(bbn._("bbn-for can't be used with bbn-else-if or bbn-else"));
           }
 
           // Retrieving the expression used by loop
           const match = value.match(/\s(in|of)\s/);
           if (!match) {
-            throw new Error(bbn._("Invalid loop expression"));
+            throw Error(bbn._("Invalid loop expression"));
           }
     
           const itemExp = value.substr(0, match.index).trim();
@@ -182,7 +182,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
             let tmp = bbn.fn.substr(itemExp, 1, -1).split(',');
             // There's at least one expression
             if (!tmp.length) {
-              throw new Error(bbn._("Invalid loop expression"));
+              throw Error(bbn._("Invalid loop expression"));
             }
     
             // That would be the value's name'
@@ -200,7 +200,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
 
           // No value no chocolate
           if (!args.value) {
-            throw new Error(bbn._("Invalid loop expression"));
+            throw Error(bbn._("Invalid loop expression"));
           }
 
           res.loop = bbn.fn.createObject({
@@ -231,7 +231,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
         case 'bbn-elseif':
         case 'bbn-else':
           if (res.condition) {
-            throw new Error(bbn._("There can't be more than one conditional expressions on the same tag"));
+            throw Error(bbn._("There can't be more than one conditional expressions on the same tag"));
           }
 
           let type = a.substr(4);
@@ -427,7 +427,7 @@ export default function analyzeElement(ele, inlineTemplates, idx) {
         isIf = true;
       }
       else if (!isIf) {
-        throw new Error(bbn._("There can't be an elseif or an else without an if"));
+        throw Error(bbn._("There can't be an elseif or an else without an if"));
       }
       else {
         item.conditionId = conditionId;

@@ -21,7 +21,7 @@ export default function define(name, obj, tplSt, css) {
   if (!name) {
     bbn.fn.warning("BOO");
     bbn.fn.log(obj);
-    throw new Error("The name of the component is mandatory");
+    throw Error("The name of the component is mandatory");
   }
 
   // Convert the template string to a DOM array.
@@ -32,7 +32,7 @@ export default function define(name, obj, tplSt, css) {
   bbn.fn.iterate(tmp.inlineTemplates, (tpl, tag) => {
     if (!obj.components[tag]) {
       bbn.fn.log(Object.keys(cpCfg.components).join(", "));
-      throw new Error("Impossible to find the sub component %s", tag);
+      throw Error("Impossible to find the sub component %s", tag);
     }
     obj.components[tag].template = tpl;
   });

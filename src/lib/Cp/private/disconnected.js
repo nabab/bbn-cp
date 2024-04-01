@@ -35,7 +35,7 @@ export default function disconnected(cp) {
       let id = cp.$values[cp.$values.length -1];
       const data = bbnData.retrieve(id);
       if (!data) {
-        throw new Error(bbn._("Impossible to find a piece of data in %s", cp.$options.name));
+        throw Error(bbn._("Impossible to find a piece of data in %s", cp.$options.name));
       }
       else {
         //bbn.fn.log('Removing 1 loop data for ' + cp.$cid + ' in ' + cp.$options.name + ' / path: ' + data.path);

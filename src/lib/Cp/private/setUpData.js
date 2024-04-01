@@ -13,7 +13,6 @@ export default function setUpData(cp, name, value) {
           cp.$computed[cp.$currentComputed].dependencies.push(name);
         }
         */
-
         return cp.$dataValues[name];
       },
       set(v) {

@@ -1,31 +1,6 @@
 export default {
   methods: {
     /**
-     * @method getDefaultURL
-     * @fires parseURL
-     * @return {String}
-     */
-    getDefaultURL() {
-      let url = this.parseURL(bbn.env.path);
-
-      if (!url && this.url) {
-        url = this.url;
-      }
-
-      // If there is a parent router we automatically give the proper baseURL
-      if (!url && this.parentContainer && (this.parentContainer.currentURL !== this.parentContainer.url)) {
-        url = bbn.fn.substr(this.parentContainer.currentURL, this.parentContainer.url.length + 1);
-      }
-
-      if (!url && this.def) {
-        url = this.def;
-      }
-
-      return url;
-    },
-
-
-    /**
     * @method getTitle
     * @param {Number} idx
     * @return {String}

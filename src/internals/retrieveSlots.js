@@ -14,7 +14,7 @@ export default function retrieveSlots(tpl, res = bbn.fn.createObject()) {
       let idx = node.attr && node.attr.name ? node.attr.name.value : 'default';
       if (!idx) {
         // Throw an error if the slot name is invalid.
-        throw new Error(bbn._("Invalid slot name"));
+        throw Error(bbn._("Invalid slot name"));
       }
 
       // Initialize an array for the slot if it's not already present in the result object.

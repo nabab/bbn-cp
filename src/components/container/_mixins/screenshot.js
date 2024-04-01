@@ -66,7 +66,7 @@ export default {
         if (!img) {
           bbn.fn.log(bbn._("Impossible to take the screenshot of") + ' ' + this.getFullCurrentURL());
           return;
-          //throw new Error(bbn._("Impossible to take the screenshot of " + this.getFullCurrentURL()));
+          //throw Error(bbn._("Impossible to take the screenshot of " + this.getFullCurrentURL()));
         }
         this.thumbnail = img.src;
         // This is in fact an insert/update

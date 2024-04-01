@@ -12,12 +12,11 @@ export default function setData(cp, name, v) {
     return setUpData(cp, name, v);
   }
 
+  v = cp.$treatValue(v, name);
   if (cp.$dataValues[name] !== v) {
     let isMod = true;
-    // Will remain the same if not simple Obj/Array
-    const oldV = bbnData.getValue(cp.$dataValues[name]);
     // Getting the bbnData object
-    let oldDataObj = bbnData.getObject(oldV);
+    let oldDataObj = bbnData.getObject(cp.$dataValues[name]);
     if (oldDataObj) {
       if (oldDataObj.isSame(v)) {
         isMod = false;

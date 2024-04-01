@@ -1029,7 +1029,7 @@ const list = {
               if (!this.loadingRequestID || (this.loadingRequestID !== loadingRequestID)) {
                 this.isLoading = false;
                 this.loadingRequestID = false;
-                throw new Error("No loading request");
+                throw Error("No loading request");
               }
 
               this.isLoading = false;

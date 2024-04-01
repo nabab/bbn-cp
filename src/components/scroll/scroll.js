@@ -869,7 +869,7 @@ const cpDef = {
     async initSize() {
       //window.bbn.fn.log("initSize");
       //await this.$forceUpdate();
-      //throw new Error("BOOOOOO");
+      //throw Error("BOOOOOO");
       this.getNaturalDimensions();
       if (this.inFloater === null) {
         this.inFloater = !!this.closest('bbn-floater');
@@ -1083,7 +1083,7 @@ const cpDef = {
       this.scrollReady = true;
       bbn.fn.log("PARENT", this.$parent);
       if ((typeof bbnFloaterCp === 'function') && (this.$parent instanceof bbnFloaterCp)) {
-        throw new Error("BOOOOOO");
+        throw Error("BOOOOOO");
       }
     });
     //cp.$emit('resizecontent');

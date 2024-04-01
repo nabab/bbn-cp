@@ -36,6 +36,6 @@ export default function treatArgument(cp, a, hash, data) {
   // If none of the above conditions are met, throw an error.
   else {
     bbn.fn.log([hash, data]);
-    throw new Error(bbn._("Impossible to find the argument %s in component %s", a, cp.$options.name));
+    throw Error(bbn._("Impossible to find the argument %s in component %s", a, cp.$options.name));
   }
 }

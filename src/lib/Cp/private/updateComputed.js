@@ -4,7 +4,7 @@ import propagateDependencyChanges from "./propagateDependencyChanges.js";
 export default function updateComputed(cp, name, val) {
   // If the computed property does not exist in cp's options
   if (!cp.$computed[name]) {
-    throw new Error(bbn._("The computed %s is not defined in %s", name, cp.$options.name));
+    throw Error(bbn._("The computed %s is not defined in %s", name, cp.$options.name));
   }
 
   //bbn.fn.log("UPDATING COMPUTED " + name + " IN " + cp.$options.name, val);

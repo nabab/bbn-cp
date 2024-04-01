@@ -42,7 +42,7 @@ export default function addUrlAsPrefix(prefix, url, mixins){
       }
     }
     catch (e) {
-      throw new Error(e);
+      throw Error(e);
     }
 
     const res = bbn.fn.createObject({
@@ -56,7 +56,7 @@ export default function addUrlAsPrefix(prefix, url, mixins){
           definition = eval(obj.script);
         }
         catch (e) {
-          throw new Error(e);
+          throw Error(e);
         }
         if (!bbn.fn.isEmpty(mixins) && definition) {
           if (!definition.mixins) {

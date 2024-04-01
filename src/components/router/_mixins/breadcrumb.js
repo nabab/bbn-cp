@@ -127,7 +127,7 @@ export default {
       if (bbn.fn.isNumber(idx) && this.views[idx]) {
         let url = this.views[idx].url,
           bc = bbn.fn.getRow(this.breadcrumbsList, { baseURL: url + '/' });
-        if (this.urls[url] && bc) {
+        if (this.urls[this.views[idx].uid] && bc) {
           ret.push(...bc.breadcrumbs);
         }
       }

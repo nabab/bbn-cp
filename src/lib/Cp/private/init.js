@@ -7,7 +7,7 @@ import addNamespace from "./addNamespace.js";
  */
 export default function init(cp) {
   if (Object.hasOwn(cp, '$isInit')) {
-    throw new Error("Illegal init call");
+    throw Error("Illegal init call");
   }
 
   /**

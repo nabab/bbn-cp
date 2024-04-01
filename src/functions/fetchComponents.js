@@ -53,7 +53,7 @@ export default async function fetchComponents(toDefine) {
     });
 
     if (handlerIdx === -1) {
-      throw new Error("Impossible to find a handler for " + tag);
+      throw Error("Impossible to find a handler for " + tag);
     }
 
     // Group components under the same prefix.
@@ -88,7 +88,7 @@ export default async function fetchComponents(toDefine) {
       // Define each component in the group.
       bbn.fn.each(res.components, obj => {
         if (!obj.definition || !obj.name) {
-          throw new Error(bbn._("Impossible to find a definition or a name in %s", rule.prefix));
+          throw Error(bbn._("Impossible to find a definition or a name in %s", rule.prefix));
         }
 
         // Add mixins to the component definition.

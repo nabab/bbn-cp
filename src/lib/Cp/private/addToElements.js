@@ -47,7 +47,7 @@ export default function addToElements(cp, ele) {
         else {
           bbn.fn.log(["Element exist error with hash", cp, cp.$elements[id][hash], ele, id, hash]);
           removeDOM(cp, cp.$elements[id][hash]);
-          //throw new Error("The element " + id + " with hash " + hash + " already exists in the DOM");
+          //throw Error("The element " + id + " with hash " + hash + " already exists in the DOM");
         }
       }
       cp.$elements[id][hash] = ele;
@@ -64,7 +64,7 @@ export default function addToElements(cp, ele) {
       else {
         bbn.fn.log(["Element exist error", cp, cp.$elements[id], ele, id]);
         removeDOM(cp, cp.$elements[id]);
-        //throw new Error("The element " + id + " already exists in the DOM");
+        //throw Error("The element " + id + " already exists in the DOM");
       }
     }
 

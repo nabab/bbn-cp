@@ -1,7 +1,11 @@
-<div :class="['bbn-overlay' , componentClass, {'bbn-unselectable': isSorting}]"
+<div :class="[componentClass, {
+  'bbn-unselectable': isSorting,
+  'bbn-overlay': scrollable
+}]"
      @mouseleave="sortTargetIndex = null; isSorting = false">
   <bbn-scroll :scrollable="scrollable"
               ref="scroll"
+              bbn-forget="!scrollable"
               bbn-bind="scrollable ? {axis: 'y'} : {}"
               @ready="onResize"
               :class="{

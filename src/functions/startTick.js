@@ -7,7 +7,7 @@ import launch from '../lib/Cp/private/launch.js';
 export default function startTick() {
   // Check if the tick process is already initiated.
   if (bbn.cp.interval) {
-    throw new Error(bbn._("The tick is already started"));
+    throw Error(bbn._("The tick is already started"));
   }
 
   let lastUpdate;
