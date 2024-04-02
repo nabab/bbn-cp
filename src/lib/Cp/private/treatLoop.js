@@ -32,6 +32,7 @@ export default async function treatLoop(
     if (data) {
       bbn.fn.checkType(data, Object);
     }
+
     // Evaluate the loop expression and determine its type.
     let loopValue = node.loop.exp ? setExpResult(cp, node.loop, hash, data) : node.loop.value;
     let conditionValue = true;

@@ -1015,8 +1015,8 @@ const cpDef = {
       source: {
         deep: true,
         handler(){
-          bbn.fn.warning('form changed')
           this.dirty = this.isModified();
+          this.canSubmit = this._canSubmit();
           if (this.storage) {
             if (!this._isSetting) {
               this.setStorage(this.source)

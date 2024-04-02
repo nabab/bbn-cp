@@ -189,8 +189,9 @@ const cpDef = {
      * @return {Boolean}
      */
     isDisabled(){
-      return typeof(this.disabled) === 'function' ?
-        this.disabled() : this.disabled
+      const res = typeof(this.disabled) === 'function' ?
+        this.disabled() : this.disabled;
+      return res ? 'disabled' : '';
     },
     /**
      * Returns the style of the button

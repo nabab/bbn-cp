@@ -70,7 +70,7 @@ bbnData.proxy = function(component, path, targetObj) {
           dataObj.update(false);
         }
         else {
-          targetObj.update(true, key);
+          targetObj.update(false, key);
         }
 
       }

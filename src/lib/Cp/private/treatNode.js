@@ -25,7 +25,7 @@ import applyPropsOnElement from "./applyPropsOnElement.js";
  * @param {Array} hashList - An array of elements done through an upper loop
  * @returns {HTMLElement|null} The processed element or null if no element is processed.
  */
-export default async function treatNode(
+export default async function treatNode (
   cp,
   node,
   hash,
@@ -65,22 +65,21 @@ export default async function treatNode(
       forgotten = true;
     }
 
+    const isOldComment = old && bbn.fn.isComment(old);
     // Determine if the element already exists or needs to be created.
-    if (!go && !forgotten && (!old || bbn.fn.isComment(old))) {
+    if (!go && !forgotten && (!old || isOldComment || (old.tagName !== node.tag.toUpperCase()))) {
       go = true;
     }
 
     let isComponent;
     // Only for showable elements (no template, transition, forget, etc.)
     if (go) {
-      /** @var {Object} props The schema of the element */
-      const isOldComment = ele && bbn.fn.isComment(ele);
       if (isOldComment && node.comment) {
         node.comment = false;
       }
   
       go = treatProperties(cp, node, hash, data, go);
-      // If no element we must go on
+        // If no element we must go on
       if (isOldComment || !old) {
         go = true;
       }

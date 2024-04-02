@@ -90,7 +90,7 @@ export default function stringToTemplate(str, withMap, name) {
   )
   .filter(n => n.tagName && (n.tagName.toLowerCase() !== 'script'))
   .map(a => {
-    const tmp = analyzeElement(a, inlineTemplates, num.toString());
+    const tmp = analyzeElement(a, inlineTemplates, num.toString(), name);
     num++;
     return tmp.res;
   });
