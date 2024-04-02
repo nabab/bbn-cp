@@ -101,7 +101,10 @@ export default function applySchemaOnComponent (cp, props) {
         if (Object.hasOwn(cp.$props, n)) {
           setProp(cp, n, props[n]);
         }
-        else if (cp.$el[n] !== undefined) {
+        if (cp.$el[n] !== undefined) {
+          if (!props[n]) {
+            cp.$el.removeAttribute(n);
+          }
           cp.$el[n] = bbn.fn.isString(props[n]) ? props[n] : props[n]?.toString() || '';
         }
       }

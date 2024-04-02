@@ -13,12 +13,12 @@ export default function addNamespace(cp, name, type) {
 
   // Ensures that the type is defined
   if (!type) {
-    throw new Error(bbn._("Type must be defined for %s", name));
+    throw Error(bbn._("Type must be defined for %s", name));
   }
 
   // Checks if the name is among the list of reserved names in the bbn.var.reserved array
   if (bbn.var.reserved.includes(name)) {
-    throw new Error(bbn._("The name %s is reserved", name));
+    throw Error(bbn._("The name %s is reserved", name));
   }
 
   // Checks for namespace conflicts: if the namespace already exists and is of a different type
@@ -32,7 +32,7 @@ export default function addNamespace(cp, name, type) {
       name
     ]);
     // Throws an error indicating the conflict
-    throw new Error(bbn._("The name %s in %s is already used by %s in %s", name, type, cp.$namespaces[name], cp.$options.name));
+    throw Error(bbn._("The name %s in %s is already used by %s in %s", name, type, cp.$namespaces[name], cp.$options.name));
   }
 
   // If no conflicts, adds the name to the $namespaces object with its type

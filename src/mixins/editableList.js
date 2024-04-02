@@ -199,7 +199,7 @@ const editableList = {
      */
     edit(row, winOptions, index) {
       if (!this.editable) {
-        throw new Error(_("The component is not editable, you cannot use the edit function"));
+        throw Error(_("The component is not editable, you cannot use the edit function"));
       }
       if ( !winOptions ){
         winOptions = {};
@@ -292,7 +292,7 @@ const editableList = {
             },
           };
         } else {
-          throw new Error(bbn._("Impossible to open a window if either an editor or a URL is not set"))
+          throw Error(bbn._("Impossible to open a window if either an editor or a URL is not set"))
         }
         popup.onClose = () => {
           bbn.fn.log("AFTER CLOSER");

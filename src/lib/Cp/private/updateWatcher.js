@@ -6,7 +6,7 @@ export default function updateWatcher(cp, name, v, init) {
       let name = bits.join('.');
       if (cp.$watcher[name]?.handler) {
         if (!bbn.fn.isFunction(cp.$watcher[name].handler)) {
-          throw new Error(bbn._("Watchers must be function, wrong parameter for %s", name));
+          throw Error(bbn._("Watchers must be function, wrong parameter for %s", name));
         }
 
         const hash = bbnData.hash(v);

@@ -25,7 +25,13 @@ export default class bbnAnonCp extends bbnCp {
       writable: false,
       configurable: false
     });
-  }
+    Object.defineProperty(this, '$computed', {
+      value: bbn.fn.createObject(),
+      writable: false,
+      configurable: false
+    });
+
+}
 
   async $connected() {
     //bbn.fn.log("ANON!!! ",this.$el.bbnSchema.props?.is);
@@ -50,7 +56,7 @@ export default class bbnAnonCp extends bbnCp {
     if (cfg && cfg.computed) {
       bbn.fn.iterate(cfg.computed, (computed, name) => {
         if (name.substr(0, 1) === '$') {
-          throw new Error(bbn._("Properties starting with the dollar sign are reserved"));
+          throw Error(bbn._("Properties starting with the dollar sign are reserved"));
         }
 
         bbn.cp.setComputed(this, name, computed.get, computed.set);
@@ -65,7 +71,7 @@ export default class bbnAnonCp extends bbnCp {
       });
       bbn.fn.iterate(cfg.methods, (fn, name) => {
         if (name.substr(0, 1) === '$') {
-          throw new Error(bbn._("Properties starting with the dollar sign are reserved"));
+          throw Error(bbn._("Properties starting with the dollar sign are reserved"));
         }
 
         if (this[name] === undefined) {

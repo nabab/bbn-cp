@@ -85,11 +85,11 @@ const cpDef = {
    */
   async mounted() {
     if ( !this.router ){
-      throw new Error(bbn._("bbn-container cannot be rendered without a bbn-router"));
+      throw Error(bbn._("bbn-container cannot be rendered without a bbn-router"));
     }
 
     this.screenshotMounted();
-    await this.coreMounted();
+    await this.selectionMounted();
   },
   /**
    * @event beforeDestroy
@@ -122,6 +122,7 @@ const cpDef = {
 
 import cpHtml from './container.html';
 import cpStyle from './container.less';
+import bbn from '@bbn/bbn';
 let cpLang = {};
 if (bbn.env.lang) {
   try {

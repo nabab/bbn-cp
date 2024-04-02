@@ -229,7 +229,7 @@ const cpDef = {
      */
     registerFunction(fn) {
       if (!bbn.fn.isFunction(fn)) {
-        throw new Error(bbn._("%s takes a function as argument", "registerFunction"));
+        throw Error(bbn._("%s takes a function as argument", "registerFunction"));
       }
 
       let signature = bbn.fn.md5(fn.toString());
@@ -357,7 +357,7 @@ const cpDef = {
             if (!this.loadingRequestID || (this.loadingRequestID !== loadingRequestID)) {
               this.isLoading = false;
               this.loadingRequestID = false;
-              throw new Error("No loading request");
+              throw Error("No loading request");
             }
 
             this.isLoading = false;

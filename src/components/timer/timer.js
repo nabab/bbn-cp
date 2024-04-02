@@ -258,10 +258,10 @@
      */
     init(){
       if (this.precisionIdx === -1) {
-        throw new Error(bbn._("The precision is incorrect"));
+        throw Error(bbn._("The precision is incorrect"));
       }
       else if (this.scaleIdx === -1) {
-        throw new Error(bbn._("The scale is incorrect"));
+        throw Error(bbn._("The scale is incorrect"));
       }
       else {
         let tmp = bbn.fn.isFunction(this.source) ? this.source() : this.source;

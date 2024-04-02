@@ -417,14 +417,14 @@ const cpDef = {
     },
     register(name, cp) {
       if (this.registeredComponents[name]) {
-        throw new Error(bbn._("%s is already registered", name));
+        throw Error(bbn._("%s is already registered", name));
       }
 
       if (cp) {
         this.registeredComponents[name] = cp;
       }
       else {
-        throw new Error(bbn._("The component that should be registered as %s does not exist", name));
+        throw Error(bbn._("The component that should be registered as %s does not exist", name));
       }
     },
     unregister(name, ignore) {
@@ -432,7 +432,7 @@ const cpDef = {
         delete this.registeredComponents[name];
       }
       else if (!ignore) {
-        throw new Error(bbn._("The component") + ' ' + name + ' ' + bbn._("is not registered"));
+        throw Error(bbn._("The component") + ' ' + name + ' ' + bbn._("is not registered"));
       }
     },
     getRegistered(name, ignore) {
@@ -444,7 +444,7 @@ const cpDef = {
       }
 
       if (!ignore) {
-        throw new Error(bbn._("The component") + ' ' + name + ' ' + bbn._("cannot be found"));
+        throw Error(bbn._("The component") + ' ' + name + ' ' + bbn._("cannot be found"));
       }
     },
     getField: bbn.fn.getField,
@@ -755,7 +755,7 @@ const cpDef = {
   },
   created() {
     if (window.appui) {
-      throw new Error("Impossible to have 2 bbn-appui components on a same page. bbn-appui is meant to hold a whole web app");
+      throw Error("Impossible to have 2 bbn-appui components on a same page. bbn-appui is meant to hold a whole web app");
     }
     else {
       window.appui = this;
@@ -945,28 +945,8 @@ const cpDef = {
       if (this.$refs.app) {
         this.app = this.$refs.app;
       }
-      this.onResize();
       this.ready = true;
-      this.opacity = 1;
-      this._postMessage({
-        type: 'initCompleted'
-      });
-      if (!this.single) {
-        this.registerChannel('appui', true);
-        if (this.plugins['appui-chat']) {
-          this.registerChannel('appui-chat');
-        }
-        if (this.plugins['appui-notification']) {
-          this.registerChannel('appui-notification');
-          this.browserNotificationURL = this.plugins['appui-notification'];
-          this.browserNotificationSW = true;
-        }
-        this.poll();
-      }
-      this.onResize();
       setTimeout(() => {
-        this.ready = true;
-        this.opacity = 1;
         setTimeout(() => {
           this._postMessage({
             type: 'initCompleted'
@@ -981,7 +961,9 @@ const cpDef = {
             this.browserNotificationSW = true;
           }
           this.poll();
-        }, 5000);
+          this.opacity = 1;
+          this.onResize();
+        }, 1000);
       }, this.app?.header ? 1000 : 10);
     }
   },
@@ -1019,6 +1001,7 @@ const cpDef = {
   }
 };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './appui.html';
 import cpStyle from './appui.less';
 let cpLang = {};

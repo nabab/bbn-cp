@@ -105,8 +105,8 @@ export default {
       bbn.fn.each(this.views, (v, i) => {
         if (v.idx !== i) {
           v.idx = i;
-          if (this.urls[v.url]) {
-            this.urls[v.url].currentIndex = i;
+          if (this.urls[v.uid]) {
+            this.urls[v.uid].currentIndex = i;
           }
         }
       });

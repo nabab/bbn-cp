@@ -38,7 +38,7 @@ bbnCp.prototype.$connected = async function () {
   }
   if (Object.hasOwn(this, '$isInit')) {
     bbn.fn.log("WTF " + this.constructor.name);
-    throw new Error("WTF " + this.constructor.name);
+    throw Error("WTF " + this.constructor.name);
   }
 
   init(this);
@@ -85,7 +85,7 @@ bbnCp.prototype.$connected = async function () {
         // Generating
         const fn = templateToFunction(this, this.$el.constructor.bbnTpl);
         if (!fn) {
-          throw new Error(bbn._("Impossible to create the template evaluator"));
+          throw Error(bbn._("Impossible to create the template evaluator"));
         }
         // Setting in component's constructor
         this.$el.constructor.prototype.bbnEval = fn;
@@ -96,7 +96,7 @@ bbnCp.prototype.$connected = async function () {
       // Generating
       const fn = templateToFunction(this, this.$el.bbnTpl);
       if (!fn) {
-        throw new Error(bbn._("Impossible to create the template evaluator"));
+        throw Error(bbn._("Impossible to create the template evaluator"));
       }
       // Setting in component's property
       Object.defineProperty(this.$el, 'bbnEval', {

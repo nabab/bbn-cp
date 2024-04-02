@@ -15,7 +15,7 @@
 export default function checkPropValue(cp, name, cfg, value) {
   // Checking if the property configuration exists.
   if (!cfg) {
-    throw new Error(bbn._("The property %s is not defined in component %s", name, cp.$options.name));
+    throw Error(bbn._("The property %s is not defined in component %s", name, cp.$options.name));
   }
 
   // Determining if the property is explicitly defined in the component's data.
@@ -36,7 +36,7 @@ export default function checkPropValue(cp, name, cfg, value) {
   if (!cp.$numBuild && !isDefined && (cfg.default !== undefined)) {
     // Ensuring that default object values are returned by a function.
     if (bbn.fn.isObject(cfg.default) || bbn.fn.isArray(cfg.default)) {
-      throw new Error(bbn._("A function must be used to return object default values in %s", name));
+      throw Error(bbn._("A function must be used to return object default values in %s", name));
     }
 
     // Assigning default value; if it's a function, execute the function to get the value.
@@ -46,7 +46,7 @@ export default function checkPropValue(cp, name, cfg, value) {
 
   // Check if the property is required and not properly defined or has an empty value.
   if (cfg.required && (!isDefined || [null, undefined, ''].includes(v))) {
-    throw new Error(bbn._("The property %s is required in component %s", name, cp.$options.name));
+    throw Error(bbn._("The property %s is required in component %s", name, cp.$options.name));
   }
 
   // Type checking for the property value.
@@ -56,7 +56,7 @@ export default function checkPropValue(cp, name, cfg, value) {
 
   // Custom validation for the property.
   if (isDefined && bbn.fn.isFunction(cfg.validator) && !cfg.validator(v)) {
-    throw new Error(bbn._("The property %s is invalid", name));
+    throw Error(bbn._("The property %s is invalid", name));
   }
 
   // Returning the validated value.

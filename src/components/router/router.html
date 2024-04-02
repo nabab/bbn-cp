@@ -2,7 +2,8 @@
              'bbn-invisible': !ready,
              'bbn-overlay': (nav || scrollContent),
              'bbn-w-100': !scrollContent
-             }]">
+             }]"
+      @keydown.esc="onEscape">
   <bbn-splitter :resizable="resizable"
                 :collapsible="collapsible"
                 :full-size="scrollContent"
@@ -16,9 +17,9 @@
                   'bbn-flex-width': hasVerticalTabs,
                   'bbn-router-nav': nav,
                   'bbn-router-nabbn-bc': nav && isBreadcrumb,
-                  'bbn-router-nabbn-verticaltabs': hasVerticalTabs,
-                  'bbn-w-100': !scrollContent
-                  }">
+                  'bbn-router-nabbn-verticaltabs': hasVerticalTabs
+                  }"
+           bbn-forget="!nav && !scrollContent">
         <!-- START OF BREADCRUMB -->
         <div bbn-if="nav && isBreadcrumb && !isVisual"
             ref="breadcrumb"
@@ -123,29 +124,20 @@
                   :position="orientation === 'auto' ? undefined : orientation"/>
         <!-- END OF LEFT|TOP TABS -->
         <!-- START OF CONTENT -->
-        <div :class="{
-            'bbn-flex-fill': scrollContent,
-            'bbn-w-100': !scrollContent,
-        }">
-          <bbn-scroll bbn-if="ready"
-              :class="{
-                      'bbn-router-scroller': isVisual,
-                      }"
+        <div class="bbn-flex-fill"
+             bbn-if="ready"
+             bbn-forget="!scrollContent">
+          <bbn-scroll class="bbn-router-scroller"
               :scrollable="visualShowAll"
               :style="{
                 overflow: 'auto',
                 height: visualShowAll || scrollContent ? '100%' : 'auto'
               }"
-              bbn-forget="!scrollContent">
-            <div :class="{
-                        'bbn-overlay': scrollContent && !visualShowAll,
-                        'bbn-w-100': isVisual && !scrollContent || visualShowAll,
-                        'bbn-router-visual': isVisual
-                      }"
-                :style="isVisual ? visualStyle : {}"
-                bbn-if="ready"
+              bbn-forget="!isVisual">
+            <div class="bbn-w-100 bbn-router-visual"
+                :style="visualStyle"
                 ref="visualRouter"
-                @keydown.esc="onEscape"
+                bbn-forget="!isVisual"
                 :tabindex="isVisual && visualShowAll ? 0 : -1">
               <div bbn-if="isVisual && (selected !== null) && (views.length > numVisuals)"
                   :class="'bbn-bg-black bbn-white bbn-p' + (visualShowAll ? '  bbn-container-ratio' : '')"
@@ -156,18 +148,15 @@
                   </div>
                 </div>
               </div>
+              <slot :filter="filterIsContainer"/>
               <template bbn-for="a in (isVisual ? visualList : views)"
-                        :key="isVisual ? a.view.url : a.url">
-                <slot bbn-if="(isVisual && a.view.real) || a.real"
-                      class="bbn-router-container-fake"
-                      :style="visualStyleContainer[a.view.url || a.url]"
-                      :ref="'ct-' + (isVisual ? a.view.url : a.url)"/>
-                <bbn-container bbn-elseif="!component"
+                        :key="isVisual ? a.view.uid : a.uid">
+                <bbn-container bbn-if="!a.real && !component"
                               :visual="isVisual"
                               :portal="routed && getPane(a) ? '#' + (a.view?.pane || a.pane) + slashToHyphen(a.view?.url || a.url) : false"
                               :style="visualStyleContainer[a.view?.url || a.url]"
                               bbn-bind="isVisual ? a.view : a"/>
-                <bbn-container bbn-elseif="component"
+                <bbn-container bbn-elseif="!a.real && component"
                               :source="componentSource"
                               :portal="routed && getPane(a) ? '#' + (a.view?.pane || a.pane) + slashToHyphen(a.view?.url || a.url) : false"
                               :visual="isVisual"

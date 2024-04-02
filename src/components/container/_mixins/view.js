@@ -150,6 +150,13 @@ export default {
       type: [String, Number]
     },
     /**
+     * Defines the uid.
+     * @prop {String} url
+     */
+    uid: {
+      type: String
+    },
+    /**
      * @prop current
      * @prop {String|Number} current
      */
@@ -199,7 +206,7 @@ export default {
       isPinned: this.pinned,
       /**
        * True if the container is fixed.
-       * @data {Boolean} isStatic
+       * @data {Boolean} isFixed
        */
       isFixed: this.fixed,
       /**
@@ -207,17 +214,28 @@ export default {
        * @data {String} currentURL
        */
       currentURL: this.current || this.url,
-      currentIndex: this.idx || null
+      routerUid: this.uid
     }
   },
   computed: {
+    currentIndex() {
+      return this.currentView?.idx;
+    },
     currentView() {
       if (!this.router) {
         this.router = this.closest('bbn-router');
       }
 
       if (this.router) {
-        return bbn.fn.getRow(this.router.views, {idx: this.currentIndex})
+        const o = {};
+        if (this.routerUid) {
+          o.uid = this.routerUid;
+        }
+        else {
+          o.url = this.url;
+        }
+
+        return bbn.fn.getRow(this.router.views, o)
       }
 
       return null;
@@ -467,6 +485,22 @@ export default {
       set(v) {
         if ( this.currentView ){
           this.currentView.current = v;
+        }
+      }
+    },
+    /**
+     * The selected prop
+     * @prop {Object} cfg
+     */
+    currentSelected: {
+      get() {
+        return this.currentView?.selected;
+      },
+      set(v) {
+        if (this.currentView && (this.currentView.selected !== v)) {
+          if (v) {
+            this.show();
+          }
         }
       }
     },
@@ -878,6 +912,7 @@ export default {
      * @param {String} oldVal 
      */
     currentURL(newVal, oldVal){
+      /*
       // Auto cancelling if it does not correspond to the url
       if ( !newVal || (newVal.indexOf(this.url) !== 0) ){
         this.currentURL = this.url;
@@ -886,6 +921,7 @@ export default {
       else if (this.router && this.router.$isInit && this.currentView && (this.currentView.current !== newVal)) {
         this.router.route(newVal)
       }
+      */
     },
     dirty(v){
       let view = this.router.getView(this.url);
@@ -893,6 +929,6 @@ export default {
         view.dirty = v;
         this.router.retrieveDirtyContainers();
       }
-    }
+    },
   }
 }

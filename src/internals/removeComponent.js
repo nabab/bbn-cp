@@ -9,7 +9,7 @@ import bbn from "@bbn/bbn";
 export default function removeComponent(cid) {
   // Validate that the component ID is provided.
   if (!cid) {
-    throw new Error("The component doesn't have a component ID");
+    throw Error("The component doesn't have a component ID");
   }
 
   // Retrieve the component from the global components index using the provided ID.
@@ -18,7 +18,7 @@ export default function removeComponent(cid) {
   // Check if the component exists in the index.
   if (!cp) {
     // Throw an error if the component is not found in the index.
-    throw new Error("The component is already removed");
+    throw Error("The component is already removed");
   }
 
   // If the component exists, remove it from the global components index.

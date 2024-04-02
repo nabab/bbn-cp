@@ -10,7 +10,7 @@ import getExpValue from "../Cp/private/getExpValue.js";
 export default class bbnBuilder/* extends EventTarget*/ {
   constructor(cp, tpl) {
     if (bbn.fn.numProperties(cp.$fns)) {
-      throw new Error("The component's functions have already been generated");
+      throw Error("The component's functions have already been generated");
     }
 
     this.cp = cp;

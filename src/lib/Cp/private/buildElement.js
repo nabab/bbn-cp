@@ -22,7 +22,7 @@ export default async function buildElement(cp, node, parent, data, before, items
   bbn.fn.checkType(cp, bbnCp, "No component in buildElement");
   bbn.fn.checkType(node, "object", "Props must be an object in buildElement");
   if (node.bbn) {
-    throw new Error("Props cannot contain a bbn property in buildElement");
+    throw Error("Props cannot contain a bbn property in buildElement");
   }
 
   // Check if the node represents a component and not a comment

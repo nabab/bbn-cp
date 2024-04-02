@@ -5,7 +5,7 @@ export default async function handleElement(cp, id, hash) {
   const props = bbn.fn.createObject();
   const element = cp.$retrieveElement(id, hash);
   if (!element) {
-    throw new Error("Impossible to find the element " + id + " in " + cp.$options.name);
+    throw Error("Impossible to find the element " + id + " in " + cp.$options.name);
   }
 
   bbn.fn.error("TREAT NODE ON HANDLE")

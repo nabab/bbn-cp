@@ -67,7 +67,7 @@ export default async function createApp(ele, obj) {
       }
     }
     catch (e) {
-      throw new Error(e);
+      throw Error(e);
     }
 
     const res = bbn.fn.createObject({

@@ -32,6 +32,7 @@ export default async function treatLoop(
     if (data) {
       bbn.fn.checkType(data, Object);
     }
+
     // Evaluate the loop expression and determine its type.
     let loopValue = node.loop.exp ? setExpResult(cp, node.loop, hash, data) : node.loop.value;
     let conditionValue = true;
@@ -70,7 +71,7 @@ export default async function treatLoop(
       // Evaluate the condition for the current loop iteration.
       if (newNode.condition) {
         if (newNode.condition.type !== 'if') {
-          throw new Error("The condition in a loop can only be of type 'if'");
+          throw Error("The condition in a loop can only be of type 'if'");
         }
         conditionValue = setExpResult(cp, newNode.condition, hash, loopData);
       } else {

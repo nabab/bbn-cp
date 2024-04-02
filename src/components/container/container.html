@@ -1,17 +1,16 @@
 <div :class="[componentClass, {
   'bbn-container-ratio': router?.visualShowAll,
   'bbn-overlay': !visual && router?.scrollContent,
-  'bbn-w-100': !router?.scrollContent && !router?.visualShowAll
+  'bbn-w-100': !router?.scrollContent && !router?.visualShowAll,
+  'bbn-background': true,
 }]"
      @subready.stop
+     title=""
      :style="visual ? visualStyle : {}"
      bbn-portal="portal"
      bbn-show="(!router?.isVisual && isVisible) || isVisualVisible || isPane">
-  <div :class="{
-    'bbn-overlay': true,
-    'bbn-container-full-screen': fullScreen,
-  }"
-       bbn-forget="!router?.scrollContent">
+  <div class="bbn-container-full-screen"
+       bbn-forget="!fullScreen">
     <transition name="fade"
                 @enter="enter"
                 @after-enter="onResize">
@@ -20,6 +19,7 @@
         'bbn-flex-height': (!isPane && (router?.isVisual || fullScreen)) && router?.scrollContent,
         'bbn-w-100': visual || !router?.scrollContent
       }"
+          bbn-forget="isPane || !router?.isVisual"
           bbn-show="isVisible || router?.isVisual">
         <!-- The header -->
         <div bbn-if="!isPane && (visual || fullScreen)"
@@ -59,7 +59,6 @@
         </div>
         <!-- The main container (the one we take screenshots of) -->
         <div :class="{
-          'bbn-background': true,
           'bbn-overlay': !fullScreen && !router?.isVisual && !isPane && router?.scrollContent,
           'bbn-flex-fill': (fullScreen || (router?.isVisual && !isPane)) && router?.scrollContent,
           'bbn-w-100': !router?.scrollContent,

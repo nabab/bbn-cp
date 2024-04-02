@@ -7,7 +7,7 @@ import addNamespace from "./addNamespace.js";
  */
 export default function init(cp) {
   if (Object.hasOwn(cp, '$isInit')) {
-    throw new Error("Illegal init call");
+    throw Error("Illegal init call");
   }
 
   /**
@@ -185,14 +185,6 @@ export default function init(cp) {
     }
   });
 
-
-  /**
-   * Object of all elements with bbn-model prop.
-   * Indexed by element's id with bbn-model's value as value
-   */
-  Object.defineProperty(cp, '$computed', {
-    value: bbn.fn.createObject()
-  });
 
   // Setting $eval with the retrived/generated function
   Object.defineProperty(cp, '$oldValues', {

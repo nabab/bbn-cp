@@ -8,7 +8,7 @@ import bbnData from "../Data.js";
  */
 bbnData.prototype.addComponent = function(component, path, parent) {
   if (!(component instanceof bbnCp)) {
-    throw new Error(bbn._("bbnData hasComponent must be called with a bbn component"));
+    throw Error(bbn._("bbnData hasComponent must be called with a bbn component"));
   }
 
   if (!bbn.fn.count(this.refs, {component, path})) {

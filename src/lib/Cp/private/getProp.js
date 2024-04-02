@@ -5,7 +5,7 @@ export default function getProp(cp, name) {
     setProp(cp, name, cp.$el.bbnSchema.props[name]);
   }
 
-  let v = bbnData.getValue(cp.$props[name]);
+  //let v = bbnData.getValue(cp.$props[name]);
 
   /** @todo build2
   if (cp.$currentComputed && !cp.$computed[cp.$currentComputed].dependencies.includes(name)) {
@@ -20,7 +20,7 @@ export default function getProp(cp, name) {
       if (cp.$isInit) {
         if (cp.$watcher?.[name]?.handler) {
           if (!bbn.fn.isFunction(cp.$watcher[name].handler)) {
-            throw new Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
+            throw Error(bbn._("Watchers must be function, wrnmg parameter for %s", name));
           }
           const oldV = cp.$watcher[name].value;
           cp.$watcher[name].value = v;
@@ -34,5 +34,5 @@ export default function getProp(cp, name) {
   }
   */
 
-  return v;
+  return cp.$props[name];
 }

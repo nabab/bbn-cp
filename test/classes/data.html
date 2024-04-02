@@ -49,19 +49,36 @@
         // your tests here
         describe("bbnData test suite", function () {
           before(async function() {
-            app = await bbn.cp.createApp(document.getElementById('app'), {
-              data: {
-                foo: 'bar'
+            ele = document.getElementById('app');
+            app = await bbn.cp.createApp(ele, {
+              data() {
+                return {
+                  foo: 'bar',
+                  obj: dummyObj()
+                };
+              },
+              mounted() {
+                setTimeout(() => {
+                  this.obj.name = "Ettore";
+                  bbn.fn.log("Just changed obj name");
+                }, 3000);
+              },
+              watch: {
+                obj: {
+                  deep: true,
+                  handler (newVal, oldVal) {
+                    bbn.fn.log('obj changed', newVal, oldVal);
+                  }
+                }
               }
             });
             expect(app).to.be.an.instanceof(bbnCp);
+            await app.$nextTick();
+            ele = document.getElementById('app');
             expect(ele).to.be.an.instanceof(HTMLElement);
-              await setTimeout(() => {
-                ele = document.getElementById("app");
-                expect(ele).to.have.property('bbn');
-                cp = ele.bbn;
-                bbn.fn.log('?');
-            });
+            expect(ele).to.have.property('bbn');
+            cp = ele.bbn;
+            bbn.fn.log('?');
           });
           describe('#constructor', () => {
             it('should initialize correctly with valid data', () => {

@@ -11,16 +11,16 @@ export default function setUpProp(cp, name, cfg) {
   }
 
   if (name.indexOf('data-') === 0) {
-    throw new Error(bbn._("The name of the property cannot start with %s", 'data-'));
+    throw Error(bbn._("The name of the property cannot start with %s", 'data-'));
   }
 
   if (name.indexOf('aria-') === 0) {
-    throw new Error(bbn._("The name of the property cannot start with %s", 'aria-'));
+    throw Error(bbn._("The name of the property cannot start with %s", 'aria-'));
   }
 
   /*
   if (globalAttributes.includes(name)) {
-    throw new Error(bbn._("The name of the property cannot be a global attribute: %s", name));
+    throw Error(bbn._("The name of the property cannot be a global attribute: %s", name));
   }
   */
 

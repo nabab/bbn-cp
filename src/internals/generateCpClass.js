@@ -54,6 +54,14 @@ export default function generateCpClass(publicClass, obj) {
         configurable: false
       });
 
+      /**
+       * Object of all elements with bbn-model prop.
+       * Indexed by element's id with bbn-model's value as value
+       */
+      Object.defineProperty(this, '$computed', {
+        value: bbn.fn.createObject()
+      });
+
       // Set up computed properties.
       if (obj.computed) {
         for (let n in obj.computed) {
@@ -82,14 +90,14 @@ export default function generateCpClass(publicClass, obj) {
         res = f(iface);
         if (res) {
           if (!bbn.fn.isObject(res)) {
-            throw new Error(bbn._("If the static method returns it must be an object"));
+            throw Error(bbn._("If the static method returns it must be an object"));
           }
           bbn.fn.iterate(res, (v, n) => {
             if (this[n] === undefined) {
               this[n] = bbnData.immunizeValue(v);
             }
             else {
-              throw new Error(bbn._("The static method cannot override an existing property"));
+              throw Error(bbn._("The static method cannot override an existing property"));
             }
           });
         }

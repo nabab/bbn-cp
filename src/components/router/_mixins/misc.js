@@ -55,11 +55,6 @@ export default {
   },
   data() {
     return {
-      /**
-       * False until the first routing.
-       * @data {Boolean} [false] isInit
-       */
-      isInit: false,
     }
   },
   computed: {
@@ -97,14 +92,14 @@ export default {
           this.visualStyleContainer[view.url] = {};
         }
 
-        if (!this.urls[view.url]) {
+        if (!this.urls[view.uid]) {
           return;
         }
 
-        const ct = this.urls[view.url];
+        const ct = this.urls[view.uid];
         if (!ct?.isVisible || this.visualShowAll) {
-          if (this.visualStyleContainer[view.url].zoom != 0.5) {
-            this.visualStyleContainer[view.url] = { zoom: 0.1 };
+          if (this.visualStyleContainer[view.uid].zoom != 0.5) {
+            this.visualStyleContainer[view.uid] = { zoom: 0.1 };
           }
 
           return;
@@ -128,13 +123,13 @@ export default {
         }
 
 
-        if ((this.visualStyleContainer[view.url].zoom != 1)
-          || (this.visualStyleContainer[view.url].gridColumnStart != coord[0])
-          || (this.visualStyleContainer[view.url].gridColumnEnd != coord[1])
-          || (this.visualStyleContainer[view.url].gridRowStart != coord[2])
-          || (this.visualStyleContainer[view.url].gridRowEnd != coord[3])
+        if ((this.visualStyleContainer[view.uid].zoom != 1)
+          || (this.visualStyleContainer[view.uid].gridColumnStart != coord[0])
+          || (this.visualStyleContainer[view.uid].gridColumnEnd != coord[1])
+          || (this.visualStyleContainer[view.uid].gridRowStart != coord[2])
+          || (this.visualStyleContainer[view.uid].gridRowEnd != coord[3])
         ) {
-          this.visualStyleContainer[view.url] = {
+          this.visualStyleContainer[view.uid] = {
             gridColumnStart: coord[0],
             gridColumnEnd: coord[1],
             gridRowStart: coord[2],
@@ -145,20 +140,6 @@ export default {
       });
 
       return this.visualStyleContainer;
-    },
-
-
-    async init(url) {
-      if (!this.isInit) {
-        if (this.numRegistered) {
-          this.isInit = true;
-        }
-
-        await this.$forceUpdate();
-        if (this.auto) {
-          await this.route(url, true);
-        }
-      }
     },
 
 

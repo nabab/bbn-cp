@@ -333,75 +333,11 @@ const cpDef = {
         isInit: false,
         canSubmit: false,
         sourceTimeout: 0,
-        isClosing: false
+        isClosing: false,
+        realButtons: []
       };
     },
     computed: {
-      /**
-       * Returns an array containing the form's buttons.
-       *
-       * @computed realButtons
-       * @return {Array}
-       */
-      realButtons(){
-        let r = [];
-        if ( this.buttons ){
-          bbn.fn.each(this.buttons, a => {
-            let t = typeof(a);
-            let obj;
-            if ( t === 'string' ){
-              switch ( a ){
-                case 'cancel':
-                  obj = {
-                    preset: 'cancel',
-                    text: this.cancelText,
-                    icon: 'nf nf-fa-times_circle',
-                    action: () => {
-                      this.cancel();
-                    },
-                    disabled: !this.canCancel
-                  };
-                  break;
-                case 'reset':
-                  obj = {
-                    preset: 'reset',
-                    text: this.resetText,
-                    icon: 'nf nf-fa-refresh',
-                    action: () => {
-                      this.reset();
-                    },
-                    disabled: !this.dirty && !this.prefilled
-                  };
-                  break;
-                case 'submit':
-                  obj = {
-                    preset: 'submit',
-                    text: this.submitText,
-                    icon: 'nf nf-fa-check_circle',
-                    action: () => {
-                      this.submit();
-                    },
-                    disabled: !this.canSubmit
-                  };
-                  break;
-              }
-            }
-            else if ( t === 'object' ){
-              if ( (typeof a.action === 'string') && bbn.fn.isFunction(this[a.action]) ){
-                a.action = this[a.action];
-              }
-              obj = a;
-            }
-            if (obj) {
-              if (this.isLoading) {
-                obj.disabled = true;
-              }
-              r.push(obj);
-            }
-          });
-        }
-        return r;
-      },
       /**
        * Returns true if the form has a footer.
        *
@@ -411,8 +347,8 @@ const cpDef = {
       hasFooter(){
         return this.$slots.footer && this.$slots.footer.length;
       },
-      canCancel(){
-        return this.window || this.isModified();
+      canCancel() {
+        return this._canCancel();
       },
       
       /**
@@ -461,6 +397,92 @@ const cpDef = {
       }
     },
     methods: {
+      /**
+       * Returns an array containing the form's buttons.
+       *
+       * @computed realButtons
+       * @return {Array}
+       */
+      updateRealButtons(full) {
+        let r = [];
+        if (full) {
+          this.realButtons.splice(0, this.realButtons.length);
+        }
+        if (!this.realButtons.length && this.buttons?.length) {
+          bbn.fn.each(this.buttons, a => {
+            let t = typeof(a);
+            let obj;
+            if ( t === 'string' ){
+              switch ( a ){
+                case 'cancel':
+                  obj = {
+                    preset: 'cancel',
+                    text: this.cancelText,
+                    icon: 'nf nf-fa-times_circle',
+                    action: () => {
+                      this.cancel();
+                    },
+                    disabled: !this._canCancel()
+                  };
+                  break;
+                case 'reset':
+                  obj = {
+                    preset: 'reset',
+                    text: this.resetText,
+                    icon: 'nf nf-fa-refresh',
+                    action: () => {
+                      this.reset();
+                    },
+                    disabled: !this.dirty && !this.prefilled
+                  };
+                  break;
+                case 'submit':
+                  obj = {
+                    preset: 'submit',
+                    text: this.submitText,
+                    icon: 'nf nf-fa-check_circle',
+                    action: () => {
+                      this.submit();
+                    },
+                    disabled: !this.canSubmit
+                  };
+                  break;
+              }
+            }
+            else if ( t === 'object' ){
+              if ( (typeof a.action === 'string') && bbn.fn.isFunction(this[a.action]) ){
+                a.action = this[a.action];
+              }
+              obj = a;
+            }
+            if (obj) {
+              if (this.isLoading) {
+                obj.disabled = true;
+              }
+              r.push(obj);
+            }
+          });
+          this.realButtons.push(...r);
+        }
+        else if (this.realButtons.length) {
+          bbn.fn.map(bbn.fn.filter(this.realButtons, a => {
+            if (a.preset === 'cancel') {
+              a.disabled = !this._canCancel();
+            }
+            else if (a.preset === 'reset') {
+              a.disabled = !this.dirty && !this.prefilled;
+            }
+            else if (a.preset === 'submit') {
+              a.disabled = !this.canSubmit;
+            }
+          }));
+        }
+
+        return r;
+      },
+      _canCancel() {
+        return this.window || this.isModified();
+      },
       /**
        * Returns true if the form can be submitted.
        *
@@ -851,7 +873,7 @@ const cpDef = {
             this.tab = this.closest("bbn-container");
           }
           this.canSubmit = this._canSubmit();
-          this.updateButtons();
+          this.updateRealButtons();
           this.isInit = true;
           if (this.autofocus) {
             this.focusFirst();
@@ -993,8 +1015,8 @@ const cpDef = {
       source: {
         deep: true,
         handler(){
-          bbn.fn.warning('form changed')
           this.dirty = this.isModified();
+          this.canSubmit = this._canSubmit();
           if (this.storage) {
             if (!this._isSetting) {
               this.setStorage(this.source)
@@ -1018,7 +1040,7 @@ const cpDef = {
         deep: true,
         handler(){
           if ( this.isInit ){
-            this.updateButtons();
+            this.updateRealButtons(true);
           }
         }
       },
@@ -1026,13 +1048,13 @@ const cpDef = {
        * @watch canSubmit
        */
       canSubmit(){
-        this.updateButtons();
+        this.updateRealButtons();
       },
       /**
        * @watch canCancel
        */
       canCancel(){
-        this.updateButtons();
+        this.updateRealButtons();
       },
       /**
        * @watch dirty
@@ -1049,11 +1071,12 @@ const cpDef = {
         this.currentMode = v;
       },
       isLoading() {
-        this.updateButtons();
+        this.updateRealButtons();
       }
     }
   };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './form.html';
 import cpStyle from './form.less';
 let cpLang = {};

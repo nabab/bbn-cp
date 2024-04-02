@@ -226,7 +226,7 @@ const cpDef = {
      */
     registerFunction(fn) {
       if (!bbn.fn.isFunction(fn)) {
-        throw new Error(bbn._("%s takes a function as argument", "registerFunction"));
+        throw Error(bbn._("%s takes a function as argument", "registerFunction"));
       }
 
       let signature = bbn.fn.md5(fn.toString());

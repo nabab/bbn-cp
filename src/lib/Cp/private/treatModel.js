@@ -1,5 +1,7 @@
 import bbn from "@bbn/bbn";
 import setProp from "./setProp.js";
+import setExpResult from "./setExpResult.js";
+import bbnData from "../../Data/Data.js";
 /**
  * Processes an element in the virtual DOM of a web component.
  * It handles the creation and updating of elements, binding properties and events,
@@ -53,19 +55,14 @@ export default async function treatModel(cp, node, hash, ele, data) {
             obj[modelVarBits[modelVarBits.length - 1]] = eventValue;
           }
           else if (cp.$namespaces[modelVarRoot]) {
-            let obj = cp[modelVarRoot];
-            bbn.fn.each(modelVarBits, (v, i) => {
-              if (!Object.hasOwn(obj, v) && Object.hasOwn(data, v)) {
-                modelVarBits[i] = data[v];
-                obj = obj[data[v]];
-              }
-              else {
-                obj = obj[v];
-              }
-            });
-            //bbn.fn.log(["MOSWL LISTENER 2", obj]);
-            obj = modelVarBits.length > 1 ? bbn.fn.getProperty(cp[modelVarRoot], ...modelVarBits.slice(0, -1)) : cp[modelVarRoot];
-            obj[modelVarBits[modelVarBits.length - 1]] = eventValue;
+            bbnData.startWatching();
+            setExpResult(cp, m, hash, data, true);
+            const dataObj = bbnData.getLastUsed();
+            dataObj.data.value[dataObj.name] = eventValue;
+            cp.$tick();
+            if (ele.bbn) {
+              ele.bbn.$tick();
+            }
           }
           else {
             throw new Error("Invalid model variable " + modelVarName);

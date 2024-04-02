@@ -4,10 +4,10 @@
  * @param {Object} loopVars - The loop variables in the current context.
  * @param {Object} a - The attribute or property object.
  * @param {Object} node - The current node in the template.
- * @param {boolean} isEvent - Indicates if the function is for an event.
+ * @param {boolean} type - Indicates if the function is for an event.
  * @returns {Function} A function to evaluate the expression.
  */
-const expToFn = (cp, loopVars, a, node, isEvent) => {
+const expToFn = (cp, loopVars, a, node, type) => {
   if (a.exp) {
     const deps = [];
     bbn.fn.each(Object.keys(cp.$namespaces), arg => {
@@ -21,13 +21,15 @@ const expToFn = (cp, loopVars, a, node, isEvent) => {
         args.push(...v);
       }
     });
-    if (isEvent) {
+    if (type === 'event') {
       let stFn = 'const $_bbnData = {';
       bbn.fn.each(args, arg => {
         stFn += `  ${arg}: bbn.fn.hash(${arg}),\n`;
       });
       stFn += `};\n`;
+      stFn += `if (bbnData.isWatching) {bbnData.watchStarted = true;}\n`;
       stFn += `${a.exp}\n`;
+      stFn += `if (bbnData.watchStarted) {bbnData.watchStarted = false;}\n`;
       bbn.fn.each(args, arg => {
         stFn += `if ($_bbnData['${arg}'] !== bbn.fn.hash(${arg})) {\n`;
         if (loopVars[arg]) {
@@ -40,7 +42,14 @@ const expToFn = (cp, loopVars, a, node, isEvent) => {
       a.fn = new Function(...args, stFn);
     }
     else {
-      a.fn = new Function(...args, 'return (' + (a.exp || (node.type === 'else' ? 'true' : '')) + ')');
+      let stFn = `if (bbnData.isWatching) {bbnData.watchStarted = true;}\n`;
+      stFn += 'const res = (' + (a.exp || (node.type === 'else' ? 'true' : '')) + ')\n';
+      stFn += `if (bbnData.watchStarted) {bbnData.watchStarted = false;}\n`;
+      stFn += `return res;\n`;
+      a.fn = new Function(...args, stFn);
+      if (type === 'model') {
+        a.setter = new Function('bbnValue', ...args, a.exp + ' = bbnValue; return bbnValkue;');
+      }
     }
 
     a.args = args;
@@ -113,7 +122,7 @@ export default function mapDependencies(cp) {
     if (node.events) {
       bbn.fn.iterate(node.events, a => {
         if (a.exp) {
-          const args = expToFn(cp, loopVars, a, node, true);
+          const args = expToFn(cp, loopVars, a, node, 'event');
           deps.push(...args);
         }
       });
@@ -122,7 +131,7 @@ export default function mapDependencies(cp) {
     if (node.model) {
       bbn.fn.iterate(node.model, a => {
         if (a.exp) {
-          const args = expToFn(cp, loopVars, a, node);
+          const args = expToFn(cp, loopVars, a, node, 'model');
           deps.push(...args);
         }
       });

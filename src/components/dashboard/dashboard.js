@@ -331,7 +331,7 @@ const cpDef = {
        */
       scrollable: {
         type: Boolean,
-        default: true
+        default: false
       },
       /**
        * The source of the dashboard.
@@ -555,7 +555,7 @@ const cpDef = {
        */
       onResize(){
         let ele = this.getRef('container');
-        if (ele) {
+        if (ele && ele.clientWidth) {
           let actualWidth = parseInt(window.getComputedStyle(ele).width),
               num = 1,
               steps = [800, 1150, 1550, 2200, 3000, 3800];
@@ -900,7 +900,7 @@ const cpDef = {
       resizeScroll(){
         //bbn.fn.log("RESIZE SCROLL");
         if ( this.scrollable && this.$refs.scroll ){
-          this.getRef('scroll').onResize();
+          //this.getRef('scroll').onResize();
         }
       },
       /**

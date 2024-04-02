@@ -19,7 +19,7 @@ bbnData.treatValue = function(value, component, path, parent) {
       if (!dataObj) {
         bbn.fn.log(value);
         bbn.fn.warning(bbn._("The data inventory does not contain the data object"));
-        throw new Error(bbn._("The data inventory does not contain the data object"));
+        throw Error(bbn._("The data inventory does not contain the data object"));
       }
 
       if (!parent) {
@@ -30,10 +30,11 @@ bbnData.treatValue = function(value, component, path, parent) {
     }
 
     if (value.__bbnComponent) {
-      throw new Error(bbn._("The data object is a component definition"));
+      throw Error(bbn._("The data object is a component definition"));
     }
 
     const dataObj = new bbnData(value, component, path, parent);
+
     return dataObj.value;
   }
 

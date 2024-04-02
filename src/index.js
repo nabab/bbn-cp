@@ -7,7 +7,6 @@ import "./lib/Data/prototype/isSame.js";
 import "./lib/Data/prototype/removeComponent.js";
 import "./lib/Data/prototype/unset.js";
 import "./lib/Data/prototype/update.js";
-import "./lib/Data/prototype/updateChildren.js";
 import "./lib/Data/static/getObject.js";
 import "./lib/Data/static/getValue.js";
 import "./lib/Data/static/immunizeValue.js";

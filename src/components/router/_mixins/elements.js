@@ -19,7 +19,7 @@ export default {
         idx = this.selected;
       }
 
-      return this.urls[this.views[idx]?.url];
+      return this.urls[this.views[idx]?.uid];
     },
     /**
      * Returns the corresponding container's component's DOM element.

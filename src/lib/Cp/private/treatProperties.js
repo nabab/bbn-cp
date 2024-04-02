@@ -63,8 +63,12 @@ export default function treatProperties(cp, node, hash, data, go = false) {
     }
 
     // If 'bbn-bind' is used, extend the properties with the resolved binding value.
-    if (bbn.fn.numProperties(bindValue)) {
-      bbn.fn.extendOut(props, bindValue);
+    if (bindValue) {
+      bbn.fn.iterate(bindValue, (v, p) => {
+        if (!node.attr[p] || (props[p] === undefined)) {
+          props[p] = v;
+        }
+      });
     }
 
     // Special handling for 'class' attribute to merge classes properly.

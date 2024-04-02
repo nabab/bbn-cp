@@ -1,3 +1,4 @@
+import bbn from "@bbn/bbn";
 import setExpResult from "./setExpResult.js";
 
 /**
@@ -23,32 +24,36 @@ export default async function treatSlot(cp, node, hash, parent, data) {
 
     // Check if there are elements to be placed in this slot.
     if (cp.$el.bbnSlots?.[slot]?.length) {
+      const filter = node.attr?.filter ? setExpResult(cp, node.attr.filter, hash, data) : false;
+      const filterFn = a => {
+        return filter ? filter(a) : true;
+      }
       // Iterate over each element designated for this slot.
       bbn.fn.each(cp.$el.bbnSlots[slot], a => {
-        // Prepare a search object to find the element in the slot.
-        let search = {bbnId: a.bbnId};
-        if (a.bbnHash) {
-          search.bbnHash = a.bbnHash;
-        }
+        if (filterFn(a)) {
+          // Prepare a search object to find the element in the slot.
+          let search = {bbnId: a.bbnId};
+          if (a.bbnHash) {
+            search.bbnHash = a.bbnHash;
+          }
 
-        // Handle the case where the slot is inside another component.
-        if ((parent !== cp.$el) && bbn.cp.isComponent(parent)) {
-          let idx = bbn.fn.search(parent.bbnSlots[slot], search);
-          parent.bbnSlots[slot].splice(idx > -1 ? idx : parent.bbnSlots[slot].length, idx > -1 ? 1 : 0, a);
-        }
-        // Handle the case where the element is not yet mounted.
-        else if (!a.parentNode) {
-          let idx = bbn.fn.search(parent.childNodes, search);
-          if (idx > -1) {
-            parent.replaceChild(a, parent.childNodes[idx]);
+          // Handle the case where the slot is inside another component.
+          if ((parent !== cp.$el) && bbn.cp.isComponent(parent)) {
+            if (!parent.bbnSlots[slot].includes(a)) {
+              let idx = bbn.fn.search(parent.bbnSlots[slot], search);
+              parent.bbnSlots[slot].splice(idx > -1 ? idx : parent.bbnSlots[slot].length, idx > -1 ? 1 : 0, a);
+            }
           }
-          else {
-            parent.appendChild(a);
+          // Handle the case where the element is not yet mounted.
+          else if (!a.parentNode) {
+            let idx = bbn.fn.search(parent.childNodes, search);
+            if (idx > -1) {
+              parent.replaceChild(a, parent.childNodes[idx]);
+            }
+            else {
+              parent.appendChild(a);
+            }
           }
-        }
-        else if (a.bbnId === "0-1-0-0-0") {
-          bbn.fn.warning("----- 000000 SLOT 0000000000 -----");
-          bbn.fn.log(a);
         }
       });
     }

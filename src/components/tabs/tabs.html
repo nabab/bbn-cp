@@ -89,7 +89,7 @@
                 <div class="bbn-tabs-selected"
                      :ref="'selector-' + tabIndex"
                      bbn-if="tabIndex === value"
-                     :style="{backgroundColor: selectedBarColor || altTextColor}"/>
+                     :style="{backgroundColor: tab.fcolor || altTextColor}"/>
                 <span bbn-if="!tab.fixed && !tab.pinned && closable"
                       class="bbn-p bbn-router-tab-close bbn-iblock bbn-top-right bbn-hxspadded"
                       tabindex="-1"

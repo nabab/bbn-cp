@@ -146,21 +146,5 @@ export default {
       }
     },
 
-    async coreMounted() {
-      if (!this.router.ready) {
-        bbn.fn.warning("ROUTER NOT READY");
-        this.router.$on('ready', () => {
-          bbn.fn.warning("ROUTER INITING");
-          this.init();
-        });
-      }
-      else{
-        bbn.fn.warning("ROUTER REGISTERING FOR " + this.url);
-        this.router.register(this);
-        await this.$nextTick();
-        this.init();
-      }
-    }
-
   }
 }

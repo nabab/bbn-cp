@@ -105,7 +105,6 @@ const cpObj = bbn.fn.createObject({
     view
   }),
   defaults: bbn.fn.createObject(),
-  dataInventory: new Map(),
   version: 1,
   spaceHash: bbn.fn.hash(' '),
   queue: [],

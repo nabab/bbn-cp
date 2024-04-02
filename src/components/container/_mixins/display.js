@@ -82,17 +82,8 @@ export default {
         this.$emit(nv ? 'view' : 'unview', this);
       }
 
-      if (nv && this.router) {
-        if (!this.isLoaded && !this.isLoading) {
-          this.router.load(this.currentURL, true)
-        }
-
-        if (!this.ready) {
-          this.$nextTick(() => {
-            this.onResize();
-            this.init();
-          }); 
-        }
+      if (nv) {
+        this.onShow();
       }
     },
     /**

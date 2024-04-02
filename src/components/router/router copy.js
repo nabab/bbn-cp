@@ -1754,10 +1754,10 @@ const cpDef = {
           row = bbn.fn.getRow(this.views, { url: url });
         }
         if (!row) {
-          throw new Error(bbn._("Impossible to find a container for the URL %s", url));
+          throw Error(bbn._("Impossible to find a container for the URL %s", url));
         }
         if (!this.urls[row.url]) {
-          throw new Error(bbn._("The container for the URL %s is not registered", row.url));
+          throw Error(bbn._("The container for the URL %s is not registered", row.url));
         }
         container = this.urls[row.url];
       }
@@ -2561,7 +2561,7 @@ const cpDef = {
       }
       else {
         //bbn.fn.log(url, this.views[0].loading, this.views[0].url, JSON.stringify(Object.keys(this.urls), null, 2));
-        //throw new Error(bbn._("Impossible to find the container for URL") + ' ' + url);
+        //throw Error(bbn._("Impossible to find the container for URL") + ' ' + url);
       }
     },
     checkLoaded(idx) {
@@ -3571,10 +3571,10 @@ const cpDef = {
         let paneIndex = bbn.fn.search(this.currentPanes, { id: paneId });
         let pane = this.currentPanes[paneIndex];
         if (!pane) {
-          throw new Error(bbn._("Impossible to find the pane with ID %s", paneId));
+          throw Error(bbn._("Impossible to find the pane with ID %s", paneId));
         }
         if (pane.tabs.length) {
-          throw new Error(bbn._("Impossible to remove the pane with ID %s as it has still containers inside", paneId));
+          throw Error(bbn._("Impossible to remove the pane with ID %s as it has still containers inside", paneId));
         }
 
         this.currentPanes.splice(paneIndex, 1);
@@ -3590,7 +3590,7 @@ const cpDef = {
     addToPane(containerIdx, paneId) {
       let view = this.views[containerIdx];
       if (!view) {
-        throw new Error(bbn._("Impossible to find the view with index") + ' ' + containerIdx);
+        throw Error(bbn._("Impossible to find the view with index") + ' ' + containerIdx);
       }
 
       if (view.dirty) {
@@ -3757,7 +3757,7 @@ const cpDef = {
 
         if (!node.comment && ['bbn-container', 'bbns-container'].includes(node?.tag)) {
           if (node.props.url === undefined) {
-            throw new Error(bbn._("You cannot use containers in router without defining a URL property"));
+            throw Error(bbn._("You cannot use containers in router without defining a URL property"));
           }
           if (!this.hasRealContainers) {
             this.hasRealContainers = true;
@@ -3785,7 +3785,7 @@ const cpDef = {
     bbn.fn.each(this.source, (a, i) => {
       if (a.url === '') {
         if (a.load) {
-          throw new Error(bbn._("You cannot use containers with empty URL for loading"));
+          throw Error(bbn._("You cannot use containers with empty URL for loading"));
         }
         this.hasEmptyURL = true;
       }
@@ -3819,7 +3819,7 @@ const cpDef = {
     //bbn.fn.warning("ROUTER BEFORE MOUNT");
     bbn.fn.each(tmp, a => {
       if (!bbn.fn.isString(a.url)) {
-        throw new Error(bbn._("The container must have a valid URL"));
+        throw Error(bbn._("The container must have a valid URL"));
       }
 
       // Setting current if URL starts with default URL
@@ -3959,7 +3959,7 @@ const cpDef = {
         }
       }
       else {
-        throw new Error("The view with index " + idx + " doesn't exist");
+        throw Error("The view with index " + idx + " doesn't exist");
       }
     },
     currentTitle(v) {
@@ -4071,7 +4071,7 @@ const cpDef = {
     source(v, ov) {
       bbn.fn.each(v, a => {
         if (!bbn.fn.isString(a.url)) {
-          throw new Error(bbn._("The container must have a valid URL"));
+          throw Error(bbn._("The container must have a valid URL"));
         }
 
         // Setting current if URL starts with default URL

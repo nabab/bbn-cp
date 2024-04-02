@@ -46,7 +46,7 @@ export default function convertClasses(...args) {
     // If the format is not recognized, log the value and throw an error.
     else {
       bbn.fn.log(css);
-      throw new Error(bbn._("Can't understand classes"));
+      throw Error(bbn._("Can't understand classes"));
     }
   }
 

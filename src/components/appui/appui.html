@@ -10,8 +10,7 @@
   <div :class="{
     'bbn-flex-height': scrollable,
     'bbn-w-100': !scrollable
-  }"
-       bbn-if="ready">
+  }">
     <!-- HEADER -->
     <component bbn-if="headerComponent"
                ref="header"
@@ -47,7 +46,8 @@
       'bbn-flex-fill': scrollable,
       'bbn-w-100': !scrollable,
       'bbn-appui-center': true
-    }">
+    }"
+    bbn-if="ready">
       <bbn-router :root="root"
                   :source="source"
                   :storage="!!nav"

@@ -1062,7 +1062,7 @@ const cpDef = {
             }
 
             if (!o) {
-              throw new Error(bbn._("Wrong parameter for toolbar"))
+              throw Error(bbn._("Wrong parameter for toolbar"))
             }
 
             r.push(o);

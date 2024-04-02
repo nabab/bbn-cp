@@ -15,7 +15,7 @@ export default function applyPropsOnElement (cp, node, ele) {
   bbn.fn.checkType(cp, bbnCp, "No component in applyPropsOnElement");
   bbn.fn.checkType(node, "object", "Props must be an object in applyPropsOnElement");
   if (node.bbn) {
-    throw new Error("Props cannot contain a bbn property in applyPropsOnElement");
+    throw Error("Props cannot contain a bbn property in applyPropsOnElement");
   }
   
   if (node.comment) {

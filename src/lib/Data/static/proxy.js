@@ -1,3 +1,4 @@
+import bbn from "@bbn/bbn";
 import bbnData from "../Data.js";
 
 /**
@@ -8,15 +9,14 @@ import bbnData from "../Data.js";
  * @returns 
  */
 bbnData.proxy = function(component, path, targetObj) {
-  if (path === 'computed') {
-    bbn.fn.log([component, path, targetObj]);
-    throw new Error("Proxy cannot be initialized with a computed property");
-  }
-
   const t = this;
   return {
     get(target, key) {
-      const realValue = target[key];
+      let realValue = target[key];
+      if (key === 'constructor') {
+        return realValue;
+      }
+
       if (key?.indexOf && (key.indexOf('__bbn') === 0)) {
         if (key === '__bbnProxy') {
           return true;
@@ -34,10 +34,10 @@ bbnData.proxy = function(component, path, targetObj) {
         }
       }
       else if (realValue) {
-        const val = t.treatValue(realValue, component, key, targetObj);
-        return val;
+        realValue = t.treatValue(realValue, component, key, targetObj);
       }
 
+      bbnData.addSequence(component, key, targetObj);
       return realValue;
     },
     set(target, key, value) {
@@ -64,20 +64,13 @@ bbnData.proxy = function(component, path, targetObj) {
         const newVal = t.treatValue(value, component, key, targetObj);
         target[key] = newVal;
         const dataObj = t.getObject(newVal);
-        /*
-        if (key === 'loading') {
-          bbn.fn.log(["SET LOADING", value, mod, target, targetObj]);
-        }
-
-        bbn.fn.log(["SET", targetObj, key, newVal, oldValue, target, '------']);
-        */
-        
+        //bbn.fn.log(["SET", targetObj, key, newVal, oldValue, target, '------']);
 
         if (dataObj) {
           dataObj.update(false);
         }
         else {
-          targetObj.update(true, key);
+          targetObj.update(false, key);
         }
 
       }

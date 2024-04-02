@@ -20,7 +20,7 @@ const updateRoot = (ar, lower) => {
   bbn.fn.each(ar, a => {
     if (lower) {
       if (a.id.indexOf('0-')) {
-        throw new Error("The root element cannot have a lower id");
+        throw Error("The root element cannot have a lower id");
       }
       a.id = a.id.substr(2);
     }
@@ -81,7 +81,7 @@ export default function stringToTemplate(str, withMap, name) {
 
   // If the HTML string cannot be parsed, It throw an error
   if (errorNode) {
-    throw new Error("Impossible to parse the template");
+    throw Error("Impossible to parse the template");
   }
 
   let num = 0;
@@ -90,7 +90,7 @@ export default function stringToTemplate(str, withMap, name) {
   )
   .filter(n => n.tagName && (n.tagName.toLowerCase() !== 'script'))
   .map(a => {
-    const tmp = analyzeElement(a, inlineTemplates, num.toString());
+    const tmp = analyzeElement(a, inlineTemplates, num.toString(), name);
     num++;
     return tmp.res;
   });
