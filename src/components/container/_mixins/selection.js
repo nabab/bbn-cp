@@ -1,3 +1,5 @@
+import bbn from "@bbn/bbn";
+
 export default {
   props: {
     /**
@@ -123,7 +125,7 @@ export default {
         if (!d.title || (d.title === bbn._('Loading'))) {
           let title = bbn._('Untitled');
           let num = 0;
-          while (bbn.fn.search(this.views, { title: title }) > -1) {
+          while (bbn.fn.search(this.router.views, a => a.title.indexOf(title) === 0) > -1) {
             num++;
             title = bbn._('Untitled') + ' ' + num;
           }
@@ -132,19 +134,13 @@ export default {
 
         this.currentTitle = d.title;
 
-        if (d.url !== this.url) {
-          this.currentView.url = d.url;
+        if (d.url && (d.url !== this.currentURL)) {
+          this.currentURL = d.url;
+          this.router.updateBaseURL();
+          bbn.fn.log("CHANGING URL TO " + d.url + ' / ' + this.router.baseURL);
           if (this.currentCurrent.indexOf(d.url)) {
             this.currentCurrent = d.url;
           }
-        }
-
-        if (!d.current && d.url) {
-          d.current = d.url;
-        }
-
-        if (Object.hasOwn(d, 'current')) {
-          this.currentURL = d.current;
         }
 
         if (Object.hasOwn(d, 'data')) {

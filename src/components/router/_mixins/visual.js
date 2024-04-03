@@ -297,19 +297,21 @@ export default {
     },
   },
   beforeMount() {
-    let storage = !this.single && this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
-    if (storage) {
-      if (storage.visual !== undefined) {
-        this.isVisual = storage.visual;
+    if (!this.single) {
+      let storage = this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
+      if (storage) {
+        if (storage.visual !== undefined) {
+          this.isVisual = storage.visual;
+        }
+  
+        if (storage.orientation) {
+          this.visualOrientation = storage.orientation;
+          this.lockedOrientation = true;
+        }
       }
-
-      if (storage.orientation) {
-        this.visualOrientation = storage.orientation;
-        this.lockedOrientation = true;
-      }
+  
+      this.updateVisualStyleContainer();
     }
-
-    this.updateVisualStyleContainer();
   }
 
 }

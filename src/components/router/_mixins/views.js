@@ -138,7 +138,6 @@ export default {
     },
 
     async viewsInit() {
-      let storage = !this.single && this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
       let tmp = [];
       // ---- ADDED 16/12/20 (Mirko) ----
       // Adding bbns-container from the slot
@@ -173,20 +172,24 @@ export default {
         }
         tmp.push(this.getDefaultView(a, { real: false }));
       });
-  
-      //Get config from the storage
-      if (storage && storage.views && tmp) {
-        bbn.fn.each(storage.views, a => {
-          let idx = bbn.fn.search(tmp, { url: a.url });
-          if (idx > -1) {
-            // Static comes only from configuration
-            let isFixed = tmp[idx].fixed;
-            bbn.fn.extend(tmp[idx], a, { fixed: isFixed });
-          }
-          else if (this.autoload) {
-            tmp.push(this.getDefaultView(a));
-          }
-        });
+
+      if (!this.single) {
+        bbn.fn.log("LOOKING FOR STORAGE FOR " + this.baseURL + ' WITH NAME ' + (this.parentContainer ? this.parentContainer.getFullURL() : this.storageName));
+        let storage = this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
+        //Get config from the storage
+        if (storage && storage.views && tmp) {
+          bbn.fn.each(storage.views, a => {
+            let idx = bbn.fn.search(tmp, { url: a.url });
+            if (idx > -1) {
+              // Static comes only from configuration
+              let isFixed = tmp[idx].fixed;
+              bbn.fn.extend(tmp[idx], a, { fixed: isFixed });
+            }
+            else if (this.autoload) {
+              tmp.push(this.getDefaultView(a));
+            }
+          });
+        }
       }
   
       // Real containers at the end

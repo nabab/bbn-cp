@@ -404,11 +404,13 @@ const cpDef = {
        * @return {Array}
        */
       updateRealButtons(full) {
-        let r = [];
         if (full) {
           this.realButtons.splice(0, this.realButtons.length);
         }
+
+        let change = full;
         if (!this.realButtons.length && this.buttons?.length) {
+          const r = [];
           bbn.fn.each(this.buttons, a => {
             let t = typeof(a);
             let obj;
@@ -455,6 +457,7 @@ const cpDef = {
               }
               obj = a;
             }
+
             if (obj) {
               if (this.isLoading) {
                 obj.disabled = true;
@@ -467,18 +470,35 @@ const cpDef = {
         else if (this.realButtons.length) {
           bbn.fn.map(bbn.fn.filter(this.realButtons, a => {
             if (a.preset === 'cancel') {
-              a.disabled = !this._canCancel();
+              let disabled = !this._canCancel();
+              if (a.disabled !== disabled) {
+                a.disabled = disabled;
+                change = true;
+              }
             }
             else if (a.preset === 'reset') {
-              a.disabled = !this.dirty && !this.prefilled;
+              let disabled = !this.dirty && !this.prefilled;
+              if (a.disabled !== disabled) {
+                a.disabled = disabled;
+                change = true;
+              }
             }
             else if (a.preset === 'submit') {
-              a.disabled = !this.canSubmit;
+              let disabled = !this.canSubmit;
+              if (a.disabled !== disabled) {
+                a.disabled = disabled;
+                change = true;
+              }
             }
           }));
         }
 
-        return r;
+        if (change && this.window && bbn.fn.isArray(this.window.currentButtons) && (this.currentMode === 'big')) {
+          this.window.currentButtons.splice(0, this.window.currentButtons.length, ...this.realButtons);
+          this.window.$forceUpdate().then(() => this.window.onResize());
+        }
+
+        return this.realButtons;
       },
       _canCancel() {
         return this.window || this.isModified();
@@ -567,13 +587,6 @@ const cpDef = {
       _execCommand(button, ev){
         if ( button.action ){
           button.action(this.source, this, ev)
-        }
-      },
-      updateButtons() {
-        if (this.window && bbn.fn.isArray(this.window.currentButtons) && (this.currentMode === 'big')) {
-          setTimeout(() => {
-            this.window.currentButtons.splice(0, this.window.currentButtons.length, ...this.realButtons);
-          }, 50);
         }
       },
       /**
@@ -860,25 +873,21 @@ const cpDef = {
         if ( this.$options.propsData.script ){
           this.$el.dataset.script = this.$options.propsData.script;
         }
-        //this.originalData = bbn.fn.extend(true, {}, this.getData());
-        this.$nextTick(() => {
-          let focusable = null;
-          if (!this.window && this.windowed) {
-            this.window = this.closest("bbn-floater");
-            if ( this.window ){
-              this.window.addClose(this.closePopup);
-            }
+        if (!this.window && this.windowed) {
+          this.window = this.closest("bbn-floater");
+          if ( this.window ){
+            this.window.addClose(this.closePopup);
           }
-          if ( !this.tab ){
-            this.tab = this.closest("bbn-container");
-          }
-          this.canSubmit = this._canSubmit();
-          this.updateRealButtons();
-          this.isInit = true;
-          if (this.autofocus) {
-            this.focusFirst();
-          }
-        });
+        }
+        if ( !this.tab ){
+          this.tab = this.closest("bbn-container");
+        }
+        this.canSubmit = this._canSubmit();
+        this.updateRealButtons(true);
+        this.isInit = true;
+        if (this.autofocus) {
+          this.focusFirst();
+        }
       },
       /**
        * @method checkValidity
@@ -917,6 +926,8 @@ const cpDef = {
       while (container = container.closest('bbn-floater')) {
         container.forms.push(this);
       }
+
+      this.updateRealButtons();
 
       
       if (this.storage){

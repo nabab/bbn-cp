@@ -1,3 +1,5 @@
+import bbn from "@bbn/bbn";
+
 export default {
   methods: {
     /**
@@ -6,8 +8,11 @@ export default {
      * @param {String} url
      */
     registerRouter(router) {
+      if (this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)]) {
+        throw Error(bbn._('The router %s already exists', router.getBaseURL() || '__root__'));
+      }
+
       this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)] = router;
-      this.router.registerRouter(router);
     },
     /**
      * @method unregisterRouter
@@ -15,8 +20,11 @@ export default {
      * @param {String} url
      */
     unregisterRouter(router){
+      if (!this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)]) {
+        throw Error(bbn._('The router %s was not registered', router.getBaseURL() || '__root__'));
+      }
+
       delete this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)];
-      this.router.unregisterRouter(router);
     }
   }
 }

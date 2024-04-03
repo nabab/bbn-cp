@@ -177,29 +177,31 @@ export default {
     //bbn.fn.warning("BEFORE MOUNT ROUTER")
 
     //Get config from the storage
-    let storage = !this.single && this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
-    if (storage) {
-      if (storage.breadcrumb !== undefined) {
-        this.isBreadcrumb = storage.breadcrumb;
+    if (!this.single & this.nav) {
+      let storage = this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
+      if (storage) {
+        if (storage.breadcrumb !== undefined) {
+          this.isBreadcrumb = storage.breadcrumb;
+        }
       }
-    }
 
-    if (!this.master && this.parent && this.parentContainer) {
-      this.parent.registerBreadcrumb(this);
-      bbn.fn.log("VIEW ON BREADCUMB")
-      this.parentContainer.$on('view', () => {
+      if (!this.master && this.parent && this.parentContainer) {
         this.parent.registerBreadcrumb(this);
-      }, true);
-      this.parentContainer.$on('unview', () => {
-        this.parent.unregisterBreadcrumb(this);
-      }, true);
-      if (this.parentContainer.isVisible) {
-        this.parent.registerBreadcrumb(this);
+        bbn.fn.log("VIEW ON BREADCUMB")
+        this.parentContainer.$on('view', () => {
+          this.parent.registerBreadcrumb(this);
+        }, true);
+        this.parentContainer.$on('unview', () => {
+          this.parent.unregisterBreadcrumb(this);
+        }, true);
+        if (this.parentContainer.isVisible) {
+          this.parent.registerBreadcrumb(this);
+        }
       }
     }
   },
   beforeDestroy() {
-    if (!this.master && this.parent) {
+    if (!this.single & this.nav && !this.master && this.parent) {
       this.parent.unregisterBreadcrumb(this);
     }
   }

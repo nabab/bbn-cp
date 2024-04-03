@@ -387,6 +387,10 @@ export default {
         });
       }
 
+      if (ok && !this.isInit && this.ready) {
+        await this.init();
+      }
+
       if (ok && this.isInit && (force || !this.activeContainer || (url !== this.currentURL))) {
         let event = new CustomEvent(
           "beforeroute",
@@ -510,7 +514,7 @@ export default {
           //await this.activate(url, this.urls[uid]);
         }
         if (this.urls[uid] && this.urls[uid].isLoaded) {
-          this.urls[uid].currentURL = url;
+          this.urls[uid].currentCurrent = url;
           let child = this.urls[uid].find('bbn-router');
           bbn.fn.log(["IN ROUTER", url, this.routers, this.getFullBaseURL(), child]);
           //bbn.fn.log("LOOKING FOR CHILD", child);
@@ -715,10 +719,10 @@ export default {
     * @returns {String}
     */
     getFullURL() {
-      let url = this.getURL();
-      if (url !== false) {
-        return this.getFullBaseURL() + url;
+      if (this.currentView) {
+        return this.getFullBaseURL() + this.currentView.url;
       }
+
       return '';
     },
     /**
@@ -737,9 +741,8 @@ export default {
     * @returns {String|Boolean}
     */
     getFullCurrentURL() {
-      let url = this.getCurrentURL();
-      if (url !== false) {
-        return this.getFullBaseURL() + url;
+      if (this.currentView) {
+        return this.getFullBaseURL() + this.currentView.current;
       }
       return false;
     },
@@ -833,6 +836,20 @@ export default {
       }
     },
 
+    updateBaseURL() {
+      if (this.parentContainer || this.root) {
+        let uri = this.parentContainer?.currentURL || '';
+        if (this.root && (uri !== this.root) && (this.root.indexOf(uri) === 0)) {
+          uri = this.root;
+        }
+        const baseURL = this.formatBaseURL(uri);
+        if (this.baseURL !== baseURL) {
+          this.baseURL = baseURL;
+          bbn.fn.log(["UPDATING BASE UTL WITH " + this.baseURL, this.parentContainer?.currentURL])
+        }
+      }
+    },
+
     navigationInit() {
       // All routers above (which constitute the fullBaseURL)
       this.parents = this.ancestors('bbn-router');
@@ -844,11 +861,8 @@ export default {
 
       if (this.parent) {
         this.parentContainer = this.closest('bbn-container');
-        let uri = this.parentContainer.url;
-        if (this.root && (uri !== this.root) && (this.root.indexOf(uri) === 0)) {
-          uri = this.root;
-        }
-        this.baseURL = this.formatBaseURL(uri);
+        this.parentContainer.registerRouter(this);
+        this.updateBaseURL();
       }
       // Case where the rooter is at root level
       else {
@@ -924,6 +938,7 @@ export default {
         this.views[idx].selected = true;
         this.urls[this.views[idx].uid].$tick();
       }
+      this.activeContainer = this.urls[this.views[idx].uid];
 
       this.views[idx].last = bbn.fn.timestamp();
     },

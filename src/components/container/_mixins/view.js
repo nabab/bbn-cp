@@ -1,3 +1,5 @@
+import bbn from "@bbn/bbn"
+
 export default {
   props: {
     /**
@@ -210,10 +212,9 @@ export default {
        */
       isFixed: this.fixed,
       /**
-       * The current url.
+       * The container UID given by the router.
        * @data {String} currentURL
        */
-      currentURL: this.current || this.url,
       routerUid: this.uid
     }
   },
@@ -239,6 +240,25 @@ export default {
       }
 
       return null;
+    },
+    /**
+      * The current url.
+      * @data {String} currentURL
+      */
+    currentURL: {
+      get(){
+        return this.currentView?.url || '';
+      },
+      set(v){
+        if (this.currentView && (this.currentView.url !== v)) {
+          if (bbn.fn.getRow(this.router.views, {url: v})) {
+            throw Error(bbn._("The URL already exists"));
+          }
+
+          this.currentView.url = v;
+          bbn.fn.each(this.routers, r => r.updateBaseURL());
+        }
+      }
     },
     /**
      * Defines the css string for the component.
@@ -578,7 +598,7 @@ export default {
      */
     setCurrent(url){
       if ( url.indexOf(this.url) === 0 ){
-        this.currentURL = url;
+        this.currentCurrent = url;
         return true;
       }
 
@@ -900,7 +920,7 @@ export default {
     },
     current(newVal){
       if (newVal.indexOf(this.url) === 0){
-        this.currentURL = newVal;
+        this.currentCurrent = newVal;
       }
       if (this.real) {
         this.currentView.current = v;

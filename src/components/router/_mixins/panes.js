@@ -189,11 +189,13 @@ export default {
      * @event created
      */
     panesCreated() {
-      let storage = !this.single && this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
-      if (storage && storage.panes) {
-        bbn.fn.each(storage.panes, a => {
-          this.addPane(a.id);
-        })
+      if (!this.single) {
+        let storage = this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
+        if (storage && storage.panes) {
+          bbn.fn.each(storage.panes, a => {
+            this.addPane(a.id);
+          })
+        }
       }
     },
   },
