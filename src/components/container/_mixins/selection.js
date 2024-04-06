@@ -38,13 +38,16 @@ export default {
      * 
      * @method show
      */
-    show() {
+    show(url) {
       if (!this.isPane) {
         this.router.selected = this.currentIndex;
         if (this.visual && this.router.visualShowAll) {
           this.router.visualShowAll = false;
         }
+      }
 
+      if (url && !url.indexOf(this.currentURL)) {
+        this.currentCurrent = url
       }
     },
 

@@ -79,7 +79,7 @@
                   <span bbn-if="tab.icon"
                         :title="tab.title"
                         :class="'bbn-tabs-main-icon bbn-iblock bbn-right-smargin ' + (tab.notext ? 'bbn-lg' : 'bbn-m')">
-                    <i :class="tab.icon"/>
+                    <bbn-icon :content="tab.icon"/>
                   </span>
                   <span bbn-if="!tab.notext && tab.title"
                         class="bbn-router-tab-text"

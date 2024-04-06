@@ -9,6 +9,7 @@
  *
  * @created 10/02/2017
  */
+import bbn from '@bbn/bbn';
 import '../../cp.js';
 
 const cpDef = {
@@ -893,24 +894,26 @@ const cpDef = {
      * @emits resize
      * @returns Promise
      */
-    onResize(force) {
+    async onResize(force) {
+
       let res = bbn.cp.mixins.resizer.methods.onResize.apply(this);
+      const content = this.getRef('scrollContent');
+      let sendResizeContent = false;
+      if (content && ((content.clientWidth !== this.contentWidth) || (content.clientHeight !== this.contentHeight))) {
+        sendResizeContent = true;
+      }
+
       // If the container measures have changed
-      if (!this.isResizing && (res || force)) {
+      if (!this.isResizing && (res || force || sendResizeContent)) {
         // Setting up the element's measures
         // getting current measures of element and scrollable container
         let container = this.$el;
-        let content = this.getRef('scrollContent');
         let ct = this.getRef('scrollContainer');
         if (!this.scrollable || !content || !container.clientWidth || !container.clientHeight) {
           return;
         }
         let x = ct.scrollLeft;
         let y = ct.scrollTop;
-        let sendResizeContent = false;
-        if ((content.clientWidth !== this.contentWidth) || (content.clientHeight !== this.contentHeight)) {
-          sendResizeContent = true;
-        }
 
         this.contentWidth = content.scrollWidth;
         this.contentHeight = content.scrollHeight;
@@ -1005,7 +1008,7 @@ const cpDef = {
 
       clearTimeout(this.readyTimeout);
       this.readyTimeout = setTimeout(() => {
-        //window.bbn.fn.log("WAIT READY");
+        window.bbn.fn.log("WAIT READY");
         this.initSize();
       }, this.latency)
     },

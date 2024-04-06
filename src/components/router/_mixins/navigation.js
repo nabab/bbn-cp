@@ -138,7 +138,7 @@ export default {
       history: [],
       /**
        * The current title of the selected tab
-       * @data {String} [''] routers
+       * @data {String} [''] currentTitle
        */
       currentTitle: '',
       /**
@@ -146,11 +146,6 @@ export default {
       * @data {Array} [[]] parents
       */
       parents: [],
-      /**
-      * An object with each mounted children router.
-      * @data {Object} [{}] routers
-      */
-      routers: {},
       /**
      * The direct parent router if there is one.
      * @data {bbnCp} [null] parent
@@ -302,7 +297,7 @@ export default {
           let st = bits.join('/');
           let idx = this.search(st);
           if ((idx !== false) && this.urls[this.views[idx].uid]) {
-            return this.urls[this.views[idx].uid].disabled ? '' : this.views[idx].current;
+            return this.urls[this.views[idx].uid].disabled ? '' : this.views[idx].url;
           }
 
           bits.pop();
@@ -314,7 +309,7 @@ export default {
       }
 
       if (this.views.length && force) {
-        return this.views[0].current
+        return this.views[0].url;
       }
 
       return false;
@@ -452,7 +447,7 @@ export default {
             const viewIdx = this.search(st);
             if (viewIdx !== false) {
               bbn.fn.log("SHOWING EXISTING VIEW");
-              this.urls[this.views[viewIdx].uid].show();
+              this.urls[this.views[viewIdx].uid].show(url);
               bbn.fn.log("REAL ROUTE " + st);
             }
             // Otherwise the container is activated ie made visible
@@ -516,7 +511,7 @@ export default {
         if (this.urls[uid] && this.urls[uid].isLoaded) {
           this.urls[uid].currentCurrent = url;
           let child = this.urls[uid].find('bbn-router');
-          bbn.fn.log(["IN ROUTER", url, this.routers, this.getFullBaseURL(), child]);
+          bbn.fn.log(["IN ROUTER", url, this.getFullBaseURL(), child]);
           //bbn.fn.log("LOOKING FOR CHILD", child);
           if (child) {
             child.route(bbn.fn.substr(url, uid.length + 1));
@@ -606,23 +601,14 @@ export default {
           }
         }
       }
-      else if (url !== container.currentURL) {
-        if (container.routers) {
-          let rt;
-          bbn.fn.iterate(container.routers, (r, n) => {
-            if (!rt) {
-              rt = r;
-            }
-
-            if (url.indexOf(r.baseURL) === 0) {
-              rt = r;
-              return false;
-            }
-          });
-          if (rt) {
-            bbn.fn.log("SUBROUTER ROUTING");
-            rt.route(url.indexOf(rt.baseURL) === 0 ? bbn.fn.substr(url, rt.baseURL.length) : '');
-          }
+      else if (url !== container.currentCurrent) {
+        if (container.subrouter) {
+          bbn.fn.log("SUBROUTER THROUGH ROUTER")
+          container.subrouter.route(
+            url.indexOf(container.subrouter.baseURL) === 0 ? 
+                bbn.fn.substr(url, container.subrouter.baseURL.length) 
+                : ''
+          );
         }
         else {
           this.activeContainer.setCurrent(url);

@@ -36,25 +36,6 @@ export default {
       return c ? c.$el : false;
     },
     /**
-     * Returns the next router in the corresponding container if there's any.
-     * @method getSubRouter
-     * @param misc
-     * @fires getIndex
-     * @fires getvue
-     * @return {Vue|null}
-     */
-    getSubRouter(misc) {
-      let idx = this.getIndex(misc);
-      if (idx === undefined) {
-        idx = this.selected;
-      }
-      let container = this.getContainer(idx);
-      if (container) {
-        return container.find('bbn-router') || null;
-      }
-      return null;
-    },
-    /**
      * @method getFinalContainer
      * @param misc
      * @fires getIndex
@@ -68,7 +49,7 @@ export default {
         idx = this.selected;
       }
 
-      let router = this.getSubRouter(idx);
+      let router = this.urrls[this.views[idx].uid].subRouter;
       if (router) {
         return router.getFinalContainer();
       }

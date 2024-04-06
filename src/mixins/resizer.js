@@ -87,7 +87,6 @@ const resizer = {
         if (ms1 || ms2) {
           //bbn.fn.log(["DEFAULT ONRESIZE FN FROM " + this.$options.name, ms1, ms2]);
           res = true;
-          this.$tick();
         }
       }
 

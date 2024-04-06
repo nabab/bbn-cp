@@ -16,7 +16,6 @@ export default {
     /**
      * @method getMenuFn
      * @param {Number} idx
-     * @fires getSubRouter
      * @fires getContainer
      * @fires reload
      * @return {Array|Boolean}
@@ -37,7 +36,7 @@ export default {
       });
 
       if (!this.views[idx].help) {
-        let sub = this.getSubRouter(idx);
+        let sub = this.urls[this.views[idx].uid].subrouter;
         if (sub && sub.views && sub.views.length) {
           let helps = [];
           sub.views.forEach(a => {

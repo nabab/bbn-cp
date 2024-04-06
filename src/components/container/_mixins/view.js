@@ -256,7 +256,6 @@ export default {
           }
 
           this.currentView.url = v;
-          bbn.fn.each(this.routers, r => r.updateBaseURL());
         }
       }
     },
@@ -931,8 +930,12 @@ export default {
      * @param {String} newVal 
      * @param {String} oldVal 
      */
-    currentURL(newVal, oldVal){
-      /*
+    currentCurrent(v) {
+      if (this.subrouter) {
+        bbn.fn.log("CC", this.currentView, v);
+        this.subrouter.route(this.subrouter.parseURL(v));
+      }
+  /*
       // Auto cancelling if it does not correspond to the url
       if ( !newVal || (newVal.indexOf(this.url) !== 0) ){
         this.currentURL = this.url;

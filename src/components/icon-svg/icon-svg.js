@@ -8,16 +8,12 @@
  * @author Mirko Argentino
  */
 const cpDef = {
-    name: 'bbn-icon',
+    name: 'bbn-icon-svg',
     /**
      * @mixin bbn.cp.mixins.basic
      */
     mixins: [bbn.cp.mixins.basic],
     props: {
-      min: {
-        type: Number,
-        default: 16
-      },
       content: {
         type: String
       },
@@ -34,18 +30,12 @@ const cpDef = {
     },
     data(){
       return {
+        currentContent: this.content || '',
         isLoading: this.loading || false,
-        isNotFound: false,
-        defaultSize: null
+        isNotFound: false
       }
     },
     computed: {
-      isImage() {
-        return this.content && !this.content.indexOf('data:image/');
-      },
-      isSVG() {
-        return this.content && !this.content.indexOf('<svg');
-      },
       currentStyle() {
         let o = {
           background: 'none'
@@ -64,29 +54,24 @@ const cpDef = {
           }
         });
         if (!this.width && !this.height) {
-          o.height = this.defaultSize || 'auto';
           o.width = 'auto';
+          o.height = 'auto';
+          o.maxHeight = '100% !important';
+          o.maxWidth = '100% !important';
+          o.minWidth = '4rem';
         }
-
-        o.minWidth = this.min + 'px';
 
         return o;
       }
-    },
-    mounted() {
-      if (!this.width && !this.height) {
-        this.defaultSize = getComputedStyle(this.$el.parentNode)['font-size'];
-      }
     }
-
   };
 
-import cpHtml from './icon.html';
-import cpStyle from './icon.less';
+import cpHtml from './icon-svg.html';
+import cpStyle from './icon-svg.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./_i18n/icon.${bbn.env.lang}.lang`);
+    cpLang = await import(`./_i18n/icon-svg.${bbn.env.lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }
@@ -95,7 +80,7 @@ if (bbn.env.lang) {
 }
 
 export default {
-  name: 'bbn-icon',
+  name: 'bbn-icon-svg',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,

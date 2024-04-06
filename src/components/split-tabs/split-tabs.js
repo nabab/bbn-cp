@@ -409,9 +409,8 @@ const cpDef = {
      * @param container
      */
     updateView(container){
-      return;
       // Looking for a subrouter in the activated container
-      let subRouter = this.getSubRouter();
+      let subRouter = container.subRouter;
       if ( subRouter ){
         // If so routing also this container
         //bbn.fn.log("FROM UPDATEVIEW");
@@ -632,6 +631,7 @@ const cpDef = {
       if ( idx === undefined ){
         idx = this.selected;
       }
+
       let container = this.getVue(idx);
       if ( container ){
         return container.find('bbn-router') || null;

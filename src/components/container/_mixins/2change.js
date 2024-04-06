@@ -8,11 +8,11 @@ export default {
      * @param {String} url
      */
     registerRouter(router) {
-      if (this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)]) {
+      if (this.subrouter && (this.subrouter !== router)) {
         throw Error(bbn._('The router %s already exists', router.getBaseURL() || '__root__'));
       }
 
-      this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)] = router;
+      this.subrouter = router;
     },
     /**
      * @method unregisterRouter
@@ -20,11 +20,11 @@ export default {
      * @param {String} url
      */
     unregisterRouter(router){
-      if (!this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)]) {
+      if (!this.subrouter) {
         throw Error(bbn._('The router %s was not registered', router.getBaseURL() || '__root__'));
       }
 
-      delete this.routers[bbn.fn.substr(router.getBaseURL(), 0, -1)];
+      this.subrouter = null;
     }
   }
 }

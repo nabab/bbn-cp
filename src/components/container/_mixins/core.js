@@ -42,7 +42,7 @@ export default {
        * An object with each mounted children router.
        * @data {Object} [{}] routers
        */
-      routers: {},
+      subrouter: null,
       /**
        * Reacts to mouse movements.
        * @data {Boolean} isOver

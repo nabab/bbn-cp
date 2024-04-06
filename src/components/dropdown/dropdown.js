@@ -250,10 +250,9 @@ const cpDef = {
         this.currentSelectValue = v;
       }
 
-      bbn.fn.log(["DROPDOWN SELECT " + v, this.$el, this.currentTextValue]);
-      if (this.currentText !== (this.currentTextValue || '')) {
-        this.currentText = this.currentTextValue || '';
-      }
+      this.$nextTick(() => {
+        this.currentText = this.currentTextValue;
+      });
 
       if (this.storage) {
         if (v) {

@@ -24,7 +24,7 @@
     <bbn-input bbn-if="!native && _1strun"
                ref="input"
                class="bbn-no-border bbn-flex-fill"
-               bbn-model="notext ? placeholder : currentText"
+               bbn-model="currentText"
                @keydown="keydown"
                @keyup="keyup"
                @click.stop="click"

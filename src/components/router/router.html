@@ -81,7 +81,7 @@
                           <span bbn-if="isNumber(bc.selected) && bc.views[bc.selected] && bc.views[bc.selected].icon"
                                 :title="bc.views[bc.selected].title"
                                 :class="'bbn-router-breadcrumb-element-icon bbn-h-100 bbn-vmiddle bbn-right-xsspace' + (bc.views[bc.selected].notext ? ' bbn-lg' : ' bbn-m')">
-                            <i :class="bc.views[bc.selected].icon"/>
+                            <bbn-icon :content="bc.views[bc.selected].icon"/>
                           </span>
                           <span bbn-if="isNumber(bc.selected) && bc.views[bc.selected] && !bc.views[bc.selected].notext"
                                 :class="['bbn-router-breadcrumb-element-text', {'bbn-b': !breadcrumbs[i+1]}]"
