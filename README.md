@@ -32,7 +32,7 @@ Define a container for your app. This can be any HTML element:
 </div>
 ```
 
-Initialize your app with the bbn.cp.createApp method inside a <script> tag. This method takes two arguments: a selector for your app's container and an options object defining your app's data, methods, and lifecycle hooks:
+Initialize your app with the bbn.cp.createApp method inside a `<script>` tag. This method takes two arguments: a selector for your app's container and an options object defining your app's data, methods, and lifecycle hooks:
 
 ```html
 <script>
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 ```
 
-Inside your app's container, use custom elements (e.g., <bbn-input>, <bbn-dropdown>) to create an interactive UI. Bind data to these elements with the v-model directive and use {{}} syntax for text interpolation:
+Inside your app's container, use custom elements (e.g., `<bbn-input>`, `<bbn-dropdown>`) to create an interactive UI. Bind data to these elements with the v-model directive and use {{}} syntax for text interpolation:
 
 ```html
 <h1>
