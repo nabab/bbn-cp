@@ -12,9 +12,11 @@ This guide will walk you through setting up a basic project using our Web Compon
 
 Basic knowledge of HTML, CSS, and JavaScript.
 A modern web browser that supports Web Components.
-Installation
+
+## Installation
+
 Download the latest version of our library from the official repository.
-Include the library in your HTML file with a <script> tag:
+Include the library in your HTML file with a `<script>` tag:
 
 ```html
 <script type="text/javascript" src="path/to/bbn-cp/v2/dist/bbn-cp.js"></script>
