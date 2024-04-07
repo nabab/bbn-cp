@@ -517,6 +517,7 @@ export default {
       },
       set(v) {
         if (this.currentView && (this.currentView.selected !== v)) {
+          this.currentView.selected = v;
           if (v) {
             this.show();
           }
@@ -672,6 +673,9 @@ export default {
     }
   },
   watch: {
+    currentCurrent(v) {
+
+    },
     currentView: {
       deep: true,
       handler(v, ov) {
@@ -878,7 +882,7 @@ export default {
     content(newVal, oldVal){
       if ( newVal ){
         this.currentView.content = newVal;
-        bbn.fn.log("GT CONTENT")
+        //bbn.fn.log("CONTAINER CONTENT WATCH", newVal)
   
         /*
         setTimeout(() => {
@@ -917,9 +921,9 @@ export default {
     loading(v) {
       this.isLoading = v;
     },
-    current(newVal){
-      if (newVal.indexOf(this.url) === 0){
-        this.currentCurrent = newVal;
+    current(v){
+      if (v.indexOf(this.url) === 0){
+        this.currentCurrent = v;
       }
       if (this.real) {
         this.currentView.current = v;

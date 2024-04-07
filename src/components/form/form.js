@@ -332,6 +332,7 @@ const cpDef = {
         window: null,
         isInit: false,
         canSubmit: false,
+        canCancel: false,
         sourceTimeout: 0,
         isClosing: false,
         realButtons: []
@@ -346,9 +347,6 @@ const cpDef = {
        */
       hasFooter(){
         return this.$slots.footer && this.$slots.footer.length;
-      },
-      canCancel() {
-        return this._canCancel();
       },
       
       /**
@@ -484,7 +482,8 @@ const cpDef = {
               }
             }
             else if (a.preset === 'submit') {
-              let disabled = !this.canSubmit;
+              let disabled = !this._canSubmit();
+              bbn.fn.log(["Checking submit", disabled, a.disabled])
               if (a.disabled !== disabled) {
                 a.disabled = disabled;
                 change = true;
@@ -496,6 +495,10 @@ const cpDef = {
         if (change && this.window && bbn.fn.isArray(this.window.currentButtons) && (this.currentMode === 'big')) {
           this.window.currentButtons.splice(0, this.window.currentButtons.length, ...this.realButtons);
           this.window.$forceUpdate().then(() => this.window.onResize());
+        }
+
+        if (change) {
+          this.$forceUpdate();
         }
 
         return this.realButtons;
@@ -907,8 +910,8 @@ const cpDef = {
       },
       update() {
         bbn.fn.warning("update");
+        this.canCancel = this._canCancel();
         this.canSubmit = this._canSubmit();
-        this.$forceUpdate();
       }
     },
     /**
@@ -1025,7 +1028,7 @@ const cpDef = {
        */
       source: {
         deep: true,
-        handler(){
+        handler() {
           this.dirty = this.isModified();
           this.canSubmit = this._canSubmit();
           if (this.storage) {
@@ -1058,13 +1061,13 @@ const cpDef = {
       /**
        * @watch canSubmit
        */
-      canSubmit(){
+      canSubmit() {
         this.updateRealButtons();
       },
       /**
        * @watch canCancel
        */
-      canCancel(){
+      canCancel() {
         this.updateRealButtons();
       },
       /**

@@ -34,7 +34,6 @@ import "./lib/Cp/prototype/emit.js";
 import "./lib/Cp/prototype/forceUpdate.js";
 import "./lib/Cp/prototype/get.js";
 import "./lib/Cp/prototype/has.js";
-import "./lib/Cp/prototype/insertElement.js";
 import "./lib/Cp/prototype/is.js";
 import "./lib/Cp/prototype/isComponent.js";
 import "./lib/Cp/prototype/nextTick.js";

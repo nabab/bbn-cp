@@ -69,7 +69,6 @@ const cpDef = {
         }
 
         o.minWidth = this.min + 'px';
-
         return o;
       }
     },

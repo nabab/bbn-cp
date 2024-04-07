@@ -62,7 +62,7 @@ export default function addToElements(cp, ele) {
         removeDOM(cp, cp.$elements[id]);
       }
       else {
-        bbn.fn.log(["Element exist error", cp, cp.$elements[id], ele, id]);
+        bbn.fn.log(["Element exist error", cp, cp.$elements[id], ele, id, cp.$numBuild, cp.$options.name]);
         removeDOM(cp, cp.$elements[id]);
         //throw Error("The element " + id + " already exists in the DOM");
       }

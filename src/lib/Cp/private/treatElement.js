@@ -35,15 +35,12 @@ export default async function treatElement(cp, eleNode, hash, parent, data, go =
       // Setting properties
       // Either the element exists and the object is its bbnSchema or we clone the node
       // Setting the new properties only when needed
-      bbn.fn.iterate(eleNode.props, (v, n) => {
-        if (n === '_default_') {
-          n = old?.bbn?.$cfg?.model?.prop || 'value';
-          if (!bbn.fn.isSame(eleNode.props[n], v)) {
-            eleNode.props[n] = v;
-          }
+      if (Object.hasOwn(eleNode.props, '_default_')) {
+        let n = old?.bbn?.$cfg?.model?.prop || 'value';
+        if (!bbn.fn.isSame(eleNode.props[n], eleNode.props._default_)) {
+          eleNode.props[n] = eleNode.props._default_;
         }
-
-      });
+      }
 
       // Updating the hash
       if (hash && (eleNode.loopHash !== hash)) {

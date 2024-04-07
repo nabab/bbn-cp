@@ -248,8 +248,8 @@ const cpDef = {
     this.init();
   },
   mounted(){
-    if (this.required) {
-      this.getRef('element').setAttribute('required', '');
+    if (this.value !== this.currentValue) {
+      this.emitValue(this.currentValue);
     }
 
     this.ready = true;

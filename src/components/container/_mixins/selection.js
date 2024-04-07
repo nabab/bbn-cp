@@ -47,7 +47,7 @@ export default {
       }
 
       if (url && !url.indexOf(this.currentURL)) {
-        this.currentCurrent = url
+        this.currentCurrent = url;
       }
     },
 
@@ -60,7 +60,7 @@ export default {
     onShow() {
       if (this.isVisible && this.router) {
         if (!this.isLoaded && !this.isLoading) {
-          this.getView(this.currentURL, true)
+          this.getView(this.currentCurrent, true)
         }
         else if (!this.ready) {
           this.$nextTick(() => {
@@ -137,7 +137,8 @@ export default {
 
         this.currentTitle = d.title;
 
-        if (d.url && (d.url !== this.currentURL)) {
+        d.url = this.router.parseURL(d.url || '');
+        if (d.url !== this.currentURL) {
           this.currentURL = d.url;
           this.router.updateBaseURL();
           bbn.fn.log("CHANGING URL TO " + d.url + ' / ' + this.router.baseURL);
@@ -333,7 +334,7 @@ export default {
         });
       }
       else{
-        bbn.fn.warning("ROUTER REGISTERING FOR " + this.url);
+        //bbn.fn.warning("ROUTER REGISTERING FOR " + this.url);
         this.router.register(this);
         await this.$nextTick();
         if (this.currentSelected) {
@@ -445,7 +446,7 @@ export default {
           this.isComponent = false;
         }
 
-        if (bbn.env.url.indexOf('#')) {
+        if (bbn.env.path.indexOf('#') !== -1) {
           let scroll = this.getRef('scroll');
           /**
            * @todo  Does it mean the scroll manage the hash? Check it out
@@ -453,7 +454,7 @@ export default {
           if (scroll && (scroll.currentY || scroll.currentX)) {
             return;
           }
-          let hash = bbn.env.url.split('#')[1];
+          let hash = bbn.env.path.split('#')[1];
           if (hash) {
             hash = '#' + hash;
             location.hash = null;

@@ -151,10 +151,10 @@ const cpDef = {
      * @emits input
      * @emits change
      */
-    toggle() {
+    toggle(ev) {
       if (!this.isDisabled && !this.readonly) {
         this.$emit('beforechange', ev, this.state);
-        if (!ev.defaultPrevented) {
+        if (!ev?.defaultPrevented) {
           let emitVal;
           if (this.modelValue !== undefined) {
             emitVal = this.state ? this.novalue : this.value;

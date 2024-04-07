@@ -102,6 +102,6 @@ export default async function handleComponent(cp) {
 
   // Handle nested items within the component template.
   if (cp.$tpl[0]?.items) {
-    await treatItems(cp, cp.$tpl[0].items, cp.$hash, cp.$el);
+    await treatItems(cp, cp.$tpl[0].items, '', cp.$el);
   }
 }

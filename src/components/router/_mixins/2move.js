@@ -1,3 +1,5 @@
+import bbn from "@bbn/bbn";
+
 export default {
   props: {
     /**
@@ -10,23 +12,6 @@ export default {
     },
   },
   methods: {
-    realInit(url) {
-      bbn.fn.log("REAL INIT", url, this.urls, this.views)
-      if (this.urls[url]) {
-        this.urls[url].setLoaded(true);
-        // Otherwise the changes we just did on the props wont be taken into account at container level
-        this.urls[url].init();
-        //bbn.fn.log("callRouter", this.urls[url], this.urls[url].currentView);
-        this.callRouter(this.urls[url].currentURL || url, url);
-        this.$emit('update', this.views);
-      }
-      else {
-        //bbn.fn.log(url, this.views[0].loading, this.views[0].url, JSON.stringify(Object.keys(this.urls), null, 2));
-        //throw Error(bbn._("Impossible to find the container for URL") + ' ' + url);
-      }
-    },
-
-
     checkLoaded(idx) {
       return this.views[idx] &&
         //!this.views[idx].real &&
@@ -42,8 +27,10 @@ export default {
     * @fires route
     */
     async reload(idx, force) {
-      if (this.checkLoaded(idx)) {
+      if (this.isValidIndex(idx) && this.checkLoaded(idx)) {
         let url = this.views[idx].current;
+        let rurl = this.views[idx].url;
+        bbn.fn.log(["RELOAD", idx, url, rurl, this.baseURL]);
         if (!force
           && !this.ignoreDirty
           && this.isDirty
@@ -58,19 +45,21 @@ export default {
                   f.reset();
                 });
               }
-              if (this.urls[this.views[idx].uid]
-                && this.urls[this.views[idx].uid].popups
-                && this.urls[this.views[idx].uid].popups.length
-              ) {
+              if (this.urls[this.views[idx].uid].popups?.length) {
                 this.urls[this.views[idx].uid].popups.splice(0);
               }
-              this.load(url, true, idx);
+
+              this.remove(idx).then(() => {
+                this.add({url: rurl, current: url, selected: true, load: true}, idx);
+              });
             }
           });
         }
         else {
-          this.load(url, true, idx);
-        }
+          this.remove(idx).then(() => {
+            this.add({url: rurl, current: url, selected: true, load: true}, idx);
+          });
+}
       }
     }
 

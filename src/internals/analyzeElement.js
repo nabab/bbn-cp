@@ -140,7 +140,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
     let tmp = a.indexOf(':') === 0 ? a.substr(1) : a;
     const name = tmp.indexOf('bbn-') === 0 ? tmp : bbn.fn.camelize(tmp);
     if (res.attr[name] !== undefined) {
-      bbn.fn.warning(bbn._("The attribute %s can't be defined more than once", name));
+      bbn.fn.warning(bbn._("The attribute %s can't be defined more than once (check %s)", name, componentName));
       return;
     }
     // create the attribute object

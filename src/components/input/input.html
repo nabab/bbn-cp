@@ -52,7 +52,8 @@
             'bbn-ellipsis': ellipsis,
             'bbn-radius': !buttonLeft && !buttonRight,
             'bbn-radius-left': !buttonLeft,
-            'bbn-radius-right': !buttonRight
+            'bbn-radius-right': !buttonRight,
+            'bbn-right-lpadding': isNullable && (!readonly || forceNullable) && !isDisabled
           }"
           :size="currentInputSize"
           :inputmode="inputmode"
@@ -64,7 +65,7 @@
     <bbn-loadicon bbn-if="loading"
                   class="bbn-top-right bbn-vmiddle bbn-h-100 bbn-right-xspadded"/>
     <div bbn-elseif="isNullable && (!readonly || forceNullable) && !isDisabled"
-         class="bbn-input-nullable-container bbn-vmiddle"
+         class="bbn-input-nullable-container bbn-vmiddle bbn-top-right bbn-h-100"
          :style="{
            positions: 'absolute',
            top: 0,

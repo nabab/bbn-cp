@@ -100,6 +100,14 @@ export default async function treatNode (
           }
 
           ele = await buildElement(cp, node, parent, data);
+          if (node.forget && (getExpState(cp, node.forget.hash, hash) !== 'OK') && (!node.comment)) {
+            Array.from(parent.childNodes).forEach(node => {
+              if (node.bbnId.indexOf(node.id + '-') === 0) {
+                ele.appendChild(node);
+              }
+            });
+          }
+
           if (isComponent) {
             cp.$connectors.push(ele);
           }
@@ -109,7 +117,6 @@ export default async function treatNode (
           if (bbn.fn.numProperties(node.directives)) {
             for (let n in node.directives) {
               if (node.directives[n].exp) {
-                setExpResult(cp, node.directives[n], hash);
                 if (getExpState(cp, node.directives[n].hash, hash) !== "OK") {
                   node.directives[n].value = getExpValue(cp, node.directives[n].hash, hash);
                   ele.bbnSchema.directives[n].value = node.directives[n].value;

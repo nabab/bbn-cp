@@ -226,14 +226,28 @@ export default {
     },
   },
   methods: {
-    async init() {
+    async init(url) {
       if (!this.isInit && this.ready) {
         this.isInit = true;
         if (!this.views[this.selected] && this.auto) {
-          bbn.fn.log("AUTO ROUTING TO " + this.getDefaultURL());
-          await this.route(this.getDefaultURL(), true);
+          bbn.fn.log([
+            "AUTO ROUTING",
+            "sent URL: " + url,
+            "Default URL: " + this.getDefaultURL(),
+            "currentURL: " + this.currentURL,
+            "Env path: " + bbn.env.path,
+            "baseURL: " + this.baseURL,
+            "fullBaseURL: " + this.fullBaseURL,
+            "Parsed path: " + this.parseURL(bbn.env.path),
+            "Number of views: " + this.views.length
+          ]);
+          await this.route(url || this.getDefaultURL(), true);
         }
       }
+    },
+
+    async load(url, force) {
+      return await this.route(url, force);
     },
 
 
@@ -243,17 +257,21 @@ export default {
      * @return {String}
      */
     getDefaultURL() {
-      let url = this.parseURL(bbn.env.path);
+      const row = bbn.fn.getRow(this.views, { selected: true });
+      if (row) {
+        bbn.fn.log("ROWWW", row.current, row)
+      }
+      let url = row ? row.current : this.parseURL(this.parentContainer ? this.parentContainer.getFullCurrentURL() : bbn.env.path);
+      if (!url && this.parentContainer && (this.parentContainer.currentURL !== this.parentContainer.currentCurrent)) {
+        url = bbn.fn.substr(this.parentContainer.currentCurrent, this.parentContainer.currentURL.length + 1);
+      }
+
 
       if (!url && this.url) {
         url = this.url;
-      }
+      }  
 
       // If there is a parent router we automatically give the proper baseURL
-      if (!url && this.parentContainer && (this.parentContainer.currentURL !== this.parentContainer.url)) {
-        url = bbn.fn.substr(this.parentContainer.currentURL, this.parentContainer.url.length + 1);
-      }
-
       if (!url && this.def) {
         url = this.def;
       }
@@ -383,7 +401,7 @@ export default {
       }
 
       if (ok && !this.isInit && this.ready) {
-        await this.init();
+        return await this.init(url);
       }
 
       if (ok && this.isInit && (force || !this.activeContainer || (url !== this.currentURL))) {
@@ -409,15 +427,15 @@ export default {
 
           let st = url ? this.getRoute(url) : '';
           /** @todo There is asomething to do here */
-          bbn.fn.log("ROUTING EXECUTING FOR " + url + " (" + (st ? "CORRESPONDING TO " + st : "NO TAB FOUND") + ")");
           if (!url || (!force && (this.currentURL === url))) {
             /** @todo Add the anchor / named href */
             if (bits[1]) {
-              //document.location.hash = bits[1];
+              document.location.hash = bits[1];
             }
             else {
-              bbn.fn.log("SAME URL NO ROUTING");
+              bbn.fn.log(bbn._("SAME URL %s NO ROUTING", url));
             }
+
             return;
           }
           else if (url && !st && this.autoload) {
@@ -446,9 +464,10 @@ export default {
           else {
             const viewIdx = this.search(st);
             if (viewIdx !== false) {
-              bbn.fn.log("SHOWING EXISTING VIEW");
-              this.urls[this.views[viewIdx].uid].show(url);
-              bbn.fn.log("REAL ROUTE " + st);
+              bbn.fn.log("SHOWING EXISTING VIEW WITH URL " + url);
+              const current = url || this.urls[this.views[viewIdx].uid].currentCurrent;
+              this.urls[this.views[viewIdx].uid].show(current);
+              bbn.fn.log(["REAL ROUTE " + st, current, this.urls[this.views[viewIdx].uid].subrouter]);
             }
             // Otherwise the container is activated ie made visible
             else {
@@ -480,12 +499,8 @@ export default {
         throw Error(bbn._('The selected index in bbn-router is not valid for navigation'));
       }
 
-      if (this.urls[uid]) {
-        bbn.fn.log("REAL ROUTING GOING ON FOR " + url);
-        if (!this.urls[uid].isPane && (url !== this.currentURL)) {
-          //bbn.fn.log("THE URL IS DIFFERENT FROM THE ORIGINAL " + this.currentURL);
-          this.currentURL = url;
-        }
+      if (this.urls[uid] && (url !== this.currentURL)) {
+        bbn.fn.log(bbn._("NAVIGATE FOR %s IN %s", url, this.baseURL || "root"));
         // First routing, triggered only once
         if (this.urls[uid].currentView.pane) {
           let pane = bbn.fn.getRow(this.currentPanes, { id: this.urls[uid].currentView.pane });
@@ -500,6 +515,7 @@ export default {
           }
         }
         else {
+          this.currentURL = url;
           if (!this.routed) {
             this.routed = true;
             this.$emit("route1", this);
@@ -508,18 +524,19 @@ export default {
 
           //await this.activate(url, this.urls[uid]);
         }
+
         if (this.urls[uid] && this.urls[uid].isLoaded) {
           this.urls[uid].currentCurrent = url;
           let child = this.urls[uid].find('bbn-router');
           bbn.fn.log(["IN ROUTER", url, this.getFullBaseURL(), child]);
           //bbn.fn.log("LOOKING FOR CHILD", child);
           if (child) {
-            child.route(bbn.fn.substr(url, uid.length + 1));
+            child.route(bbn.fn.substr(url, v.url.length + 1));
           }
           else {
             let ifr = this.urls[uid].find('bbn-frame');
             if (ifr) {
-              ifr.route(bbn.fn.substr(url, uid.length + 1));
+              ifr.route(bbn.fn.substr(url, v.url.length + 1));
             }
           }
         }
@@ -584,6 +601,7 @@ export default {
         if (!container.isPane) {
           this.activeContainer = container;
         }
+
         container.show();
         // Scrolling tabs
         if (this.scrollable && this.nav && !this.breadcrumb && !this.isVisual) {
@@ -875,6 +893,7 @@ export default {
             return st;
           }
         });
+
       }
     },
 
@@ -896,7 +915,6 @@ export default {
           }
         }
       });
-
     },
   },
   watch: {

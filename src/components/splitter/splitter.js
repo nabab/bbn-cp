@@ -494,10 +494,10 @@ const cpDef = {
               next = this.getNextResizable(idx, tmp);
               prevc = this.getPrevCollapsible(idx, tmp);
               nextc = this.getNextCollapsible(idx, tmp);
-              bbn.fn.log(["IN SPLITTER", prev, prevc, next, nextc, '----'])
+              //bbn.fn.log(["IN SPLITTER", prev, prevc, next, nextc, '----'])
               // First collapsible
               if ( (prev !== false) || (prevc !== false) ){
-                bbn.fn.log("------ case 2", idx + ' position ' + currentPosition);
+                //bbn.fn.log(["------ case 2", idx + ' position ' + currentPosition]);
                 let o = {
                   position: currentPosition,
                   panec1: false,

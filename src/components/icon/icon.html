@@ -1,7 +1,8 @@
 <div :class="[componentClass, 'bbn-iblock', 'bbn-ratio']"
      :style="currentStyle">
   <img bbn-if="isImage"
-       :src="content">
+       :src="content"
+       style="vertical-align: middle">
   <svg bbn-elseif="isSVG"
         :xmlns="xmlns"
         :viewBox="viewBox"

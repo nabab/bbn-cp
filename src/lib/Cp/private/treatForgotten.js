@@ -2,8 +2,9 @@ import setExpResult from "./setExpResult.js";
 import buildElement from "./buildElement.js";
 import getExpState from "./getExpState.js";
 import removeDOM from "./removeDOM.js";
+import treatProperties from "./treatProperties.js";
+import treatElement from "./treatElement.js";
 import bbn from "@bbn/bbn";
-import cloneNode from "./cloneNode.js";
 
 /**
  * Processes a virtual DOM node with the 'forget' directive.
@@ -26,7 +27,7 @@ export default async function treatForgotten(cp, o, hash, parent, data) {
     const forgotten = setExpResult(cp, o.forget, hash, data);
 
     // Check if the internal state of the 'forget' directive is not 'OK'.
-    if (getExpState(cp, o.forget.hash, hash, data) !== 'OK') {
+    if (getExpState(cp, o.forget.hash, hash) !== 'OK') {
       // Retrieve the existing element based on the node ID and hash.
       let ele = cp.$retrieveElement(o.id, hash);
       // If the condition is true, process the children without rendering the parent element.
@@ -42,19 +43,12 @@ export default async function treatForgotten(cp, o, hash, parent, data) {
             parent.insertBefore(node, ele);
           });
           // Remove the existing element from the DOM.
-          removeDOM(cp, ele);
           await buildElement(cp, o, parent, data);
         }
       }
       // If forgotten is false but has changed
       else if (bbn.fn.isComment(ele)) {
         o.comment = false;
-        ele = await buildElement(cp, o, parent, data);
-        Array.from(parent.childNodes).forEach(node => {
-          if (node.bbnId.indexOf(o.id + '-') === 0) {
-            ele.appendChild(node);
-          }
-        });
       }
     }
 

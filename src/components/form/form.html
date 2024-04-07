@@ -64,9 +64,8 @@
       <div bbn-elseif="!hasFooter && realButtons.length && ['small', 'normal'].includes(currentMode)"
           class="bbn-form-buttons bbn-w-100 bbn-vpadding bbn-c">
         <bbn-button bbn-for="(button, i) in realButtons"
-                    :class="{'bbn-primary': button.preset === 'submit'}"
+                    :class="['bbn-hxspadded', {'bbn-primary': button.preset === 'submit'}]"
                     :key="i"
-                    class="bbn-hxspadded"
                     bbn-bind="button"/>
       </div>
       <!-- DEFAULT BUTTONS IN WINDOW -->

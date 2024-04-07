@@ -132,7 +132,6 @@ const cpDef = {
   async beforeMount() {
     this.navigationInit();
     await this.viewsInit();
-    this.updateBaseURL();
     this.panesCreated();
     this.navigationCreated();
     this.ready = true;

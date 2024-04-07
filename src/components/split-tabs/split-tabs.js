@@ -410,7 +410,7 @@ const cpDef = {
      */
     updateView(container){
       // Looking for a subrouter in the activated container
-      let subRouter = container.subRouter;
+      let subRouter = container.subrouter;
       if ( subRouter ){
         // If so routing also this container
         //bbn.fn.log("FROM UPDATEVIEW");

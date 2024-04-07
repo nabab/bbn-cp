@@ -69,26 +69,21 @@ export default function applySchemaOnComponent (cp, props) {
           }
 
           const isAttr = (cp.$el[propName] !== undefined);
-          if (isAttr) {
-            const attr = cp.$el[propName];
-            if (attr !== value) {
-              if (!value) {
-                cp.$el.removeAttribute(n);
-                // for SVG
-                if ({}.toString.apply(cp.$el[propName]).substr(0, 7) !== '[object') {
-                  cp.$el[propName] = '';
-                }
+          // It's not a prop and it's already defined in the template
+          if (isAttr && (!Object.hasOwn(cp.$props, n) || !Object.hasOwn(props, n))) {
+            if (!value && cp.$el.hasAttribute(n)) {
+              bbn.fn.log("REMOVING ATTRIBUTE FROM " + cp.$options.name)
+              cp.$el.removeAttribute(n);
+              // for SVG
+              if ({}.toString.apply(cp.$el[propName]).substr(0, 7) !== '[object') {
+                cp.$el[propName] = '';
               }
-              else {
-                cp.$el.setAttribute(n, value);
-                // for SVG
-                if ({}.toString.apply(cp.$el[propName]).substr(0, 7) !== '[object') {
-                  cp.$el[n] = bbn.fn.isString(value) ? value : value?.toString() || '';
-                }
-                else {
-                  //bbn.fn.warning("SVG OBJ " +propName);
-                  //bbn.fn.log(cp.$el[propName]);
-                }
+            }
+            else if (value) {
+              cp.$el.setAttribute(n, value);
+              // for SVG
+              if ({}.toString.apply(cp.$el[propName]).substr(0, 7) !== '[object') {
+                cp.$el[n] = bbn.fn.isString(value) ? value : value?.toString() || '';
               }
             }
           }
@@ -97,15 +92,14 @@ export default function applySchemaOnComponent (cp, props) {
     }
 
     for (let n in props) {
-      if (!['class', 'style'].includes(n) && !Object.hasOwn(cp.$el?.bbnSchema?.props || {}, n)) {
-        if (Object.hasOwn(cp.$props, n)) {
-          setProp(cp, n, props[n]);
-        }
+      if (!['class', 'style'].includes(n)) {
         if (cp.$el[n] !== undefined) {
-          if (!props[n]) {
+          if (props[n]) {
+            cp.$el[n] = bbn.fn.isString(props[n]) ? props[n] : props[n]?.toString() || '';
+          }
+          else if (cp.$el.hasAttribute(n)) {
             cp.$el.removeAttribute(n);
           }
-          cp.$el[n] = bbn.fn.isString(props[n]) ? props[n] : props[n]?.toString() || '';
         }
       }
     }

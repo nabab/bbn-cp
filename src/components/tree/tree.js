@@ -506,6 +506,9 @@ const cpDef = {
         });
         return items;
       },
+      onNodeClick(node, ev) {
+        this.$emit('nodeclick', node, ev);
+      },
       /**
        * Resets the tree to the original configuration.
        * @method reset
@@ -1179,7 +1182,7 @@ const cpDef = {
       selectPath(path, field){
         this.expandPath(path, field, true);
       },
-      initState(){
+      initState() {
         if ((this.node?.isExpanded
             || this.isRoot
             || bbn.fn.count(Object.values(this.currentState), {expanded: true})
@@ -1188,6 +1191,7 @@ const cpDef = {
           && this.filteredData.length
         ) {
           setTimeout(() => {
+            let hasSelected = false;  
             bbn.fn.iterate(this.currentState, (o, uid) => {
               let it = this.uid !== undefined ?
                 this.findNode({[this.uid]: uid}) :
@@ -1199,8 +1203,9 @@ const cpDef = {
                   it.isExpanded = true;
                 }
                 if (o.selected) {
-                  if (it.selectable) {
+                  if (it.selectable && (this.multiple || !hasSelected)) {
                     it.isSelected = true;
+                    hasSelected = true;
                   }
                   else {
                     o.selected = false;
@@ -1208,7 +1213,7 @@ const cpDef = {
                 }
               }
               else {
-               delete this.currentState[uid];
+                delete this.currentState[uid];
               }
             })
           }, 50);
@@ -1219,7 +1224,7 @@ const cpDef = {
        * @fires updateData
        * @fires initState
        */
-      init(){
+      init() {
         if (this.node.isExpanded
           || this.isRoot
           || bbn.fn.count(Object.values(this.currentState), {expanded: true})
@@ -1227,8 +1232,8 @@ const cpDef = {
         ) {
           return this.updateData().then(() => {
             this.isInit = true;
-                          this.initState();
-                      });
+            this.initState();
+          });
         }
         else {
           this.isInit = true;
@@ -1318,7 +1323,7 @@ const cpDef = {
       this.ready = true;
       this.initStorage();
       if (this.tree.autobind) {
-        this.$nextTick(() => {
+        this.$forceUpdate().then(() => {
           this.init();
         })
       }
@@ -1581,14 +1586,14 @@ const cpDef = {
             }
             return style;
           },
-/**
-         * @computed menu
-         * @return {Array}
-         * @memberof bbn-tree-node
-         */
-        menu(){
-          return this.getMenu()
-        },
+          /**
+           * @computed menu
+           * @return {Array}
+           * @memberof bbn-tree-node
+           */
+          menu(){
+            return this.getMenu()
+          },
           textFromText() {
             if (this.source.data.text) {
               return bbn.fn.html2text(this.source.data.text)
@@ -1943,9 +1948,9 @@ const cpDef = {
             // if the current node isn't already selected
             if ( !this.tree.currentSelected.includes(this) ){
               let sameParent = this.tree.selectedNode && (this.tree.selectedNode.parent === this.parent);
-if ( (this.tree.selectedNode && !this.tree.multiple) || (sameParent && !this.parent.multiple) ){
-              this.tree.selectedNode.isSelected = false;
-            }
+              if ( (this.tree.selectedNode && !this.tree.multiple) || (sameParent && !this.parent.multiple) ){
+                this.tree.selectedNode.isSelected = false;
+              }
                             // initializing and calling the event beforeSelect
               let ev = new Event('beforeSelect', {cancelable: true});
               if (emit) {
@@ -1953,7 +1958,7 @@ if ( (this.tree.selectedNode && !this.tree.multiple) || (sameParent && !this.par
               }
 
               if ( !ev.defaultPrevented ){
-                                // adding the node to selected
+                // adding the node to selected
                 this.tree.currentSelected.push(this);
                 // call the event select
                 if ( emit ){
@@ -2192,7 +2197,7 @@ if ( (this.tree.selectedNode && !this.tree.multiple) || (sameParent && !this.par
            * @memberof bbn-tree-node
            */
           clickOnNode(ev){
-            this.tree.$emit('nodeclick', this, ev);
+            this.$emit('nodeclick', this, ev);
           },
           /**
            * Double click on the node

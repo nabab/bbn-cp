@@ -1008,7 +1008,7 @@ const cpDef = {
 
       clearTimeout(this.readyTimeout);
       this.readyTimeout = setTimeout(() => {
-        window.bbn.fn.log("WAIT READY");
+        //bbn.fn.log("WAIT READY");
         this.initSize();
       }, this.latency)
     },

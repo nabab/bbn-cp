@@ -18,42 +18,57 @@ import bbnData from "../../Data/Data.js";
 export default async function treatModel(cp, node, hash, ele, data) {
   if (node.model) {
     for (let name in node.model) {
-      let m = node.model[name];
-      const eventName = m.modifiers.includes('lazy') ? 'change' : 'input';
+      const eventName = node.model[name].modifiers.includes('lazy') ? 'change' : 'input';
       ele.addEventListener(eventName, async e => {
+        const cpSource = bbn.cp.getComponent(ele.bbnComponentId).bbn;
         if (!cp.$isMounted) {
-          return;
+          //return;
+        }
+        
+        let eventValue = e.detail?.args ? e.detail.args[0] : e.target?.value;
+        if (name === '_default_') {
+          name = ele?.bbn?.$cfg?.model?.prop || 'value';
         }
 
+        let m = node.model[name] || node.model._default_;
         let modelValue = m.value;
-        let eventValue = e.detail?.args ? e.detail.args[0] : e.target?.value;
         let oldValue = modelValue;
-
         if (oldValue !== eventValue) {
-          cp.$numBuilds++;
+          //bbn.fn.log(['Modfel change', oldValue, m, m.exp, JSON.stringify(Object.keys(node.model)), eventValue, name, cpSource.$namespaces[m.exp]])
           if (Object.hasOwn(data, m.exp)) {
+            //bbn.fn.log("MODEL THROUGH DATA")
             data[m.exp] = eventValue;
           }
-          else if (Object.hasOwn(cp.$namespaces, m.exp)) {
-            cp[m.exp] = eventValue;
+          else if (Object.hasOwn(cpSource.$namespaces, m.exp)) {
+            //bbn.fn.log("MODEL THROUGH NS")
+            switch (cpSource.$namespaces[m.exp]) {
+              case 'props':
+                setProp(cpSource, m.exp, eventValue);
+                break;
+              case 'data':
+              case 'computed':
+                cpSource[m.exp] = eventValue;
+                break;
+              default:
+                throw new Error("Invalid namespace " + cpSource.$namespaces[m.exp]);
+            }
           }
           else {
             bbnData.startWatching();
-            setExpResult(cp, m, hash, data, true);
+            setExpResult(cpSource, m, hash, data, true);
             const dataObj = bbnData.getLastUsed();
             if (!dataObj) {
               throw new Error("Invalid model variable " + m.exp);
             }
 
             dataObj.data.value[dataObj.name] = eventValue;
+            //bbn.fn.log(["MODEL THROUGH BBN DATA", dataObj.name]);
           }
 
-          m.value = eventValue;
-          if (ele.bbn) {
-            await ele.bbn.$forceUpdate();
+          await cpSource.$tick();
+          if (cp !== cpSource) {
+            await cp.$tick();
           }
-
-          await cp.$forceUpdate();
         }
       });
     }

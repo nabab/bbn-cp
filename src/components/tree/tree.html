@@ -25,22 +25,23 @@
       ref="list">
         <!-- Tree node component -->
         <node inline-template
-                        bbn-for="(it, i) in filteredData"
-                        :source="it"
-                        :key="(it.key ? it.key + '-' : '') + 'node-' + level + '-' + i"
-                        :idx="it.index"
-                        :component="it.component || component"
-                        :selectable="it.selectable !== undefined ? it.selectable : selectable"
-                        :multiple="it.multiple !== undefined ? it.multiple : multiple"
-                        :level="level"
-                        :selection="it.selection !== undefined ? it.selection : selection"
-                        :flat="flat"
-                        ref="node"
-                        :quick-filter="quickFilter"
-                        :sortable="it.sortable !== undefined ? it.sortable : sortable"
-                        :uid="uid"
-                        @selectmenu="clickMenuItem"
-                        :tree-state="uid !== undefined ? _getTreeState(it.data[uid]) : {}">
+              bbn-for="(it, i) in filteredData"
+              :source="it"
+              :key="(it.key ? it.key + '-' : '') + 'node-' + level + '-' + i"
+              :idx="it.index"
+              :component="it.component || component"
+              :selectable="it.selectable !== undefined ? it.selectable : selectable"
+              :multiple="it.multiple !== undefined ? it.multiple : multiple"
+              :level="level"
+              :selection="it.selection !== undefined ? it.selection : selection"
+              :flat="flat"
+              ref="node"
+              :quick-filter="quickFilter"
+              :sortable="it.sortable !== undefined ? it.sortable : sortable"
+              :uid="uid"
+              @selectmenu="clickMenuItem"
+              @nodeclick="onNodeClick"
+              :tree-state="uid !== undefined ? _getTreeState(it.data[uid]) : {}">
           <li :class="['bbn-tree-node', 'bbn-vxxspadded', 'bbn-unselectable', {
                         'bbn-state-active': (isActive && !isSelected) || (tree.draggable && tree.dragging && (tree.dragging === _self)),
                         'bbn-state-selected': isSelected

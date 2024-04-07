@@ -49,7 +49,7 @@ export default {
         idx = this.selected;
       }
 
-      let router = this.urrls[this.views[idx].uid].subRouter;
+      let router = this.urls[this.views[idx].uid].subrouter;
       if (router) {
         return router.getFinalContainer();
       }

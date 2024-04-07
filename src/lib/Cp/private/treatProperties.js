@@ -95,7 +95,6 @@ export default function treatProperties(cp, node, hash, data, go = false) {
       props[name] = setExpResult(cp, m, hash, data);
       if (!go && (getExpState(cp, m.hash, hash) !== "OK")) {
         go = true;
-        bbn.fn.warning("GO IS TRUE BY MODEL");
       }
     });
   }
@@ -110,7 +109,6 @@ export default function treatProperties(cp, node, hash, data, go = false) {
       }
     }
   }
-
 
   // Return the flag indicating if an update is needed and the processed properties.
   return go;

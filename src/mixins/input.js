@@ -165,11 +165,13 @@ const input = {
        * True if the component has a value.
        * @data {Boolean} hasVale
        */
-      hasValue: !!this.value,
       originalValue: original
     };
   },
   computed: {
+    hasValue() {
+      return !!this.value;
+    },
     /**
      * Returns true if the component can have a null value.
      * @computed isNullable
