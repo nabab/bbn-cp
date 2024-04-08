@@ -798,7 +798,8 @@ import cpStyle from './masked.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./_i18n/masked.${bbn.env.lang}.lang`);
+    const lang = bbn.env.lang || 'en';
+    cpLang = await import(`./_i18n/masked.${lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

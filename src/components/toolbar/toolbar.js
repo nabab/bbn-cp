@@ -138,7 +138,8 @@ import cpStyle from './toolbar.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./_i18n/toolbar.${bbn.env.lang}.lang`);
+    const lang = bbn.env.lang || 'en';
+    cpLang = await import(`./_i18n/toolbar.${lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

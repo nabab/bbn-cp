@@ -242,7 +242,8 @@ import cpStyle from './tabs.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./_i18n/tabs.${bbn.env.lang}.lang`);
+    const lang = bbn.env.lang || 'en';
+    cpLang = await import(`./_i18n/tabs.${lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

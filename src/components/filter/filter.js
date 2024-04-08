@@ -860,7 +860,8 @@ import cpStyle from './filter.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./_i18n/filter.${bbn.env.lang}.lang`);
+    const lang = bbn.env.lang || 'en';
+    cpLang = await import(`./_i18n/filter.${lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

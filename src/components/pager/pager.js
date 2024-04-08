@@ -228,7 +228,8 @@ import cpStyle from './pager.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./_i18n/pager.${bbn.env.lang}.lang`);
+    const lang = bbn.env.lang || 'en';
+    cpLang = await import(`./_i18n/pager.${lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

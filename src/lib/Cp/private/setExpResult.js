@@ -33,7 +33,7 @@ export default function setExpResult(cp, attr, hash, data, force) {
         catch(e) {
           // Log and rethrow any errors encountered during argument processing.
           bbn.fn.log(["ERROR IN TREAT ARGUMENT", e, a, cp, hash, attr, data]);
-          throw e;
+          throw Error(e.message + ' (' + bbn._("Expression") + ': ' + attr.exp + ')');
         }
     
         return res; // Return the processed argument.

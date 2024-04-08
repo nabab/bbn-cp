@@ -271,7 +271,8 @@ import cpStyle from './range.less';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./_i18n/range.${bbn.env.lang}.lang`);
+    const lang = bbn.env.lang || 'en';
+    cpLang = await import(`./_i18n/range.${lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }

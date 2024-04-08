@@ -161,7 +161,8 @@ import cpHtml from './radio.html';
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    cpLang = await import(`./_i18n/radio.${bbn.env.lang}.lang`);
+    const lang = bbn.env.lang || 'en';
+    cpLang = await import(`./_i18n/radio.${lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }
