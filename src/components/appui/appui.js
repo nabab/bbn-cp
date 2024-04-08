@@ -333,7 +333,7 @@ const cpDef = {
   methods: {
     fdate: bbn.fn.fdate,
     onCopy() {
-      let cpb = this.getRef('clipboardButton');
+      let cpb = this.getRegistered('clipboard-button');
       //bbn.fn.log("AWATCH", cpb);
       if (cpb) {
         cpb.style.color = 'green';
@@ -485,7 +485,7 @@ const cpDef = {
     },
 
     notify(obj, type, timeout) {
-      let notification = this.getRef('notification');
+      let notification = this.getRegistered('notification');
       if (notification) {
         return notification.show(obj, type, timeout);
       }
@@ -665,13 +665,13 @@ const cpDef = {
           }
           break;
         case 'c':
-          let clipboard = this.getRef('clipboard');
+          let clipboard = this.getRegistered('clipboard');
           if (clipboard) {
             clipboard.show();
           }
           break;
         case 'm':
-          let menu = this.getRef('slider');
+          let menu = this.getRegistered('menu');
           if (menu) {
             menu.show();
           }
@@ -856,7 +856,7 @@ const cpDef = {
       })
       // appui-chat
       this.$on('appui-chat', (type, data) => {
-        let chat = this.getRef('chat');
+        let chat = this.getRegistered('chat');
         switch (type) {
           case 'message':
             if (bbn.cp.isComponent(chat) && bbn.fn.numProperties(data)) {
