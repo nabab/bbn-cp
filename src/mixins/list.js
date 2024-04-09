@@ -467,7 +467,7 @@ const list = {
        * @data {Boolean} [false] isLoaded
        * @memberof listComponent 
        */
-      isLoaded: this.source !== 'string',
+      isLoaded: typeof this.source !== 'string',
       /**
        * True if the source of the list is a string.
        * @data {Boolean} isAjax
