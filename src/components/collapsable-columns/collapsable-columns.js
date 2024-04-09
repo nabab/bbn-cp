@@ -147,6 +147,13 @@ const cpDef = {
     childrenLimit: {
       type: Number,
       default: 10
+    },
+    /**
+     * @prop {Boolean} [true] loading
+     */
+    loading: {
+      type: Boolean,
+      default: true
     }
   },
   data(){

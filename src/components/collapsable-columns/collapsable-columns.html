@@ -32,7 +32,7 @@
                         @expanded="c => $emit('expanded', c)"
                         @collapse="c => $emit('collapsed', c)"
                         :uid="uid"
-                        :start-hidden="true"/>
+                        :start-hidden="!loading"/>
     </div>
   </component>
 </div>

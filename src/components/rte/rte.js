@@ -521,12 +521,12 @@ const cpDef = {
       const setButtons = buttons => {
         let res = bbnData.immunizeValue([]);
         if (!buttons.length) {
-          buttons = Object.keys(this.defaultButtons);
+          buttons = Object.keys(bbnRteCp.defaultButtons);
         }
 
         bbn.fn.each(buttons, a => {
-          if (bbn.fn.isString(a) && this.defaultButtons[a]) {
-            res.push(bbn.fn.extend({code: a}, this.defaultButtons[a]));
+          if (bbn.fn.isString(a) && bbnRteCp.defaultButtons[a]) {
+            res.push(bbn.fn.extend({code: a}, bbnRteCp.defaultButtons[a]));
           }
           else {
             res.push(a);
@@ -918,6 +918,12 @@ const cpDef = {
           }
           fileReader.readAsDataURL(file);
         }
+      },
+      setContent(){
+        this.content = this.getRef('element');
+        if (this.content){
+          this.content.innerHTML = this.currentValue;
+        }
       }
     },
     /**
@@ -959,11 +965,11 @@ const cpDef = {
         },
         iframeCSSLinks: this.iFrame ? this.iframeCSSLinks : []
       };
-  
-      this.content = this.getRef('element');
-      bbn.fn.log("CONTENT", this);
-      this.content.innerHTML = this.currentValue;
-  
+
+      if (!this.currentHeight) {
+        this.setContent();
+      }
+
       /*
       buttons.forEach(action => {
         const button = createElement('button')
@@ -998,11 +1004,13 @@ const cpDef = {
       value(v) {
         if (v !== this.currentValue) {
           this.currentValue = v;
-          this.content.innerHTML = v;
+          if (!!this.content) {
+            this.content.innerHTML = v;
+          }
         }
       },
       currentValue(v) {
-        if (this.showSource) {
+        if (this.showSource && !!this.content) {
           this.content.innerHTML = v;
         }
       },

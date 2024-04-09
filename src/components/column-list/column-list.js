@@ -190,6 +190,13 @@ const cpDef = {
       }
     }
   },
+  created(){
+    if (this.startHidden) {
+      this.$once('dataloaded', () => {
+        this.isVisible = true;
+      });
+    }
+  },
   /**
    * @event beforeMount
    * @fires setCheckCollapse
@@ -229,20 +236,6 @@ const cpDef = {
       }
     },
     /**
-     * @watch isLoaded
-     * @fires $once
-     */
-    isLoaded: {
-      immediate: true,
-      handler(newVal){
-        if (this.startHidden) {
-          this.$once('dataloaded', () => {
-            this.isVisible = true;
-          });
-        }
-      }
-    },
-    /**
      * @watch currentPage
      * @fires closest
      * @fires $once
@@ -259,6 +252,7 @@ const cpDef = {
     }
   }
 }
+
 import cpHtml from './column-list.html';
 import cpStyle from './column-list.less';
 let cpLang = {};
