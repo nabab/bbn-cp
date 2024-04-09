@@ -19,16 +19,9 @@ export default function updateWatcher(cp, name, v, init) {
         let oldV = oldDataObj ? oldDataObj.value : cp.$watcher[name].value;
         cp.$watcher[name].value = lev ? bbn.fn.getProperty(cp, name) : v;
         cp.$watcher[name].hash = bbnData.hash(cp.$watcher[name].value);
-        if (!init && cp.$isInit) {
+        if ((init && cp.$watcher[name].immediate) || (!init && cp.$isInit)) {
           cp.$watcher[name].num++;
-          if (cp.$watcher[name].immediate) {
-            cp.$watcher[name].handler.apply(cp, [cp.$watcher[name].value, oldV]);
-          }
-          else {
-            cp.$tick(() => {
-              cp.$watcher[name].handler.apply(cp, [cp.$watcher[name].value, oldV]);
-            });
-          }
+          cp.$watcher[name].handler.apply(cp, [cp.$watcher[name].value, oldV]);
         }
       }
     }

@@ -148,6 +148,7 @@ bbnCp.prototype.$connected = async function () {
     writable: false,
     configurable: true
   });
+  this.$el.dispatchEvent(new CustomEvent('connected'));
 
   if (!this.$isMounted) {
     // Sending mounted event
@@ -161,5 +162,4 @@ bbnCp.prototype.$connected = async function () {
     });
   }
 
-  this.$el.dispatchEvent(new CustomEvent('connected'));
 }

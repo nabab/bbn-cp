@@ -49,17 +49,15 @@ export default async function treatCondition(
         });
       }
     }
-    else {
-      // Retrieve the element based on node id and hash.
-      ele = cp.$retrieveElement(node.id, hash);
+    // Retrieve the element based on node id and hash.
+    ele = cp.$retrieveElement(node.id, hash);
 
-      // Check if the element is not already a comment.
-      if (!ele || !bbn.fn.isComment(ele)) {
-        // If the element exists, remove it.
-        node.comment = true;
-        node.loopHash = hash;
-        ele = await buildElement(cp, node, parent, data);
-      }
+    // Check if the element is not already a comment.
+    if (!ele || !bbn.fn.isComment(ele)) {
+      // If the element exists, remove it.
+      node.comment = true;
+      node.loopHash = hash;
+      ele = await buildElement(cp, node, parent, data);
     }
   }
 
