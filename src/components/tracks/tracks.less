@@ -1,0 +1,36 @@
+.bbn-tracks {
+  .bbn-tracks-item {
+    top: 3rem;
+    bottom: 0.5rem;
+    position: absolute;
+    border-radius: 0.6rem;
+    .bbn-tracks-item-resizing-times {
+      position: absolute;
+      top: var(--sspace);
+      left: var(--sspace);
+    }
+    .bbn-tracks-item-overlay {
+      z-index: 1;
+    }
+  }
+  .bbn-tracks-label {
+    position: sticky;
+    left: 0;
+    background-color: var(--default-background);
+    padding-right: var(--sspace);
+    > div {
+      white-space: nowrap;
+      background-color: var(--secondary-background);
+      color: var(--secondary-text);
+      padding: var(--sspace);
+    }
+  }
+  .bbn-tracks-toolbar {
+    .bbn-datetimepicker > .bbn-button {
+      line-height: 1;
+    }
+    .bbn-textarea > textarea {
+      padding: 0.0833rem 0.25rem;
+    }
+  }
+}

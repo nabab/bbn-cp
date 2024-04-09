@@ -1,15 +1,24 @@
 export default function() {
   var isDragging = false;
   var currentEle = false;
+  var lastMouseUp = null;
 
   const fnDrag = e => {
     drag(e, currentEle);
   };
 
   const fnEnd = e => {
+    lastMouseUp = e.timeStamp;
     endDrag(e, currentEle);
     document.removeEventListener('mousemove', fnDrag);
     isDragging = false;
+  };
+
+  const fnClick = e => {
+    if (e.target.timeStamp === lastMouseUp) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
   };
 
   const startDrag = (e, ele) => {
@@ -55,8 +64,13 @@ export default function() {
       }
       if (!ev.defaultPrevented) {
         ev.stopImmediatePropagation();
+        ele.addEventListener('click', fnClick, {once: true});
         document.addEventListener('mouseup', fnEnd, {once: true});
         document.addEventListener('mousemove', fnDrag);
+      }
+      else {
+        endDrag(e, ele, true);
+        isDragging = false;
       }
     }
   };
@@ -180,7 +194,7 @@ export default function() {
               }
               ele.style.left = tmpLeft - element.margin.left + 'px';
             }
-            setSize(ele, styleEle.height, width + 'px', toSetAbs);
+            setSize(ele, null, width + 'px', toSetAbs, ev);
           }
         }
       }
@@ -212,7 +226,7 @@ export default function() {
               }
               ele.style.top = tmpTop - element.margin.top + 'px';
             }
-            setSize(ele, height + 'px', styleEle.width, toSetAbs);
+            setSize(ele, height + 'px', null, toSetAbs, ev);
           }
         }
       }
@@ -234,14 +248,21 @@ export default function() {
     });
   };
 
-  const setSize = (ele, height, width, abs) => {
-    ele.style.height = height;
-    ele.style.width = width;
+  const setSize = (ele, height, width, abs, ev) => {
+    if (!bbn.fn.isNull(height)) {
+      ele.style.height = height;
+    }
+
+    if (!bbn.fn.isNull(width)) {
+      ele.style.width = width;
+    }
+
     if (abs) {
       ele.style.position = 'absolute';
     }
+
     if (ele.bbn !== undefined) {
-      ele.bbn.$emit('userresize', ev, detail);
+      ele.bbn.$emit('userresize', ev);
       if (!ev.defaultPrevented
         && (ele.bbn.parentResizer !== undefined)
         && bbn.fn.isFunction(ele.bbn.parentResizer.onResize)
@@ -251,29 +272,35 @@ export default function() {
     }
   };
 
-  const endDrag = (e, ele) => {
+  const endDrag = (e, ele, force = false) => {
     if (isDragging
       && !!ele.bbnDirectives.resizable.active
       && !!ele.bbnDirectives.resizable.resizing
     ) {
-      ele.bbnDirectives.resizable.resizing = false;
-      ele.classList.remove('bbn-resizable-resizing');
-      document.body.style.cursor = ele.bbnDirectives.resizable.cursor;
       e.preventDefault();
       e.stopImmediatePropagation();
-      let ev = new CustomEvent('userresizeend', {
-        cancelable: true,
-        bubbles: true,
-        detail: ele.bbnDirectives.resizable
-      });
-      ele.dispatchEvent(ev);
-      if (ele.bbn !== undefined) {
-        ele.bbn.$emit('userresizestart', ev);
+      if (!force) {
+        let ev = new CustomEvent('userresizeend', {
+          cancelable: true,
+          bubbles: true,
+          detail: ele.bbnDirectives.resizable
+        });
+        ele.dispatchEvent(ev);
+        if (ele.bbn !== undefined) {
+          ele.bbn.$emit('userresizestart', ev);
+        }
+        document.removeEventListener('mouseup', fnEnd, {once: true});
+        document.removeEventListener('mousemove', fnDrag);
+        delete ele.bbnDirectives.resizable.mouseX;
+        delete ele.bbnDirectives.resizable.mouseY;
       }
-      document.removeEventListener('mouseup', fnEnd, {once: true});
-      document.removeEventListener('mousemove', fnDrag);
-      delete ele.bbnDirectives.resizable.mouseX;
-      delete ele.bbnDirectives.resizable.mouseY;
+
+      ele.classList.remove('bbn-resizable-resizing');
+      document.body.style.cursor = ele._bbn.directives.resizable.cursor;
+      setTimeout(() => {
+        ele._bbn.directives.resizable.resizing = false;
+      }, 100);
+
     }
   };
 
@@ -384,11 +411,9 @@ export default function() {
           }),
           container = false;
       el.dataset.bbn_resizable = true;
-      el.bbnDirectives.resizable = bbn.fn.createObject({
-        active: true,
-        resizing: false,
-        enabledModes: modes
-      });
+      el.bbnDirectives.resizable.active = true;
+      el.bbnDirectives.resizable.enabledModes = modes;
+      el.bbnDirectives.resizable.resizing = !!el.bbnDirectives.resizable.resizing;
       if (!el.classList.contains('bbn-resizable')) {
         el.classList.add('bbn-resizable');
       }

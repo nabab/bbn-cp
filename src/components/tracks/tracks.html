@@ -1,0 +1,67 @@
+<div :class="[componentClass, 'bbn-iflex-height', 'bbn-100']">
+  <div class="bbn-flex-width bbn-spadded bbn-vmiddle"
+       style="gap: var(--sspace); flex-wrap: wrap">
+    <div class="bbn-flex-fill bbn-vmiddle bbn-lg bbn-background-secondary bbn-secondary-text bbn-xspadded bbn-radius"
+         style="gap: var(--sspace)">
+      <i class="nf nf-fa-calendar bbn-xl"/>
+      <span class="bbn-b"
+            bbn-text="currentStartTitle"/>
+      <i class="nf nf-fa-long_arrow_right bbn-xl"/>
+      <span class="bbn-b"
+            bbn-text="currentEndTitle"/>
+    </div>
+    <div class="bbn-vmiddle bbn-xspadded bbn-alt-background bbn-radius"
+         style="gap: var(--sspace)">
+      <bbn-button @click="zoomIn"
+                  icon="nf nf-fa-plus"
+                  :notext="true"
+                  class="bbn-tertiary bbn-lg"
+                  :disabled="secPerPx === 1"
+                  :title="_('Zoom in')"/>
+      <i class="nf nf-fa-search bbn-xl bbn-alt-text"/>
+      <bbn-button @click="zoomOut"
+                  icon="nf nf-fa-minus"
+                  :notext="true"
+                  class="bbn-tertiary bbn-lg"
+                  :title="_('Zoom out')"/>
+    </div>
+    <div class="bbn-vmiddle bbn-xspadded bbn-alt-background bbn-radius"
+         style="gap: var(--sspace)">
+      <bbn-button @click="updateData"
+                  icon="nf nf-fa-refresh"
+                  :notext="true"
+                  class="bbn-secondary bbn-lg"
+                  :title="_('Refresh')"/>
+    </div>
+  </div>
+  <div bbn-if="editMode === 'inline'"
+       class="bbn-tracks-toolbar">
+    <component bbn-if="!!editedRow"
+               :is="editor || $options.components.toolbarEditor"
+               :source="editedRow"/>
+  </div>
+  <div class="bbn-flex-fill">
+    <bbn-scroll axis="x"
+                ref="scroll"
+                @ready="scrollToFirstItem">
+      <div class="bbn-grid bbn-h-100"
+           :style="gridStyle">
+        <template bbn-if="numCols">
+          <div bbn-for="(c, i) in cols"
+               bbn-if="i % 2 !== 0"
+               :class="['bbn-tracks-col-header', 'bbn-bordered-top', 'bbn-bordered-bottom', 'bbn-bordered-right', 'bbn-middle', 'bbn-spadded', {'bbn-bordered-right': !!cols[i + 1]}]"
+               bbn-text="c.label"
+               :style="{'grid-area': '1 / ' + i + ' / 1 / span 2'}"/>
+          <div bbn-for="(c, i) in numCols"
+               :class="['bbn-tracks-col-cell', 'bbn-c', {'bbn-bordered-right': c !== numCols}]"/>
+          <item bbn-for="item in filteredData"
+                :source="item"
+                :key="item.key"
+                :ref="'item-' + (!!uid ? item.data[uid] : item.key)"
+                :resizable="!editedRow"
+                :selected="!!editedRow && (editedIndex === item.index)"/>
+        </template>
+      </div>
+    </bbn-scroll>
+  </div>
+</div>
