@@ -3,7 +3,7 @@ import bbnCp from "../Cp.js";
 /**
  * Add delay before another function call
  */
-bbnCp.prototype.$tick = function () {
+bbnCp.prototype.$tick = function (fn) {
   return new Promise(resolve => {
     let idx = bbn.fn.search(bbn.cp.queue, {cp: this});
     let fns = [];
@@ -14,6 +14,13 @@ bbnCp.prototype.$tick = function () {
     else {
       fns = bbn.cp.queue[idx].fns;
     }
-    fns.push(resolve);
+
+    fns.push(() => {
+      if (fn) {
+        fn();
+      }
+
+      resolve();
+    });
   });
 }
