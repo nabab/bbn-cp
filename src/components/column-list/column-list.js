@@ -71,7 +71,7 @@ const cpDef = {
      * @prop {String|bbnCp|Object} toolbar
      */
     toolbar: {
-      type: [String, Vue, Object]
+      type: [String, bbnCp, Object]
     },
     /**
      * @prop {Object} toolbarSource

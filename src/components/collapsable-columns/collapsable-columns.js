@@ -20,7 +20,7 @@ const cpDef = {
      * @prop {String|Object|bbnCp} toolbar
      */
     toolbar: {
-      type: [String, Object, Vue]
+      type: [String, Object, bbnCp]
     },
     /**
      * The name of the property used to specify the color to use as the background
