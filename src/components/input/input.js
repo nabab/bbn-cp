@@ -192,12 +192,12 @@ const cpDef = {
        * The action performed by the left button.
        * @data {Function} currentActionLeft
        */
-      currentActionLeft: bbn.fn.isFunction(this.actionLeft) ? this.actionLeft : ()=>{this.$emit('clickLeftButton')},
+      currentActionLeft: bbn.fn.isFunction(this.actionLeft) ? this.actionLeft : () => this.$emit('clickLeftButton'),
       /**
        * The action performed by the right button.
        * @data {Function} currentActionRight
        */
-      currentActionRight: bbn.fn.isFunction(this.actionRight) ? this.actionRight : ()=>{this.$emit('clickRightButton')},
+      currentActionRight: bbn.fn.isFunction(this.actionRight) ? this.actionRight : () => this.$emit('clickRightButton'),
       currentPattern: null,
       currentType: null
     }

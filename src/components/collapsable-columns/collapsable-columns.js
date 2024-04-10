@@ -214,6 +214,21 @@ const cpDef = {
       });
     },
     /**
+       * Reload all columns
+       * @method reloadAll
+       * @fires updateData
+       * @fires $nextTick
+       */
+    reloadAll(){
+      this.updateData().then(() => {
+        this.$nextTick(() => {
+          bbn.fn.each(this.columns, c => {
+            c.updateData();
+          });
+        });
+      });
+    },
+    /**
      * Fires setCheckCollapse method on every columns
      * @method setAllCheckCollapse
      */
