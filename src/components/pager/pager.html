@@ -1,4 +1,5 @@
-<div bbn-show="numPages || extraControls"
+<div bbn-if="element"
+     bbn-show="numPages || extraControls"
 		 :class="[componentClass, 'bbn-widget', 'bbn-unselectable']">
   <div :class="{
 				 'bbn-block': !isMobile || isTablet,
@@ -130,27 +131,27 @@
 			&nbsp;
 			<bbn-button bbn-if="element.currentQuery && element.showQuery"
 									:title="_('View SQL query')"
-									@click="element.showQuery"
+									@click="element ? element.showQuery() : () => {}"
 									icon="nf nf-mdi-database"
 									:notext="true"
 									class="bbn-left-xsspace"/>
 			<bbn-button bbn-if="element.saveable"
 									:disabled="element.isSaved"
 									:title="_('Save current configuration')"
-									@click="element.$emit('save', element.currentConfig)"
+									@click="element ? element.$emit('save', element.currentConfig) : () => {}"
 									icon="nf nf-fa-save"
 									:notext="true"
 									class="bbn-left-xsspace"/>
 			<bbn-button bbn-if="(element.filterable || element.showable) && element.reset"
 									:disabled="!element.isChanged"
 									:title="_('Reset to original configuration')"
-									@click="element.reset(false)"
+									@click="element ? element.reset(false) : () => {}"
 									icon="nf nf-fa-undo"
 									:notext="true"
 									class="bbn-left-xsspace"/>
 			<bbn-button bbn-if="element.showable && element.openColumnsPicker"
 									:title="_('Columns\' picker')"
-									@click="element.openColumnsPicker"
+									@click="element ? element.openColumnsPicker() : () => {}"
 									icon="nf nf-fa-columns"
 									:notext="true"
 									class="bbn-left-xsspace"/>
@@ -162,12 +163,12 @@
 														'bbn-left-xsspace',
 														{'bbn-red': element.currentFilters && element.currentFilters.conditions.length ? true : false}
 													]"
-									@click="element.openMultiFilter"
+									@click="element ? element.openMultiFilter() : () => {}"
 									icon="nf nf-mdi-filter_variant"
 									:notext="true"/>
 			<bbn-button bbn-if="element.isAjax && element.updateData"
 									:title="_('Refresh')"
-									@click="element.updateData"
+									@click="element ? element.updateData() : () => {}"
 									icon="nf nf-fa-refresh"
 									:notext="true"
 									class="bbn-left-xsspace"/>

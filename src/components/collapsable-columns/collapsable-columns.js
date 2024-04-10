@@ -221,9 +221,16 @@ const cpDef = {
       bbn.fn.each(this.columns, c => c.setCheckCollapse(true));
     },
     /**
+     * Adds a column to the columns list
+     * @param {Object|bbnCp} column
+     */
+    addColumn(column){
+      this.columns.push(column);
+    },
+    /**
      * Removes a column form the columns list
      * @method removeColumn
-     * @param {Object} column
+     * @param {Object|bbnCp} column
      */
     removeColumn(column){
       if (this.columns.length && column.bbnUid) {

@@ -21,10 +21,15 @@ bbn-rte{
       align-items: center;
       //justify-content: center;
       text-align: center;
-      > * {
-        margin: var(--sspace) .15rem 0 .15rem;
+      gap: var(--sspace) var(--xxsspace);
+      > bbn-anon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
       }
-      .bbn-rte-fontcolor, .bbn-rte-fontbgcolor {
+      .bbn-rte-fontcolor,
+      .bbn-rte-fontbgcolor {
         .bbn-colorpicker-input {
           border: 0;
         }

@@ -27,7 +27,7 @@
                         :toolbar-source="col.data"
                         :component="!!col.data[sourceComponent] ? col.data[sourceComponent] : realComponent"
                         :component-options="!!col.data[sourceComponentOptions] ? col.data[sourceComponentOptions] : componentOptions"
-                        @beforemount="c => columns.push(c)"
+                        @beforemount="addColumn"
                         @beforedestroy="removeColumn"
                         @expanded="c => $emit('expanded', c)"
                         @collapse="c => $emit('collapsed', c)"
