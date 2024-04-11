@@ -74,7 +74,9 @@ export default function setExpResult(cp, attr, hash, data, force) {
 
     }
 
-    r[attr.hash][hash].num = cp.$numBuild + 1;
+    if (!force) {
+      r[attr.hash][hash].num = cp.$numBuild + 1;
+    }
     //r[attr.hash][hash].dependencies = dependencies;
   }
 

@@ -49,6 +49,9 @@ export default function applySchemaOnComponent (cp, props) {
     }
 
     stl = bbn.cp.convertStyles(stl);
+    if (cp.$options.name === 'appui-task-columns-toolbar') {
+      bbn.fn.log(['applySchemaOnComponent', stl])
+    }
     if (!stl && cp.$el.style.cssText) {
       cp.$el.style.cssText = '';
     }
