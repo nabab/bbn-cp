@@ -41,7 +41,7 @@ export default async function treatNode (
 
   // Retrieve the existing element and its virtual DOM node.
   // Process text nodes
-  if (node.text) {
+  if (Object.hasOwn(node, 'text')) {
     return treatText(cp, node, hash, parent, data);
   }
   // process slots content
@@ -142,6 +142,13 @@ export default async function treatNode (
     else if (cp.$currentMap[node.id].items?.length) {
       await treatItems(cp, cp.$currentMap[node.id].items, hash, forgotten ? parent : ele, data, forgotten ? hashList : null);
     }
+
+    if (!ele && ['transition', 'template'].includes(node.tag)) {
+      node.comment = true;
+      node.loopHash = hash;
+      ele = await buildElement(cp, node, parent, data);
+    }
+
 
     return ele;
   }

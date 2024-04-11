@@ -3,11 +3,8 @@
   <img bbn-if="isImage"
        :src="content"
        style="vertical-align: middle">
-  <svg bbn-elseif="isSVG"
-        :xmlns="xmlns"
-        :viewBox="viewBox"
-        :preserve-aspect-ratio="preserveAspectRatio"
-        bbn-html="content"></svg>
+  <span bbn-elseif="isSVG"
+        bbn-html="content"/>
   <i bbn-elseif="content"
       :class="content"/>
   <i bbn-else class="nf nf-fa-question_circle"/>

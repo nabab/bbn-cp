@@ -127,6 +127,16 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
         }
       });
       o.exp = value;
+      if (o.exp.indexOf('=>') > -1) {
+        let analyzed;
+        try {
+          analyzed = bbn.fn.analyzeFunction(o.exp);
+        }
+        catch (e) {}
+        if (analyzed && analyzed.isArrow) {
+          o.exp = '(' + o.exp + ')(' + (analyzed.argString || '') + ')';
+        }
+      }
       let eventName = a.substr(1);
       if (main[1]) {
         eventName += ':' + main[1];

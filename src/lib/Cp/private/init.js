@@ -259,11 +259,6 @@ export default function init(cp) {
     writable: false,
     configurable: false
   });
-  Object.defineProperty(cp, '$attr', {
-    value: bbn.fn.getAttributes(cp.$el),
-    writable: false,
-    configurable: false
-  });
 
   Object.defineProperty(cp, '$events', {
     value: bbn.fn.createObject(),
@@ -420,7 +415,6 @@ export default function init(cp) {
   addNamespace(cp, '$props', 'internal');
   addNamespace(cp, '$el', 'internal');
   addNamespace(cp, '$root', 'internal');
-  addNamespace(cp, '$attr', 'internal');
   addNamespace(cp, '$event', 'internal');
   addNamespace(cp, '$parent', 'internal');
   addNamespace(cp, '$options', 'internal');

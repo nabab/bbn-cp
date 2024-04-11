@@ -18,9 +18,26 @@ import { Arr } from "tern";
  * @param {Object} data 
  * @returns 
  */
+const isBefore = (id1, id2) => {
+  if (id1 === id2) {
+    throw Error("Cannot compare the same ID in isBefore");
+  }
+
+  const bits1 = id1.split('-');
+  const bits2 = id2.split('-');
+  for (let i = 0; i < bits1.length; i++) {
+    if (bits1[i] !== bits2[i]) {
+      return parseInt(bits1[i]) < parseInt(bits2[i]);
+    }
+  }
+
+  return true;
+}
+
 export default async function buildElement(cp, node, parent, data, before, items) {
   bbn.fn.checkType(cp, bbnCp, "No component in buildElement");
   bbn.fn.checkType(node, "object", "Props must be an object in buildElement");
+  bbn.fn.checkType(parent, Element, "Parent must be a DOM element");
   if (node.bbn) {
     throw Error("Props cannot contain a bbn property in buildElement");
   }
@@ -44,7 +61,8 @@ export default async function buildElement(cp, node, parent, data, before, items
   if (!node.comment && isComponent) {
     // Attempt to add unknown component for dynamic fetching if needed
     if (addUnknownComponent(cp, tag)) {
-      await fetchComponents(cp); // Fetch component definitions if the component is unknown
+      // Fetch component definitions if the component is unknown
+      await fetchComponents(cp); 
     }
     // Adjust the tag name for static components if necessary
     if (bbn.cp.statics[tag]?.tag) {
@@ -54,23 +72,31 @@ export default async function buildElement(cp, node, parent, data, before, items
   }
   // Decide on creating a new element or reusing the old one
   if (oldEle) {
-    replace = true; // Mark for replacement if an old element exists
+    // Mark for replacement if an old element exists
+    replace = true; 
   }
   // Create the appropriate DOM element based on the node type
   if (node.comment) {
-    ele = document.createComment(" ***_BBN_*** "); // Create a comment node for placeholders
+    // Create a comment node for placeholders
+    ele = document.createComment(" ***_BBN_*** "); 
   } else if (tag === 'svg') {
-    ele = document.createElementNS("http://www.w3.org/2000/svg", tag); // Create an SVG element for vector graphics
-    ele.innerHTML = cp.$currentMap[node.id].content; // Set the SVG content
+    // Create an SVG element for vector graphics
+    ele = document.createElementNS("http://www.w3.org/2000/svg", tag); 
+    // Set the SVG content
+    ele.innerHTML = cp.$currentMap[node.id].content; 
   } else {
     // Handle component elements or standard HTML elements
     const constructorArgs = [tag];
     if (originalTag !== tag) {
-      constructorArgs.push({ is: originalTag }); // Handle custom elements with 'is' attribute
+      // Handle custom elements with 'is' attribute
+      constructorArgs.push({ is: originalTag }); 
     }
-    ele = document.createElement(...constructorArgs); // Create the element
+
+    // Create the element
+    ele = document.createElement(...constructorArgs); 
     if (originalTag !== tag) {
-      ele.setAttribute('is', originalTag); // Set the 'is' attribute for custom elements
+      // Set the 'is' attribute for custom elements
+      ele.setAttribute('is', originalTag); 
     }
     // Additional setup for anonymous components (bbn-anon)
     if (tag === 'bbn-anon' && node.cfg) {
@@ -116,7 +142,8 @@ export default async function buildElement(cp, node, parent, data, before, items
   if (isComponent) {
     let realSlots = tag === 'bbn-anon' ? retrieveSlots(ele.bbnTpl || cp.$currentMap[node.id].items) : bbn.fn.clone(ele.constructor.bbnSlots);
     if (!bbn.fn.numProperties(realSlots)) {
-      realSlots = { default: [] }; // Ensure a default slot is always available
+      // Ensure a default slot is always available
+      realSlots = { default: [] }; 
     }
     if (items) {
       bbn.fn.warning("MY ITEMS ------------------");
@@ -163,7 +190,8 @@ export default async function buildElement(cp, node, parent, data, before, items
   }
   // Determine the insertion method based on the provided arguments
   else if (before) {
-    parent.insertBefore(ele, before); // Insert before a specific sibling
+    // Insert before a specific sibling
+    parent.insertBefore(ele, before); 
   } else if (replace && oldEle) {
     if (oldEle.childNodes.length && !node.comment) {
       Array.from(oldEle.childNodes).forEach(c => {
@@ -171,28 +199,55 @@ export default async function buildElement(cp, node, parent, data, before, items
       });
     }
     if (oldEle.parentNode === parent) {
-      parent.replaceChild(ele, oldEle); // Replace an existing element
+      // Replace an existing element
+      parent.replaceChild(ele, oldEle); 
     }
     else {
-      parent.appendChild(ele); // Append as a new child
+      // Append as a new child
+      parent.appendChild(ele); 
     }
-  } else if (parent) {
-    parent.appendChild(ele); // Append as a new child
+  }
+  // First time is done in a linear direction
+  else if (!cp.$numBuild) {
+    // Append as a new child
+    parent.appendChild(ele); 
+  }
+  else {
+    let after = false;
+    for (let i = parent.childNodes.length - 1; i >= 0; i--) {
+      if ((parent.childNodes[i].bbnId !== ele.bbnId) && isBefore(parent.childNodes[i].bbnId, ele.bbnId)) {
+        after = parent.childNodes[i];
+        break;
+      }
+    }
+
+    if (after) {
+      // Insert after a specific sibling
+      after.after(ele); 
+    }
+    else {
+      // Append as a new child
+      parent.appendChild(ele); 
+    }
   }
   // Register the element in the component's tracking system
   addToElements(cp, ele);
   // Handle directives, model bindings, and events for the new element
   if (!node.comment) {
     if (bbn.fn.numProperties(node.directives)) {
-      bbn.cp.insertDirectives(ele.bbnSchema.directives, ele); // Apply directives
+      // Apply directives
+      bbn.cp.insertDirectives(ele.bbnSchema.directives, ele); 
     }
     if (node.model) {
-      treatModel(cp, node, ele.bbnHash, ele, data); // Bind model data
+      // Bind model data
+      treatModel(cp, node, ele.bbnHash, ele, data); 
     }
     if (Object.keys(node.events || {}).length) {
-      treatEvents(cp, ele, data); // Set up event listeners
+      // Set up event listeners
+      treatEvents(cp, ele, data); 
     }
   }
 
-  return ele; // Return the created or modified element
+  // Return the created or modified element
+  return ele; 
 }

@@ -39,7 +39,6 @@ export default function applySchemaOnComponent (cp, props) {
     //bbn.fn.log("PUTTING CLASSES " + textCls);
 
     let stl = [cp.$el.bbnSchema.props?.style || ''];
-    stl.push(cp.$attr.style || '');
     if (props?.style) {
       stl.push(props.style);
     }
@@ -50,7 +49,10 @@ export default function applySchemaOnComponent (cp, props) {
     }
 
     stl = bbn.cp.convertStyles(stl);
-    if (stl && (stl !== cp.$el.style.cssText)) {
+    if (!stl && cp.$el.style.cssText) {
+      cp.$el.style.cssText = '';
+    }
+    else if (stl && (stl !== cp.$el.style.cssText)) {
       cp.$el.style.cssText = stl;
     }
 
@@ -72,7 +74,6 @@ export default function applySchemaOnComponent (cp, props) {
           // It's not a prop and it's already defined in the template
           if (isAttr && (!Object.hasOwn(cp.$props, n) || !Object.hasOwn(props, n))) {
             if (!value && cp.$el.hasAttribute(n)) {
-              bbn.fn.log("REMOVING ATTRIBUTE FROM " + cp.$options.name)
               cp.$el.removeAttribute(n);
               // for SVG
               if ({}.toString.apply(cp.$el[propName]).substr(0, 7) !== '[object') {

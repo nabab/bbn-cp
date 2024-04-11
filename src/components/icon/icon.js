@@ -44,7 +44,7 @@ const cpDef = {
         return this.content && !this.content.indexOf('data:image/');
       },
       isSVG() {
-        return this.content && !this.content.indexOf('<svg');
+        return this.content && !this.content.trim().indexOf('<svg');
       },
       currentStyle() {
         let o = {

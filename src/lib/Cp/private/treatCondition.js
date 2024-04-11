@@ -29,7 +29,6 @@ export default async function treatCondition(
   hashList
 ) {
   let ele = null;
-
   // If the condition is true, treat the element.
   if (conditionValue) {
     ele = await treatNode(cp, node, hash, parent, data, true, hashList);
@@ -51,7 +50,6 @@ export default async function treatCondition(
     }
     // Retrieve the element based on node id and hash.
     ele = cp.$retrieveElement(node.id, hash);
-
     // Check if the element is not already a comment.
     if (!ele || !bbn.fn.isComment(ele)) {
       // If the element exists, remove it.

@@ -3,7 +3,7 @@ import createText from "./createText.js";
 
 export default function treatText(cp, node, hash, parent, data, go = false) {
   bbn.fn.checkType(cp, bbnCp, "No component in treatText");
-  if (node.text) {
+  if (Object.hasOwn(node, 'text')) {
     const ele = cp.$retrieveElement(node.id, hash);
     if (!ele) {
       go = true;

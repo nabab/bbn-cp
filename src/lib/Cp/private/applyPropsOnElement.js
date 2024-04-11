@@ -46,6 +46,7 @@ export default function applyPropsOnElement (cp, node, ele) {
               ele.className = v;
             }
           }
+          attr.class = v;
           break;
         case 'style':
           if (!isComponent && (ele !== cp.$el)) {
@@ -53,6 +54,7 @@ export default function applyPropsOnElement (cp, node, ele) {
               ele.style.cssText = bbn.cp.convertStyles(v);
             }
           }
+          attr.style = v;
           break;
         case 'bbn-show':
           if (v && (ele.style.display === 'none')) {
