@@ -48,7 +48,7 @@ export default function convertStyles(...args) {
       let value = css[n];
 
       // Process and append each style property and its value to the resulting string.
-      if (![undefined, null, ''].includes(value)) {
+      if (![undefined, null, false, ''].includes(value)) {
         // Add 'px' to numeric values for certain properties.
         if (bbn.fn.isNumber(css[n]) && bbn.fn.isPropSize(prop)) {
           value = css[n] + 'px';

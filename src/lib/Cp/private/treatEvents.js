@@ -88,9 +88,7 @@ export default function treatEvents(cp, ele, data) {
         }
         else {
           // Bind the event handler to the component and execute it with the processed arguments.
-          cp.$nextTick(() => {
-            ev.fn.bind(cp)(...args);
-          })
+          ev.fn.bind(cp)(...args);
         }
         //bbn.fn.log(['on Event ' + e.type, cp.$namespaces[ev.exp] === 'method', cp.$options.name + ' ' + cp.$cid]);
       }

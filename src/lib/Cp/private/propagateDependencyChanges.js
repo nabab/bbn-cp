@@ -1,5 +1,4 @@
 export default function propagateDependencyChanges(cp, name, hash) {
-  return;
   bbn.fn.iterate(cp.$computed, (v, n) => {
     if (v.dependencies && v.dependencies.includes(name)) {
       cp.$computed[n].update();

@@ -68,7 +68,7 @@ export default function realSetProp(cp, name, value) {
 
     // Update any watchers that might be observing this property.
     updateWatcher(cp, name, value);
-    //propagateDependencyChanges(cp, name);
+    propagateDependencyChanges(cp, name);
   }
 
   // If the component is already mounted, emit a 'propchange' event.

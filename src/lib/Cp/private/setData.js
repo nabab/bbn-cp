@@ -31,7 +31,7 @@ export default function setData(cp, name, v) {
       const newVal = cp.$treatValue(v, name);
       cp.$dataValues[name] = newVal;
       updateWatcher(cp, name, newVal);
-      //propagateDependencyChanges(cp, name);
+      propagateDependencyChanges(cp, name);
       cp.$tick();
     }
   }
