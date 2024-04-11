@@ -122,7 +122,7 @@ const cpDef = {
     source: {
       type: Array,
       default(){
-        return window.appui?.app?.users || []
+        return window.appui?.users || []
       }
     },
     /**
@@ -132,7 +132,7 @@ const cpDef = {
     nameField: {
       type: String,
       default(){
-        return window.appui?.app?.users ? 'text' : 'name'
+        return window.appui?.users ? 'text' : 'name'
       }
     },
     /**
@@ -142,7 +142,7 @@ const cpDef = {
     idField: {
       type: String,
       default(){
-        return window.appui?.app?.users ? 'value' : 'id'
+        return window.appui?.users ? 'value' : 'id'
       }
     },
     /**

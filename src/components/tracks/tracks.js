@@ -671,7 +671,7 @@ const cpDef = {
             && !this.isResizing
             && !this.main.isResizing
             && !event.defaultPrevented
-            && !event.target._bbn.directives.resizable.resizing
+            && !event.target?.bbnDirectives?.resizable?.resizing
           ) {
             if (!!this.main.editedRow) {
               this.main.editedRow = false;

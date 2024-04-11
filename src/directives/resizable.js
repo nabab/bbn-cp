@@ -31,7 +31,7 @@ export default function() {
       isDragging = true;
       currentEle = ele;
       ele.bbnDirectives.resizable.resizing = true;
-      let cursor = ''
+      let cursor = '',
           modes = ele.bbnDirectives.resizable.modes;
       if (!!modes.left) {
         cursor = !!modes.top ? 'nwse-resize' : (!!modes.bottom ? 'nesw-resize' : 'ew-resize');
@@ -45,6 +45,7 @@ export default function() {
       else if (!!modes.bottom) {
         cursor = !!modes.right ? 'nwse-resize' : (!!modes.left ? 'nesw-resize' : 'ns-resize');
       }
+
       ele.bbnDirectives.resizable.cursor = window.getComputedStyle(document.body).cursor;
       document.body.style.cursor = cursor;
       ele.classList.add('bbn-resizable-resizing');
@@ -53,15 +54,17 @@ export default function() {
       if (!ele.bbnDirectives.resizable.container) {
         ele.bbnDirectives.resizable.container = bbn.fn.isDom(ele.parentElement) ? ele.parentElement : document.body;
       }
+
       let ev = new CustomEvent('userresizestart', {
         cancelable: true,
         bubbles: true,
         detail: ele.bbnDirectives.resizable
       });
       ele.dispatchEvent(ev);
-      if (ele.bbn !== undefined) {
+      /* if (ele.bbn !== undefined) {
         ele.bbn.$emit('userresizestart', ev);
-      }
+      } */
+
       if (!ev.defaultPrevented) {
         ev.stopImmediatePropagation();
         ele.addEventListener('click', fnClick, {once: true});
@@ -262,7 +265,7 @@ export default function() {
     }
 
     if (ele.bbn !== undefined) {
-      ele.bbn.$emit('userresize', ev);
+      //ele.bbn.$emit('userresize', ev);
       if (!ev.defaultPrevented
         && (ele.bbn.parentResizer !== undefined)
         && bbn.fn.isFunction(ele.bbn.parentResizer.onResize)
@@ -286,9 +289,9 @@ export default function() {
           detail: ele.bbnDirectives.resizable
         });
         ele.dispatchEvent(ev);
-        if (ele.bbn !== undefined) {
+        /* if (ele.bbn !== undefined) {
           ele.bbn.$emit('userresizestart', ev);
-        }
+        } */
         document.removeEventListener('mouseup', fnEnd, {once: true});
         document.removeEventListener('mousemove', fnDrag);
         delete ele.bbnDirectives.resizable.mouseX;
@@ -296,9 +299,9 @@ export default function() {
       }
 
       ele.classList.remove('bbn-resizable-resizing');
-      document.body.style.cursor = ele._bbn.directives.resizable.cursor;
+      document.body.style.cursor = ele.bbnDirectives.resizable.cursor;
       setTimeout(() => {
-        ele._bbn.directives.resizable.resizing = false;
+        ele.bbnDirectives.resizable.resizing = false;
       }, 100);
 
     }
@@ -359,6 +362,30 @@ export default function() {
         }
       };
       el.addEventListener('mousemove', el.bbnDirectives.resizable.onmousemove);
+
+      el.bbnDirectives.resizable.onmouseleave = ev => {
+        if (!!el.bbnDirectives.resizable.active
+          && !el.bbnDirectives.resizable.resizing
+          && !isDragging
+        ) {
+          if (el.classList.contains('bbn-resizable-over-left')) {
+            el.classList.remove('bbn-resizable-over-left');
+          }
+
+          if (el.classList.contains('bbn-resizable-over-right')) {
+            el.classList.remove('bbn-resizable-over-right');
+          }
+
+          if (el.classList.contains('bbn-resizable-over-top')) {
+            el.classList.remove('bbn-resizable-over-top');
+          }
+
+          if (el.classList.contains('bbn-resizable-over-bottom')) {
+            el.classList.remove('bbn-resizable-over-bottom');
+          }
+        }
+      };
+      el.addEventListener('mouseleave', el.bbnDirectives.resizable.onmouseleave);
 
       // Add the events listener to capture the long press click and start the drag
       let clickTimeout = 0,
@@ -457,18 +484,26 @@ export default function() {
     if (el.bbnDirectives === undefined) {
       el.bbnDirectives = bbn.fn.createObject();
     }
+
     if (el.bbnDirectives.resizable === undefined) {
       el.bbnDirectives.resizable = bbn.fn.createObject();
     }
+
     if (!!el.bbnDirectives.resizable.active) {
       if (bbn.fn.isFunction(el.bbnDirectives.resizable.onmousedown)) {
         el.removeEventListener('mousedown', el.bbnDirectives.resizable.onmousedown);
       }
+
       if (bbn.fn.isFunction(el.bbnDirectives.resizable.onmouseup)) {
         el.removeEventListener('mouseup', el.bbnDirectives.resizable.onmouseup);
       }
+
       if (bbn.fn.isFunction(el.bbnDirectives.resizable.onmousemove)) {
         el.removeEventListener('mousemove', el.bbnDirectives.resizable.onmousemove);
+      }
+
+      if (bbn.fn.isFunction(el.bbnDirectives.resizable.onmouseleave)) {
+        el.removeEventListener('mouseleave', el.bbnDirectives.resizable.onmouseleave);
       }
     }
     el.bbnDirectives.resizable = bbn.fn.createObject({
@@ -476,6 +511,22 @@ export default function() {
     });
     if (el.classList.contains('bbn-resizable')) {
       el.classList.remove('bbn-resizable');
+    }
+
+    if (el.classList.contains('bbn-resizable-over-left')) {
+      el.classList.remove('bbn-resizable-over-left');
+    }
+
+    if (el.classList.contains('bbn-resizable-over-right')) {
+      el.classList.remove('bbn-resizable-over-right');
+    }
+
+    if (el.classList.contains('bbn-resizable-over-top')) {
+      el.classList.remove('bbn-resizable-over-top');
+    }
+
+    if (el.classList.contains('bbn-resizable-over-bottom')) {
+      el.classList.remove('bbn-resizable-over-bottom');
     }
   };
 
