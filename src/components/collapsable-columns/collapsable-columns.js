@@ -147,6 +147,13 @@ const cpDef = {
     childrenLimit: {
       type: Number,
       default: 10
+    },
+    /**
+     * @prop {Boolean} [true] loading
+     */
+    loading: {
+      type: Boolean,
+      default: true
     }
   },
   data(){
@@ -207,6 +214,21 @@ const cpDef = {
       });
     },
     /**
+       * Reload all columns
+       * @method reloadAll
+       * @fires updateData
+       * @fires $nextTick
+       */
+    reloadAll(){
+      this.updateData().then(() => {
+        this.$nextTick(() => {
+          bbn.fn.each(this.columns, c => {
+            c.updateData();
+          });
+        });
+      });
+    },
+    /**
      * Fires setCheckCollapse method on every columns
      * @method setAllCheckCollapse
      */
@@ -214,9 +236,16 @@ const cpDef = {
       bbn.fn.each(this.columns, c => c.setCheckCollapse(true));
     },
     /**
+     * Adds a column to the columns list
+     * @param {Object|bbnCp} column
+     */
+    addColumn(column){
+      this.columns.push(column);
+    },
+    /**
      * Removes a column form the columns list
      * @method removeColumn
-     * @param {Object} column
+     * @param {Object|bbnCp} column
      */
     removeColumn(column){
       if (this.columns.length && column.bbnUid) {

@@ -25,6 +25,7 @@ const cpDef = {
       const formatBlock = 'formatBlock';
       const queryCommandState = command => document.queryCommandState(command);
       const queryCommandValue = command => document.queryCommandValue(command);
+      const exec = (command, value = null) => document.execCommand(command, false, value);
       const defaultButtons = bbnData.immunizeValue({
         blockStyle: {
           text: bbn._('Style'),
@@ -40,6 +41,11 @@ const cpDef = {
                             :clear-html="true"/>
             `,
             data(){
+              let rte = this.closest('bbn-rte');
+              if (!rte && this.closest('bbn-floater')) {
+                rte = this.closest('bbn-floater').opener;
+              }
+
               return {
                 styles: [{
                   text: bbn._('Normal'),
@@ -72,17 +78,13 @@ const cpDef = {
                   text: '<blockquote>' + bbn._('Quote') + '</blockquote>',
                   value: '<blockquote>'
                 }],
-                currentStyle: ''
-              }
-            },
-            computed: {
-              rte() {
-                return this.closest('bbn-floater').opener;
+                currentStyle: '',
+                rte: rte
               }
             },
             methods: {
               setStyle(style){
-                exec(formatBlock, style);
+                bbnRteCp.exec(bbnRteCp.formatBlock, style);
               }
             },
             mounted(){
@@ -106,6 +108,11 @@ const cpDef = {
                             title="` + bbn._('Font size') + `"/>
             `,
             data(){
+              let rte = this.closest('bbn-rte');
+              if (!rte && this.closest('bbn-floater')) {
+                rte = this.closest('bbn-floater').opener;
+              }
+
               return {
                 sizes: [{
                   text: '<font class="bbn-rte-fontsize-font" size="1">1</font>',
@@ -129,17 +136,13 @@ const cpDef = {
                   text: '<font class="bbn-rte-fontsize-font" size="7">7</font>',
                   value: 7
                 }],
-                currentSize: ''
-              }
-            },
-            computed: {
-              rte() {
-                return this.closest('bbn-floater').opener;
+                currentSize: '',
+                rte: rte
               }
             },
             methods: {
               setSize(style){
-                exec('fontSize', style);
+                bbnRteCp.exec('fontSize', style);
               }
             },
             mounted(){
@@ -157,16 +160,21 @@ const cpDef = {
                           :notext="true"
                           @click="onClick"/>
             `,
-            computed: {
-              rte() {
-                return this.closest('bbn-floater').opener;
+            data(){
+              let rte = this.closest('bbn-rte');
+              if (!rte && this.closest('bbn-floater')) {
+                rte = this.closest('bbn-floater').opener;
+              }
+
+              return {
+                rte: rte
               }
             },
             methods: {
               onClick(){
                 let current = parseInt(bbnRteCp.queryCommandValue('fontSize'));
                 if (current < 7) {
-                  exec('fontSize', current + 1);
+                  bbnRteCp.exec('fontSize', current + 1);
                   this.rte.setFontsize();
                 }
               }
@@ -183,16 +191,21 @@ const cpDef = {
                           :notext="true"
                           @click="onClick"/>
             `,
-            computed: {
-              rte() {
-                return this.closest('bbn-floater').opener;
+            data(){
+              let rte = this.closest('bbn-rte');
+              if (!rte && this.closest('bbn-floater')) {
+                rte = this.closest('bbn-floater').opener;
+              }
+
+              return {
+                rte: rte
               }
             },
             methods: {
               onClick(){
                 let current = parseInt(bbnRteCp.queryCommandValue('fontSize'));
                 if (current > 1) {
-                  exec('fontSize', current - 1);
+                  bbnRteCp.exec('fontSize', current - 1);
                   this.rte.setFontsize();
                 }
               }
@@ -206,28 +219,28 @@ const cpDef = {
           text: bbn._('Bold'),
           notext: true,
           active: false,
-          action: () => exec('bold')
+          action: () => bbnRteCp.exec('bold')
         },
         italic: {
           icon: 'nf nf-fa-italic',
           text: bbn._('Italic'),
           notext: true,
           active: false,
-          action: () => exec('italic')
+          action: () => bbnRteCp.exec('italic')
         },
         underline: {
           icon: 'nf nf-fa-underline',
           text: bbn._('Underline'),
           notext: true,
           active: false,
-          action: () => exec('underline')
+          action: () => bbnRteCp.exec('underline')
         },
         strikethrough: {
           icon: 'nf nf-fa-strikethrough',
           text: bbn._('Strike-through'),
           notext: true,
           active: false,
-          action: () => exec('strikeThrough')
+          action: () => bbnRteCp.exec('strikeThrough')
         },
         align: {
           text: bbn._('Align'),
@@ -244,6 +257,11 @@ const cpDef = {
                                 @input="setAlign"/>
             `,
             data(){
+              let rte = this.closest('bbn-rte');
+              if (!rte && this.closest('bbn-floater')) {
+                rte = this.closest('bbn-floater').opener;
+              }
+
               return {
                 buttons: [{
                   text: bbn._('Align Left'),
@@ -264,25 +282,23 @@ const cpDef = {
                 }],
                 currentAlign: '',
                 isDisabled: false,
-                isReadOnly: false
-              }
-            },
-            computed: {
-              rte() {
-                return this.closest('bbn-floater').opener;
+                isReadOnly: false,
+                rte: rte
               }
             },
             methods: {
               setAlign(align){
-                exec(align);
+                bbnRteCp.exec(align);
               }
             },
             mounted(){
-              this.rte.alignComponent = this;
-              this.isDisabled = !!this.rte.disabled;
-              this.isReadOnly = !!this.rte.readonly;
-              this.disWatch = this.rte.$watch('disabled', val => this.isDisabled = !!val);
-              this.readWatch = this.rte.$watch('readonly', val => this.isDisabled = !!val);
+              if (!!this.rte) {
+                this.rte.alignComponent = this;
+                this.isDisabled = !!this.rte.disabled;
+                this.isReadOnly = !!this.rte.readonly;
+                this.disWatch = this.rte.$watch('disabled', val => this.isDisabled = !!val);
+                this.readWatch = this.rte.$watch('readonly', val => this.isDisabled = !!val);
+              }
             },
             beforeDestroy(){
               this.disWatch();
@@ -309,28 +325,31 @@ const cpDef = {
               </span>
             `,
             data(){
+              let rte = this.closest('bbn-rte');
+              if (!rte && this.closest('bbn-floater')) {
+                rte = this.closest('bbn-floater').opener;
+              }
+
               return {
                 currentColor: bbn.fn.rgb2hex(window.getComputedStyle(document.body).color),
                 isDisabled: false,
-                isReadOnly: false
-              }
-            },
-            computed: {
-              rte() {
-                return this.closest('bbn-floater').opener;
+                isReadOnly: false,
+                rte: rte
               }
             },
             methods: {
               setColor(color){
-                exec('foreColor', color);
+                bbnRteCp.exec('foreColor', color);
               }
             },
             mounted(){
-              this.rte.fontColorComponent = this;
-              this.isDisabled = !!this.rte.disabled;
-              this.isReadOnly = !!this.rte.readonly;
-              this.disWatch = this.rte.$watch('disabled', val => this.isDisabled = !!val);
-              this.readWatch = this.rte.$watch('readonly', val => this.isDisabled = !!val);
+              if (!!this.rte) {
+                this.rte.fontColorComponent = this;
+                this.isDisabled = !!this.rte.disabled;
+                this.isReadOnly = !!this.rte.readonly;
+                this.disWatch = this.rte.$watch('disabled', val => this.isDisabled = !!val);
+                this.readWatch = this.rte.$watch('readonly', val => this.isDisabled = !!val);
+              }
             },
             beforeDestroy(){
               this.disWatch();
@@ -357,28 +376,31 @@ const cpDef = {
               </span>
             `,
             data(){
+              let rte = this.closest('bbn-rte');
+              if (!rte && this.closest('bbn-floater')) {
+                rte = this.closest('bbn-floater').opener;
+              }
+
               return {
                 currentColor: '',
                 isDisabled: false,
-                isReadOnly: false
-              }
-            },
-            computed: {
-              rte() {
-                return this.closest('bbn-floater').opener;
+                isReadOnly: false,
+                rte: rte
               }
             },
             methods: {
               setColor(color){
-                exec('hiliteColor', color);
+                bbnRteCp.exec('hiliteColor', color);
               }
             },
             mounted(){
-              this.rte.fontBgColorComponent = this;
-              this.isDisabled = !!this.rte.disabled;
-              this.isReadOnly = !!this.beforeDestroy, this.rte.readonly;
-              this.disWatch = this.rte.$watch('disabled', val => this.isDisabled = !!val);
-              this.readWatch = this.rte.$watch('readonly', val => this.isDisabled = !!val);
+              if (!!this.rte) {
+                this.rte.fontBgColorComponent = this;
+                this.isDisabled = !!this.rte.disabled;
+                this.isReadOnly = !!this.beforeDestroy, this.rte.readonly;
+                this.disWatch = this.rte.$watch('disabled', val => this.isDisabled = !!val);
+                this.readWatch = this.rte.$watch('readonly', val => this.isDisabled = !!val);
+              }
             },
             beforeDestroy(){
               this.disWatch();
@@ -390,13 +412,13 @@ const cpDef = {
           icon: 'nf nf-md-arrow_expand_left',
           text: bbn._('Decrease indent'),
           notext: true,
-          action: () => exec('outdent')
+          action: () => bbnRteCp.exec('outdent')
         },
         indent: {
           icon: 'nf nf-md-arrow_expand_right',
           text: bbn._('Increase indent'),
           notext: true,
-          action: () => exec('indent')
+          action: () => bbnRteCp.exec('indent')
         },
         /*
         heading: {
@@ -408,37 +430,37 @@ const cpDef = {
               icon: 'nf nf-mdi-format_header_1',
               text: bbn._('Heading 1'),
               notext: true,
-              action: () => exec(formatBlock, '<h1>')
+              action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<h1>')
             },
             {
               icon: 'nf nf-mdi-format_header_2',
               text: bbn._('Heading 2'),
               notext: true,
-              action: () => exec(formatBlock, '<h2>')
+              action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<h2>')
             },
             {
               icon: 'nf nf-mdi-format_header_3',
               text: bbn._('Heading 3'),
               notext: true,
-              action: () => exec(formatBlock, '<h3>')
+              action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<h3>')
             },
             {
               icon: 'nf nf-mdi-format_header_4',
               text: bbn._('Heading 4'),
               notext: true,
-              action: () => exec(formatBlock, '<h4>')
+              action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<h4>')
             },
             {
               icon: 'nf nf-mdi-format_header_5',
               text: bbn._('Heading 5'),
               notext: true,
-              action: () => exec(formatBlock, '<h5>')
+              action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<h5>')
             },
             {
               icon: 'nf nf-mdi-format_header_6',
               text: bbn._('Heading 6'),
               notext: true,
-              action: () => exec(formatBlock, '<h6>')
+              action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<h6>')
             },
           ]
         },
@@ -446,38 +468,38 @@ const cpDef = {
           icon: 'nf nf-fa-paragraph',
           text: bbn._('Paragraph'),
           notext: true,
-          action: () => exec(formatBlock, '<p>')
+          action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<p>')
         },
         */
         quote: {
           icon: 'nf nf-mdi-format_quote_open',
           text: bbn._('Quote'),
           notext: true,
-          action: () => exec('formatBlock', '<blockquote>')
+          action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<blockquote>')
         },
         olist: {
           icon: 'nf nf-mdi-format_list_numbers',
           text: bbn._('Ordered List'),
           notext: true,
-          action: () => exec('insertOrderedList')
+          action: () => bbnRteCp.exec('insertOrderedList')
         },
         ulist: {
           icon: 'nf nf-mdi-format_list_bulleted_type',
           text: bbn._('Unordered List'),
           notext: true,
-          action: () => exec('insertUnorderedList')
+          action: () => bbnRteCp.exec('insertUnorderedList')
         },
         code: {
           icon: 'nf nf-mdi-code_tags',
           text: bbn._('Code'),
           notext: true,
-          action: () => exec('formatBlock', '<pre>')
+          action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<pre>')
         },
         line: {
           icon: 'nf nf-oct-horizontal_rule',
           text: bbn._('Horizontal Line'),
           notext: true,
-          action: () => exec('insertHorizontalRule')
+          action: () => bbnRteCp.exec('insertHorizontalRule')
         },
         link: {
           icon: 'nf nf-oct-link',
@@ -485,7 +507,7 @@ const cpDef = {
           notext: true,
           action: () => {
             const url = window.prompt(bbn._('Enter the link URL'))
-            if (url) exec('createLink', url)
+            if (url) bbnRteCp.exec('createLink', url)
           }
         },
         image64: {
@@ -497,6 +519,16 @@ const cpDef = {
                           :notext="true"
                           @click="onClick"/>
             `,
+            data(){
+              let rte = this.closest('bbn-rte');
+              if (!rte && this.closest('bbn-floater')) {
+                rte = this.closest('bbn-floater').opener;
+              }
+
+              return {
+                rte: rte
+              }
+            },
             methods: {
               onClick() {
                 let fileInput = this.rte.getRef('fileInput');
@@ -514,19 +546,19 @@ const cpDef = {
           notext: true,
           action: () => {
             const url = window.prompt(bbn._('Enter the image URL'))
-            if (url) exec('insertImage', url)
+            if (url) bbnRteCp.exec('insertImage', url)
           }
         }
       });
       const setButtons = buttons => {
         let res = bbnData.immunizeValue([]);
         if (!buttons.length) {
-          buttons = Object.keys(this.defaultButtons);
+          buttons = Object.keys(bbnRteCp.defaultButtons);
         }
 
         bbn.fn.each(buttons, a => {
-          if (bbn.fn.isString(a) && this.defaultButtons[a]) {
-            res.push(bbn.fn.extend({code: a}, this.defaultButtons[a]));
+          if (bbn.fn.isString(a) && bbnRteCp.defaultButtons[a]) {
+            res.push(bbn.fn.extend({code: a}, bbnRteCp.defaultButtons[a]));
           }
           else {
             res.push(a);
@@ -535,19 +567,18 @@ const cpDef = {
 
         return res;
       };
-      const exec = (command, value = null) => document.execCommand(command, false, value);
       const defaultStates = {
         bold: {
-          active: () => this.queryCommandState('bold'),
+          active: () => bbnRteCp.queryCommandState('bold'),
         },
         italic: {
-          active: () => this.queryCommandState('italic'),
+          active: () => bbnRteCp.queryCommandState('italic'),
         },
         underline: {
-          active: () => this.queryCommandState('underline'),
+          active: () => bbnRteCp.queryCommandState('underline'),
         },
         strikethrough: {
-          active: () => this.queryCommandState('strikeThrough'),
+          active: () => bbnRteCp.queryCommandState('strikeThrough'),
         },
       };
 
@@ -788,7 +819,7 @@ const cpDef = {
           event.stopImmediatePropagation();
         }
         if (event.key === 'Enter' && bbnRteCp.queryCommandValue(bbnRteCp.formatBlock) === 'blockquote') {
-          setTimeout(() => exec(bbnRteCp.formatBlock, `<${this.defaultParagraphSeparator}>`), 0);
+          setTimeout(() => bbnRteCp.exec(bbnRteCp.formatBlock, `<${this.defaultParagraphSeparator}>`), 0);
         }
         this.setColors();
         this.setStyle();
@@ -816,7 +847,7 @@ const cpDef = {
       rteOnInput(target) {
         let firstChild = target.firstChild;
         if (firstChild && firstChild.nodeType === 3) {
-          exec(bbnRteCp.formatBlock, `<${this.defaultParagraphSeparator}>`);
+          bbnRteCp.exec(bbnRteCp.formatBlock, `<${this.defaultParagraphSeparator}>`);
         }
         else if (this.content.innerHTML === '<br>') {
           this.content.innerHTML = ''
@@ -831,7 +862,7 @@ const cpDef = {
       setStyle(){
         if (this.styleComponent) {
           let style = bbnRteCp.queryCommandValue(bbnRteCp.formatBlock);
-          this.styleComponent.currentStyle =  !!style ? `<${style}>` : '<div>';
+          this.styleComponent.currentStyle = !!style ? `<${style}>` : '<div>';
         }
       },
       /**
@@ -862,16 +893,16 @@ const cpDef = {
       setAlign(){
         if (this.alignComponent) {
           let current;
-          if (queryCommandState('justifyLeft')) {
+          if (bbnRteCp.queryCommandState('justifyLeft')) {
             current = 'justifyLeft';
           }
-          else if (queryCommandState('justifyCenter')) {
+          else if (bbnRteCp.queryCommandState('justifyCenter')) {
             current = 'justifyCenter';
           }
-          else if (queryCommandState('justifyRight')) {
+          else if (bbnRteCp.queryCommandState('justifyRight')) {
             current = 'justifyRight';
           }
-          else if (queryCommandState('justifyFull')) {
+          else if (bbnRteCp.queryCommandState('justifyFull')) {
             current = 'justifyFull';
           }
           if (!!current && (this.alignComponent.currentAlign != current)) {
@@ -913,10 +944,16 @@ const cpDef = {
           const fileReader = new FileReader();
           fileReader.onload = () => {
             const img = fileReader.result;
-            exec('insertHTML', `<img src="${img}" style="max-width: 100%; height: auto; object-fit: scale-down">`);
+            bbnRteCp.exec('insertHTML', `<img src="${img}" style="max-width: 100%; height: auto; object-fit: scale-down">`);
             this.getRef('fileInput').value = '';
           }
           fileReader.readAsDataURL(file);
+        }
+      },
+      setContent(){
+        this.content = this.getRef('element');
+        if (this.content){
+          this.content.innerHTML = this.currentValue;
         }
       }
     },
@@ -959,11 +996,11 @@ const cpDef = {
         },
         iframeCSSLinks: this.iFrame ? this.iframeCSSLinks : []
       };
-  
-      this.content = this.getRef('element');
-      bbn.fn.log("CONTENT", this);
-      this.content.innerHTML = this.currentValue;
-  
+
+      if (!this.currentHeight) {
+        this.setContent();
+      }
+
       /*
       buttons.forEach(action => {
         const button = createElement('button')
@@ -983,8 +1020,8 @@ const cpDef = {
         appendChild(actionbar, button)
       })
   
-      if (settings.styleWithCSS) exec('styleWithCSS')
-        exec(defaultParagraphSeparatorString, defaultParagraphSeparator)
+      if (settings.styleWithCSS) bbnRteCp.exec('styleWithCSS')
+        bbnRteCp.exec(defaultParagraphSeparatorString, defaultParagraphSeparator)
         */
 
       this.ready = true;
@@ -998,11 +1035,13 @@ const cpDef = {
       value(v) {
         if (v !== this.currentValue) {
           this.currentValue = v;
-          this.content.innerHTML = v;
+          if (!!this.content) {
+            this.content.innerHTML = v;
+          }
         }
       },
       currentValue(v) {
-        if (this.showSource) {
+        if (this.showSource && !!this.content) {
           this.content.innerHTML = v;
         }
       },

@@ -15,7 +15,7 @@
   }">
     <bbn-button bbn-if="buttonLeft"
           :icon="buttonLeft" 
-          @click="currentActionLeft"
+          :action="currentActionLeft"
           tabindex="-1"
           :class="[
             'bbn-button-left',
@@ -79,7 +79,7 @@
     <bbn-button bbn-if="buttonRight"
                 :icon="buttonRight"
                 tabindex="-1"
-                @click="currentActionRight"
+                :action="currentActionRight"
                 :class="[
                   'bbn-button-right',
                   'bbn-no-vborder',

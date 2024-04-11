@@ -162,6 +162,9 @@ const cpDef = {
         ){
           this.element.currentPage = this.element.numPages;
         }
+      },
+      updateData(){
+        this.element.updateData();
       }
     },
     /**
