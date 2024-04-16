@@ -472,22 +472,22 @@ const cpDef = {
     },
     components: {
       /**
-       * @component gallery-col
+       * @component column
        */
-      galleryCol: {
-        name: 'gallery-col',
+      column: {
+        name: 'column',
         template: `
 <div :style="colStyle">
-  <component :is="gallery.itemComponent || 'gallery-item'"
+  <component :is="gallery.itemComponent || 'item'"
              bbn-for="(item, idx) in source"
              :source="item"
-             :key="'gallery-item-'+index+'-'+idx"/>
+             :key="'item-' + index + '-' + idx"/>
 </div>`,
         props: {
           /**
            * The source of the component 'gallery-col'.
            * @prop {Array} [[]] source
-           * @memberof gallery-col
+           * @memberof column
            */
           source: {
             type: Array,
@@ -498,7 +498,7 @@ const cpDef = {
           /**
            * The index of the column.
            * @prop {Number} index
-           * @memberof gallery-col
+           * @memberof column
            */
           index: {
             type: Number
@@ -508,7 +508,7 @@ const cpDef = {
           /**
            * The parent gallery component.
            * @computed gallery
-           * @memberof gallery-col
+           * @memberof column
            * @return {Object}
            */
           gallery() {
@@ -517,7 +517,7 @@ const cpDef = {
           /**
            * The style object of the column.
            * @computed colStyle
-           * @memberof gallery-col
+           * @memberof column
            * @return {Object}
            */
           colStyle() {
@@ -531,11 +531,11 @@ const cpDef = {
         },
         components: {
           /**
-           * @component galleryItem
-           * @memberof gallery-col
+           * @component item
+           * @memberof column
            */
-          galleryItem: {
-            name: 'gallery-item',
+          item: {
+            name: 'item',
             template: `
 <a bbn-if="!col.gallery.isLoading"
     :class="['bbn-gallery-item', 'bbn-box', {'bbn-primary': isSelected, 'bbn-p': !!col.gallery.zoomable}]"
@@ -584,7 +584,7 @@ const cpDef = {
                    : []"
                  :attach="buttonMenuElement"
                  :item-component="col.gallery.contextComponent"
-                 @hook:mounted="buttonMenuElement = getRef('itemMenu') || undefined"
+                 @hook:mounted="buttonMenuElement = getRef('itemMenu') || ''"
                  ref="menuButton">
         <div class="bbn-block">
           <i class="bbn-gallery-button-menu nf nf-mdi-menu"
@@ -599,9 +599,9 @@ const cpDef = {
             `,
             props: {
               /**
-               * The source of the compoment 'gallery-item'.
+               * The source of the compoment 'item'.
                * @prop {String|Object} source
-               * @memberof gallery-item
+               * @memberof item
                */
               source: {
                 type: [String, Object]
@@ -610,25 +610,25 @@ const cpDef = {
             data() {
               return {
                 /**
-                 * True if the gallery-item is loaded.
+                 * True if the item is loaded.
                  * @data {Boolean} [false] loaded
-                 * @memberof gallery-item
+                 * @memberof item
                  */
                 loaded: (this.source.data.is_image !== undefined) && !this.source.data.is_image,
                 /**
                  * The element to which the context menu is attached
                  * @data {HTMLElement} [undefined] buttonMenuElement
-                 * @memberof gallery-item
+                 * @memberof item
                  */
-                buttonMenuElement: undefined,
+                buttonMenuElement: '',
                 error: false
               }
             },
             computed: {
               /**
-               * The parent component 'gallery-col'.
+               * The parent component 'column'.
                * @computed col
-               * @memberof gallery-item
+               * @memberof item
                * @return {bbnCp}
                */
               col() {
@@ -637,7 +637,7 @@ const cpDef = {
               /**
                * The style object of the item.
                * @computed aStyle
-               * @memberof gallery-item
+               * @memberof item
                * @return {Object}
                */
               aStyle() {
@@ -653,7 +653,7 @@ const cpDef = {
               /**
                * The style object of the image.
                * @computed imgStyle
-               * @memberof gallery-item
+               * @memberof item
                * @return {Object}
                */
               imgStyle() {
@@ -670,7 +670,7 @@ const cpDef = {
                * True if the source of the component is an object.
                * @computed isObj
                * @return {Boolean}
-               * @memberof gallery-item
+               * @memberof item
                */
               isObj() {
                 return bbn.fn.isObject(this.source);
@@ -679,7 +679,7 @@ const cpDef = {
                * If true, shows the overlay.
                * @computed showOverlay
                * @return {Boolean}
-               * @memberof gallery-item
+               * @memberof item
                */
               showOverlay() {
                 return this.col.gallery.overlay && this.isObj && (this.source.data[this.col.gallery.overlayName] !== undefined);
@@ -688,7 +688,7 @@ const cpDef = {
                * True if the item is selected.
                * @computed isSelected
                * @return {Boolean}
-               * @memberof gallery-item
+               * @memberof item
                */
               isSelected() {
                 return this.col.gallery.currentSelected.includes(!!this.col.gallery.uid ? this.source.data[this.col.gallery.uid] : this.source.index);
@@ -696,7 +696,7 @@ const cpDef = {
               /**
                * The image source
                * @computed imgSrc
-               * @memberof gallery-item
+               * @memberof item
                * @return {String}
                */
               imgSrc() {
@@ -750,13 +750,13 @@ const cpDef = {
               /**
                * Alias of bbn.fn.isFunction method
                * @methods isFunction
-               * @memberof gallery-item
+               * @memberof item
                */
               isFunction: bbn.fn.isFunction,
               /**
                * Manages the actions.
                * @methods action
-               * @memberof gallery-item
+               * @memberof item
                * @fires getPopup
                */
               action(ev) {
@@ -812,10 +812,10 @@ const cpDef = {
         }
       },
       /**
-       * @component gallery-zoom
+       * @component zoom
        */
-      galleryZoom: {
-        name: 'gallery-zoom',
+      zoom: {
+        name: 'zoom',
         template: `
 <div class="bbn-overlay bbn-gallery-zoom">
   <bbn-slideshow :source="source.data"
@@ -833,6 +833,7 @@ const cpDef = {
           /**
            * The source of the component 'gallery-zoom'.
            * @prop {String|Object} source
+           * @memberof zoom
            */
           source: {
             type: [String, Object]
@@ -840,10 +841,10 @@ const cpDef = {
         }
       },
       /**
-       * @component gallery-selected
+       * @component selected
        */
-      gallerySelected: {
-        name: 'gallery-selected',
+      selected: {
+        name: 'selected',
         template: `
 <div class="bbn-rel">
   <i class="bbn-top-right nf nf-fa-close bbn-red bbn-vxspadded bbn-hspadded bbn-lg bbn-p"
@@ -860,7 +861,7 @@ const cpDef = {
         props: {
           /**
            * @prop {String|Number} source
-           * @memberof gallery-selected
+           * @memberof selected
            */
           source: {
             type: [String, Number],
@@ -870,7 +871,7 @@ const cpDef = {
         computed: {
           /**
            * @computed altSrc
-           * @memberof gallery-selected
+           * @memberof selected
            * @fires bbn.fn.basename
            * @return {String}
            */
@@ -879,7 +880,7 @@ const cpDef = {
           },
           /**
            * @computed gallery
-           * @memberof gallery-selected
+           * @memberof selected
            * @fires closest
            * @return {bbnCp}
            */
@@ -888,7 +889,7 @@ const cpDef = {
           },
           /**
            * @computed imgSrc
-           * @memberof gallery-selected
+           * @memberof selected
            * @return {String|null}
            */
           imgSrc() {
@@ -920,7 +921,7 @@ const cpDef = {
         methods: {
           /**
            * @method unselect
-           * @memberof gallery-selected
+           * @memberof selected
            */
           unselect() {
             if (this.gallery) {

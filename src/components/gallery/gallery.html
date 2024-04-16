@@ -94,7 +94,7 @@
            class="bbn-gallery-selected-panel bbn-rel bbn-hxsspace">
         <bbn-scroll>
           <div class="bbn-gallery-selected-panel-grid">
-            <gallery-selected bbn-for="(sel, idx) in currentSelected"
+            <selected bbn-for="(sel, idx) in currentSelected"
                               :source="sel"
                               :key="idx"/>
           </div>
@@ -115,12 +115,12 @@
                   bbn-elseif="total">
           <div class="bbn-gallery-columns-container"
                :style="{margin: '0 auto', textAlign: align}">
-            <gallery-col bbn-for="index in cols"
-                        :key="'gallery-col-' + index"
-                        :index="index"
-                        :source="items.filter((it, i) => {
-                            return i % cols === index;
-                          })"/>
+            <column bbn-for="index in cols"
+                    :key="'column-' + index"
+                    :index="index"
+                    :source="items.filter((it, i) => {
+                      return i % cols === index;
+                    })"/>
           </div>
         </component>
       </div>
@@ -140,7 +140,7 @@
               :scrollable="false"
               :resizable="false"
               :maximizable="false"
-              :component="$options.components.galleryZoom"
+              :component="$options.components.zoom"
               :source="floaterSource"/>
   
 </div>
