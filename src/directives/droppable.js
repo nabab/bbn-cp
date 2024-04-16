@@ -24,6 +24,8 @@ export default function() {
             if (el.classList.contains('bbn-droppable-over')) {
               el.classList.remove('bbn-droppable-over');
             }
+
+            el.bbnDirectives.droppable.over = false;
             delete el.dataset.bbn_droppable_over;
           }
         }
@@ -49,6 +51,8 @@ export default function() {
             if (!el.classList.contains('bbn-droppable-over')) {
               el.classList.add('bbn-droppable-over');
             }
+
+            el.bbnDirectives.droppable.over = true;
             el.dataset.bbn_droppable_over = true;
           }
         }
@@ -93,19 +97,23 @@ export default function() {
     if (el.bbnDirectives === undefined) {
       el.bbnDirectives = bbn.fn.createObject();
     }
+
     if (el.bbnDirectives.droppable === undefined) {
       el.bbnDirectives.droppable = bbn.fn.createObject();
     }
+
     if ((binding.value !== false)
       && !el.classList.contains('bbn-undroppable')
     ) {
       el.dataset.bbn_droppable = true;
       el.bbnDirectives.droppable = bbn.fn.createObject({
-        active: true
+        active: true,
+        over: false
       });
       if (!el.classList.contains('bbn-droppable')) {
         el.classList.add('bbn-droppable');
       }
+
       let options = bbn.fn.createObject(),
           asArg = !!binding.arg && binding.arg.length,
           asMods = bbn.fn.isArray(binding.modifiers) && binding.modifiers.length,
@@ -128,6 +136,7 @@ export default function() {
           data = options.data;
         }
       }
+
       options.data = data;
       el.bbnDirectives.droppable.options = options;
       return true;
@@ -146,9 +155,11 @@ export default function() {
     if (el.bbnDirectives === undefined) {
       el.bbnDirectives = bbn.fn.createObject();
     }
+
     if (el.bbnDirectives.droppable === undefined) {
       el.bbnDirectives.droppable = bbn.fn.createObject();
     }
+
     if (!!el.bbnDirectives.droppable.active) {
       if (bbn.fn.isFunction(el.bbnDirectives.droppable.onmouseenter)) {
         el.removeEventListener('mouseenter', el.bbnDirectives.droppable.onmouseenter);
@@ -163,6 +174,7 @@ export default function() {
         el.removeEventListener('beforedrop', el.bbnDirectives.droppable.onbeforedrop);
       }
     }
+
     el.bbnDirectives.droppable = bbn.fn.createObject({
       active: false
     });
@@ -180,7 +192,7 @@ export default function() {
         if (binding.oldValue === false) {
           inserted(el, binding);
         }
-        else if (!el.dataset.bbn_droppable_over){
+        else if (!el.bbnDirectives.droppable.over) {
           analyzeValue(el, binding);
         }
       }
