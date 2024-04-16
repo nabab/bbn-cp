@@ -1,6 +1,6 @@
 <span :class="[componentClass, 'bbn-flex-width', 'bbn-vmiddle']"
 	   :style="(currentSize !== '') ? 'width:' + currentSize : '' ">
-  <input :value="Number(value.toString().replace(currentUnit, ''))"
+  <input :value="Number(!!value ? value.toString().replace(currentUnit, '') : 0)"
          type="range"
          :name="name"
          ref="element"
