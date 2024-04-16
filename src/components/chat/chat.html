@@ -208,7 +208,7 @@
       <template bbn-else>
         <div class="bbn-flex-fill bbn-bordered bbn-no-vborder">
           <bbn-scroll ref="scroll"
-                      @reachTop="loadMoreMessages"
+                      @reachtop="loadMoreMessages"
                       @hook:mounted="scrollEnd"
           >
             <div class="bbn-padded">
@@ -288,7 +288,7 @@
                      @keydown.enter.prevent="sendMessage"
                      bbn-model="currentMessage"
                      button-right="nf nf-fa-paper_plane"
-                     @clickRightButton="sendMessage"
+                     @clickrightbutton="sendMessage"
           ></bbn-input>
         </div>
       </template>

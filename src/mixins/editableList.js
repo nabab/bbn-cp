@@ -119,7 +119,7 @@ const editableList = {
      */
     _addTmp(data) {
       this._removeTmp().tmpRow = this._defaultRow(data);
-      this.$emit('addTmp', this.tmpRow);
+      this.$emit('addtmp', this.tmpRow);
       return this;
     },
     /**
@@ -284,7 +284,7 @@ const editableList = {
                 }
               },
               failure(d) {
-                table.$emit('editFailure', d);
+                table.$emit('editfailure', d);
               },
               cancel() {
                 if (table && table.cancel) {
@@ -412,16 +412,16 @@ const editableList = {
       if (bbn.fn.isObject(d)) {
         if ((d.success !== undefined) && !d.success) {
           if (window.appui) {
-            let ev = new Event('editFailure', {cancelable: true});
-            this.$emit('editFailure', d, ev);
+            let ev = new Event('editfailure', {cancelable: true});
+            this.$emit('editfailure', d, ev);
             if (!ev.defaultPrevented) {
               appui.error();
             }
           }
         }
         else {
-          let ev = new Event('editSuccess', {cancelable: true});
-          this.$emit('editSuccess', d, ev);
+          let ev = new Event('editsuccess', {cancelable: true});
+          this.$emit('editsuccess', d, ev);
           if (!ev.defaultPrevented) {
             if (d.data) {
               bbn.fn.iterate(d.data, (o, n) => {

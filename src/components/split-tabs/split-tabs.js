@@ -295,7 +295,7 @@ const cpDef = {
           let i = bbn.fn.search(this.observers, {id: obs.id, element: obs.element});
           if ( (i > -1) && (this.observers[i].value !== newVal) ){
             if ( idx === this.selected ){
-              this.$emit('bbnObs' + obs.element + obs.id, newVal);
+              this.$emit('bbnobs' + obs.element + obs.id, newVal);
               this.observers[i].value = newVal;
             }
             else{
@@ -318,13 +318,13 @@ const cpDef = {
     route(url, force){
       if ( this.ready && (force || !this.activeContainer || (url !== this.currentURL)) ){
         let event = new CustomEvent(
-          "beforeRoute",
+          "beforeroute",
           {
             bubbles: false,
             cancelable: true
           }
         );
-        this.$emit("beforeRoute", event, url);
+        this.$emit("beforeroute", event, url);
         if ( !event.defaultPrevented ){
           // Checks weather the container is already there
           if ( !url ){

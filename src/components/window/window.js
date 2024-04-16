@@ -288,14 +288,14 @@ const cpDef = {
       close(force, ev){
         let ok = true;
         if ( !ev ){
-          ev = new Event('beforeClose', {cancelable: true});
+          ev = new Event('beforeclose', {cancelable: true});
         }
         if ( !force ){
           if ( this.popup ){
-            this.popup.$emit('beforeClose', ev, this);
+            this.popup.$emit('beforeclose', ev, this);
           }
           else{
-            this.$emit('beforeClose', ev, this);
+            this.$emit('beforeclose', ev, this);
           }
           if ( this.beforeClose && (this.beforeClose(this) === false) ){
             return;

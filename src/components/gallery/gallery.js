@@ -789,7 +789,7 @@ const cpDef = {
                   bbn.fn.link(this.source.data[this.col.gallery.sourceAction]);
                 }
                 else {
-                  this.col.gallery.$emit('clickItem', this.source);
+                  this.col.gallery.$emit('clickitem', this.source);
                 }
               },
               changeOrder(ev) {

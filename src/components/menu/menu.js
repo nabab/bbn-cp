@@ -123,7 +123,7 @@ const cpDef = {
         this.$emit('select', item, idx, idx2, ev);
       }
       /*onDataLoaded(){         
-        this.$emit('onDataLoaded', this);
+        this.$emit('ondataloaded', this);
       }*/
     },
     watch: {

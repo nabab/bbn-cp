@@ -106,7 +106,7 @@ const serviceWorker = {
      * @emit messageToChannel
      */
     messageToChannel(data, channel){
-      this.$emit('messageToChannel', data, channel);
+      this.$emit('messagetochannel', data, channel);
     },
     /**
      * @method _checkSW

@@ -254,10 +254,10 @@ const cpDef = {
      */
     close(idx, force){
       if ( this.isValidIndex(idx) ){
-        let ev = new CustomEvent('beforeClose', {
+        let ev = new CustomEvent('beforeclose', {
           cancelable: true
         });
-        this.$emit('beforeClose', idx, force, ev);
+        this.$emit('beforeclose', idx, force, ev);
         if ( !ev.defaultPrevented ){
           this.source.splice(idx, 1);
           if ( this.selected > idx ){

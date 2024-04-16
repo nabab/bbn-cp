@@ -678,7 +678,7 @@ const cpDef = {
        */
       cancel(){
         let ev = new Event('cancel', {cancelable: true});
-        this.$emit('beforeCancel');
+        this.$emit('beforecancel');
         if ( !ev.defaultPrevented ){
           this.$emit('cancel', ev, this);
           this.reset();

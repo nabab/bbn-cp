@@ -738,7 +738,7 @@ const cpDef = {
           }
         },
         failure(d) {
-          this.main.$emit('editFailure', d);
+          this.main.$emit('editfailure', d);
         },
         cancel() {
           if (this.main
@@ -861,7 +861,7 @@ const cpDef = {
           }
         },
         onFailure(d) {
-          this.main.$emit('editFailure', d);
+          this.main.$emit('editfailure', d);
         },
         onCancel() {
           if (this.main

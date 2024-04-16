@@ -1076,9 +1076,9 @@ const cpDef = {
        * @method setLocalStorage
        */
       setLocalStorage(){
-        let ev = new Event('setStorage', {cancelable: true}),
+        let ev = new Event('setstorage', {cancelable: true}),
             cfg = this.getConfig();
-        this.$emit('setStorage', cfg, this.storageFullName || this.storageName, ev);
+        this.$emit('setstorage', cfg, this.storageFullName || this.storageName, ev);
         if ( !ev.defaultPrevented ){
           this.setStorage(cfg, this.storageFullName || this.storageName, !!this.storageFullName);
         }
@@ -1848,13 +1848,13 @@ const cpDef = {
               // remove the data at old index
               let ele = arr.splice(oldNum-1, 1);
               // create a new event beforeOrder that is cancelable
-              let ev = new Event('beforeOrder', {cancelable: true});
+              let ev = new Event('beforeorder', {cancelable: true});
               // if there is datas in ele
               if ( ele.length ){
                 // and force is false
                 if ( !force ){
                   // we call the event beforeOrfer
-                  this.tree.$emit('beforeOrder', oldNum, newNum, this.tree.dragging, ev);
+                  this.tree.$emit('beforeorder', oldNum, newNum, this.tree.dragging, ev);
                 }
                 if ( !!force || !ev.defaultPrevented ){
                   // remove the data at the index
@@ -1952,9 +1952,9 @@ const cpDef = {
                 this.tree.selectedNode.isSelected = false;
               }
                             // initializing and calling the event beforeSelect
-              let ev = new Event('beforeSelect', {cancelable: true});
+              let ev = new Event('beforeselect', {cancelable: true});
               if (emit) {
-                this.tree.$emit('beforeSelect', this, ev);
+                this.tree.$emit('beforeselect', this, ev);
               }
 
               if ( !ev.defaultPrevented ){
@@ -2009,10 +2009,10 @@ const cpDef = {
             let idx = this.tree.currentSelected.indexOf(this);
             let idx2 = this.parent.currentSelected.indexOf(this);
             // initializing and sending an event cancelable if emit is false
-            let ev = new Event('beforeUnselect', {cancelable: true});
+            let ev = new Event('beforeunselect', {cancelable: true});
             if ( emit ){
               // if emit is here we call the event beforeUnselect
-              this.tree.$emit('beforeUnselect', this, ev);
+              this.tree.$emit('beforeunselect', this, ev);
             }
             if ( !ev.defaultPrevented ){
               let path = [];
@@ -2070,8 +2070,8 @@ const cpDef = {
               // initializing and sending a cancelable event if emit is true
               let ev;
               if (emit) {
-                ev = new Event('beforeUnfold', {cancelable: true});
-                this.tree.$emit('beforeUnfold', this, ev);
+                ev = new Event('beforeunfold', {cancelable: true});
+                this.tree.$emit('beforeunfold', this, ev);
               }
               if (!emit || !ev.defaultPrevented) {
                 // adding to the list of nodes that are currently expanded
@@ -2128,8 +2128,8 @@ const cpDef = {
             if (idx > -1) {
               let ev;
               if (emit) {
-                ev = new Event('beforeFold', {cancelable: true});
-                this.tree.$emit('beforeFold', this, ev);
+                ev = new Event('beforefold', {cancelable: true});
+                this.tree.$emit('beforefold', this, ev);
               }
               // Initializing and sending an event cancelable if emit is true
               // if the action has not been prevented

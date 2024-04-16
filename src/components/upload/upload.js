@@ -537,8 +537,8 @@ const cpDef = {
         this.$nextTick(() => {
           bbn.fn.each(this.filesProgress, fr => {
             if ( (id === undefined) || (fr.id === id) ){
-              let ev = new Event('beforeUpload', {cancelable: true});
-              this.$emit('beforeUpload', ev, fr);
+              let ev = new Event('beforeupload', {cancelable: true});
+              this.$emit('beforeupload', ev, fr);
               if ( !ev.defaultPrevented ){
                 if ( this.saveUrl ){
                   bbn.fn.upload(
@@ -763,8 +763,8 @@ const cpDef = {
      * @fires _remove
      */
     remove(file, force){
-      let ev = new Event('beforeRemove', {cancelable: true});
-      this.$emit('beforeRemove', ev, file);
+      let ev = new Event('beforeremove', {cancelable: true});
+      this.$emit('beforeremove', ev, file);
       if (force || !ev.defaultPrevented) {
         this.confirm(this.currentText.removeConfirm, () => {
           if ( this.removeUrl ){

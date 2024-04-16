@@ -137,7 +137,7 @@ const observer = {
       let row = bbn.fn.getRow(this.observers, {id: obs.id, element: obs.element});
       if ( row && (row.value !== newVal) ){
         row.value = newVal;
-        this.$emit('bbnObs' + obs.element + obs.id, newVal);
+        this.$emit('bbnobs' + obs.element + obs.id, newVal);
         return true;
       }
     },

@@ -1136,10 +1136,10 @@ const cpDef = {
       let idx = this.getIndex(misc);
       if (idx > -1) {
         /** @var {Event} onBeforeClose beforeClose event, cancelable only if not force */
-        let onBeforeClose = new Event('beforeClose', { cancelable: !force });
+        let onBeforeClose = new Event('beforeclose', { cancelable: !force });
         /** @var {Event} onClose close event, cancelable only if not force */
         let onClose = new Event('close');
-        this.$emit('beforeClose', idx, onBeforeClose);
+        this.$emit('beforeclose', idx, onBeforeClose);
         //bbn.fn.log("REMOVING " + this.views[idx].url)
         if (force || !onBeforeClose.defaultPrevented) {
           if (
@@ -3199,7 +3199,7 @@ const cpDef = {
           let i = bbn.fn.search(this.observers, {id: obs.id, element: obs.element});
           if ( (i > -1) && (this.observers[i].value !== newVal) ){
             if ( idx === this.selected ){
-              this.$emit('bbnObs' + obs.element + obs.id, newVal);
+              this.$emit('bbnobs' + obs.element + obs.id, newVal);
               this.observers[i].value = newVal;
             }
             else{
@@ -3373,10 +3373,10 @@ const cpDef = {
      */
     pin(idx) {
       if (this.isValidIndex(idx)) {
-        let ev = new CustomEvent('beforePin', {
+        let ev = new CustomEvent('beforepin', {
           cancelable: true
         });
-        this.$emit('beforePin', idx, ev);
+        this.$emit('beforepin', idx, ev);
         if (!ev.defaultPrevented) {
           this.views[idx].pinned = true;
           this.setConfig();
@@ -3394,10 +3394,10 @@ const cpDef = {
      */
     unpin(idx) {
       if (this.isValidIndex(idx)) {
-        let ev = new CustomEvent('beforeUnpin', {
+        let ev = new CustomEvent('beforeunpin', {
           cancelable: true
         });
-        this.$emit('beforeUnpin', idx, ev);
+        this.$emit('beforeunpin', idx, ev);
         if (!ev.defaultPrevented) {
           this.views[idx].pinned = false;
           this.setConfig();

@@ -1872,7 +1872,7 @@ const cpDef = {
          * @emit titleChanged
          */
         currentTitle(newVal){
-          this.$emit('titleChanged', newVal)
+          this.$emit('titlechanged', newVal)
         },
         /**
          * @watch info.title
@@ -1986,7 +1986,7 @@ const cpDef = {
             :admins="chat.admins"
             :user-id="cp.userId"
             :users="cp.users"
-            @titleChanged="title => chat.title = title"
+            @titlechanged="title => chat.title = title"
             :titleVisible="true"
 ></component>
 </bbn-form>

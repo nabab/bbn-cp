@@ -789,8 +789,8 @@ const cpDef = {
     */
     refresh(force){
       if ( !force ){
-        let ev = new Event('dataLoad', {cancelable: true});
-        this.$emit('dataLoad', ev, this);
+        let ev = new Event('dataload', {cancelable: true});
+        this.$emit('dataload', ev, this);
         if (ev.defaultPrevented) {
           return false;
         }

@@ -1281,10 +1281,10 @@ const cpDef = {
           }
         }
         else {
-          let beforeCloseEvent = new Event('beforeClose', {
+          let beforeCloseEvent = new Event('beforeclose', {
             cancelable: true
           });
-          this.$emit('beforeClose', beforeCloseEvent, this);
+          this.$emit('beforeclose', beforeCloseEvent, this);
           if (beforeCloseEvent.defaultPrevented) {
             return;
           }

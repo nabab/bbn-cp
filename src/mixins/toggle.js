@@ -55,8 +55,8 @@ const toggle = {
      * @emits show      
      */
     show(){
-      let e = new Event('beforeShow', {cancelable: true});
-      this.$emit('beforeShow', e);
+      let e = new Event('beforeshow', {cancelable: true});
+      this.$emit('beforeshow', e);
       if (!e.defaultPrevented) {
         this.currentVisible = true;
       }
@@ -67,8 +67,8 @@ const toggle = {
      * @emits hide      
      */
     hide(){
-      let e = new Event('beforeHide', {cancelable: true});
-      this.$emit('beforeHide', e);
+      let e = new Event('beforehide', {cancelable: true});
+      this.$emit('beforehide', e);
       if (!e.defaultPrevented) {
         this.currentVisible = false;
       }

@@ -339,7 +339,7 @@ const cpDef = {
       increment(event, negative) {
         if ( !this.readonly && !this.isDisabled && (negative ? !this.disableDecrease : !this.disableIncrease)){
           let evName = negative ? 'decrement' : 'increment',
-              beforeEvName = 'before' + bbn.fn.correctCase(evName),
+              beforeEvName = 'before' + evName,
               ev = new Event(beforeEvName, {cancelable: true}),
               modifier = negative ? -1 : 1,
               ratio = (this.currentDecimals ? Math.pow(10, this.currentDecimals) : 1),
