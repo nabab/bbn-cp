@@ -61,14 +61,6 @@ const cpDef = {
         type: Array
       },
       /**
-       * The real value used in the input emit.
-       * @prop {String|Boolean|Number} [undefined] modelValue
-       */
-      modelValue: {
-        type: [String, Boolean, Number],
-        default: undefined
-      },
-      /**
        * @prop {Boolean} [false] notext
        */
       notext: {
@@ -93,7 +85,7 @@ const cpDef = {
     beforeMount() {
       if (this.hasStorage) {
         let v = this.getStorage();
-        if (v && (v !== this.modelValue)) {
+        if (v && (v !== this.value)) {
           this.changed(v);
         }
       }
