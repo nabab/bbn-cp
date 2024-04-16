@@ -100,7 +100,8 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
       throw Error(_("The name '_default_' is reserved for the default value of the model (check %s)", componentName));
     }
 
-    let a = bbn.fn.camelToCss(modifiers.splice(0, 1)[0]);
+    let original = modifiers.splice(0, 1)[0];
+    let a = bbn.fn.camelToCss(original);
     // replaces v- by bbn-
     if (a.indexOf('v-') === 0) {
       a = 'bbn-' + a.substr(2);
@@ -137,7 +138,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
           o.exp = '(' + o.exp + ')(' + (analyzed.argString || '') + ')';
         }
       }
-      let eventName = a.substr(1);
+      let eventName = original.substr(1);
       if (main[1]) {
         eventName += ':' + main[1];
       }
