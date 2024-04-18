@@ -43,9 +43,9 @@ const expToFn = (cp, loopVars, a, node, type) => {
     }
     else {
       let stFn = `if (bbnData.isWatching) {bbnData.watchStarted = true;}\n`;
-      stFn += 'const res = (' + (a.exp || (node.type === 'else' ? 'true' : '')) + ')\n';
+      stFn += 'const $_bbnRes = (' + (a.exp || (node.type === 'else' ? 'true' : '')) + ')\n';
       stFn += `if (bbnData.watchStarted) {bbnData.watchStarted = false;}\n`;
-      stFn += `return res;\n`;
+      stFn += `return $_bbnRes;\n`;
       a.fn = new Function(...args, stFn);
       if (type === 'model') {
         a.setter = new Function('bbnValue', ...args, a.exp + ' = bbnValue; return bbnValkue;');
