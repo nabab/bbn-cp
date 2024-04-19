@@ -141,6 +141,23 @@
                         :text="_('Send')"/>
           </div>
         </div>
+        <div bbn-elseif="currentMode === 'email'"
+             class="bbn-w-100">
+          <div class="bbn-w-100 bbn-c bbn-vsmargin">
+            <bbn-input class="bbn-c bbn-w-100"
+                      required="required"
+                      button-left="nf nf-fa-envelope_o"
+                      :nullable="true"
+                      :placeholder="_('E-mail address')"
+                      bbn-model="currentFormData.email"
+                      type="email"/>
+          </div>
+          <div class="bbn-c bbn-w-100 bbn-vsmargin">
+            <bbn-button type="button"
+                        @click="$refs.form.submit()"
+                        :text="_('Send')"/>
+          </div>
+        </div>
       </bbn-form>
     </div>
   </div>
