@@ -258,6 +258,13 @@ export default async function buildElement(cp, node, parent, data, before, items
       treatEvents(cp, ele, data); 
     }
   }
+  else if (bbn.fn.numProperties(node.directives)) {
+    for (let n in node.directives) {
+      if (node.directives[n].inserted) {
+        node.directives[n].inserted = false;
+      }
+    }
+  }
 
   // Return the created or modified element
   return ele; 
