@@ -47,12 +47,12 @@ export default function setExpResult(cp, attr, hash, data, force) {
     for (let i = 0; i < sequence.length; i++) {
       let a = sequence[i];
       if (a.data instanceof bbnData) {
-        if (!a.data.deps.includes(this)) {
-          a.data.deps.push(this);
+        if (!a.data.deps.includes(cp)) {
+          a.data.deps.push(cp);
         }
 
         if (!a.cp.$deps.__bbnDataRegister.has(a.data.id)) {
-          a.cp.$deps.__bbnDataRegister.set(a.data.id, this);
+          a.cp.$deps.__bbnDataRegister.set(a.data.id, cp);
         }
       }
       else {
@@ -60,8 +60,8 @@ export default function setExpResult(cp, attr, hash, data, force) {
           a.cp.$deps[a.name] = [];
         }
 
-        if (!a.cp.$deps[a.name].includes(this)) {
-          a.cp.$deps[a.name].push(this);
+        if (!a.cp.$deps[a.name].includes(cp)) {
+          a.cp.$deps[a.name].push(cp);
         }
       }
     }

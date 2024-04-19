@@ -1,3 +1,5 @@
+import bbn from "@bbn/bbn";
+
 export default function propagateDependencyChanges(cp, name, hash) {
   bbn.fn.iterate(cp.$computed, (v, n) => {
     if (v.dependencies && v.dependencies.includes(name)) {
@@ -31,6 +33,17 @@ export default function propagateDependencyChanges(cp, name, hash) {
       }
     }
   });
+  if (cp.$deps[name]) {
+    cp.$deps[name].forEach((a) => {
+      if (a instanceof bbnData) {
+        a.update();
+      }
+      else if (a instanceof bbnCp) {
+        a.$nextTick(() => a.$tick());
+      }
+    });
+  }
+
   if (shouldTick) {
     bbn.fn.log("SHOULD TICK ON " + cp.$options.name)
     cp.$tick();

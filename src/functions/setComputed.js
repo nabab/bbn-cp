@@ -34,6 +34,7 @@ export default function setComputed(obj, name, getter, setter) {
         this.$computed[name].num = this.$numBuild + 1;
       }
   
+      bbnData.addSequence(this, name, this.$computed[name].val);
       return this.$computed[name].val;
     }
   };

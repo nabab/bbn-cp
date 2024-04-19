@@ -13,6 +13,7 @@ export default function setUpData(cp, name, value) {
           cp.$computed[cp.$currentComputed].dependencies.push(name);
         }
         */
+        bbnData.addSequence(cp, name, this.$dataValues[name]);
         return cp.$dataValues[name];
       },
       set(v) {

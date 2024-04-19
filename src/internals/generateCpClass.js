@@ -117,6 +117,7 @@ export default function generateCpClass(publicClass, obj) {
     for (let n in obj.props) {
       Object.defineProperty(window[proto].prototype, n, {
         get() {
+          bbnData.addSequence(this, n, this.$props[n]);
           return this.$props[n];
         }
       });
