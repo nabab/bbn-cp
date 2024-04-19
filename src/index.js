@@ -22,10 +22,12 @@ import "./lib/Data/static/treatValue.js";
 import bbnHTML from "./lib/Html.js";
 import bbnButtonHTML from "./lib/Button.js";
 import bbnCellHTML from "./lib/Cell.js";
+import bbnDivHTML from "./lib/Div.js";
 import bbnElementHTML from "./lib/Element.js";
 import bbnFormHTML from "./lib/Form.js";
 import bbnListHTML from "./lib/List.js";
 import bbnRowHTML from "./lib/Row.js";
+import bbnSpanHTML from "./lib/Span.js";
 import bbnCp from "./lib/Cp/Cp.js";
 import "./lib/Cp/prototype/connected.js";
 import "./lib/Cp/prototype/delete.js";
@@ -60,10 +62,12 @@ export {
   bbnAnon,
   bbnButtonHTML,
   bbnCellHTML,
+  bbnDivHTML,
   bbnElementHTML,
   bbnFormHTML,
   bbnListHTML,
   bbnRowHTML,
+  bbnSpanHTML,
   bbnAnonCp,
   bbnData,
   bbnCp

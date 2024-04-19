@@ -50,19 +50,26 @@ export default function applyPropsOnElement (cp, node, ele) {
           break;
         case 'style':
           if (!isComponent && (ele !== cp.$el)) {
-            if (v !== ele.style.cssText) {
-              ele.style.cssText = bbn.cp.convertStyles(v);
+            const args = [v];
+            if (Object.hasOwn(props, 'bbn-show')) {
+              args.push({display: props['bbn-show'] ? '' : 'none'});
+            }
+            const styles = bbn.cp.convertStyles(...args);
+            if (styles !== ele.style.cssText) {
+              ele.style.cssText = styles;
             }
           }
-          attr.style = v;
           break;
         case 'bbn-show':
-          if (v && (ele.style.display === 'none')) {
-            ele.style.removeProperty('display');
+          if (!props.style) {
+            if (v && (ele.style.display === 'none')) {
+              ele.style.removeProperty('display');
+            }
+            else if (!v && (ele.style.display !== 'none')) {
+              ele.style.display = 'none';
+            }
           }
-          else if (!v && (ele.style.display !== 'none')) {
-            ele.style.display = 'none';
-          }
+
           break;
         default:
           if (n.indexOf('bbn-') !== 0) {

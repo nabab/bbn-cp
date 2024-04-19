@@ -205,11 +205,10 @@ const cpDef = {
        */
       go(node, event){
         bbn.fn.log("GO", node);
-        event.preventDefault();
         this.searchExp = '';
         if ( node && node.data && (node.data.link || node.data.url) ){
           bbn.fn.link(node.data.link || node.data.url);
-          this.$emit('select', node, event);
+          this.$emit('select', node);
         }
       },
       /**

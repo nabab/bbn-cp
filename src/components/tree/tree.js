@@ -2348,11 +2348,11 @@ const cpDef = {
            * @memberof bbn-tree-node
            */
           isSelected(newVal){
-                        if ( newVal ){
+            if ( newVal ){
               this.addToSelected();
             }
             else {
-                            this.removeFromSelected();
+              this.removeFromSelected();
             }
           },
           /**

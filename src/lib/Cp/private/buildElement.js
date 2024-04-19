@@ -37,7 +37,7 @@ const isBefore = (id1, id2) => {
 export default async function buildElement(cp, node, parent, data, before, items) {
   bbn.fn.checkType(cp, bbnCp, "No component in buildElement");
   bbn.fn.checkType(node, "object", "Props must be an object in buildElement");
-  bbn.fn.checkType(parent, Element, "Parent must be a DOM element");
+  bbn.fn.checkType(parent, [DocumentFragment, Element], "Parent must be a DOM element");
   if (node.bbn) {
     throw Error("Props cannot contain a bbn property in buildElement");
   }
@@ -127,7 +127,7 @@ export default async function buildElement(cp, node, parent, data, before, items
       'bbnIndex': { value: node.loopIndex, writable: false, configurable: false }
     });
   }
-  if (!node.comment && node.directives) {
+  if (node.directives) {
     Object.defineProperty(ele, 'bbnDirectives', {
       value: bbn.fn.createObject(), writable: false, configurable: false
     });
@@ -208,18 +208,29 @@ export default async function buildElement(cp, node, parent, data, before, items
     }
   }
   // First time is done in a linear direction
-  else if (!cp.$numBuild) {
+  else if (!cp.$numBuild || !parent.childNodes.length) {
     // Append as a new child
     parent.appendChild(ele); 
   }
   else {
     let after = false;
+    /*
+    const loopList = false;//cp.$retrieveElement(node.id, parent.bbnHash)?.bbnLoopList;
+    const myIdx = loopList ? loopList.indexOf(node.id + '_' + node.loopHash) : -1;
     for (let i = parent.childNodes.length - 1; i >= 0; i--) {
-      if ((parent.childNodes[i].bbnId !== ele.bbnId) && isBefore(parent.childNodes[i].bbnId, ele.bbnId)) {
+      if ((myIdx > -1) && (parent.childNodes[i].bbnId === ele.bbnId)) {
+        let idx = loopList.indexOf(parent.childNodes[i].bbnId + '_' + parent.childNodes[i].bbnHash);
+        if ((idx > -1) && (idx < myIdx)) {
+          after = parent.childNodes[i];
+          break;
+        }
+      }
+      else if ((parent.childNodes[i].bbnId !== ele.bbnId) && isBefore(parent.childNodes[i].bbnId, ele.bbnId)) {
         after = parent.childNodes[i];
         break;
       }
     }
+    */
 
     if (after) {
       // Insert after a specific sibling

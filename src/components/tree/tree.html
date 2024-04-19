@@ -107,8 +107,8 @@
                             @open="isActive = true"
                             @close="isActive = false"
                             style="cursor: unset">
-                <span @dblclick="dblClickOnNode"
-                      @click="clickOnNode"
+                <span @dblclick.stop="dblClickOnNode"
+                      @click.stop="clickOnNode"
                       @dragstart="startDrag"
                       @dragover="drag"
                       @dragleave="leaveDrag"

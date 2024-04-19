@@ -4,6 +4,7 @@ import bbn from "@bbn/bbn";
 import treatCondition from "./treatCondition.js";
 import getExpState from "./getExpState.js";
 import removeDOM from "./removeDOM.js";
+import buildElement from "./buildElement.js";
 
 /**
  * Processes loop directives in a component's template, iterating over data and applying conditions.
@@ -27,7 +28,7 @@ export default async function treatLoop(
     bbn.fn.checkType(cp, bbnCp);
     bbn.fn.checkType(node, Object);
     bbn.fn.checkType(hash, String);
-    bbn.fn.checkType(parent, HTMLElement, "The parent must be an HTML Element");
+    bbn.fn.checkType(parent, [DocumentFragment, HTMLElement], "The parent must be an HTML Element");
     bbn.fn.checkType(hashList, Array);
     if (data) {
       bbn.fn.checkType(data, Object);
@@ -42,9 +43,26 @@ export default async function treatLoop(
       loopValue = Object.keys((new Array(loopValue)).fill(0)).map(a => parseInt(a));
     }
 
+    let loopEle = cp.$retrieveElement(node.id, hash);
+    if (!loopEle) {
+      const loopNode = cloneNode(cp, node.id);
+      loopNode.comment = true;
+      loopEle = await buildElement(cp, loopNode, parent);
+      Object.defineProperty(loopEle, 'bbnLoopList', {
+        value: [],
+        writable: false,
+        configurable: false
+      });
+    }
+    else {
+      loopEle.bbnLoopList.splice(0, loopEle.bbnLoopList.length);
+    }
+
+    const hashList2 = loopEle.bbnLoopList;
     const isArray = bbn.fn.isArray(loopValue);
     // Construct a unique hash for each iteration based on loop values.
     const oHash = hash ? hash + '-' : '';
+
 
     for (let j in loopValue) {
       if (isArray) {
@@ -80,9 +98,11 @@ export default async function treatLoop(
 
       //if (conditionValue) {
         hashList.push(newNode.id + '_' + hash);
+        hashList2.push(newNode.id + '_' + hash);
       //}
       // Apply the condition to the current node.
       await treatCondition(cp, conditionValue, newNode, hash, parent, loopData, hashList);
     }
+
   }
 };

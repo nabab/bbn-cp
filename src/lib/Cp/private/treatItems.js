@@ -40,8 +40,8 @@ export default async function treatItems(
 
   let firstGo = false;
   let isRoot = !parent || (parent === cp.$el);
-  if (parent) {
-    bbn.fn.checkType(parent, HTMLElement, "The items's parent must be an HTML Element");
+  if (!isRoot) {
+    bbn.fn.checkType(parent, [HTMLElement, DocumentFragment], "The items's parent must be an HTML Element");
   }
   else {
     firstGo = !cp.$numBuild
@@ -63,7 +63,6 @@ export default async function treatItems(
 
   // Iterate over each item in the items array.
   for (let i = 0; i < items.length; i++) {
-
     // Handle loop structures within the node.
     if (items[i].loop) {
       await treatLoop(cp, items[i], hash, parent, data, hashList);

@@ -1,5 +1,6 @@
 import setExpResult from "./setExpResult.js";
 import createText from "./createText.js";
+import bbn from "@bbn/bbn";
 
 export default function treatText(cp, node, hash, parent, data, go = false) {
   bbn.fn.checkType(cp, bbnCp, "No component in treatText");
@@ -9,7 +10,7 @@ export default function treatText(cp, node, hash, parent, data, go = false) {
       go = true;
     }
 
-    const val = cp.$currentMap[node.id].exp ? setExpResult(cp, cp.$currentMap[node.id], hash, data) : node.text;
+    const val = node.exp ? setExpResult(cp, node, hash, data) : node.text;
     if (ele && (ele.textContent !== val)) {
       ele.textContent = val;
     }

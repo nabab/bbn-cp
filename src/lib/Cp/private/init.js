@@ -415,6 +415,7 @@ export default function init(cp) {
   addNamespace(cp, '$props', 'internal');
   addNamespace(cp, '$el', 'internal');
   addNamespace(cp, '$root', 'internal');
+  addNamespace(cp, '$cid', 'internal');
   addNamespace(cp, '$event', 'internal');
   addNamespace(cp, '$parent', 'internal');
   addNamespace(cp, '$options', 'internal');

@@ -135,9 +135,11 @@ const cpObj = bbn.fn.createObject({
   ],
   tagExtensions: {
     'button': 'bbnButtonHTML',
+    'div': 'bbnDivHTML',
     'form': 'bbnFormHTML',
     'ul': 'bbnListHTML',
     'li': 'bbnElementHTML',
+    'span': 'bbnSpanHTML',
     'tr': 'bbnRowHTML',
     'td': 'bbnCellHTML',
     'th': 'bbnCellHTML'
