@@ -70,7 +70,7 @@ const cpDef = {
       mode: {
         type: String,
         required: true,
-        validator: m => ['login', 'lost', 'change', 'invalid'].includes(m)
+        validator: m => ['login', 'lost', 'change', 'invalid', 'email'].includes(m)
       },
       /**
        * @prop {Number} [1200000] expires
@@ -165,6 +165,9 @@ const cpDef = {
           key: this.secureKey,
           pass1: '',
           pass2: ''
+        },
+        email: {
+          email: ''
         }
       };
       return {
@@ -251,6 +254,9 @@ const cpDef = {
             this.alert(bbn._('Your password has been changed'), false, () => {}, () => {
               window.document.location.href = bbn.env.root;
             });
+          }
+          else if (this.currentMode === 'email') {
+            this.alert(bbn._('An email has been sent to %s', this.currentFormData.email), false);
           }
         }
         else {

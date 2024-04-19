@@ -18,5 +18,6 @@
   "Mandatory field, 8 characters minimum": "Campo obbligatorio, minimo 8 caratteri",
   "An email has been sent to %s": "Un'email è stata inviata a %s",
   "Your password has been changed": "La tua password è stata cambiata",
-  "Passwords must match!": "Le password devono coincidere!"
+  "Passwords must match!": "Le password devono coincidere!",
+  "E-mail address": "Indirizzo e-mail"
 }
