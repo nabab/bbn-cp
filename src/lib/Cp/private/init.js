@@ -298,7 +298,9 @@ export default function init(cp) {
   });
 
   Object.defineProperty(cp, '$deps', {
-    value: bbn.fn.createObject(),
+    value: bbn.fn.createObject({
+      __bbnDataRegister: new Map()
+    }),
     writable: false,
     configurable: false
   });
