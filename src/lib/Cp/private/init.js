@@ -297,6 +297,12 @@ export default function init(cp) {
     configurable: false
   });
 
+  Object.defineProperty(cp, '$deps', {
+    value: bbn.fn.createObject(),
+    writable: false,
+    configurable: false
+  });
+
   /**
    * Counts the number of times the component has been repainted through the method updateComponent
    */

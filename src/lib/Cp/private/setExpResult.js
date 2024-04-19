@@ -41,7 +41,31 @@ export default function setExpResult(cp, attr, hash, data, force) {
 
       return attr.fn.bind(cp)(...args);
     };
+    bbnData.startWatching();
     const expValue = v();
+    const sequence = bbnData.stopWatching();
+    for (let i = 0; i < sequence.length; i++) {
+      let a = sequence[i];
+      if (a.data instanceof bbnData) {
+        if (!a.data.deps.includes(this)) {
+          a.data.deps.push(this);
+        }
+
+        if (!a.cp.$deps.__bbnDataRegister.has(a.data.id)) {
+          a.cp.$deps.__bbnDataRegister.set(a.data.id, this);
+        }
+      }
+      else {
+        if (!a.cp.$deps[a.name]) {
+          a.cp.$deps[a.name] = [];
+        }
+
+        if (!a.cp.$deps[a.name].includes(this)) {
+          a.cp.$deps[a.name].push(this);
+        }
+      }
+    }
+
     // If the result for the given name and hash doesn't exist, create it.
     if (!r[attr.hash][hash]) {
       r[attr.hash][hash] = bbn.fn.createObject({

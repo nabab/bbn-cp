@@ -21,28 +21,37 @@ class bbnData/* extends EventTarget*/ {
 
   static watchStarted = false;
 
+  static lastSequence = null;
+
+  static stoppers = [];
+
   static startWatching() {
+    const currentSequence = this.watchSequence.splice(0, this.watchSequence.length);
+    this.stoppers.push(() => {
+      this.watchSequence.splice(0, 0, ...currentSequence);
+    });
+    if (!this.isWatching) {
+      this.lastSequence = null;
     this.isWatching = true;
   }
-
-  static stoptWatching() {
-    this.isWatching = false;
   }
 
-  static getLastUsed(noStop) {
-    const res = this.watchSequence[this.watchSequence.length - 1];
-    if (!noStop) {
-      this.stoptWatching();
-    }
-
+  static stopWatching() {
+    const res = this.watchSequence.splice(0, this.watchSequence.length);
+    this.lastSequence = res.length ? res[res.length - 1] : null;
+    this.stoppers.pop()();
+    this.isWatching = !!this.stoppers.length;
     return res;
   }
 
-  static addSequence(cp, name, data) {
-    if (bbnData.watchStarted && (bbn.fn.isString(name) || bbn.fn.isInt(name))) {
-      bbnData.watchSequence.push({cp, name, data});
-    }
+  static getLastUsed() {
+    return this.lastSequence;
+  }
 
+  static addSequence(cp, name, data) {
+    if (this.watchStarted && (bbn.fn.isString(name) || bbn.fn.isInt(name))) {
+      this.watchSequence.push({cp, name, data});
+    }
   }
 
 
@@ -153,6 +162,12 @@ class bbnData/* extends EventTarget*/ {
      */
     Object.defineProperty(this, 'components', {
       value: bbn.fn.createObject(),
+      writable: false,
+      configurable: false
+    });
+
+    Object.defineProperty(this, 'deps', {
+      value: [],
       writable: false,
       configurable: false
     });
