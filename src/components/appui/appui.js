@@ -297,7 +297,12 @@ const cpDef = {
   },
   computed: {
     userGroup() {
-      return this.getUserGroup(this.user.id_group);
+      if (this.user?.id) {
+        let idGroup = this.getUserGroup(this.user.id) || this.user.id_group;
+        if (idGroup) {
+          return bbn.fn.getRow(this.groups, 'id', idGroup);
+        }
+      }
     },
     isDev() {
       return bbn.env.isDev;
