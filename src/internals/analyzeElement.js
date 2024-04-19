@@ -355,6 +355,11 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
           after = '</tr></table>' + after;
           target = 'tr';
           break;
+        case 'col':
+          before += '<table><colgroup>';
+          after = '</colgroup></table>' + after;
+          target = 'colgroup';
+          break;
         case 'li':
           before += '<ul>';
           after = '</ul>' + after;

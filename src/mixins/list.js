@@ -1194,7 +1194,7 @@ const list = {
       * Fires the method realDelete to delete the row.
       * @method delete
       * @param {Number} index
-      * @param {Strimg} confirm
+      * @param {String} confirm
       * @fires realDelete
       * @emit beforedelete
       */

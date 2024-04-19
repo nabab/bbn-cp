@@ -43,23 +43,6 @@ export default async function treatLoop(
       loopValue = Object.keys((new Array(loopValue)).fill(0)).map(a => parseInt(a));
     }
 
-    let loopEle = cp.$retrieveElement(node.id, hash);
-    if (!loopEle) {
-      const loopNode = cloneNode(cp, node.id);
-      loopNode.loopHash = hash;
-      loopNode.comment = true;
-      loopEle = await buildElement(cp, loopNode, parent);
-      Object.defineProperty(loopEle, 'bbnLoopList', {
-        value: [],
-        writable: false,
-        configurable: false
-      });
-    }
-    else {
-      loopEle.bbnLoopList.splice(0, loopEle.bbnLoopList.length);
-    }
-
-    const hashList2 = loopEle.bbnLoopList;
     const isArray = bbn.fn.isArray(loopValue);
     // Construct a unique hash for each iteration based on loop values.
     const oHash = hash ? hash + '-' : '';
@@ -100,7 +83,6 @@ export default async function treatLoop(
 
       //if (conditionValue) {
         hashList.push(newNode.id + '_' + hash);
-        hashList2.push(newNode.id + '_' + hash);
       //}
       // Apply the condition to the current node.
       await treatCondition(cp, conditionValue, newNode, hash, parent, loopData, hashList);
