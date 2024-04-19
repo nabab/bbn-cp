@@ -26,8 +26,8 @@ export default function addToElements(cp, ele) {
   }
 
   if (!cp.$currentMap[id]) {
-    bbn.fn.warning("Element exist error");
-    bbn.fn.log(["Element exist error", cp, id, ele]);
+    bbn.fn.warning("Element does not exist in map");
+    bbn.fn.log(["Element does not exist in map", cp, id, ele]);
   }
   // If the element has a hash, add or update it in the $elements object using the hash.
   if (hash) {
@@ -62,7 +62,7 @@ export default function addToElements(cp, ele) {
         removeDOM(cp, cp.$elements[id]);
       }
       else {
-        bbn.fn.log(["Element exist error", cp, cp.$elements[id], ele, id, cp.$numBuild, cp.$options.name]);
+        bbn.fn.log(["Element exist error", cp, cp.$elements[id], ele, ele.bbnSchema.tag, id, cp.$numBuild, cp.$options.name]);
         removeDOM(cp, cp.$elements[id]);
         //throw Error("The element " + id + " already exists in the DOM");
       }

@@ -22,7 +22,7 @@ export default async function treatLoop(
   hash,
   parent,
   data,
-  hashList = []
+  hashList
 ) {
   if (node?.loop) {
     bbn.fn.checkType(cp, bbnCp);
@@ -46,6 +46,7 @@ export default async function treatLoop(
     let loopEle = cp.$retrieveElement(node.id, hash);
     if (!loopEle) {
       const loopNode = cloneNode(cp, node.id);
+      loopNode.loopHash = hash;
       loopNode.comment = true;
       loopEle = await buildElement(cp, loopNode, parent);
       Object.defineProperty(loopEle, 'bbnLoopList', {
@@ -79,6 +80,7 @@ export default async function treatLoop(
 
       const ele = cp.$retrieveElement(node.id, hash);
       const newNode = ele?.bbnSchema || cloneNode(cp, node.id);
+      newNode.loopHash = hash;
 
       // Set loop item and index in the data.
       setExpResult(cp, newNode.loopItem, hash, loopData);

@@ -54,7 +54,6 @@ export default async function treatCondition(
     if (!ele || !bbn.fn.isComment(ele)) {
       // If the element exists, remove it.
       node.comment = true;
-      node.loopHash = hash;
       ele = await buildElement(cp, node, parent, data);
     }
   }

@@ -32,7 +32,6 @@ export default async function treatForgotten(cp, o, hash, parent, data) {
       let ele = cp.$retrieveElement(o.id, hash);
       // If the condition is true, process the children without rendering the parent element.
       if (forgotten) {
-        o.loopHash = hash;
         o.comment = true;
 
         if (!ele) {

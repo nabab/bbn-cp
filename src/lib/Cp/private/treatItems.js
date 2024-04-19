@@ -71,6 +71,7 @@ export default async function treatItems(
     else {
       const ele = cp.$retrieveElement(items[i].id, hash);
       const node = ele ? ele.bbnSchema : cloneNode(cp, items[i].id);
+      node.loopHash = hash;
       hashList.push(node.id + (hash ? '_' + hash : ''));
       if (node.condition) {
         // Processing all nodes with the same conditionId
@@ -87,6 +88,7 @@ export default async function treatItems(
           for (let j = 0; j < tmp.length; j++) {
             const ele = cp.$retrieveElement(tmp[j].id, hash);
             const node = ele ? ele.bbnSchema : cloneNode(cp, tmp[j].id);
+            node.loopHash = hash;
             const conditionValue = isConditionTrue ? false : (node.condition.type === 'else' ? true : setExpResult(cp, node.condition, hash, data));
             if (conditionValue) {
               isConditionTrue = true;

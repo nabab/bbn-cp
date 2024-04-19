@@ -58,6 +58,7 @@ export default async function treatNode (
     forgotten = await treatForgotten(cp, node, hash, parent, data);
     if (forgotten) {
       go = false;
+
     }
     // Special handling for 'transition' and 'template' tags.
     else if (!node.pre && ['transition', 'template'].includes(node.tag)) {
@@ -67,7 +68,7 @@ export default async function treatNode (
 
     const isOldComment = old && bbn.fn.isComment(old);
     // Determine if the element already exists or needs to be created.
-    if (!go && !forgotten && (!old || isOldComment || (old.tagName !== node.tag.toUpperCase()))) {
+    if (!go && !forgotten && (!old || isOldComment || !bbn.cp.isTag(node.tag, old))) {
       go = true;
     }
 
@@ -145,7 +146,6 @@ export default async function treatNode (
 
     if (!ele && ['transition', 'template'].includes(node.tag)) {
       node.comment = true;
-      node.loopHash = hash;
       ele = await buildElement(cp, node, parent, data);
     }
 
