@@ -36,11 +36,9 @@ export default async function treatModel(cp, node, hash, ele, data) {
         if (oldValue !== eventValue) {
           //bbn.fn.log(['Modfel change', oldValue, m, m.exp, JSON.stringify(Object.keys(node.model)), eventValue, name, cpSource.$namespaces[m.exp]])
           if (Object.hasOwn(data, m.exp)) {
-            //bbn.fn.log("MODEL THROUGH DATA")
             data[m.exp] = eventValue;
           }
           else if (Object.hasOwn(cpSource.$namespaces, m.exp)) {
-            //bbn.fn.log("MODEL THROUGH NS")
             switch (cpSource.$namespaces[m.exp]) {
               case 'props':
                 setProp(cpSource, m.exp, eventValue);

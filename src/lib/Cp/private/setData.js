@@ -28,9 +28,8 @@ export default function setData(cp, name, v) {
     }
 
     if (isMod) {
-      const newVal = cp.$treatValue(v, name);
-      cp.$dataValues[name] = newVal;
-      updateWatcher(cp, name, newVal);
+      cp.$dataValues[name] = v;
+      updateWatcher(cp, name, v);
       propagateDependencyChanges(cp, name);
       cp.$tick();
     }

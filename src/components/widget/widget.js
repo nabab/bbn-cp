@@ -342,7 +342,7 @@ const cpDef = {
        * @return {Boolean}
        */
       isClosable() {
-        return this.dadhboard && this.dashboard.closable && this.closable;
+        return this.dashboard && this.dashboard.closable && this.closable;
       },
       /**
        * @computed currentPage

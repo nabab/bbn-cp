@@ -1,3 +1,4 @@
+import bbn from '@bbn/bbn';
 import bbnCp from '../lib/Cp/Cp.js';
 
 const input = {

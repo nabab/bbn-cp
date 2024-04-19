@@ -18,13 +18,13 @@ import setExpResult from "./setExpResult.js";
  * @param {boolean} [go=false] - A flag indicating whether the element needs to be updated.
  * @returns {HTMLElement|null} The processed element or null if no element is processed.
  */
-export default async function treatElement(cp, eleNode, hash, parent, data, go = false) {
+export default async function treatElement(cp, node, hash, parent, data, go = false) {
   /** @var {null, HTMLElement} ele The element  */
   let ele = null;
   // Elements must be tags
-  if (eleNode.tag) {
+  if (node.tag) {
     /** @var {String} id Type 0-1, 0-3-6-0-1 */
-    const id = eleNode.id;
+    const id = node.id;
     /** @var {HTMLElement, null} old The existing element if it exists */
     const old = cp.$retrieveElement(id, hash);
     // For the time being ele is the old element or null
@@ -35,44 +35,55 @@ export default async function treatElement(cp, eleNode, hash, parent, data, go =
       // Setting properties
       // Either the element exists and the object is its bbnSchema or we clone the node
       // Setting the new properties only when needed
-      if (Object.hasOwn(eleNode.props, '_default_')) {
+      if (Object.hasOwn(node.props, '_default_')) {
         let n = old?.bbn?.$cfg?.model?.prop || 'value';
-        if (!bbn.fn.isSame(eleNode.props[n], eleNode.props._default_)) {
-          eleNode.props[n] = eleNode.props._default_;
+        if (!bbn.fn.isSame(node.props[n], node.props._default_)) {
+          node.props[n] = node.props._default_;
         }
+        delete node.props._default_;
       }
 
       // Updating the hash
-      if (hash && (eleNode.loopHash !== hash)) {
-        eleNode.loopHash = hash;
+      if (hash && (node.loopHash !== hash)) {
+        node.loopHash = hash;
       }
 
       // With the custom node we update the props and model.value
-      if (eleNode.model) {
-        for (let n in eleNode.model) {
-          if (getExpState(cp, eleNode.model[n].hash, hash) !== 'OK') {
-            eleNode.model[n].value = eleNode.props[n];
+      if (node.model) {
+        if (node.model._default_) {
+          let n = old?.bbn?.$cfg?.model?.prop || 'value';
+          if (!bbn.fn.isSame(node.model[n], node.model._default_)) {
+            node.model[n] = node.model._default_;
+          }
+          delete node.model._default_;
+        }
+
+        for (let n in node.model) {
+          const modelValue = setExpResult(cp, node.model[n], hash, data);
+          if (getExpState(cp, node.model[n].hash, hash) !== 'OK') {
+            node.model[n].value = modelValue;
+            node.props[n] = modelValue;
           }
         }
       }
 
       // Updating also the directives
-      if (bbn.fn.numProperties(eleNode.directives)) {
-        for (let n in eleNode.directives) {
-          if (eleNode.directives[n].exp) {
-            eleNode.directives[n].value = getExpValue(cp, eleNode.directives[n].hash, hash);
+      if (bbn.fn.numProperties(node.directives)) {
+        for (let n in node.directives) {
+          if (node.directives[n].exp) {
+            node.directives[n].value = getExpValue(cp, node.directives[n].hash, hash);
           }
         }
       }
     
       // 'component' tag is a special case
-      if (cp.$currentMap[eleNode.id].tag === 'component') {
-        if (bbn.fn.isObject(eleNode.props.is)) {
-          eleNode.tag = eleNode.props.name ? bbn.fn.camelToCss(eleNode.props.name) : 'bbn-anon';
-          eleNode.cfg = bbn.cp.normalizeComponent(eleNode.props.is);
+      if (cp.$currentMap[node.id].tag === 'component') {
+        if (bbn.fn.isObject(node.props.is)) {
+          node.tag = node.props.name ? bbn.fn.camelToCss(node.props.name) : 'bbn-anon';
+          node.cfg = bbn.cp.normalizeComponent(node.props.is);
         }
         else {
-          eleNode.tag = bbn.fn.camelToCss(eleNode.props.is);
+          node.tag = bbn.fn.camelToCss(node.props.is);
         }
       }
 
@@ -80,5 +91,5 @@ export default async function treatElement(cp, eleNode, hash, parent, data, go =
   }
 
   
-  return eleNode;
+  return node;
 }
