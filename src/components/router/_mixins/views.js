@@ -231,7 +231,7 @@ export default {
           ) {
             this.confirm(this.confirmLeave, () => {
               // Looking for dirty ones in registered forms of each container
-              let forms = this.urls[this.views[idx].url].forms;
+              let forms = this.urls[this.views[idx].uid].forms;
               if (Array.isArray(forms) && forms.length) {
                 bbn.fn.each(forms, (f, k) => {
                   f.reset();

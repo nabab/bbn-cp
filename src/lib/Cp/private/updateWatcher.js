@@ -1,3 +1,5 @@
+import bbn from "@bbn/bbn";
+
 export default function updateWatcher(cp, name, v, init) {
   if (!cp.$watcher) {
     return;
@@ -8,6 +10,7 @@ export default function updateWatcher(cp, name, v, init) {
   const bits = name.split(".");
   for (let i = 0; i < bits.length; i++) {
     let name = bits.join('.');
+    //bbn.fn.log("WATCHER ON " + name + " IN " + cp.$options.name);
     if (cp.$watcher[name]?.handler) {
       if (!bbn.fn.isFunction(cp.$watcher[name].handler)) {
         throw Error(bbn._("Watchers must be function, wrong parameter for %s", name));

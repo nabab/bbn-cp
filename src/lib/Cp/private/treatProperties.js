@@ -47,7 +47,7 @@ export default function treatProperties(cp, node, hash, data, go = false) {
       // Process attributes with expressions.
       if (attr.exp) {
         let attrValue = setExpResult(cp, attr, hash, data); // Resolve the attribute value.
-        if (attrValue !== undefined) {
+        if (attrValue !== props[n]) {
           props[n] = attrValue; // Assign the resolved value to the properties object.
         }
 
@@ -56,7 +56,7 @@ export default function treatProperties(cp, node, hash, data, go = false) {
           go = true;
         }
       }
-      else {
+      else if (props[n] !== attr.value) {
         // Directly assign static attribute values.
         props[n] = attr.value;
       }
@@ -65,7 +65,7 @@ export default function treatProperties(cp, node, hash, data, go = false) {
     // If 'bbn-bind' is used, extend the properties with the resolved binding value.
     if (bindValue) {
       bbn.fn.iterate(bindValue, (v, p) => {
-        if (!node.attr[p] || (props[p] === undefined)) {
+        if (!Object.hasOwn(node.attr, p) && (props[p] !== v)) {
           props[p] = v;
         }
       });
@@ -73,20 +73,26 @@ export default function treatProperties(cp, node, hash, data, go = false) {
 
     // Special handling for 'class' attribute to merge classes properly.
     if (Object.hasOwn(props, 'class')) {
-      props.class = bbn.cp.convertClasses(
-        bindValue?.['class'] && props['class'] !== bindValue['class'] ? 
+      const v = bbn.cp.convertClasses(
+        bindValue?.['class'] && (props['class'] !== bindValue['class']) ? 
             [bindValue['class'], props['class']]
             : props['class']
       );
+      if (v !== props['class']) {
+        props['class'] = v;
+      }
     }
 
     // Special handling for 'style' attribute to merge styles properly.
     if (Object.hasOwn(props, 'style')) {
-      props.style = bbn.cp.convertStyles(
+      const v = bbn.cp.convertStyles(
         bindValue?.style && props.style !== bindValue.style ? 
             [bindValue.style, props.style]
             : props.style
       );
+      if (v !== props.style) {
+        props.style = v;
+      }
     }
   }
 

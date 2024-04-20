@@ -22,9 +22,7 @@ bbnData.treatValue = function(value, component, path, parent) {
         throw Error(bbn._("The data inventory does not contain the data object"));
       }
 
-      if (!parent) {
-        dataObj.addComponent(component, path, parent);
-      }
+      dataObj.addComponent(component, path, parent);
 
       return dataObj.value;
     }

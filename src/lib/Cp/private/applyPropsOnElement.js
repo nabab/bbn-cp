@@ -1,6 +1,7 @@
 import bbn from "@bbn/bbn";
 import setProp from "./setProp.js";
 import setRef from "./setRef.js";
+import getExpState from "./getExpState.js";
 
 /**
  * (Re)generates the whole component's vDOM and DOM if needed, picking the right root, shadow or not
@@ -27,7 +28,7 @@ export default function applyPropsOnElement (cp, node, ele) {
   /** @constant {Object} props */
   const props = node.props || bbn.fn.createObject();
   /** @constant {Boolean} isComponent */
-  const isComponent = cp.$isComponent(node);
+  const isComponent = (node.id !== '0') && cp.$isComponent(node);
   /** @var {Object} attr The attributes of the element to be built */
   const attr = bbn.fn.createObject();
   let isChanged = false;
@@ -144,18 +145,19 @@ export default function applyPropsOnElement (cp, node, ele) {
       isChanged = true;
     }
   });
-  if (!isChanged && isComponent && ele.bbnSchema.props) {
-    bbn.fn.iterate(ele.bbnSchema.props, (value, name) => {
-      if (Object.hasOwn(ele.bbn?.$props || {}, name) && (ele.bbn[name] !== value)) {
+  if (!isChanged && isComponent) {
+    bbn.fn.iterate(ele.bbnSchema.attr, (attr, name) => {
+      if (attr.exp && !['OK', 'TMP'].includes(getExpState(cp, attr.hash, ele.bbnSchema.loopHash))) {
         isChanged = true;
       }
     });
   }
 
-  if (isChanged) {
-    //bbn.fn.log(["IS CHANGED", ele, ele.bbnId, cp.$options.name]);
-    if (isComponent && ele.bbn?.$isMounted) {
+  if (isChanged && isComponent && ele.bbn?.$isMounted) {
+    ele.bbn.$tick();
+    /** @todo Understand why the form needs tick to be called twice */
+    setTimeout(() => {
       ele.bbn.$tick();
-    }
+    }, 50);
   }
 }

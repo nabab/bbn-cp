@@ -79,6 +79,7 @@ export default async function treatNode (
         node.comment = false;
       }
   
+      // Update every attributes/models/directives, and populates props accordingly (all in the node)
       go = treatProperties(cp, node, hash, data, go);
         // If no element we must go on
       if (isOldComment || !old) {

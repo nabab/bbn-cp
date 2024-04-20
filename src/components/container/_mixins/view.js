@@ -673,9 +673,6 @@ export default {
     }
   },
   watch: {
-    currentCurrent(v) {
-
-    },
     currentView: {
       deep: true,
       handler(v, ov) {
@@ -935,8 +932,8 @@ export default {
      * @param {String} oldVal 
      */
     currentCurrent(v) {
-      if (this.subrouter) {
-        bbn.fn.log("CC", this.currentView, v);
+      if (this.subrouter && v) {
+        //bbn.fn.log("currentCurrent", this.currentView, v);
         this.subrouter.route(this.subrouter.parseURL(v));
       }
   /*

@@ -35,13 +35,6 @@ export default async function treatElement(cp, node, hash, parent, data, go = fa
       // Setting properties
       // Either the element exists and the object is its bbnSchema or we clone the node
       // Setting the new properties only when needed
-      if (Object.hasOwn(node.props, '_default_')) {
-        let n = old?.bbn?.$cfg?.model?.prop || 'value';
-        if (!bbn.fn.isSame(node.props[n], node.props._default_)) {
-          node.props[n] = node.props._default_;
-        }
-        delete node.props._default_;
-      }
 
       // Updating the hash
       if (hash && (node.loopHash !== hash)) {
@@ -50,19 +43,26 @@ export default async function treatElement(cp, node, hash, parent, data, go = fa
 
       // With the custom node we update the props and model.value
       if (node.model) {
-        if (node.model._default_) {
-          let n = old?.bbn?.$cfg?.model?.prop || 'value';
+        if (node.model._default_ && old?.bbn?.$cfg) {
+          let n = old.bbn.$cfg.model?.prop || 'value';
           if (!bbn.fn.isSame(node.model[n], node.model._default_)) {
             node.model[n] = node.model._default_;
           }
+
+          if (Object.hasOwn(node.props, '_default_')) {
+            let n = old?.bbn?.$cfg?.model?.prop || 'value';
+            if (!bbn.fn.isSame(node.props[n], node.props._default_)) {
+              node.props[n] = node.props._default_;
+            }
+            delete node.props._default_;
+          }
+
           delete node.model._default_;
         }
 
         for (let n in node.model) {
-          const modelValue = setExpResult(cp, node.model[n], hash, data);
           if (getExpState(cp, node.model[n].hash, hash) !== 'OK') {
-            node.model[n].value = modelValue;
-            node.props[n] = modelValue;
+            node.model[n].value = node.props[n];
           }
         }
       }

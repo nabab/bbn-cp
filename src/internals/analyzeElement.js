@@ -1,3 +1,4 @@
+import bbn from "@bbn/bbn";
 import removeSelfClosing from "./removeSelfClosing.js";
 
 const eventInstructions = ['stop', 'prevent', 'passive'];
@@ -95,9 +96,13 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
   attr.forEach(attrName => {
     const main = attrName.indexOf(':') > 0 ? attrName.split(':') : [attrName];
     const modifiers = main[0].split('.');
-    const modelValue = main.length > 1 ? main[1] : '_default_';
+    let modelValue = main.length > 1 ? main[1] : '_default_';
     if (main[1] === '_default_') {
       throw Error(_("The name '_default_' is reserved for the default value of the model (check %s)", componentName));
+    }
+
+    if ((modelValue === '_default_') && ['input', 'select', 'textarea'].includes(res.tag)) {
+      modelValue = 'value';
     }
 
     let a = bbn.fn.camelToCss(modifiers.splice(0, 1)[0]);
@@ -117,7 +122,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
 
     // Events
     if (a.indexOf('@') === 0) {
-      let o = bbn.fn.createObject({modifiers: []});
+      let o = bbn.fn.createObject({id: res.id + '-' + a, modifiers: []});
       bbn.fn.each(modifiers, modifier => {
         if (eventInstructions.includes(modifier)) {
           o[modifier] = true;
@@ -168,6 +173,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
     }
     // Special attributes
     else if (a.indexOf('bbn-') === 0) {
+      const hash = bbn.fn.hash(value);
       switch (a) {
         case 'bbn-for':
           if (attr['bbn-elseif'] || attr['bbn-else']) {
@@ -245,7 +251,6 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
           }
 
           let type = a.substr(4);
-          let hash = bbn.fn.hash(value);
           res.condition = bbn.fn.createObject({
             type,
             id: res.id + '-bbn-condition',
@@ -265,7 +270,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
           res.model[modelValue] = bbn.fn.createObject({
             id: res.id + '-model-' + modelValue,
             exp: value,
-            hash: bbn.fn.hash(value),
+            hash,
             modifiers: modifiers
           });
           break;
@@ -273,7 +278,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
           res.cloak = bbn.fn.createObject({
             id: res.id + '-cloak',
             exp: value,
-            hash: bbn.fn.hash(value)
+            hash
           });
           break;
         case 'bbn-pre':
@@ -283,7 +288,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
           res.forget = bbn.fn.createObject({
             id: res.id + '-forget',
             exp: value,
-            hash: bbn.fn.hash(value)
+            hash
           });
           break;
         default:
@@ -381,6 +386,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
   let num = 0;
   let lastEmpty = false;
   let prevTag;
+  const div = document.createElement('div');
   bbn.fn.each(childNodes, (node, i) => {
     if (node instanceof Comment) {
       return;
@@ -399,18 +405,23 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
     }
     // No text nodes in the slots
     else if (node.textContent) {
-      const isEmpty = !bbn.fn.removeExtraSpaces(node.textContent);
-      const txt = node.textContent
+      const n2 = node.cloneNode(true);
+      div.appendChild(n2);
+      const txt = div.innerHTML
                   // escaping dollars
                   //.replace(/\$/g, (_, g) => '\\$')
                   // replacing double curly braces by dollar and single
-                  .replace(/{{(.+?)}}/gs, (_, g1) => '${' + g1 + '}');
-      let isDynamic = txt.indexOf('${') > -1;
+                  .replace(/{{(.+?)}}/gs, (_, g1) => '${' + g1 + '}')
+                  .replace(/\n/g, '')
+                  .replace(/\t/g, '');
+      div.removeChild(n2);
+      const isEmpty = !bbn.fn.removeExtraSpaces(txt);
       if (!isEmpty || (!lastEmpty && prevTag && !noSpaceTags.includes(prevTag))) {
+        let isDynamic = txt.indexOf('${') > -1;
         lastEmpty = isEmpty;
         const item = bbn.fn.createObject({
           id: idx + '-' + num,
-          text: isEmpty ? ' ' : txt,
+          text: isEmpty ? ' ' : txt.replace(/&nbsp;/g, '\u00A0'),
           hash: isEmpty ? bbn.cp.spaceHash : bbn.fn.hash(txt),
           empty: isEmpty
         });

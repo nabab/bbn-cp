@@ -25,12 +25,37 @@ export default async function treatModel(cp, node, hash, ele, data) {
           //return;
         }
         
-        let eventValue = e.detail?.args ? e.detail.args[0] : e.target?.value;
         if (name === '_default_') {
           name = ele?.bbn?.$cfg?.model?.prop || 'value';
         }
 
-        let m = node.model[name] || node.model._default_;
+        let eventValue = e.detail?.args ? e.detail.args[0] : e.target?.value;
+        let m = node.model[name];
+        if (eventValue && m.modifiers?.length) {
+          for (let i = 0; i < m.modifiers.length; i++) {
+            switch (m.modifiers[i]) {
+              case 'decimal':
+                eventValue = parseFloat(eventValue);
+                break;
+              case 'number':
+                eventValue = parseInt(eventValue);
+                break;
+              case 'trim':
+                eventValue = eventValue.trim();
+                break;
+              case 'lowercase':
+              case 'lower':
+                eventValue = eventValue.toLowerCase();
+                break;
+              case 'uppercase':
+              case 'upper':
+              case 'capitalize':
+                eventValue = eventValue.toUpperCase();
+                break;
+            }
+          }
+        }
+
         let modelValue = m.value;
         let oldValue = modelValue;
         if (oldValue !== eventValue) {

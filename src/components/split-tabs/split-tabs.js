@@ -597,8 +597,8 @@ const cpDef = {
 
     activateIndex(idx){
       if ( this.isValidIndex(idx) ){
-        if ( this.urls[this.views[idx].url] ){
-          this.route(this.urls[this.views[idx].url].currentURL);
+        if ( this.urls[this.views[idx].uid] ){
+          this.route(this.urls[this.views[idx].uid].currentURL);
         }
         else{
           this.route(this.views[idx].current);
@@ -611,7 +611,7 @@ const cpDef = {
         idx = this.selected;
       }
       if ( this.isValidIndex(idx) ){
-        return this.urls[this.views[idx].url];
+        return this.urls[this.views[idx].uid];
       }
       return false;
     },
@@ -962,13 +962,13 @@ const cpDef = {
         this.views[idx] &&
         !this.views[idx].slot &&
         this.views[idx].load &&
-        this.urls[this.views[idx].url] &&
-        this.urls[this.views[idx].url].isLoaded
+        this.urls[this.views[idx].uid] &&
+        this.urls[this.views[idx].uid].isLoaded
       ){
         this.views[idx].loaded = false;
-        this.urls[this.views[idx].url].isLoaded = false;
+        this.urls[this.views[idx].uid].isLoaded = false;
         this.$nextTick(() => {
-          this.route(this.urls[this.views[idx].url].currentURL, true);
+          this.route(this.urls[this.views[idx].uid].currentURL, true);
         })
       }
     },

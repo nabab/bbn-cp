@@ -127,8 +127,11 @@ const cpDef = {
         default(){
           return [];
         }
+      },
+      mode: {
+        type: String,
+        default: 'normal'
       }
-
     },
     data(){
       return {

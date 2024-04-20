@@ -1,3 +1,5 @@
+import bbn from "@bbn/bbn";
+
 /**
  * Validates the value of a property against the provided configuration.
  * 
@@ -56,7 +58,8 @@ export default function checkPropValue(cp, name, cfg, value) {
 
   // Custom validation for the property.
   if (isDefined && bbn.fn.isFunction(cfg.validator) && !cfg.validator(v)) {
-    throw Error(bbn._("The property %s is invalid", name));
+    bbn.fn.log("GIVEN VALUE", v);
+    throw Error(bbn._("The property %s is invalid in component %s", name, cp.$options.name));
   }
 
   // Returning the validated value.
