@@ -59,6 +59,7 @@ const cpDef = {
       return {
         currentSelectedIndex: this.selectedIndex,
         overIdx: -1,
+        activeIdx: -1,
         isChanging: false
       };
     },
@@ -67,7 +68,19 @@ const cpDef = {
         //bbn.fn.log("ENTER LI");
         if ((idx > -1) && (this.overIdx !== idx)) {
           this.overIdx = idx;
+          this.activeIdx = idx;
           this.getRef('li' + idx).focus();
+        }
+      },
+      _exitLi(idx) {
+        //bbn.fn.log("ENTER LI");
+        if ((idx > -1) && (this.overIdx === idx)) {
+          this.activeIdx = -1;
+          setTimeout(() => {
+            if (this.activeIdx === -1) {
+              this.overIdx = -1;
+            }
+          }, 50)
         }
       },
       clickLi(idx, ev) {

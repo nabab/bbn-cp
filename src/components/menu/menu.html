@@ -15,7 +15,8 @@
         @focus="onFocus(i)"
         @click="clickLi(i, $event)"
         @keydown.stop="onKeyDown(i, $event)"
-        @mouseenter="_enterLi(i)">
+        @mouseenter="_enterLi(i)"
+        @mouseleave="_exitLi(i)">
       <a bbn-if="item.data.url"
          :href="item.data.url"
          @click.stop.prevent="clickLi(i, $event)"
@@ -35,6 +36,7 @@
                :children="children"
                :element="getRef('li' + overIdx)"
                :scroll-hidden="true"
+               @mouseenter="activeIdx = overIdx"
                @mouseleave="overIdx = -1"
                :focused="false"
                :source="filteredData[overIdx].data[children]"

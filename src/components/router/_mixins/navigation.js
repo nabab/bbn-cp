@@ -420,7 +420,6 @@ export default {
             let viewIdx = this.search('');
             if (viewIdx !== false) {
               this.selected = viewIdx;
-              await this.navigate();
               return;
             }
           }
@@ -439,7 +438,7 @@ export default {
             return;
           }
           else if (url && !st && this.autoload) {
-            bbn.fn.log("ADDING NEW VIEW");
+            bbn.fn.log("ADDING NEW VIEW", url);
             const uid = await this.add({
               url: url,
               title: bbn._('Loading'),
@@ -453,26 +452,25 @@ export default {
               loaded: false,
               hidden: false,
               last: bbn.fn.timestamp(),
-              selected: true
             });
             await this.$forceUpdate();
             let idx = bbn.fn.search(this.views, { uid: uid });
             if (!this.isValidIndex(idx)) {
               throw Error(bbn._("Impossible to find the view for URL %s", url));
             }
+            this.selected = idx;
           }
           else {
             const viewIdx = this.search(st);
             if (viewIdx !== false) {
-              bbn.fn.log("SHOWING EXISTING VIEW WITH URL " + url);
-              const current = url || this.urls[this.views[viewIdx].uid].currentCurrent;
-              if (this.currentIndex !== viewIdx) {
-                this.urls[this.views[viewIdx].uid].show(current);
+              if (this.views[viewIdx].current.indexOf(url) !== 0) {
+                this.views[viewIdx].current = url;
               }
-              else if (this.currentURL !== current) {
-                this.activateIndex(viewIdx)
+              if (this.selected !== viewIdx) {
+                this.selected = viewIdx;
               }
-              bbn.fn.log(["REAL ROUTE " + st, current, this.urls[this.views[viewIdx].uid].subrouter]);
+
+              bbn.fn.log(["REAL ROUTE " + st, url, this.urls[this.views[viewIdx].uid].subrouter]);
             }
             // Otherwise the container is activated ie made visible
             else {

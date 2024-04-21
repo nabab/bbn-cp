@@ -13,17 +13,19 @@
       <bbn-input :placeholder="_('Search clipboard')"
                  :button-right="(search === '') ? 'nf nf-fa-search' : 'nf nf-fa-close'"
                  bbn-model="search"
+                 tabindex="-1"
                  ref="search"
-                 :focused="true"
                  @clickrightbutton="unsearch"/>
     </div>
-    <div class="bbn-w-100 bbn-p bbn-hpadded"
+    <div class="bbn-w-100 bbn-hpadded"
          bbn-if="items.length">
       <bbn-button bbn-if="!search.length"
                   @click="clear"
+                  tabindex="-1"
                   :text="_('Clear all')"/>
       <textarea class="bbn-invisible"
                 ref="textarea"
+                tabindex="-1"
                 style="width: 0px; height: 0px"/>
     </div>
     <hr class="bbn-hr">
@@ -81,7 +83,8 @@
     </div>
     <div class="bbn-w-100 bbn-padded bbn-primary">
       <input class="bbn-textbox bbn-w-100 bbn-s"
-             @paste.prevent="copy"
+             tabindex="-1"
+             :disabled="!isOpened"
              ref="paster"
              @drop.prevent.stop="copy"
              @keydown.enter="addInput"

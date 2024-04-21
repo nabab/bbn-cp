@@ -273,6 +273,7 @@ export default {
       obj.url = bbn.fn.replaceAll('//', '/', obj.url);
 
       if (bbn.fn.getRow(this.views, {url: obj.url})) {
+        bbn.fn.log(bbn.fn.getRow(this.views, {url: obj.url}) === obj, obj)
         throw Error(bbn._("The container already exists"));
       }
 
@@ -496,19 +497,22 @@ export default {
       }
     },
     source(v, ov) {
-      bbn.fn.each(v, a => {
-        if (!bbn.fn.isString(a.url)) {
-          throw Error(bbn._("The container must have a valid URL"));
-        }
-
-        // Setting current if URL starts with default URL
-        if (this.currentURL && this.currentURL.indexOf(a.url) === 0) {
-          a.current = this.currentURL;
-        }
-
-        //bbn.fn.warning(bbn._("ADDING %s ON WATCH", a.url));
-        this.add(a);
-      });
+      if (v !== ov) {
+        this.views.splice(0, this.views.length);
+        bbn.fn.each(v, a => {
+          if (!bbn.fn.isString(a.url)) {
+            throw Error(bbn._("The container must have a valid URL"));
+          }
+  
+          // Setting current if URL starts with default URL
+          if (this.currentURL && this.currentURL.indexOf(a.url) === 0) {
+            a.current = this.currentURL;
+          }
+  
+          bbn.fn.warning(bbn._("ADDING %s ON WATCH", a.url));
+          this.add(a);
+        });
+      }
     },
     views() {
       this.updateVisualStyleContainer();

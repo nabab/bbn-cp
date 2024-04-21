@@ -9,7 +9,7 @@
        @touchmove.passive="onTouchmove"
        @focus="isFocused = true"
        @blur="isFocused = false"
-       :tabindex="scrollable ? '0' : '-1'">
+       tabindex="-1">
     <div :class="{
       'bbn-scroll-content': true,
       'bbn-w-100': scrollable
