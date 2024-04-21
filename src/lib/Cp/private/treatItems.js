@@ -1,10 +1,5 @@
-import treatNode from "./treatNode.js";
-import setExpResult from "./setExpResult.js";
-import setConditionResult from "./setConditionResult.js";
-import treatCondition from "./treatCondition.js";
-import cloneNode from "./cloneNode.js";
+import treatItem from "./treatItem.js";
 import bbn from "@bbn/bbn";
-import treatLoop from "./treatLoop.js";
 import removeDOM from "./removeDOM.js";
 
 /**
@@ -40,13 +35,12 @@ export default async function treatItems(
 
   let firstGo = false;
   let isRoot = !parent || (parent === cp.$el);
-  if (!isRoot) {
-    bbn.fn.checkType(parent, [HTMLElement, DocumentFragment], "The items's parent must be an HTML Element");
-  }
-  else {
+  if (isRoot) {
     firstGo = !cp.$numBuild
     parent = firstGo ? new DocumentFragment() : cp.$el;
   }
+
+  bbn.fn.checkType(parent, [HTMLElement, DocumentFragment], "The items's parent must be an HTML Element");
 
   if (data) {
     bbn.fn.checkType(data, Object);
@@ -56,58 +50,9 @@ export default async function treatItems(
     data = bbn.fn.createObject();
   }
 
-
-  // Variables for handling conditions and loops.
-  let conditionId = null;
-  let isConditionTrue = true;
-
   // Iterate over each item in the items array.
   for (let i = 0; i < items.length; i++) {
-    // Handle loop structures within the node.
-    if (items[i].loop) {
-      await treatLoop(cp, items[i], hash, parent, data, hashList);
-    }
-    // Handle non-loop nodes.
-    else {
-      const ele = cp.$retrieveElement(items[i].id, hash);
-      const node = ele ? ele.bbnSchema : cloneNode(cp, items[i].id);
-      node.loopHash = hash;
-      hashList.push(node.id + (hash ? '_' + hash : ''));
-      if (node.condition) {
-        // Processing all nodes with the same conditionId
-        if (node.conditionId !== conditionId) {
-          conditionId = node.conditionId;
-          isConditionTrue = false;
-          let tmp = items.filter(a => (a.conditionId === node.conditionId));
-          if (!tmp.length || !node.conditionId) {
-            bbn.fn.log("FINISHING HERE ", node.conditionId, node.condition);
-            return;
-          }
-        
-          // Evaluate conditions for the current node.
-          for (let j = 0; j < tmp.length; j++) {
-            const ele = cp.$retrieveElement(tmp[j].id, hash);
-            const node = ele ? ele.bbnSchema : cloneNode(cp, tmp[j].id);
-            node.loopHash = hash;
-            const conditionValue = isConditionTrue ? false : (node.condition.type === 'else' ? true : setExpResult(cp, node.condition, hash, data));
-            if (conditionValue) {
-              isConditionTrue = true;
-              setConditionResult(cp, node.condition, true, hash, data);
-            }
-            else {
-              //bbn.fn.warning("SHIYLD");
-              setConditionResult(cp, node.condition, false, hash, data);
-            }
-            // Apply the condition to the current node.
-            await treatCondition(cp, conditionValue, node, hash, parent, data, hashList);
-          }
-        }
-      }
-      else {
-        // Process nodes without conditions.
-        await treatNode(cp, node, hash, parent, data, true, hashList);
-      }
-    }
+    await treatItem(cp, items[i], hash, parent, data, hashList);
   }
 
   if (firstGo) {
