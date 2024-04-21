@@ -147,6 +147,7 @@ const cpDef = {
   },
   data() {
     return {
+      setterTimeout: null,
       // Editor state
       state: null,
       // Editor widget/view instance
@@ -252,6 +253,8 @@ const cpDef = {
     onKeyDown(event) {
       this.lastKeyDown = event;
       // Custom key handling for code beautification and autocompletion
+      bbn.fn.log("CODE KEY DOWN", event)
+      /*
       if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'f') {
         // Beautify the code based on the mode
         let newValue = "";
@@ -292,6 +295,9 @@ const cpDef = {
       if (event.key === ".") {
         codemirror6.autocomplete.startCompletion(this.widget)
       }
+      /*
+      */
+      codemirror6.autocomplete.startCompletion(this.widget)
       // Emit keydown event
       this.$emit('keydown', event); 
     },
@@ -325,18 +331,24 @@ const cpDef = {
       });
     },
     value(nv) {
-      // Update the document content if the value prop changes
+      clearTimeout(this.setterTimeout);
+      // Update the document content if the value prop changes - but not too fast
       if (this.widget) {
         let value = this.widget.state.doc.toString();
-        if (value !== nv) {
-          this.widget.dispatch({
-            changes: {
-              from: 0,
-              to: this.widget.state.doc.length,
-              insert: nv
+        this.setterTimeout = setTimeout(() => {
+          if (this.widget) {
+            let v2 = this.widget.state.doc.toString();
+            if ((v2 === value) && (value !== nv)) {
+              this.widget.dispatch({
+                changes: {
+                  from: 0,
+                  to: this.widget.state.doc.length,
+                  insert: nv
+                }
+              });
             }
-          });
-        }
+          }
+        }, 250)
       }
     }
   }
@@ -345,6 +357,7 @@ const cpDef = {
 // Import component HTML template and styles
 import cpHtml from './code.html';
 import cpStyle from './code.less';
+import bbn from "@bbn/bbn";
 let cpLang = {};
 if (bbn.env.lang) {
   // Attempt to load language-specific strings

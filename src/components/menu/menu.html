@@ -35,6 +35,7 @@
                :children="children"
                :element="getRef('li' + overIdx)"
                :scroll-hidden="true"
+               @mouseleave="overIdx = -1"
                :focused="false"
                :source="filteredData[overIdx].data[children]"
                @close="overIdx = -1"

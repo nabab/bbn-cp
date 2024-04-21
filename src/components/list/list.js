@@ -642,8 +642,11 @@ const cpDef = {
       overIdx(newVal) {
         this.keepCool(() => {
           if (this.hasScroll && (newVal !== -1) && !this.isOver) {
-            this.closest('bbn-scroll').scrollTo(null, this.getRef('li' + newVal));
-                      }
+            const scroll = this.closest('bbn-scroll');
+            if (scroll) {
+              scroll.scrollTo(null, this.getRef('li' + newVal));
+            }
+          }
         }, 'overIdx', 50)
       },
       /**

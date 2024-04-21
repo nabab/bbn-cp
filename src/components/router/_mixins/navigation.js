@@ -466,7 +466,12 @@ export default {
             if (viewIdx !== false) {
               bbn.fn.log("SHOWING EXISTING VIEW WITH URL " + url);
               const current = url || this.urls[this.views[viewIdx].uid].currentCurrent;
-              this.urls[this.views[viewIdx].uid].show(current);
+              if (this.currentIndex !== viewIdx) {
+                this.urls[this.views[viewIdx].uid].show(current);
+              }
+              else if (this.currentURL !== current) {
+                this.activateIndex(viewIdx)
+              }
               bbn.fn.log(["REAL ROUTE " + st, current, this.urls[this.views[viewIdx].uid].subrouter]);
             }
             // Otherwise the container is activated ie made visible
