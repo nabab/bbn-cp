@@ -36,7 +36,7 @@
           @mouseover="mouseenter($event, idx)"
           :ref="'li' + idx"
           :key="uid ? li.data[uid] : li.key"
-          @click="select(idx)"
+          @click.prevent.stop="select(idx)"
           :class="{
             'bbn-no-padding': !!component,
             'bbn-state-default': true,

@@ -1163,7 +1163,7 @@ const cpDef = {
       }
       else {
         let ct = this.getRef('scrollContainer');
-        if (ct && (y + ct.clientHeight >= ct.scrollHeight)) {
+        if (ct && ct.scrollHeight && (y + ct.clientHeight >= ct.scrollHeight - 10)) {
           this.$emit('reachbottom');
         }
       }

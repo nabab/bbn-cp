@@ -167,7 +167,7 @@ const cpDef = {
     }
     return {
       isParsed: isParsed,
-      currentValue: v
+      currentValue: v.trim()
     };
   },
   computed: {
@@ -328,7 +328,7 @@ const cpDef = {
      */
     currentValue(v){
       if (this.ready && (this.widget.getText() != v)) {
-        this.widget.setText(v);
+        this.widget.setText(v || '{}');
       }
     },
     value(v){

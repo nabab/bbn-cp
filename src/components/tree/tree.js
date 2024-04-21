@@ -488,10 +488,13 @@ const cpDef = {
         items = bbn.fn.map(items, item => {
           let o = {};
           if ( this.tree.map ){
-            item = this.tree.map(item.data !== undefined ? item.data : item, this.level + 1, item.data !== undefined ? item : {});
+            item = this.tree.map(item, this.level + 1);
           }
+
           bbn.fn.each(bbnTreeCp.NODE_PROPERTIES, p => {
-            o[p] = p === 'text' ? item[this.tree.sourceText] : item[p];
+            if (!Object.hasOwn(o, p)) {
+              o[p] = p === 'text' ? item[this.tree.sourceText] : item[p];
+            }
           });
           if (!!item.data && !!item.data[this.tree.children]) {
             o.numChildren = item.data[this.tree.children].length;

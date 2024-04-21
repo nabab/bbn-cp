@@ -58,7 +58,12 @@ export default async function treatLoop(
         loopData[node.loop.index] = j;
       }
 
-      let key = node.attr?.key?.exp ? bbn.fn.getProperty(loopValue[j], node.attr.key.exp) || j : j;
+
+      let key = j;
+      if (node.attr?.key?.exp) {
+        key = setExpResult(cp, node.attr.key, oHash + node.loop.hash + '-' + j, loopData);
+      }
+
       hash = oHash + node.loop.hash + '-' + key;
 
       const ele = cp.$retrieveElement(node.id, hash);

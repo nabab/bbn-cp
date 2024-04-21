@@ -56,7 +56,7 @@ export default function treatEvents(cp, ele, data) {
 
       // If specified, stop the propagation of the event.
       if (ev.stop) {
-        e.stopPropagation();
+        e.stopImmediatePropagation();
       }
 
       // If an expression is defined for the event, execute it.
