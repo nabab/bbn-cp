@@ -17,7 +17,7 @@ export default function disconnected(cp) {
     });
     //bbn.fn.log("Disconnected callback from " + cp.$el.tagName);
     // Sending beforeDestroy event
-    const beforeDestroy = new Event('beforedestroy');
+    const beforeDestroy = new Event('hook:beforedestroy');
     onHook(cp, 'beforeDestroy');
     cp.$el.dispatchEvent(beforeDestroy);
     
@@ -45,7 +45,7 @@ export default function disconnected(cp) {
 
     removeComponent(cp.$el.bbnCid);
     // Setting back $isinit
-    const destroyed = new Event('destroyed');
+    const destroyed = new Event('hook:destroyed');
     onHook(cp, 'destroyed');
     cp.$el.dispatchEvent(destroyed);
   }
