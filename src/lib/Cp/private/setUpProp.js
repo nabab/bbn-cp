@@ -38,8 +38,5 @@ export default function setUpProp(cp, name, cfg) {
   }
 
   const value = checkPropValue(cp, name, cfg);
-  const isDefined = value !== undefined;
-  if (isDefined) {
-    realSetProp(cp, name, value);
-  }
+  realSetProp(cp, name, value);
 }

@@ -296,7 +296,7 @@ const cpDef = {
         /**
          * @data currentItems
          */
-        currentItems: this.items || [],
+        currentItems: this.items,
         /**
          * @data currentStart
          */
@@ -312,7 +312,7 @@ const cpDef = {
         /**
          * @data currentSource
          */
-        currentSource: this.source?.length ? this.source : [],
+        currentSource: this.source,
         /**
          * @data {Array} [[]] realButtonsRight
          */
@@ -432,7 +432,7 @@ const cpDef = {
        * @fires $nextTick
        * @fires load
        */
-      reload(){
+      reload() {
         bbn.fn.log("RELOAD");
         this.currentItems = [];
         this.$nextTick(() => {
@@ -630,8 +630,7 @@ const cpDef = {
        * @watch limit
        * @fires load
        */
-      limit(){
-        bbn.fn.log("LIMIT", this.limit)
+      limit() {
         this.load();
       },
       /**
@@ -639,8 +638,7 @@ const cpDef = {
       * @param {Boolean} newVal
       * @fires load
       */
-      observerDirty(newVal){
-        bbn.fn.log("observerDirty", newVal)
+      observerDirty(newVal) {
         if ( newVal && !this.editedRow ){
           this.observerDirty = false;
           this.load();
@@ -650,12 +648,15 @@ const cpDef = {
        * @watch source
        * @param {Object} newVal
        */
-      source: {
-        deep: true,
-        handler(newVal){
-          bbn.fn.log("SOURCE", newVal)
-          this.currentSource = newVal
-        }
+      source(newVal) {
+        this.currentSource = newVal
+      },
+      /**
+       * @watch items
+       * @param {Object} newVal
+       */
+      items(newVal) {
+        this.currentItems = newVal
       },
       /**
        * @watch url
@@ -663,7 +664,6 @@ const cpDef = {
        * @fires reload
        */
       url(newVal){
-        bbn.fn.log("URL", newVal)
         this.reload();
       }
     }

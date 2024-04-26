@@ -992,6 +992,15 @@ const cpDef = {
        * @returns {String}
        */
       jsonConfig() {
+        let cfg = this.currentConfig;
+        if (this.currentHidden.length > (this.cols.length/2)) {
+          bbn.fn.log("WE ARE IN!!!!");
+          cfg = bbn.fn.createObject(cfg);
+          cfg.shown = this.allFields.filter(x => !cfg.hidden.includes(x));
+          bbn.fn.log(cfg);
+          delete cfg.hidden;
+        }
+
         return JSON.stringify(this.currentConfig);
       },
       /**
@@ -1008,7 +1017,7 @@ const cpDef = {
        * @returns {Boolean}
        */
       isChanged() {
-        return JSON.stringify(this.currentConfig) !== this.initialConfig;
+        return this.jsonConfig !== this.initialConfig;
       },
       /**
        * Return an array with the object(s) button for the toolbar.
@@ -1069,6 +1078,16 @@ const cpDef = {
           });
         }
         return r;
+      },
+      allFields() {
+        const res = [];
+        for (let i = 0; i < this.cols.length; i++) {
+          if (this.cols[i].field && !res.includes(this.cols[i].field)) {
+            res.push(this.cols[i].field);
+          }
+        }
+
+        return res;
       },
       /**
        * Return false if a required field of a column is missing.
@@ -2314,6 +2333,9 @@ const cpDef = {
       getColumnsConfig() {
         return JSON.parse(JSON.stringify(this.cols));
       },
+      onSave() {
+        this.$emit('save', JSON.parse(this.jsonConfig))
+      },
       /**
        * Sets the current config of the table.
        * @method setConfig
@@ -2352,14 +2374,20 @@ const cpDef = {
             }
           }
           if (this.showable) {
-            if ((cfg.hidden !== undefined) && (cfg.hidden !== this.currentHidden)) {
+            if ((cfg.hidden !== undefined) && (!bbn.fn.isSame(cfg.hidden, this.currentHidden))) {
               this.currentHidden = cfg.hidden;
             }
+            else if ((cfg.shown !== undefined) && !bbn.fn.isSame(this.allFields.filter(x => !cfg.shown.includes(x)), this.currentHidden)) {
+              bbn.fn.warning("WAR!!!");
+              this.currentHidden = this.allFields.filter(x => !cfg.shown.includes(x));
+            }
+
             bbn.fn.each(this.cols, (a, i) => {
-              let hidden = (this.currentHidden.indexOf(i) > -1);
-              if (a.hidden !== hidden) {
+              let isHidden = (this.currentHidden.indexOf(a.field || i) > -1);
+              if (a.hidden !== isHidden) {
                 //bbn.fn.log("CHANGING HIDDEN");
-                this.$set(this.cols[i], 'hidden', hidden);
+                //this.cols[i].hidden = hidden;
+                this.$set(this.cols[i], 'hidden', isHidden);
               }
             });
           }
@@ -2371,7 +2399,14 @@ const cpDef = {
             hidden: this.currentHidden
           };
           if (!no_storage) {
-            this.setStorage(this.currentConfig);
+            let cfg = this.currentConfig;
+            if ((this.cols.length > 10) && (this.currentHidden?.length > (this.cols.length / 2))) {
+              cfg = bbn.fn.extend({}, cfg);
+              cfg.shown = this.allFields.filter(x => !cfg.hidden.includes(x))
+              delete cfg.hidden;
+            }
+
+            this.setStorage(cfg);
           }
 
         }
@@ -3543,7 +3578,7 @@ const cpDef = {
 
       this.setConfig(false, true);
       this.initialConfig = this.jsonConfig;
-      this.savedConfig = this.jsonConfig;
+      this.savedConfig = this.initialConfig;
       let cfg = this.getStorage();
       if (cfg) {
         this.setConfig(cfg, true);

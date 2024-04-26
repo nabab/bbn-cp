@@ -27,6 +27,7 @@
     "babel-minify": "^0.5.2",
     "babel-plugin-module-resolver": "^5.0.0",
     "babel-preset-minify": "^0.5.2",
+    "bun": "^1.1.4",
     "chai": "^4.3.10",
     "css-loader": "^6.8.1",
     "html-loader": "^4.2.0",

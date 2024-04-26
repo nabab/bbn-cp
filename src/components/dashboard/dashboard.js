@@ -887,7 +887,7 @@ const cpDef = {
         if ( obj.storageFullName ){
           let tmp = this.getWidgetStorage(idx);
           if ( tmp ){
-            //bbn.fn.extend(obj, tmp);
+            bbn.fn.extend(obj, tmp);
           }
         }
         return obj;

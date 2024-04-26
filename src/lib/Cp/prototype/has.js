@@ -8,5 +8,5 @@ import bbnCp from "../Cp.js";
  * @return {Function}
  */
 bbnCp.prototype.$has = function(propName){
-  return this.$namespaces[propName] !== undefined;
+  return Object.hasOwn(this.$namespaces, propName);
 }

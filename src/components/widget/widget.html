@@ -71,10 +71,10 @@
             :style="itemStyle"
             :key="uid ? it[uid] : idx">
           <component bbn-if="itemComponent"
-                      :is="itemComponent"
-                      bbn-bind="options"
-                      :source="it"
-                      :key="!!options && !!options.uid ? it[options.uid] : idx"/>
+                     :is="itemComponent"
+                     bbn-bind="options"
+                     :source="it"
+                     :key="!!options && !!options.uid ? it[options.uid] : idx"/>
           <a bbn-elseif="it && it.text && it.url" :href="it.url" bbn-html="it.text"/>
           <span bbn-elseif="it && it.text" bbn-html="it.text"/>
           <span bbn-else

@@ -3,6 +3,7 @@ import setData from "./setData.js";
 import updateWatcher from "./updateWatcher.js";
 
 export default function setUpData(cp, name, value) {
+  
   if (!Object.hasOwn(cp, name)) {
     // The data will remain the same if not simple Obj/Array
     cp.$dataValues[name] = cp.$treatValue(value, name);
@@ -22,6 +23,9 @@ export default function setUpData(cp, name, value) {
     };
     Object.defineProperty(cp, name, def);
     addNamespace(cp, name, 'data');
+    if ((cp.$options.name === 'bbn-widget') && (name === 'dashboard')){
+      bbn.fn.log(["SETTING UP DATA", value, Object.hasOwn(cp, name), cp.$namespaces.currentItems, cp.$numBuild, cp.$isCreated, cp.$isMounted])
+    }
     if (cp.$numBuild) {
       updateWatcher(cp, name, cp.$dataValues[name], true);
     }

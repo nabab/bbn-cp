@@ -943,9 +943,11 @@ export default {
 
       if (!this.views[idx].selected && !this.views[idx].pane) {
         this.views[idx].selected = true;
-        this.urls[this.views[idx].uid].$tick();
       }
-      this.activeContainer = this.urls[this.views[idx].uid];
+
+      if (this.urls[this.views[idx].uid]) {
+        this.activeContainer = this.urls[this.views[idx].uid];
+      }
 
       this.views[idx].last = bbn.fn.timestamp();
     },
