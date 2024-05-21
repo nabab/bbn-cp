@@ -20,8 +20,7 @@ bbnData.proxySplice = function(target, component) {
       const newVal = this.treatValue(a, component, idx, targetObj);
       newArgs.push(newVal);
     });
-
-    const res = target.splice(index, numDelete, ...newArgs);
+    const res = numDelete === undefined ? target.splice(index) : target.splice(index, numDelete, ...newArgs);
     bbn.fn.each(res, t => {
       let subObj = this.getObject(t);
       if (subObj) {
