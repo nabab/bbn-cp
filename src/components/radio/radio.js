@@ -13,7 +13,7 @@ const cpDef = {
    * @mixin bbn.cp.mixins.events
    *
    */
-  mixins: 
+  mixins:
   [
     bbn.cp.mixins.basic,
     bbn.cp.mixins.input,
@@ -91,19 +91,7 @@ const cpDef = {
           value: 0
         }];
       }
-    },
-    /**
-     * The real value used in the input emit.
-     * @prop {String|Boolean|Number} [undefined] modelValue
-     */
-    modelValue: {
-      type: [String, Boolean, Number],
-      default: undefined
     }
-  },
-  model: {
-    prop: 'modelValue',
-    event: 'input'
   },
   methods: {
     /**
@@ -114,7 +102,6 @@ const cpDef = {
      * @emits change
      */
     changed(val, d, e){
-      bbn.fn.log("CHANGED", val, d, e);
       this.$emit('input', val);
       this.$emit('change', val, d, e);
     },
@@ -134,7 +121,7 @@ const cpDef = {
   beforeMount() {
     if (this.hasStorage) {
       let v = this.getStorage();
-      if (v && (v !== this.modelValue)) {
+      if (v && (v !== this.value)) {
         this.changed(v);
       }
     }
@@ -144,7 +131,7 @@ const cpDef = {
      * @watch value
      * @param {Mixed} v
      */
-    modelValue(v) {
+    value(v) {
       if (this.storage) {
         if (v) {
           this.setStorage(v);
