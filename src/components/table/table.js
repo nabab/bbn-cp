@@ -2722,17 +2722,17 @@ const cpDef = {
        * @returns {bbnCp}
        */
       resizeWidth() {
-        bbn.fn.log('resizeWidth');
         let currentTot = this.groupCols[0].width + this.groupCols[1].width + this.groupCols[2].width,
             parentWidth = this.$el.offsetParent ? this.$el.offsetParent.getBoundingClientRect().width : this.lastKnownCtWidth,
-            diff =  parentWidth - this.borderLeft - this.borderRight - currentTot,
+            parentStyle = this.$el.offsetParent ? window.getComputedStyle(this.$el.offsetParent) : {},
+            parentPadding = parseFloat(parentStyle?.paddingLeft || 0) + parseFloat(parentStyle?.paddingRight || 0),
+            diff =  parentWidth - parentPadding - this.borderLeft - this.borderRight - currentTot,
             numDynCols = this.currentColumns.filter(c => (c.width === undefined) && !c.isExpander && !c.isSelection && !c.hidden).length,
             numStaticCols = this.currentColumns.filter(c => !!c.width && !c.isExpander && !c.isSelection && !c.hidden).length,
             newWidth = numDynCols || numStaticCols
               ? (diff / (numDynCols || numStaticCols))
               : 0;
         if (newWidth) {
-          window.bbn.fn.log(['inside table', diff, newWidth, numDynCols, numStaticCols]);
           this.isResizingWidth = true;
           bbn.fn.each(this.groupCols, (groupCol, groupIdx) => {
             let sum = 0,
