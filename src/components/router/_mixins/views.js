@@ -215,8 +215,7 @@ export default {
      */
     async remove(misc, force) {
       let idx = this.getIndex(misc);
-      bbn.fn.log(["REMOVE " + idx, this.views[idx].url, misc])
-      debugger;
+      //bbn.fn.log(["REMOVE " + idx, this.views[idx].url, misc])
       if (idx > -1) {
         /** @var {Event} onBeforeClose beforeClose event, cancelable only if not force */
         let onBeforeClose = new Event('beforeclose', { cancelable: !force });
