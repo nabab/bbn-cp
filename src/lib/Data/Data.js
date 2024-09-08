@@ -28,12 +28,6 @@ class bbnData/* extends EventTarget*/ {
    * @param {bbnData} parent If the data is a sub-object of another bbnData object, the parent object
    */
   constructor(data, component, path, parent) {
-    //super();
-    if (path === 'computed') {
-      bbn.fn.log([component, path, parent, data]);
-      throw Error("bbnData cannot be initialized with a computed property");
-    }
-
     if (data instanceof bbnData) {
       throw Error("bbnData cannot be initialized with a bbnData");
     }

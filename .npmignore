@@ -1,0 +1,8 @@
+/src
+/test
+/node_modules
+/user-nabab*
+rollup.config.js
+tsconfig.json
+/.history
+/.vscode

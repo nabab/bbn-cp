@@ -223,7 +223,7 @@ const cpDef = {
      * @fires post
      * @fires makeWindows
      */
-    load(obj) {
+    async load(obj) {
       let d = {};
       if (typeof (obj) !== 'object') {
         for (let i = 0; i < arguments.length; i++) {
@@ -274,7 +274,7 @@ const cpDef = {
               // anon vuejs component initialization
               else if (typeof (tmp) === 'object') {
                 bbn.fn.extendOut(tmp, {
-                  name: bbn.fn.randomString(20, 15).toLowerCase(),
+                  //name: bbn.fn.randomString(20, 15).toLowerCase(),
                   template: '<div class="bbn-overlay">' + (r.content || '') + '</div>',
                   props: ['source']
                 });
