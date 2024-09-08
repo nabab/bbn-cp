@@ -13,7 +13,7 @@
     "Go to the previous %s": "Aller \u00e0 la %s pr\u00e9c\u00e9dente",
     "Go to the next %s": "Aller \u00e0 la %s suivante",
     "Go to the last %s": "Aller \u00e0 la derni\u00e8re %s",
-    "per": "pas",
+    "per": "par",
     "View SQL query:": "Afficher la requête SQL",
     "records": "enregistrements"
 }

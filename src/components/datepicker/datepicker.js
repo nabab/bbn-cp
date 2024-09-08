@@ -246,7 +246,7 @@ const cpDef = {
        * @fires setValue
        */
       setDate(val, calendar, format){
-        this.setValue(dayjs(val, format).isValid() ? dayjs(val, format).format(this.getValueFormat(val)) : '');
+        this.setValue(dayjs(val.toString(), format).isValid() ? dayjs(val.toString(), format).format(this.getValueFormat(val.toString())) : '');
       },
       /**
        * Sets the value.
@@ -355,7 +355,7 @@ const cpDef = {
           let mask = this.getRef('element'),
               mom = dayjs(newVal.toString(), this.getValueFormat(newVal.toString()));
           this.inputValue = newVal && mask && mom.isValid() ?
-            mask.raw(mom.format(this.currentFormat)) :
+            mask.raw(mom.format(this.currentFormat).toString()) :
             '';
         }
         else {
@@ -432,6 +432,7 @@ const cpDef = {
        * @fires setInputValue
       */
       value(newVal){
+        bbn.fn.log('DATEPICKER VALUE WATCH', newVal, this.$el);
         this.setInputValue(newVal);
       }
     }

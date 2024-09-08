@@ -6,8 +6,7 @@
 		'bbn-invisible' : (type === 'hidden'),
     'bbn-input-nullable': isNullable
 	}]"
-	:style="(currentSize !== '') ? 'width:' + currentSize : '' "
->
+	:style="(currentSize !== '') ? 'width:' + currentSize : '' ">
   <div :class="{
     'bbn-w-100': (!buttonLeft && !buttonRight && !nullable),
     'bbn-flex-width' : (buttonLeft || buttonRight || nullable),
@@ -28,17 +27,19 @@
     <div bbn-if="prefix"
          class="bbn-block bbn-h-100 bbn-vmiddle bbn-nowrap"
          bbn-text="prefix"/>
-    <input bbn-model="currentValue"
+    <input :value="currentValue"
           :type="currentType"
           :name="name"
           ref="element"
           :readonly="readonly ? 'readonly' : false"
+          :required="required"
           :disabled="isDisabled"
           :placeholder="placeholder"
           :maxlength="maxlength"
+          :minlength="minlength"
           :autocomplete="currentAutocomplete"
           :pattern="currentPattern"
-          @input="emitValue($refs.element.value)"
+          @input="onInput"
           @click="click"
           @paste="$emit('paste', $event)"
           @focus="focus"

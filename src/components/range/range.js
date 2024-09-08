@@ -143,7 +143,7 @@ const cpDef = {
          * The property 'size' normalized.
          * @data {String} [''] currentSize
          */
-        currentSize: this.size || '',
+        currentSize: this.size || undefined,
         /**
          * The original value
          * @data {Number} originalValue

@@ -515,7 +515,9 @@ const cpDef = {
      */
     nodata: {
       type: String,
-      default: bbn._('No data')
+      default(){
+        return bbn._('No data');
+      }
     },
     /**
      * Set it to true if you want to see the odd values only.

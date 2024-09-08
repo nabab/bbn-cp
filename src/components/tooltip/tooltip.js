@@ -10,8 +10,12 @@
 const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
+     * @mixin bbn.cp.mixins.toggle
      */
-    mixins: [bbn.cp.mixins.basic],
+    mixins: [
+      bbn.cp.mixins.basic,
+      bbn.cp.mixins.toggle
+    ],
     props: {
       /**
        * @prop {(String|Object|bbnCp)} component

@@ -53,7 +53,9 @@ const pageable = {
      */
     pageName: {
       type: String,
-      default: bbn._("Page")
+      default(){
+        return bbn._("Page");
+      }
     }
   },
   data(){

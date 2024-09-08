@@ -207,6 +207,7 @@ export default {
    */
   beforeMount() {
     if (this.splittable) {
+      let storage = this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
       if (storage && storage.panes) {
         bbn.fn.each(storage.panes, pane => {
           bbn.fn.each(pane.tabs, tab => {

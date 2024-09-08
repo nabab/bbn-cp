@@ -174,7 +174,7 @@ export default {
       });
 
       if (!this.single) {
-        bbn.fn.log("LOOKING FOR STORAGE FOR " + this.baseURL + ' WITH NAME ' + (this.parentContainer ? this.parentContainer.getFullURL() : this.storageName));
+        //bbn.fn.log("LOOKING FOR STORAGE FOR " + this.parentContainer.getFullURL());
         let storage = this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
         //Get config from the storage
         if (storage && storage.views && tmp) {
@@ -215,6 +215,8 @@ export default {
      */
     async remove(misc, force) {
       let idx = this.getIndex(misc);
+      bbn.fn.log(["REMOVE " + idx, this.views[idx].url, misc])
+      debugger;
       if (idx > -1) {
         /** @var {Event} onBeforeClose beforeClose event, cancelable only if not force */
         let onBeforeClose = new Event('beforeclose', { cancelable: !force });
@@ -242,11 +244,19 @@ export default {
             });
           }
           else if (this.views[idx] && !this.views[idx].real) {
-            bbn.fn.log(["ERMOVE FROM ROUTER " + idx, force])
             this.$emit('close', idx, onClose);
+            //const replacers = replacer ? [this.getViewObject(replacer)] : [];
+            //this.views.splice(idx, 1, ...replacers);
             this.views.splice(idx, 1);
-            bbn.fn.log(["ERMOVE FROM ROUTER " + idx, bbn.fn.numProperties(this.urls), this.views.length])
+            //bbn.fn.log(["ERMOVE FROM ROUTER " + idx, bbn.fn.numProperties(this.urls), this.views.length])
+            
             this.fixIndexes();
+            if (idx < this.selected) {
+              this.selected--;
+            }
+            else if (idx === this.selected) {
+              this.selectClosest(idx);
+            }
             await this.$forceUpdate();
             await this.$nextTick();
             return true;
@@ -255,27 +265,11 @@ export default {
       }
       return false;
     },
-    /**
-     * Adds an object with a valid url to the views.
-     * @method add
-     * @param {Object} obj
-     * @param {Number} idx
-     * @fires getFullBaseURL
-     * @fires search
-     * @fires isValidIndex
-     * @fires getDefaultView
-     */
-    async add(obj, idx) {
-      let index;
+    getViewObject(obj, idx) {
       //obj must be an object with property url
       bbn.fn.checkType(obj, 'object');
       bbn.fn.checkType(obj.url, 'string');
       obj.url = bbn.fn.replaceAll('//', '/', obj.url);
-
-      if (bbn.fn.getRow(this.views, {url: obj.url})) {
-        bbn.fn.log(bbn.fn.getRow(this.views, {url: obj.url}) === obj, obj)
-        throw Error(bbn._("The container already exists"));
-      }
 
       if (obj.uid) {
         throw Error(bbn._("The object already has a uid"));
@@ -310,23 +304,34 @@ export default {
         obj.menu = [];
       }
 
-      let isValid = this.isValidIndex(idx);
-      obj.idx = isValid ? idx : this.views.length;
-
       bbn.fn.iterate(this.getDefaultView(), (a, n) => {
         if (obj[n] === undefined) {
           // Each new property must be set with $set
           this.$set(obj, n, a);
         }
       });
-      if (this.single && this.views.length) {
-        let idxNonCached = bbn.fn.search(this.views, { cached: false });
-        if (idxNonCached > -1) {
-          await this.remove(idxNonCached, true);
-          obj.idx = idxNonCached;
-          isValid = false;
-        }
+
+      return obj;
+    },
+    /**
+     * Adds an object with a valid url to the views.
+     * @method add
+     * @param {Object} obj
+     * @param {Number} idx
+     * @fires getFullBaseURL
+     * @fires search
+     * @fires isValidIndex
+     * @fires getDefaultView
+     */
+    async add(obj, idx) {
+      obj = this.getViewObject(obj, idx);
+
+      if (bbn.fn.getRow(this.views, {url: obj.url})) {
+        bbn.fn.log(bbn.fn.getRow(this.views, {url: obj.url}) === obj, obj)
+        throw Error(bbn._("The container already exists"));
       }
+      let isValid = this.isValidIndex(idx);
+      obj.idx = isValid ? idx : this.views.length;
 
       if (isValid) {
         this.views.splice(obj.idx, 0, obj);
@@ -341,12 +346,20 @@ export default {
         this.views.push(obj);
       }
 
+      if (this.single && (this.views.length > 1)) {
+        let toDel = bbn.fn.search(this.views, a => !a.cached && (a.uid !== obj.uid));
+        if (toDel !== -1) {
+          await this.remove(toDel, true);
+        }
+      }
+
+      this.fixIndexes();
+      await this.$forceUpdate();
       if (obj.selected) {
         this.selected = obj.idx;
       }
 
-      this.fixIndexes();
-      return uid;
+      return obj.uid;
     },
     /**
     * Moves a container within the router, changes its idx.
@@ -392,16 +405,8 @@ export default {
     * @return {Boolean}
     */
     close(idx, force, noCfg) {
-      bbn.fn.log("CLOSING CT")
       let res = this.remove(idx, force);
       if (res) {
-        if (this.selected > idx) {
-          this.selected--;
-        }
-        else if (idx === this.selected) {
-          this.selectClosest(idx);
-        }
-
         if (!noCfg) {
           this.setConfig();
         }
@@ -509,13 +514,17 @@ export default {
             a.current = this.currentURL;
           }
   
-          bbn.fn.warning(bbn._("ADDING %s ON WATCH", a.url));
+          //bbn.fn.warning(bbn._("ADDING %s ON WATCH", a.url));
           this.add(a);
         });
       }
     },
+    /*
     views() {
+      bbn.fn.log("VIEWS CHANGED")
       this.updateVisualStyleContainer();
     }
+    */
+
   }
 }

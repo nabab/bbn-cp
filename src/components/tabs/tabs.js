@@ -178,7 +178,7 @@ const cpDef = {
         }
       },
       onScrollReady() {
-        bbn.fn.log("on scroll, ready");
+        //bbn.fn.log("on scroll, ready");
         setTimeout(() => {
           this.updateScroll();
         }, 1500);
@@ -203,12 +203,6 @@ const cpDef = {
           this.updateScroll();
         })
       },
-      source: {
-        deep: true,
-        handler() {
-          this.$forceUpdate();
-        }
-      }
     },
     updated() {
       if (this.source[this.value]) {

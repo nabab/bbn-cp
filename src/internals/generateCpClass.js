@@ -1,3 +1,4 @@
+import bbnComputed from "../lib/Computed/Computed.js";
 import setUpProp from "../lib/Cp/private/setUpProp.js";
 
 /**
@@ -65,10 +66,9 @@ export default function generateCpClass(publicClass, obj) {
       // Set up computed properties.
       if (obj.computed) {
         for (let n in obj.computed) {
-          bbn.cp.setComputed(this, n, obj.computed[n].get, obj.computed[n].set);
+          new bbnComputed(this, n, obj.computed[n].get, obj.computed[n].set);
         }
       }
-
     }
 
     // Set up component properties.
@@ -117,7 +117,7 @@ export default function generateCpClass(publicClass, obj) {
     for (let n in obj.props) {
       Object.defineProperty(window[proto].prototype, n, {
         get() {
-          bbnData.addSequence(this, n, this.$props[n]);
+          bbnData.addSequence(this, n);
           return this.$props[n];
         }
       });

@@ -1,6 +1,6 @@
 <div :class="componentClass"
       tabindex="-1"
-      @click="clickItem"
+      @click.bubbles="clickItem"
       @contextmenu="clickItem"
       @keydown.space.enter="clickItem"
       @touchstart.passive="touchstart"

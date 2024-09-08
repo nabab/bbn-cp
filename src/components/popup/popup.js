@@ -27,7 +27,9 @@ const cpDef = {
      */
     untitled: {
       type: String,
-      default: bbn._("Untitled")
+      default(){
+        return bbn._("Untitled");
+      }
     },
     /**
      * @prop {Array} [[]] source
@@ -50,42 +52,54 @@ const cpDef = {
      */
     alertMessage: {
       type: String,
-      default: bbn._("There was a problem") + '...'
+      default(){
+        return bbn._("There was a problem") + '...';
+      }
     },
     /**
      * @prop {String} ['Confirmation request] confirmTitle
      */
     confirmTitle: {
       type: String,
-      default: bbn._("Confirmation request")
+      default(){
+        return bbn._("Confirmation request");
+      }
     },
     /**
      * @prop {String} ['Are you sure?'] confirmMessage
      */
     confirmMessage: {
       type: String,
-      default: bbn._("Are you sure?")
+      default(){
+        return bbn._("Are you sure?");
+      }
     },
     /**
      * @prop {String} ['OK'] okText
      */
     okText: {
       type: String,
-      default: bbn._("OK")
+      default(){
+        return bbn._("OK");
+      }
     },
     /**
      * @prop {String} ['Yes'] yesText
      */
     yesText: {
       type: String,
-      default: bbn._("Yes")
+      default(){
+        return bbn._("Yes");
+      }
     },
     /**
      * @prop {String} ['No'] noText
      */
     noText: {
       type: String,
-      default: bbn._("No")
+      default(){
+        return bbn._("No");
+      }
     }
   },
   data() {

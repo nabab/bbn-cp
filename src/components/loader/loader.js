@@ -33,7 +33,9 @@ const cpDef = {
        */
       text: {
         type: String,
-        default: bbn._('Loading')
+        default(){
+          return bbn._('Loading');
+        }
       },
       /**
        * The background color

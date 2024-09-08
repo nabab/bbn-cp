@@ -183,7 +183,9 @@ const list = {
      */
     noData: {
       type: String,
-      default: bbn._('No data') + '...'
+      default(){
+        return bbn._('No data') + '...';
+      }
     },
     /**
      * The uid of the list.
@@ -664,7 +666,7 @@ const list = {
       return true;
     },
     hashCfg() {
-      return bbn.fn.md5(JSON.stringify(this.currentFilters) + JSON.stringify(this.currentLimit) + JSON.stringify(this.start) + JSON.stringify(this.currentOrder));
+      return bbn.fn.hash(JSON.stringify(this.currentFilters) + JSON.stringify(this.currentLimit) + JSON.stringify(this.start) + JSON.stringify(this.currentOrder));
     },
     /**
      * Returns the current item icon
@@ -939,16 +941,17 @@ const list = {
       data = this._map(data);
       return bbn.fn.map(data, (a, i) => {
         /** @todo Is it compatible with the fact of updating the source when given an array */
-        let o = this.hierarchy ? bbn.fn.extend(true, a, {
+        let o = this.hierarchy ? bbn.fn.extend(a, {
           index: i,
-          key: this.isAjax ? (i + '-' + this.hashCfg) : i,
-          _bbn: true,
+          key: this.uid ? data[this.uid] : (this.isAjax ? (i + '-' + this.hashCfg) : i),
+          _bbn: true
         }) : {
           data: a,
           index: i,
-          key: this.isAjax ? (i + '-' + this.hashCfg) : i,
+          key: this.uid ? data[this.uid] : (this.isAjax ? (i + '-' + this.hashCfg) : i),
           _bbn: true
         };
+
         if (this.children && a[this.children] && a[this.children].length) {
           o.opened = true;
         }
@@ -968,6 +971,10 @@ const list = {
         this._dataPromise = new Promise(resolve => {
           let prom;
           let loadingRequestID;
+          if (this.currentData.length) {
+            this.currentData.splice(0);
+          }
+
           if (this.isAjax) {
             if (this.loadingRequestID) {
               bbn.fn.abort(this.loadingRequestID);
@@ -1051,11 +1058,11 @@ const list = {
 
             if (d && bbn.fn.isArray(d.data)) {
               if (d.data.length && d.data[0]._bbn) {
-                this.currentData = d.data;
+                this.currentData.push(...d.data);
                 this.updateIndexes();
               }
               else {
-                this.currentData = this.treatData(d.data);
+                this.currentData.push(...this.treatData(d.data));
               }
               if (d.query) {
                 this.currentQuery = d.query;
@@ -1266,7 +1273,7 @@ const list = {
   created() {
     if (!this.component && !this.template && this.$slots.default.length) {
       if (this.$slots.default[0].bbnSchema.pre) {
-        this.currentTemplate = this.$slots.default[0].bbnSchema.pre;
+        this.currentTemplate = this.$slots.default[0].bbnSchema.pre.content;
       }
     }
 
@@ -1327,14 +1334,10 @@ const list = {
         }
       }
     },
-    source: {
-      deep: true,
-      handler() {
-        if (this.ready && !this.editable) {
-          /*
-          this.updateData();
-          */
-        }
+    source() {
+      if (this.ready && !this.editable) {
+        //bbn.fn.log("WATCH SOURce from list")
+        this.updateData();
       }
     },
     /**

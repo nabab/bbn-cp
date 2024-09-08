@@ -16,7 +16,7 @@ export default function addToElements(cp, ele) {
 
   // Retrieve the element's unique identifier and hash.
   const id = ele.bbnId;
-  const hash = ele.bbnHash;
+  let hash = ele.bbnHash;
   // Retrieve the component ID associated with the element.
   const origin = ele.bbnComponentId;
 
@@ -29,6 +29,7 @@ export default function addToElements(cp, ele) {
     bbn.fn.warning("Element does not exist in map");
     bbn.fn.log(["Element does not exist in map", cp, id, ele]);
   }
+
   // If the element has a hash, add or update it in the $elements object using the hash.
   if (hash) {
     // Initialize the object for the element ID if not already present.
@@ -42,6 +43,7 @@ export default function addToElements(cp, ele) {
         let isCommentNew = bbn.fn.isComment(ele);
         let isCommentOld = bbn.fn.isComment(cp.$elements[id][hash]);
         if ((isCommentNew !== isCommentOld) || (ele.tagName !== cp.$elements[id][hash].tagName)) {
+          bbn.fn.log(["Element exist no error with hash", cp, cp.$elements[id][hash], ele, id, hash]);
           removeDOM(cp, cp.$elements[id][hash]);
         }
         else {
@@ -50,6 +52,11 @@ export default function addToElements(cp, ele) {
           //throw Error("The element " + id + " with hash " + hash + " already exists in the DOM");
         }
       }
+
+      if (!cp.$elements[id]) {
+        cp.$elements[id] = bbn.fn.createObject();
+      }
+
       cp.$elements[id][hash] = ele;
     }
   }
@@ -59,6 +66,7 @@ export default function addToElements(cp, ele) {
       let isCommentNew = bbn.fn.isComment(ele);
       let isCommentOld = bbn.fn.isComment(cp.$elements[id]);
       if ((isCommentNew !== isCommentOld) || (ele.tagName !== cp.$elements[id].tagName)) {
+        bbn.fn.log(["Element exist no error", cp, cp.$elements[id], ele, ele.bbnSchema.tag, id, cp.$numBuild, cp.$options.name]);
         removeDOM(cp, cp.$elements[id]);
       }
       else {

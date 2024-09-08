@@ -11,7 +11,9 @@ const expToFn = (cp, loopVars, a, node, type) => {
   if (a.exp) {
     const deps = [];
     bbn.fn.each(Object.keys(cp.$namespaces), arg => {
-      if (a.exp.match(new RegExp((arg.indexOf('$') === 0 ? '' : '\\b') + bbn.fn.escapeRegExp(arg) + '\\b'))) {
+      const matcher = (arg.indexOf('$') === 0 ? '' : '\\b') + bbn.fn.escapeRegExp(arg) + '\\b';
+      const rgxp = new RegExp('^' + matcher + '|[^.]+' + matcher);
+      if (a.exp.match(rgxp)) {
         deps.push(arg);
       }
     });
@@ -21,17 +23,16 @@ const expToFn = (cp, loopVars, a, node, type) => {
         args.push(...v);
       }
     });
+
     if (type === 'event') {
       let stFn = 'const $_bbnData = {';
       bbn.fn.each(args, arg => {
-        stFn += `  ${arg}: bbn.fn.hash(${arg}),\n`;
+        stFn += `  ${arg}: bbnData.hash(${arg}),\n`;
       });
       stFn += `};\n`;
-      stFn += `if (bbnData.isWatching) {bbnData.watchStarted = true;}\n`;
       stFn += `${a.exp}\n`;
-      stFn += `if (bbnData.watchStarted) {bbnData.watchStarted = false;}\n`;
       bbn.fn.each(args, arg => {
-        stFn += `if ($_bbnData['${arg}'] !== bbn.fn.hash(${arg})) {\n`;
+        stFn += `if ($_bbnData['${arg}'] !== bbnData.hash(${arg})) {\n`;
         if (loopVars[arg]) {
         }
         else if (Object.hasOwn(cp, arg)) {
@@ -39,16 +40,19 @@ const expToFn = (cp, loopVars, a, node, type) => {
         }
         stFn += `}\n`;
       });
-      a.fn = new Function(...args, stFn);
+      if (a.argNames) {
+        a.fn = new Function(...[...args, ...a.argNames.map(b => b.name)], stFn);
+      }
+      else {
+        a.fn = new Function(...args, stFn);
+      }
     }
     else {
-      let stFn = `if (bbnData.isWatching) {bbnData.watchStarted = true;}\n`;
-      stFn += 'const $_bbnRes = (' + (a.exp || (node.type === 'else' ? 'true' : '')) + ')\n';
-      stFn += `if (bbnData.watchStarted) {bbnData.watchStarted = false;}\n`;
+      let stFn = 'const $_bbnRes = (' + (a.exp || (node.type === 'else' ? 'true' : '')) + ')\n';
       stFn += `return $_bbnRes;\n`;
       a.fn = new Function(...args, stFn);
       if (type === 'model') {
-        a.setter = new Function('bbnValue', ...args, a.exp + ' = bbnValue; return bbnValkue;');
+        a.setter = new Function('bbnValue', ...args, a.exp + ' = bbnValue; return bbnValue;');
       }
     }
 
@@ -67,7 +71,7 @@ const expToFn = (cp, loopVars, a, node, type) => {
  * @param {bbnCp} cp - The component instance to process.
  */
 export default function mapDependencies(cp) {
-  const elemSrc = cp.$el.constructor === bbnAnon ? cp.$el : cp.$el.constructor;
+  const elemSrc = cp.$el.constructor === bbnAnonHtml ? cp.$el : cp.$el.constructor;
   // Avoid remapping if already done for the component.
   if (elemSrc.bbnMapped) {
     return;
@@ -105,6 +109,11 @@ export default function mapDependencies(cp) {
       deps.push(...args);
     }
 
+    if (node.bind) {
+      const args = expToFn(cp, loopVars, node.bind, node);
+      deps.push(...args);
+    }
+
     if (node.attr) {
       bbn.fn.iterate(node.attr, a => {
         if (a.exp) {
@@ -113,9 +122,9 @@ export default function mapDependencies(cp) {
         }
       });
     }
-    else if (node.exp) {
-      node.exp = '`' + node.exp + '`';
-      const args = expToFn(cp, loopVars, node, node);
+    else if (node.text?.exp) {
+      node.text.exp = '`' + node.text.exp + '`';
+      const args = expToFn(cp, loopVars, node.text, node);
       deps.push(...args);
     }
 
@@ -147,7 +156,7 @@ export default function mapDependencies(cp) {
     }
 
     // Store unique dependencies for each node.
-    node.dependencies = bbn.fn.unique(deps);
+    //node.dependencies.splice(0, node.dependencies.length, ...bbn.fn.unique(deps));
     Object.freeze(node);
   });
 

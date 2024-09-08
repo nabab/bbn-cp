@@ -11,29 +11,33 @@ import bbnData from "../Data.js";
 bbnData.treatValue = function(value, component, path, parent) {
   if (component.$isDestroyed) {
     return value;
+  }  
+
+  const hasStarted = this.watchStarted;
+  if (hasStarted) {
+    this.watchStarted = false;
   }
 
   if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor) && !value.__bbnNoData) {
+    // Will remove from the sequence the subsequent calls to the data
+    let dataObj;
     if (value.__bbnData) {
-      const dataObj = this.retrieve(value.__bbnData);
-      if (!dataObj) {
-        bbn.fn.log(value);
-        bbn.fn.warning(bbn._("The data inventory does not contain the data object"));
-        throw Error(bbn._("The data inventory does not contain the data object"));
-      }
-
+      dataObj = this.retrieve(value.__bbnData);
       dataObj.addComponent(component, path, parent);
-
-      return dataObj.value;
     }
 
+    if (!dataObj) {
+      dataObj = new bbnData(value, component, path, parent);
+    }
+
+    value = dataObj.value;
     if (value.__bbnComponent) {
       throw Error(bbn._("The data object is a component definition"));
     }
+  }
 
-    const dataObj = new bbnData(value, component, path, parent);
-
-    return dataObj.value;
+  if (hasStarted) {
+    this.watchStarted = true;
   }
 
   return value;

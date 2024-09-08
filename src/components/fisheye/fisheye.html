@@ -13,12 +13,13 @@
     </div>
     <ul ref="container"
         :class="['bbn-spadded', {'bbn-invisible': !showIcons || !ready}]"
+        bbn-if="ready"
         :style="{zIndex: zIndex}">
       <li bbn-for="it in items"
           :key="it.index"
           bbn-draggable="!it.fixed"
-          @mouseover="mouseover(it.index)"
-          @mouseout="mouseout(it.index)"
+          @mouseenter="mouseover(it.index)"
+          @mouseleave="mouseout(it.index)"
           @dragstart="dragstart(it.index, $event)"
           @dragend="dragend(it.index, $event)">
         <span class="bbn-iblock bbn-p"
@@ -60,8 +61,8 @@
        bbn-if="visibleBin"
        :style="binPosition">
     <i :class="['nf nf-fa-trash', {'bbn-red': overBin}]"
-       @dragover="overBin = true"
        bbn-if="visibleBin"
+       @dragover="overBin = true"
        @dragleave="dragleave($event)"
        @drop="drop($event)"
        bbn-droppable/>

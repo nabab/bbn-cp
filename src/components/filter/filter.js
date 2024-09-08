@@ -153,10 +153,7 @@ const cpDef = {
        *
        */
       componentOptions: {
-        type: [Object, String],
-        default(){
-          return {};
-        }
+        type: [Object, String]
       },
       /**
        * The column's value for a single column filter.
@@ -470,10 +467,7 @@ const cpDef = {
            * @memberof bbn-filter-form
            */
           componentOptions: {
-            type: Object,
-            default(){
-              return {}
-            }
+            type: Object
           },
           /**
            * Set to true to show the button to delete a condition.

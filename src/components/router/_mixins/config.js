@@ -27,7 +27,7 @@ export default {
      */
     getConfig() {
       let cfg = {
-        baseURL: this.parentContainer ? this.parentContainer.getFullURL() : this.storageName,
+        baseURL: this.parentContainer ? this.parentContainer.currentURL : this.storageName,
         views: [],
         breadcrumb: this.isBreadcrumb,
         visual: this.isVisual,
@@ -47,7 +47,7 @@ export default {
             fixed: !!obj.fixed,
             pinned: !!obj.pinned,
             pane: obj.pane || false,
-            current: obj.current ? obj.current : obj.url,
+            current: obj.current || obj.url,
             cfg: {},
             real: obj.real,
             last: obj.last

@@ -12,7 +12,7 @@
             }]"
             :disabled="disabled">
     <slot bbn-if="slotBefore"></slot>
-    <div class="bbn-flex-fill bbn-toolbar-flex">
+    <div class="bbn-toolbar-flex">
       <template bbn-for="(s, i) in source">
         <component bbn-if="!s.end && s.component"
                   :is="s.component"
@@ -64,7 +64,9 @@
                     :element="'item' + i"/>
       </template>
     </div>
-    <slot bbn-if="!slotBefore"></slot>
-    <slot name="right"></slot>
+    <slot bbn-if="!slotBefore"/>
+    <div class="bbn-right">
+      <slot name="right"/>
+    </div>
   </fieldset>
 </div>

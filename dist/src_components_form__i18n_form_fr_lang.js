@@ -15,7 +15,7 @@
   \************************************************/
 /***/ ((module) => {
 
-eval("module.exports = /*#__PURE__*/JSON.parse('{\"Are you sure you want to discard the changes you made in this form?\":\"Êtes-vous sûr de vouloir fermer ce formulaire sans prendre en compte les changement effectués?\",\"Cancel\":\"Annuler\",\"Reset\":\"Réinitialiser\",\"Submit\":\"Enregistrer\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/form/_i18n/form.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Are you sure you want to discard the changes you made in this form?\":\"Êtes-vous sûr de vouloir fermer ce formulaire sans prendre en compte les changement effectués?\",\"Cancel\":\"Annuler\",\"Reset\":\"Réinitialiser\",\"Submit\":\"Enregistrer\",\"An error occurred\":\"Une erreur s\\'est produite\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/form/_i18n/form.fr.lang?");
 
 /***/ })
 

@@ -468,6 +468,7 @@ const cpDef = {
         if (b.cls) {
           delete o.cls;
         }
+
         res.push(o);
       });
       return res;
@@ -560,9 +561,10 @@ const cpDef = {
     HTMLStyle() {
       this.scrollWidth = Math.min(this.scrollWidth, this.currentMaxWidth);
       this.scrollHeight = Math.min(this.scrollHeight, this.scrollMaxHeight - this.currentTop);
+      const maxHeight = this.scrollMaxHeight - this.currentTop;
       let s = {
-        maxWidth: this.isMaximized ? '100%' : (this.currentMaxWidth + 'px') || null,
-        maxHeight: this.isMaximized ? '100%' : ((this.scrollMaxHeight - this.currentTop) + 'px') || null
+        maxWidth: this.isMaximized ? '100%' : (!!this.currentMaxWidth ? (this.currentMaxWidth + 'px') : null),
+        maxHeight: this.isMaximized ? '100%' : (!!maxHeight ? (maxHeight + 'px') : null)
       };
       return s;  
     },
@@ -615,7 +617,7 @@ const cpDef = {
         this.onResize(true);
         this._setMinMax();
         this.$forceUpdate().then(() => {
-          if (!this.scrollable || this.definedHeight) {
+          if (!this.scrollable || this.definedHeight || this.definedWidth) {
             this.resizeAfterScroll();
           }
           else if (this.content) {
@@ -702,37 +704,76 @@ const cpDef = {
       if (this.left !== undefined) {
         maxWidth.push(Math.max(this.left, bbn.env.width - this.left));
       }
+
       if (this.right !== undefined) {
         maxWidth.push(Math.max(this.right, bbn.env.width - this.right));
       }
+
       if (this.top !== undefined) {
         maxHeight.push(Math.max(this.top, bbn.env.height - this.top));
       }
+
       if (this.bottom !== undefined) {
         maxHeight.push(Math.max(this.bottom, bbn.env.height - this.bottom));
       }
+
       let outHeight = 0;
+      const currentStyle = window.getComputedStyle(this.$el);
+      if (!!currentStyle.borderTop) {
+        outHeight += Math.round(parseFloat(currentStyle.borderTop));
+      }
+
+      if (!!currentStyle.borderBottom) {
+        outHeight += Math.round(parseFloat(currentStyle.borderBottom));
+      }
+
       if (this.title) {
-        let header = this.getRef('header');
+        const header = this.getRef('header');
         if (header) {
           outHeight += header.offsetHeight;
+          const headerStyle = window.getComputedStyle(header);
+          if (!!headerStyle.marginTop) {
+            outHeight += Math.round(parseFloat(headerStyle.marginTop));
+          }
+
+          if (!!headerStyle.marginBottom) {
+            outHeight += Math.round(parseFloat(headerStyle.marginBottom));
+          }
         }
       }
+
       if (this.footer) {
-        let footer = this.getRef('footer');
+        const footer = this.getRef('footer');
         if (footer) {
           outHeight += footer.offsetHeight;
+          const footerStyle = window.getComputedStyle(footer);
+          if (!!footerStyle.marginTop) {
+            outHeight += Math.round(parseFloat(footerStyle.marginTop));
+          }
+
+          if (!!footerStyle.marginBottom) {
+            outHeight += Math.round(parseFloat(footerStyle.marginBottom));
+          }
         }
       }
       else if (this.currentButtons) {
-        let footer = this.getRef('buttons');
+        const footer = this.getRef('buttons');
         if (footer) {
           outHeight += footer.offsetHeight;
+          const footerStyle = window.getComputedStyle(footer);
+          if (!!footerStyle.marginTop) {
+            outHeight += Math.round(parseFloat(footerStyle.marginTop));
+          }
+
+          if (!!footerStyle.marginBottom) {
+            outHeight += Math.round(parseFloat(footerStyle.marginBottom));
+          }
         }
       }
       if (outHeight !== this.outHeight) {
         this.outHeight = outHeight;
       }
+
       tmp = false;
       this.currentMinWidth = Math.max(...minWidth);
       this.currentMinHeight = Math.max(...minHeight);
@@ -741,6 +782,7 @@ const cpDef = {
       if ((maxHeight < minHeight) || (maxHeight < minHeight)) {
         throw Error(bbn._("Wrong min/max width/height set in the properties"));
       }
+
       if (this.width || this.height) {
         tmp = this.getDimensions(this.width, this.height);
         if (tmp) {
@@ -749,6 +791,7 @@ const cpDef = {
           ) {
             tmp.width = this.currentMaxWidth;
           }
+
           if (tmp.width
             && (this.currentMaxWidth >= tmp.width)
             && (this.currentMinHeight <= tmp.width)
@@ -758,11 +801,13 @@ const cpDef = {
           else if (this.definedWidth) {
             this.definedWidth = null;
           }
+
           if (tmp.height
             && (tmp.height > this.currentMaxHeight)
           ) {
             tmp.height = this.currentMaxHeight;
           }
+
           if (tmp.height
               && (this.currentMaxHeight >= tmp.height)
               && (this.currentMinHeight <= tmp.height)
@@ -807,12 +852,17 @@ const cpDef = {
         //return this.realResize();
       }
     },
-    fullResize() {
+    async fullResize() {
       this.isResized = false;
-      this.realResize();
+      this.isResizing = true;
+      await this.$forceUpdate();
+      await this.getRef('scroll').initSize();
+      this.isResizing = false;
+      await this.$forceUpdate();
+      this.onResize(true);
+      this.resizeAfterScroll();
     },
     realResize() {
-
       return this.onResize(true);
     },
     /**
@@ -826,7 +876,6 @@ const cpDef = {
      * @fires setResizeMeasures
      */
     resizeAfterScroll() {
-      //bbn.fn.log("RESIZEAFTERSCROLL");
       let go = this.isVisible
           && bbn.fn.isDom(this.$el)
           && (!this.isInit 
@@ -857,13 +906,15 @@ const cpDef = {
               return;
             }
 
-            resolve(0);
+            bbn.fn.log("WAITING FOR SCROLL 2");
+            resolve(!this.isInit);
             return;
           }
           else {
             let scroll = this.getRef('scroll');
             if (!scroll || !scroll.naturalWidth) {
               // We do nothing and wait that the scroll does the resize
+              bbn.fn.log("WAITING FOR SCROLL");
               resolve(0);
               return;
             }
@@ -908,7 +959,7 @@ const cpDef = {
             if ( currentWidth < this.currentMinWidth ){
               currentWidth = this.currentMinWidth;
             }
-            let isChanged = 0;
+            let isChanged = this.isInit ? 0 : 1;
             if (!this.realWidth || (Math.abs(this.realWidth - currentWidth) > 2)) {
               isChanged = 1;
               this.realWidth = currentWidth;
@@ -922,7 +973,6 @@ const cpDef = {
         }
         else {
           resolve(0);
-          return;
         }
       }).then(r => {
         if (!this.isResized) {
@@ -1270,7 +1320,7 @@ const cpDef = {
      * @fires afterClose
      */
     close(force, confirm = false) {
-      bbn.fn.log("Close by floater");
+      //bbn.fn.log("Close by floater");
       if (force !== true) {
         if (!this.closable && !this.autoHide && !force) {
           return;
@@ -1305,7 +1355,6 @@ const cpDef = {
         this.forms[0].closePopup(force);
       }
       else if (popup && this.uid) {
-        bbn.fn.log("The popup should have closed the floater");
         let idx = popup.getIndexByUID(this.uid);
         popup.close(idx, true);
       }

@@ -26,29 +26,37 @@ bbnData.proxy = function(component, path, targetObj) {
       }
 
       if (bbn.fn.isFunction(realValue)) {
-        if (targetObj && targetObj.isArray && bbn.fn.isString(key)) {
+        if (targetObj?.isArray && bbn.fn.isString(key)) {
           const fnName = bbn.fn.camelize('proxy-' + key);
           if (bbn.fn.isFunction(bbnData[fnName])) {
-            return t[fnName](target, component, path);
+            return t[fnName](targetObj, target, component, path);
           }
         }
+
+        return realValue;
       }
       else if (realValue) {
         realValue = t.treatValue(realValue, component, key, targetObj);
       }
+      
+      if ((realValue === undefined) && !Object.hasOwn(target, key)) {
+        return realValue;
+      }
 
       bbnData.addSequence(component, key, targetObj);
+
       return realValue;
     },
     set(target, key, value) {
       if (key?.indexOf && (key.indexOf('__bbn') === 0)) {
-        target[key] = newVal;
+        target[key] = value;
         return true;
       }
 
       const oldValue = target[key];
       const oldObj = t.getObject(oldValue);
       let mod = false;
+      //bbn.fn.log(["SET", key, oldValue, value, oldObj, targetObj.getImpacted([key], bbn.fn.microtimestamp())]);
 
       if (oldObj && !oldObj.isSame(value)) {
         const newObj = t.getObject(value);
@@ -64,13 +72,30 @@ bbnData.proxy = function(component, path, targetObj) {
         const newVal = t.treatValue(value, component, key, targetObj);
         target[key] = newVal;
         const dataObj = t.getObject(newVal);
-        //bbn.fn.log(["SET", targetObj, key, newVal, oldValue, target, '------']);
+        /*
+        bbn.fn.log([
+          "SET",
+          "DATAOBJ",
+          dataObj,
+          "TARGET",
+          t.getObject(target),
+          "SAME",
+          targetObj === t.getObject(target),
+          "TARGETOBJ",
+          targetObj,
+          key,
+          newVal,
+          oldValue,
+          target,
+          '------'
+        ]);
+        */
 
         if (dataObj) {
-          dataObj.update(false);
+          dataObj.prepareUpdate();
         }
         else {
-          targetObj.update(false, key);
+          targetObj.prepareUpdate(key);
         }
 
       }
@@ -95,7 +120,7 @@ bbnData.proxy = function(component, path, targetObj) {
 
       Object.defineProperty(target, key, description);
       if (targetObj) {
-        targetObj.update(false, key);
+        targetObj.prepareUpdate(key);
       }
       else {
         bbn.fn.log(target, key, description);
@@ -110,7 +135,7 @@ bbnData.proxy = function(component, path, targetObj) {
       }
 
       delete target[key];
-      targetObj.update();
+      targetObj.prepareUpdate();
       return true;
     }
   }

@@ -143,6 +143,7 @@ const cpDef = {
       filteredData: {
         deep: true,
         handler() {
+          //bbn.fn.log("FILTERED DATA IN MENU");
           this.isChanging = true;
           this.$forceUpdate().then(() => {
             setTimeout(() => {

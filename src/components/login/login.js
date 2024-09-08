@@ -119,21 +119,27 @@ const cpDef = {
        */
       passwordLink: {
         type: [Boolean, String],
-        default: bbn._("Password forgotten?")
+        default(){
+          return bbn._("Password forgotten?");
+        }
       },
       /**
        * @prop {String} ['Login name'] loginFieldPlaceholder
        */
       loginFieldPlaceholder: {
         type: String,
-        default: bbn._('Login name')
+        default(){
+          return bbn._('Login name');
+        }
       },
       /**
        * @prop {String} ['Password'] passwordFieldPlaceholder
        */
        passwordFieldPlaceholder: {
         type: String,
-        default: bbn._('Password')
+        default(){
+          return bbn._('Password');
+        }
       },
       /**
        * @prop {String} note
@@ -192,7 +198,11 @@ const cpDef = {
         /**
          * @data {Number} clientHeight
          */
-        clientHeight: document.documentElement.clientHeight
+        clientHeight: document.documentElement.clientHeight,
+        /**
+         * @data {Boolean} [false] isLoading
+         */
+        isLoading: false
       }
     },
     computed: {
@@ -227,6 +237,9 @@ const cpDef = {
        */
        onSubmit(ev, form){
         this.$emit('submit', ev, form);
+        if (!ev.defaultPrevented) {
+          this.isLoading = true;
+        }
        },
       /**
        * @method onAfterSubmit
@@ -237,6 +250,7 @@ const cpDef = {
       onAfterSubmit(d){
         let ev = new Event('aftersubmit', {cancelable: true});
         this.$emit('aftersubmit', ev, d, this.currentMode, this);
+        this.isLoading = false;
         if (ev.defaultPrevented) {
           return;
         }
@@ -262,6 +276,16 @@ const cpDef = {
         else {
           this.alert(d.errorMessage, false);
         }
+      },
+      /**
+       * @method onFailureSubmit
+       * @param xhr
+       * @param textStatus
+       * @param errorThrown
+       */
+      onFailureSubmit(xhr, textStatus, errorThrown){
+        this.isLoading = false;
+        this.$emit('failure', xhr, textStatus, errorThrown);
       },
       /**
        * @method setHeight

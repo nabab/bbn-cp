@@ -7,10 +7,9 @@ import bbnData from "../Data.js";
  * @param {*} path 
  * @returns 
  */
-bbnData.proxyUnshift = function(target, component) {
+bbnData.proxyUnshift = function(targetObj, target, component) {
   return (...args) => {
     // The bbnData object of the target array
-    const targetObj = this.getObject(target);
     let newArgs = [];
     bbn.fn.each(args, (a, i) => {
       const idx = target.length + i;
@@ -19,9 +18,7 @@ bbnData.proxyUnshift = function(target, component) {
     });
     const res = target.unshift(...newArgs);
     if (targetObj) {
-      //bbn.fn.log([dataObj.path, path]);
-      //bbn.fn.warning("UNSHIFT");
-      targetObj.update();
+      targetObj.prepareUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in unshift", target]);

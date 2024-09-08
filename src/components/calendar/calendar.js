@@ -293,6 +293,21 @@ const cpDef = {
     showLoading: {
       type: Boolean,
       default: false
+    },
+    /**
+     * Highlights the current date.
+     * @prop {Boolean} highlightCurrent
+     */
+    highlightCurrent: {
+      type: Boolean,
+      default: true
+    },
+    /**
+     * Highlights the given dates.
+     * @prop {Array|Function} highlightDates
+     */
+    highlightDates: {
+      type: [Array, Function]
     }
   },
   data(){
@@ -301,10 +316,10 @@ const cpDef = {
       let m = dayjs(this.date, this.getCfg().valueFormat);
       mom = m.isValid() ? m : mom;
     }
-    else if ( this.max ){
+    /* else if ( this.max ){
       let m = dayjs(this.max, this.getCfg().valueFormat);
       mom = m.isValid() ? m : mom;
-    }
+    } */
     return {
       /**
        * Today as 'YYYY-MM-DD' format.
@@ -398,11 +413,12 @@ const cpDef = {
     */
     _makeItem(txt, val, hid, col, dis, ext){
       //let events = this.filterEvents(val),
+      const isCurrent = val === dayjs(this.today, this.currentCfg.valueFormat).format(this.currentCfg.valueFormat);
       let events = this.events[val],
           obj = {
             text: txt,
             value: val,
-            isCurrent: val === dayjs(this.today, this.currentCfg.valueFormat).format(this.currentCfg.valueFormat),
+            isCurrent: isCurrent,
             hidden: !!hid,
             colored: !!col,
             over: false,
@@ -411,6 +427,9 @@ const cpDef = {
             disabled: !!dis,
             extra: !!ext
           };
+      obj.highlight = (this.highlightCurrent && isCurrent)
+        || ((bbn.fn.isFunction(this.highlightDates) && this.highlightDates(obj))
+          || (bbn.fn.isArray(this.highlightDates) && this.highlightDates.includes(val)));
       if (
         (this.onlyEvents && (!events || !events.length)) ||
         (this.min && (obj.value < dayjs(this.min, this.currentCfg.valueFormat).format(this.currentCfg.valueFormat))) ||
@@ -460,7 +479,7 @@ const cpDef = {
       }
       this.gridStyle = 'grid-template-columns: repeat(7, 1fr); grid-template-rows: max-content repeat(6, 1fr);';
       this.currentLabelsDates = Array.from({length: 7}, (v, i) => dayjs(this.currentDate).weekday(i));
-      this.$set(this, 'items', items);
+      this.items.splice(0, this.items.length, ...items);
     },
     /**
      * Makes the items' structure of "weeks" mode.
@@ -485,7 +504,7 @@ const cpDef = {
           });
       this.gridStyle = 'grid-template-columns: repeat(7, 1fr); grid-template-rows: max-content auto';
       this.currentLabelsDates = Array.from({length: 7}, (v, i) => dayjs(this.currentDate).weekday(i));
-      this.$set(this, 'items', items);
+      this.items.splice(0, this.items.length, ...items);
     },
     /**
      * Makes the items' structure of "months" mode.
@@ -509,7 +528,7 @@ const cpDef = {
           });
       this.gridStyle = 'grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr);';
       this.currentLabelsDates = [];
-      this.$set(this, 'items', items);
+      this.items.splice(0, this.items.length, ...items);
     },
     /**
      * Makes the items' structure in "years" mode.
@@ -534,7 +553,7 @@ const cpDef = {
           });
       this.gridStyle = 'grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr);';
       this.currentLabelsDates = [];
-      this.$set(this, 'items', items);
+      this.items.splice(0, this.items.length, ...items);
     },
     /**
      * Returns the correct configuration based on the calendar type.

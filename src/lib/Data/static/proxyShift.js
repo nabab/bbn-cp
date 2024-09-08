@@ -7,10 +7,9 @@ import bbnData from "../Data.js";
  * @param {*} path 
  * @returns 
  */
-bbnData.proxyShift = function(target) {
+bbnData.proxyShift = function(targetObj, target) {
   return () => {
     // The bbnData object of the target array
-    const targetObj = this.getObject(target);
     if (target.length) {
       const subObj = this.getObject(target[0]);
       if (subObj) {
@@ -20,7 +19,7 @@ bbnData.proxyShift = function(target) {
     const res = target.shift();
     if (targetObj) {
       //bbn.fn.log("SHIFT");
-      targetObj.update();
+      targetObj.prepareUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in shift", target]);

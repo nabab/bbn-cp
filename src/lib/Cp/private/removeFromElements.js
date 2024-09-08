@@ -8,11 +8,15 @@
  * @returns {undefined}
  */
 export default function removeFromElements(cp, id, hash) {
+  //bbn.fn.log("REMOVING " + id + (hash ? ' ' + hash : ''));
   bbn.fn.checkType(id, ['string', 'symbol'], "In removeFromElements the ID should be a symbol");
   if (hash) {
     const row = cp.$elements[id];
     if (row) {
       delete cp.$elements[id][hash];
+      if (!Object.keys(cp.$elements[id]).length) {
+        delete cp.$elements[id];
+      }
     }
     else{
       bbn.fn.log(["HASH BUT NO ROW IN " + cp.$options.name, id, hash, cp.$elements[id]]);

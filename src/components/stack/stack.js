@@ -21,7 +21,7 @@ const cpDef = {
 		}
 	}, 
 	created(){
-		bbn.fn.log('mounted', this.source)
+		//bbn.fn.log('stack mounted', this.source)
 		this.current = this.source
 		//this.currentData = this.source;
 	},

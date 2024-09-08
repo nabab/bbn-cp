@@ -6,16 +6,100 @@ import bbnData from "../Data.js";
  * @param {String} path 
  * @returns {Boolean}
  */
+
+/**
+ * source[0].prop.list
+ * currentData[0].prop.list
+ * filteredData[0].data.prop.list
+ * row.prop.list
+ */
+const cp1 = 1;
+const example = {
+  data: [{prop: {list: []}}, {prop: {list: []}}, {prop: {list: []}}],
+  refs: [{
+    cp1,
+    path: 'list',
+    parent: {
+      refs: [{
+        cp1,
+        path: 'prop',
+        parent: {
+          refs: [{
+            cp1,
+            path: 'row',
+            parent: null
+          }, {
+            cp1, 
+            path: 'data',
+            parent: {
+              refs: [{
+                cp1,
+                path: '0',
+                parent: {
+                  refs: [{
+                    cp1,
+                    path: 'filteredData',
+                    parent: null
+                  }]
+                }
+              }]
+            }
+          }, {
+            cp1,
+            path: '0',
+            parent: {
+              refs: [{
+                cp1,
+                path: 'currentData',
+                parent: null
+              }, {
+                cp1,
+                path: 'source',
+                parent: null
+              }]
+            }
+          }]
+        }
+      }]
+    }
+  }]
+};
+
+
 bbnData.prototype.addComponent = function(component, path, parent) {
   if (!(component instanceof bbnCp)) {
     throw Error(bbn._("bbnData hasComponent must be called with a bbn component"));
   }
 
-  if (!bbn.fn.count(this.refs, {component, path})) {
+  if (typeof path !== 'string') {
+    if (!path.toString) {
+      throw Error(bbn._("The path must be a string"));
+    }
+
+    path = path.toString();
+  }
+
+  /*
+  const fpath = [[path]];
+  if (parent) {
+    let done = 0;
+    bbn.fn.each(parent.refs, a => {
+      if (a.component === component) {
+        if ()
+        fpath.push(a.path);
+      }
+    })
+  }
+  */
+
+  if (!this.refs.filter(
+    b => (b.component === component) && (JSON.stringify(b.path) === JSON.stringify(path))
+  ).length
+  ) {
     this.refs.unshift({
       component,
       path,
-      parent
+      parent: parent || null
     });
   }
 

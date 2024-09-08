@@ -179,7 +179,6 @@ const cpDef = {
        * @fires updateData
        */
       clickItem(e){
-        bbn.fn.log("click item context");
         if (
           !this.disabled
           && (
@@ -236,7 +235,7 @@ const cpDef = {
        * @method toggle
        */
       toggle(){
-        bbn.fn.log("CONTEXT TOGGLE")
+        //bbn.fn.log("CONTEXT TOGGLE")
         if (!this.showFloater) {
           this.updateData().then(() => {
             this.showFloater = !this.showFloater;
@@ -272,6 +271,16 @@ const cpDef = {
       }
     },
     watch: {
+      source(v, ov) {
+        if (this.showFloater && !this.disabled) {
+          this.updateData();
+        }
+      },
+      filters() {
+        if (this.showFloater && !this.disabled) {
+          this.updateData();
+        }
+      },
       showFloater(v){
         if (v) {
           document.addEventListener('click', this.clickOut, true)

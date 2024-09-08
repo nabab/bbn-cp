@@ -15,9 +15,9 @@ const cpDef = {
    * @mixin bbn.cp.mixins.input
    * @mixin bbn.cp.mixins.basic
    */
-  mixins: 
+  mixins:
   [
-    bbn.cp.mixins.basic, 
+    bbn.cp.mixins.basic,
     bbn.cp.mixins.input
   ],
   props: {
@@ -246,7 +246,8 @@ const cpDef = {
        * Indicates if an uploading is running.
        *  @data {Boolean} [false] uploading
        */
-      uploading: false
+      uploading: false,
+      oldFilesProgress: []
     };
   },
   computed: {
@@ -545,22 +546,14 @@ const cpDef = {
                     this.saveUrl,
                     bbn.fn.extend(true, {}, this.data ? this.data : {}, {file: fr.data}),
                     res => {
-                      let f = false;
-                      if ( res.data.file || res.data.fichier ){
-                        f = res.data.file || res.data.fichier
-                      }
-                      else if (
-                        res.data.data &&
-                        (res.data.data.file || res.data.data.fichier)
-                      ){
-                        f = res.data.data.file || res.data.data.fichier
-                      }
+                      let f = res.data.file || res.data.uploaded || res.data.fichier || res.data.data?.file || res.data.data?.uploaded || res.data.data?.fichier;
                       if ( f && f.name !== fr.data.name ){
                         this.setName(fr.id, f.name, false)
                       }
+
                       if ( this.setStatusSuccess(fr.id) ){
                         this.$nextTick(() => {
-                          this.$emit('success', fr.id, f.name || fr.data.name, res.data, res)
+                          this.$emit('success', fr.id, f.name || fr.data.name, bbn.fn.extendOut(f, {original: fr.data.name}), res)
                         })
                       }
                     },
@@ -668,14 +661,17 @@ const cpDef = {
           return {
             name: f.data.name,
             size: f.data.size,
+            original: f.data.original,
             extension: bbn.fn.substr(f.data.name, f.data.name.lastIndexOf('.'))
           }
         }
         return bbn.fn.extend(true, {}, f.data, {
-          size: f. data.size,
+          size: f.data.size,
+          original: f.data.original,
           extension: bbn.fn.substr(f.data.name, f.data.name.lastIndexOf('.'))
         });
       })
+      bbn.fn.log('setValue', bbn.fn.clone(value));
       this.emitInput(this.json ? JSON.stringify(value) : value)
       this.$nextTick(() => this.$emit('change', this.value));
     },
@@ -939,6 +935,7 @@ const cpDef = {
    */
   mounted(){
     this.$nextTick(() => {
+      this.oldFilesProgress = bbn.fn.clone(this.filesProgress);
       if ( this.value ){
         this._makeFiles(this.getValue(), false, 'success')
       }
@@ -968,7 +965,8 @@ const cpDef = {
      * @fires setValue
      */
     filesProgress(newVal, oldVal){
-      if ( !bbn.fn.isSame(newVal, oldVal) && !newVal.length ){
+      bbn.fn.log(["FILES PROGRESS", newVal, oldVal]);
+      if ( !bbn.fn.isSame(newVal, this.oldFilesProgress) && !newVal.length ){
         this.uploading = false;
         if ( !this.filesError.length ){
           this.$emit('complete', this.filesSuccess, this.filesError)
@@ -977,6 +975,8 @@ const cpDef = {
           })
         }
       }
+
+      this.oldFilesProgress = bbn.fn.clone(newVal);
     }
   }
 };

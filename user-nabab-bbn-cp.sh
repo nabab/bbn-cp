@@ -10,6 +10,4 @@ git stage ./package.json
 git commit -m "Latest changes"
 git push
 npm publish
-rm -rf ~/web/bbn-cp/v2/dist
-cp -rf dist ~/web/bbn-cp/v2/
 

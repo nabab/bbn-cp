@@ -9,7 +9,8 @@
                     :storage-full-name="storageName"
                     style="width: 80%"
                     ref="dropdown"
-                    @click.stop/>
+                    @click.stop
+                    @mouseup.stop.prevent/>
     </div>
     <div class="bbn-block bbn-w-100 bbn-bottom-padded bbn-c" bbn-if="search">
       <bbn-input name="search"

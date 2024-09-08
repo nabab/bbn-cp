@@ -7,13 +7,12 @@ import bbnData from "../Data.js";
  * @param {*} path 
  * @returns 
  */
-bbnData.proxySort = function(target) {
+bbnData.proxySort = function(targetObj, target) {
   return (...args) => {
     const res = target.sort(...args);
-    const targetObj = this.getObject(target);
     if (targetObj) {
       bbn.fn.warning("SORT");
-      targetObj.update();
+      targetObj.prepareUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in sort", target]);

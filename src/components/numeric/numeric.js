@@ -373,6 +373,7 @@ const cpDef = {
        * @fires emitInput
        */
       changeValue(newVal, oldVal){
+        //bbn.fn.log("CHANGE VALUE - " + newVal + ' - ' + oldVal);
         if ((newVal === '') || (newVal === null) ){
           this.currentValue = '';
           this.setInputValue('');

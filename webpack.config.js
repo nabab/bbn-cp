@@ -112,7 +112,8 @@ export default {
                     chunks: 'all'
                 }
             }
-        },*/
+        },
+        */
         minimize: mode === 'production',
         minimizer: [new TerserPlugin()],
         concatenateModules: true

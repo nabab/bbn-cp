@@ -274,7 +274,7 @@ const cpDef = {
             }
           }
           if (this.value !== v) {
-            bbn.fn.log("REAL CHANGE", v);
+            //bbn.fn.log("REAL CHANGE", v);
             this.emitInput(v);
           }
         };
@@ -288,7 +288,7 @@ const cpDef = {
      */
     init(){
       let cfg = this.getCfg();
-      bbn.fn.log("VALUE", this.value);
+      //bbn.fn.log("VALUE", this.value);
       this.widget = new window.JSONEditor(this.$refs.element, cfg);
       if (this.currentValue) {
         this.widget.setText(this.currentValue);

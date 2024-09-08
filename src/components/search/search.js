@@ -228,9 +228,9 @@ const cpDef = {
       }
 
       clearTimeout(this.filterTimeout);
-      bbn.fn.log("CLEARED")
+      //bbn.fn.log("CLEARED")
       if (!v && this.nullable && this.inputIsVisible) {
-        bbn.fn.log("NO VALUE")
+        //bbn.fn.log("NO VALUE")
         this.unfilter();
         this.emitInput(null);
         this.currentText = '';
@@ -239,20 +239,20 @@ const cpDef = {
         }
       }
       else if (v) {
-        bbn.fn.log("VALUE")
+        //bbn.fn.log("VALUE")
         if (v.length < this.minLength) {
           if (this.currentData.length) {
             this.currentData.splice(0, this.currentData.length);
           }
         }
         else if ((v !== this.currentText)) {
-          bbn.fn.log("MIN PASSED")
+          //bbn.fn.log("MIN PASSED")
           this.isOpened = false;
           this.filterTimeout = setTimeout(() => {
             // this.filterTimeout = false;
             // We don't relaunch the source if the component has been left
             if (this.isActive) {
-              bbn.fn.log("UPDATING AUTOC");
+              //bbn.fn.log("UPDATING AUTOC");
               this.currentFilters.conditions.splice(0, this.currentFilters.conditions.length ? 1 : 0, {
                 field: this.sourceText,
                 operator: this.filterMode,

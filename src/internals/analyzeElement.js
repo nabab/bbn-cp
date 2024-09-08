@@ -1,5 +1,6 @@
 import bbn from "@bbn/bbn";
 import removeSelfClosing from "./removeSelfClosing.js";
+import stringToTemplate from "./stringToTemplate.js";
 
 const eventInstructions = ['stop', 'prevent', 'passive'];
 const parser = new DOMParser();
@@ -140,6 +141,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
         catch (e) {}
         if (analyzed && analyzed.isArrow) {
           o.exp = '(' + o.exp + ')(' + (analyzed.argString || '') + ')';
+          o.argNames = analyzed.args;
         }
       }
       let eventName = a.substr(1);
@@ -159,7 +161,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
       return;
     }
     // create the attribute object
-    if (!['bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else', 'bbn-forget', 'bbn-model'].includes(a)) {
+    if (!['bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else', 'bbn-forget', 'bbn-model', 'bbn-bind', 'bbn-slot'].includes(a)) {
       res.attr[name] = bbn.fn.createObject({
         id: idx + '-' + name
       });
@@ -169,11 +171,9 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
     // Dynamic attributes
     if (a.indexOf(':') === 0) {
       res.attr[name].exp = value;
-      res.attr[name].hash = bbn.fn.hash(value);
     }
     // Special attributes
     else if (a.indexOf('bbn-') === 0) {
-      const hash = bbn.fn.hash(value);
       switch (a) {
         case 'bbn-for':
           if (attr['bbn-elseif'] || attr['bbn-else']) {
@@ -224,21 +224,18 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
             id: res.id + '-loop',
             item: args.value,
             index: args.index || null,
-            hash: bbn.fn.hash(valueExp),
             original: value
           });
           
           res.loopItem = bbn.fn.createObject({
             exp: args.value,
             id: res.id + '-loop-item',
-            hash: bbn.fn.hash(args.value),
             original: args.value
           });
           if (args.index) {
             res.loopIndex = bbn.fn.createObject({
               exp: args.index,
               id: res.id + '-loop-index',
-              hash: bbn.fn.hash(args.index),
               original: args.index
             });
           }
@@ -256,7 +253,6 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
             id: res.id + '-bbn-condition',
             exp: a === 'bbn-else' ? 'true' : value,
             // Adding prefix as conditions can be set to false even when the expression is not
-            hash: 'CONDITION' + idx.toString() + '-' + hash
           });
           if (!value && (type !== 'else')) {
             throw Error(bbn._("The condition must have an expression (check %s)", componentName));
@@ -270,25 +266,40 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
           res.model[modelValue] = bbn.fn.createObject({
             id: res.id + '-model-' + modelValue,
             exp: value,
-            hash,
             modifiers: modifiers
+          });
+          break;
+        case 'bbn-slot':
+          res.slot = bbn.fn.createObject({
+            id: res.id + '-slot-' + (modelValue || 'default'),
+            slotName: modelValue || 'default',
+            slotValue: value,
           });
           break;
         case 'bbn-cloak':
           res.cloak = bbn.fn.createObject({
             id: res.id + '-cloak',
             exp: value,
-            hash
           });
           break;
         case 'bbn-pre':
-          res.pre = ele.innerHTML;
+          const tpl = stringToTemplate(ele.innerHTML, true);
+          res.pre = bbn.fn.createObject({
+            id: res.id + '-pre',
+            content: ele.innerHTML,
+            template: tpl.res,
+          });
           break;
         case 'bbn-forget':
           res.forget = bbn.fn.createObject({
             id: res.id + '-forget',
             exp: value,
-            hash
+          });
+          break;
+        case 'bbn-bind':
+          res.bind = bbn.fn.createObject({
+            id: res.id + '-bind',
+            exp: value,
           });
           break;
         default:
@@ -302,7 +313,6 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
             res.directives[a] = bbn.fn.createObject({
               id: res.id + '-directive-' + a,
               exp: value,
-              hash: bbn.fn.hash(value),
               modifiers: !!directiveMod ? bbn.fn.map(directiveMod, m => bbn.fn.substr(m, 1)) : [],
               arg: !!directiveArg ? bbn.fn.substr(directiveArg[0], 1) : null,
               oldValue: undefined,
@@ -312,7 +322,6 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
           }
           else {
             res.attr[name].exp = value;
-            res.attr[name].hash = bbn.fn.hash(value);
           }
       }
     }
@@ -377,16 +386,35 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
       before + tpl + after,
       "text/html"
     );
-    childNodes = doc.documentElement.querySelector(target).childNodes;
+    childNodes = Array.prototype.slice.apply(doc.documentElement.querySelector(target).childNodes);
   }
   else {
-    childNodes = ele.childNodes;
+    childNodes = Array.prototype.slice.apply(ele.childNodes);
   }
   
   let num = 0;
   let lastEmpty = false;
   let prevTag;
   const div = document.createElement('div');
+  // removing elements between if and else
+  for (let i = 0; i < childNodes.length; i++) {
+    if (!childNodes[i] || childNodes[i] instanceof Comment) {
+      childNodes.splice(i, 1);
+      i--;
+    }
+
+    if (childNodes[i].getAttributeNames) {
+      if (childNodes[i].getAttributeNames().filter(a => ['bbn-else', 'v-else', 'bbn-elseif', 'bbn-else-if', 'v-else-if'].includes(a)).length) {
+        let j = i-1;
+        while (childNodes[j] && !childNodes[j].getAttributeNames) {
+          childNodes.splice(j, 1);
+          j--;
+          i--;
+        }
+      }
+    }
+  }
+
   bbn.fn.each(childNodes, (node, i) => {
     if (node instanceof Comment) {
       return;
@@ -421,15 +449,25 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
         lastEmpty = isEmpty;
         const item = bbn.fn.createObject({
           id: idx + '-' + num,
-          text: isEmpty ? ' ' : txt.replace(/&nbsp;/g, '\u00A0'),
-          hash: isEmpty ? bbn.cp.spaceHash : bbn.fn.hash(txt),
-          empty: isEmpty
+          text: {
+            id: idx + '-' + num + '-text',
+            content: isEmpty ? ' ' : txt.replace(/&nbsp;/g, '\u00A0'),
+            empty: isEmpty,
+          },
         });
         if (isDynamic) {
-          item.exp = txt;
+          item.text.exp = txt;
+          item.text.value = '';
+        }
+        else {
+          item.text.value = item.text.content;
         }
 
-        res.items.push(item);
+        // Prevent starting with empty
+        if (!isEmpty || res.items.length) {
+          res.items.push(item);
+        }
+
         num++;
       }
       else {
@@ -441,12 +479,14 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
       lastEmpty = false;
     }
   });
-  let isIf = false;
-  let conditionId = null;
-  while (res.items.length && res.items[res.items.length - 1].empty) {
+
+  // Trimming result
+  while (res.items.length && res.items[res.items.length - 1].text?.empty) {
     res.items.pop();
   }
-
+  
+  let isIf = false;
+  let conditionId = null;
   for (let i = 0; i < res.items.length; i++) {
     let item = res.items[i];
     if (item.condition) {
@@ -465,20 +505,8 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
         isIf = false;
       }
     }
-    else if (isIf) {
-      if (item.empty) {
-        res.items.splice(i, 1);
-        i--;
-      }
-      else {
-        isIf = false;
-      }
-    }
   }
 
-  if (res.condition) {
-    res.conditionId = bbn.fn.randomString(32);
-  }
   return {
     res,
     inlineTemplates

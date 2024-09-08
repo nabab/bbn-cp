@@ -1,51 +1,17 @@
 import bbn from "@bbn/bbn";
+import initResults from "../private/initResults.js";
+import bbnComputed from "../../Computed/Computed.js";
+import bbnStyleAttr from "../../Attr/Style.js";
 
-export default function propagateDependencyChanges(cp, name, hash) {
-  bbn.fn.iterate(cp.$computed, (v, n) => {
-    if (v.dependencies && v.dependencies.includes(name)) {
-      cp.$computed[n].update();
-    };
-  });
-  let shouldTick = false;
-  bbn.fn.iterate(cp.$currentMap, (v, n) => {
-    if (v.dependencies && v.dependencies.includes(name)) {
-      if (bbn.cp.isComponent(v)) {
-        if (cp.$elements[v.id]) {
-          if (bbn.fn.isDom(cp.$elements[v.id])) {
-            if (cp.$elements[v.id].bbn) {
-              cp.$elements[v.id].bbn.$tick();
-            }
-            else if (!shouldTick) {
-              shouldTick = true;
-            }
-          }
-          else if (hash && cp.$elementsv[v.id][hash]) {
-            if (bbn.fn.isDom(cp.$elements[v.id][hash])) {
-              if (cp.$elements[v.id][hash].bbn) {
-                cp.$elements[v.id][hash].bbn.$tick();
-              }
-              else if (!shouldTick) {
-                shouldTick = true;
-              }
-            }
-          }
-        }
-      }
-    }
-  });
+export default function propagateDependencyChanges(cp, name) {
   if (cp.$deps[name]) {
     cp.$deps[name].forEach((a) => {
-      if (a instanceof bbnData) {
-        a.update();
+      if (a instanceof bbnAttr || a instanceof bbnComputed) {
+        bbn.cp.queueUpdate(a);
       }
-      else if (a instanceof bbnCp) {
-        a.$nextTick(() => a.$tick());
+      else {
+        bbn.fn.log("UNKNOWN DEPENDENCY", a);
       }
     });
-  }
-
-  if (shouldTick) {
-    bbn.fn.log("SHOULD TICK ON " + cp.$options.name)
-    cp.$tick();
   }
 }

@@ -44,7 +44,9 @@ const cpDef = {
        */
       confirmLeave: {
         type: [Boolean, String, Function],
-        default: bbn._("Are you sure you want to leave?")
+        default(){
+          return bbn._("Are you sure you want to leave?");
+        }
       },
       /**
        * Set to true to disable the form.
@@ -105,7 +107,9 @@ const cpDef = {
        */
       confirmLeave: {
         type: [Boolean, String, Function],
-        default: bbn._("Are you sure you want to discard the changes you made in this form?")
+        default(){
+          return bbn._("Are you sure you want to discard the changes you made in this form?");
+        }
       },
       /**
        * The url contacted when submitting the form.

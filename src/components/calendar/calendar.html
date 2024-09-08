@@ -1,98 +1,83 @@
 <div :class="[componentClass, 'bbn-w-100']"
-     bbn-show="ready"
->
+     bbn-show="ready">
   <div bbn-if="showLoading && isLoading"
        class="bbn-overlay bbn-middle bbn-xl bbn-white bbn-modal bbn-abs"
        bbn-text="_('Loading')"
-       style="z-index: 1"
-  ></div>
+       style="z-index: 1"/>
   <div :class="['bbn-widget', 'bbn-flex-height', {'bbn-overlay': type === 'weeks'}]">
     <div class="bbn-calendar-header bbn-header bbn-xspadded bbn-no-border-left bbn-no-border-right bbn-no-border-top">
       <component bbn-if="headerComponent"
-                 :is="headerComponent"
-      ></component>
+                 :is="headerComponent"/>
       <div bbn-else
-           class="bbn-flex-width bbn-vmiddle"
-      >
+           class="bbn-flex-width bbn-vmiddle">
         <template bbn-if="arrows && arrowsButtons">
           <bbn-button bbn-if="currentCfg.stepSkip"
                       icon="nf nf-fa-angle_double_left"
                       @click="prev(true)"
                       :title="_('Previous') + ' ' + currentCfg.stepSkipText"
                       :notext="true"
-                      class="bbn-right-xsspace"
-          ></bbn-button>
+                      class="bbn-right-xsspace"/>
           <bbn-button icon="nf nf-fa-angle_left"
                       @click="prev(false)"
                       :title="_('Previous') + ' ' + currentCfg.stepText"
-                      :notext="true"
-          ></bbn-button>
+                      :notext="true"/>
         </template>
         <template bbn-elseif="arrows && !arrowsButtons">
           <i bbn-if="currentCfg.stepSkip"
              class="nf nf-fa-angle_double_left bbn-p bbn-hsmargin"
              @click="prev(true)"
-             :title="_('Previous') + ' ' + currentCfg.stepSkipText"
-          ></i>
+             :title="_('Previous') + ' ' + currentCfg.stepSkipText"/>
           <i class="nf nf-fa-angle_left bbn-p bbn-hsmargin"
              @click="prev(false)"
-             :title="_('Previous') + ' ' + currentCfg.stepText"
-          ></i>
+             :title="_('Previous') + ' ' + currentCfg.stepText"/>
         </template>
         <div class="bbn-flex-fill bbn-middle bbn-calendar-header-title">
           <span @click="!!titleAction ? titleAction(_self) : false"
-                :class="{'bbn-p': !!titleAction}"
-          >
+                :class="{'bbn-p': !!titleAction}">
             <i bbn-if="titleIcon"
-               :class="[titleIcon, 'bbn-hsmargin', 'bbn-large']"></i>
-            <strong bbn-text="title"></strong>
+               :class="[titleIcon, 'bbn-hsmargin', 'bbn-large']"/>
+            <strong bbn-text="title"/>
           </span>
         </div>
         <template bbn-if="arrows && arrowsButtons">
           <bbn-button icon="nf nf-fa-angle_right"
                       @click="next(false)"
                       :title="_('Next') + ' ' + currentCfg.stepText"
-                      :notext="true"
-          ></bbn-button>
+                      :notext="true"/>
           <bbn-button bbn-if="currentCfg.stepSkip"
                       icon="nf nf-fa-angle_double_right"
                       @click="next(true)"
                       :title="_('Next') + ' ' + currentCfg.stepSkipText"
                       :notext="true"
-                      class="bbn-left-xsspace"
-          ></bbn-button>
+                      class="bbn-left-xsspace"/>
         </template>
         <template bbn-elseif="arrows && !arrowsButtons">
           <i class="nf nf-fa-angle_right bbn-p bbn-hsmargin"
              @click="next(false)"
-             :title="_('Next') + ' ' + currentCfg.stepText"
-          ></i>
+             :title="_('Next') + ' ' + currentCfg.stepText"/>
           <i bbn-if="currentCfg.stepSkip"
              class="nf nf-fa-angle_double_right bbn-p bbn-hsmargin"
              @click="next(true)"
-             :title="_('Next') + ' ' + currentCfg.stepSkipText"
-          ></i>
+             :title="_('Next') + ' ' + currentCfg.stepSkipText"/>
         </template>
       </div>
     </div>
     <div class="bbn-flex-fill bbn-spadded"
-         style="display: flex;"
-    >
+         style="display: flex;">
       <div class="bbn-calendar-container bbn-w-100"
-           :style="gridStyle"
-      >
+           :style="gridStyle">
         <div class="bbn-calendar-labels"
             bbn-if="labels && currentLabels"
             bbn-for="(label, i) in currentLabels"
             bbn-html="label"
-            ref="label"
-        ></div>
-        <template bbn-for="item in items">
+            ref="label"/>
+        <template bbn-for="item in items"
+                  :key="item.value">
           <div bbn-if="!item.hidden"
               :class="['bbn-calendar-item-box', 'bbn-box', {
                 'bbn-p': selection && !item.disabled,
                 'bbn-spadded': !itemDetails && itemPadding,
-                'bbn-tertiary': item.isCurrent && !(selection && (item.value === currentValue)),
+                'bbn-tertiary': item.highlight && !(selection && (item.value === currentValue)),
                 'bbn-background-effect-tertiary': item.isCurrent && item.inRange && (item.value !== currentValue),
                 'bbn-background-effect-primary': item.inRange && (item.value === currentValue),
                 'bbn-state-hover': selection && item.over && !item.disabled,
@@ -108,37 +93,33 @@
               @mouseover="item.over = true"
               @mouseleave="item.over = false"
               @click="!item.disabled ? select(item.value) : false"
-              :title="typeof itemTitle === 'function' ? itemTitle(item) : itemTitle"
-          >
+              :title="typeof itemTitle === 'function' ? itemTitle(item) : itemTitle">
             <div bbn-if="item.events && item.events.length && itemDetails"
                 class="bbn-flex-height"
-                style="position: relative"
-            >
+                style="position: relative">
               <div :class="['bbn-r', 'bbn-unselectable', 'bbn-calendar-item', {
                 'bbn-secondary-text': item.colored && !item.hidden && !item.extra,
                 'bbn-tertiary-text': item.isCurrent && (!item.inRange || (item.inRange && item.over))
               }]"
-                  style="margin-right: .2rem"
-              >
-                <span bbn-text="item.text"></span>
+                  style="margin-right: .2rem">
+                <span bbn-text="item.text"/>
               </div>
               <component bbn-if="itemComponent"
                         :is="itemComponent"
                         :source="item"
                         :selected="currentValue"
-                        class="bbn-flex-fill"
-              ></component>
+                        class="bbn-flex-fill"/>
             </div>
             <template bbn-else>
               <i bbn-if="item.events && item.events.length && eventIcon"
-                :class="[eventIcon, 'bbn-unselectable', 'bbn-calendar-item-icon']"
-              ></i>
+                :class="[eventIcon, 'bbn-unselectable', 'bbn-calendar-item-icon']"/>
               <div :class="['bbn-100', 'bbn-middle', 'bbn-unselectable', 'bbn-calendar-item', {'bbn-tertiary-text': item.colored && !item.extra}]">
-                <span bbn-text="item.text"></span>
+                <span bbn-text="item.text"/>
               </div>
             </template>
           </div>
-          <div bbn-else class="bbn-calendar-item-box bbn-box bbn-o bbn-alt-background"></div>
+          <div bbn-else
+               class="bbn-calendar-item-box bbn-box bbn-o bbn-alt-background"/>
         </template>
       </div>
     </div>

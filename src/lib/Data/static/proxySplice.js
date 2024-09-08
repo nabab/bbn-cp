@@ -8,18 +8,19 @@ import bbnData from "../Data.js";
  * @param {*} path 
  * @returns 
  */
-bbnData.proxySplice = function(target, component) {
+bbnData.proxySplice = function(targetObj, target, component) {
   return (index, numDelete, ...args) => {
-    const targetObj = this.getObject(target);
     if (!targetObj) {
-      bbn.fn.log(["Impossible to find the data object", target]);
+      throw new Error(["Impossible to find the data object", target]);
     }
+
     let newArgs = [];
     bbn.fn.each(args, (a, i) => {
       const idx = target.length + i;
       const newVal = this.treatValue(a, component, idx, targetObj);
       newArgs.push(newVal);
     });
+
     const res = numDelete === undefined ? target.splice(index) : target.splice(index, numDelete, ...newArgs);
     bbn.fn.each(res, t => {
       let subObj = this.getObject(t);
@@ -29,7 +30,7 @@ bbnData.proxySplice = function(target, component) {
     });
     if (targetObj) {
       //bbn.fn.log("SPLICE");
-      targetObj.update();
+      targetObj.prepareUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in splice", target]);

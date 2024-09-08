@@ -15,7 +15,7 @@
   \**************************************************/
 /***/ ((module) => {
 
-eval("module.exports = /*#__PURE__*/JSON.parse('{\"of\":\"de\",\"Total\":\"Total\",\"items\":\"éléments\",\"No item\":\"Aucun élément\",\"page\":\"page\",\"Save current configuration\":\"Enregistrer la configuration courante\",\"Reset to original configuration\":\"Réinitialiser la configuration\",\"Columns\\' picker\":\"Sélectionneur de colonnes\",\"Multi Filter\":\"Multi-filtre\",\"Refresh\":\"Rafraíchir\",\"Go to the first %s\":\"Aller à la première %s\",\"Go to the previous %s\":\"Aller à la %s précédente\",\"Go to the next %s\":\"Aller à la %s suivante\",\"Go to the last %s\":\"Aller à la dernière %s\",\"per\":\"pas\",\"View SQL query:\":\"Afficher la requête SQL\",\"records\":\"enregistrements\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/pager/_i18n/pager.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"of\":\"de\",\"Total\":\"Total\",\"items\":\"éléments\",\"No item\":\"Aucun élément\",\"page\":\"page\",\"Save current configuration\":\"Enregistrer la configuration courante\",\"Reset to original configuration\":\"Réinitialiser la configuration\",\"Columns\\' picker\":\"Sélectionneur de colonnes\",\"Multi Filter\":\"Multi-filtre\",\"Refresh\":\"Rafraíchir\",\"Go to the first %s\":\"Aller à la première %s\",\"Go to the previous %s\":\"Aller à la %s précédente\",\"Go to the next %s\":\"Aller à la %s suivante\",\"Go to the last %s\":\"Aller à la dernière %s\",\"per\":\"par\",\"View SQL query:\":\"Afficher la requête SQL\",\"records\":\"enregistrements\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/pager/_i18n/pager.fr.lang?");
 
 /***/ })
 

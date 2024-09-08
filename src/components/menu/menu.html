@@ -32,14 +32,14 @@
   <bbn-floater bbn-if="ready && !isChanging && filteredData?.[overIdx]?.data?.[children]"
                class="bbn-menu-floater"
                ref="floater"
-               :min-width="getRef('li' + overIdx).clientWidth"
+               :min-width="getRef('li' + overIdx)?.clientWidth || 0"
                :children="children"
                :element="getRef('li' + overIdx)"
                :scroll-hidden="true"
                @mouseenter="activeIdx = overIdx"
                @mouseleave="overIdx = -1"
                :focused="false"
-               :source="filteredData[overIdx].data[children]"
+               :source="filteredData[overIdx]?.data?.[children]"
                @close="overIdx = -1"
                @select="select"/>
 </div>

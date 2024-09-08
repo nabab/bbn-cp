@@ -40,6 +40,8 @@ export default function setProp(cp, name, value) {
     return;
   }
 
+  //bbn.fn.log(["REAL SET PROP", v, name])
+
   // Set the property with the validated value.
   realSetProp(cp, name, v);
 }

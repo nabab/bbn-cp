@@ -8,13 +8,14 @@ import { LanguageSupport } from "@codemirror/language"
 import * as autocomplete from "@codemirror/autocomplete";
 import * as commands from "@codemirror/commands";
 import * as collaboration from "@codemirror/collab";
+import * as lsp from "codemirror-languageserver";
 import * as language from "@codemirror/language";
 import * as lint from "@codemirror/lint";
 import * as state from "@codemirror/state";
 import * as search from "@codemirror/search";
 import * as view from "@codemirror/view";
 import * as html from "@codemirror/lang-html";
-import * as vue from "@codemirror/lang-vue";
+import * as bbnCpCM from "@bbn/codemirror-lang-bbn-cp";
 import * as javascript from "@codemirror/lang-javascript";
 import * as php from "@codemirror/lang-php";
 import * as css from "@codemirror/lang-css";
@@ -25,80 +26,7 @@ import * as theme from "thememirror";
 import { abbreviationTracker } from '@emmetio/codemirror6-plugin';
 
 // Mapping of language extensions to their respective CodeMirror language supports
-const languageExtensions = {
-  javascript: [new LanguageSupport(javascript.javascriptLanguage)],
-  html: [new LanguageSupport(html.htmlLanguage)],
-  css: [new LanguageSupport(css.cssLanguage)],
-  php: [new LanguageSupport(php.phpLanguage)],
-  json: [new LanguageSupport(json.jsonLanguage)],
-  markdown: [new LanguageSupport(markdown.markdownLanguage)],
-  xml: [new LanguageSupport(xml.xmlLanguage)],
-  vue: [new LanguageSupport(vue.vueLanguage)]
-};
 
-// The main object containing CodeMirror configurations and extensions
-const codemirror6 = {
-  autocomplete,
-  commands,
-  collaboration,
-  language,
-  languageExtensions,
-  lint,
-  state,
-  search,
-  view,
-  vue,
-  html,
-  javascript,
-  php,
-  css,
-  json,
-  markdown,
-  xml,
-  theme,
-  // Emmet abbreviation tracker for improved code writing efficiency
-  elmet: abbreviationTracker(),
-  /**
-   * Gets basic extensions based on the editor instance `cm`.
-   * Extensions are features like line numbers, code folding, syntax highlighting, etc.
-   * @param {Object} cm - The editor instance.
-   * @returns {Object} An object containing configured extensions for the editor.
-   */
-  getBasicExtensions(cm) {
-    if (!cm.ext) {
-      cm.ext = {
-        lineNumbers: cm.view.lineNumbers(),
-        lineWrapping: cm.view.EditorView.lineWrapping,
-        highlightActiveLineGutter: cm.view.highlightActiveLineGutter(),
-        highlightSpecialChars: cm.view.highlightSpecialChars(),
-        history: cm.commands.history(),
-        foldGutter: cm.language.foldGutter(),
-        drawSelection: cm.view.drawSelection(),
-        dropCursor: cm.view.dropCursor(),
-        allowMultipleSelections: cm.state.EditorState.allowMultipleSelections.of(true),
-        indentOnInput: cm.language.indentOnInput(),
-        syntaxHighlighting: cm.language.syntaxHighlighting(cm.language.defaultHighlightStyle, {fallback: true}),
-        bracketMatching: cm.language.bracketMatching(),
-        closeBrackets: cm.autocomplete.closeBrackets(),
-        autocompletion: cm.autocomplete.autocompletion(),
-        rectangularSelection: cm.view.rectangularSelection(),
-        crosshairCursor: cm.view.crosshairCursor(),
-        highlightSelectionMatches: cm.search.highlightSelectionMatches(),
-        keymap: cm.view.keymap.of([
-          ...cm.autocomplete.closeBracketsKeymap,
-          ...cm.commands.defaultKeymap,
-          ...cm.search.searchKeymap,
-          ...cm.commands.historyKeymap,
-          ...cm.language.foldKeymap,
-          ...cm.autocomplete.completionKeymap,
-          ...cm.lint.lintKeymap,
-          cm.commands.indentWithTab
-        ]),
-      };
-    }
-    return cm.ext;
-  }
-};
 
 /**
  * @file Defines the bbn-code component.
@@ -107,6 +35,71 @@ const codemirror6 = {
  * @copyright BBN Solutions
  */
 const cpDef = {
+  statics() {
+    return {
+      cm: {
+        languageExtensions: {
+          javascript: [new LanguageSupport(javascript.javascriptLanguage)],
+          html: [new LanguageSupport(html.htmlLanguage)],
+          css: [new LanguageSupport(css.cssLanguage)],
+          php: [new LanguageSupport(php.phpLanguage)],
+          json: [new LanguageSupport(json.jsonLanguage)],
+          markdown: [new LanguageSupport(markdown.markdownLanguage)],
+          xml: [new LanguageSupport(xml.xmlLanguage)],
+          bbn: [new LanguageSupport(bbnCpCM.bbnLanguage)]
+        },
+        autocomplete,
+        commands,
+        collaboration,
+        language,
+        lint,
+        lsp,
+        state,
+        search,
+        view,
+        bbn: bbnCpCM,
+        html,
+        javascript,
+        php,
+        css,
+        json,
+        markdown,
+        xml,
+        theme,
+        // Emmet abbreviation tracker for improved code writing efficiency
+        elmet: abbreviationTracker(),
+        extensions: {
+          lineNumbers: view.lineNumbers(),
+          lineWrapping: view.EditorView.lineWrapping,
+          highlightActiveLineGutter: view.highlightActiveLineGutter(),
+          highlightSpecialChars: view.highlightSpecialChars(),
+          history: commands.history(),
+          foldGutter: language.foldGutter(),
+          drawSelection: view.drawSelection(),
+          dropCursor: view.dropCursor(),
+          allowMultipleSelections: state.EditorState.allowMultipleSelections.of(true),
+          indentOnInput: language.indentOnInput(),
+          syntaxHighlighting: language.syntaxHighlighting(language.defaultHighlightStyle, {fallback: true}),
+          bracketMatching: language.bracketMatching(),
+          closeBrackets: autocomplete.closeBrackets(),
+          autocompletion: autocomplete.autocompletion(),
+          rectangularSelection: view.rectangularSelection(),
+          crosshairCursor: view.crosshairCursor(),
+          highlightSelectionMatches: search.highlightSelectionMatches(),
+          keymap: view.keymap.of([
+            ...autocomplete.closeBracketsKeymap,
+            ...commands.defaultKeymap,
+            ...search.searchKeymap,
+            ...commands.historyKeymap,
+            ...language.foldKeymap,
+            ...autocomplete.completionKeymap,
+            ...lint.lintKeymap,
+            commands.indentWithTab
+          ]),
+        }
+      },
+    }
+  },
   /**
    * @mixin bbn.cp.mixins.basic - Basic mixin for common functionalities.
    * @mixin bbn.cp.mixins.input - Input mixin for handling input related features.
@@ -131,8 +124,7 @@ const cpDef = {
     },
     // Custom extensions for the editor
     extensions: {
-      type: Array,
-      default: null 
+      type: [Array, Function]
     },
     // Enables/disables line wrapping
     wrap: {
@@ -163,12 +155,18 @@ const cpDef = {
       this.$emit('update', this.currentDoc); 
     },
     getExtensions() {
-      if (this.extensions?.length) {
-        // Return custom extensions if provided
-        return this.extensions; 
+      const extensions = [];
+      if (this.extensions) {
+        if (bbn.fn.isFunction(this.extensions)) {
+          extensions.push(...this.extensions())
+        }
+        else if (this.extensions?.length) {
+          // Return custom extensions if provided
+          return this.extensions; 
+        }
       }
 
-      const cm = codemirror6;
+      const cm = this.constructor.cm;
 
       if (!this.mode || !this.theme) {
         throw Error("You must provide a language and a theme");
@@ -179,7 +177,6 @@ const cpDef = {
       if (!cm.theme[this.theme]) {
         throw Error("Unknown theme");
       }
-      const extensions = [];
       const state = cm.state;
       const cpt = state.Compartment;
 
@@ -221,11 +218,8 @@ const cpDef = {
         this.emitInput(value); // Emit input event if the value has changed
       }
     },
-    initUntilExtensionsLoaded(max) {
-      this.init(); // Initialize the editor
-    },
     init() {
-      let cm = codemirror6;
+      let cm = this.constructor.cm;
       // Get extensions for the editor
       let extensions = this.getExtensions(); 
       // Configuration for the editor state
@@ -254,24 +248,23 @@ const cpDef = {
       this.lastKeyDown = event;
       // Custom key handling for code beautification and autocompletion
       bbn.fn.log("CODE KEY DOWN", event)
-      /*
       if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'f') {
         // Beautify the code based on the mode
         let newValue = "";
         // JavaScript beautification
-        if (['javascript', 'js'].includes(this.mode) && window.beautifier.js) {
+        if (['javascript', 'js'].includes(this.mode)) {
           const options = { indent_size: 2, space_in_empty_paren: true };
-          newValue = window.beautifier.js(this.widget.state.doc.toString(), options);
+          newValue = js_beautify(this.widget.state.doc.toString(), options);
         }
         // CSS and LESS beautification
-        else if (['css', 'less'].includes(this.mode) && window.beautifier.css) {
+        else if (['css', 'less'].includes(this.mode)) {
           const options = { indent_size: 2, space_in_empty_paren: true };
-          newValue = window.beautifier.css(this.widget.state.doc.toString(), options);
+          newValue = css_beautify(this.widget.state.doc.toString(), options);
         }
         // HTML beautification
-        else if (['html'].includes(this.mode) && window.beautifier.html) {
+        else if (['html'].includes(this.mode)) {
           const options = { indent_size: 2, space_in_empty_paren: true, wrap_attributes: 'force-aligned' };
-          newValue = window.beautifier.html(this.widget.state.doc.toString(), options);
+          newValue = html_beautify(this.widget.state.doc.toString(), options);
         }
         // PHP beautification
         else if (['php', 'purephp'].includes(this.mode)) {
@@ -279,27 +272,32 @@ const cpDef = {
           if (this.mode === 'purephp') {
             options.plain = true;
           }
-          newValue = window.beautifier.html(this.widget.state.doc.toString(), options);
+          newValue = html_beautify(this.widget.state.doc.toString(), options);
         }
 
-        // Apply the beautified content as a change
-        this.widget.dispatch({
-          changes: {
-            from: 0,
-            to: this.widget.state.doc.toString().length,
-            insert: newValue
-          }
-        })
+        if (newValue) {
+          // Apply the beautified content as a change
+          this.widget.dispatch({
+            changes: {
+              from: 0,
+              to: this.widget.state.doc.toString().length,
+              insert: newValue
+            }
+          })
+        }
       }
       // Trigger autocomplete on '.' press
-      if (event.key === ".") {
-        codemirror6.autocomplete.startCompletion(this.widget)
+      if (['Escape', 'Space'].includes(event.key)) {
+        this.constructor.cm.autocomplete.closeCompletion(this.widget)
+      }
+      else if (![].concat(...bbn.var.keys.leftRight, ...bbn.var.keys.upDown).includes(event.which)
+        && !this.constructor.cm.autocomplete.currentCompletions(this.widget.state).length
+      ) {
+        this.constructor.cm.autocomplete.startCompletion(this.widget);
       }
       /*
       */
-      codemirror6.autocomplete.startCompletion(this.widget)
       // Emit keydown event
-      this.$emit('keydown', event); 
     },
     scrollBottom() {
       // Scroll to the bottom of the editor
@@ -307,27 +305,52 @@ const cpDef = {
       if (sc) {
         sc.scrollTop = sc.scrollHeight;
       }
-    }
+    },
+    foldAll() {
+      this.constructor.cm.language.foldAll(this.widget);
+      //bbnCodeCp.cm.language.foldInside(bbnCodeCp.cm.language.syntaxTree(this.widget));
+    },
+    unfoldAll() {
+      this.constructor.cm.language.unfoldAll(this.widget);
+
+    },
+    openSearchPanel() {
+      this.constructor.cm.search.openSearchPanel(this.widget);
+    },
+    closeSearchPanel() {
+      this.constructor.cm.search.closeSearchPanel(this.widget);
+    },
+    findNext() {
+      this.constructor.cm.search.findNext(this.widget);
+    },
+    findPrevious() {
+      this.constructor.cm.search.findPrevious(this.widget);
+    },
+    replaceAll() {
+      this.constructor.cm.search.replaceAll(this.widget);
+    },
   },
   mounted() {
-    // Initialize the editor once mounted
-    this.initUntilExtensionsLoaded(100); 
+    this.init();
   },
   watch: {
+    extensions() {
+
+    },
     // Watchers to dynamically reconfigure editor based on props changes
     tabSize(v) {
       this.widget.dispatch({
-        effects: this.compartments.tabSize.reconfigure(codemirror6.state.EditorState.tabSize.of(v))
+        effects: this.compartments.tabSize.reconfigure(this.constructor.cm.state.EditorState.tabSize.of(v))
       });
     },
     wrap(v) {
       this.widget.dispatch({
-        effects: this.compartments.wrap.reconfigure(codemirror6.view.EditorView.lineWrapping.of(v))
+        effects: this.compartments.wrap.reconfigure(this.constructor.cm.view.EditorView.lineWrapping.of(v))
       });
     },
     readonly(v) {
       this.widget.dispatch({
-        effects: this.compartments.readonly.reconfigure(codemirror6.state.EditorState.readOnly.of(v))
+        effects: this.compartments.readonly.reconfigure(this.constructor.cm.state.EditorState.readOnly.of(v))
       });
     },
     value(nv) {
@@ -381,4 +404,4 @@ const def = {
 };
 
 // Exporting component definition and utilities
-export { def as default, codemirror6, js_beautify, css_beautify, html_beautify, tern }
+export { def as default, js_beautify, css_beautify, html_beautify, tern }

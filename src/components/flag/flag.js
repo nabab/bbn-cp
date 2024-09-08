@@ -7,7 +7,7 @@
  *
  * @author Mirko Argentino
  */
-import 'flag-icons/css/flag-icons.css';
+import "flag-icons/css/flag-icons.min.css";
 
 const cpDef = {
     name: 'bbn-flag',
@@ -50,9 +50,9 @@ const cpDef = {
         if (code === 'en') {
           code = 'gb';
         }
-        let st = 'flag-icon flag-icon-' + code;
+        let st = 'fi fi-' + code;
         if (this.square) {
-          st += ' flag-icon-squared';
+          st += ' fis';
         }
 
         return st;

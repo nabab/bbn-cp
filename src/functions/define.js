@@ -1,6 +1,6 @@
 import stringToTemplate from "../internals/stringToTemplate.js";
 import generateCpClass from "../internals/generateCpClass.js";
-import generateHTMLClass from "../internals/generateHTMLClass.js";
+import generateHtmlClass from "../internals/generateHtmlClass.js";
 import retrieveModels from "../internals/retrieveModels.js";
 import retrieveSlots from "../internals/retrieveSlots.js";
 
@@ -40,7 +40,7 @@ export default function define(name, obj, tplSt, css) {
   Object.freeze(cpCfg);
 
   // Determine the class to use based on the tag name.
-  const cls = cpCfg.tag && bbn.cp.tagExtensions[cpCfg.tag] ? bbn.cp.tagExtensions[cpCfg.tag] : 'bbnHTML';
+  const cls = cpCfg.tag && bbn.cp.tagExtensions[cpCfg.tag] ? bbn.cp.tagExtensions[cpCfg.tag] : 'bbnHtml';
 
   // Store component configuration in bbn.cp.statics.
   bbn.cp.statics[name] = bbnData.immunizeValue(bbn.fn.createObject({
@@ -81,7 +81,7 @@ export default function define(name, obj, tplSt, css) {
   }
   
   // Generate and globally expose HTML and Cp classes.
-  window[publicName] = generateHTMLClass(publicName, (new Function(`return ${cls};`))());
+  window[publicName] = generateHtmlClass(publicName, (new Function(`return ${cls};`))());
   // Generating the code for the private class based on the component config
   //const privateClassCode = makePrivateClass(privateName, cpCfg);
   //bbn.fn.log('generateCpClass', publicName);
@@ -101,4 +101,5 @@ export default function define(name, obj, tplSt, css) {
   bbn.cp.known.push(name);
   // Assigning the public class to the component's tag
   customElements.define(...args);
+  return cpCfg;
 }

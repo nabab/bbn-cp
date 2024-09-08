@@ -152,6 +152,7 @@ const cpDef = {
      * @emits change
      */
     toggle(ev) {
+      //bbn.fn.log("ONCHANGE CHECKBOX")
       if (!this.isDisabled && !this.readonly) {
         this.$emit('beforechange', ev, this.state);
         if (!ev?.defaultPrevented) {

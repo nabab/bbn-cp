@@ -16,7 +16,11 @@ bbn-list{
       min-width: 7rem;
       white-space: nowrap;
       user-select: none;
-      &.bbn-disabled{
+      &:hover {
+        background-color: var(--hover-background);
+        color: var(--hover-color);
+      }
+      &.bbn-disabled {
         background-color: inherit;
       }
       .space{

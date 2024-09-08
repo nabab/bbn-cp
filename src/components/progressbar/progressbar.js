@@ -152,6 +152,14 @@ const cpDef = {
         type: String,
         default: 'right',
         validator: p => ['left', 'center', 'right', 'top', 'bottom'].includes(p)
+      },
+      /**
+       * Set to true to have a rounded bar
+       * @prop {Boolean} [false] radius
+       */
+      radius: {
+        type: Boolean,
+        default: false
       }
     },
     data(){
@@ -218,7 +226,7 @@ const cpDef = {
           st += 'height:' + this.percent  + '%;'
         }
         if ( this.barColor ){
-          st += 'background-color: ' + this.barColor + '!important;border-color: '+ this.barColor + '!important;'
+          st += 'background-color: ' + this.barColor + '!important; border-color: '+ this.barColor + '!important;'
         }
         if (this.reverse) {
           st += 'margin-left: auto;'

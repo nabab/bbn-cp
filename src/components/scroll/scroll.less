@@ -27,6 +27,12 @@ bbn-scroll {
         min-width: 100% !important;
         min-height: 100% !important;
       }
+      &.resizing {
+        visibility: hidden !important;
+        > * {
+          position: relative !important;
+        }
+      }
     }
   }
   ::-webkit-scrollbar {

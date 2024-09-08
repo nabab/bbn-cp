@@ -198,7 +198,9 @@ const cpDef = {
              */
             noData: {
               type: String,
-              default: bbn._("There is no available data")
+              default(){
+                return bbn._("There is no available data");
+              }
             },
             /**
              * @prop {Array} [[]] menu
@@ -1052,18 +1054,12 @@ const cpDef = {
        * @watch source
        * @fires init
        */
-      source: {
-        deep: true,
-        handler(){
-          bbn.fn.log("SOURCE CHANGED");
-          this.init();
-        }
+      source() {
+        bbn.fn.log("SOURCE CHANGED");
+        this.init();
       },
-      widgets: {
-        deep: true,
-        handler(){
-          bbn.fn.log("widgets CHANGED");
-        }
+      widgets(){
+        bbn.fn.log("widgets CHANGED");
       }
     }
   };

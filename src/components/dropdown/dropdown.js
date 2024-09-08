@@ -107,6 +107,7 @@ const cpDef = {
     keyup(e) {
       if (e.key.match(/^[A-z0-9\s]{1}$/)) {
         this.startingTmpValue += e.key;
+        bbn.fn.log("keyup")
         if (!this.isOpened) {
           this.isOpened = true;
         }
@@ -232,6 +233,7 @@ const cpDef = {
     currentSelectValue(newVal) {
       if (this.ready && (newVal !== this.value)) {
         this.emitInput(newVal);
+        this.$emit('change', newVal);
       }
     },
     filterString(v) {

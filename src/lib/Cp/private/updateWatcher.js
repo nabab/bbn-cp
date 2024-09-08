@@ -1,34 +1,57 @@
-import bbn from "@bbn/bbn";
+import queueUpdate from "../../../functions/queueUpdate.js";
 
-export default function updateWatcher(cp, name, v, init) {
+
+const getFn = function(watcher, lev) {
+  return async () => {
+    watcher.update(false, lev);
+  };
+};
+/**
+ * Updates a watcher for a component property.
+ * 
+ * @param {bbnCp} cp - The component object.
+ * @param {string} name - The name of the property to watch.
+ * @param {boolean} init - Whether this is an initial update.
+ * @param {boolean} root - True for the main object.
+ */
+export default async function updateWatcher(cp, name) {
+  // If the component doesn't have a watcher, do nothing.
   if (!cp.$watcher) {
     return;
   }
 
-
+  let v;
+  try {
+    v = bbn.fn.getProperty(cp, name);
+  }
+  catch (e) {
+    bbn.fn.log(["ERROR IN GETTING PROP IN WATCHER", cp, name, e]);
+    return;
+  }
+  //bbn.fn.log(["INIT UPDATE WATCHER", cp.$options.name, name])
+  // Initialize the level of nesting for the property name.
   let lev = 0;
-  const bits = name.split(".");
-  for (let i = 0; i < bits.length; i++) {
-    let name = bits.join('.');
-    //bbn.fn.log("WATCHER ON " + name + " IN " + cp.$options.name);
-    if (cp.$watcher[name]?.handler) {
-      if (!bbn.fn.isFunction(cp.$watcher[name].handler)) {
-        throw Error(bbn._("Watchers must be function, wrong parameter for %s", name));
-      }
 
-      const hash = bbnData.hash(v);
-      if ((!lev || cp.$watcher[name].deep) && (hash !== cp.$watcher[name].hash)) {
-        let oldDataObj = bbnData.getObject(cp.$watcher[name].value);
-        let oldV = oldDataObj ? oldDataObj.value : cp.$watcher[name].value;
-        cp.$watcher[name].value = lev ? bbn.fn.getProperty(cp, name) : v;
-        cp.$watcher[name].hash = bbnData.hash(cp.$watcher[name].value);
-        if ((init && cp.$watcher[name].immediate) || (!init && cp.$isInit)) {
-          cp.$watcher[name].num++;
-          cp.$watcher[name].handler.apply(cp, [cp.$watcher[name].value, oldV]);
-        }
-      }
+  // Split the property name into its nested parts.
+  const bits = name.split(".");
+
+  // Iterate over each part of the property name.
+  while (bits.length) {
+    // Reconstruct the full property name from the current bits.
+    let fullName = bits.join(".");
+    // Log a message for debugging purposes (currently commented out).
+    // bbn.fn.log("WATCHER ON " + fullName + " IN " + cp.$options.name);
+    // Check if the watcher has a handler for this property.
+    if (cp.$watcher[fullName]) {
+      queueUpdate({
+        component: cp,
+        fn: getFn(cp.$watcher[fullName], lev)
+      });
+      
     }
+
+    // Remove the last part of the property name for the next iteration.
     bits.pop();
-    lev++
+    lev++;
   }
 }

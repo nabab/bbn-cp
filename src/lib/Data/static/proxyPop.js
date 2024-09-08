@@ -7,10 +7,9 @@ import bbnData from "../Data.js";
  * @param {*} path 
  * @returns 
  */
-bbnData.proxyPop = function(target) {
+bbnData.proxyPop = function(targetObj, target) {
   return () => {
     // The bbnData object of the target array
-    const targetObj = this.getObject(target);
     const len = target.length;
     if (len) {
       const subObj = this.getObject(target[len - 1]);
@@ -21,7 +20,7 @@ bbnData.proxyPop = function(target) {
     const res = target.pop();
     if (targetObj) {
       //bbn.fn.log("POP");
-      targetObj.update();
+      targetObj.prepareUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in pop", target]);

@@ -76,7 +76,7 @@ export default {
      * @return {String}
      */
     getFullCurrentURL(){
-      return this.router.getFullBaseURL() + this.currentURL;
+      return this.router.getFullBaseURL() + this.currentCurrent;
     },
 
 
@@ -87,7 +87,7 @@ export default {
      * @return {String}
      */
     getFullURL(){
-      return this.router.getFullBaseURL() + this.url;
+      return this.router.getFullBaseURL() + this.currentURL;
     },
 
 

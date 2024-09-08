@@ -8,7 +8,6 @@ import createApp from "./functions/createApp.js";
 import define from "./functions/define.js";
 import executeQueueItem from "./functions/executeQueueItem.js";
 import executeQueueItems from "./functions/executeQueueItems.js";
-import executeTemplate from "./functions/executeTemplate.js";
 import fetchComponents from "./functions/fetchComponents.js";
 import getComponent from "./functions/getComponent.js";
 import initDefaults from "./functions/initDefaults.js";
@@ -17,8 +16,8 @@ import isComponent from "./functions/isComponent.js";
 import isTag from "./functions/isTag.js";
 import mapTemplate from "./functions/mapTemplate.js";
 import normalizeComponent from "./functions/normalizeComponent.js";
+import queueUpdate from "./functions/queueUpdate.js";
 import realDefineComponent from "./functions/realDefineComponent.js";
-import setComputed from "./functions/setComputed.js";
 import setDefaults from "./functions/setDefaults.js";
 import startTick from "./functions/startTick.js";
 import stopTick from "./functions/stopTick.js";
@@ -107,8 +106,7 @@ const cpObj = bbn.fn.createObject({
   defaults: bbn.fn.createObject(),
   version: 1,
   spaceHash: bbn.fn.hash(' '),
-  queue: [],
-  known: [],
+  known: ['bbn-anon'],
   interval: null,
   statics: bbn.fn.createObject(),
   /** @var {Array} directives List of existing directives */
@@ -123,6 +121,11 @@ const cpObj = bbn.fn.createObject({
     contenteditable: 'contentEditable',
     crossorigin: 'crossOrigin',
     for: 'htmlFor',
+    colspan: 'colSpan',
+    rowspan: 'rowSpan',
+    maxlength: 'maxLength',
+    minlength: 'minLength',
+    inputmode: 'inputMode'
   },
   hooks: [
     'beforeCreate',
@@ -134,15 +137,15 @@ const cpObj = bbn.fn.createObject({
     'destroyed'
   ],
   tagExtensions: {
-    'button': 'bbnButtonHTML',
-    'div': 'bbnDivHTML',
-    'form': 'bbnFormHTML',
-    'ul': 'bbnListHTML',
-    'li': 'bbnElementHTML',
-    'span': 'bbnSpanHTML',
-    'tr': 'bbnRowHTML',
-    'td': 'bbnCellHTML',
-    'th': 'bbnCellHTML'
+    'button': 'bbnButtonHtml',
+    'div': 'bbnDivHtml',
+    'form': 'bbnFormHtml',
+    'ul': 'bbnListHtml',
+    'li': 'bbnElementHtml',
+    'span': 'bbnSpanHtml',
+    'tr': 'bbnRowHtml',
+    'td': 'bbnCellHtml',
+    'th': 'bbnCellHtml'
   },
   knownPrefixes: [],
   queue: [],
@@ -161,7 +164,6 @@ const cpObj = bbn.fn.createObject({
   define,
   executeQueueItem,
   executeQueueItems,
-  executeTemplate,
   fetchComponents,
   getComponent,
   initDefaults,
@@ -170,8 +172,8 @@ const cpObj = bbn.fn.createObject({
   isTag,
   mapTemplate,
   normalizeComponent,
+  queueUpdate,
   realDefineComponent,
-  setComputed,
   setDefaults,
   startTick,
   stopTick,
@@ -179,7 +181,6 @@ const cpObj = bbn.fn.createObject({
 });
 
 bbn.fn.autoExtend('cp', cpObj);
-
 draggable();
 droppable();
 focused();

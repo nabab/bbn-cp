@@ -191,6 +191,7 @@ const cpDef = {
     isDisabled(){
       const res = typeof(this.disabled) === 'function' ?
         this.disabled() : this.disabled;
+      return !!res;
       return res ? 'disabled' : '';
     },
     /**

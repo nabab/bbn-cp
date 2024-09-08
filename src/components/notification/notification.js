@@ -30,28 +30,36 @@ const cpDef = {
        */
       successMessage: {
         type: [String, Function],
-        default: bbn._('Success')
+        default(){
+          return bbn._('Success');
+        }
       },
       /**
        * @prop {String|Function}, ['Warning'] warningMessage
        */
       warningMessage: {
         type: [String, Function],
-        default: bbn._('Warning')
+        default(){
+          return bbn._('Warning');
+        }
       },
       /**
        * @prop {String|Function}, ['Error'] errorMessage
        */
       errorMessage: {
         type: [String, Function],
-        default: bbn._('Error')
+        default(){
+          return bbn._('Error');
+        }
       },
       /**
        * @prop {String|Function}, ['Info'] infoMessage
        */
       infoMessage: {
         type: [String, Function],
-        default: bbn._('Info')
+        default(){
+          return bbn._('Info');
+        }
       },
       /**
        * @prop {String|Boolean}, ['nf nf-fa-check_square'] successIcon

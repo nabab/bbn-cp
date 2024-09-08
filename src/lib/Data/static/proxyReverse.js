@@ -7,12 +7,11 @@ import bbnData from "../Data.js";
  * @param {*} path 
  * @returns 
  */
-bbnData.proxyReverse = function(target) {
+bbnData.proxyReverse = function(targetObj, target) {
   return (...args) => {
     const res = target.reverse(...args);
-    const targetObj = this.getObject(target);
     if (targetObj) {
-      targetObj.update();
+      targetObj.prepareUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in reverse", target]);

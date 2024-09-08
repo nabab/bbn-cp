@@ -248,7 +248,7 @@ const basic = {
      */
     ready(newVal) {
       if (newVal) {
-        let ev = new CustomEvent('subready', {bubbles: true, detail: {cp: this}});
+        let ev = new CustomEvent('subready', {bubbles: true, detail: {component: this}});
         this.$el.dispatchEvent(ev);
         this.$emit('ready', this);
       }

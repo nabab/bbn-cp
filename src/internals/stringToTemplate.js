@@ -28,12 +28,12 @@ const updateRoot = (ar, lower) => {
       a.id = '0-' + a.id;
     }
     bbn.fn.iterate(a, (value, prop) => {
-      if (['attr', 'model', 'directives'].includes(prop)) {
+      if (['attr', 'model', 'directives', 'events'].includes(prop)) {
         bbn.fn.iterate(value, v => {
           v.id = lower ? v.id.substr(2) : '0-' + v.id;
         });
       }
-      else if (['loop', 'condition', 'forget'].includes(prop)) {
+      else if (['loop', 'condition', 'forget', 'text'].includes(prop)) {
         value.id = lower ? value.id.substr(2) : '0-' + value.id;
       }
     });
@@ -54,6 +54,11 @@ const updateRoot = (ar, lower) => {
  * @returns {Array}
  */
 export default function stringToTemplate(str, withMap, name) {
+  /*
+  if (name === 'apst-adherent-widget-contact') {
+    bbn.fn.warning("GO!!");
+    bbn.fn.log(str);
+  }*/
   const map = bbn.fn.createObject();
   const inlineTemplates = bbn.fn.createObject();
 
@@ -102,15 +107,36 @@ export default function stringToTemplate(str, withMap, name) {
 
   if ((res.length > 1)
     || (res.length
-        && (res[0].attr?.['bbn-if']
-            || res[0].attr?.['bbn-for']
-            || res[0].attr?.['bbn-model']
-            || res[0].attr?.['bbn-forget']
+        && (res[0].condition
+            || res[0].loop
+            || res[0].model
+            || res[0].forget
             || (bbn.cp.isComponent(res[0]) && (res[0].tag !== name))
             || (!bbn.cp.isComponent(res[0]) && !['div', 'span', name].includes(res[0].tag))
         )
     )
   ) {
+    let isIf = false;
+    let conditionId = null;
+    for (let i = 0; i < res.length; i++) {
+      let item = res[i];
+      if (item.condition) {
+        if (item.condition.type === 'if') {
+          conditionId = bbn.fn.randomString(32);
+          item.conditionId = conditionId;
+          isIf = true;
+        }
+        else if (!isIf) {
+          throw Error(bbn._("There can't be an elseif or an else without an if (check %s)", componentName));
+        }
+        else {
+          item.conditionId = conditionId;
+        }
+        if (item.condition.type === 'else') {
+          isIf = false;
+        }
+      }
+    }
     res = [{
       id: '0',
       tag: 'div',

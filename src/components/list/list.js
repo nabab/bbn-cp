@@ -325,10 +325,14 @@ const cpDef = {
        */
       currentStyle(){
         let s = {
-          width: this.formattedWidth,
-          height: this.formattedHeight,
           overflow: 'hidden'
         };
+        if (this.width || this.width) {
+          s.width = this.formattedWidth;
+        }
+        if (this.height || this.isMaximized) {
+          s.height = this.formattedHeight;
+        }
         if (this.maxWidth) {
           s.maxWidth = this.maxWidth + (bbn.fn.isNumber(this.maxWidth) ? 'px' : '')
         }

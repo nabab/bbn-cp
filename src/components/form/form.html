@@ -47,7 +47,7 @@
       <div bbn-if="!hasFooter && !window && realButtons.length && ['small', 'normal'].includes(currentMode)"
           class="bbn-form-buttons bbn-middle bbn-vpadding">
         <bbn-button bbn-for="(button, i) in realButtons"
-                    :key="i"
+                    :key="button.key || i"
                     class="bbn-hsmargin"
                     bbn-bind="button"/>
       </div>
@@ -65,7 +65,7 @@
           class="bbn-form-buttons bbn-w-100 bbn-vpadding bbn-c">
         <bbn-button bbn-for="(button, i) in realButtons"
                     :class="['bbn-hxspadded', {'bbn-primary': button.preset === 'submit'}]"
-                    :key="i"
+                    :key="button.key || i"
                     bbn-bind="button"/>
       </div>
       <!-- DEFAULT BUTTONS IN WINDOW -->
@@ -74,7 +74,7 @@
            :style="'grid-template-columns: repeat(' + realButtons.length + ', 1fr)'">
         <bbn-button bbn-for="(button, i) in realButtons"
                     :class="{'bbn-primary': button.preset === 'submit'}"
-                    :key="i"
+                    :key="button.key || button.text || button.icon || i"
                     :style="{width: '10em'}"
                     bbn-bind="button"/>
       </div>
@@ -90,7 +90,7 @@
        class="bbn-form-footer bbn-popup-footer bbn-button-group bbn-flex-width bbn-lg">
     <bbn-button bbn-for="(button, i) in realButtons"
                 :class="[{'bbn-primary': button.preset === 'submit'}, button.cls || '']"
-                :key="i"
+                :key="button.key || button.text || button.icon || i"
                 ref="butt"
                 bbn-bind="button"/>
   </div>

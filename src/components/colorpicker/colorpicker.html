@@ -5,13 +5,15 @@
          ref="element"
          :disabled="isDisabled"
          :readonly="readonly"
-         :required="required"
-         @click="click($event)"
-         @focus="focus($event)"
-         @blur="blur($event)"
-         @keydown="keydown($event)"
-         @keyup="keyup($event)">
-  <div :class="['bbn-textbox', 'bbn-colorpicker-input', {'bbn-disabled': !!isDisabled}]">
+         :required="required">
+  <div :class="['bbn-textbox', 'bbn-colorpicker-input', {'bbn-disabled': !!isDisabled}]"
+       :tabindex="tabindex || '0'"
+       ref="focuser"
+       @click="click"
+       @focus="focus"
+       @blur="blur"
+       @keydown="keydown"
+       @keyup="keyup">
     <div :class="['bbn-flex-width', 'bbn-radius', {'bbn-p': !isDisabled && !readonly}]"
          @click="openCloseFloater">
       <div class="bbn-flex-fill bbn-right-xsspace bbn-radius bbn-colorpicker-input-color bbn-middle bbn-bordered"
@@ -41,12 +43,15 @@
         <div class="bbn-overlay bbn-middle">
           <div class="bbn-colorpicker-picker"
                ref="picker"
-               @dblclick.prevent.stop=""
-          ></div>
-          <bbn-scroll bbn-if="showPalette || onlyPalette" class="bbn-background">
+               @dblclick.prevent.stop=""/>
+          <bbn-scroll bbn-if="showPalette || onlyPalette"
+                      class="bbn-background">
             <div class="bbn-c bbn-vsmargin">
               <div bbn-for="p in palette"
-                   class="bbn-iblock bbn-colorpicker-palette bbn-bordered bbn-smargin bbn-p"
+                   class="bbn-iblock bbn-colorpicker-palette bbn-textbox bbn-smargin bbn-p"
+                   tabindex="0"
+                   @keydown.enter.space.stop.prevent="setColor(p)"
+                   @keyup.escape="openCloseFloater"
                    :style="{backgroundColor: p}"
                    @click="setColor(p)"/>
             </div>
@@ -69,7 +74,9 @@
               </span>
               <div>
                 <bbn-input :value="currentHex"
-                           @change="fromInput"/>
+                           @change="fromInput"
+                           @keydown.enter="save"
+                           @keyup.escape="openCloseFloater"/>
               </div>
               <span class="bbn-vmiddle">RGB</span>
               <span class="bbn-vmiddle">
@@ -77,6 +84,8 @@
               </span>
               <div>
                 <bbn-input :value="currentRgb"
+                           @keyup.escape="openCloseFloater"
+                           @keydown.enter="save"
                            @change="fromInput"/>
               </div>
               <span class="bbn-vmiddle">RGBA</span>
@@ -85,6 +94,8 @@
               </span>
               <div>
                 <bbn-input :value="currentRgba"
+                           @keyup.escape="openCloseFloater"
+                           @keydown.enter="save"
                            @change="fromInput"/>
               </div>
               <span class="bbn-vmiddle">HSL</span>
@@ -93,6 +104,8 @@
               </span>
               <div>
                 <bbn-input :value="currentHsl"
+                           @keyup.escape="openCloseFloater"
+                           @keydown.enter="save"
                            @change="fromInput"/>
               </div>
             </div>
@@ -101,6 +114,8 @@
                 <bbn-button :icon="!showPalette ? 'nf nf-fae-palette_color' : 'nf nf-fa-adjust'"
                             :notext="true"
                             :text="!showPalette ? _('Show palette') : _('Close palette')"
+                            @keyup.escape="openCloseFloater"
+                            @keydown.space="showPalette = !showPalette"
                             @click="showPalette = !showPalette"
                             bbn-if="!onlyPalette"/>
               </div>

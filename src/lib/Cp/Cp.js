@@ -10,7 +10,7 @@ export default class bbnCp {
       writable: false,
       configurable: false
     });
-0
+
     /**
      * Component configuration object
      */
@@ -22,6 +22,25 @@ export default class bbnCp {
   
     // Adding itself to the global static #components
     addComponent(this.$el);
+    /*
+    return new Proxy(this, {
+      get(target, prop) {
+        if (target.$cfg.getter) {
+          return target.$cfg.getter(target, prop);
+        }
+
+        return target[prop];
+      },
+      set(target, prop, value) {
+        if (target.$cfg.setter) {
+          return target.$cfg.setter(target, prop, value);
+        }
+
+        target[prop] = value;
+        return true;
+      }
+    });
+    */
   }
 
   /**
@@ -136,7 +155,9 @@ export default class bbnCp {
   find(selector, index) {
     const letters = selector.split('');
     if (!['.', '#', '[', ':'].filter(c => letters.includes(c)).length) {
-      selector += ',*[is=' + selector + ']';
+      bbn.fn.each(selector.split(','), a => {
+        selector += ',*[is=' + a + ']';
+      });
     }
 
     if (index) {
@@ -157,7 +178,9 @@ export default class bbnCp {
   findAll(selector, only_children) {
     const letters = selector.split('');
     if (!['.', '#', '[', ':'].filter(c => letters.includes(c)).length) {
-      selector += ',*[is=' + selector + ']';
+      bbn.fn.each(selector.split(','), a => {
+        selector += ',*[is=' + a + ']';
+      });
     }
 
     if (only_children) {

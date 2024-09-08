@@ -424,6 +424,7 @@ export default function() {
             if ((options.container === undefined)
               || !bbn.fn.isDom(options.container)
             ) {
+              return;
               bbn.fn.error(bbn._('No "container" property found or not a DOM element'));
               throw bbn._('No "container" property found or not a DOM element');
             }

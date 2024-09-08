@@ -67,13 +67,23 @@ const input = {
     size: {
       type: [Number, String]
     },
-      /**
+    /**
      * Defines the maxlength of the value.
      * @prop {Number|String} maxlength 
      * @memberof inputComponent
      */
     maxlength: {
-      type: [String, Number]
+      type: [String, Number],
+      default: -1
+    },
+    /**
+     * Defines the minlength of the value.
+     * @prop {Number|String} minlength
+     * @memberof inputComponent
+     */
+    minlength: {
+      type: [String, Number],
+      default: -1
     },
     /**
      * A function to validate the value before submit.
@@ -332,9 +342,11 @@ const input = {
         return elem;
       };
       if (inp) {
+        //bbn.fn.log(['isValid Inp', inp, getLastElement(inp), check(getLastElement(inp))])
         return check(getLastElement(inp)) || false;
       }
       if (ele) {
+        //bbn.fn.log(['isValid Ele', ele, getLastElement(ele), check(getLastElement(ele))])
         return check(getLastElement(ele)) || false;
       }
       return true;
@@ -355,6 +367,7 @@ const input = {
           && !!elem
           && bbn.fn.isDom(elem.$el)
         ) {
+          // Vue version
           /*
           let style = document.createElement('style');
           style.id = this.validationID + '_style';
@@ -397,6 +410,52 @@ const input = {
             }
           })
           */
+
+          // BBN version
+          /* let style = document.createElement('style');
+          style.id = this.validationID + '_style';
+          style.innerHTML = `
+            #${this.validationID} .bbn-floater {
+              background-color: var(--red) !important;
+              color: var(--white) !important;
+            }
+            #${this.validationID} .bbn-floater-arrow:after {
+              background-color: var(--red) !important;
+            }`;
+          window.document.head.appendChild(style)
+          let cont = document.createElement('div');
+          const validationID = this.validationID;
+          const cfg = {
+            template: `
+              <div :id="id">
+                <bbn-tooltip :source="message"
+                            ref="tooltip"
+                            :icon="false"
+                            position="bottomLeft"
+                            @hook:mounted="showContent"
+                            @close="onCloseTooltip"
+                            :element="elem"/>
+              </div>
+            `,
+            data() {
+              return {
+                  id: validationID,
+                  message: message,
+                  elem: elem.$el
+              }
+            },
+            methods: {
+              showContent(){
+                this.getRef('tooltip').show();
+              },
+              onCloseTooltip() {
+                style.remove();
+                cont.remove();
+              }
+            }
+          };
+          this.$el.appendChild(cont);
+          bbn.cp.createApp(cont, cfg) */
         }
       }
       /*
@@ -479,15 +538,10 @@ const input = {
           }
         }
       }
-      */
       if ( !!newVal !== this.hasValue ){
         this.hasValue = !!newVal;
       }
-    },
-    currentValue(newVal) {
-      if (newVal !== this.currentValue) {
-        this.currentValue = newVal;
-      }
+      */
     },
   }
 };

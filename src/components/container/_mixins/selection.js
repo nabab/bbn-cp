@@ -58,9 +58,10 @@ export default {
       }
     },
     onShow() {
+      //bbn.fn.log(["ON SHOW", this.isVisible, this.router?.selected, this.currentIndex, this.isLoaded, this.isLoading, this.ready]);
       if (this.isVisible && this.router) {
         if (!this.isLoaded && !this.isLoading) {
-          this.getView(this.currentCurrent, true)
+          this.loadView(this.currentCurrent)
         }
         else if (!this.ready) {
           this.$nextTick(() => {
@@ -85,19 +86,25 @@ export default {
      * @fires activate
      * @emit update
     */
-    async getView(url, force, index) {
+    async loadView(url, force, index) {
       if (!url) {
         throw Error(bbn._("Impossible to get the view without an URL"));
+      }
+
+      //bbn.fn.log("LOADING VIEW " + url);
+      if (this.isLoading) {
+        return;
       }
 
       let finalURL = this.router.fullBaseURL + url;
       this.isLoading = true;
       if (!this.currentView.pane) {
-        this.currentURL = this.router.parseURL(url);
+        //bbn.fn.log(["GETTING VIEW " + finalURL, url, this.router.parseURL(url), this.router.baseURL, this.getFullCurrentURL()]);
+        this.currentURL = url;
       }
 
       this.router.$emit('update', this.router.views);
-      this.router.$emit("load", finalURL);
+      this.router.$emit("load", url);
       let dataObj = this.router.postBaseUrl ? { _bbn_baseURL: this.router.fullBaseURL } : {};
       let response;
       try {
@@ -108,7 +115,7 @@ export default {
         bbn.fn.warning("ABORTED")
         this.isLoading = false;
         /*
-        let idx = this.search(this.parseURL(finalURL));
+        let idx = this.search(url);
         if (idx !== false) {
           let url = this.currentView.url;
           if (this.urls[url]) {
@@ -124,6 +131,7 @@ export default {
 
       if (response?.status === 200) {
         const d = response.data;
+        //bbn.fn.log(["RESPONSE", d.url, d, dataObj, this.$el]);
         let callRealInit = true;
         if (!d.title || (d.title === bbn._('Loading'))) {
           let title = bbn._('Untitled');
@@ -137,11 +145,14 @@ export default {
 
         this.currentTitle = d.title;
 
-        d.url = this.router.parseURL(d.url || '');
+        d.url = this.router.parseURL(d.url || finalURL);
         if (d.url !== this.currentURL) {
           this.currentURL = d.url;
           this.router.updateBaseURL();
-          bbn.fn.log("CHANGING URL TO " + d.url + ' / ' + this.router.baseURL);
+          if (!d.url) {
+            debugger;
+          }
+          //bbn.fn.log("CHANGING URL TO " + d.url + ' / ' + this.router.baseURL);
           if (this.currentCurrent.indexOf(d.url)) {
             this.currentCurrent = d.url;
           }
@@ -211,9 +222,6 @@ export default {
         this.init();
 
         /*
-        if (d.url) {
-          d.url = this.parseURL(d.url);
-        }
         if (!d.url) {
           d.url = url;
         }
@@ -306,7 +314,7 @@ export default {
       else {
         this.isLoading = false;
         /*
-        let idx = this.search(this.parseURL(finalURL));
+        let idx = this.search(url);
         if (idx !== false) {
           let url = this.currentView.url;
           if (this.urls[url]) {
@@ -322,6 +330,7 @@ export default {
       }
     },
     async selectionMounted() {
+
       if (!this.router.ready) {
         bbn.fn.warning("ROUTER NOT READY");
         this.router.$on('ready', () => {
@@ -334,6 +343,10 @@ export default {
         });
       }
       else{
+        if (this.router.urls[this.uid]) {
+          return;
+        }
+
         //bbn.fn.warning("ROUTER REGISTERING FOR " + this.url);
         this.router.register(this);
         await this.$nextTick();

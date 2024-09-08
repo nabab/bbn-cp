@@ -1,175 +1,157 @@
 <div :class="[componentClass, 'bbn-box', 'bbn-spadded']">
-    <div bbn-if="ready && showList"
-         style="z-index: 2">
-      <div bbn-for="(f, idx) in currentData"
-           :class="['bbn-flex-width', 'bbn-bordered', 'bbn-spadded', 'bbn-vmiddle', {
-             'bbn-alt-background': (f.status !== 'progress') && (f.status !== 'error'),
-             'bbn-background-tertiary': f.status === 'progress',
-             'bbn-bg-red': f.status === 'error',
-             'bbn-bottom-sspace': currentData[idx+1],
-             'bbn-alt-dark': !!(idx % 2),
-             'bbn-primary-text-alt': f.status === 'ready'
-           }]"
-      >
-        <div bbn-if="icons">
-          <i :class="['bbn-large', getFileIcon(f)]"/>
-        </div>
-        <div bbn-elseif="thumbs"
-             class="bbn-upload-thumb bbn-block">
-          <template bbn-if="isFile(f)">
-            <img bbn-if="f.data.type.startsWith('image/')"
-                 :src="getThumbURL(f)">
-            <video bbn-elseif="f.data.type.startsWith('video/')"
-                   muted>
-              <source :src="getThumbURL(f)"
-                      :type="f.data.type">
-              <div class="bbn-middle">
-                <i :class="['bbn-large', getFileIcon(f)]"/>
-              </div>
-            </video>
-            <object bbn-elseif="f.data.type === 'application/pdf'"
-                    :data="getThumbURL(f)"/>
-            <div bbn-else
-                 class="bbn-middle">
+  <div bbn-if="ready && showList"
+       style="z-index: 2">
+    <div bbn-for="(f, idx) in currentData"
+         :class="['bbn-flex-width', 'bbn-bordered', 'bbn-spadded', 'bbn-vmiddle', {
+           'bbn-alt-background': (f.status !== 'progress') && (f.status !== 'error'),
+           'bbn-background-tertiary': f.status === 'progress',
+           'bbn-bg-red': f.status === 'error',
+           'bbn-bottom-sspace': currentData[idx+1],
+           'bbn-alt-dark': !!(idx % 2),
+           'bbn-primary-text-alt': f.status === 'ready'
+         }]">
+      <div bbn-if="icons">
+        <i :class="['bbn-large', getFileIcon(f)]"/>
+      </div>
+      <div bbn-elseif="thumbs"
+           class="bbn-upload-thumb bbn-block">
+        <template bbn-if="isFile(f)">
+          <img bbn-if="f.data.type.startsWith('image/')"
+               :src="getThumbURL(f)">
+          <video bbn-elseif="f.data.type.startsWith('video/')"
+                 muted>
+            <source :src="getThumbURL(f)"
+                    :type="f.data.type">
+            <div class="bbn-middle">
               <i :class="['bbn-large', getFileIcon(f)]"/>
             </div>
-          </template>
-          <img bbn-elseif="getThumbURL(f)"
-               :src="getThumbURL(f)">
+          </video>
+          <object bbn-elseif="f.data.type === 'application/pdf'"
+                  :data="getThumbURL(f)"/>
           <div bbn-else
-               class="bbn-middle">
+                class="bbn-middle">
             <i :class="['bbn-large', getFileIcon(f)]"/>
           </div>
-          <div class="bbn-overlay" style="opacity: 0;"/>
+        </template>
+        <img bbn-elseif="getThumbURL(f)"
+             :src="getThumbURL(f)">
+        <div bbn-else
+             class="bbn-middle">
+          <i :class="['bbn-large', getFileIcon(f)]"/>
         </div>
-        <div class="bbn-flex-fill bbn-hmargin">
-          <div bbn-if="f.edit === false"
-               :class="{
-                 'bbn-abs': f.status === 'progress',
-                 'bbn-h-100': f.status === 'progress',
-                 'bbn-vmiddle': f.status === 'progress'
-               }"
-               :style="{'z-index': f.status === 'progress' ? 2 : 0}"
-          >
-            <span bbn-text="f.data.name"></span>
-            <span bbn-if="showFilesize"
-                  class="bbn-left-sspace bbn-i bbn-s"
-            >({{getFileSize(f)}})</span>
-          </div>
-          <bbn-input bbn-elseif="f.status !== 'progress'"
-                     bbn-model="f.edit"
-                     class="bbn-w-100"
-                     :placeholder="currentText.filename"
-                     ref="filenameInput"
-          ></bbn-input>
-          <bbn-progressbar bbn-if="(f.edit === false) && (f.status === 'progress')"
-                           :value="f.progress"
-                           :show-value="true"
-                           type="percent"
-                           class="bbn-no-border"
-                           style="text-align: right"
-                           bar-class="bbn-background-tertiary"
-          ></bbn-progressbar>
+        <div class="bbn-overlay" style="opacity: 0;"/>
+      </div>
+      <div class="bbn-flex-fill bbn-hmargin">
+        <div bbn-if="f.edit === false"
+             :class="{
+               'bbn-abs': f.status === 'progress',
+               'bbn-h-100': f.status === 'progress',
+               'bbn-vmiddle': f.status === 'progress'
+             }"
+             :style="{'z-index': f.status === 'progress' ? 2 : 0}">
+          <span bbn-text="f.data.name"/>
+          <span bbn-if="showFilesize"
+                class="bbn-left-sspace bbn-i bbn-s">
+            ({{getFileSize(f)}})
+          </span>
         </div>
-        <div>
-          <div bbn-if="isEnabled && (f.edit === false)">
-            <i bbn-if="(f.status === 'success') && !!downloadable && !!downloadUrl && !uploading"
-              class="bbn-large nf nf-fa-download bbn-p bbn-right-sspace"
-              @click="download(f)"
-              :title="currentText.download"
-            ></i>
-            <i bbn-if="(f.status === 'success') && editable && !uploading"
-              class="bbn-large nf nf-fa-edit bbn-p bbn-right-sspace"
-              @click="edit(f)"
-              :title="currentText.editFilename"
-            ></i>
-            <i bbn-if="f.status === 'error'"
-              class="bbn-large nf nf-fa-repeat bbn-p bbn-right-sspace"
-              @click="retry(f)"
-              :title="currentText.retry"
-            ></i>
-            <i bbn-if="eliminable && (f.status !== 'progress') && !uploading"
-              class="bbn-large nf nf-fa-trash bbn-p"
-              @click="remove(f)"
-              :title="currentText.remove"
-            ></i>
-            <bbn-loadicon bbn-if="f.status === 'progress'"></bbn-loadicon>
-          </div>
-          <div bbn-elseif="isEnabled && (f.edit !== false) && !uploading">
-            <i class="bbn-large nf nf-fa-check bbn-p bbn-right-sspace"
-               @click="saveEdit(f)"
-               :title="currentText.save"
-            ></i>
-            <i class="bbn-large nf nf-fa-close bbn-p"
-               @click="cancelEdit(f)"
-               :title="currentText.cancel"
-            ></i>
-          </div>
-          <div bbn-elseif="(f.status === 'success') && !!downloadable && !!downloadUrl && !uploading">
-            <i class="bbn-large nf nf-fa-download bbn-p"
-               @click="download(f)"
-               :title="currentText.download"
-            ></i>
-          </div>
+        <bbn-input bbn-elseif="f.status !== 'progress'"
+                   bbn-model="f.edit"
+                   class="bbn-w-100"
+                   :placeholder="currentText.filename"
+                   ref="filenameInput"/>
+        <bbn-progressbar bbn-if="(f.edit === false) && (f.status === 'progress')"
+                         :value="f.progress"
+                         :show-value="true"
+                         type="percent"
+                         class="bbn-no-border"
+                         style="text-align: right"
+                         bar-class="bbn-background-tertiary"/>
+      </div>
+      <div>
+        <div bbn-if="isEnabled && (f.edit === false)">
+          <i bbn-if="(f.status === 'success') && !!downloadable && !!downloadUrl && !uploading"
+            class="bbn-large nf nf-fa-download bbn-p bbn-right-sspace"
+            @click="download(f)"
+            :title="currentText.download"/>
+          <i bbn-if="(f.status === 'success') && editable && !uploading"
+            class="bbn-large nf nf-fa-edit bbn-p bbn-right-sspace"
+            @click="edit(f)"
+            :title="currentText.editFilename"/>
+          <i bbn-if="f.status === 'error'"
+            class="bbn-large nf nf-fa-repeat bbn-p bbn-right-sspace"
+            @click="retry(f)"
+            :title="currentText.retry"/>
+          <i bbn-if="eliminable && (f.status !== 'progress') && !uploading"
+            class="bbn-large nf nf-fa-trash bbn-p"
+            @click="remove(f)"
+            :title="currentText.remove"/>
+          <bbn-loadicon bbn-if="f.status === 'progress'"/>
+        </div>
+        <div bbn-elseif="isEnabled && (f.edit !== false) && !uploading">
+          <i class="bbn-large nf nf-fa-check bbn-p bbn-right-sspace"
+             @click="saveEdit(f)"
+             :title="currentText.save"/>
+          <i class="bbn-large nf nf-fa-close bbn-p"
+             @click="cancelEdit(f)"
+             :title="currentText.cancel"/>
+        </div>
+        <div bbn-elseif="(f.status === 'success') && !!downloadable && !!downloadUrl && !uploading">
+          <i class="bbn-large nf nf-fa-download bbn-p"
+             @click="download(f)"
+             :title="currentText.download"/>
         </div>
       </div>
-      <div bbn-if="!currentData.length && !isEnabled"
-           class="bbn-c"
-           bbn-text="currentText.empty"
-      ></div>
     </div>
-    <div bbn-if="isEnabled"
-         class="bbn-rel"
-         :style="{
-           'padding-top': !!currentData.length && canAddFile ? '.5rem' : '0',
-           'z-index': 2
-         }"
-    >
-      <div class="bbn-flex-width bbn-vmiddle">
-        <i bbn-if="canAddFile"
-           :class="[icon, 'bbn-primary-text-alt', 'bbn-xlarge']"
-        ></i>
-        <div bbn-if="canAddFile"
-             class="bbn-flex-fill bbn-primary-text-alt bbn-hsmargin"
-             @click="getRef('fileInput').click()"
-             bbn-text="dragDrop ? currentText.uploadOrDrop : currentText.uploadButton"
-             @drop="dropEvent"
-        ></div>
-        <div class="bbn-box bbn-spadded"
-             ref="pasteContainer"
-             bbn-if="paste && canAddFile"
-             style="z-index: 2"
-             :title="currentText.pasteContainer"
-             @paste="pasteEvent"
-        >
-          <i class="nf nf-fa-paste bbn-large"></i>
-        </div>
-        <div class="bbn-box bbn-spadded bbn-p"
-             ref="uploadButton"
-             bbn-if="canAddFile && !autoUpload && !!filesReady.length"
-             style="z-index: 2"
-             :title="currentText.upload"
-             @click="upload()"
-        >
-          <i class="nf nf-fa-upload bbn-large"></i>
-        </div>
-        <input title=""
-               :disabled="!!isDisabled || !canAddFile"
-               ref="fileInput"
-               type="file"
-               :multiple="multiple"
-               :accept="accept"
-               @change="filesChanged"
-               class="bbn-invisible bbn-abs bbn-top-left bbn-bottom-right bbn-100"
-               style="z-index: 1"
-               @drop="dropEvent"
-        >
-        <input type="hidden"
-               :value="value"
-               :readonly="readonly"
-               :required="required"
-               ref="element"
-        >
+    <div bbn-if="!currentData.length && !isEnabled"
+         class="bbn-c"
+         bbn-text="currentText.empty"/>
+  </div>
+  <div bbn-if="isEnabled"
+       class="bbn-rel"
+       :style="{
+         'padding-top': !!currentData.length && canAddFile ? '0.5rem' : '0',
+         'z-index': 2
+       }">
+    <div class="bbn-flex-width bbn-vmiddle">
+      <i bbn-if="canAddFile"
+         :class="[icon, 'bbn-primary-text-alt', 'bbn-xlarge']"/>
+      <div bbn-if="canAddFile"
+           class="bbn-flex-fill bbn-primary-text-alt bbn-hsmargin"
+           @click="getRef('fileInput').click()"
+           bbn-text="dragDrop ? currentText.uploadOrDrop : currentText.uploadButton"
+           @drop="dropEvent"/>
+      <div class="bbn-box bbn-spadded"
+           ref="pasteContainer"
+           bbn-if="paste && canAddFile"
+           style="z-index: 2"
+           :title="currentText.pasteContainer"
+           @paste="pasteEvent">
+        <i class="nf nf-fa-paste bbn-large"/>
       </div>
+      <div class="bbn-box bbn-spadded bbn-p"
+           ref="uploadButton"
+           bbn-if="canAddFile && !autoUpload && !!filesReady.length"
+           style="z-index: 2"
+           :title="currentText.upload"
+           @click="upload()">
+        <i class="nf nf-fa-upload bbn-large"/>
+      </div>
+      <input title=""
+             :disabled="!!isDisabled || !canAddFile"
+             ref="fileInput"
+             type="file"
+             :multiple="multiple"
+             :accept="accept"
+             @change="filesChanged"
+             class="bbn-invisible bbn-abs bbn-top-left bbn-bottom-right bbn-100"
+             style="z-index: 1"
+             @drop="dropEvent">
+      <input type="hidden"
+             :value="value"
+             :readonly="readonly"
+             :required="required"
+             ref="element">
     </div>
+  </div>
 </div>

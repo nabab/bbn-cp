@@ -4,11 +4,16 @@ bbnCp.prototype.$nextTick = async function(fn){
   const cp = this;
   return new Promise((resolve) => {
     setTimeout(() => {
-      if (fn) {
-        fn.bind(cp)();
-      }
+      bbn.cp.queueUpdate({
+        component: cp,
+        fn() {
+          if (fn) {
+            fn();
+          }
 
-      resolve();
+          resolve();
+        }
+      });
     }, bbn.cp.tickDelay);
   });
 }

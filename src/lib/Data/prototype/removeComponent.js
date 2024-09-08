@@ -12,7 +12,12 @@ bbnData.prototype.removeComponent = function(component, path) {
   if (path) {
     const idx = bbn.fn.search(this.refs, {component, path});
     if (idx === -1) {
-      throw Error("The component is not in the list of components");
+      if (!this.refs.length) {
+        this.unset();
+      }
+      else {
+        throw Error("The component is not in the list of components");
+      }
     }
     else {
       if (this.refs[idx].root) {
@@ -20,15 +25,14 @@ bbnData.prototype.removeComponent = function(component, path) {
       }
       else {
         this.refs.splice(idx, 1);
-        if (!bbn.fn.count(this.refs, {component})) {
-          let idx = component.$values.indexOf(this.id);
-          if (idx === -1) {
-            throw Error("Bha on remove component")
-          }
-          else {
-            component.$values.splice(idx, 1);
-          }
-        }
+      }
+
+    }
+
+    if (!bbn.fn.count(this.refs, {component})) {
+      let idx = component.$values.indexOf(this.id);
+      if (idx !== -1) {
+        component.$values.splice(idx, 1);
       }
     }
   }
@@ -36,7 +40,7 @@ bbnData.prototype.removeComponent = function(component, path) {
     if (this.refs.length === 1) {
       this.unset();
     }
-    else if (bbn.fn.getRow(this.refs, {component, root: true})) {
+    else if (this.refs.filter(a => (a.component === component) && (a.root === true)).length) {
       this.unset();
     }
     else {

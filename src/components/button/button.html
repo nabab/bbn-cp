@@ -10,6 +10,7 @@
         @mousedown.prevent.stop="click($event)"
         @mouseenter="over($event)"
         @mouseleave="out($event)"
+        @click.stop.prevent
         :type="type"
         :disabled="isDisabled"
         :title="titleString"

@@ -113,8 +113,8 @@ const cpDef = {
        * @computed currentItem
        * @return {Object|Boolean}
       */
-      currentItem(){
-        return this.loadingItems.length ? this.loadingItems[0] : (this.loadedItems.length ? this.loadedItems[0] : false)
+      currentItem() {
+        return this.loadingItems[0] || this.loadedItems[0] || false;
       },
 
     },
@@ -204,18 +204,6 @@ const cpDef = {
       }
     },
     watch: {
-      source: {
-        deep: true,
-        handler(v, ov) {
-          //bbn.fn.log(["WATCHING LOADBAR SOURCE", v, ov, v === ov])
-          this.$forceUpdate();
-        }
-      },
-      /*
-      async currentItem(v) {
-        await this.$forceUpdate();
-      },
-      */
       info(v) {
         if (this.interval) {
           clearInterval(this.interval);

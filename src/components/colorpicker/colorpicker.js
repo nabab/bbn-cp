@@ -242,6 +242,7 @@ const cpDef = {
             }
             this.widget = new iro.ColorPicker(el, bbn.fn.extend(true, {width: width}, this.currentCfg));
             this.setEvents();
+            this.find('bbn-input,bbn-button').focus();
           }
         }, 300);
       },
@@ -366,6 +367,13 @@ const cpDef = {
         else if ( !this.isDisabled && !this.readonly ){
           this.showFloater = true;
         }
+      },
+      keydown(ev) {
+        if (!this.showFloater) {
+          if ((ev.code === 'Space') || (ev.code === 'ArrowDown')) {
+            this.showFloater = true;
+          }
+        }
       }
     },
     /**
@@ -383,6 +391,15 @@ const cpDef = {
      */
     beforeDestroy(){
       this.destroy();
+    },
+    watch: {
+      showFloater(v) {
+        if (!v) {
+          this.$nextTick(() => {
+            this.getRef('focuser').focus();
+          });
+        }
+      }
     }
   };
 

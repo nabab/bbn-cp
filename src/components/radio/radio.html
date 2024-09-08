@@ -7,6 +7,7 @@
   <div :style="getStyle()">
     <div bbn-for="(d, idx) in source"
          :class="{
+            'bbn-radio-item': true,
             'bbn-iblock': !vertical,
             'bbn-right-space': !vertical && !separator && source[idx+1],
             'bbn-bottom-sspace': !!vertical && !separator && source[idx+1]
@@ -18,10 +19,12 @@
              :disabled="isDisabled || d.disabled"
              :required="required"
              :id="id + '_' + idx"
-             @change="changed(d[sourceValue], d, $event)"
+             @change.stop="changed(d[sourceValue], d, $event)"
              :checked="d[sourceValue] === value ? 'checked' : false"
              style="display: none">
       <label class="bbn-radio-label bbn-iflex bbn-vmiddle"
+             :tabindex="tabindex || '0'"
+             @keydown.space.enter.stop.prevent="$event.target.click()"
              :for="id + '_' + idx">
         <component bbn-if="d.component"
                    :is="d.component"

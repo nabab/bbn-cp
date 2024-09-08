@@ -5,6 +5,7 @@ import bbnData from "../Data.js";
  */
 const err = "Impossible to find the data object in the values of the component %s with CID %s";
 bbnData.prototype.unset = function(noParent) {
+  //bbn.fn.log("UNSET: " + JSON.stringify(this.targetData), this, this.deps.map(d => d.constructor.name));
   const id = this.id;
 
   // Unsetting the children
@@ -13,7 +14,8 @@ bbnData.prototype.unset = function(noParent) {
   });
   const done = [];
   // Unsetting the data in each component, root is last
-  bbn.fn.each(this.refs, it => {
+  for (let i = 0; i < this.refs.length; i++) {
+    const it = this.refs[i];
     const cp = it.component;
     if (cp) {
       let idx = cp.$values.indexOf(id);
@@ -21,30 +23,24 @@ bbnData.prototype.unset = function(noParent) {
         cp.$values.splice(idx, 1);
         done.push(cp.$cid);
       }
-      else if (!done.includes(cp.$cid) && cp.$isInit) {
-        bbn.fn.warning(bbn._(err, cp.$options.name, cp.$cid));
-        bbn.fn.log([this, cp, it]);
-        return;
-        //throw Error(bbn._(err, cp.$options.name, cp.$cid));
+      else if (!done.includes(cp.$cid)) {
+        this.refs.splice(i, 1);
+        i--;
       }
       
-      if (it.parent) {
+      if (!noParent && it.parent) {
         let idx = it.parent.children.indexOf(this);
         if (idx > -1) {
           //bbn.fn.log(["UPDATE ON UNSET", this, it.parent, cp, it]);
           it.parent.children.splice(idx, 1);
-          it.parent.update();
+          it.parent.prepareUpdate();
         }
-      }
-
-      if (!cp.$isDestroyed) {
-        cp.$tick();
       }
     }
     else {
       throw Error(bbn._("Impossible to find the component %s", cp.$cid));
     }
-  });
+  }
 
   /*
 
@@ -61,7 +57,8 @@ bbnData.prototype.unset = function(noParent) {
   */
 
   bbnData.inventory.delete(id);
-  delete this.data.__bbnData;
+  delete this.targetData.__bbnData;
+  //bbn.fn.log(["DATA deleted", JSON.stringify(this.targetData)]);
 };
 
   

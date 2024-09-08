@@ -32,7 +32,7 @@ export default function isComponent(node) {
   }
 
   if (node.attr?.is?.value) {
-    return node.attr.is.value.indexOf('-') > -1;
+    return bbn.fn.isObject(node.attr.is.value) || (node.attr.is.value.indexOf('-') > -1);
   }
 
   if (node.tag) {

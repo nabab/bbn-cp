@@ -1,6 +1,6 @@
 import bbnCp from "../Cp.js";
 
-bbnCp.prototype.$retrieveElement = function (id, hash, index = -1, loopObj) {
+bbnCp.prototype.$retrieveElement = function (id, hash) {
   let res = this.$elements[id] || null;
   if (res && hash) {
     return res[hash] || null;

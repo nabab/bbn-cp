@@ -336,9 +336,6 @@ const cpDef = {
         }
       }
     },
-    beforeCreate(){
-      bbn.fn.log(["BEFORE CREATE", this.$el, this.$slots, this.$el.bbnSlots, this.closest('bbn-anon')])
-    },
     props: {
       /**
        * True if the columns has to have titles.
@@ -1276,7 +1273,7 @@ const cpDef = {
                 index: data[i].index,
                 value: currentGroupValue,
                 data: a,
-                rowIndex: rowIndex,
+                rowIndex,
                 rowKey: data[i].key,
                 expander: true,
                 num: bbn.fn.count(data, 'data.' + this.cols[this.group].field, currentGroupValue)
@@ -1369,7 +1366,7 @@ const cpDef = {
               index: data[i].index,
               data: a,
               rowIndex: rowIndex,
-              rowKey: data[i].key
+              rowKey: data[i].key,
             };
             if (isGroup) {
               if (!currentGroupValue) {
@@ -2768,21 +2765,21 @@ const cpDef = {
                     tmp = maxWidth;
                   }
 
-                  this.$set(col, 'realWidth', tmp);
+                  col.realWidth = tmp;
                 }
                 sum += col.realWidth;
                 if (groupIdx === 0) {
-                  this.$set(col, 'left', sumLeft);
+                  col.left = sumLeft;
                   sumLeft += col.realWidth;
                 }
 
                 if (groupIdx === 2) {
-                  this.$set(col, 'right', sumRight);
+                  col.right = sumRight;
                   sumRight += col.realWidth;
                 }
               }
             })
-            this.$set(this.groupCols[groupIdx], 'width', sum);
+            this.groupCols[groupIdx].width = sum;
             sum = 0;
             sumLeft = 0;
             sumRight = 0;
@@ -2945,7 +2942,7 @@ const cpDef = {
        * @fires updateData
        */
       init(with_data) {
-        bbn.fn.warning("INIT TABLE");
+        //bbn.fn.warning("INIT TABLE");
           this.initStarted = true;
           this.setContainerMeasures();
           this.setResizeMeasures();
@@ -2975,7 +2972,10 @@ const cpDef = {
               aggregatedColIndex = false,
               aggregatedColTitle = false,
               aggregatedColumns = [],
-              parentWidth = this.$el.offsetParent ? this.$el.offsetParent.getBoundingClientRect().width : this.lastKnownCtWidth;
+              parentWidth = this.$el.offsetParent ? this.$el.offsetParent.getBoundingClientRect().width : this.lastKnownCtWidth,
+              parentStyle = this.$el.offsetParent ? window.getComputedStyle(this.$el.offsetParent) : {},
+              parentPadding = parseFloat(parentStyle?.paddingLeft || 0) + parseFloat(parentStyle?.paddingRight || 0);
+          parentWidth -= parentPadding;
           this.groupCols.splice(0, this.groupCols.length, ...groupCols);
           bbn.fn.each(this.cols, a => {
             a.realWidth = 0;
@@ -3181,21 +3181,29 @@ const cpDef = {
             sumRight = 0;
           });
           this.groupCols.splice(0, this.groupCols.length, ...groupCols);
-          this.colButtons = colButtons;
-          this.isAggregated = isAggregated;
-          this.aggregatedColumns = aggregatedColumns;
-          this.resizeWidth();
-          this.initReady = true;
-          if (with_data) {
-            this.$once('dataloaded', () => {
-              this.initStarted = false;
-            });
-            this.updateData();
-          }
-          else{
-            this.initStarted = false;
-          }
-          this.$forceUpdate();
+          this.$nextTick(() => {
+            this.colButtons = colButtons;
+            this.isAggregated = isAggregated;
+            this.aggregatedColumns = aggregatedColumns;
+            this.resizeWidth();
+            this.initReady = true;
+            if (with_data) {
+              this.$once('dataloaded', () => {
+                this.$nextTick(() => {
+                  this.initStarted = false;
+                  this.$emit('init', this);
+                });
+              });
+              this.updateData();
+            }
+            else{
+              this.$nextTick(() => {
+                this.initStarted = false;
+                this.$emit('init', this);
+              });
+            }
+            this.$forceUpdate();
+          })
           //bbn.fn.log('forceupdate5');
         },
       /**
@@ -3605,7 +3613,6 @@ const cpDef = {
      * @fires updateData
      */
     mounted() {
-      bbn.fn.log("TABLE MOUNTED");
       this.container = this.getRef('container');
       this.marginStyleSheet = document.createElement('style');
       document.body.appendChild(this.marginStyleSheet);

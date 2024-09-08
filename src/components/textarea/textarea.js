@@ -36,13 +36,6 @@ const cpDef = {
 				validator: bbn.fn.isNumber
       },
       /**
-       * The max length of the text inside the textarea.
-       * @prop {Number}  maxlength
-       */
-			maxlength: {
-				type: Number
-      },
-      /**
        * Sets the textarea resizable
        * @prop {Boolean} [true] resizable
        */
@@ -90,7 +83,7 @@ const cpDef = {
     },
     methods: {
       onInput(e) {
-        if (this.maxlength && (e.target.value.length > this.maxlength)) {
+        if (this.maxlength && (parseInt(this.maxlength) > -1) && (e.target.value.length > parseInt(this.maxlength))) {
           this.emitInput(this.value);
           return;
         }
@@ -109,7 +102,7 @@ const cpDef = {
        * @fires keydown
        */
       textareaKeydown(ev) {
-        if (this.maxlength && (this.value.length >= this.maxlength)) {
+        if (this.maxlength && (parseInt(this.maxlength) > -1) && (this.value.length >= parseInt(this.maxlength))) {
           ev.preventDefault();
         }
         else {

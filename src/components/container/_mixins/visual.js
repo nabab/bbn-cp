@@ -32,7 +32,8 @@ export default {
             zoom: 0.1,
             width: '100%',
             height: 'auto',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            display: bbn.fn.getRow(this.router.visualList, 'view.uid', this.currentView.uid) ? 'block' : 'none'
           };
         }
 
@@ -59,7 +60,8 @@ export default {
           gridColumnEnd: coord[1],
           gridRowStart: coord[2],
           gridRowEnd: coord[3],
-          zoom: 1
+          zoom: 1,
+          display: bbn.fn.getRow(this.router.visualList, 'view.uid', this.currentView.uid) ? 'block' : 'none'
         };
       }
 

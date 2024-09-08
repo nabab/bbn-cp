@@ -82,7 +82,7 @@ export default {
      * @param {bbnCp} cp
      */
     unregister(cp) {
-      bbn.fn.log("UNREGISTERING " + cp.url);
+      //bbn.fn.log("UNREGISTERING " + cp.url);
       if (!bbn.fn.isString(cp.url)) {
         throw Error(bbn._('The component bbn-container must have a URL defined'));
       }

@@ -108,16 +108,6 @@ export default function init(cp) {
     configurable: false
   });
 
-  if (cp.$el.bbnSchema.model?._default_) {
-    const modelProp = cp.$cfg.model?.prop || 'value';
-    cp.$el.bbnSchema.model[modelProp] = cp.$el.bbnSchema.model._default_;
-    delete cp.$el.bbnSchema.model._default_;
-    if (cp.$el.bbnSchema.props?._default_) {
-      cp.$el.bbnSchema.props[modelProp] = cp.$el.bbnSchema.props._default_;
-      delete cp.$el.bbnSchema.props._default_;
-    }
-  }
-
   const _t = cp;
 
   Object.defineProperty(cp.$options, 'propsData', {
@@ -137,6 +127,11 @@ export default function init(cp) {
     writable: false,
     configurable: false
   });
+  Object.defineProperty(cp, '$propsCfg', {
+    value: bbn.fn.createObject(),
+    writable: false,
+    configurable: false
+  });
 
   /**
    * Object of all available slots nodes in the template.
@@ -144,7 +139,7 @@ export default function init(cp) {
    */
   Object.defineProperty(cp, '$availableSlots', {
     get() {
-      return cp.$el.bbnSlots || bbnHTML.availableSlots;
+      return cp.$el.bbnSlots || bbnHtml.availableSlots;
     }
   });
 
@@ -197,10 +192,6 @@ export default function init(cp) {
   Object.defineProperty(cp, '$watcher', {
     value: bbn.fn.createObject(),
     writable: false
-  });
-
-  bbn.fn.iterate(cp.$cfg.watch, (a, name) => {
-    cp.$watch(name, a);
   });
 
   /**
@@ -284,8 +275,8 @@ export default function init(cp) {
     configurable: false
   });
 
-  /** @var {Object} $dataValues The content of the data */
-  Object.defineProperty(cp, '$dataValues', {
+  /** @var {Object} $dataCfg The content of the data */
+  Object.defineProperty(cp, '$dataCfg', {
     value: bbn.fn.createObject(),
     writable: false,
     configurable: false
@@ -298,9 +289,7 @@ export default function init(cp) {
   });
 
   Object.defineProperty(cp, '$deps', {
-    value: bbn.fn.createObject({
-      __bbnDataRegister: new Map()
-    }),
+    value: bbn.fn.createObject(),
     writable: false,
     configurable: false
   });
@@ -356,6 +345,12 @@ export default function init(cp) {
    */
   Object.defineProperty(cp, '$root', {
     value: cp.$parent?.$root || cp,
+    writable: false,
+    configurable: false
+  });
+
+  Object.defineProperty(cp, '$isRoot', {
+    value: cp.$root === cp,
     writable: false,
     configurable: false
   });
@@ -420,6 +415,7 @@ export default function init(cp) {
   });
 
   // Setting up available props for HTML templates
+  addNamespace(cp, '$internal', 'internal');
   addNamespace(cp, '$props', 'internal');
   addNamespace(cp, '$el', 'internal');
   addNamespace(cp, '$root', 'internal');

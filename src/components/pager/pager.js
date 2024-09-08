@@ -17,7 +17,7 @@ const cpDef = {
       element: {
         type: [Object, bbnCp],
         default() {
-          bbn.fn.log("ELEMENT ON TABLE", this);
+          //bbn.fn.log("ELEMENT ON TABLE", this);
           return this.$parent;
         }
       },
@@ -51,7 +51,9 @@ const cpDef = {
        */
       pageName: {
         type: String,
-        default: bbn._("page")
+        default(){
+          return bbn._("page");
+        }
       },
       /**
        * The name of the `record` word as used in the pager interface.
@@ -59,7 +61,9 @@ const cpDef = {
        */
       itemName: {
         type: String,
-        default: bbn._("records")
+        default(){
+          return bbn._("records");
+        }
       },
       /**
        * The extra controls part on the right.
@@ -107,11 +111,6 @@ const cpDef = {
         get(){
           return this.element?.numPages;
         },
-        set(v) {
-          if (this.element) {
-            this.element.numPages = v;
-          }
-        }
       }
     },
     methods: {
@@ -127,7 +126,6 @@ const cpDef = {
       },
       updatePager() {
         this.currentNumericPage = this.element.currentPage;
-        this.numPages = this.element.numPages;
       },
       /**
        * @method firstPage
@@ -221,10 +219,10 @@ const cpDef = {
       currentPage(v) {
         //bbn.fn.log("CURRENT PAGE", v);
         if (this.currentNumericPage !== v) {
-          this.currentNumericPage = parseInt(v);
+          this.currentNumericPage = parseInt(v) || 1;
         }
       },
-      currentNumericPage(v){
+      currentNumericPage(v) {
         //bbn.fn.log("CURRENT NUM PAGE", v);
         if (this.numericTimeout) {
           clearTimeout(this.numericTimeout);

@@ -5,18 +5,17 @@ import propagateDependencyChanges from "./propagateDependencyChanges.js";
  * Set the data properties of the object
  */
 export default function setData(cp, name, v) {
-  //bbn.fn.log(["SET DATA", cp, name, v]);
   // In the case the function is called litterally it creates 
   
   if (!Object.hasOwn(cp, name)) {
     return setUpData(cp, name, v);
   }
 
-  v = cp.$treatValue(v, name);
-  if (cp.$dataValues[name] !== v) {
+  if (cp.$dataCfg[name].value !== v) {
+    v = cp.$treatValue(v, name);
     let isMod = true;
     // Getting the bbnData object
-    let oldDataObj = bbnData.getObject(cp.$dataValues[name]);
+    let oldDataObj = bbnData.getObject(cp.$dataCfg[name].value);
     if (oldDataObj) {
       if (oldDataObj.isSame(v)) {
         isMod = false;
@@ -28,10 +27,10 @@ export default function setData(cp, name, v) {
     }
 
     if (isMod) {
-      cp.$dataValues[name] = v;
-      updateWatcher(cp, name, v);
+      cp.$dataCfg[name].value = v;
+      cp.$dataCfg[name].lastUpdate = bbn.fn.microtimestamp();
       propagateDependencyChanges(cp, name);
-      cp.$tick();
+      updateWatcher(cp, name);
     }
   }
 }

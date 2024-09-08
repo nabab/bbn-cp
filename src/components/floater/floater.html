@@ -75,6 +75,7 @@
       <div :class="{'bbn-100': !ready || !pageable, 'bbn-flex-fill': pageable}">
         <bbn-scroll :latency="latency"
                     ref="scroll"
+                    @ready="resizeAfterScroll"
                     @resizecontent="resizeAfterScroll"
                     :class="{'bbn-flex-fill': pageable}"
                     :scrollable="scrollable"
@@ -93,8 +94,9 @@
               bbn-html="content"
               :class="scrollable ? 'bbn-block' : 'bbn-overlay'"
               :style="HTMLStyle"/>
-          <bbn-list bbn-elseif="filteredData.length"
+          <bbn-list bbn-else
                     :mode="mode"
+                    :no-data="noData"
                     ref="list"
                     :suggest="suggest"
                     :source="filteredData"
@@ -117,7 +119,6 @@
                     :group-style="groupStyle"
                     :pageable="pageable"
                     :pager-element="pagerElement"/>
-          <h3 bbn-else bbn-text="noData"/>
         </bbn-scroll>
       </div>
       <div bbn-if="pageable && ready">
@@ -155,7 +156,7 @@
             class="bbn-w-100 bbn-button-group"
             ref="buttons">
       <bbn-button bbn-for="(b, i) in shownButtons"
-                  :key="i"
+                  :key="b?.key || i"
                   :ref="'button' + i"
                   @ready="t => focusable = t"
                   bbn-bind="b"/>

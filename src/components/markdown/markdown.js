@@ -177,7 +177,7 @@ const cpDef = {
         sideBySideFullscreen: false,
         nativeSpellcheck: this.cfg.nativeSpellCheck || false,
         spellChecker: this.cfg.spellChecker || false,
-        indentWithTabs: this.cfg.indentWithTabs === undefined ? true : this.cfg.indentWithTabs,
+        indentWithTab: this.cfg.indentWithTab === undefined ? true : this.cfg.indentWithTab,
         initialValue: this.value,
         autoDownloadFontAwesome: false,
         renderingConfig: {

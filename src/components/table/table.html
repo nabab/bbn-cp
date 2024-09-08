@@ -11,15 +11,14 @@
                    :source="toolbarButtons"
                    :slot-before="toolbarSlotBefore">
         <slot name="toolbar"></slot>
-        <template bbn-slot:right>
-          <div bbn-if="search"
-               class="bbn-hsmargin">
-            <bbn-input :nullable="true"
-                       button-right="nf nf-fa-search"
-                       class="bbn-wide"
-                       bbn-model="searchValue"/>
-           </div>
-        </template>
+        <div slot="right"
+             bbn-if="search"
+             class="bbn-hsmargin">
+          <bbn-input :nullable="true"
+                      button-right="nf nf-fa-search"
+                      class="bbn-wide"
+                      bbn-model="searchValue"/>
+        </div>
       </bbn-toolbar>
       <div bbn-elseif="typeof toolbar === 'function'"
            bbn-html="toolbar()"/>
@@ -27,8 +26,9 @@
                  :is="toolbar"/>
     </div>
     <div :class="['bbn-w-100', 'bbn-table-container', {'bbn-flex-fill': scrollable}]">
-      <div bbn-if="initStarted || isLoading"
-           class="bbn-overlay bbn-middle bbn-background"
+      <!--<div bbn-if="initStarted || isLoading"-->
+      <div bbn-if="initStarted || isResizing"
+           :class="['bbn-middle', 'bbn-background', 'bbn-text', 'bbn-padded', {'bbn-overlay': !!scrollable, 'bbn-w-100': !scrollable}]"
            style="z-index: 5">
         <bbn-loadicon class="bbn-vmiddle"
                       :size="24"/>
@@ -46,18 +46,17 @@
                ref="table"
                aria-describedby="table"
                class="bbn-table-table">
-          <colgroup>
-            <template bbn-for="(groupCol, groupIndex) in groupCols">
-              <col bbn-for="(col, i) in groupCol.cols"
-                  bbn-show="!col.hidden"
-                  :style="{width: col.realWidth + 'px'}"
-                  :key="groupIndex + '-'+ i">
-            </template>
+          <colgroup bbn-for="(groupCol, groupIndex) in groupCols">
+            <col bbn-for="(col, i) in groupCol.cols"
+                bbn-show="!col.hidden"
+                :style="{width: col.realWidth + 'px'}"
+                :key="groupIndex + '-'+ i">
           </colgroup>
           <thead bbn-if="titles" ref="thead">
             <tr bbn-if="titleGroups">
               <template bbn-for="(groupCol, groupIndex) in groupCols">
-                <th bbn-for="(col, i) in titleGroupsCells(groupIndex)"
+                <th bbn-if="!!groupCol.cols.length"
+                    bbn-for="(col, i) in titleGroupsCells(groupIndex)"
                     :colspan="col.colspan"
                     scope="colgroup"
                     :style="{
@@ -71,9 +70,7 @@
                       'bbn-table-fixed-cell-left': groupIndex === 0,
                       'bbn-table-fixed-cell-left-last': (groupIndex === 0) && !titleGroupsCells(groupIndex)[i+1],
                       'bbn-table-fixed-cell-right': groupIndex === 2,
-                      'bbn-table-cell-first': (groupIndex === 1)
-                        && titleGroupsCells(groupIndex).length
-                        && (i === 0)
+                      'bbn-table-cell-first': (groupIndex === 1) && (i === 0)
                     }]"
                     :title="col.text">
                   <component bbn-if="col.component"
@@ -82,8 +79,7 @@
                   <div class="bbn-100 bbn-table-title-group" bbn-else>
                     <div :class="[col.cls, 'bbn-ellipsis']"
                         :style="col.style"
-                        bbn-html="col.text"
-                    ></div>
+                        bbn-html="col.text"/>
                   </div>
                 </th>
               </template>

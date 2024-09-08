@@ -250,6 +250,25 @@ export default function normalizeComponent(cfg, clsName) {
 
         break;
 
+
+      /* Idea if we were putting a proxy on bbnCp;
+      case 'getter':
+        if (cfg.getter) {
+          bbn.fn.checkType(cfg.getter, 'function', bbn._("Getters be functions (check %s)", cn));
+          res.getter = cfg.getter;
+        }
+
+        break;
+
+      case 'setter':
+        if (cfg.getter) {
+          bbn.fn.checkType(cfg.setter, 'function', bbn._("Setters be functions (check %s)", cn));
+          res.setter = cfg.setter;
+        }
+
+        break;
+      */
+
       default:
         if (bbn.cp.hooks.includes(name)) {
           bbn.fn.each(bbn.fn.isArray(cfg[name]) ? cfg[name] : [cfg[name]], fn => {

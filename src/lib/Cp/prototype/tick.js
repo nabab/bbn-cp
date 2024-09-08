@@ -3,24 +3,19 @@ import bbnCp from "../Cp.js";
 /**
  * Add delay before another function call
  */
-bbnCp.prototype.$tick = function (fn) {
+bbnCp.prototype.$tick = function(...fns) {
   return new Promise(resolve => {
-    let idx = bbn.fn.search(bbn.cp.queue, {cp: this});
-    let fns = [];
-    if (idx === -1) {
-      bbn.cp.queue.push({cp: this, fns});
-      idx = bbn.cp.queue.length - 1;
-    }
-    else {
-      fns = bbn.cp.queue[idx].fns;
-    }
+    bbn.cp.queueUpdate({
+      component: this,
+      fn: async () => {
+        for (let i = 0; i < fns.length; i++) {
+          if (bbn.fn.isFunction(fns[i])) {
+            await fns[i]();
+          }
+        }
 
-    fns.push(() => {
-      if (fn) {
-        fn();
+        resolve();
       }
-
-      resolve();
     });
   });
 }

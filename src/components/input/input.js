@@ -214,7 +214,7 @@ const cpDef = {
   },
   methods: {
     clear(){
-      this.emitInput(this.prefix || '');
+      this.emitInput(this.prefix || (this.nullable ? null : ''));
       this.currentValue = '';
     },
     init(){
@@ -241,7 +241,25 @@ const cpDef = {
         v = this.prefix + v;
       }
 
-      this.emitInput(v);
+      this.emitInput(!v && this.nullable ? null : v);
+    },
+    /*
+    inputFieldUpdate() {
+      if (this.inputFieldUpdater !== undefined) {
+        clearTimeout(this.inputFieldUpdater);
+      }
+
+      this.inputFieldUpdater = setTimeout(() => {
+        const ele = this.getRef('element');
+        if (ele && (ele.value !== this.currentValue)) {
+          this.getRef('element').value = this.currentValue;
+        }
+      }, 50);
+    }*/
+    onInput(ev){
+      ev.stopPropagation();
+      ev.stopImmediatePropagation();
+      this.currentValue = ev.target.value;
     }
   },
   created() {
@@ -266,18 +284,19 @@ const cpDef = {
     },
     currentValue(v) {
       if (this.value !== (this.prefix || '') + this.currentValue) {
-        this.getRef('element').value = v;
         this.emitValue(v);
       }
     },
     required(v){
-      if (v) {
-        this.getRef('element').setAttribute('required', '');
+      const ele = this.getRef('element');
+      if (ele) {
+        if (v) {
+          ele.setAttribute('required', '');
+        }
+        else if (ele.hasAttribute('required')) {
+          ele.removeAttribute('required');
+        }
       }
-      else{
-        this.getRef('element').removeAttribute('required');
-      }
-
     },
     type(newVal) {
       this.init()

@@ -5,7 +5,7 @@ bbnData.prototype.isSame = function(obj) {
     return bbn.fn.isSame(obj, this.value);
   }
   else if (obj?.__bbnData) {
-    return bbn.fn.isSame(obj, this.data);
+    return bbn.fn.isSame(obj, this.targetData);
   }
 
   return false;

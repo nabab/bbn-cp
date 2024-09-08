@@ -1,4 +1,6 @@
+import bbnWatcher from "../../Watcher/Watcher.js";
 import bbnCp from "../Cp.js";
+import updateWatcher from "../private/updateWatcher.js";
 
 /**
  * Set the watcher for the given property.
@@ -9,21 +11,10 @@ import bbnCp from "../Cp.js";
 bbnCp.prototype.$watch = function (name, a) {
   const cp = this;
 
-  const val = bbn.fn.getProperty(cp, name);
-  let tmp = bbn.fn.createObject({
-    handler: (bbn.fn.isFunction(a) ? a : a.handler).bind(cp),
+  const handler = (bbn.fn.isFunction(a) ? a : a.handler).bind(cp);
+  const options = {
     immediate: a.immediate || false,
     deep: a.deep || false,
-    value: val,
-    hash: bbnData.hash(val),
-    num: 0
-  });
-  //bbn.fn.log(["WATCHING " + name, val, tmp])
-
-  cp.$watcher[name] = tmp;
-
-  // Returns a function to cancel the watcher
-  return () => {
-    delete cp.$watcher[name];
-  }
+  };
+  return bbnWatcher.setUp(cp, name, handler, options);
 }

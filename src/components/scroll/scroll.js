@@ -768,123 +768,11 @@ const cpDef = {
         }
       }
     },
-    /**
-     * Gets the dimensions after a resize
-     * @method getNaturalDimensions
-     * @fires getNaturalDimensions
-     */
-    getNaturalDimensions() {
-      let sc = this.find('bbn-scroll');
-      //bbn.fn.log(sc ? "THERE IS A SCROLL" : "THERE IS NO SCROLL");
-      const old = {
-        width: this.naturalWidth,
-        height: this.naturalHeight
-      }
-
-      if (this.isResizing) {
-        return;
-      }
-
-      if (this.scrollable) {
-        const content = this.getRef('scrollContent');
-        if (!content) {
-          return;
-        }
-
-        this.isResizing = true;
-        let oldWidth = this.$el.style.width;
-        let oldHeight = this.$el.style.height;
-        let oldcWidth = content.style.width;
-        let oldcHeight = content.style.height;
-        let oldVisibility = this.$el.style.visibility;
-        this.$el.style.width = this.maxWidth ? bbn.fn.formatSize(this.maxWidth) : '100%';
-        this.$el.style.height = this.maxHeight ? bbn.fn.formatSize(this.maxHeight) : '100%';
-        content.style.width = 'auto';
-        content.style.height = 'auto';
-        content.classList.add('resizing');
-        this.$el.style.visibility = 'hidden';
-        let hasOverlay = this.getRef('scrollContainer').classList.contains('bbn-overlay');
-        if (hasOverlay) {
-          this.getRef('scrollContainer').classList.remove('bbn-overlay');
-        }
-
-        let d = { width: content.offsetWidth, height: content.offsetHeight };
-        //bbn.fn.log(["NAT DIM " + JSON.stringify(d)])
-        if (!d.width || !d.height) {
-          if (sc && (sc.$el.clientWidth === this.$el.clientWidth) && (sc.$el.clientHeight === this.$el.clientHeight)) {
-            sc.getNaturalDimensions();
-            this.naturalWidth = sc.naturalWidth;
-            this.naturalHeight = sc.naturalHeight;
-          }
-          else {
-            this.naturalWidth = 0;
-            this.naturalHeight = 0;
-          }
-        }
-        else {
-          this.naturalWidth = d.width;
-          this.naturalHeight = d.height;
-        }
-        this.$el.style.width = oldWidth;
-        this.$el.style.height = oldHeight;
-        this.$el.style.visibility = oldVisibility;
-        content.style.width = oldcWidth;
-        content.style.height = oldcHeight;
-        content.classList.remove('resizing');
-        if (hasOverlay) {
-          this.getRef('scrollContainer').classList.add('bbn-overlay');
-        }
-        this.isResizing = false;
-      }
-      else {
-        if (sc && (sc.$el.clientWidth === this.$el.clientWidth) && (sc.$el.clientHeight === this.$el.clientHeight)) {
-          sc.getNaturalDimensions();
-          this.naturalWidth = sc.naturalWidth;
-          this.naturalHeight = sc.naturalHeight;
-        }
-        else {
-          this.naturalWidth = this.$el.offsetWidth;
-          this.naturalHeight = this.$el.offsetHeight;
-        }
-
-        //this.$forceUpdate();
-        if ((old.width !== this.naturalWidth) || (old.height !== this.naturalHeight)) {
-          if (old.width || old.height) {
-            this.$emit('resizecontent');
-            //bbn.fn.log({ w: this.naturalWidth, h: this.naturalHeight });
-          }
-        }
-      }
-    },
     hasX() {
       return this.scrollable && ((this.axis === 'both') || (this.axis === 'x'));
     },
     hasY() {
       return this.scrollable && ((this.axis === 'both') || (this.axis === 'y'));
-    },
-    /**
-     * @method initSize
-     * @fires getNaturalDimensions
-     * @fires onResize
-     */
-    async initSize() {
-      //window.bbn.fn.log("initSize");
-      //await this.$forceUpdate();
-      //throw Error("BOOOOOO");
-      this.getNaturalDimensions();
-      if (this.inFloater === null) {
-        this.inFloater = !!this.closest('bbn-floater');
-      }
-
-      if (this.inFloater && !this.naturalWidth && !this.disabled) {
-        return this.waitReady();
-      }
-      //bbn.fn.log(bbn._("Init size from %s with ID %s", this.$options.name, this.$cid));
-      this.scrollReady = true;
-      await this.onResize(true);
-      this.ready = true;
-      this.$emit('resizecontent');
-      return this.$forceUpdate();
     },
     /**
      * Handles the resize of the scroll
@@ -912,11 +800,14 @@ const cpDef = {
         if (!this.scrollable || !content || !container.clientWidth || !container.clientHeight) {
           return;
         }
+
+        this.isResizing = true;
+        await this.$forceUpdate();
         let x = ct.scrollLeft;
         let y = ct.scrollTop;
 
-        this.contentWidth = content.scrollWidth;
-        this.contentHeight = content.scrollHeight;
+        this.contentWidth = content.scrollWidth || content.offsetWidth;
+        this.contentHeight = content.scrollHeight || content.offsetHeight;
         this.containerWidth = container.clientWidth;
         this.containerHeight = container.clientHeight;
         // With scrolling on we check the scrollbars
@@ -983,9 +874,127 @@ const cpDef = {
             ct.scrollTop = this.currentY;
           }
 
+          this.isResizing = false;
         }
+
         this.$emit('resize');
       }
+    },
+    /**
+     * Gets the dimensions after a resize
+     * @method getNaturalDimensions
+     * @fires getNaturalDimensions
+     */
+    getNaturalDimensions() {
+      //bbn.fn.log(sc ? "THERE IS A SCROLL" : "THERE IS NO SCROLL");
+      const old = {
+        width: this.naturalWidth,
+        height: this.naturalHeight
+      }
+        
+      if (this.isResizing) {
+        return;
+      }
+          
+      let sc = this.find('bbn-scroll');
+      if (this.scrollable) {
+        const content = this.getRef('scrollContent');
+        if (!content) {
+          return;
+        }
+
+        this.isResizing = true;
+        let oldWidth = this.$el.style.width;
+        let oldHeight = this.$el.style.height;
+        let oldcWidth = content.style.width;
+        let oldcHeight = content.style.height;
+        this.$el.style.width = this.maxWidth ? bbn.fn.formatSize(this.maxWidth) : '100%';
+        this.$el.style.height = this.maxHeight ? bbn.fn.formatSize(this.maxHeight) : '100%';
+        content.style.width = 'auto';
+        content.style.height = 'auto';
+        content.classList.add('resizing');
+        let hasOverlay = this.getRef('scrollContainer').classList.contains('bbn-overlay');
+        if (hasOverlay) {
+          this.getRef('scrollContainer').classList.remove('bbn-overlay');
+        }
+
+        let d = { width: content.offsetWidth, height: content.offsetHeight };
+        if (!d.width || !d.height) {
+          if (sc && (sc.$el.clientWidth === this.$el.clientWidth) && (sc.$el.clientHeight === this.$el.clientHeight)) {
+            sc.getNaturalDimensions();
+            this.naturalWidth = sc.naturalWidth;
+            this.naturalHeight = sc.naturalHeight;
+          }
+          else {
+            this.naturalWidth = 0;
+            this.naturalHeight = 0;
+            // @mirko, this is wrong, by giving 0, we show we don't know the natural dimensions
+            // This causes the floater to open in full screen for the first time
+            //this.naturalWidth = this.$el.offsetWidth;
+            //this.naturalHeight = this.$el.offsetHeight;
+          }
+        }
+        else {
+          this.naturalWidth = d.width;
+          this.naturalHeight = d.height;
+        }
+        this.$el.style.width = oldWidth;
+        this.$el.style.height = oldHeight;
+        content.style.width = oldcWidth;
+        content.style.height = oldcHeight;
+        content.classList.remove('resizing');
+        if (hasOverlay) {
+          this.getRef('scrollContainer').classList.add('bbn-overlay');
+        }
+        this.isResizing = false;
+      }
+      else {
+        if (sc && (sc.$el.clientWidth === this.$el.clientWidth) && (sc.$el.clientHeight === this.$el.clientHeight)) {
+          sc.getNaturalDimensions();
+          this.naturalWidth = sc.naturalWidth;
+          this.naturalHeight = sc.naturalHeight;
+        }
+        else {
+          this.naturalWidth = this.$el.offsetWidth;
+          this.naturalHeight = this.$el.offsetHeight;
+        }
+
+        //this.$forceUpdate();
+        if ((old.width !== this.naturalWidth) || (old.height !== this.naturalHeight)) {
+          if (old.width || old.height) {
+            this.$emit('resizecontent');
+            //bbn.fn.log({ w: this.naturalWidth, h: this.naturalHeight });
+          }
+        }
+      }
+    },
+    /**
+     * @method initSize
+     * @fires getNaturalDimensions
+     * @fires onResize
+     */
+    async initSize() {
+      //window.bbn.fn.log("initSize");
+      //await this.$forceUpdate();
+      //throw Error("BOOOOOO");
+      if (this.inFloater === null) {
+        this.inFloater = !!this.closest('bbn-floater');
+      }
+      
+      if (!this.inFloater || !this.closest('bbn-floater').definedWidth || !this.closest('bbn-floater').definedHeight) {
+        await this.getNaturalDimensions();
+        if (this.inFloater && !this.naturalWidth && !this.disabled && !this.width) {
+          bbn.fn.log(["WAITING FOR FLOATER", this.inFloater, this.$el, this.scrollable, this.autoresize]);
+          return this.waitReady();
+        }
+        //bbn.fn.log(bbn._("Init size from %s with ID %s", this.$options.name, this.$cid));
+      }
+
+      this.scrollReady = true;
+      await this.onResize(true);
+      this.ready = true;
+      this.$emit('resizecontent');
+      return this.$forceUpdate();
     },
     /**
      * Creates a delay to set the scroll as ready
@@ -1008,12 +1017,12 @@ const cpDef = {
 
       clearTimeout(this.readyTimeout);
       this.readyTimeout = setTimeout(() => {
-        //bbn.fn.log("WAIT READY");
+        //bbn.fn.log("WAIT READY SCROLL");
         this.initSize();
       }, this.latency)
     },
     setObserver() {
-      if (false && !this.scrollObserver) {
+      if (this.$el.clientWidth && !this.scrollObserver) {
         this.scrollObserver = new MutationObserver(mutations_list => {
           let mutated = false;
           mutations_list.forEach(mutation => {
@@ -1079,8 +1088,9 @@ const cpDef = {
    */
   mounted() {
     this.setObserver();
-    this.ready = true;
-    this.waitReady();
+    setTimeout(() => {
+      this.waitReady();
+    }, 100);
     /*
     this.initSize().then(() => {
       this.scrollReady = true;

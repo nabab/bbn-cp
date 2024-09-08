@@ -26,11 +26,22 @@ export default function setUpProp(cp, name, cfg) {
 
   if (Object.hasOwn(cp.$cfg.props, name)) {
     if (!Object.hasOwn(cp.$props, name)) {
-      Object.defineProperty(cp.$props, name, {
-        value: undefined,
+      Object.defineProperty(cp.$propsCfg, name, {
+        value: bbn.fn.createObject({
+          value: undefined,
+          lastUpdate: 0
+        }),
         writable: false,
         enumerable: true,
-        configurable: true
+        configurable: false
+      });
+      Object.defineProperty(cp.$props, name, {
+        get() {
+          return cp.$propsCfg[name].value;
+        },
+        set(v) {
+          realSetProp(cp, name, v);
+        }
       });
     }
 

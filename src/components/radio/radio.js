@@ -13,7 +13,7 @@ const cpDef = {
    * @mixin bbn.cp.mixins.events
    *
    */
-  mixins:
+  mixins: 
   [
     bbn.cp.mixins.basic,
     bbn.cp.mixins.input,

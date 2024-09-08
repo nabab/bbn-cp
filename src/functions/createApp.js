@@ -22,72 +22,38 @@ export default async function createApp(ele, obj) {
     await import('@bbn/bbn-css/dist/css/bbn-css-' + (bbn.env.theme || 'default') + '.css');
   }
   
-  // Add prefix handling for component names.
-  // Define how to handle 'bbn-' prefixed components.
-  bbn.cp.addPrefix('bbn-', async components => {
-    const res = bbn.fn.createObject({
-      components: []
-    });
-    //bbn.fn.log("COMPONENTS", components);
-    for (let cp of components) {
-      if (cp === 'bbn-anon') {
-        continue;
-      }
-      // Request needs to be done as a string explicitly
-      // @see https://stackoverflow.com/questions/42908116/webpack-critical-dependency-the-request-of-a-dependency-is-an-expression
-      const definition = await import(
-        /* webpackChunkName: "components/[request]" */
-        `../components/${cp.substr(4)}/${cp.substr(4)}.js`
-      );
-      //bbn.fn.log(["DEFINITION", definition]);
-      for (let n in definition) {
-        if (n === 'default') {
-          res.components.push(definition.default);
-        }
-        else if (!window[n]) {
-          window[n] = definition[n];
-        }
-      }
-    }
-
-    return res;
-  });
-
-
-  /*
-  bbn.cp.addPrefix('appui-', async components => {
-    const urlPrefix = 'components/';
-    const url = urlPrefix + components.join('/') + '?v=3280&test=1&lang=fr';
-    // Request
-    const d = await bbn.fn.ajax(url, 'text');
-    let tmp;
-    try {
-      if (bbn.fn.isString(d.data)) {
-        tmp = (new Function('return ' + d.data + ';'))();
-      }
-    }
-    catch (e) {
-      throw Error(e);
-    }
-
-    const res = bbn.fn.createObject({
-      components: []
-    });
-
-    if (tmp.components) {
-      bbn.fn.each(tmp.components, obj => {
-        res.components.push(bbn.fn.createObject({
-          name: obj.name,
-          definition: eval(obj.script),
-          template: obj.content,
-          css: obj.css || null
-        }));
+  if (!bbn.cp.interval) {
+    // Add prefix handling for component names.
+    // Define how to handle 'bbn-' prefixed components.
+    bbn.cp.addPrefix('bbn-', async components => {
+      const res = bbn.fn.createObject({
+        components: []
       });
-    }
+      //bbn.fn.log("COMPONENTS", components);
+      for (let cp of components) {
+        if (cp === 'bbn-anon') {
+          continue;
+        }
+        // Request needs to be done as a string explicitly
+        // @see https://stackoverflow.com/questions/42908116/webpack-critical-dependency-the-request-of-a-dependency-is-an-expression
+        const definition = await import(
+          /* webpackChunkName: "components/[request]" */
+          `../components/${cp.substr(4)}/${cp.substr(4)}.js`
+        );
+        //bbn.fn.log(["DEFINITION", definition]);
+        for (let n in definition) {
+          if (n === 'default') {
+            res.components.push(definition.default);
+          }
+          else if (!window[n]) {
+            window[n] = definition[n];
+          }
+        }
+      }
 
-    return res;
-  });
-  */
+      return res;
+    });
+  }
 
   // If 'ele' is a string, find the corresponding HTML element.
   if (bbn.fn.isString(ele)) {
@@ -97,7 +63,7 @@ export default async function createApp(ele, obj) {
   // Check if 'ele' is a valid HTMLElement.
   bbn.fn.checkType(ele, HTMLElement, "The createApp function should be given a HTMLElement");
   // Its content is its template
-  let tmp = stringToTemplate(ele.outerHTML, true, 'bbn-anon');
+  let tmp = stringToTemplate(obj.template || ele.outerHTML, true, 'bbn-anon');
   const cpTpl = tmp.res;
   const cpMap = tmp.map;
   const schema = bbn.fn.clone(cpTpl[0]);
@@ -118,6 +84,12 @@ export default async function createApp(ele, obj) {
   if (!obj.mixins.includes(bbn.cp.mixins.basic)) {
     obj.mixins.push(bbn.cp.mixins.basic);
   }
+  bbn.fn.iterate(tmp.inlineTemplates, (tpl, tag) => {
+    if (!obj.components[tag]) {
+      throw Error("Impossible to find the sub component %s", tag);
+    }
+    obj.components[tag].template = tpl;
+  });
 
   // Freeze the component configuration.
   const cpCfg = Object.freeze(bbn.cp.normalizeComponent(obj, 'bbnCpRoot'));
@@ -140,6 +112,7 @@ export default async function createApp(ele, obj) {
     document.createElement("bbn-anon"),
     {
       bbnId: '0',
+      bbnConnected: true,
       bbnCfg: cpCfg,
       bbnTpl: cpTpl,
       bbnSlots: slots,
@@ -160,10 +133,11 @@ export default async function createApp(ele, obj) {
   });*/
 
   // Start the tick process for component updates.
-  bbn.cp.startTick();
+  if (!bbn.cp.interval) {
+    bbn.cp.startTick();
+  }
 
   // Return the bbn property of the component.
-  cp.bbn.$connected();
   return cp.bbn;
   
 }

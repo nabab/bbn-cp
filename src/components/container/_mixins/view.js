@@ -15,7 +15,9 @@ export default {
      */
     title: {
       type: [String, Number],
-      default: bbn._("Untitled")
+      default(){
+        return bbn._("Untitled");
+      }
     },
     /**
      * The options object of the component.
@@ -281,8 +283,8 @@ export default {
       get(){
         return this.currentView?.source || undefined;
       },
-      set(v){
-        if ( this.currentView ){
+      set(v) {
+        if ( this.currentView?.source !== v) {
           this.currentView.source = v;
         }
       }
@@ -651,7 +653,7 @@ export default {
      */
     setColor(bcolor, fcolor){
       if ( this.router ){
-        let view = this.router.getView(this.url);
+        let view = this.currentView;
         if (view) {
           if ( bcolor ){
             this.router.$set(view, "bcolor", bcolor);
@@ -673,24 +675,6 @@ export default {
     }
   },
   watch: {
-    currentView: {
-      deep: true,
-      handler(v, ov) {
-        if (v || ov) {
-          //bbn.fn.log("DEEP HANDLER ON VIEW", v, ov);
-          this.$tick();
-        }
-      }
-      /*
-      bbn.fn.iterate(v, (a, n) => {
-        let name = 'c' + bbn.fn.correctCase(n);
-        if (Object.hasOwn(this, name) && !bbn.fn.isSame(this[name], a)) {
-          this[name] = a;
-          bbn.fn.log("***************** CHANGING " + name + " IN CURRENT VIEW FOR " + this.url + " *****************")
-        }
-      });
-      */
-    },
     /**
      * The source of the component.
      * @prop {Object|Function} source
@@ -927,14 +911,13 @@ export default {
       }
     },
     /**
-     * @watch currentUrl
+     * @watch currentCurrent
      * @param {String} newVal 
      * @param {String} oldVal 
-     */
     currentCurrent(v) {
       if (this.subrouter && v) {
         //bbn.fn.log("currentCurrent", this.currentView, v);
-        this.subrouter.route(this.subrouter.parseURL(v));
+        this.subrouter.route(this.subrouter.parseURL(this.getFullURL()));
       }
   /*
       // Auto cancelling if it does not correspond to the url
@@ -945,12 +928,11 @@ export default {
       else if (this.router && this.router.$isInit && this.currentView && (this.currentView.current !== newVal)) {
         this.router.route(newVal)
       }
-      */
     },
+    */
     dirty(v){
-      let view = this.router.getView(this.url);
-      if (view) {
-        view.dirty = v;
+      if (this.currentView) {
+        this.currentView.dirty = v;
         this.router.retrieveDirtyContainers();
       }
     },

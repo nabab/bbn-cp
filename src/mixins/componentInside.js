@@ -16,10 +16,7 @@ const componentInside = {
      * @memberof componentInsideComponent
      */
     componentOptions: {
-      type: Object,
-      default(){
-        return {};
-      }
+      type: Object
     }
   }
 };

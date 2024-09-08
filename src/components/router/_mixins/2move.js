@@ -8,7 +8,9 @@ export default {
      */
     confirmLeave: {
       type: [Boolean, String, Function],
-      default: bbn._("Are you sure you want to discard the changes you made in this page?")
+      default(){
+        return bbn._("Are you sure you want to discard the changes you made in this page?");
+      }
     },
   },
   methods: {

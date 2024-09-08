@@ -498,7 +498,7 @@ const cpDef = {
               (
                 (bbn.fn.isNumber(this.maxLen) && (value.length >= parseInt(this.maxLen))) ||
                 ((this.size !== undefined) && bbn.fn.isNumber(this.size) && (value.length >= this.size)) ||
-                ((this.maxlength !== undefined) && bbn.fn.isNumber(this.maxlength) && (value.length >= parseInt(this.maxlength)))
+                ((this.maxlength !== undefined) && bbn.fn.isNumber(this.maxlength) && (parseInt(this.maxlength) > -1) && (value.length >= parseInt(this.maxlength)))
               )
             ){
               event.preventDefault()

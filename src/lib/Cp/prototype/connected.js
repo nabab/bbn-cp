@@ -4,7 +4,7 @@ import onHook from "../private/onHook.js";
 import init from "../private/init.js";
 import registerChild from "../private/registerChild.js";
 import updateData from "../private/updateData.js";
-import launch from "../private/launch.js";
+import generateNode from "../private/generateNode.js";
 import mapDependencies from "../../../internals/mapDependencies.js";
 
 /**
@@ -38,7 +38,22 @@ bbnCp.prototype.$connected = async function () {
   }
   if (Object.hasOwn(this, '$isInit')) {
     bbn.fn.log("WTF " + this.constructor.name);
+    return;
     throw Error("WTF " + this.constructor.name);
+  }
+
+  // Stopping propagation for internal events
+  for (const key in this.$el) {
+    /*
+    if (/^on/.test(key)) {
+      const eventType = bbn.fn.substr(key, 2);
+      this.$el.addEventListener(eventType, e => {
+        if (!e.bubbles && (bbn.fn.isInside(e.currentTarget, this.$el) || (this.$el === e.currentTarget))) {
+          e.stopPropagation();
+        }
+      });
+    }
+      */
   }
 
   init(this);
@@ -75,6 +90,14 @@ bbnCp.prototype.$connected = async function () {
     updateData(this);
   }
 
+  if (!this.$el.bbnDirectives) {
+    Object.defineProperty(this.$el, 'bbnDirectives', {
+      value: bbn.fn.createObject(),
+      writable: false,
+      configurable: false
+    });
+  }
+
   // Generates the evaluator function, will happen only once
   /*
   if (!this.$el.bbnEval && !this.$el.constructor.bbnEval) {
@@ -109,16 +132,20 @@ bbnCp.prototype.$connected = async function () {
   */
   mapDependencies(this);
 
-  // Setting $eval with the retrived/generated function
-  Object.defineProperty(this, '$eval', {
-    value: this.$el.bbnEval || this.$el.constructor.bbnEval,
-    writable: false,
-    configurable: false
-  });
-
-
-  // Sending created event
   if (!this.$isCreated) {
+    Object.defineProperty(this, '$lastBuild', {
+      value: 0,
+      writable: true
+    });
+
+    // If no template it's a functional component
+    if (this.$tpl['0']) {
+      Object.defineProperty(this, '$internal', {
+        value: generateNode(this.$tpl['0'], this, this.$internal),
+        writable: false,
+        configurable: false
+      });
+    }
     const created = new Event('hook:created');
     await onHook(this, 'created');
     this.$el.dispatchEvent(created);
@@ -130,7 +157,9 @@ bbnCp.prototype.$connected = async function () {
   }
 
   // Sets the current template schema and creates the DOM
-  await launch(this);
+  if (this.$internal) {
+    await this.$internal.init();
+  }
 
   // registering current object to parent and setting root
   if (this.$parent) {
@@ -141,6 +170,11 @@ bbnCp.prototype.$connected = async function () {
   const beforeMount = new Event('hook:beforemount');
   await onHook(this, 'beforeMount');
   this.$el.dispatchEvent(beforeMount);
+
+
+  bbn.fn.iterate(this.$cfg.watch, (a, name) => {
+    this.$watch(name, a);
+  });
 
   // $isInit, defined in constructor  is made writable before being set to true
   Object.defineProperty(this, '$isInit', {

@@ -10,10 +10,11 @@
          @change="toggle"
          :checked="state"
          ref="element"
-         tabindex="0"
          style="display: none">
   <label class="bbn-checkbox-label bbn-iflex bbn-vmiddle"
-         :for="id">
+         :tabindex="tabindex || '0'"
+         :for="id"
+         @keydown.space.enter.stop.prevent="$event.target.click()">
     <component bbn-if="component"
                :is="component"
                bbn-bind="componentOptions"

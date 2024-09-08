@@ -5,13 +5,7 @@ import { bbn } from "@bbn/bbn";
  */
 class bbnData/* extends EventTarget*/ {
 
-  /**
-   * Returns a unique identifier from any type of value (hashes only simple objects and arrays)
-   * 
-   * @param {*} v Value to hash
-   * @returns {String} The hash
-   */
-  static hash = bbn.fn.hash;
+  static lastSequence = null;
 
   static inventory = new Map();
 
@@ -21,40 +15,11 @@ class bbnData/* extends EventTarget*/ {
 
   static watchStarted = false;
 
-  static lastSequence = null;
-
   static stoppers = [];
 
-  static startWatching() {
-    const currentSequence = this.watchSequence.splice(0, this.watchSequence.length);
-    this.stoppers.push(() => {
-      this.watchSequence.splice(0, 0, ...currentSequence);
-    });
-    if (!this.isWatching) {
-      this.lastSequence = null;
-    this.isWatching = true;
-  }
-  }
+  static queue = [];
 
-  static stopWatching() {
-    const res = this.watchSequence.splice(0, this.watchSequence.length);
-    this.lastSequence = res.length ? res[res.length - 1] : null;
-    this.stoppers.pop()();
-    this.isWatching = !!this.stoppers.length;
-    return res;
-  }
-
-  static getLastUsed() {
-    return this.lastSequence;
-  }
-
-  static addSequence(cp, name, data) {
-    if (this.watchStarted && (bbn.fn.isString(name) || bbn.fn.isInt(name))) {
-      this.watchSequence.push({cp, name, data});
-    }
-  }
-
-
+  #uid;
   /**
    * Constructor
    * @param {Object} data A regular object or array i.e. it mustn't be a class instance
@@ -90,6 +55,7 @@ class bbnData/* extends EventTarget*/ {
       throw Error("parent must be a bbnData");
     }
 
+    this.#uid = bbn.fn.randomString();
     /**
      * @var {Symbol} id The unique id of the bbnData object
      */
@@ -124,7 +90,7 @@ class bbnData/* extends EventTarget*/ {
     /**
      * @var {Object|Array} data The original data object
      */
-    Object.defineProperty(this, 'data', {
+    Object.defineProperty(this, 'targetData', {
       value: data,
       writable: false,
       configurable: true
@@ -134,7 +100,7 @@ class bbnData/* extends EventTarget*/ {
      * @var {Proxy} value The proxy takes care of subreactivity
      */
     Object.defineProperty(this, 'value', {
-      value: new Proxy(this.data, this.constructor.proxy(component, path, this)),
+      value: new Proxy(this.targetData, this.constructor.proxy(component, path, this)),
       writable: false,
       configurable: false
     });
@@ -151,8 +117,8 @@ class bbnData/* extends EventTarget*/ {
     /**
      * @var {String} old The hash of the data object
      */
-    Object.defineProperty(this, 'old', {
-      value: bbn.fn.hash(data),
+    Object.defineProperty(this, 'lastUpdate', {
+      value: 0,
       writable: true,
       configurable: true
     });
@@ -191,10 +157,18 @@ class bbnData/* extends EventTarget*/ {
 
     // If the object has a parent, the current object is added to the parent's children
     if (parent) {
-      //bbn.fn.log(bbn._("ADDING CHILDREN for %s : %s", path.toString ? path.toString() : path || '<unknown>', JSON.stringify(this.data)))
+      //bbn.fn.log(bbn._("ADDING CHILDREN for %s : %s", path.toString ? path.toString() : path || '<unknown>', JSON.stringify(this.targetData)))
       parent.children.push(this);
     }
 
+  }
+
+  get root() {
+    return this.refs[this.refs.length - 1]
+  }
+
+  get uid() {
+    return this.root.component.$cid + '-' + this.root.component.path + '-' + this.#uid;
   }
 }
 

@@ -203,10 +203,12 @@ const cpDef = {
        */
       mouseover(idx){
         if ( !bbn.fn.isMobile() && (this.visibleText !== idx) ){
+          bbn.fn.log("OVER", idx);
           clearTimeout(this.timeout);
           this.visibleText = -1;
           this.timeout = setTimeout(() => {
             this.visibleText = idx;
+            bbn.fn.log("OVER OK", idx);
           }, 500);
         }
       },
@@ -215,6 +217,7 @@ const cpDef = {
        * @method mouseout
        */
       mouseout(){
+        bbn.fn.log("OUT", this.visibleText);
         clearTimeout(this.timeout);
         this.visibleText = -1;
       },

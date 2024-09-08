@@ -51,6 +51,7 @@
                 ref="form"
                 @submit="onSubmit"
                 @success="onAfterSubmit"
+                @failure="onFailureSubmit"
                 key="form"
                 :validation="validation"
                 class="bbn-w-100">
@@ -157,6 +158,10 @@
                         @click="$refs.form.submit()"
                         :text="_('Send')"/>
           </div>
+        </div>
+        <div class="bbn-w-100 bbn-top-sspace"
+             :style="{visibility: isLoading ? 'visible' : 'hidden'}">
+          <bbn-loadicon />
         </div>
       </bbn-form>
     </div>

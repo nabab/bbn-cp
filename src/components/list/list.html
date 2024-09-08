@@ -10,7 +10,8 @@
   </div>
   <ul bbn-if="filteredData.length && ready"
       :class="['bbn-menulist', mode]">
-    <template bbn-for="(li, idx) in filteredData">
+    <template bbn-for="(li, idx) in filteredData"
+              :key="uid || sourceValue ? li.data[uid || sourceValue] || idx : idx">
       <li bbn-if="groupable
             && (!pageable
               || ((idx >= start)
@@ -37,12 +38,13 @@
           :ref="'li' + idx"
           :key="uid ? li.data[uid] : li.key"
           @click.prevent.stop="select(idx)"
+          @mouseup.stop
           :class="{
             'bbn-no-padding': !!component,
             'bbn-state-default': true,
             'bbn-disabled': !component && !!li.data && !!li.data.disabled,
             'bbn-state-selected': isSelected(idx),
-            'bbn-state-hover': (overIdx === idx),
+            'bbn-state-hover': (overIdx === idx) && !isSelected(idx),
             'bbn-alt': alternateBackground && (idx % 2)
           }">
         <component bbn-if="currentComponent"
@@ -66,7 +68,7 @@
           <span bbn-if="hasIcons"
                 class="space bbn-c bbn-iblock">
             <i bbn-if="li.data[sourceIcon]"
-               :class="'bbn-m ' + li.data[sourceIcon]"></i>
+               :class="'bbn-m ' + li.data[sourceIcon]"/>
           </span>
           <span class="text"
                 bbn-html="li.data[sourceText]"></span>

@@ -13,29 +13,38 @@ import bbn from "@bbn/bbn";
  * @throws {Error} Throws an error if the argument cannot be resolved.
  */
 export default function treatArgument(cp, a, hash, data) {
+  let done = false;
+  let v;
   // Check if the argument is a key in the component's current results and the hash exists.
   if (hash && bbn.fn.isObject(cp.$expResults[a]) && Object.hasOwn(cp.$expResults[a], hash)) {
     // Return the value from the component's current results.
-    return cp.$expResults[a][hash].value;
+    done = true;
+    v = cp.$expResults[a][hash].value;
   }
   // Check if the argument is a key in the provided data.
   else if (Object.hasOwn(data || {}, a)) {
     // Return the value from the provided data.
-    return data[a];
+    done = true;
+    v = data[a];
   }
   // Check if the argument corresponds to a function in the component.
   else if (bbn.fn.isFunction(cp[a])) {
     // Return the function bound to the component's context.
-    return cp[a].bind(cp);
+    done = true;
+    v = cp[a].bind(cp);
   }
   // Check if the component has a property or method with the given argument name.
   else if (cp.$has(a)) {
     // Return the property or method from the component.
-    return cp[a];
+    done = true;
+    v = cp[a];
   }
+
   // If none of the above conditions are met, throw an error.
-  else {
+  if (!done) {
     bbn.fn.log([hash, data]);
     throw Error(bbn._("Impossible to find the argument %s in component %s", a, cp.$options.name));
   }
+
+  return v;
 }

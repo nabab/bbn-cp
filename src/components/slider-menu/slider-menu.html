@@ -7,8 +7,7 @@
        :style="getStyle(item)">
     <bbn-scroll :scrollable="item.visible">
       <ul bbn-if="item.data && item.data.length && ready"
-          class="bbn-menulist"
-      >
+          class="bbn-menulist">
         <li bbn-if="index > 0" class="bbn-state-default" @click="unselect">
           <span class="bbn-w-100 bbn-vxspadded bbn-hspadded">
             <!--span class="space" bbn-if="hasIcons"></span-->

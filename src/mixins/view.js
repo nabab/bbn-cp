@@ -17,7 +17,9 @@ const view = {
      */
     title: {
       type: [String, Number],
-      default: bbn._("Untitled")
+      default(){
+        return bbn._("Untitled");
+      }
     },
     /**
      * The options object of the component.
@@ -179,15 +181,6 @@ const view = {
      * @memberof viewComponent
      */
     script: {},
-    /**
-     * Defines if the component has to be static.
-     * @prop {Boolean|Number} [false] static
-     * @memberof viewComponent
-     */
-    static: {
-      type: [Boolean, Number],
-      default: false
-    },
     /**
      * Defines
      if the component has to be pinned.

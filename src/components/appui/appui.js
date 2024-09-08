@@ -764,6 +764,7 @@ const cpDef = {
     }
     else {
       window.appui = this;
+      bbn.env.loadersHistory = this.loaders;
       this.componentClass.push('bbn-resize-emitter', 'bbn-observer');
       this.cool = true;
 
@@ -1006,7 +1007,6 @@ const cpDef = {
   }
 };
 
-import bbn from '@bbn/bbn';
 import cpHtml from './appui.html';
 import cpStyle from './appui.less';
 let cpLang = {};
@@ -1017,7 +1017,6 @@ if (bbn.env.lang) {
     if (cpLang.default) {
       cpLang = cpLang.default;
     }
-
   }
   catch (err) { }
 }

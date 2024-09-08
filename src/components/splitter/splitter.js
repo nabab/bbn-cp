@@ -110,7 +110,11 @@ const cpDef = {
          * The configuration of the panes.
          * @data {Array} [[]] panes
          */
-        panes: []
+        panes: [],
+        /**
+         * @data {Boolean} [false] isInitiating
+         */
+        isInitiating: false
       };
     },
     computed: {
@@ -240,7 +244,7 @@ const cpDef = {
                 else if ( a.value ){
                   if ( a.addedSize || diff ){
                     sz += 'calc( ';
-                    sz += a.value + (a.isNumber ? 'px' : '');
+                    sz += a.value + (a.isNumber ? 'px' : (a.isPercent ? '%' : ''));
                     if ( diff ){
                       sz += ' + ' + diff + 'px';
                     }
@@ -250,7 +254,7 @@ const cpDef = {
                     sz += ')';
                   }
                   else if ( a.value ){
-                    sz += a.value + (a.isNumber ? 'px' : '');
+                    sz += a.value + (a.isNumber ? 'px' : (a.isPercent ? '%' : ''));
                   }
                 }
                 else {
@@ -299,16 +303,18 @@ const cpDef = {
             }
           }
           /** @todo so far only fuckin way to make it re-render the right dimensions */
-          let w = this.$el.style.width;
-          let h = this.$el.style.height;
-          this.$el.style.width = '100%';
-          this.$el.style.height = '100%';
-          setTimeout(() => {
-            this.$el.style.width = w;
-            this.$el.style.height = h;
-            this.isResizing = false;
-            this.$emit('resize');
-          }, 100)
+          window.requestAnimationFrame(() => {
+            let w = this.$el.style.width;
+            let h = this.$el.style.height;
+            this.$el.style.width = '100%';
+            this.$el.style.height = '100%';
+            window.requestAnimationFrame(() => {
+              this.$el.style.width = w;
+              this.$el.style.height = h;
+              this.isResizing = false;
+              this.$emit('resize');
+            })
+          })
         }
       },
       /**
@@ -396,11 +402,11 @@ const cpDef = {
        * @fires getPrevCollapsible
        * @fires getNextCollapsible
        */
-      init(){
+      async init(){
         // As we want to execute it only once and as it is triggered multiple times (by each pane)
         // We add a timeout which cancels the previous one so it should be only triggered once at mount
         clearTimeout(this.initTimeout);
-        this.initTimeout = setTimeout(() => {
+        this.initTimeout = setTimeout(async () => {
           // Emptying the panes array if it's filled
           this.panes.splice(0, this.panes.length);
           // position starts at 1
@@ -410,9 +416,10 @@ const cpDef = {
               hasPercent      = false,
               hasResizers     = false;
           // If 1st pane is collapsible we add a resizer at the start
-          this.$children.forEach((pane, i) => {
+          this.$slots.default.forEach((paneEle, i) => {
+            let pane = paneEle.bbn;
             // Defining the panes base on the content
-            if ( pane.$options.name === 'bbn-pane' ){
+            if ( pane?.$options?.name === 'bbn-pane' ){
               let isPercent   = false,
                   isFixed     = false,
                   isNumber    = false,
@@ -422,6 +429,7 @@ const cpDef = {
                   value       = parseInt(props.size) || 0;
               if ( props.size ){
                 isFixed = true;
+                //bbn.fn.log("SPLITTER SIZE", props.size);
                 if ( props.size === 'auto' ){
                   props.size = false;
                   hasAuto = true;
@@ -574,7 +582,7 @@ const cpDef = {
             throw bbn._('In a resizable splitter, if a pane has a percentage measure, at least one pane must be meausreless or set at "auto"');
           }
           else {
-            this.$forceUpdate();
+            await this.$forceUpdate();
             this.ready = true;
             this.selfEmit(true);
           }

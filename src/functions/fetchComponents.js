@@ -80,6 +80,7 @@ export default async function fetchComponents(toDefine) {
   });
 
   // Process each group of components.
+  const r = {};
   for (let prefix in groups) {
     const rule = groups[prefix];
     let res = await rule.handler(rule.components);
@@ -89,6 +90,10 @@ export default async function fetchComponents(toDefine) {
       bbn.fn.each(res.components, obj => {
         if (!obj.definition || !obj.name) {
           throw Error(bbn._("Impossible to find a definition or a name in %s", rule.prefix));
+        }
+
+        if (obj.lang) {
+          bbn.fn.translate(obj.lang);
         }
 
         // Add mixins to the component definition.
@@ -102,8 +107,10 @@ export default async function fetchComponents(toDefine) {
         }
 
         // Define the component using bbn.cp.define.
-        bbn.cp.define(obj.name, obj.definition, obj.template, obj.css);
+        r[obj.name] = bbn.cp.define(obj.name, obj.definition, obj.template, obj.css);
       });
     }
   }
+
+  return r;
 }

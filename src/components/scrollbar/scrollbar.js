@@ -340,7 +340,7 @@ const cpDef = {
           // Movement in pixel
           let newStart = this.isVertical ? e.pageY : e.pageX;
           let movement = newStart - this.start;
-          bbn.fn.warning(newStart + '/' + movement);
+          //arning(newStart + '/' + movement);
           if ( movement && this.setSliderPos(this.sliderPos + movement)) {
             this.adjustFromBar();
           }
@@ -560,9 +560,6 @@ const cpDef = {
      * @method initContainer
      */
     initContainer(){
-      if ( !this.realContainer && this.realScroller?.getRef ){
-        this.realContainer = this.realScroller.getRef('scrollContainer');
-      }
       if ( this.realContainer && !this.isInit ){
         this.onResize();
         this.isInit = true;

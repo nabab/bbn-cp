@@ -103,7 +103,9 @@ const cpDef = {
        */
       confirmLeave: {
         type: [Boolean, String, Function],
-        default: bbn._("Are you sure you want to discard the changes you made in this form?")
+        default(){
+          return bbn._("Are you sure you want to discard the changes you made in this form?");
+        }
       },
       /**
        * The url contacted when submitting the form.
@@ -190,7 +192,9 @@ const cpDef = {
        */
       submitText: {
         type: String,
-        default: bbn._('Submit')
+        default(){
+          return bbn._('Submit');
+        }
       },
       /**
        * The form's text on cancel button.
@@ -199,7 +203,9 @@ const cpDef = {
        */
       cancelText: {
         type: String,
-        default: bbn._('Cancel')
+        default(){
+          return bbn._('Cancel');
+        }
       },
       /**
        * The form's text on reset button.
@@ -208,7 +214,63 @@ const cpDef = {
        */
       resetText: {
         type: String,
-        default: bbn._('Reset')
+        default(){
+          return bbn._('Reset');
+        }
+      },
+      /**
+       * The submit button's icon.
+       *
+       * @prop {String} ['nf nf-fa-check_circle'] submitIcon
+       */
+      submitIcon: {
+        type: String,
+        default: 'nf nf-fa-check_circle'
+      },
+      /**
+       * The cancel button's icon.
+       *
+       * @prop {String} ['nf nf-fa-times_circle'] cancelIcon
+       */
+      cancelIcon: {
+        type: String,
+        default: 'nf nf-fa-times_circle'
+      },
+      /**
+       * The reset button's icon.
+       *
+       * @prop {String} ['nf nf-fa-refresh'] resetIcon
+       */
+      resetIcon: {
+        type: String,
+        default: 'nf nf-fa-refresh'
+      },
+      /**
+       * The submit button's icon position.
+       *
+       * @prop {String} ['left'] submitIconPosition
+       */
+      submitIconPosition: {
+        type: String,
+        default: 'left'
+      },
+      /**
+       * The cancel button's icon position.
+       *
+       * @prop {String} ['left'] cancelIconPosition
+       */
+      cancelIconPosition: {
+        type: String,
+        default: 'left'
+      },
+      /**
+       * The reset button's icon position.
+       *
+       * @prop {String} ['left'] resetIconPosition
+       */
+      resetTextPosition: {
+        type: String,
+        default: 'left'
       },
       /**
        * The proper data used in the form.
@@ -323,7 +385,7 @@ const cpDef = {
          */
         popupIndex: false,
         tab: false,
-        originalData: bbn.fn.clone(this.source),
+        _originalData: JSON.stringify(this.source || {}),
         isPosted: false,
         isLoading: false,
         currentSchema: currentSchema,
@@ -334,11 +396,13 @@ const cpDef = {
         canSubmit: false,
         canCancel: false,
         sourceTimeout: 0,
-        isClosing: false,
-        realButtons: []
+        isClosing: false
       };
     },
     computed: {
+      originalData() {
+        return JSON.parse(this._originalData);
+      },
       /**
        * Returns true if the form has a footer.
        *
@@ -392,6 +456,68 @@ const cpDef = {
             height: height + 'px'
           };
         }
+      },
+      realButtons() {
+        const r = [];
+        bbn.fn.each(this.buttons, a => {
+          let t = typeof(a);
+          let obj;
+          if ( t === 'string' ){
+            switch ( a ){
+              case 'cancel':
+                obj = {
+                  preset: 'cancel',
+                  text: this.cancelText,
+                  icon: this.cancelIcon,
+                  iconPosition: this.cancelIconPosition,
+                  action: () => {
+                    this.cancel();
+                  },
+                  disabled: !this._canCancel()
+                };
+                break;
+              case 'reset':
+                obj = {
+                  preset: 'reset',
+                  text: this.resetText,
+                  icon: this.resetIcon,
+                  iconPosition: this.resetIconPosition,
+                  action: () => {
+                    this.reset();
+                  },
+                  disabled: !this.dirty && !this.prefilled
+                };
+                break;
+              case 'submit':
+                obj = {
+                  preset: 'submit',
+                  text: this.submitText,
+                  icon: this.submitIcon,
+                  iconPosition: this.submitIconPosition,
+                  action: () => {
+                    this.submit();
+                  },
+                  disabled: !this.canSubmit
+                };
+                break;
+            }
+          }
+          else if ( t === 'object' ){
+            obj = bbn.fn.clone(a);
+            if ( (typeof a.action === 'string') && bbn.fn.isFunction(this[a.action]) ){
+              obj.action = this[a.action];
+            }
+          }
+
+          if (obj) {
+            if (this.isLoading) {
+              obj.disabled = true;
+            }
+            r.push(obj);
+          }
+        });
+
+        return r;
       }
     },
     methods: {
@@ -401,104 +527,13 @@ const cpDef = {
        * @computed realButtons
        * @return {Array}
        */
-      updateRealButtons(full) {
-        if (full) {
-          this.realButtons.splice(0, this.realButtons.length);
-        }
-
-        let change = full;
-        if (!this.realButtons.length && this.buttons?.length) {
-          const r = [];
-          bbn.fn.each(this.buttons, a => {
-            let t = typeof(a);
-            let obj;
-            if ( t === 'string' ){
-              switch ( a ){
-                case 'cancel':
-                  obj = {
-                    preset: 'cancel',
-                    text: this.cancelText,
-                    icon: 'nf nf-fa-times_circle',
-                    action: () => {
-                      this.cancel();
-                    },
-                    disabled: !this._canCancel()
-                  };
-                  break;
-                case 'reset':
-                  obj = {
-                    preset: 'reset',
-                    text: this.resetText,
-                    icon: 'nf nf-fa-refresh',
-                    action: () => {
-                      this.reset();
-                    },
-                    disabled: !this.dirty && !this.prefilled
-                  };
-                  break;
-                case 'submit':
-                  obj = {
-                    preset: 'submit',
-                    text: this.submitText,
-                    icon: 'nf nf-fa-check_circle',
-                    action: () => {
-                      this.submit();
-                    },
-                    disabled: !this.canSubmit
-                  };
-                  break;
-              }
-            }
-            else if ( t === 'object' ){
-              if ( (typeof a.action === 'string') && bbn.fn.isFunction(this[a.action]) ){
-                a.action = this[a.action];
-              }
-              obj = a;
-            }
-
-            if (obj) {
-              if (this.isLoading) {
-                obj.disabled = true;
-              }
-              r.push(obj);
-            }
-          });
-          this.realButtons.push(...r);
-        }
-        else if (this.realButtons.length) {
-          bbn.fn.map(bbn.fn.filter(this.realButtons, a => {
-            if (a.preset === 'cancel') {
-              let disabled = !this._canCancel();
-              if (a.disabled !== disabled) {
-                a.disabled = disabled;
-                change = true;
-              }
-            }
-            else if (a.preset === 'reset') {
-              let disabled = !this.dirty && !this.prefilled;
-              if (a.disabled !== disabled) {
-                a.disabled = disabled;
-                change = true;
-              }
-            }
-            else if (a.preset === 'submit') {
-              let disabled = !this._canSubmit();
-              bbn.fn.log(["Checking submit", disabled, a.disabled])
-              if (a.disabled !== disabled) {
-                a.disabled = disabled;
-                change = true;
-              }
-            }
-          }));
-        }
-
-        if (change && this.window && bbn.fn.isArray(this.window.currentButtons) && (this.currentMode === 'big')) {
-          this.window.currentButtons.splice(0, this.window.currentButtons.length, ...this.realButtons);
-          this.window.$forceUpdate().then(() => this.window.onResize());
-        }
-
-        if (change) {
-          this.$forceUpdate();
+      updateRealButtons() {
+        this.$forceUpdate();
+        if (this.window && bbn.fn.isArray(this.window.currentButtons) && (this.currentMode === 'big')) {
+          if (this.window.currentButtons !== this.realButtons) {
+            this.window.currentButtons = this.realButtons;
+            this.window.$forceUpdate().then(() => this.window.onResize());
+          }
         }
 
         return this.realButtons;
@@ -531,26 +566,24 @@ const cpDef = {
           let method = this.blank || this.self || this.target ? 'postOut' : 'post';
           this[method](this.action, data, d => {
             if (d && (d.success === false)) {
+              if (this.failureMessage) {
+                this.alert(bbn.fn.isFunction(this.failureMessage) ? this.failureMessage(d) : this.failureMessage);
+              }
+              else {
+                this.alert(bbn._("An error occurred"));
+              }
 
-
+              this.isLoading = false;
             }
             else if (d) {
               let e = new Event('success', {cancelable: true});
               this.$emit('success', d, e);
               if (!e.defaultPrevented) {
-                this.originalData = bbn.fn.clone(this.source || {});
-                if (this.successMessage && p) {
-                  p.alert(this.successMessage);
-                  bbn.fn.info(this.successMessage, p);
+                this.commitData();
+                if (this.successMessage) {
+                  this.alert(bbn.fn.isFunction(this.successMessage) ? this.successMessage(d) : this.successMessage);
                 }
-  
-                /*
-                if ( this.sendModel && this.source ){
-                  this.originalData = bbn.fn.extend(true, {}, this.source || {});
-                }
-                */
-  
-                this.dirty = false;
+
                 this.isLoading = false;
                 this.update();
 
@@ -568,11 +601,12 @@ const cpDef = {
           } : (this.self ? '_self' : (this.blank ? '_blank' : this.target)));
         }
         else{
-          this.originalData = bbn.fn.clone(this.source);
+          this.commitData();
           let e = new Event('success', {cancelable: true});
           this.$emit('success', this.source, e);
+          // ?????
           if ( this.sendModel ){
-            this.originalData = bbn.fn.clone(this.source);
+            this.commitData();
           }
           this.dirty = false;
           this.isLoading = false;
@@ -582,6 +616,10 @@ const cpDef = {
             }
           }
         }
+      },
+      commitData() {
+        this._originalData = JSON.stringify(this.source || {});
+        this.dirty = false;
       },
       /**
        * Executes the action given to the button.
@@ -603,7 +641,7 @@ const cpDef = {
         let data = this.getData(this.$el) || {},
             res = {};
         for ( let n in data ){
-          if ( (this.sendModel && (data[n] !== this.originalData[n])) || (!this.sendModel && (data[n] != this.originalData[n])) ){
+          if (!bbn.fn.isSame(this.originalData[n], data[n])) {
             res[n] = data[n];
           }
         }
@@ -700,7 +738,7 @@ const cpDef = {
             if ((bbn.fn.isFunction(ele.isValid) && !ele.isValid(ele, callValidation))
               || (bbn.fn.isFunction(ele.validation) && !ele.validation())
             ) {
-              bbn.fn.log("PROB", ele);
+              //bbn.fn.log("VALIDITY PROB", ele);
               ok = false;
               if (bbn.fn.isNull(firstFound)) {
                 firstFound = ele;
@@ -831,7 +869,7 @@ const cpDef = {
        * 
        */
       reinit(){
-        this.originalData = JSON.parse(JSON.stringify(this.source));
+        this._originalData = JSON.stringify(this.source);
         this.dirty = this.isModified();
       },
       focusFirst(fromLast){
@@ -909,7 +947,6 @@ const cpDef = {
         return this.$el.reportValidity();
       },
       update() {
-        bbn.fn.warning("update");
         this.canCancel = this._canCancel();
         this.canSubmit = this._canSubmit();
       }
@@ -1029,6 +1066,7 @@ const cpDef = {
       source: {
         deep: true,
         handler() {
+          //bbn.fn.log("SOURCE CHANGED", JSON.stringify(this.getModifications()));
           this.dirty = this.isModified();
           this.canSubmit = this._canSubmit();
           if (this.storage) {
@@ -1052,8 +1090,8 @@ const cpDef = {
        */
       buttons: {
         deep: true,
-        handler(){
-          if ( this.isInit ){
+        handler() {
+          if (this.isInit) {
             this.updateRealButtons(true);
           }
         }

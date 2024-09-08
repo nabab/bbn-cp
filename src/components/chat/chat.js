@@ -964,7 +964,7 @@ const cpDef = {
            * @data {bbnCp} chat
            * @memberof chat
            */
-          cp: cp,
+          cp,
           /**
            * Indicates if a loading is in progress
            * @data {Boolean} [false] isLoading
@@ -1362,7 +1362,7 @@ const cpDef = {
            * @data {bbnCp} cp
            * @memberof user
            */
-          cp: cp
+          cp
         }
       }
     },
@@ -1424,7 +1424,7 @@ const cpDef = {
            * @data {bbnCp} cp
            * @memberof active
            */
-          cp: cp
+          cp
         }
       },
       computed: {
@@ -1999,7 +1999,7 @@ const cpDef = {
            * @data {bbnCp} cp
            * @memberof newGroup
            */
-          cp: cp,
+          cp,
           /**
            * The chat info
            * @data {Object} chat

@@ -269,6 +269,26 @@ const cpDef = {
         if (newValue !== this.state) {
           this.toggle();
         }
+      },
+      modelValue(newValue) {
+        if (newValue !== this.state) {
+          if (this.strict) {
+            if (newValue === this.value) {
+              this.state = true;
+            }
+            else if (newValue === this.novalue) {
+              this.state = false;
+            }
+          }
+          else {
+            if (newValue == this.value) {
+              this.state = true;
+            }
+            else if (newValue == this.novalue) {
+              this.state = false;
+            }
+          }
+        }
       }
     }
   };

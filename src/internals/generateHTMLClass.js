@@ -3,10 +3,10 @@
  * Assumes that tpl, cfg, and others are defined in bbn.cp.statics.
  *
  * @param {String} name - The name of the class to generate.
- * @param {Function} clsExtends - The class to extend, defaults to bbnHTML.
+ * @param {Function} clsExtends - The class to extend, defaults to bbnHtml.
  * @returns {Class} - The dynamically created class.
  */
-export default function generateHTMLClass(name, clsExtends = bbnHTML) {
+export default function generateHtmlClass(name, clsExtends = bbnHtml) {
   // Convert the class name from camel case to CSS-style (kebab-case).
   const eleName = bbn.fn.camelToCss(name);
 

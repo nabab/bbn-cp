@@ -7,10 +7,9 @@ import bbnData from "../Data.js";
  * @param {*} path 
  * @returns 
  */
-bbnData.proxyPush = function(target, component) {
+bbnData.proxyPush = function(targetObj, target, component) {
   return (...args) => {
     // The bbnData object of the target array
-    const targetObj = this.getObject(target);
     let newArgs = [];
     bbn.fn.each(args, (a, i) => {
       const idx = target.length + i;
@@ -20,7 +19,7 @@ bbnData.proxyPush = function(target, component) {
     const res = target.push(...newArgs);
     if (targetObj) {
       //bbn.fn.log("PUSH");
-      targetObj.update();
+      targetObj.prepareUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in push", target]);
