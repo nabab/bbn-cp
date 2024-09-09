@@ -16,7 +16,7 @@ const getFn = function(watcher, lev) {
  */
 export default async function updateWatcher(cp, name) {
   // If the component doesn't have a watcher, do nothing.
-  if (!cp.$watcher) {
+  if (!cp.$watcher || cp.$isDestroyed) {
     return;
   }
 

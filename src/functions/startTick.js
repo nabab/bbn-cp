@@ -77,7 +77,7 @@ async function treatQueue() {
       else if (queueElement instanceof bbnAttr) {
         if (!attrQueue.includes(queueElement)) {
           await queueElement.update();
-          //attrQueue.push(queueElement);
+          attrQueue.push(queueElement);
         }
       }
       else if (bbn.fn.isFunction(queueElement?.fn)) {
