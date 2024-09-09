@@ -62,10 +62,6 @@ bbnNode.prototype.insert = function(ele, after) {
 
   const cp = this.component;
   if (!parent) {
-    if (this.isCommented) {
-      return;
-    }
-
     bbn.fn.log(ele, this, this.parentElement)
     throw new Error("Impossible to find the parent element");
   }

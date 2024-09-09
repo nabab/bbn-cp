@@ -1,3 +1,4 @@
+import bbnConditionAttr from '../lib/Attr/Condition.js';
 import bbnComputed from '../lib/Computed/Computed.js';
 import initResults from '../lib/Cp/private/initResults.js';
 import updateWatcher from '../lib/Cp/private/updateWatcher.js';
@@ -75,9 +76,30 @@ async function treatQueue() {
         await queueElement.update();
       }
       else if (queueElement instanceof bbnAttr) {
-        if (!attrQueue.includes(queueElement)) {
-          await queueElement.update();
-          attrQueue.push(queueElement);
+        const isCond = queueElement instanceof bbnConditionAttr;
+        const isForget = queueElement instanceof bbnForgetAttr;
+        if (queueElement.node.isCommented && !isCond && !isForget) {
+          continue;
+        }
+
+        await queueElement.update();
+        if (isCond && !queueElement.value) {
+          const id = queueElement.node.id;
+          for (let i = 0; i < queue.length; i++) {
+            if (queue[i] instanceof bbnAttr && !queue[i].id.indexOf(id + '-')) {
+              queue.splice(i, 1);
+              i--;
+            }
+          }
+        }
+        else if (isForget && queueElement.value) {
+          const id = queueElement.node.id;
+          for (let i = 0; i < queue.length; i++) {
+            if (queue[i] instanceof bbnAttr && (queue[i].node.id === id)) {
+              queue.splice(i, 1);
+              i--;
+            }
+          }
         }
       }
       else if (bbn.fn.isFunction(queueElement?.fn)) {
@@ -88,36 +110,6 @@ async function treatQueue() {
         throw new Error("DATA IN QUEUE");
         //await queueElement.data.update(true);
       }
-    }
-
-    // Doing all attributes
-    if (attrQueue.length) {
-      // Sorting attributes
-      const q = attrQueue.sort(sorter);
-      await requestAnimationFrame(async tst => {
-        while (q.length) {
-          const queueElement = q.shift();
-          await queueElement.update();
-          if (queueElement instanceof bbnConditionAttr && !queueElement.value) {
-            const id = queueElement.node.id;
-            for (let i = 0; i < q.length; i++) {
-              if (q[i].id.indexOf(id + '-') === 0) {
-                q.splice(i, 1);
-                i--;
-              }
-            }
-          }
-          else if (queueElement instanceof bbnForgetAttr && queueElement.value) {
-            const id = queueElement.node.id;
-            for (let i = 0; i < q.length; i++) {
-              if (q[i].node.id === id) {
-                q.splice(i, 1);
-                i--;
-              }
-            }
-          }
-        }
-      });
     }
 
     if (oneDone) {

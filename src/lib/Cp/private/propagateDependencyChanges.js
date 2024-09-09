@@ -1,7 +1,5 @@
 import bbn from "@bbn/bbn";
-import initResults from "../private/initResults.js";
 import bbnComputed from "../../Computed/Computed.js";
-import bbnStyleAttr from "../../Attr/Style.js";
 
 export default function propagateDependencyChanges(cp, name) {
   if (cp.$deps[name]) {
