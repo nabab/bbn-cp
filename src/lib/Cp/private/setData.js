@@ -20,8 +20,10 @@ export default function setData(cp, name, v) {
     if (oldDataObj) {
       if (oldDataObj.isSame(v)) {
         isMod = false;
+        bbn.fn.log("SAME VALUE IN DATA");
       }
       else {
+        bbn.fn.log(["REMOVING COMPONENT FROM DATA", cp, oldV, v]);
         oldDataObj.removeComponent(cp, name);
       }
     }

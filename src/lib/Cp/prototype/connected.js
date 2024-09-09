@@ -62,11 +62,6 @@ bbnCp.prototype.$connected = async function () {
   /** @todo check if the above assertion is true (source?) */
   this.$setUpProps();
 
-  // Sending beforeCreate event
-  const beforeCreate = new Event('hook:beforecreate');
-  await onHook(this, 'beforeCreate');
-  this.$el.dispatchEvent(beforeCreate);
-
   // Setting up the config
   const cfg = this.$cfg;
   // Setting up the namespace for the methods
@@ -89,6 +84,11 @@ bbnCp.prototype.$connected = async function () {
     // Setting up all the data properties
     updateData(this);
   }
+
+  // Sending beforeCreate event
+  const beforeCreate = new Event('hook:beforecreate');
+  await onHook(this, 'beforeCreate');
+  this.$el.dispatchEvent(beforeCreate);
 
   if (!this.$el.bbnDirectives) {
     Object.defineProperty(this.$el, 'bbnDirectives', {
