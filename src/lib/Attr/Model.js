@@ -42,9 +42,9 @@ export default class bbnModelAttr extends bbnAttr
     if (init) {
       const eventName = this.modifiers.includes('lazy') ? 'change' : 'input';
       const ele = this.node.element;
-      const data = this.node.data;
       //bbn.fn.log(["FROM MODEL INIT", eventName, this.name, this.getValue()]);
       ele.addEventListener(eventName, e => {
+        const data = this.node.data;
         //bbn.fn.log(["FROM MODEL EVENT", eventName, ele, e.target, e]);
         if (!this.node.parentElement) {
           e.stopImmediatePropagation();
@@ -93,9 +93,8 @@ export default class bbnModelAttr extends bbnAttr
         let modelValue = m.value;
         let oldValue = modelValue;
         if (oldValue !== eventValue) {
-          const res = this.node.component.$expResults[m.id][this.node.hash || '_root'];
           const varName = bbn.fn.firstVarElement(m.exp);
-          //bbn.fn.log(['Modfel change', oldValue, m, m.exp, varName, JSON.stringify(Object.keys(this.node.model)), eventValue, this.name, cpSource.$namespaces[m.exp], this.sequence])
+          //bbn.fn.log(['Modfel change', oldValue, m, m.exp, varName, JSON.stringify(Object.keys(this.node.model)), eventValue, this.name, cpSource.$namespaces[m.exp], this.result.seq])
           if (m.exp === varName) {
             if (data && varName in data) {
               data[varName] = eventValue;
@@ -118,7 +117,10 @@ export default class bbnModelAttr extends bbnAttr
               throw new Error("Invalid model variable 5: " + m.exp);
             }
           }
-          else if (res) {
+          else {
+            this.result.num--;
+            this.setResult();
+            const res = this.result;
             if (res?.seq?.length) {
               const last = res.seq[res.seq.length - 1];
               if (last.data) {
@@ -146,10 +148,6 @@ export default class bbnModelAttr extends bbnAttr
             else {
               throw new Error("Invalid model variable (no sequence): " + m.exp);
             }
-          }
-          else {
-            bbn.fn.log(res, this, eventValue, oldValue, cpSource);
-            throw new Error("Invalid model variable 12: " + m.exp);
           }
         }
       });

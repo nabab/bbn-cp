@@ -25,16 +25,15 @@ bbnData.prototype.removeComponent = function(component, path) {
       }
       else {
         this.refs.splice(idx, 1);
-      }
-
-    }
-
-    if (!bbn.fn.count(this.refs, {component})) {
-      let idx = component.$values.indexOf(this.id);
-      if (idx !== -1) {
-        component.$values.splice(idx, 1);
+        if (!bbn.fn.count(this.refs, {component})) {
+          let idx = component.$values.indexOf(this.id);
+          if (idx !== -1) {
+            component.$values.splice(idx, 1);
+          }
+        }
       }
     }
+
   }
   else {
     if (this.refs.length === 1) {

@@ -20,11 +20,13 @@ const updateSequence = function (result, attr) {
         if (!a.data.deps.includes(attr)) {
           a.data.deps.push(attr);
         }
-      } else {
+      }
+      else {
         // Add the attribute to the component dependencies if not already present.
         if (!a.component.$deps[a.name]) {
           a.component.$deps[a.name] = [];
         }
+
         if (!a.component.$deps[a.name].includes(attr)) {
           a.component.$deps[a.name].push(attr);
         }
@@ -60,7 +62,12 @@ bbnAttr.prototype.setResult = function() {
   }
 
   const res = Object.hasOwn(arguments, 0) ? {val: arguments[0], seq: []} : this.exec();
-  const expValue = res.val;
+  let expValue = res.val;
+  if (this instanceof bbnConditionAttr || this instanceof bbnForgetAttr) {
+    expValue = !!expValue;
+    //bbn.fn.log([this.exp, this.id, expValue, this.node.element])
+  }
+
   let isChanged = false;
 
   // Update the value if it has changed.
@@ -74,31 +81,32 @@ bbnAttr.prototype.setResult = function() {
     r[this.id][hash] = bbn.fn.createObject({
       state: 'NEW', // New state.
       value: expValue,
-      seq: res.seq,
     });
-  } else if (r[this.id][hash].state === 'DEL') {
+  }
+  else if (r[this.id][hash].state === 'DEL') {
     r[this.id][hash].value = expValue;
-    r[this.id][hash].seq = res.seq;
     r[this.id][hash].state = 'NEW';
-  } else if (r[this.id][hash].state === 'TMP') {
+  }
+  else if (r[this.id][hash].state === 'TMP') {
     if (r[this.id][hash].value !== expValue) {
       r[this.id][hash].value = expValue;
-      r[this.id][hash].seq = res.seq;
       r[this.id][hash].state = 'MOD'; // Modified state.
-    } else {
+    }
+    else {
       const dataObj = bbnData.getObject(expValue);
       if (dataObj && (this.node.component.$lastBuild < dataObj.lastUpdate)) {
-        r[this.id][hash].seq = res.seq;
         r[this.id][hash].state = 'MOD'; // Modified state.
       }
       else {
         r[this.id][hash].state = 'OK'; // Unchanged state.
       }
     }
-  } else if (isChanged) {
+  }
+  else if (isChanged) {
     if (r[this.id][hash].value !== expValue) {
-      r[this.id][hash].value = this.value;
+      r[this.id][hash].value = expValue;
     }
+
     r[this.id][hash].state = 'MOD'; // Modified state.
   }
 
@@ -118,11 +126,11 @@ bbnAttr.prototype.setResult = function() {
 
       i++;
     }
-
-    updateSequence(r[this.id][hash], this);
   }
 
+  r[this.id][hash].seq = res.seq;
   r[this.id][hash].num = node.component.$numBuild + 1;
+  updateSequence(r[this.id][hash], this);
 
   // Return the updated result value.
   return this.value;

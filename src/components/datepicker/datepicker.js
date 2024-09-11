@@ -432,7 +432,6 @@ const cpDef = {
        * @fires setInputValue
       */
       value(newVal){
-        bbn.fn.log('DATEPICKER VALUE WATCH', newVal, this.$el);
         this.setInputValue(newVal);
       }
     }

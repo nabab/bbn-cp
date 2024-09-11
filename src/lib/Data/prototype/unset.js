@@ -14,18 +14,14 @@ bbnData.prototype.unset = function(noParent) {
   });
   const done = [];
   // Unsetting the data in each component, root is last
-  for (let i = 0; i < this.refs.length; i++) {
-    const it = this.refs[i];
+  while (this.refs.length) {
+    const it = this.refs.shift();
     const cp = it.component;
-    if (cp) {
+    if (cp && !done.includes(cp.$cid)) {
       let idx = cp.$values.indexOf(id);
       if (idx > -1) {
         cp.$values.splice(idx, 1);
         done.push(cp.$cid);
-      }
-      else if (!done.includes(cp.$cid)) {
-        this.refs.splice(i, 1);
-        i--;
       }
       
       if (!noParent && it.parent) {
@@ -37,10 +33,8 @@ bbnData.prototype.unset = function(noParent) {
         }
       }
     }
-    else {
-      throw Error(bbn._("Impossible to find the component %s", cp.$cid));
-    }
   }
+  bbn.fn.each(this.children, it => it.unset());
 
   /*
 

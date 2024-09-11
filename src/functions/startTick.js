@@ -14,6 +14,9 @@ const sorter = (a, b) => {
     throw new Error("NOT AN ATTR");
   }
 
+  const idCpA = a.node.component.$cid;
+  const idCpB = b.node.component.$cid;
+
   const tmpA = a.id.match(/^([0-9-]+)-([A-z]{1}[A-z0-9-_]+)$/);
   const tmpB = b.id.match(/^([0-9-]+)-([A-z]{1}[A-z0-9-_]+)$/);
   if ((tmpA?.length !== 3) || (tmpB?.length !== 3)) {
@@ -51,22 +54,52 @@ const sorter = (a, b) => {
 
   return atA < atB ? -1 : 1;
 };
-async function treatQueue() {
-  const cps = bbn.fn.createObject();
 
+async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
+  const cps = bbn.fn.createObject();
   const done = [];
   if (bbn.cp.queue.length) {
     let queue = bbn.cp.queue.splice(0);
     // Process each component in the queue.
     let oneDone = false;
     const attrQueue = [];
+
+    let lastElement;
+    /*
+    bbn.fn.log(JSON.stringify(queue.map(a => {
+      if (a instanceof bbnComputed) {
+        return a.component.$cid + ' ' + a.name;
+      }
+
+      if (a instanceof bbnAttr) {
+        if (a instanceof bbnClassAttr || a instanceof bbnStyleAttr) {
+          return a.node.component.$cid + ' ' + a.id;
+        }
+
+        return a.node.component.$cid + ' ' + a.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(a.exp), 50) + ' (' + bbn.fn.cast(a.value) + ')';
+      }
+
+      if (bbn.fn.isFunction(a?.fn)) {
+        const fn = bbn.fn.analyzeFunction(a.fn);
+        return a.component.$cid + ' Fn ' + fn?.hash;
+      }
+
+      return '';
+
+    }), null, 2));
+    */
     while (queue.length) {
       const queueElement = queue.shift();
       const cp = queueElement.node?.component || queueElement.component;
+      if (!cp.$el.isConnected || (lastElement === queueElement)) {
+        continue;
+      }
+
       if (!cps[cp.$cid]) {
         cps[cp.$cid] = cp;
-        initResults(cp);
       }
+
+      initResults(cp);
       // Doing all elements but attributes
       oneDone = true;
       // Launch the update process for the component.
@@ -76,29 +109,39 @@ async function treatQueue() {
         await queueElement.update();
       }
       else if (queueElement instanceof bbnAttr) {
-        const isCond = queueElement instanceof bbnConditionAttr;
-        const isForget = queueElement instanceof bbnForgetAttr;
-        if (queueElement.node.isCommented && !isCond && !isForget) {
+        const id = queueElement.node.id;
+        if (!(queueElement instanceof bbnConditionAttr) && !(queueElement instanceof bbnForgetAttr) && forgotten.includes(id)) {
+          continue;
+        }
+
+        if (!(queueElement instanceof bbnConditionAttr) && (unconditioned.includes(id) || unconditioned.filter(a => id.indexOf(a + '-') === 0).length)) {
           continue;
         }
 
         await queueElement.update();
-        if (isCond && !queueElement.value) {
-          const id = queueElement.node.id;
-          for (let i = 0; i < queue.length; i++) {
-            if (queue[i] instanceof bbnAttr && !queue[i].id.indexOf(id + '-')) {
-              queue.splice(i, 1);
-              i--;
+        bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
+        if (queueElement instanceof bbnConditionAttr) {
+          if (queueElement.value && unconditioned.includes(id)) {
+            unconditioned.splice(unconditioned.indexOf(id), 1);
+          }
+          else if (!queueElement.value && !unconditioned.includes(id)) {
+            for (let i = 0; i < unconditioned.length; i++) {
+              if (unconditioned[i].indexOf(id + '-') === 0) {
+                unconditioned.splice(i, 1);
+                i--;
+              }
             }
+
+            unconditioned.push(id);
+
           }
         }
-        else if (isForget && queueElement.value) {
-          const id = queueElement.node.id;
-          for (let i = 0; i < queue.length; i++) {
-            if (queue[i] instanceof bbnAttr && (queue[i].node.id === id)) {
-              queue.splice(i, 1);
-              i--;
-            }
+        else if (queueElement instanceof bbnForgetAttr) {
+          if (!queueElement.value && forgotten.includes(id)) {
+            forgotten.splice(forgotten.indexOf(id), 1);
+          }
+          else if (queueElement.value && !forgotten.includes(id)) {
+            forgotten.push(id);
           }
         }
       }
@@ -110,12 +153,14 @@ async function treatQueue() {
         throw new Error("DATA IN QUEUE");
         //await queueElement.data.update(true);
       }
+
+      lastElement = queueElement;
     }
 
     if (oneDone) {
-      await treatQueue(done);
+      //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
+      await treatQueue(num + 1, unconditioned, forgotten);
     }
-
     const time = bbn.fn.microtimestamp();
     for (let n in cps) {
       cps[n].$lastBuild = time;

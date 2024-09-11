@@ -12,25 +12,17 @@ export default function setData(cp, name, v) {
   }
 
   if (cp.$dataCfg[name].value !== v) {
-    v = cp.$treatValue(v, name);
-    let isMod = true;
     // Getting the bbnData object
     let oldDataObj = bbnData.getObject(cp.$dataCfg[name].value);
     if (oldDataObj) {
-      if (oldDataObj.isSame(v)) {
-        isMod = false;
-      }
-      else {
-        //bbn.fn.log(["REMOVING COMPONENT FROM DATA", cp, oldV, v]);
-        oldDataObj.removeComponent(cp, name);
-      }
+      //bbn.fn.log(["REMOVING COMPONENT FROM DATA", name, cp, oldDataObj, v]);
+      oldDataObj.removeComponent(cp, name);
     }
-
-    if (isMod) {
-      cp.$dataCfg[name].value = v;
-      cp.$dataCfg[name].lastUpdate = bbn.fn.microtimestamp();
-      propagateDependencyChanges(cp, name);
-      updateWatcher(cp, name);
-    }
+    
+    v = cp.$treatValue(v, name);
+    cp.$dataCfg[name].value = v;
+    cp.$dataCfg[name].lastUpdate = bbn.fn.microtimestamp();
+    propagateDependencyChanges(cp, name);
+    updateWatcher(cp, name);
   }
 }

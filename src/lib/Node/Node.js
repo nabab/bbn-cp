@@ -210,7 +210,7 @@ export default class bbnNode
   }
 
   get isCommented() {
-    return this.__bbn_comment;
+    return this.#comment;
   }
 
   get isOut() {
@@ -222,12 +222,12 @@ export default class bbnNode
       return true;
     }
 
-    return this.__bbn_comment;
+    return this.#comment;
   }
 
   async setComment(v) {
-    if (this.__bbn_comment !== v) {
-      this.__bbn_comment = v;
+    if (this.#comment !== v) {
+      this.#comment = v;
       if (this.element && (bbn.fn.isComment(this.element) !== !!this.comment)) {
         if (this.parentElement) {
           await this.init();
