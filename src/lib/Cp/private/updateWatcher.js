@@ -36,6 +36,7 @@ export default async function updateWatcher(cp, name) {
   const bits = name.split(".");
 
   // Iterate over each part of the property name.
+  const num = ++bbn.cp.numTicks;
   while (bits.length) {
     // Reconstruct the full property name from the current bits.
     let fullName = bits.join(".");
@@ -45,7 +46,8 @@ export default async function updateWatcher(cp, name) {
     if (cp.$watcher[fullName]) {
       queueUpdate({
         component: cp,
-        fn: getFn(cp.$watcher[fullName], lev)
+        fn: getFn(cp.$watcher[fullName], lev),
+        num
       });
       
     }

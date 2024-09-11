@@ -15,7 +15,8 @@ bbnCp.prototype.$tick = function(...fns) {
         }
 
         resolve();
-      }
+      },
+      num: ++bbn.cp.numTicks
     });
   });
 }

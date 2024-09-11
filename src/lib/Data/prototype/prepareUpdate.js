@@ -19,6 +19,7 @@ bbnData.prototype.prepareUpdate = function(path) {
   const propagation = [];
   this.lastUpdate = bbn.fn.microtimestamp();
   const impacted = this.getImpacted(path, this.lastUpdate);
+  const num = ++bbn.cp.numTicks;
   bbn.fn.each(impacted, it => {
     const id = it.component.$cid + '/' + it.path[0];
     if (!propagation.includes(id)) {
@@ -35,7 +36,8 @@ bbnData.prototype.prepareUpdate = function(path) {
         //bbn.fn.log("WATCHER FOUND ON " + bits.join('.') + " IN " + it.component.$options.name);
         queueUpdate({
           component: it.component,
-          fn: getFn(it.component.$watcher[bits.join('.')], level, this.lastUpdate)
+          fn: getFn(it.component.$watcher[bits.join('.')], level, this.lastUpdate),
+          num
         });
       }
 
@@ -45,5 +47,5 @@ bbnData.prototype.prepareUpdate = function(path) {
 
   });
 
-  this.deps.forEach(a => queueUpdate(a));
+  this.deps.forEach(a => queueUpdate({element: a, num}));
 };

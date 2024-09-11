@@ -13,7 +13,8 @@ bbnCp.prototype.$nextTick = async function(fn){
             }
   
             resolve();
-          }
+          },
+          num: ++bbn.cp.numTicks
         });
       }, bbn.cp.tickDelay);
     })

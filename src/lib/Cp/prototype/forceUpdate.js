@@ -10,7 +10,8 @@ bbnCp.prototype.$forceUpdate = async function (fn) {
         }
 
         resolve()
-      }
+      },
+      num: ++bbn.cp.numTicks
     });
   })
 }

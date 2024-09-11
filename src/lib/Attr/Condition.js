@@ -16,6 +16,7 @@ export default class bbnConditionAttr extends bbnAttr
     let conditionValue;
     let isTrue = false;
     let isPassed = false;
+    const num = ++bbn.cp.numTicks;
     for (let i = 0; i < allIfs.length; i++) {
       const ai = allIfs[i];
       if (ai.condition.id === this.id) {
@@ -57,7 +58,7 @@ export default class bbnConditionAttr extends bbnAttr
             isTrue = true;
             if (node.isCommented) {
               if (node.forget) {
-                bbn.cp.queueUpdate(node.forget);
+                bbn.cp.queueUpdate({element: node.forget, num});
               }
               else {
                 await node.setComment(false);
@@ -73,7 +74,7 @@ export default class bbnConditionAttr extends bbnAttr
 
     if (conditionValue && this.node.isCommented) {
       if (this.node.forget) {
-        bbn.cp.queueUpdate(this.node.forget);
+        bbn.cp.queueUpdate({element: this.node.forget, num});
       }
       else {
         await this.node.setComment(false);

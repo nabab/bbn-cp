@@ -56,15 +56,17 @@ const sorter = (a, b) => {
 };
 
 async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
-  const cps = bbn.fn.createObject();
   const done = [];
   if (bbn.cp.queue.length) {
-    let queue = bbn.cp.queue.splice(0);
+    let queue = bbn.fn.order(bbn.cp.queue.splice(0), 'num');
     // Process each component in the queue.
     let oneDone = false;
     const attrQueue = [];
 
     let lastElement;
+    let lastNum;
+    let cps;
+    let done;
     /*
     bbn.fn.log(JSON.stringify(queue.map(a => {
       if (a instanceof bbnComputed) {
@@ -90,41 +92,56 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
     */
     while (queue.length) {
       const queueElement = queue.shift();
-      const cp = queueElement.node?.component || queueElement.component;
+      const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
       if (!cp.$el.isConnected || (lastElement === queueElement)) {
         continue;
       }
 
-      if (!cps[cp.$cid]) {
-        cps[cp.$cid] = cp;
+      if (lastNum !== queueElement.num) {
+        cps = bbn.fn.createObject();
+        lastNum = queueElement.num;
+        done = [];
       }
 
-      initResults(cp);
+      if (queueElement.element) {
+        if (done.includes(queueElement.element)) {
+          continue;
+        }
+
+        done.push(queueElement.element);
+      }
+
+      if (!cps[cp.$cid]) {
+        cps[cp.$cid] = cp;
+        initResults(cp);
+      }
+
       // Doing all elements but attributes
       oneDone = true;
       // Launch the update process for the component.
 
       //bbn.fn.log("ATTR " + (queueElement.exp || queueElement.value || (queueElement.fn ? queueElement.fn.toString() : queueElement)), queueElement);
-      if (queueElement instanceof bbnComputed) {
-        await queueElement.update();
+      if (queueElement?.element instanceof bbnComputed) {
+        await queueElement.element.update();
       }
-      else if (queueElement instanceof bbnAttr) {
-        const id = queueElement.node.id;
-        if (!(queueElement instanceof bbnConditionAttr) && !(queueElement instanceof bbnForgetAttr) && forgotten.includes(id)) {
+      else if (queueElement?.element instanceof bbnAttr) {
+        const attr = queueElement.element;
+        const id = attr.node.id;
+        if (!(attr instanceof bbnConditionAttr) && !(attr instanceof bbnForgetAttr) && forgotten.includes(id)) {
           continue;
         }
 
-        if (!(queueElement instanceof bbnConditionAttr) && (unconditioned.includes(id) || unconditioned.filter(a => id.indexOf(a + '-') === 0).length)) {
+        if (!(attr instanceof bbnConditionAttr) && (unconditioned.includes(id) || unconditioned.filter(a => id.indexOf(a + '-') === 0).length)) {
           continue;
         }
 
-        await queueElement.update();
-        bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
-        if (queueElement instanceof bbnConditionAttr) {
-          if (queueElement.value && unconditioned.includes(id)) {
+        await attr.update();
+        //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
+        if (attr instanceof bbnConditionAttr) {
+          if (attr.value && unconditioned.includes(id)) {
             unconditioned.splice(unconditioned.indexOf(id), 1);
           }
-          else if (!queueElement.value && !unconditioned.includes(id)) {
+          else if (!attr.value && !unconditioned.includes(id)) {
             for (let i = 0; i < unconditioned.length; i++) {
               if (unconditioned[i].indexOf(id + '-') === 0) {
                 unconditioned.splice(i, 1);
@@ -136,11 +153,11 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
 
           }
         }
-        else if (queueElement instanceof bbnForgetAttr) {
-          if (!queueElement.value && forgotten.includes(id)) {
+        else if (attr instanceof bbnForgetAttr) {
+          if (!attr.value && forgotten.includes(id)) {
             forgotten.splice(forgotten.indexOf(id), 1);
           }
-          else if (queueElement.value && !forgotten.includes(id)) {
+          else if (attr.value && !forgotten.includes(id)) {
             forgotten.push(id);
           }
         }
@@ -159,7 +176,7 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
 
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
-      await treatQueue(num + 1, unconditioned, forgotten);
+      //await treatQueue(num + 1, unconditioned, forgotten);
     }
     const time = bbn.fn.microtimestamp();
     for (let n in cps) {

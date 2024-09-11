@@ -115,7 +115,7 @@ export default class bbnStyleAttr extends bbnAttr
         };
 
         if (!this.node.element?.bbn?.$internal) {
-          bbn.cp.queueUpdate({component: this.node.component, fn});
+          bbn.cp.queueUpdate({component: this.node.component, fn, num: ++bbn.cp.numTicks});
         }
         else  {
           await fn();
