@@ -73,6 +73,7 @@ export default class bbnClassAttr extends bbnAttr
 
     if (init || (this.exp && this.isChanged)) {
       this.getValue();
+      const cls = this.convert();
       if (this.node.isComponent
         && (this.node.id !== '0')
       ) {
@@ -86,7 +87,11 @@ export default class bbnClassAttr extends bbnAttr
             await arr[0].update(true);
           }
           else if (this.node.element) {
-            this.node.element.className = this.convert();
+            //bbn.fn.warning("UPDATING CLASS ON " + this.node.tag);
+            if (this.node.element.className !== cls) {
+              //bbn.fn.warning("REALLY UPDATING CLASS ON " + this.node.tag);
+              this.node.element.className = cls;
+            }
           }
         };
 
@@ -97,8 +102,9 @@ export default class bbnClassAttr extends bbnAttr
           await fn();
         }
       }
-      else {
-        this.node.element.className = this.convert();
+      else if (this.node.element.className !== cls) {
+        //bbn.fn.warning("REALLY UPDATING 2 CLASS ON " + this.node.tag + ' ' + this.node.hash + ' (' + bbn.cp.numTicks +')');
+        this.node.element.className = cls;
       }
     }
   }

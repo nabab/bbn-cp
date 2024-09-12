@@ -75,13 +75,14 @@ export default class bbnSlotNode extends bbnNode
         ele = this.element || await this.build();
         //bbn.fn.log(["SLOT PARENT", ele, this.parentElement, ele.parentNode, this.component.$options.name, this.component.$slots[name]]);
         const parent = this.parentElement;
+        /*
         if (parent.bbn && (parent.bbnCid !== this.component.$cid) && (parent.bbnSlots?.default)) {
           for (let i = 0; i < this.component.$slots[name].length; i++) {
             const item = this.component.$slots[name][i];
             parent.bbnSlots.default.push(item);
           }
         }
-        else {
+        else {*/
           for (let i = 0; i < this.component.$slots[name].length; i++) {
             const item = this.component.$slots[name][i];
             if (ele.parentNode) {
@@ -97,7 +98,7 @@ export default class bbnSlotNode extends bbnNode
               }
             }
           }
-        }
+        //}
       }
     }
 

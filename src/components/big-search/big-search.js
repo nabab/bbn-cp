@@ -103,7 +103,7 @@ const cpDef = {
      */
     delay: {
       type: Number,
-      default: 20
+      default: 400
     },
     /** 
      * @prop {String} ['?'] shortPlaceholder

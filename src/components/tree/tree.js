@@ -377,6 +377,13 @@ const cpDef = {
             return v;
           });
         }
+
+        if (this.isRoot) {
+          const scroll = this.getRef('scroll');
+          if (scroll && !scroll.ready) {
+            scroll.initSize();
+          }
+        }
         return ret;
       },
       /**

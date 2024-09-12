@@ -1088,9 +1088,7 @@ const cpDef = {
    */
   mounted() {
     this.setObserver();
-    setTimeout(() => {
-      this.waitReady();
-    }, 100);
+    this.waitReady();
     /*
     this.initSize().then(() => {
       this.scrollReady = true;

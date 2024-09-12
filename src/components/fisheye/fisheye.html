@@ -1,7 +1,8 @@
 <div :class="[componentClass, 'bbn-100']"
      :style="{zIndex: zIndex}">
   <bbn-scroll :scrollable="scrollable"
-              @hook:mounted="onScrollMounted">
+              @hook:mounted="onScrollMounted"
+              ref="scroll">
     <div bbn-if="!showIcons"
          :class="['bbn-fisheye-dots', 'bbn-overlay', 'bbn-middle', {'bbn-invisible': !ready}]"
          :style="{zIndex: zIndex}">
@@ -61,7 +62,7 @@
        bbn-if="visibleBin"
        :style="binPosition">
     <i :class="['nf nf-fa-trash', {'bbn-red': overBin}]"
-       bbn-if="visibleBin"
+       bbn-show="visibleBin"
        @dragover="overBin = true"
        @dragleave="dragleave($event)"
        @drop="drop($event)"

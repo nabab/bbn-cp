@@ -426,7 +426,7 @@ const cpDef = {
             this.overIdx = idx;
             this.isOver = true;
             this.rootList.overList = this;
-            this.filteredData[idx].opened = true;
+            //this.filteredData[idx].opened = true;
         }
       },
       /**

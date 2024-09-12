@@ -38,8 +38,8 @@ bbnCp.prototype.$insertElement = function (ele, target, prevElementIndex, oldEle
   if (replace) {
     //bbn.fn.log("REPLACE", ele);
     if (isParentComponent && !ele.bbnSchema?.comment) {
-      //bbn.fn.log("IN CP " + target.tagName, ele);
-      const slot = ele.getAttribute("slot") || 'default';
+      //bbn.fn.log(["IN CP " + target.tagName, ele.bbnSchema?.attr?.slot?.value, ele]);
+      const slot = ele.bbnSchema?.attr?.slot?.value || 'default';
       if (target.bbnSlots?.[slot]) {
         let search = {bbnId: oldEle.bbnId};
         if (oldEle.bbnHash) {
@@ -85,7 +85,7 @@ bbnCp.prototype.$insertElement = function (ele, target, prevElementIndex, oldEle
   else if (oldEle !== ele) {
     //bbn.fn.log(["INSERT ", ele, oldEle]);
     if (isParentComponent) {
-      const slot = ele.bbnSchema.props?.slot || 'default';
+      const slot = ele.bbnSchema?.attr?.slot?.value || 'default';
       if (target.bbnSlots?.[slot]) {
         if (!ele.bbnSchema && !bbn.fn.removeExtraSpaces(ele.textContent)) {
           return;

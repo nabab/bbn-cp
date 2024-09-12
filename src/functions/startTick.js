@@ -120,12 +120,13 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
       oneDone = true;
       // Launch the update process for the component.
 
-      //bbn.fn.log("ATTR " + (queueElement.exp || queueElement.value || (queueElement.fn ? queueElement.fn.toString() : queueElement)), queueElement);
+
       if (queueElement?.element instanceof bbnComputed) {
         await queueElement.element.update();
       }
       else if (queueElement?.element instanceof bbnAttr) {
         const attr = queueElement.element;
+        //bbn.fn.log(attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
         const id = attr.node.id;
         if (!(attr instanceof bbnConditionAttr) && !(attr instanceof bbnForgetAttr) && forgotten.includes(id)) {
           continue;
@@ -137,6 +138,7 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
 
         await attr.update();
         //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
+        /*
         if (attr instanceof bbnConditionAttr) {
           if (attr.value && unconditioned.includes(id)) {
             unconditioned.splice(unconditioned.indexOf(id), 1);
@@ -161,6 +163,7 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
             forgotten.push(id);
           }
         }
+        */
       }
       else if (bbn.fn.isFunction(queueElement?.fn)) {
         await queueElement.fn();
@@ -176,7 +179,7 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
 
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
-      //await treatQueue(num + 1, unconditioned, forgotten);
+      await treatQueue(num + 1, unconditioned, forgotten);
     }
     const time = bbn.fn.microtimestamp();
     for (let n in cps) {

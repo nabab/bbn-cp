@@ -418,7 +418,12 @@ const cpDef = {
       this.$emit('route', path)
     },
     route(url, force) {
-      this.getRef('router').route(url, force)
+      if (!bbn.fn.getRow(this.loaders, {url, loading: true})) {
+        this.getRef('router').route(url, force);
+        return true;
+      }
+
+      return false;
     },
     register(name, cp) {
       if (this.registeredComponents[name]) {
@@ -715,15 +720,7 @@ const cpDef = {
       return false;
     };
     bbn.fn.defaultPreLinkFunction = url => {
-      let router = appui.getRef('router');
-      if (router) {
-        if (bbn.fn.isFunction(router.route) && !router.disabled) {
-          router.route(url);
-        }
-
-        return false;
-      }
-      return true;
+      return appui.route(url);
     };
     bbn.fn.defaultAlertFunction = ele => {
       /** @todo */
@@ -764,7 +761,6 @@ const cpDef = {
     }
     else {
       window.appui = this;
-      bbn.env.loadersHistory = this.loaders;
       this.componentClass.push('bbn-resize-emitter', 'bbn-observer');
       this.cool = true;
 

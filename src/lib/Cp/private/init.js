@@ -432,6 +432,7 @@ export default function init(cp) {
   addNamespace(cp, '_self', 'internal');
   addNamespace(cp, '_', 'method');
   addNamespace(cp, '$emit', 'method');
+  addNamespace(cp, '$forceUpdate', 'method');
   addNamespace(cp, '$is', 'method');
   addNamespace(cp, '$isComponent', 'method');
   addNamespace(cp, '$nextTick', 'method');

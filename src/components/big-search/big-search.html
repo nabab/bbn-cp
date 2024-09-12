@@ -13,9 +13,9 @@
                 button-right="nf nf-fa-search"/>
   </div>
   <div class="bbn-flex-fill">
-    <bbn-scroll axis="y">
-      <bbn-list bbn-if="filteredTotal && !isDisabled && !readonly"
-                :element="$el"
+    <bbn-scroll bbn-if="filteredTotal && !isDisabled && !readonly"
+                axis="y">
+      <bbn-list :element="$el"
                 ref="list"
                 :auto-hide="false"
                 :suggest="suggest"

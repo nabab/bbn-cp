@@ -22,7 +22,8 @@ const isBefore = (id1, id2) => {
 const insertInSlot = function (parent, node, ele) {
   const cp = node.component;
   if ((parent.bbnCid !== cp.$cid) && cp.$isComponent(parent)) {
-    const slot = ele.bbnSchema.slot?.name || 'default';
+    const slot = ele.bbnSchema.slot?.name || ele.bbnSchema?.attr?.slot?.value || 'default';
+    //bbn.fn.log(["IN CP 2 " + cp.$options.name, slot, ele.bbnSchema?.attr?.slot?.value, ele]);
     if (parent.bbnSlots?.[slot]) {
       let search = {bbnId: ele.bbnId};
       if (ele.bbnHash) {

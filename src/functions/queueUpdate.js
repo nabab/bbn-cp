@@ -16,8 +16,8 @@ import bbn from "@bbn/bbn";
  * @param {Object} directives - An object containing the directives to be updated.
  * @param {HTMLElement} target - The DOM element to which the directives are applied.
  */
-export default function queueUpdate(element) {
-  //if (!bbn.cp.queue.includes(element)) {
-    bbn.cp.queue.push(element);
+export default function queueUpdate(item) {
+  //if (!bbn.fn.getRow(bbn.cp.queue, {element: item.element || null, num: item.num})) {
+    bbn.cp.queue.push(item);
   //}
 }

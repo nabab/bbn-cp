@@ -293,6 +293,7 @@ const cpDef = {
        * @fires checkMeasures
        */
       onScrollMounted(){
+        this.getRef('scroll').initSize();
         this.$nextTick(() => {
           this.checkMeasures();
         })
