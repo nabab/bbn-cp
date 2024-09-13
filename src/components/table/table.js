@@ -1274,7 +1274,7 @@ const cpDef = {
                 value: currentGroupValue,
                 data: a,
                 rowIndex,
-                rowKey: data[i].key,
+                rowKey: this.uid || this.sourceValue ? a[this.uid || this.sourceValue] : data[i].key || data[i].index,
                 expander: true,
                 num: bbn.fn.count(data, 'data.' + this.cols[this.group].field, currentGroupValue)
               };
@@ -1330,7 +1330,7 @@ const cpDef = {
                 index: data[i].index,
                 data: a,
                 rowIndex: rowIndex,
-                rowKey: data[i].key,
+                rowKey: this.uid || this.sourceValue ? a[this.uid || this.sourceValue] : data[i].key || data[i].index,
                 expander: true,
                 expanded: isExpanded
               };
@@ -1366,7 +1366,7 @@ const cpDef = {
               index: data[i].index,
               data: a,
               rowIndex: rowIndex,
-              rowKey: data[i].key,
+              rowKey: this.uid || this.sourceValue ? a[this.uid || this.sourceValue] : data[i].key || data[i].index,
             };
             if (isGroup) {
               if (!currentGroupValue) {

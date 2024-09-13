@@ -17,7 +17,7 @@ const getFn = function(watcher, lev, lastUpdate) {
  */
 bbnData.prototype.prepareUpdate = function(path) {
   const propagation = [];
-  this.lastUpdate = bbn.fn.microtimestamp();
+  this.lastUpdate = bbn.cp.numTicks;
   const impacted = this.getImpacted(path, this.lastUpdate);
   const num = ++bbn.cp.numTicks;
   bbn.fn.each(impacted, it => {

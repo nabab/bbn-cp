@@ -93,7 +93,7 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
     while (queue.length) {
       const queueElement = queue.shift();
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
-      if (!cp.$el.isConnected || (lastElement === queueElement)) {
+      if (!cp.$el.isConnected) {
         continue;
       }
 
@@ -122,11 +122,12 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
 
 
       if (queueElement?.element instanceof bbnComputed) {
+        //bbn.fn.log(cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks);
         await queueElement.element.update();
       }
       else if (queueElement?.element instanceof bbnAttr) {
         const attr = queueElement.element;
-        //bbn.fn.log(attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
+        //bbn.fn.log(cp.$options.name + ' - ' + attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
         const id = attr.node.id;
         if (!(attr instanceof bbnConditionAttr) && !(attr instanceof bbnForgetAttr) && forgotten.includes(id)) {
           continue;
@@ -166,6 +167,7 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
         */
       }
       else if (bbn.fn.isFunction(queueElement?.fn)) {
+        //bbn.fn.log(cp.$options.name + ' - Fn - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + queueElement.fn.toString());
         await queueElement.fn();
       }
       else {
@@ -181,9 +183,9 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       await treatQueue(num + 1, unconditioned, forgotten);
     }
-    const time = bbn.fn.microtimestamp();
+
     for (let n in cps) {
-      cps[n].$lastBuild = time;
+      cps[n].$lastBuild = bbn.cp.numTicks;
     }
   }
 }

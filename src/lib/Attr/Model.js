@@ -93,6 +93,7 @@ export default class bbnModelAttr extends bbnAttr
         let modelValue = m.value;
         let oldValue = modelValue;
         if (oldValue !== eventValue) {
+          bbn.cp.numBuild++;
           const varName = bbn.fn.firstVarElement(m.exp);
           //bbn.fn.log(['Modfel change', oldValue, m, m.exp, varName, JSON.stringify(Object.keys(this.node.model)), eventValue, this.name, cpSource.$namespaces[m.exp], this.result.seq])
           if (m.exp === varName) {

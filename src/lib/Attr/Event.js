@@ -86,6 +86,7 @@ export default class bbnEventAttr extends bbnAttr
 
           //bbn.fn.log(['check event', bbnData.watchStarted, bbnData.isWatching]);
 
+          bbn.cp.numBuild++;
           if (this.node.component.$namespaces[this.exp] === 'method') {
             if (e.detail?.args) {
               this.node.component.$methods[this.exp].bind(this.node.component)(...e.detail.args);

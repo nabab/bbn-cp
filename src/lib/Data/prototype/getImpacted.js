@@ -9,7 +9,7 @@ import bbnData from "../Data.js";
  * @param {Array} path - The data key whose impact is being assessed. This could be the name of a property or path within the data object.
  * @returns {Array} - An array of objects, each containing a component (`cp`) and the path (`path`) to the affected data within that component.
  */
-bbnData.prototype.getImpacted = function(path, tst, level = 0) {
+bbnData.prototype.getImpacted = function(path, numTicks, level = 0) {
   // Initialize an array to hold the sequence of keys leading to the impacted data.
   const seq = [];
   // Initialize an array to collect the impact results.
@@ -29,11 +29,11 @@ bbnData.prototype.getImpacted = function(path, tst, level = 0) {
 
     // If the current data object has a parent, recursively identify impacts in the parent's context.
     if (it.parent) {
-      if (it.parent.lastUpdate < tst) {
-        it.parent.lastUpdate = tst;
+      if (it.parent.lastUpdate < numTicks) {
+        it.parent.lastUpdate = bbn.cp.numTicks;
       }
 
-      const impacted = it.parent.getImpacted(it.path, tst, level + 1);
+      const impacted = it.parent.getImpacted(it.path, numTicks, level + 1);
       impacted.forEach(a => {
         a.path.push(...bits);
       });

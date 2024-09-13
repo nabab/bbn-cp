@@ -27,7 +27,7 @@ export default function removeDOM(cp, ele, replacer) {
       const eles = Array.prototype.slice.call(ele.parentNode.childNodes);
       while (eles.length) {
         const el = eles.shift();
-        if (el.bbnId && !el.bbnId.indexOf(id + '-') && (!hash || !el.bbnHash.indexOf(hash))) {
+        if (el.bbnId && !el.bbnId.indexOf(id + '-') && (!hash || !(el.bbnHash || '').indexOf(hash))) {
           idsToDo.push({id: el.bbnId, hash: el.bbnHash || ''});
         }
       }

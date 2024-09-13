@@ -983,10 +983,12 @@ const cpDef = {
       
       if (!this.inFloater || !this.closest('bbn-floater').definedWidth || !this.closest('bbn-floater').definedHeight) {
         await this.getNaturalDimensions();
+        /*
         if (this.inFloater && !this.naturalWidth && !this.disabled && !this.width) {
           bbn.fn.log(["WAITING FOR FLOATER", this.inFloater, this.$el, this.scrollable, this.autoresize]);
           return this.waitReady();
         }
+          */
         //bbn.fn.log(bbn._("Init size from %s with ID %s", this.$options.name, this.$cid));
       }
 

@@ -279,7 +279,7 @@ const cpDef = {
       }
 
       if (this.currentValue !== v) {
-        this.currentValue = v;
+        this.currentValue = v || '';
       }
     },
     currentValue(v) {

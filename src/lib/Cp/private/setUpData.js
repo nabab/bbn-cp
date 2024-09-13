@@ -8,7 +8,7 @@ export default function setUpData(cp, name, value) {
     // The data will remain the same if not simple Obj/Array
     cp.$dataCfg[name] = bbn.fn.createObject({
       value: cp.$treatValue(value, name),
-      lastUpdate: bbn.fn.microtimestamp()
+      lastUpdate: bbn.cp.numTicks
     });
     const def = {
       get() {

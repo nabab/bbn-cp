@@ -76,6 +76,18 @@ export default class bbnWatcher {
     this.#handlers = [];
   }
 
+  get name() {
+    return this.#name;
+  }
+
+  get num() {
+    return this.#num;
+  }
+
+  get lastUpdate() {
+    return this.#lastUpdate;
+  }
+
   /**
    * Removes a handler from the list of handlers.
    * 
@@ -131,6 +143,7 @@ export default class bbnWatcher {
    * @param {number} level - The depth level of the update (used for deep watchers).
    */
   async update(init, level) {
+    const last = bbn.cp.numTicks;
     // Retrieves the component reference
     const cp = this.#component;
 
@@ -166,6 +179,6 @@ export default class bbnWatcher {
     }
 
     // Updates the lastUpdate timestamp
-    this.#lastUpdate = dataObj ? dataObj.lastUpdate : bbn.fn.microtimestamp();
+    this.#lastUpdate = last;
   }
 }
