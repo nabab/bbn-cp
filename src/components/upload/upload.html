@@ -1,8 +1,8 @@
-<div :class="[componentClass, 'bbn-box', 'bbn-spadded']">
+<div :class="[componentClass, 'bbn-box', 'bbn-spadded', {'bbn-disabled': disabled}]">
   <div bbn-if="ready && showList"
        style="z-index: 2">
     <div bbn-for="(f, idx) in currentData"
-         :class="['bbn-flex-width', 'bbn-bordered', 'bbn-spadded', 'bbn-vmiddle', {
+         :class="['bbn-flex-width', 'bbn-bordered', 'bbn-spadded', 'bbn-vmiddle', 'bbn-radius', {
            'bbn-alt-background': (f.status !== 'progress') && (f.status !== 'error'),
            'bbn-background-tertiary': f.status === 'progress',
            'bbn-bg-red': f.status === 'error',

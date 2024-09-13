@@ -56,11 +56,10 @@ const cpDef = {
     },
     /**
      * The URL for the action 'download'.
-     * @prop {String} [null] downloadUrl
+     * @prop {String|Function} downloadUrl
      */
     downloadUrl: {
-      type: String,
-      default: null
+      type: [String, Function]
     },
     /**
      * Set to true to automatically upload selected files.
@@ -233,6 +232,13 @@ const cpDef = {
     showFilesize: {
       type: Boolean,
       default: true
+    },
+    /**
+     * Maximum file size.
+     * @prop {Number} maxFilesize
+     */
+    maxFilesize: {
+      type: Number
     }
   },
   data(){
@@ -553,7 +559,14 @@ const cpDef = {
 
                       if ( this.setStatusSuccess(fr.id) ){
                         this.$nextTick(() => {
-                          this.$emit('success', fr.id, f.name || fr.data.name, bbn.fn.extendOut(f, {original: fr.data.name}), res)
+                          this.$emit('success', fr.id, f.name || fr.data.name, bbn.fn.extendOut(f, {original: fr.data.name}), res);
+                          if (!this.filesProgress.length) {
+                            this.uploading = false;
+                            if ( !this.filesError.length ){
+                              this.$emit('complete', this.filesSuccess, this.filesError)
+                              this.setValue();
+                            }
+                          }
                         })
                       }
                     },
@@ -671,7 +684,7 @@ const cpDef = {
           extension: bbn.fn.substr(f.data.name, f.data.name.lastIndexOf('.'))
         });
       })
-      bbn.fn.log('setValue', bbn.fn.clone(value));
+      //bbn.fn.log('bbn-upload setValue', bbn.fn.clone(value));
       this.emitInput(this.json ? JSON.stringify(value) : value)
       this.$nextTick(() => this.$emit('change', this.value));
     },
@@ -806,11 +819,20 @@ const cpDef = {
      * @param {Object} file
      */
     download(file){
-      if ( !!this.downloadable && !!this.downloadUrl ){
-        this.postOut(
-          this.downloadUrl,
-          bbn.fn.extend(true, {}, this.data ? this.data : {}, {file: file.data.name})
-        )
+      if (this.downloadable && this.downloadUrl) {
+        const data = bbn.fn.extend(
+          true,
+          {},
+          this.data || {},
+          file.data,
+          {
+            file: file.data.name
+          }
+        );
+        const url = bbn.fn.isFunction(this.downloadUrl) ? this.downloadUrl(data) : this.downloadUrl;
+        if (url) {
+          this.postOut(url, data);
+        }
       }
     },
     /**
@@ -901,7 +923,7 @@ const cpDef = {
         return file.data.name.substring(file.data.name.lastIndexOf('.') + 1);
       }
       else {
-        return bbn.fn.substr(file.data.extension, 1);
+        return file.data.extension.indexOf('.') === 0 ? bbn.fn.substr(file.data.extension, 1) : file.data.extension;
       }
     },
     /**
@@ -965,7 +987,8 @@ const cpDef = {
      * @fires setValue
      */
     filesProgress(newVal, oldVal){
-      bbn.fn.log(["FILES PROGRESS", newVal, oldVal]);
+      return;
+      bbn.fn.log(["FILES PROGRESS", bbn.fn.clone(newVal), bbn.fn.clone(oldVal), bbn.fn.clone(this.oldFilesProgress)]);
       if ( !bbn.fn.isSame(newVal, this.oldFilesProgress) && !newVal.length ){
         this.uploading = false;
         if ( !this.filesError.length ){

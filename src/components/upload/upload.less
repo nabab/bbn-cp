@@ -14,4 +14,10 @@
       font-size: 3.5rem;
     }
   }
+  &:focus:not(.bbn-disabled),
+  &:focus-within:not(.bbn-disabled),
+  &:hover:focus:not(.bbn-disabled),
+  &:hover:focus-within:not(.bbn-disabled) {
+    border-color: var(--selected-border);
+  }
 }
