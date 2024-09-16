@@ -234,7 +234,7 @@ const cpDef = {
       default: true
     },
     /**
-     * Maximum file size.
+     * Maximum file size (bytes).
      * @prop {Number} maxFilesize
      */
     maxFilesize: {
@@ -268,7 +268,7 @@ const cpDef = {
         uploadButton: bbn._('Choose files'),
         dropHere: bbn._('Drop files here'),
         pasteContainer: bbn._('Click on the container and then press CTRL+V keys to paste the file'),
-        uploadOrDrop: bbn._('Choose files or drop files here'),
+        uploadOrDrop: bbn._('Choose files or drop files here') + this.maxFilesize ? ` (maximum file size ${bbn.fn.formatBytes(this.maxFilesize)})` : '',
         retry: bbn._('Retry'),
         editFilename: bbn._('Edit filename'),
         remove: bbn._('Delete'),
@@ -516,6 +516,21 @@ const cpDef = {
      */
     filesChanged(e){
       if ( e.target.files.length ){
+        if (this.maxFilesize) {
+          const files = Object.values(e.target.files);
+          let ok = true;
+          bbn.fn.each(files, f => {
+            if (f.size > this.maxFilesize) {
+             ok = false;
+             this.alert(bbn._('The file "%s" is too big!', f.name));
+             return false;
+            }
+          });
+          if (!ok) {
+            return;
+          }
+        }
+
         this._makeFiles(e.target.files, true)
       }
     },

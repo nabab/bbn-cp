@@ -17,5 +17,6 @@
     "The file": "Il file",
     "exists": "esiste",
     "The extension": "L'estensione",
-    "is not allowed": "non è consentita"
+    "is not allowed": "non è consentita",
+    "The file \"%s\" is too big!": "Il file \"%s\" è troppo grande!"
 }
