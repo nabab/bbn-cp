@@ -436,11 +436,13 @@ const cpDef = {
     _remove(file, res){
       let idx = bbn.fn.search(this.currentData, {id: file.id})
       if ( idx > -1 ){
-        this.currentData.splice(idx, 1)
-        this.$emit('remove', file.id, res, false);
-        this.$nextTick(() => {
-          this.setValue()
-        })
+        this.currentData.splice(idx, 1);
+        if (file.status !== 'error') {
+          this.$emit('remove', file.id, res, false);
+          this.$nextTick(() => {
+            this.setValue()
+          })
+        }
       }
     },
     /**
@@ -494,6 +496,15 @@ const cpDef = {
       }
       return {}
     },
+    _afterUpload(){
+      if (!this.filesProgress.length) {
+        this.uploading = false;
+        if ( !this.filesError.length ){
+          this.$emit('complete', this.filesSuccess, this.filesError)
+          this.setValue();
+        }
+      }
+    },
     /**
      * Returns the current value. If it is in the JSON format, it's converted.
      * @method getValue
@@ -522,12 +533,12 @@ const cpDef = {
           bbn.fn.each(files, f => {
             if (f.size > this.maxFilesize) {
              ok = false;
-             this.alert(bbn._('The file "%s" is too big!', f.name));
+             //this.alert(bbn._('The file "%s" is too big!', f.name));
              return false;
             }
           });
           if (!ok) {
-            return;
+            //return;
           }
         }
 
@@ -575,20 +586,17 @@ const cpDef = {
                       if ( this.setStatusSuccess(fr.id) ){
                         this.$nextTick(() => {
                           this.$emit('success', fr.id, f.name || fr.data.name, bbn.fn.extendOut(f, {original: fr.data.name}), res);
-                          if (!this.filesProgress.length) {
-                            this.uploading = false;
-                            if ( !this.filesError.length ){
-                              this.$emit('complete', this.filesSuccess, this.filesError)
-                              this.setValue();
-                            }
-                          }
+                          this._afterUpload();
                         })
                       }
                     },
                     err => {
                       if ( this.setStatusError(fr.id) ){
-                        this.$emit('error', fr.id, err)
                         bbn.fn.log('bbn-upload error', fr.id, err)
+                        this.$emit('error', fr.id, err);
+                        this.$nextTick(() => {
+                          this._afterUpload();
+                        });
                       }
                     },
                     prog => {
@@ -600,6 +608,7 @@ const cpDef = {
                   if ( this.setStatusSuccess(fr.id) ){
                     this.$nextTick(() => {
                       this.$emit('success', fr.id, fr.data.name, fr.data)
+                      this._afterUpload();
                     })
                   }
                 }
@@ -777,7 +786,9 @@ const cpDef = {
      */
     retry(file){
       if ( this.setStatusReady(file.id) ){
-        this.upload(file.id)
+        this.$nextTick(() => {
+          this.upload(file.id);
+        });
       }
     },
     /**\
@@ -787,23 +798,28 @@ const cpDef = {
      * @fires _remove
      */
     remove(file, force){
-      let ev = new Event('beforeremove', {cancelable: true});
-      this.$emit('beforeremove', ev, file);
-      if (force || !ev.defaultPrevented) {
-        this.confirm(this.currentText.removeConfirm, () => {
-          if ( this.removeUrl ){
-            this.post(
-              this.removeUrl,
-              bbn.fn.extend(true, {}, this.data ? this.data : {}, {file: file.data.name}),
-              d => {
-                this._remove(file, d)
-              }
-            )
-          }
-          else {
-            this._remove(file)
-          }
-        })
+      if (file.status === 'error') {
+        this._remove(file);
+      }
+      else {
+        let ev = new Event('beforeremove', {cancelable: true});
+        this.$emit('beforeremove', ev, file);
+        if (force || !ev.defaultPrevented) {
+          this.confirm(this.currentText.removeConfirm, () => {
+            if ( this.removeUrl ){
+              this.post(
+                this.removeUrl,
+                bbn.fn.extend(true, {}, this.data ? this.data : {}, {file: file.data.name}),
+                d => {
+                  this._remove(file, d)
+                }
+              )
+            }
+            else {
+              this._remove(file)
+            }
+          })
+        }
       }
     },
     /**

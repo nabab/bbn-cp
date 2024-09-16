@@ -82,7 +82,7 @@
             class="bbn-large nf nf-fa-repeat bbn-p bbn-right-sspace"
             @click="retry(f)"
             :title="currentText.retry"/>
-          <i bbn-if="eliminable && (f.status !== 'progress') && !uploading"
+          <i bbn-if="(eliminable || (f.status === 'error')) && (f.status !== 'progress') && !uploading"
             class="bbn-large nf nf-fa-trash bbn-p"
             @click="remove(f)"
             :title="currentText.remove"/>
