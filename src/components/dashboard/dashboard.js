@@ -1055,11 +1055,11 @@ const cpDef = {
        * @fires init
        */
       source() {
-        bbn.fn.log("SOURCE CHANGED");
+        //bbn.fn.log("SOURCE CHANGED");
         this.init();
       },
       widgets(){
-        bbn.fn.log("widgets CHANGED");
+        //bbn.fn.log("widgets CHANGED");
       }
     }
   };
