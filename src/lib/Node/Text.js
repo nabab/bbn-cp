@@ -69,7 +69,8 @@ export default class bbnTextNode extends bbnNode
   }
 
   update() {
+    this.text.update();
     //bbn.fn.log("UPDATE FROM TEXT NIODE")
-    this.element.nodeValue = this.text.getValue();
+    //this.element.nodeValue = this.text.getValue();
   }
 }

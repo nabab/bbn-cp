@@ -92,9 +92,8 @@ bbnData.proxy = function(component, path, targetObj) {
         if (dataObj) {
           dataObj.prepareUpdate();
         }
-        else {
-          targetObj.prepareUpdate(key);
-        }
+
+        targetObj.prepareUpdate(key);
 
       }
 

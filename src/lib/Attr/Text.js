@@ -20,8 +20,8 @@ export default class bbnTextAttr extends bbnAttr
           this.node.element.innerText = this.value;
         }
       }
-      else if (this.node.element.innerText !== this.value) {
-        this.node.element.innerText = this.value;
+      else if (this.node.element.nodeValue !== this.value) {
+        this.node.element.nodeValue = this.value;
       }
     }
   }

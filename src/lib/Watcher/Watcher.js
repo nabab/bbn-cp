@@ -165,7 +165,7 @@ export default class bbnWatcher {
         const a = this.#handlers[i];
         
         // Determines if the handler should be executed
-        if ((init && a.immediate && !a.isInit) || (!init && cp.$numBuild && ((level < 2) || a.deep))) {
+        if (cp.$isMounted && (init && a.immediate && !a.isInit) || (!init && cp.$numBuild && ((level < 2) || a.deep))) {
           a.isInit = true;
 
           // Executes the handler function with the new and old values
