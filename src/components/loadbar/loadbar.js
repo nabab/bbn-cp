@@ -201,9 +201,6 @@ const cpDef = {
       }
     },
     watch: {
-      source() {
-        bbn.fn.log("ITEM CHAVGING");
-      },
       info(v) {
         if (this.interval) {
           clearInterval(this.interval);
