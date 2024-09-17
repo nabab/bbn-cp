@@ -17,9 +17,9 @@ const getFn = function(watcher, lev, lastUpdate) {
  */
 bbnData.prototype.prepareUpdate = function(path) {
   const propagation = [];
-  this.lastUpdate = bbn.cp.numTicks;
   const impacted = this.getImpacted(path, this.lastUpdate);
   const num = ++bbn.cp.numTicks;
+  this.lastUpdate = num;
   bbn.fn.each(impacted, it => {
     const id = it.component.$cid + '/' + it.path[0];
     if (!propagation.includes(id)) {
