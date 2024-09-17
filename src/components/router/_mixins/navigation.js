@@ -824,7 +824,7 @@ export default {
     */
     activateIndex(idx) {
       if (this.isValidIndex(idx) && !this.views[idx].selected) {
-        bbn.fn.log("ACTIVATE INDEX");
+        //bbn.fn.log("ACTIVATE INDEX");
         this.route(
           this.urls[this.views[idx].uid] ? this.urls[this.views[idx].uid].currentURL
             : this.views[idx].current

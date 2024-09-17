@@ -56,9 +56,20 @@ const sorter = (a, b) => {
 };
 
 async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
+  let isDebug = false;
   const done = [];
   if (bbn.cp.queue.length) {
-    let queue = bbn.fn.order(bbn.cp.queue.splice(0), 'num');
+    if (bbn.cp.queue.length > 100000) {
+      if (!isDebug) {
+        isDebug = bbn.cp.numTicks;
+        bbn.fn.log("SETTING DEBUG MODE");
+      }
+    }
+    else if (isDebug) {
+      isDebug = false;
+    }
+
+    let queue = bbn.cp.queue.splice(0);
     // Process each component in the queue.
     let oneDone = false;
     const attrQueue = [];
@@ -91,6 +102,11 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
     }), null, 2));
     */
     while (queue.length) {
+      if (isDebug) {
+        if (bbn.cp.numTicks - isDebug > 1000) {
+          throw new Error("Too many ticks");
+        }
+      }
       const queueElement = queue.shift();
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
       if (!cp.$el.isConnected) {
@@ -101,6 +117,7 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
         cps = bbn.fn.createObject();
         lastNum = queueElement.num;
         done = [];
+        lastElement = null;
       }
 
       if (queueElement.element) {
@@ -122,12 +139,26 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
 
 
       if (queueElement?.element instanceof bbnComputed) {
-        //bbn.fn.log(cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks);
+        if (lastElement?.element === queueElement.element) {
+          continue;
+        }
+
+        if (isDebug) {
+          bbn.fn.log(cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks);
+        }
+
         await queueElement.element.update();
       }
       else if (queueElement?.element instanceof bbnAttr) {
+        if (lastElement?.element === queueElement.element) {
+          continue;
+        }
+
         const attr = queueElement.element;
-        //bbn.fn.log(cp.$options.name + ' - ' + attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
+        if (isDebug) {
+          bbn.fn.log(cp.$options.name + ' - ' + attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
+        }
+
         const id = attr.node.id;
         if (!(attr instanceof bbnConditionAttr) && !(attr instanceof bbnForgetAttr) && forgotten.includes(id)) {
           continue;
@@ -167,7 +198,10 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
         */
       }
       else if (bbn.fn.isFunction(queueElement?.fn)) {
-        //bbn.fn.log(cp.$options.name + ' - Fn - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + queueElement.fn.toString());
+        if (isDebug) {
+          bbn.fn.log(cp.$options.name + ' - Fn - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + queueElement.fn.toString());
+        }
+
         await queueElement.fn();
       }
       else {

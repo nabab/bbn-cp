@@ -12,12 +12,7 @@ bbnData.prototype.removeComponent = function(component, path) {
   if (path) {
     const idx = bbn.fn.search(this.refs, {component, path});
     if (idx === -1) {
-      if (!this.refs.length) {
-        this.unset();
-      }
-      else {
-        throw Error("The component is not in the list of components");
-      }
+      throw Error("The component is not in the list of components");
     }
     else {
       if (this.refs[idx].root) {
@@ -27,29 +22,37 @@ bbnData.prototype.removeComponent = function(component, path) {
         this.refs.splice(idx, 1);
         if (!bbn.fn.count(this.refs, {component})) {
           let idx = component.$values.indexOf(this.id);
-          if (idx !== -1) {
+          if (idx === -1) {
+            throw Error("Bha 0 on remove component")
+          }
+          else {
             component.$values.splice(idx, 1);
           }
+        }
+        if (!this.refs.length) {
+          this.unset();
         }
       }
     }
 
   }
   else {
-    if (this.refs.length === 1) {
-      this.unset();
-    }
-    else if (this.refs.filter(a => (a.component === component) && (a.root === true)).length) {
+    if (this.refs.filter(a => (a.component === component) && (a.root === true)).length) {
       this.unset();
     }
     else {
-      const idx = bbn.fn.search(this.refs, {component});
+      const search = {component};
+      if (path !== undefined) {
+        search.path = path;
+      }
+
+      const idx = bbn.fn.search(this.refs, search);
       if (idx === -1) {
         throw Error("The component is not in the list of components");
       }
       else {
         this.refs.splice(idx, 1);
-        if (!bbn.fn.count(this.refs, {component})) {
+        if (!component.$isDestroyed && !bbn.fn.count(this.refs, {component})) {
           let idx = component.$values.indexOf(this.id);
           if (idx === -1) {
             throw Error("Bha on remove component")
@@ -57,6 +60,10 @@ bbnData.prototype.removeComponent = function(component, path) {
           else {
             component.$values.splice(idx, 1);
           }
+        }
+
+        if (!this.refs.length)  {
+          this.unset();
         }
       }
     }

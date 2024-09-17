@@ -706,6 +706,7 @@ const cpDef = {
     }
   },
   beforeCreate() {
+    bbn.env.loadersHistory = this.loaders;
     bbn.fn.defaultAjaxErrorFunction = (jqXHR, textStatus, errorThrown) => {
       /** @todo */
       if (window.appui?.status) {

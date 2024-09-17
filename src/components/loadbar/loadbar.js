@@ -101,13 +101,7 @@ const cpDef = {
        * @return {Array}
        */
       items(){
-        let items = [];
-        bbn.fn.each(this.loadingItems, a => {
-          let b = bbn.fn.clone(a);
-          b.duration = this.timeNow - b.start;
-          items.push(b);
-        })
-        return items.concat(this.loadedItems)
+        return [].concat(this.loadingItems).concat(this.loadedItems)
       },
       /** 
        * @computed currentItem
@@ -119,6 +113,9 @@ const cpDef = {
 
     },
     methods: {
+      duration(item){
+        return this.timeNow - item.start;
+      },
       contextMenu(item) {
         let res =  [{
           text: bbn._("Copy URL"),
@@ -204,6 +201,9 @@ const cpDef = {
       }
     },
     watch: {
+      source() {
+        bbn.fn.log("ITEM CHAVGING");
+      },
       info(v) {
         if (this.interval) {
           clearInterval(this.interval);

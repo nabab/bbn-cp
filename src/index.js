@@ -3,6 +3,7 @@ import bbnData from "./lib/Data/Data.js";
 import "./lib/Data/prototype/addComponent.js";
 import "./lib/Data/prototype/getImpacted.js";
 import "./lib/Data/prototype/hasComponent.js";
+import "./lib/Data/prototype/hasParent.js";
 import "./lib/Data/prototype/isSame.js";
 import "./lib/Data/prototype/launchUpdate.js";
 import "./lib/Data/prototype/prepareUpdate.js";

@@ -59,8 +59,6 @@ bbnData.proxy = function(component, path, targetObj) {
       //bbn.fn.log(["SET", key, oldValue, value, oldObj, targetObj.getImpacted([key], bbn.fn.microtimestamp())]);
 
       if (oldObj && !oldObj.isSame(value)) {
-        const newObj = t.getObject(value);
-        //bbn.fn.log(["UNSET", key, oldValue, value, oldObj.path, newObj?.path, oldObj.parent?.value?.length, newObj?.parent?.value?.length]);
         oldObj.unset();
         mod = true;
       }
@@ -129,6 +127,11 @@ bbnData.proxy = function(component, path, targetObj) {
       return true;
     },
     deleteProperty(target, key) {
+      if (key.indexOf && !key.indexOf('__bbn')) {
+        delete target[key];
+        return true;
+      }
+
       const dataObj = t.getObject(target[key]);
       if (dataObj) {
         dataObj.unset();

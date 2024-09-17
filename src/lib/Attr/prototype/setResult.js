@@ -112,22 +112,6 @@ bbnAttr.prototype.setResult = function() {
 
   this.state = r[this.id][hash].state;
 
-  // Update the sequence if the state is not OK.
-  if (this.state !== 'OK') {
-    let i = 0;
-    while (res.seq[i]) {
-      if (res.seq[i].data instanceof bbnData) {
-        const doubles = bbn.fn.filter(res.seq, {data: res.seq[i].data});
-        while (doubles.length > 1) {
-          const idx = res.seq.indexOf(doubles.shift());
-          res.seq.splice(idx, 1);
-        }
-      }
-
-      i++;
-    }
-  }
-
   r[this.id][hash].seq = res.seq;
   r[this.id][hash].num = node.component.$numBuild + 1;
   updateSequence(r[this.id][hash], this);

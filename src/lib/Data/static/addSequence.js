@@ -6,9 +6,11 @@ bbnData.addSequence = function(component, name, data = null) {
   }
 
   if (this.watchStarted && bbn.fn.isString(name)) {
-    if (!bbn.fn.getRow(this.watchSequence, d => d?.component === component && d?.name === name & d?.data === data)) {
-      this.watchSequence.push({component, name, data});
+    const last = this.watchSequence[this.watchSequence.length - 1];
+    if (data && last?.data && (data.root?.parent === last.data)) {
+      this.watchSequence.pop();
     }
 
+    this.watchSequence.push({component, name, data});
   }
 };

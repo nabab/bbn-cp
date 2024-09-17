@@ -46,8 +46,7 @@
         <li bbn-for="it of items">
           <bbn-context tag="div"
                        class="bbn-vmiddle"
-                       style="height: 30px"
-                       :max-width="300"
+                       style="height: 1.5em"
                        :source="contextMenu(it)">
             <span class="bbn-loadbar-state bbn-hxspadded bbn-c">
               <bbn-loadicon bbn-if="it.loading"
@@ -60,7 +59,7 @@
                  class="nf nf-mdi-stop bbn-orange"/>
             </span>
             <div class="bbn-loadbar-time bbn-c bbn-s">
-              <span bbn-text="renderDuration(it.duration)"/>
+              <span bbn-text="renderDuration(it.duration || duration(it))"/>
             </div>
             <span class="bbn-hxspadded bbn-s"
                   bbn-text="it.url"/>

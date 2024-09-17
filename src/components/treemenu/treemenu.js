@@ -204,7 +204,7 @@ const cpDef = {
        * @emits select
        */
       go(node, event){
-        bbn.fn.log("GO", node);
+        //bbn.fn.log("GO", node);
         this.searchExp = '';
         if ( node && node.data && (node.data.link || node.data.url) ){
           bbn.fn.link(node.data.link || node.data.url);

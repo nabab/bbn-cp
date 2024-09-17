@@ -9,19 +9,17 @@ bbnData.prototype.unset = function(noParent) {
   const id = this.id;
 
   // Unsetting the children
-  bbn.fn.each(this.children, subObj => {
-    subObj.unset(true);
-  });
-  const done = [];
+  while (this.children.length) {
+    this.children.pop().unset(true);
+  }
   // Unsetting the data in each component, root is last
   while (this.refs.length) {
     const it = this.refs.shift();
     const cp = it.component;
-    if (cp && !done.includes(cp.$cid)) {
+    if (cp) {
       let idx = cp.$values.indexOf(id);
       if (idx > -1) {
         cp.$values.splice(idx, 1);
-        done.push(cp.$cid);
       }
       
       if (!noParent && it.parent) {
@@ -34,7 +32,6 @@ bbnData.prototype.unset = function(noParent) {
       }
     }
   }
-  bbn.fn.each(this.children, it => it.unset());
 
   /*
 
@@ -52,6 +49,8 @@ bbnData.prototype.unset = function(noParent) {
 
   bbnData.inventory.delete(id);
   delete this.targetData.__bbnData;
+  delete this.targetData.__bbnKeys;
+  delete this.targetData;
   //bbn.fn.log(["DATA deleted", JSON.stringify(this.targetData)]);
 };
 

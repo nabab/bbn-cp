@@ -1204,7 +1204,7 @@ const cpDef = {
                 tmpData[col.field] = {};
                 bbn.fn.each(data, function (d) {
                   tmpData[col.field][d.index] = d.data[col.field];
-                  d.data[col.field] = d.data[col.field] ? bbn.fn.getField(col.source, col.sourceText ? col.sourceText : 'text', col.sourceValue ? col.sourceValue : 'value', d.data[col.field]) || '' : '';
+                  //d.data[col.field] = d.data[col.field] ? bbn.fn.getField(col.source, col.sourceText ? col.sourceText : 'text', col.sourceValue ? col.sourceValue : 'value', d.data[col.field]) || '' : '';
                 })
               }
             });
@@ -1215,7 +1215,7 @@ const cpDef = {
             bbn.fn.each(this.cols, col => {
               if (col.source && col.field) {
                 bbn.fn.each(data, (d, i) => {
-                  d.data[col.field] = tmpData[col.field][d.index];
+                  //d.data[col.field] = tmpData[col.field][d.index];
                 });
               }
             });
@@ -1274,7 +1274,7 @@ const cpDef = {
                 value: currentGroupValue,
                 data: a,
                 rowIndex,
-                rowKey: this.uid || this.sourceValue ? a[this.uid || this.sourceValue] : data[i].key || data[i].index,
+                rowKey: this.uid || this.sourceValue ? a[this.uid || this.sourceValue] : (data[i].key || data[i].index),
                 expander: true,
                 num: bbn.fn.count(data, 'data.' + this.cols[this.group].field, currentGroupValue)
               };
@@ -3603,9 +3603,6 @@ const cpDef = {
         }
       })
     },
-    beforeDestroy() {
-      bbn.fn.log("DESTROYING TABLE");
-    },
     /**
      * After the initialization of the component sets the property ready on true.
      * @event mounted
@@ -3650,6 +3647,7 @@ const cpDef = {
     },
     watch: {
       columns() {
+        bbn.fn.log("WATCH COLUMNS");
         if (this.ready) {
           this.cols.splice(0, this.cols.length);
           if (this.columns.length) {
@@ -3690,6 +3688,7 @@ const cpDef = {
        * @fires updateData
        */
       observerDirty(v) {
+        bbn.fn.log("WATCH OBSDIRY");
         if (v && !this.editedRow) {
           this.observerDirty = false;
           this.updateData();
@@ -3711,6 +3710,7 @@ const cpDef = {
       currentHidden: {
         deep: true,
         handler() {
+          bbn.fn.log("WATCH HIDDDEN");
           if (this.ready) {
             this.setConfig(true);
             this.$forceUpdate();
@@ -3736,6 +3736,7 @@ const cpDef = {
        * @emit focusout
        */
       focusedRow(newIndex, oldIndex) {
+        bbn.fn.log("WATCH FOC");
         if (bbn.fn.isNumber(oldIndex)) {
           this.$emit('focusout', oldIndex, this.items[oldIndex] ? this.items[oldIndex].index : undefined);
         }

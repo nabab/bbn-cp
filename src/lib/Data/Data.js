@@ -133,21 +133,17 @@ class bbnData/* extends EventTarget*/ {
     });
 
     Object.defineProperty(this, 'refs', {
-      value: [],
+      value: [{
+        component,
+        path: typeof path !== 'string' ? path.toString() : path,
+        root: true,
+        parent: parent || null
+      }],
       writable: false,
       configurable: false
     });
 
-    this.refs.push({
-      component,
-      path,
-      root: true,
-      parent: parent || null
-    });
-
-    if (component.$values.indexOf(this.id) === -1) {
-      component.$values.push(this.id);
-    }
+    component.$values.push(this.id);
 
     // If the object has a parent, the current object is added to the parent's children
     if (parent) {

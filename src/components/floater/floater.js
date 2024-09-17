@@ -906,7 +906,7 @@ const cpDef = {
               return;
             }
 
-            bbn.fn.log("WAITING FOR SCROLL 2");
+            //bbn.fn.log("WAITING FOR SCROLL 2");
             resolve(!this.isInit);
             return;
           }
@@ -914,8 +914,9 @@ const cpDef = {
             let scroll = this.getRef('scroll');
             if (!scroll || !scroll.naturalWidth) {
               // We do nothing and wait that the scroll does the resize
-              bbn.fn.log("WAITING FOR SCROLL");
-              resolve(0);
+              //bbn.fn.log("WAITING FOR SCROLL");
+              this.$nextTick(this.fullResize);
+              resolve(1);
               return;
             }
             //bbn.fn.warning("FLOATER RESIZE");

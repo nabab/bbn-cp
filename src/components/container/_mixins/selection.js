@@ -145,11 +145,14 @@ export default {
 
         this.currentTitle = d.title;
 
+        const oldUrl = d.url;
+        const oldCurrent = d.url;
         d.url = this.router.parseURL(d.url || finalURL);
         if (d.url !== this.currentURL) {
           this.currentURL = d.url;
           this.router.updateBaseURL();
           if (!d.url) {
+            bbn.fn.log("OLD URL " + oldUrl, "OLD CUR " + oldCurrent, "NEW URL " + d.url, "NEW CUR " + finalURL);
             debugger;
           }
           //bbn.fn.log("CHANGING URL TO " + d.url + ' / ' + this.router.baseURL);

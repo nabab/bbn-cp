@@ -46,7 +46,8 @@
                ref="table"
                aria-describedby="table"
                class="bbn-table-table">
-          <colgroup bbn-for="(groupCol, groupIndex) in groupCols">
+          <colgroup bbn-for="(groupCol, groupIndex) in groupCols"
+                    bbn-if="groupCol.cols.length">
             <col bbn-for="(col, i) in groupCol.cols"
                 bbn-show="!col.hidden"
                 :style="{width: col.realWidth + 'px'}"

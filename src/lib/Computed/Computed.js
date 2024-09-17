@@ -105,7 +105,6 @@ export default class bbnComputed {
 
     let forceUpdate = false;
 
-    //bbn.fn.log("UPDATING COMPUTED " + this.#name)
     // Start watching the process before executing the getter.
     bbnData.startWatching();
     // Get the new value using the getter.
@@ -150,16 +149,27 @@ export default class bbnComputed {
     }
 
     if (this.#val !== v) {
-      let hasData = false;
       // Taking care of data (object or array)
       if (!bbn.fn.isPrimitive(v)) {
         // Case where the result has not been treated and a data object already exists
         if (!v.__bbnData && this.#data) {
+          if (!bbn.fn.numProperties(bbn.fn.diffObj(this.#val, v))) {
+            v = this.#val;
+          }
           // If both are arrays we mutate the old one into the new one
-          if (this.#data.isArray && bbn.fn.isArray(v)) {
+          else if (this.#data.isArray && bbn.fn.isArray(v)) {
+            let hasChanged = false;
             for (let i = 0; i < v.length; i++) {
               if (v[i] !== this.#data.value[i]) {
-                if (this.#data.value.includes(v[i])) {
+                if (!v[i].__bbnData && Object.hasOwn(this.#data.value, i) && !bbn.fn.numProperties(bbn.fn.diffObj(v[i], this.#data.value[i]))) {
+                  continue;
+                }
+
+                hasChanged = true;
+                if (!Object.hasOwn(this.#data.value, i)) {
+                  this.#data.value.push(v[i]);
+                }
+                else if (this.#data.value.includes(v[i])) {
                   bbn.fn.move(this.#data.value, this.#data.value.indexOf(v[i]), i);
                 }
                 else if (v[i].__bbnData) {
@@ -170,7 +180,7 @@ export default class bbnComputed {
                     bbn.fn.mutateObject(this.#data.value[i], v[i]);
                   }
                   else {
-                    this.#data.value.splice(i, v.includes(this.#data.value[i]) ? 0 : 1, v[i]);
+                    this.#data.value.splice(i, !Object.hasOwn() || v.includes(this.#data.value[i]) ? 0 : 1, v[i]);
                   }
                 }
               }
@@ -179,13 +189,14 @@ export default class bbnComputed {
               this.#data.value.splice(v.length);
             }
 
-            //bbn.fn.log(["MUTATE ARRAY", this.#name, this.#data, this.#data.value, v]);
-            forceUpdate = true;
+            if (hasChanged) {
+              //bbn.fn.log(["MUTATE ARRAY", this.#name, this.#data, this.#data.value, v]);
+              forceUpdate = true;
+            }
             v = this.#data.value;
           }
           // If both are objects we mutate the old one into the new one
           else if (!this.#data.isArray && bbn.fn.isObject(v)) {
-            hasData = true;
             bbn.fn.mutateObject(this.#data.value, v);
             forceUpdate = true;
             //bbn.fn.log(["MUTATE OBJECT", this.#data.value, v]);
@@ -196,9 +207,6 @@ export default class bbnComputed {
             this.#data.removeComponent(this.#component, this.#name);
             v = this.#component.$treatValue(v, this.#name);
             this.#data = bbnData.getObject(v);
-            if (this.#data) {
-              hasData = true;
-            }
           }
 
         }
@@ -216,7 +224,6 @@ export default class bbnComputed {
 
           // Retrieve the new data object.
           if (data) {
-            hasData = true;
             // Add the new data object to the component.
             data.addComponent(this.#component, this.#name); 
           }
@@ -225,21 +232,19 @@ export default class bbnComputed {
           // Treat the value and get the data object.
           v = this.#component.$treatValue(v, this.#name);
           this.#data = bbnData.getObject(v);
-          if (this.#data) {
-            hasData = true;
-          }
         }
       }
 
-      if (this.#num) {
-        // Update the component with the new value.
-        this.#updateComponent(v, forceUpdate);
-      }
-      else {
-        if (this.#val !== v) {
+      //if (this.#val !== v) {
+        //bbn.fn.log(["UPDATING COMPUTED " + this.#name + " ON " + this.#component.$options.name, bbn.fn.diffObj(this.#val, v)]);
+        if (this.#num) {
+          // Update the component with the new value.
+          this.#updateComponent(v, forceUpdate);
+        }
+        else {
           this.#val = v;
         }
-      }
+      //}
     }
 
     // Update the build number.

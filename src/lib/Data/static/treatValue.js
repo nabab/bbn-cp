@@ -25,8 +25,7 @@ bbnData.treatValue = function(value, component, path, parent) {
       dataObj = this.retrieve(value.__bbnData);
       dataObj.addComponent(component, path, parent);
     }
-
-    if (!dataObj) {
+    else {
       dataObj = new bbnData(value, component, path, parent);
     }
 
