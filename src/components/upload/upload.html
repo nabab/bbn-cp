@@ -114,11 +114,9 @@
          'z-index': 2
        }">
     <div class="bbn-flex-width bbn-vmiddle">
-      <i bbn-if="canAddFile"
-         :class="[icon, 'bbn-primary-text-alt', 'bbn-xlarge']"/>
-      <div bbn-if="canAddFile"
-           class="bbn-flex-fill bbn-primary-text-alt bbn-hsmargin"
-           @click="getRef('fileInput').click()"
+      <i :class="[icon, 'bbn-primary-text-alt', 'bbn-xlarge']"/>
+      <div class="bbn-flex-fill bbn-primary-text-alt bbn-hsmargin"
+           @click="onTextClick"
            bbn-text="dragDrop ? currentText.uploadOrDrop : currentText.uploadButton"
            @drop="dropEvent"/>
       <div class="bbn-box bbn-spadded"
@@ -131,7 +129,7 @@
       </div>
       <div class="bbn-box bbn-spadded bbn-p"
            ref="uploadButton"
-           bbn-if="canAddFile && !autoUpload && !!filesReady.length"
+           bbn-if="!autoUpload && !!filesReady.length"
            style="z-index: 2"
            :title="currentText.upload"
            @click="upload()">

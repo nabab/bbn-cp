@@ -252,8 +252,7 @@ const cpDef = {
        * Indicates if an uploading is running.
        *  @data {Boolean} [false] uploading
        */
-      uploading: false,
-      oldFilesProgress: []
+      uploading: false
     };
   },
   computed: {
@@ -396,24 +395,26 @@ const cpDef = {
      * @fires upload
      */
     _makeFiles(files, fromUser, status){
-      if ( !this.ready || !this.isDisabled ){
-        if ( files instanceof FileList ){
+      if (!this.ready || !this.isDisabled) {
+        if (files instanceof FileList) {
           files = Object.values(files)
         }
+
         files = this._filterFiles(bbn.fn.map(files, file => {
           return this._makeFile(file, fromUser, status)
-        }))
+        }));
         bbn.fn.each(files, file => {
-          if ( !this.ready || this.canAddFile ){
-            this._addFile(file)
+          if (!this.ready || this.canAddFile) {
+            this._addFile(file);
           }
         })
-        if ( this.ready && this.autoUpload ){
+        if (this.ready && this.autoUpload) {
           this.$nextTick(() => {
-            this.upload()
+            this.upload();
           })
         }
       }
+
       if ( this.getRef('fileInput') ){
         this.getRef('fileInput').value = null
       }
@@ -424,7 +425,15 @@ const cpDef = {
      * @param {Object} file
      */
     _addFile(file){
-      this.currentData.push(file)
+      const idx = bbn.fn.search(this.currentData, {id: file.id});
+      if (idx === -1) {
+        this.currentData.push(file);
+      }
+      else {
+        bbn.fn.iterate(file, (v, i) => {
+          this.currentData[idx][i] = v;
+        });
+      }
     },
     /**
      * Removes the given file from the currentData property.
@@ -457,24 +466,29 @@ const cpDef = {
         if ( !file.data.name || ((file.data.size !== undefined) && !file.data.size) ){
           return false
         }
-        if ( bbn.fn.getRow(this.currentData, {'data.name': file.data.name}) ){
-          if ( file.fromUser ){
+
+        let current = bbn.fn.getRow(this.currentData, {'data.name': file.data.name});
+        if (current) {
+          if (file.fromUser) {
             this.$emit('error', {file: file.data.name, message: bbn._('The file exists!')})
             this.alert(bbn._('The file') + ` "${file.data.name}" ` + bbn._('exists') + '!')
+            return false;
           }
-          return false
+          else {
+            file.id = current.id;
+          }
         }
-        if ( bbn.fn.isArray(this.extensions) && this.extensions.length ){
+        if (bbn.fn.isArray(this.extensions) && this.extensions.length) {
           let ext = file.data.name.substring(file.data.name.lastIndexOf('.')+1).toLowerCase(),
               extensions = bbn.fn.map(this.extensions, e => {
                 return e.toLowerCase();
               });
-          if ( !extensions.includes(ext) ){
-            if ( file.fromUser ){
-              this.$emit('error', {file: file.data.name, message: bbn._('The extension') + ` "${ext}" ` + bbn._('is not allowed') + '!'})
-              this.alert(bbn._('The extension') + ` "${ext}" ` + bbn._('is not allowed') + '!')
-            }
-            return false
+          if (!extensions.includes(ext)
+            && file.fromUser
+          ) {
+            this.$emit('error', {file: file.data.name, message: bbn._('The extension') + ` "${ext}" ` + bbn._('is not allowed') + '!'});
+            this.alert(bbn._('The extension') + ` "${ext}" ` + bbn._('is not allowed') + '!');
+            return false;
           }
         }
         return true
@@ -496,13 +510,17 @@ const cpDef = {
       }
       return {}
     },
+    /**
+     * The callback function after an upload.
+     * @method _afterUpload
+     * @emits complete
+     * @fires setValue
+     */
     _afterUpload(){
       if (!this.filesProgress.length) {
         this.uploading = false;
-        if ( !this.filesError.length ){
-          this.$emit('complete', this.filesSuccess, this.filesError)
-          this.setValue();
-        }
+        this.$emit('complete', this.filesSuccess, this.filesError)
+        this.setValue();
       }
     },
     /**
@@ -511,14 +529,12 @@ const cpDef = {
      * @return Array
      */
     getValue(){
-      let res;
-      if ( (typeof this.value === 'string') && this.json ){
-        res = JSON.parse(this.value)
+      let res = this.value;
+      if (bbn.fn.isString(this.value) && this.json) {
+        res = JSON.parse(this.value);
       }
-      else if ( bbn.fn.isArray(this.value) ){
-        res = this.value
-      }
-      return bbn.fn.isArray(res) ? res : []
+
+      return bbn.fn.isArray(res) ? res : [];
     },
     /**
      * The method called when the user select or drop files.
@@ -526,23 +542,24 @@ const cpDef = {
      * @fires _makeFiles
      */
     filesChanged(e){
-      if ( e.target.files.length ){
+      if (e.target.files.length) {
+        // Check files size
         if (this.maxFilesize) {
           const files = Object.values(e.target.files);
           let ok = true;
           bbn.fn.each(files, f => {
             if (f.size > this.maxFilesize) {
              ok = false;
-             //this.alert(bbn._('The file "%s" is too big!', f.name));
+             this.alert(bbn._('The file "%s" is too big!', f.name));
              return false;
             }
           });
           if (!ok) {
-            //return;
+            return;
           }
         }
 
-        this._makeFiles(e.target.files, true)
+        this._makeFiles(e.target.files, true);
       }
     },
     /**
@@ -557,7 +574,10 @@ const cpDef = {
      * @emits failure
      */
     upload(id){
-      if ( this.uploadable && this.filesReady.length ){
+      if (this.uploadable
+        && this.filesReady.length
+        && this.canAddFile
+      ) {
         this.uploading = true;
         if ( id ){
           this.setStatusProgress(id);
@@ -694,7 +714,7 @@ const cpDef = {
      */
     setValue(){
       let value = bbn.fn.map(this.filesSuccess, f => {
-        if ( f.data instanceof File ){
+        if (this.isFile(f)) {
           return {
             name: f.data.name,
             size: f.data.size,
@@ -771,7 +791,10 @@ const cpDef = {
      */
     cancelEdit(file){
       if ( file.fromPaste && (file.status === 'ready') ){
-        this.currentData.splice(bbn.fn.search(this.currentData, {id: file.id}), 1)
+        const idx = bbn.fn.search(this.currentData, {id: file.id});
+        if (idx > -1) {
+          this.currentData.splice(idx, 1);
+        }
       }
       else {
         file.edit = false
@@ -830,7 +853,7 @@ const cpDef = {
      * @fires _addFile
      */
     pasteEvent(event){
-      if ( event.clipboardData.files.length && this.canAddFile ){
+      if (event.clipboardData.files.length && this.canAddFile) {
         let file = this._makeFile(event.clipboardData.files[0], true, 'ready', true)
         file.edit = ''
         this._addFile(file)
@@ -840,7 +863,7 @@ const cpDef = {
       }
     },
     dropEvent(event){
-      if ( !this.dragDrop ){
+      if (!this.canAddFile || !this.dragDrop) {
         event.preventDefault();
       }
     },
@@ -979,6 +1002,15 @@ const cpDef = {
      */
     isFile(file){
       return file.data instanceof File;
+    },
+    /**
+     * @method onTextClick
+     * @fires getRef
+     */
+    onTextClick(){
+      if (this.canAddFile) {
+        this.getRef('fileInput').click();
+      }
     }
   },
   /**
@@ -988,10 +1020,10 @@ const cpDef = {
    */
   mounted(){
     this.$nextTick(() => {
-      this.oldFilesProgress = bbn.fn.clone(this.filesProgress);
       if ( this.value ){
         this._makeFiles(this.getValue(), false, 'success')
       }
+
       this.ready = true
     })
   },
@@ -1004,33 +1036,11 @@ const cpDef = {
     value: {
       deep: true,
       handler(newVal, oldVal){
-        if ( !bbn.fn.isSame(newVal, oldVal) ){
-          this.currentData.splice(0);
-        }
+
         this.$nextTick(() => {
           this._makeFiles(this.getValue(), false, 'success')
         });
       }
-    },
-    /**
-     * @watch filesSProgress
-     * @emits complete
-     * @fires setValue
-     */
-    filesProgress(newVal, oldVal){
-      return;
-      bbn.fn.log(["FILES PROGRESS", bbn.fn.clone(newVal), bbn.fn.clone(oldVal), bbn.fn.clone(this.oldFilesProgress)]);
-      if ( !bbn.fn.isSame(newVal, this.oldFilesProgress) && !newVal.length ){
-        this.uploading = false;
-        if ( !this.filesError.length ){
-          this.$emit('complete', this.filesSuccess, this.filesError)
-          this.$nextTick(() => {
-            this.setValue();
-          })
-        }
-      }
-
-      this.oldFilesProgress = bbn.fn.clone(newVal);
     }
   }
 };
