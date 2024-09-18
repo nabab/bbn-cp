@@ -16,9 +16,17 @@ const updateSequence = function (result, attr) {
       let a = result.seq[i];
       // If the action's data is an instance of bbnData.
       if (a.data instanceof bbnData) {
+        if (a.name) {
+          if (!a.data.deps[a.name]) {
+            a.data.deps[a.name] = [];
+          }
+          if (!a.data.deps[a.name].includes(attr)) {
+            a.data.deps[a.name].push(attr);
+          }
+        }
         // Add the attribute to the data dependencies if not already present.
-        if (!a.data.deps.includes(attr)) {
-          a.data.deps.push(attr);
+        else if (!a.data.deps.__bbnRoot.includes(attr)) {
+          a.data.deps.__bbnRoot.push(attr);
         }
       }
       else {

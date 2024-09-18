@@ -123,16 +123,22 @@ export default class bbnComputed {
           if (r.parent === prev) {
             deps.splice(i - 1, 1);
             i--;
+            a = deps[i];
             return false;
           }
-        })
-        if (!a.data.deps.includes(this)) {
-          if (this.#data && this.#data.deps.includes(a.data)) {
-            bbn.fn.log(this, a.data);
-            throw new Error("Circular dependency detected");
-          }
+        });
 
-          a.data.deps.push(this); // Add this computed property to the dependencies.
+        if (a.name) {
+          if (!a.data.deps[a.name]) {
+            a.data.deps[a.name] = [];
+          }
+          if (!a.data.deps[a.name].includes(this)) {
+            a.data.deps[a.name].push(this);
+          }
+        }
+        // Add the attribute to the data dependencies if not already present.
+        else if (!a.data.deps.__bbnRoot.includes(this)) {
+          a.data.deps.__bbnRoot.push(this);
         }
       }
       else if (a.component && a.name && a.component.$namespaces[a.name]) {
@@ -189,16 +195,11 @@ export default class bbnComputed {
               this.#data.value.splice(v.length);
             }
 
-            if (hasChanged) {
-              //bbn.fn.log(["MUTATE ARRAY", this.#name, this.#data, this.#data.value, v]);
-              forceUpdate = true;
-            }
             v = this.#data.value;
           }
           // If both are objects we mutate the old one into the new one
           else if (!this.#data.isArray && bbn.fn.isObject(v)) {
             bbn.fn.mutateObject(this.#data.value, v);
-            forceUpdate = true;
             //bbn.fn.log(["MUTATE OBJECT", this.#data.value, v]);
             v = this.#data.value;
           }
@@ -235,7 +236,7 @@ export default class bbnComputed {
         }
       }
 
-      //if (this.#val !== v) {
+      if (this.#val !== v) {
         //bbn.fn.log(["UPDATING COMPUTED " + this.#name + " ON " + this.#component.$options.name, bbn.fn.diffObj(this.#val, v)]);
         if (this.#num) {
           // Update the component with the new value.
@@ -244,7 +245,7 @@ export default class bbnComputed {
         else {
           this.#val = v;
         }
-      //}
+      }
     }
 
     // Update the build number.

@@ -1336,7 +1336,7 @@ const list = {
     },
     source() {
       if (this.ready && !this.editable) {
-        bbn.fn.log("WATCH SOURce from list")
+        //bbn.fn.log("WATCH SOURce from list")
         this.updateData();
       }
     },

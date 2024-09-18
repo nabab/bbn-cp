@@ -32,8 +32,8 @@ bbnData.prototype.prepareUpdate = function(path) {
   const impacted = this.getImpacted(path, this.lastUpdate);
   const num = ++bbn.cp.numTicks;
   this.lastUpdate = num;
-  this.deps.forEach(a => {
-    let go = true;
+  const deps = (path ? this.deps[path] : this.deps.__bbnRoot) || [];
+  deps.forEach(a => {
     if (!(a instanceof bbnComputed) || !this.hasParent(a.component, a.name)) {
       queueUpdate({element: a, num})
     }
@@ -42,7 +42,7 @@ bbnData.prototype.prepareUpdate = function(path) {
     const id = it.component.$cid + '/' + it.path[0];
     if (!propagation.includes(id)) {
       propagation.push(id);
-      if ((it.level <= 1) && it.component.$deps[it.path[0]]) {
+      if ((it.level <= 1) && /*(it.path.length === 1) &&*/ it.component.$deps[it.path[0]]) {
         propagateDependencyChanges(it.component, it.path[0]);
       }
     }

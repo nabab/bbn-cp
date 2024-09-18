@@ -1,6 +1,7 @@
 import bbnCp from "../Cp.js";
 
 bbnCp.prototype.$nextTick = async function(fn){
+  const f = fn ? bbn.fn.analyzeFunction(fn) : {hash: 'nextTick'}; 
   const cp = this;
   return new Promise((resolve) => {
     this.$tick(() => {
@@ -14,6 +15,7 @@ bbnCp.prototype.$nextTick = async function(fn){
   
             resolve();
           },
+          hash: f.hash,
           num: ++bbn.cp.numTicks
         });
       }, bbn.cp.tickDelay);

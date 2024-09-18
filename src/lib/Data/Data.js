@@ -127,7 +127,9 @@ class bbnData/* extends EventTarget*/ {
     });
 
     Object.defineProperty(this, 'deps', {
-      value: [],
+      value: bbn.fn.createObject({
+        __bbnRoot: []
+      }),
       writable: false,
       configurable: false
     });

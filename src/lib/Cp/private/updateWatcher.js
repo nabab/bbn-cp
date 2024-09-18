@@ -46,6 +46,7 @@ export default async function updateWatcher(cp, name) {
       queueUpdate({
         component: cp,
         fn: getFn(cp.$watcher[fullName], lev),
+        hash: cp.$cid + '-' + fullName,
         num
       });
       

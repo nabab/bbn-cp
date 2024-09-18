@@ -70,6 +70,7 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
     }
 
     let queue = bbn.cp.queue.splice(0);
+    //bbn.fn.log(queue.slice());
     // Process each component in the queue.
     let oneDone = false;
     const attrQueue = [];
@@ -116,6 +117,11 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
       if (lastNum !== queueElement.num) {
         cps = bbn.fn.createObject();
         lastNum = queueElement.num;
+        /*
+        if (done?.length) {
+          bbn.fn.log(done.slice());
+        }*/
+
         done = [];
         lastElement = null;
       }

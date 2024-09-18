@@ -1063,6 +1063,7 @@ const cpDef = {
       /**
        * @watch source
        */
+      /*
       source: {
         deep: true,
         handler() {
@@ -1085,6 +1086,7 @@ const cpDef = {
           })
         }
       },
+      */
       /**
        * @watch buttons
        */

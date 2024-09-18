@@ -4,6 +4,11 @@ import bbnCp from "../Cp.js";
  * Add delay before another function call
  */
 bbnCp.prototype.$tick = function(...fns) {
+  let hash = 'tick-';
+  bbn.fn.each(fns, fn => {
+    const f = bbn.fn.analyzeFunction(fn);
+    hash += f.hash + '-';
+  });
   return new Promise(resolve => {
     bbn.cp.queueUpdate({
       component: this,
@@ -16,6 +21,7 @@ bbnCp.prototype.$tick = function(...fns) {
 
         resolve();
       },
+      hash,
       num: ++bbn.cp.numTicks
     });
   });
