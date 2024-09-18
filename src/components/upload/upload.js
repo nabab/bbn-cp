@@ -1013,6 +1013,11 @@ const cpDef = {
       }
     }
   },
+  created(){
+    if (this.value) {
+      this._makeFiles(this.getValue(), false, 'success');
+    }
+  },
   /**
    * @event mounted
    * @fires _makeFiles
@@ -1020,10 +1025,6 @@ const cpDef = {
    */
   mounted(){
     this.$nextTick(() => {
-      if ( this.value ){
-        this._makeFiles(this.getValue(), false, 'success')
-      }
-
       this.ready = true
     })
   },
