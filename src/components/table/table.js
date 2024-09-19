@@ -1274,7 +1274,7 @@ const cpDef = {
                 value: currentGroupValue,
                 data: a,
                 rowIndex,
-                rowKey: this.uid || this.sourceValue ? a[this.uid || this.sourceValue] : (data[i].key || data[i].index),
+                rowKey: this.uid ? a[this.uid] : (data[i].key || rowIndex),
                 expander: true,
                 num: bbn.fn.count(data, 'data.' + this.cols[this.group].field, currentGroupValue)
               };
@@ -1329,8 +1329,8 @@ const cpDef = {
               let tmp = {
                 index: data[i].index,
                 data: a,
-                rowIndex: rowIndex,
-                rowKey: this.uid || this.sourceValue ? a[this.uid || this.sourceValue] : data[i].key || data[i].index,
+                rowIndex,
+                rowKey: this.uid ? a[this.uid] : data[i].key || rowIndex,
                 expander: true,
                 expanded: isExpanded
               };
@@ -1365,8 +1365,8 @@ const cpDef = {
             o = {
               index: data[i].index,
               data: a,
-              rowIndex: rowIndex,
-              rowKey: this.uid || this.sourceValue ? a[this.uid || this.sourceValue] : data[i].key || data[i].index,
+              rowIndex,
+              rowKey: this.uid ? a[this.uid] : data[i].key || rowIndex,
             };
             if (isGroup) {
               if (!currentGroupValue) {
@@ -1417,7 +1417,7 @@ const cpDef = {
                 data: bbn.fn.filter(data, v => {
                   return v.data[groupField] === data[i].data[groupField];
                 }),
-                rowIndex: rowIndex,
+                rowIndex,
                 rowKey: data[i].key,
                 isGrouped: true,
                 footer: true,
@@ -1506,7 +1506,7 @@ const cpDef = {
                   tmp[ac.field] = aggr[c];
                   res.push({
                     index: data[i] ? data[i].index : 0,
-                    rowIndex: rowIndex,
+                    rowIndex,
                     rowKey: 'a' + aggIndex + '-' + (data[i] ? data[i].key : rowIndex),
                     aggregated: true,
                     name: c,

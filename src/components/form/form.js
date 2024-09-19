@@ -1063,11 +1063,10 @@ const cpDef = {
       /**
        * @watch source
        */
-      /*
       source: {
         deep: true,
         handler() {
-          //bbn.fn.log(["SOURCE CHANGED", JSON.stringify(this.getModifications()), this.originalData, JSON.stringify(this.source)]);
+          bbn.fn.log(["SOURCE CHANGED", JSON.stringify(this.getModifications()), this.originalData, JSON.stringify(this.source)]);
           this.dirty = this.isModified();
           this.canSubmit = this._canSubmit();
           if (this.storage) {
@@ -1086,7 +1085,6 @@ const cpDef = {
           })
         }
       },
-      */
       /**
        * @watch buttons
        */
