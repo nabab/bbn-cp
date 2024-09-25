@@ -1,0 +1,27 @@
+<div :class="[componentClass, 'bbn-iflex', 'bbn-textbox', {'bbn-disabled': !!isDisabled}]">
+  <bbn-dropdown :source="countryCodes"
+                bbn-model="currentPrefix"
+                :disabled="isDisabled"
+                :readonly="readonly"
+                :required="required"
+                :placeholder="placeholder"
+                :native="native"
+                source-value="prefix"
+                :clear-html="true"
+                class="bbn-phone-dropdown bbn-right-xsspace bbn-no-border"/>
+  <bbn-input tabindex="1"
+             autocomplete="off"
+             bbn-model="currentNumber"
+             :name="name"
+             ref="element"
+             :disabled="isDisabled"
+             :readonly="readonly"
+             :required="required"
+             :inputmode="inputmode"
+             :placeholder="placeholder"
+             class="bbn-phone-input bbn-no-border"
+             pattern="[0-9]"
+             :maxlength="maxLength"/>
+  <input type="hidden"
+          :value="value">
+</div>
