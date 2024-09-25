@@ -64,6 +64,10 @@ const cpDef = {
   },
   computed: {
     currentValue(){
+      if (!this.currentNumber.length) {
+        return '';
+      }
+
       return this.currentPrefix + this.currentNumber;
     },
     currentCountry(){
@@ -110,7 +114,7 @@ const cpDef = {
       this.currentNumber = this.getNumberFromValue();
     },
     currentValue(newVal){
-      this.emitInput(newVal);
+      this.emitInput(!newVal.length && this.nullable ? this.nullValue : newVal);
     }
   }
 };
