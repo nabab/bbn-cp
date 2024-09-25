@@ -13,7 +13,7 @@
     'bbn-nowrap': true
   }">
     <bbn-button bbn-if="buttonLeft"
-          :icon="buttonLeft" 
+          :icon="buttonLeft"
           :action="currentActionLeft"
           tabindex="-1"
           :class="[
@@ -23,7 +23,8 @@
               'bbn-invisible': autoHideLeft,
               'bbn-disabled': buttonLeftDisabled
             }
-          ]"/>
+          ]"
+          :disabled="buttonLeftDisabled"/>
     <div bbn-if="prefix"
          class="bbn-block bbn-h-100 bbn-vmiddle bbn-nowrap"
          bbn-text="prefix"/>
@@ -88,6 +89,7 @@
                     'bbn-invisible' : autoHideRight,
                     'bbn-disabled': buttonRightDisabled
                   }
-                ]"/>
+                ]"
+                :disabled="buttonRightDisabled"/>
   </div>
 </div>
