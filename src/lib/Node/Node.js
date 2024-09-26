@@ -226,15 +226,11 @@ export default class bbnNode
   }
 
   async setComment(v) {
-    if (this.#comment !== v) {
-      this.#comment = v;
+    if (this.#comment !== !!v) {
+      this.#comment = !!v;
       if (this.element && (bbn.fn.isComment(this.element) !== !!this.comment)) {
-        if (this.parentElement) {
-          await this.init();
-        }
-        else {
-          removeDOM(this.component, this.element);
-        }
+        removeDOM(this.component, this.element);
+        await this.init();
       }
     }
   }

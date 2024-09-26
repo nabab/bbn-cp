@@ -2577,7 +2577,7 @@ const cpDef = {
               field: f
             });
           if (pos > -1) {
-            if (this.currentOrder[pos].dir === 'ASC') {
+            if (this.currentOrder[pos].dir.toUpperCase() === 'ASC') {
               this.currentOrder[pos].dir = 'DESC';
             } else {
               this.currentOrder.splice(0, this.currentOrder.length);
@@ -3266,6 +3266,8 @@ const cpDef = {
               return 'bbn-input';
             case "url":
               return 'bbn-input';
+            case "phone":
+              return 'bbn-phone';
             case "number":
               return 'bbn-numeric';
             case "money":
@@ -3309,6 +3311,8 @@ const cpDef = {
               });
               break;
             case "number":
+              break;
+            case "phone":
               break;
             case "money":
               break;

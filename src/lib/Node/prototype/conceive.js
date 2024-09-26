@@ -12,11 +12,13 @@ bbnNode.prototype.conceive = async function() {
       }
 
       const ele = this.component.$retrieveElement(item.id, hash);
-      const node = ele ? ele.bbnSchema : generateNode(item, this.component, this, hash, this.data);
+      const node = ele?.bbnSchema || generateNode(item, this.component, this, hash, this.data);
       if (!ele) {
+        //bbn.fn.log("INIT " + node.id + ' ' + node.tag)
         await node.init();
       }
       else {
+        //bbn.fn.log("UPDATE " + node.id + ' ' + node.tag)
         //bbn.fn.log(["SHOULD UPDATE " + (this instanceof bbnInternalNode ? this.component.$options.name : this.tag), this])
         await node.update();
       }

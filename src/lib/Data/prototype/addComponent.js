@@ -102,8 +102,4 @@ bbnData.prototype.addComponent = function(component, path, parent) {
       parent: parent || null
     });
   }
-
-  if (!component.$values.includes(this.id)) {
-    component.$values.push(this.id);
-  }
 };

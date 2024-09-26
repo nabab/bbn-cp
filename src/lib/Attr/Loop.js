@@ -134,14 +134,14 @@ export default class bbnLoopAttr extends bbnAttr
                 && cp.$elements[elem.bbnId][n]
                 && !elem.bbnHash.indexOf(n)
               ) {
-                //bbn.fn.warning("DELETING")
+                bbn.fn.warning("DELETING")
                 removeDOM(cp, elem);
               }
               k++;
             }
           }
 
-          //bbn.fn.warning("DELETING 0")
+          bbn.fn.warning("DELETING 0")
           removeDOM(cp, a);
         }
       });

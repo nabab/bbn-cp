@@ -17,11 +17,6 @@ bbnData.prototype.unset = function(noParent) {
     const it = this.refs.shift();
     const cp = it.component;
     if (cp) {
-      let idx = cp.$values.indexOf(id);
-      if (idx > -1) {
-        cp.$values.splice(idx, 1);
-      }
-      
       if (!noParent && it.parent) {
         let idx = it.parent.children.indexOf(this);
         if (idx > -1) {

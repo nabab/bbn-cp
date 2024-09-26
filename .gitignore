@@ -3,6 +3,7 @@ package-lock.json
 .vscode/
 .history/
 .idea/
+vue/
 _DS_STORE*
 *.DS_Store
 ._*

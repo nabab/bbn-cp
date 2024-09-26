@@ -7,7 +7,7 @@ class bbnData/* extends EventTarget*/ {
 
   static lastSequence = null;
 
-  static inventory = new Map();
+  static inventory = new WeakMap();
 
   static watchSequence = [];
 
@@ -144,8 +144,6 @@ class bbnData/* extends EventTarget*/ {
       writable: false,
       configurable: false
     });
-
-    component.$values.push(this.id);
 
     // If the object has a parent, the current object is added to the parent's children
     if (parent) {

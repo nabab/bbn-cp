@@ -97,6 +97,8 @@ export default {
       }
 
       let finalURL = this.router.fullBaseURL + url;
+      bbn.fn.warning("ROUTING " + url + ' / CURRENT: ' + this.router.currentURL + ' / FULL: ' + this.router.getFullCurrentURL() + ' / FINAL: ' + finalURL);
+      bbn.fn.log(this.router.postBaseUrl);
       this.isLoading = true;
       if (!this.currentView.pane) {
         //bbn.fn.log(["GETTING VIEW " + finalURL, url, this.router.parseURL(url), this.router.baseURL, this.getFullCurrentURL()]);

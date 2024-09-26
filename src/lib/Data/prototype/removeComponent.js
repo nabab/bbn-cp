@@ -20,15 +20,6 @@ bbnData.prototype.removeComponent = function(component, path) {
       }
       else {
         this.refs.splice(idx, 1);
-        if (!bbn.fn.count(this.refs, {component})) {
-          let idx = component.$values.indexOf(this.id);
-          if (idx === -1) {
-            throw Error("Bha 0 on remove component")
-          }
-          else {
-            component.$values.splice(idx, 1);
-          }
-        }
         if (!this.refs.length) {
           this.unset();
         }
@@ -52,16 +43,6 @@ bbnData.prototype.removeComponent = function(component, path) {
       }
       else {
         this.refs.splice(idx, 1);
-        if (!component.$isDestroyed && !bbn.fn.count(this.refs, {component})) {
-          let idx = component.$values.indexOf(this.id);
-          if (idx === -1) {
-            throw Error("Bha on remove component")
-          }
-          else {
-            component.$values.splice(idx, 1);
-          }
-        }
-
         if (!this.refs.length)  {
           this.unset();
         }

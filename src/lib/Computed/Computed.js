@@ -141,7 +141,7 @@ export default class bbnComputed {
           a.data.deps.__bbnRoot.push(this);
         }
       }
-      else if (a.component && a.name && a.component.$namespaces[a.name]) {
+      else if (a.component && a.name && a.component.$namespaces[a.name] && ((a.component !== this.#component) || (a.name !== this.#name))) {
         if (!a.component.$deps[a.name]) {
           a.component.$deps[a.name] = [];
         }

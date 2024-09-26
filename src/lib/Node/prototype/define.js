@@ -45,7 +45,7 @@ bbnNode.prototype.define = function(node, data) {
            this.parent.element?.parentNode
            : this.parent.element;
 
-      return !parent || parent.bbnSchema.comment ? null : parent;
+      return parent || this.component.$el;
     }
   });
 

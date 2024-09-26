@@ -22,7 +22,7 @@ bbnCp.prototype.$tick = function(...fns) {
         resolve();
       },
       hash,
-      num: ++bbn.cp.numTicks
+      num: bbn.cp.numTicks
     });
   });
 }

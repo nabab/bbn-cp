@@ -194,6 +194,10 @@ const cpDef = {
     };
   },
   computed: {
+    currentTextValue() {
+      return this.value;
+    },
+
     isNullable(){
       return this.nullable && this.isActive;
     },

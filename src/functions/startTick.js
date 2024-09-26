@@ -55,7 +55,7 @@ const sorter = (a, b) => {
   return atA < atB ? -1 : 1;
 };
 
-async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
+async function treatQueue(unconditioned = [], forgotten = []) {
   let isDebug = false;
   const done = [];
   if (bbn.cp.queue.length) {
@@ -103,11 +103,12 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
     }), null, 2));
     */
     while (queue.length) {
+      /*
       if (isDebug) {
-        if (bbn.cp.numTicks - isDebug > 1000) {
+        if (bbn.cp.numTicks - isDebug > 10000) {
           throw new Error("Too many ticks");
         }
-      }
+      }*/
       const queueElement = queue.shift();
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
       if (!cp.$el.isConnected) {
@@ -174,7 +175,9 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
           continue;
         }
 
-        await attr.update();
+        if (!attrQueue.includes(attr)) {
+          attrQueue.push(attr);
+        }
         //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
         /*
         if (attr instanceof bbnConditionAttr) {
@@ -221,11 +224,16 @@ async function treatQueue(num = 0, unconditioned = [], forgotten = []) {
 
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
-      await treatQueue(num + 1, unconditioned, forgotten);
+      //await treatQueue(unconditioned, forgotten);
     }
 
     for (let n in cps) {
       cps[n].$lastBuild = bbn.cp.numTicks;
+    }
+
+    while (attrQueue.length) {
+      const attr = attrQueue.shift();
+      attr.update();
     }
   }
 }
@@ -258,6 +266,7 @@ export default function startTick() {
           //lastUpdate = tst;
 
           await treatQueue();
+          bbn.cp.numTicks++;
 
           // Indicate that the current update cycle is complete.
           bbn.cp.isRunning = false;

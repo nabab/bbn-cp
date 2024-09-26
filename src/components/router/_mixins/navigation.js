@@ -224,6 +224,13 @@ export default {
       }
       return base;
     },
+    currentView() {
+      if (this.views[this.selected]) {
+        return this.views[this.selected];
+      }
+
+      return false;
+    },
   },
   methods: {
     async init(url) {
@@ -372,7 +379,6 @@ export default {
     * @returns {void}
     */
     async route(url, force) {
-      //bbn.fn.warning("ROUTING " + url + ' / CURRENT: ' + this.currentURL);
       //bbn.fn.log(this.baseURL, this.routed);
       if (!bbn.fn.isString(url)) {
         throw Error(bbn._('The component bbn-container must have a valid URL defined (URL is not a string)'));
@@ -764,6 +770,7 @@ export default {
       if (this.currentView) {
         return this.getFullBaseURL() + this.currentView.current;
       }
+
       return false;
     },
     /**

@@ -20,13 +20,6 @@ export default function init(cp) {
   });
 
 
-  // This will hold all the reactive data
-  Object.defineProperty(cp, '$values', {
-    value: [],
-    writable: false,
-    configurable: false
-  });
-
   // This will become true after all is mounted
   Object.defineProperty(cp, '$isInit', {
     value: false,

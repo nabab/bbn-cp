@@ -64,6 +64,15 @@ bbnNode.prototype.insert = function(ele, after) {
   const cp = this.component;
   if (!parent) {
     if (this.isCommented) {
+      if (this.hash) {
+        if (this.component.$elements[this.id]?.[this.hash] && (this.component.$elements[this.id]?.[this.hash] !== ele)) {
+          this.component.$elements[this.id][this.hash] = ele;
+        }
+      }
+      else if (this.component.$elements[this.id] && (this.component.$elements[this.id] !== ele)) {
+        this.component.$elements[this.id] = ele;
+      }
+
       return;
     }
 
@@ -74,13 +83,11 @@ bbnNode.prototype.insert = function(ele, after) {
   if (insertInSlot(parent, this, ele)) {
     if (this.hash) {
       if (this.component.$elements[this.id]?.[this.hash] && (this.component.$elements[this.id]?.[this.hash] !== ele)) {
-        this.component.$elements[this.id][this.hash] = ele;
-        return;
+        removeDOM(this.component, this.component.$elements[this.id][this.hash], ele);
       }
     }
     else if (this.component.$elements[this.id] && (this.component.$elements[this.id] !== ele)) {
-      this.component.$elements[this.id] = ele;
-      return;
+      removeDOM(this.component, this.component.$elements[this.id], ele);
     }
   }
   else if (replace && this.element) {
@@ -92,26 +99,7 @@ bbnNode.prototype.insert = function(ele, after) {
       //bbn.fn.log(["APPEND CHILDREN", this.tag, ele])
     }
 
-    if (this.element.parentNode === parent) {
-      // Replace an existing element
-      removeDOM(this.component, this.element, ele);
-      // The DOM has been replaced so we just remove the reference
-      //removeFromElements(this.component, this.id, this.hash);
-    }
-    else if (this.element.parentNode) {
-      this.element.parentNode.replaceChild(ele, this.element);
-      if (this.hash) {
-        this.component.$elements[this.id][this.hash] = ele;
-      }
-      else {
-        this.component.$elements[this.id] = ele;
-      }
-
-      return;
-    }
-    else {
-      parent.appendChild(ele); 
-    }
+    removeDOM(this.component, this.element, ele);
   }
   // First time is done in a linear direction
   else if (!this.component.$numBuild) {

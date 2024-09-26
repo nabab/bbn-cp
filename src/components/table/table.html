@@ -144,8 +144,8 @@
                   <i bbn-if="isSorted(col)"
                     :class="{
                       'bbn-table-sortable-icon': true,
-                      'nf nf-fa-caret_up': isSorted(col).dir === 'ASC',
-                      'nf nf-fa-caret_down': isSorted(col).dir === 'DESC',
+                      'nf nf-fa-caret_up': isSorted(col).dir.toUpperCase() === 'ASC',
+                      'nf nf-fa-caret_down': isSorted(col).dir.toUpperCase() === 'DESC',
                   }"/>
                 </th>
               </template>

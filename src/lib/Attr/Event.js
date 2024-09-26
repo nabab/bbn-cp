@@ -34,6 +34,7 @@ export default class bbnEventAttr extends bbnAttr
 
       // Add the event listener to the element.
       this.node.element.addEventListener(this.name, e => {
+        bbn.cp.numTicks++;
         //bbn.fn.log("EVENT " + this.name)
         // Check for any specified modifiers and apply them.
         if (this.modifiers.length) {

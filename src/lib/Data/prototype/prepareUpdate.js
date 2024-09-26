@@ -30,7 +30,7 @@ bbnData.prototype.prepareUpdate = function(path) {
 
   const propagation = [];
   const impacted = this.getImpacted(path, this.lastUpdate);
-  const num = ++bbn.cp.numTicks;
+  const num = bbn.cp.numTicks;
   this.lastUpdate = num;
   const deps = (path ? this.deps[path] : this.deps.__bbnRoot) || [];
   deps.forEach(a => {

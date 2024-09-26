@@ -35,7 +35,7 @@ export default async function updateWatcher(cp, name) {
   // Split the property name into its nested parts.
   const bits = name.split(".");
   // Iterate over each part of the property name.
-  const num = ++bbn.cp.numTicks;
+  const num = bbn.cp.numTicks;
   while (bits.length) {
     // Reconstruct the full property name from the current bits.
     let fullName = bits.join(".");
