@@ -73,7 +73,7 @@ export default class bbnAttr
   }
 
   get isChanged() {
-    return this.fn && (this.getState() !== 'OK');
+    return this.fn && (this.attrGetState() !== 'OK');
   }
 
 }

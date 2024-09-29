@@ -10,7 +10,7 @@ export default class bbnInternalNode extends bbnNode
     this.element = this.component.$el;
     if (!this.comment) {
       for (let i = 0; i < this.attributes.length; i++) {
-        await this.attributes[i].set();
+        await this.attributes[i].attrSet();
         await this.attributes[i].attrUpdate(true);
       }
     }

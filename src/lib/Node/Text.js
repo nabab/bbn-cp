@@ -14,7 +14,7 @@ export default class bbnTextNode extends bbnNode
 
     const parent = this.parentElement || this.component.$el;
     const cp = this.component;
-    this.element = document.createTextNode(this.text.getValue());
+    this.element = document.createTextNode(this.text.attrGetValue());
     Object.defineProperty(this.element, 'bbnId', {
       value: this.id,
       writable: false,
@@ -69,6 +69,6 @@ export default class bbnTextNode extends bbnNode
   nodeUpdate() {
     this.text.attrUpdate();
     //bbn.fn.log("UPDATE FROM TEXT NIODE")
-    //this.element.nodeValue = this.text.getValue();
+    //this.element.nodeValue = this.text.attrGetValue();
   }
 }

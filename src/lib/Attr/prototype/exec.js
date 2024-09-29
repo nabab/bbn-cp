@@ -1,6 +1,6 @@
 import bbnAttr from "../Attr.js";
 
-bbnAttr.prototype.exec = function(data) {
+bbnAttr.prototype.attrExec = function(data) {
   if (!this.fn) {
     return;
   }

@@ -6,12 +6,12 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnIsAttr extends bbnAttr
 {
-  async set(init) {
+  async attrSet(init) {
     if (init) {
-      this.getValue();
+      this.attrGetValue();
       if (bbn.fn.isObject(this.value)) {
         Object.defineProperty(this.node, 'cfg', {
-          value: bbn.cp.normalizeComponent(this.getValue()),
+          value: bbn.cp.normalizeComponent(this.attrGetValue()),
           writable: false,
           configurable: true
         });
@@ -21,9 +21,9 @@ export default class bbnIsAttr extends bbnAttr
 
   async attrUpdate() {
     if (this.isChanged && (this.realTag === 'bbn-anon')) {
-      if (bbn.fn.isObject(this.getValue())) {
+      if (bbn.fn.isObject(this.attrGetValue())) {
         Object.defineProperty(this.node, 'cfg', {
-          value: bbn.cp.normalizeComponent(this.getValue()),
+          value: bbn.cp.normalizeComponent(this.attrGetValue()),
           writable: false,
           configurable: true
         });

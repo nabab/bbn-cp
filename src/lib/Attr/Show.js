@@ -7,8 +7,8 @@ import bbnStyleAttr from "./Style.js";
  */
 export default class bbnShowAttr extends bbnAttr
 {
-  async set() {
-    this.node.props[this.name] = this.getValue();
+  async attrSet() {
+    this.node.props[this.name] = this.attrGetValue();
   }
 
   async attrUpdate(init) {
@@ -17,7 +17,7 @@ export default class bbnShowAttr extends bbnAttr
     }
 
     if (!init) {
-      this.set();
+      this.attrSet();
     }
 
     if (this.node.isComponent

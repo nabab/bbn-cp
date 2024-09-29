@@ -6,7 +6,7 @@ bbnAttr.prototype.attrUpdate = async function(init) {
   if (this.name && this.node.element && !this.node.isOut) {
     const name = bbn.cp.badCaseAttributes[this.name] || this.name;
     if (init || (this.exp && this.isChanged)) {
-      const v = this.getValue();
+      const v = this.attrGetValue();
       this.node.props[name] = v;
       if (this.node.tag === 'svg') {
         this.node.element.setAttribute(this.name, v);

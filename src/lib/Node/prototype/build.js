@@ -26,7 +26,7 @@ bbnNode.prototype.nodeBuild = async function(after) {
     const realTag = this.realTag;
     let tag = realTag;
     if (this.attr?.is) {
-      this.attr.is.getValue();
+      this.attr.is.attrGetValue();
     }
     
     // Special handling for components and unknown components
@@ -155,12 +155,12 @@ bbnNode.prototype.nodeBuild = async function(after) {
 
   // Register the element in the component's tracking system
 
-  this.nodeInsert(this.element, after);
   if (!this.comment) {
     for (let i = 0; i < this.attributes.length; i++) {
       await this.attributes[i].attrUpdate(true);
     }
   }
+  this.nodeInsert(this.element, after);
 
   // Return the created or modified element
   this.numBuild++;

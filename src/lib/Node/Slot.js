@@ -19,7 +19,7 @@ export default class bbnSlotNode extends bbnNode
     }
     this.isCreating = true;
 
-    const name = this.attr.name ? this.attr.name.getValue() : 'default';
+    const name = this.attr.name ? this.attr.name.attrGetValue() : 'default';
     this.#name = name;
     let ele;
     //bbn.fn.log(["IN A SLOT", name, ele, this.component.$slots[name], ele.parentNode]);
@@ -58,7 +58,7 @@ export default class bbnSlotNode extends bbnNode
 
             this.cfg = (new Function('cp', fnStr))(item.component);
             this.#tag = 'bbn-anon';
-            this.props[item.slot.slotValue] = this.bind.getValue();
+            this.props[item.slot.slotValue] = this.bind.attrGetValue();
             if (this.comment) {
               const done = await this.setComment(false);
               if (done) {

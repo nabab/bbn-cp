@@ -33,10 +33,10 @@ export default class bbnSlotAttr extends bbnAttr
   
   async attrUpdate(init) {
     if (!init) {
-      this.set();
-      //bbn.fn.log(["UPDATE ATTR MODEL " + this.name, this.node.tag, this.isChanged, this.getValue()]);
+      this.attrSet();
+      //bbn.fn.log(["UPDATE ATTR MODEL " + this.name, this.node.tag, this.isChanged, this.attrGetValue()]);
     }
   
-    this.getValue();
+    this.attrGetValue();
   }
 }

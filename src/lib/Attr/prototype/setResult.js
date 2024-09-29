@@ -43,8 +43,8 @@ const updateSequence = function (result, attr) {
   }
 }
 
-// Extend the bbnAttr prototype with the setResult method.
-bbnAttr.prototype.setResult = function() {
+// Extend the bbnAttr prototype with the attrSetResult method.
+bbnAttr.prototype.attrSetResult = function() {
   if (!this.fn) {
     return this.value;
   }
@@ -69,7 +69,7 @@ bbnAttr.prototype.setResult = function() {
     return this.value;
   }
 
-  const res = Object.hasOwn(arguments, 0) ? {val: arguments[0], seq: []} : this.exec();
+  const res = Object.hasOwn(arguments, 0) ? {val: arguments[0], seq: []} : this.attrExec();
   let expValue = res.val;
   if (this instanceof bbnConditionAttr || this instanceof bbnForgetAttr) {
     expValue = !!expValue;

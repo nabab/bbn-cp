@@ -7,9 +7,9 @@ import bbnInternalNode from "../Node/Internal.js";
  */
 export default class bbnBindAttr extends bbnAttr
 {
-  async set(init) {
+  async attrSet(init) {
     if (this.fn) {
-      this.getValue();
+      this.attrGetValue();
     }
   
     for (let n in this.value) {
@@ -21,7 +21,7 @@ export default class bbnBindAttr extends bbnAttr
 
 
   async attrUpdate(init) {
-    if (init || (this.getState() !== 'OK')) {
+    if (init || (this.attrGetState() !== 'OK')) {
       if (!this.value) {
         return;
       }

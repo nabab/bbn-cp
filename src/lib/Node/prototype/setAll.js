@@ -5,7 +5,7 @@ import bbnLoopAttr from "../../Attr/Loop.js";
 bbnNode.prototype.nodeSetAll = async function() {
   for (let i = 0; i < this.attributes.length; i++) {
     if (!this.loop || (this.attributes[i] instanceof bbnConditionAttr) || (this.attributes[i] instanceof bbnLoopAttr)) {
-      await this.attributes[i].set(true);
+      await this.attributes[i].attrSet(true);
       if (this.comment) {
         break;
       }

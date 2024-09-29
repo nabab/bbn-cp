@@ -13,7 +13,7 @@ export default class bbnTransitionNode extends bbnNode
     this.isCreating = true;
 
     if (this.loop) {
-      await this.loop.set();
+      await this.loop.attrSet();
     }
     else {
       const done = await this.setComment(true);

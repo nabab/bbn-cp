@@ -12,7 +12,7 @@ export default class bbnHtmlAttr extends bbnAttr
     }
 
     if (!this.node.comment && this.node.element) {
-      this.node.element.innerHTML = this.getValue();
+      this.node.element.innerHTML = this.attrGetValue();
     }
   }
 }

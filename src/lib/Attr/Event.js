@@ -7,7 +7,7 @@ import initResults from "../Cp/private/initResults.js";
  */
 export default class bbnEventAttr extends bbnAttr
 {
-  async set() {
+  async attrSet() {
 
   }
 

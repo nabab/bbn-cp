@@ -1,6 +1,6 @@
 import bbnAttr from "../Attr.js";
 
-bbnAttr.prototype.getValue = function() {
+bbnAttr.prototype.attrGetValue = function() {
   if (!this.exp) {
     return this.value;
   }
@@ -9,7 +9,7 @@ bbnAttr.prototype.getValue = function() {
   const hash = this.node.hash || '_root';
 
   if (this.isLate) {
-    this.setResult();
+    this.attrSetResult();
   }
 
   return r[this.id][hash].value;

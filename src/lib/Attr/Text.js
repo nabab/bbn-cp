@@ -6,12 +6,12 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnTextAttr extends bbnAttr
 {
-  async update(init) {
+  async attrUpdate(init) {
     if (!init) {
-      this.set();
+      this.attrSet();
     }
     else {
-      this.setResult();
+      this.attrSetResult();
     }
   
     if (!this.comment && this.node.element) {

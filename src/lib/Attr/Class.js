@@ -72,7 +72,7 @@ export default class bbnClassAttr extends bbnAttr
     }
 
     if (init || (this.exp && this.isChanged)) {
-      this.getValue();
+      this.attrGetValue();
       const cls = this.convert();
       if (this.node.isComponent
         && (this.node.id !== '0')

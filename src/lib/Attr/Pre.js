@@ -6,13 +6,13 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnPreAttr extends bbnAttr
 {
-  async set() {
+  async attrSet() {
   }
 
   async attrUpdate() {
   }
 
-  setResult() {
+  attrSetResult() {
     return this.value;
   }
 

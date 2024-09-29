@@ -77,8 +77,8 @@ async function treatQueue(unconditioned = [], forgotten = []) {
 
     let lastElement;
     let lastNum;
-    let cps = bbn.fn.createObject();
-    let done = [];
+    let cps;
+    let done;
     const proms = [];
     /*
     bbn.fn.log(JSON.stringify(queue.map(a => {
@@ -230,7 +230,7 @@ async function treatQueue(unconditioned = [], forgotten = []) {
       await Promise.all(proms);
     }
 
-
+    bbn.cp.numTicks++;
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       await treatQueue(unconditioned, forgotten);

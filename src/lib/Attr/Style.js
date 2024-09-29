@@ -50,10 +50,10 @@ export default class bbnStyleAttr extends bbnAttr
     // Treat the given arguments to consolidate them into a single object of style properties.
     const show = this.node.attributes.filter(a => a instanceof bbnShowAttr);
     if (show.length) {
-      args.push({display: show[0].getValue() ? '' : 'none'});
+      args.push({display: show[0].attrGetValue() ? '' : 'none'});
     }
     else if (this.node instanceof bbnInternalNode && !this.node.component.$isRoot && this.node.element.bbnSchema.attributes.filter(a => a instanceof bbnShowAttr).length) {
-      args.push({display: this.node.element.bbnSchema.attributes.filter(a => a instanceof bbnShowAttr)[0].getValue()});
+      args.push({display: this.node.element.bbnSchema.attributes.filter(a => a instanceof bbnShowAttr)[0].attrGetValue()});
     }
 
     const css = treatStyleArguments(...args);

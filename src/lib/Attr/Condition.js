@@ -7,7 +7,7 @@ import removeDOM from "../Cp/private/removeDOM.js";
  */
 export default class bbnConditionAttr extends bbnAttr
 {
-  async set() {
+  async attrSet() {
     if (this.node.loop) {
       return;
     }
@@ -23,17 +23,17 @@ export default class bbnConditionAttr extends bbnAttr
         isPassed = true;
         if (this.type === 'else') {
           if (this.value !== !isTrue) {
-            this.setResult(!isTrue);
+            this.attrSetResult(!isTrue);
           }
-          //bbn.fn.log(["ON COND", this.value, this.getValue()])
+          //bbn.fn.log(["ON COND", this.value, this.attrGetValue()])
         }
         else if (isTrue) {
           if (this.value) {
-            this.setResult(false);
+            this.attrSetResult(false);
           }
         }
         else {
-          this.getValue();
+          this.attrGetValue();
         }
 
         conditionValue = this.value;
@@ -47,11 +47,11 @@ export default class bbnConditionAttr extends bbnAttr
         if (node?.condition) {
           if (isTrue || (node.condition.type === 'else')) {
             if (node.condition.value !== !isTrue) {
-              node.condition.setResult(!isTrue);
+              node.condition.attrSetResult(!isTrue);
             }
           }
           else {
-            node.condition.getValue();
+            node.condition.attrGetValue();
           }
 
           if (node.condition.value) {
@@ -91,7 +91,7 @@ export default class bbnConditionAttr extends bbnAttr
         return;
       }
       
-      await this.set();
+      await this.attrSet();
 
       /*
       bbn.fn.log([
@@ -103,8 +103,8 @@ export default class bbnConditionAttr extends bbnAttr
         "numBuild: " + this.node.component.$numBuild,
         "VALUE: " + this.value,
         "EXP: " + this.exp,
-        "GET VALUE: " + this.getValue(),
-        "SET RESULT: " + this.setResult(),
+        "GET VALUE: " + this.attrGetValue(),
+        "SET RESULT: " + this.attrSetResult(),
         this.node.data,
         this.node.component[this.exp],
         this.node.component.$expResults[this.id]
@@ -118,7 +118,7 @@ export default class bbnConditionAttr extends bbnAttr
     // Special handling for specific node tags like 'template', 'transition', 'slot'.
     if (this.node.forget?.value || ['template', 'transition', 'slot'].includes(this.node.tag)) {
       if (this.node.items) {
-        if (!this.getValue()) {
+        if (!this.attrGetValue()) {
           // Iterate over each item in the node.
           bbn.fn.each(this.node.items, it => {
             let e = this.node.component.$retrieveElement(it.id, this.node.hash);
@@ -135,7 +135,7 @@ export default class bbnConditionAttr extends bbnAttr
       }
     }
     else {
-      const isComment = !this.getValue(init);
+      const isComment = !this.attrGetValue(init);
       if (!isComment && this.node.forget) {
         await this.node.forget.attrUpdate();
       }

@@ -275,7 +275,7 @@ export default class bbnNode
         tag = this.component.$cfg.tag;
       }
       else if (this.attr?.is) {
-        tag = this.attr.is.getValue();
+        tag = this.attr.is.attrGetValue();
         if (bbn.fn.isObject(tag)) {
           tag = tag.tag || tag.name || 'bbn-anon';
         }

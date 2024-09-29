@@ -6,9 +6,9 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnForgetAttr extends bbnAttr
 {
-  async set(init) {
+  async attrSet(init) {
     if (init) {
-      this.setResult();
+      this.attrSetResult();
       if (!this.node.condition || this.node.condition.value) {
         await this.node.setComment(this.value);
       }
@@ -21,7 +21,7 @@ export default class bbnForgetAttr extends bbnAttr
 
     //bbn.fn.log(["FORGET", node.element, init])
     if (!init) {
-      this.getValue();
+      this.attrGetValue();
     }
 
     if (node.condition && !node.condition.value) {

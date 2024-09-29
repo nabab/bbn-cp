@@ -14,7 +14,7 @@ export default class bbnTemplateNode extends bbnNode
     this.isCreating = true;
     let ele = this.element;
     if (this.loop) {
-      return await this.loop.set(true);
+      return await this.loop.attrSet(true);
     }
     else {
       this.nodeSetAll();

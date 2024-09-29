@@ -19,16 +19,16 @@ export default class bbnLoopAttr extends bbnAttr
     });
   }
 
-  async set(init) {
+  async attrSet(init) {
     await this.attrUpdate(init);
   }
 
   async init() {
-    await this.set(true);
+    await this.attrSet(true);
   }
 
   async attrUpdate(init) {
-    //bbn.fn.log("UPDATE ATTR LOOP " + this.exp, this.node.tag, this.isChanged, this.getValue(true));
+    //bbn.fn.log("UPDATE ATTR LOOP " + this.exp, this.node.tag, this.isChanged, this.attrGetValue(true));
     if (init || (this.exp && this.isChanged)) {
       const node = this.node;
       if (node.isOut) {
@@ -39,7 +39,7 @@ export default class bbnLoopAttr extends bbnAttr
       const proms = [];
 
       // Evaluate the loop expression and determine its type.
-      let loopValue = this.getValue();
+      let loopValue = this.attrGetValue();
 
       //bbn.fn.log(["LOOP VALUE", loopValue, this.value, this.node.component.$numBuild])
       const isNumber = bbn.fn.isNumber(loopValue);
@@ -78,7 +78,7 @@ export default class bbnLoopAttr extends bbnAttr
 
         let key = j;
         if (node.attr?.key?.exp) {
-          key = node.attr.key.exec(loopData).val;
+          key = node.attr.key.attrExec(loopData).val;
         }
         else if (node.attr?.key?.value !== undefined) {
           key = loopValue[j][node.attr.key.value];

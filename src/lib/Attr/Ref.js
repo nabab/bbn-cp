@@ -17,7 +17,7 @@ export default class bbnRefAttr extends bbnAttr
 
     const cp = this.node.component;
     if (init || (this.exp && this.isChanged)) {
-      const ref = this.getValue();
+      const ref = this.attrGetValue();
       if (cp.$refsElements[ref] && (cp.$refsElements[ref] !== this.node.element)) {
         if (!bbn.fn.isArray(cp.$refsElements[ref])) {
           if (!cp.$refsElements[ref].isConnected) {

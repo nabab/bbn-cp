@@ -379,7 +379,7 @@ export default {
     * @returns {void}
     */
     async route(url, force) {
-      //bbn.fn.log(this.baseURL, this.routed);
+      //bbn.fn.warning("ROUTING " + url + ' / CURRENT: ' + this.currentURL);
       if (!bbn.fn.isString(url)) {
         throw Error(bbn._('The component bbn-container must have a valid URL defined (URL is not a string)'));
       }

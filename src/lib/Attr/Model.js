@@ -13,12 +13,12 @@ export default class bbnModelAttr extends bbnAttr
     }
 
     if (!init) {
-      this.set();
+      this.attrSet();
     }
   
-    //bbn.fn.log(["UPDATE ATTR MODEL " + this.name, init, this.node, this.isChanged, this.getValue()]);
+    //bbn.fn.log(["UPDATE ATTR MODEL " + this.name, init, this.node, this.isChanged, this.attrGetValue()]);
     if (this.isChanged) {
-      const value = this.getValue();
+      const value = this.attrGetValue();
       if (this.node.props[this.name] !== value) {
         this.node.props[this.name] = value;
       }
@@ -42,7 +42,7 @@ export default class bbnModelAttr extends bbnAttr
     if (init) {
       const eventName = this.modifiers.includes('lazy') ? 'change' : 'input';
       const ele = this.node.element;
-      //bbn.fn.log(["FROM MODEL INIT", eventName, this.name, this.getValue()]);
+      //bbn.fn.log(["FROM MODEL INIT", eventName, this.name, this.attrGetValue()]);
       ele.addEventListener(eventName, e => {
         const data = this.node.data;
         //bbn.fn.log(["FROM MODEL EVENT", eventName, ele, e.target, e]);
@@ -121,7 +121,7 @@ export default class bbnModelAttr extends bbnAttr
           }
           else {
             this.result.num--;
-            this.setResult();
+            this.attrSetResult();
             const res = this.result;
             if (res?.seq?.length) {
               const last = res.seq[res.seq.length - 1];
