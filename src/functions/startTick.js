@@ -1,3 +1,4 @@
+import bbn from '@bbn/bbn';
 import bbnConditionAttr from '../lib/Attr/Condition.js';
 import bbnComputed from '../lib/Computed/Computed.js';
 import initResults from '../lib/Cp/private/initResults.js';
@@ -59,6 +60,7 @@ async function treatQueue(unconditioned = [], forgotten = []) {
   let isDebug = false;
   const done = [];
   if (bbn.cp.queue.length) {
+    //bbn.fn.log("TREATING QUEUE: " + bbn.cp.queue.length);
     if (bbn.cp.queue.length > 100000) {
       if (!isDebug) {
         isDebug = bbn.cp.numTicks;
@@ -104,12 +106,11 @@ async function treatQueue(unconditioned = [], forgotten = []) {
     }), null, 2));
     */
     while (queue.length) {
-      /*
       if (isDebug) {
-        if (bbn.cp.numTicks - isDebug > 10000) {
+        if (bbn.cp.numTicks - isDebug > 1000) {
           throw new Error("Too many ticks");
         }
-      }*/
+      }
       const queueElement = queue.shift();
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
       if (!cp.$el.isConnected) {
@@ -183,7 +184,6 @@ async function treatQueue(unconditioned = [], forgotten = []) {
 
         proms.push(attr.attrUpdate());
         //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
-        /*
         if (attr instanceof bbnConditionAttr) {
           if (attr.value && unconditioned.includes(id)) {
             unconditioned.splice(unconditioned.indexOf(id), 1);
@@ -197,7 +197,6 @@ async function treatQueue(unconditioned = [], forgotten = []) {
             }
 
             unconditioned.push(id);
-
           }
         }
         else if (attr instanceof bbnForgetAttr) {
@@ -208,7 +207,6 @@ async function treatQueue(unconditioned = [], forgotten = []) {
             forgotten.push(id);
           }
         }
-        */
       }
       else if (bbn.fn.isFunction(queueElement?.fn)) {
         if (isDebug) {
