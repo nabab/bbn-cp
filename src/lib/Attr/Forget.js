@@ -15,7 +15,7 @@ export default class bbnForgetAttr extends bbnAttr
     }
   }
 
-  async update(init) {
+  async attrUpdate(init) {
 
     const node = this.node;
 
@@ -47,7 +47,7 @@ export default class bbnForgetAttr extends bbnAttr
           }
         }
         else if (node.comment && node.condition) {
-          await node.conceive();
+          await node.nodeConceive();
         }
 
         if (!node.comment) {
@@ -74,7 +74,7 @@ export default class bbnForgetAttr extends bbnAttr
           }
 
           if (!childDone && this.node.condition) {
-            await this.node.conceive();
+            await this.node.nodeConceive();
           }
         }
       }

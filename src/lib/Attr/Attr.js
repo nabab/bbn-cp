@@ -13,9 +13,7 @@ export default class bbnAttr
    * @param {bbnData} parent If the data is a sub-object of another bbnData object, the parent object
    */
   constructor(def, node, name) {
-    bbn.fn.checkType(def, Object);
-    bbn.fn.checkType(node, Object);
-    if (!def.id || !node.id) {
+    if (!def?.id || !node?.id) {
       throw Error("bbnAttr must be initialized with an id");
     }
 

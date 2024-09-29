@@ -13,7 +13,12 @@ export default class bbnSlotNode extends bbnNode
     return this.#tag;
   }
 
-  async init() {
+  async nodeInit() {
+    if (this.isCreating) {
+      throw new Error("Already creating");
+    }
+    this.isCreating = true;
+
     const name = this.attr.name ? this.attr.name.getValue() : 'default';
     this.#name = name;
     let ele;
@@ -55,10 +60,13 @@ export default class bbnSlotNode extends bbnNode
             this.#tag = 'bbn-anon';
             this.props[item.slot.slotValue] = this.bind.getValue();
             if (this.comment) {
-              await this.setComment(false);
+              const done = await this.setComment(false);
+              if (done) {
+                return done;
+              }
             }
 
-            ele = await this.build();
+            ele = this.element || await this.nodeBuild();
             if (ele?.bbn && !ele.bbn?.$isCreated) {
               ele.bbn.$connected();
             }
@@ -71,8 +79,10 @@ export default class bbnSlotNode extends bbnNode
         }
       }
       else {
-        await this.setComment(true);
-        ele = this.element || await this.build();
+        ele = await this.setComment(true);
+        if (!ele) {
+          ele = this.element || await this.nodeBuild();
+        }
         //bbn.fn.log(["SLOT PARENT", ele, this.parentElement, ele.parentNode, this.component.$options.name, this.component.$slots[name]]);
         const parent = this.parentElement;
         if (parent.bbn && (parent.bbnCid !== this.component.$cid) && (parent.bbnSlots?.default)) {
@@ -102,10 +112,13 @@ export default class bbnSlotNode extends bbnNode
     }
 
     if (!ele) {
-      await this.setComment(true);
-      ele = await this.build();
+      ele = await this.setComment(true);
+      if (!ele) {
+        ele = await this.nodeBuild();
+      }
     }
 
+    this.isCreating = false;
     return ele;
   }
 }

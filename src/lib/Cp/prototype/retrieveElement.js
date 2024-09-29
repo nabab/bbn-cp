@@ -1,10 +1,10 @@
 import bbnCp from "../Cp.js";
 
 bbnCp.prototype.$retrieveElement = function (id, hash) {
-  let res = this.$elements[id] || null;
+  let res = this.$nodes[id] || null;
   if (res && hash) {
-    return res[hash] || null;
+    return res[hash]?.element || null;
   }
 
-  return res;
+  return res?.element;
 }

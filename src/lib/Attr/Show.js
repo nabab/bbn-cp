@@ -11,7 +11,7 @@ export default class bbnShowAttr extends bbnAttr
     this.node.props[this.name] = this.getValue();
   }
 
-  async update(init) {
+  async attrUpdate(init) {
     if (this.comment) {
       return;
     }
@@ -24,10 +24,10 @@ export default class bbnShowAttr extends bbnAttr
       && this.node.element?.bbn?.$internal
       && this.node.element.bbn.$internal.attributes.filter(a => a instanceof bbnStyleAttr).length
     ) {
-      this.node.element.bbn.$internal.attributes.filter(a => a instanceof bbnStyleAttr)[0].update(true);
+      this.node.element.bbn.$internal.attributes.filter(a => a instanceof bbnStyleAttr)[0].attrUpdate(true);
     }
     else if (this.node.attributes.filter(a => a instanceof bbnStyleAttr).length) {
-      this.node.attributes.filter(a => a instanceof bbnStyleAttr)[0].update(true);
+      this.node.attributes.filter(a => a instanceof bbnStyleAttr)[0].attrUpdate(true);
     }
     else if (this.node.element?.style) {
       const isVisible = this.node.element.style?.display !== 'none';

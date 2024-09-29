@@ -7,13 +7,14 @@
  * @param {string} type - The type of the namespace being added (e.g., 'prop', 'method').
  */
 export default function addNamespace(cp, name, type) {
-  bbn.fn.checkType(cp, bbnCp, "No component in addNamespace");
-  bbn.fn.checkType(name, String, "Incorrect name in addNamespace");
-  bbn.fn.checkType(type, String, "Incorrect type in addNamespace");
-
-  // Ensures that the type is defined
-  if (!type) {
-    throw Error(bbn._("Type must be defined for %s", name));
+  if (!(cp instanceof bbnCp)) {
+    throw new Error("No component in addNamespace");
+  }
+  if (!name || (typeof name !== 'string')) {
+    throw new Error("Incorrect name in addNamespace");
+  }
+  if (!type || (typeof type !== 'string')) {
+    throw new Error("Incorrect type in addNamespace");
   }
 
   // Checks if the name is among the list of reserved names in the bbn.var.reserved array

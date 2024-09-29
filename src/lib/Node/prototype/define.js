@@ -24,7 +24,7 @@ const allowed = [
   'text'
 ];
 
-bbnNode.prototype.define = function(node, data) {
+bbnNode.prototype.nodeDefine = function(node, data) {
   const cp = this.component;
   /*
   Object.defineProperty(this, 'parent', {

@@ -55,7 +55,7 @@ const insertInSlot = function (parent, node, ele) {
   return false;
 };
 
-bbnNode.prototype.insert = function(ele, after) {
+bbnNode.prototype.nodeInsert = function(ele, after) {
   //bbn.fn.log(["INSERT", this.component.$options.name, after, ele]);
   bbn.fn.checkType(ele, [Text, Comment, HTMLElement, SVGElement]);
   let replace = !!this.element;
@@ -64,15 +64,6 @@ bbnNode.prototype.insert = function(ele, after) {
   const cp = this.component;
   if (!parent) {
     if (this.isCommented) {
-      if (this.hash) {
-        if (this.component.$elements[this.id]?.[this.hash] && (this.component.$elements[this.id]?.[this.hash] !== ele)) {
-          this.component.$elements[this.id][this.hash] = ele;
-        }
-      }
-      else if (this.component.$elements[this.id] && (this.component.$elements[this.id] !== ele)) {
-        this.component.$elements[this.id] = ele;
-      }
-
       return;
     }
 
@@ -81,25 +72,19 @@ bbnNode.prototype.insert = function(ele, after) {
   }
 
   if (insertInSlot(parent, this, ele)) {
-    if (this.hash) {
-      if (this.component.$elements[this.id]?.[this.hash] && (this.component.$elements[this.id]?.[this.hash] !== ele)) {
-        removeDOM(this.component, this.component.$elements[this.id][this.hash], ele);
-      }
-    }
-    else if (this.component.$elements[this.id] && (this.component.$elements[this.id] !== ele)) {
-      removeDOM(this.component, this.component.$elements[this.id], ele);
-    }
+    return;
   }
-  else if (replace && this.element) {
+  else if (replace && this.oldElement) {
     //bbn.fn.log("REPLACE", this.element, ele)
-    if (this.element.childNodes.length && !this.comment) {
+    if (this.oldElement.childNodes.length && !this.comment) {
       Array.from(this.element.childNodes).forEach(c => {
-        ele.appendChild(c);
+        this.element.appendChild(c);
       });
       //bbn.fn.log(["APPEND CHILDREN", this.tag, ele])
     }
 
-    removeDOM(this.component, this.element, ele);
+    bbn.fn.log("REMOVE AND REPLACE");
+    removeDOM(this.component, this.oldElement, this.element);
   }
   // First time is done in a linear direction
   else if (!this.component.$numBuild) {
@@ -190,6 +175,4 @@ bbnNode.prototype.insert = function(ele, after) {
     }
   }
 
-  // Register the element in the component's tracking system
-  addToElements(this.component, ele);
 };

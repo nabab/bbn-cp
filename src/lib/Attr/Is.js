@@ -19,7 +19,7 @@ export default class bbnIsAttr extends bbnAttr
     }
   }
 
-  async update() {
+  async attrUpdate() {
     if (this.isChanged && (this.realTag === 'bbn-anon')) {
       if (bbn.fn.isObject(this.getValue())) {
         Object.defineProperty(this.node, 'cfg', {

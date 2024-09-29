@@ -1,27 +1,40 @@
 import bbnNode from "../Node.js";
 
-bbnNode.prototype.init = async function(after) {
+bbnNode.prototype.nodeInit = async function(after) {
+  if (this.isCreating) {
+    throw new Error("Already creating");
+  }
+  this.isCreating = true;
   const old = this.element;
-  if (old && (old.bbnSchema === this) && (old.bbnSchema.comment === bbn.fn.isComment(old))) {
-    bbn.fn.warning("Already initialized " + this.tag);
-    await this.update(true);
-    return old;
+  if (old && (old.bbnSchema === this)) {
+    //await this.update();
+    if (this.comment && (this.comment === bbn.fn.isComment(old))) {
+      return old;
+    }
+
+    const isLaunched = await this.setComment(this.comment);
+    if (isLaunched) {
+      return isLaunched;
+    }
   }
 
-  await this.setAll();
-  const ele = await this.build(after);
+  await this.nodeSetAll();
   if (!this.loop) {
-    await this.conceive();
+    await this.nodeBuild(after);
+  }
+  if (!this.loop) {
+    await this.nodeConceive();
   }
 
   if (this.isComponent) {
-    if (!ele.bbn) {
-      ele.bbnConnected = true;
+    if (!this.element.bbn) {
+      this.element.bbnConnected = true;
     }
-    else if (!Object.hasOwn(ele.bbn, '$isCreated')){
-      ele.bbn.$connected();
+    else if (!Object.hasOwn(this.element.bbn, '$isCreated')){
+      this.element.bbn.$connected();
     }
   }
+  this.isCreating = false;
 
-  return ele;
+  return this.element;
 };

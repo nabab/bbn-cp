@@ -6,19 +6,28 @@ import bbnNode from "./Node.js";
  */
 export default class bbnTransitionNode extends bbnNode
 {
-  async init(after) {
+  async nodeInit(after) {
+    if (this.isCreating) {
+      throw new Error("Already creating");
+    }
+    this.isCreating = true;
+
     if (this.loop) {
       await this.loop.set();
     }
     else {
-      await this.setComment(true);
+      const done = await this.setComment(true);
+      if (done) {
+        return done;
+      }
     }
 
-    const ele = await this.build(after);
+    const ele = await this.nodeBuild(after);
     if (!this.loop) {
-      await this.conceive();
+      await this.nodeConceive();
     }
   
+    this.isCreating = false;
     return ele;
   
   }

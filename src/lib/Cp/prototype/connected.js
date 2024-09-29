@@ -141,7 +141,7 @@ bbnCp.prototype.$connected = async function () {
     // If no template it's a functional component
     if (this.$tpl['0']) {
       Object.defineProperty(this, '$internal', {
-        value: generateNode(this.$tpl['0'], this, this.$internal),
+        value: generateNode(this.$tpl['0'], this, this.$el),
         writable: false,
         configurable: false
       });
@@ -158,7 +158,7 @@ bbnCp.prototype.$connected = async function () {
 
   // Sets the current template schema and creates the DOM
   if (this.$internal) {
-    await this.$internal.init();
+    await this.$internal.nodeInit();
   }
 
   // registering current object to parent and setting root

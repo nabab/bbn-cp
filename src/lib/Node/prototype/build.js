@@ -2,25 +2,25 @@ import bbn from "@bbn/bbn";
 import bbnNode from "../Node.js";
 import addUnknownComponent from "../../Cp/private/addUnknownComponent.js";
 import fetchComponents from "../../Cp/private/fetchComponents.js";
-import bbnConditionAttr from "../../Attr/Condition.js";
 import retrieveSlots from "../../../internals/retrieveSlots.js";
 import stringToTemplate from "../../../internals/stringToTemplate.js";
 
-bbnNode.prototype.build = async function(after) {
+bbnNode.prototype.nodeBuild = async function(after) {
   const parent = this.parentElement || this.component.$el;
   const cp = this.component;
   // Check if the node represents a component and not a comment
   // Retrieve the source component based on node's componentId or default to cp
   // Attempt to retrieve an existing element with the same ID and hash
   let hash = this.hash;
-
-  const oldEle = this.component.$retrieveElement(this.id, hash);
+  this.oldElement = this.element;
   // Flag to determine if the existing element should be replaced
-  let ele; // Variable to hold the new or existing element
   // Create the appropriate DOM element based on the node type
   if (this.comment) {
     // Create a comment node for placeholders
-    ele = document.createComment(" ***_BBN_*** ");
+    this.element = document.createComment(" ***_BBN_*** ");
+    if (bbn.fn.isComment(this.oldElement)) {
+      debugger;
+    }
   }
   else {
     const realTag = this.realTag;
@@ -65,9 +65,9 @@ bbnNode.prototype.build = async function(after) {
     const isDiff = realTag !== tag;
     if (tag === 'svg') {
       // Create an SVG element for vector graphics
-      ele = document.createElementNS("http://www.w3.org/2000/svg", tag);
+      this.element = document.createElementNS("http://www.w3.org/2000/svg", tag);
       // Set the SVG content
-      ele.innerHTML = this.component.$currentMap[this.id].content;
+      this.element.innerHTML = this.component.$currentMap[this.id].content;
     }
     else {
       // Handle component elements or standard HTML elements
@@ -78,18 +78,18 @@ bbnNode.prototype.build = async function(after) {
       }
 
       // Create the element
-      ele = Object.assign(
+      this.element = Object.assign(
         document.createElement(...constructorArgs),
         {}
       );
 
       if (isDiff) {
         // Set the 'is' attribute for custom elements
-        ele.setAttribute('is', this.tag);
+        this.element.setAttribute('is', this.tag);
       }
 
-      if (this.model?._default_ && ele.constructor.bbnCfg) {
-        const modelProp = ele.constructor.bbnCfg.model?.prop || 'value';
+      if (this.model?._default_ && this.element.constructor.bbnCfg) {
+        const modelProp = this.element.constructor.bbnCfg.model?.prop || 'value';
         this.model[modelProp] = this.model._default_;
         Object.defineProperty(this.model, 'name', {
           value: modelProp,
@@ -108,7 +108,7 @@ bbnNode.prototype.build = async function(after) {
 
         const tpl = stringToTemplate(this.cfg.template, true);
         // Define properties for configuration, template, mapping, and inline templates
-        Object.defineProperties(ele, {
+        Object.defineProperties(this.element, {
           'bbnCfg': { value: this.cfg, writable: false, configurable: false },
           'bbnTpl': { value: tpl.res, writable: false, configurable: false },
           'bbnMap': { value: tpl.map, writable: false, configurable: false },
@@ -116,16 +116,16 @@ bbnNode.prototype.build = async function(after) {
         });
       }
       if (this.isComponent) {
-        let realSlots = tag === 'bbn-anon' ? retrieveSlots(ele.bbnTpl || this.items) : bbn.fn.clone(ele.constructor.bbnSlots);
+        let realSlots = tag === 'bbn-anon' ? retrieveSlots(this.element.bbnTpl || this.items) : bbn.fn.clone(this.element.constructor.bbnSlots);
         if (!Object.keys(realSlots || {}).length) {
           // Ensure a default slot is always available
           realSlots = { default: [] }; 
         }
-        Object.defineProperty(ele, 'bbnRealSlots', {
+        Object.defineProperty(this.element, 'bbnRealSlots', {
           value: realSlots, writable: false, configurable: false
         });
         // Alias for accessing slots directly
-        Object.defineProperty(ele, 'bbnSlots', {
+        Object.defineProperty(this.element, 'bbnSlots', {
           get() { return this.bbnRealSlots; }
         });
       }
@@ -133,20 +133,20 @@ bbnNode.prototype.build = async function(after) {
   }
 
   // Assign a unique ID and schema to the element for tracking and management
-  Object.defineProperties(ele, {
+  Object.defineProperties(this.element, {
     'bbnId': { value: this.id, writable: false, configurable: false },
     'bbnSchema': { value: this, writable: true, configurable: true },
     'bbnComponentId': { value: this.component.$cid, writable: false, configurable: false }
   });
   // Additional properties for loop handling and directives
   if (this.hash) {
-    Object.defineProperties(ele, {
+    Object.defineProperties(this.element, {
       'bbnHash': { value: this.hash, writable: false, configurable: false },
       'bbnIndex': { value: this.loopIndex, writable: false, configurable: false }
     });
   }
   if (!this.comment && this.directives) {
-    Object.defineProperty(ele, 'bbnDirectives', {
+    Object.defineProperty(this.element, 'bbnDirectives', {
       value: bbn.fn.createObject(),
       writable: false,
       configurable: false
@@ -155,14 +155,14 @@ bbnNode.prototype.build = async function(after) {
 
   // Register the element in the component's tracking system
 
-  this.insert(ele, after);
+  this.nodeInsert(this.element, after);
   if (!this.comment) {
     for (let i = 0; i < this.attributes.length; i++) {
-      await this.attributes[i].update(true);
+      await this.attributes[i].attrUpdate(true);
     }
   }
 
   // Return the created or modified element
   this.numBuild++;
-  return ele;
+  return this.element;
 };

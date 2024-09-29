@@ -9,7 +9,7 @@ export default class bbnPreAttr extends bbnAttr
   async set() {
   }
 
-  async update() {
+  async attrUpdate() {
   }
 
   setResult() {

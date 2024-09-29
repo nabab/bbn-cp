@@ -1,10 +1,10 @@
 import bbnNode from "../Node.js";
 
-bbnNode.prototype.update = async function() {
+bbnNode.prototype.nodeUpdate = async function() {
   return;
   if (!this.comment) {
     for (let i = 0; i < this.attributes.length; i++) {
-      await this.attributes[i].update(false);
+      await this.attributes[i].attrUpdate(false);
       if (this.comment) {
         break;
       }

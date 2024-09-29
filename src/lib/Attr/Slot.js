@@ -31,7 +31,7 @@ export default class bbnSlotAttr extends bbnAttr
     });
   }
   
-  async update(init) {
+  async attrUpdate(init) {
     if (!init) {
       this.set();
       //bbn.fn.log(["UPDATE ATTR MODEL " + this.name, this.node.tag, this.isChanged, this.getValue()]);

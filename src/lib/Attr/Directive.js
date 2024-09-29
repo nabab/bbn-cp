@@ -8,7 +8,7 @@ export default class bbnDirectiveAttr extends bbnAttr
 {
   inserted = false;
 
-  update(init) {
+  attrUpdate(init) {
     //bbn.fn.log("UPDATE ATTR DIRECTIVE " + this.name)
   
     if (!this.inserted) {
@@ -25,7 +25,7 @@ export default class bbnDirectiveAttr extends bbnAttr
     }
     else if (this.isChanged) {
       // Call the 'update' function of the directive with the target element and directive info.
-      bbn.cp.directives[this.name].update(this.node.element, this);
+      bbn.cp.directives[this.name].attrUpdate(this.node.element, this);
     }
   }
 }

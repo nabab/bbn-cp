@@ -25,7 +25,7 @@ export default function updateDirectives(directives, target) {
         dir.lastUpdate = bbn.fn.dateSQL();
 
         // Call the 'update' function of the directive with the target element and directive info.
-        bbn.cp.directives[name].update(target, dir);
+        bbn.cp.directives[name].attrUpdate(target, dir);
       }
     });
   }

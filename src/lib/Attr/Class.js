@@ -66,7 +66,7 @@ export default class bbnClassAttr extends bbnAttr
     return bbn.fn.removeEmpty(bbn.fn.unique(arr)).join(' ');
   }
 
-  async update(init) {
+  async attrUpdate(init) {
     if (!this.node.element || this.node.comment) {
       return;
     }
@@ -84,7 +84,7 @@ export default class bbnClassAttr extends bbnAttr
           ) {
             //bbn.fn.warning("UPDATING INTERNAL CLASS ON " + this.node.tag);
             //bbn.cp.queueUpdate(arr[0])
-            await arr[0].update(true);
+            await arr[0].attrUpdate(true);
           }
           else if (this.node.element) {
             //bbn.fn.warning("UPDATING CLASS ON " + this.node.tag);

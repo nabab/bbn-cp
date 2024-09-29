@@ -7,33 +7,33 @@ import addToElements from "../Cp/private/addToElements.js";
  */
 export default class bbnTextNode extends bbnNode
 {
-  build() {
+  nodeBuild() {
     if (!this.text) {
       throw new Error("A text node must be text! (Magritte)")
     }
 
     const parent = this.parentElement || this.component.$el;
     const cp = this.component;
-    const ele = document.createTextNode(this.text.getValue());
-    Object.defineProperty(ele, 'bbnId', {
+    this.element = document.createTextNode(this.text.getValue());
+    Object.defineProperty(this.element, 'bbnId', {
       value: this.id,
       writable: false,
       configurable: false
     });
-    Object.defineProperty(ele, 'bbnComponentId', {
+    Object.defineProperty(this.element, 'bbnComponentId', {
       value: cp.$cid,
       writable: false,
       configurable: false
     });
   
-    Object.defineProperty(ele, 'bbnSchema', {
+    Object.defineProperty(this.element, 'bbnSchema', {
       value: this,
       writable: false,
       configurable: false
     });
   
     if (this.data) {
-      Object.defineProperty(ele, 'bbnLoopVars', {
+      Object.defineProperty(this.element, 'bbnLoopVars', {
         value: this.data,
         writable: false,
         configurable: false
@@ -41,7 +41,7 @@ export default class bbnTextNode extends bbnNode
     }
   
     if (this.hash) {
-      Object.defineProperty(ele, 'bbnHash', {
+      Object.defineProperty(this.element, 'bbnHash', {
         value: this.hash,
         writable: false,
         configurable: false
@@ -55,21 +55,19 @@ export default class bbnTextNode extends bbnNode
       */
     }
   
-    addToElements(cp, ele);
-  
     if (bbn.cp.isComponent(parent)) {
-      if (parent.bbnSlots?.default?.length || bbn.fn.removeExtraSpaces(ele.textContent)) {
-        parent.bbnSlots.default.push(ele);
+      if (parent.bbnSlots?.default?.length || bbn.fn.removeExtraSpaces(this.element.textContent)) {
+        parent.bbnSlots.default.push(this.element);
       }
     }
     else if (parent !== cp.$el) {
-      parent.appendChild(ele);
+      parent.appendChild(this.element);
     }
   
   }
 
-  update() {
-    this.text.update();
+  nodeUpdate() {
+    this.text.attrUpdate();
     //bbn.fn.log("UPDATE FROM TEXT NIODE")
     //this.element.nodeValue = this.text.getValue();
   }

@@ -119,6 +119,8 @@ export default class bbnNode
 {
   #comment = false;
   numBuild = 0;
+  element = null;
+  oldElement = null;
   /**
    * Constructor
    * @param {Object} node
@@ -135,9 +137,25 @@ export default class bbnNode
       });
     }
     
-    bbn.fn.checkType(cp, bbnCp);
-    bbn.fn.checkType(node, Object);
-    bbn.fn.checkType(hash, String);
+    if (!(cp instanceof bbnCp) || !node || (typeof hash !== 'string')) {
+      throw new Error("Invalid arguments");
+    }
+
+    if (hash) {
+      if (!cp.$nodes[node.id]) {
+        cp.$nodes[node.id] = bbn.fn.createObject();        
+      }
+      if (cp.$nodes[node.id][hash]) {
+        throw new Error("Node already exists");
+      }
+      cp.$nodes[node.id][hash] = this;
+    }
+    else {
+      if (cp.$nodes[node.id]) {
+        throw new Error("Node already exists");
+      }
+      cp.$nodes[node.id] = this;
+    }
   
     Object.defineProperty(this, 'id', {
       writable: false,
@@ -198,15 +216,11 @@ export default class bbnNode
       });
     }
 
-    this.define(node);
+    this.nodeDefine(node);
   }
 
   get template() {
     return this.component.$currentMap[this.id];
-  }
-
-  get element() {
-    return this.component.$retrieveElement(this.id, this.hash);
   }
 
   get isCommented() {
@@ -227,10 +241,10 @@ export default class bbnNode
 
   async setComment(v) {
     if (this.#comment !== !!v) {
+      //bbn.fn.log(["SET COMMENT", v, this.#comment, this.id, this, this.component.$options.name]);
       this.#comment = !!v;
-      if (this.element && (bbn.fn.isComment(this.element) !== !!this.comment)) {
-        removeDOM(this.component, this.element);
-        await this.init();
+      if (this.element && (bbn.fn.isComment(this.element) !== this.#comment)) {
+        return await this.nodeInit();
       }
     }
   }

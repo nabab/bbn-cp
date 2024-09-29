@@ -7,7 +7,7 @@ import setProp from "../Cp/private/setProp.js";
  */
 export default class bbnModelAttr extends bbnAttr
 {
-  async update(init) {
+  async attrUpdate(init) {
     if (!this.name || !this.node.parentElement || (!init && this.node.isOut)) {
       return;
     }

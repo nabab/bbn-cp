@@ -10,6 +10,11 @@ export default class bbnCp {
       writable: false,
       configurable: false
     });
+    Object.defineProperty(this, '$nodes', {
+      value: bbn.fn.createObject(),
+      writable: false,
+      configurable: false
+    });
 
     /**
      * Component configuration object

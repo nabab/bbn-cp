@@ -94,6 +94,7 @@ import "./lib/Cp/prototype/on.js";
 import "./lib/Cp/prototype/once.js";
 import "./lib/Cp/prototype/retrieveComponent.js";
 import "./lib/Cp/prototype/retrieveElement.js";
+import "./lib/Cp/prototype/retrieveNode.js";
 import "./lib/Cp/prototype/set.js";
 import "./lib/Cp/prototype/tick.js";
 import "./lib/Cp/prototype/treatValue.js";

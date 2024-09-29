@@ -58,7 +58,7 @@ export default class bbnConditionAttr extends bbnAttr
             isTrue = true;
             if (node.isCommented) {
               if (node.forget) {
-                bbn.cp.queueUpdate({element: node.forget, num});
+                await node.forget.attrUpdate();
               }
               else {
                 await node.setComment(false);
@@ -74,7 +74,7 @@ export default class bbnConditionAttr extends bbnAttr
 
     if (conditionValue && this.node.isCommented) {
       if (this.node.forget) {
-        bbn.cp.queueUpdate({element: this.node.forget, num});
+        await this.node.forget.attrUpdate();
       }
       else {
         await this.node.setComment(false);
@@ -85,7 +85,7 @@ export default class bbnConditionAttr extends bbnAttr
     }
   }
 
-  async update(init) {
+  async attrUpdate(init) {
     if (!init) {
       if (this.node.isOut) {
         return;
@@ -124,22 +124,20 @@ export default class bbnConditionAttr extends bbnAttr
             let e = this.node.component.$retrieveElement(it.id, this.node.hash);
             // Remove the element if it exists and is not a comment.
             if (e) {
+              bbn.fn.log("REMOVE CHILDREN");
               removeDOM(this.node.component, e);
             }
           });
         }
-        else if (this.node.tag === 'template') {
-          this.node.init();
+        else if ((this.node.tag === 'template') && !this.node.element){
+          this.node.nodeInit();
         }
       }
     }
     else {
       const isComment = !this.getValue(init);
       if (!isComment && this.node.forget) {
-        await this.node.forget.update();
-      }
-      else {
-        await this.node.setComment(isComment);
+        await this.node.forget.attrUpdate();
       }
     }
   }

@@ -2,7 +2,7 @@ import bbnNode from "../Node.js";
 import generateNode from "../../Cp/private/generateNode.js";
 import bbnInternalNode from "../Internal.js";
 
-bbnNode.prototype.conceive = async function() {
+bbnNode.prototype.nodeConceive = async function() {
   if (this.items && (!this.comment || (!this.loop && (!this.condition || this.condition.value)))) {
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i];
@@ -11,16 +11,15 @@ bbnNode.prototype.conceive = async function() {
         hash = this.hash + (this.hash ? '-root' : 'root');
       }
 
-      const ele = this.component.$retrieveElement(item.id, hash);
-      const node = ele?.bbnSchema || generateNode(item, this.component, this, hash, this.data);
+      const node = this.component.$retrieveNode(item.id, hash) || generateNode(item, this.component, this, hash, this.data);
+      const ele = node.element;
       if (!ele) {
-        //bbn.fn.log("INIT " + node.id + ' ' + node.tag)
-        await node.init();
+        await node.nodeInit();
       }
       else {
         //bbn.fn.log("UPDATE " + node.id + ' ' + node.tag)
         //bbn.fn.log(["SHOULD UPDATE " + (this instanceof bbnInternalNode ? this.component.$options.name : this.tag), this])
-        await node.update();
+        //await node.nodeUpdate();
       }
     }
   }

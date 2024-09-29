@@ -1,5 +1,4 @@
-<div bbn-if="element"
-     bbn-show="numPages || extraControls"
+<div bbn-show="element && (numPages || extraControls)"
 		 :class="[componentClass, 'bbn-widget', 'bbn-unselectable']">
   <div :class="{
 				 'bbn-block': !isMobile || isTablet,

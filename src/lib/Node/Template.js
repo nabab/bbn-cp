@@ -6,22 +6,29 @@ import bbnNode from "./Node.js";
  */
 export default class bbnTemplateNode extends bbnNode
 {
-  async init(after) {
+  async nodeInit(after) {
+    if (this.isCreating) {
+      throw new Error("Already creating");
+    }
+
+    this.isCreating = true;
     let ele = this.element;
     if (this.loop) {
       return await this.loop.set(true);
     }
     else {
-      this.setAll();
+      this.nodeSetAll();
+      //bbn.fn.log(["INIT TEMPLATE " + this.id, this.comment, this.isCommented, ele, bbn.fn.isComment(ele)]);
       if (!ele || (this.comment !== bbn.fn.isComment(ele))) {
-        ele = await this.build(after);
+        ele = await this.nodeBuild(after);
       }
       
       if (!this.pre && (!this.condition || this.condition.value) && (!this.parent?.condition || this.parent.condition.value)) {
-        await this.conceive();
+        await this.nodeConceive();
       }
     }
 
+    this.isCreating = false;
     return ele;
   }
 }

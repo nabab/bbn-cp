@@ -260,14 +260,6 @@ export default function init(cp) {
     configurable: false
   });
 
-  Object.defineProperty(cp, '$elements', {
-    value: bbn.fn.createObject({
-      '0': cp.$el
-    }),
-    writable: false,
-    configurable: false
-  });
-
   /** @var {Object} $dataCfg The content of the data */
   Object.defineProperty(cp, '$dataCfg', {
     value: bbn.fn.createObject(),

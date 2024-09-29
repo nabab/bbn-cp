@@ -2,7 +2,7 @@ import bbnAttr from "../Attr.js";
 import bbnInternalNode from "../../Node/Internal.js";
 import setProp from "../../Cp/private/setProp.js";
 
-bbnAttr.prototype.update = async function(init) {
+bbnAttr.prototype.attrUpdate = async function(init) {
   if (this.name && this.node.element && !this.node.isOut) {
     const name = bbn.cp.badCaseAttributes[this.name] || this.name;
     if (init || (this.exp && this.isChanged)) {

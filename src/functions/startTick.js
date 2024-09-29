@@ -77,8 +77,9 @@ async function treatQueue(unconditioned = [], forgotten = []) {
 
     let lastElement;
     let lastNum;
-    let cps;
-    let done;
+    let cps = bbn.fn.createObject();
+    let done = [];
+    const proms = [];
     /*
     bbn.fn.log(JSON.stringify(queue.map(a => {
       if (a instanceof bbnComputed) {
@@ -118,6 +119,11 @@ async function treatQueue(unconditioned = [], forgotten = []) {
       if (lastNum !== queueElement.num) {
         cps = bbn.fn.createObject();
         lastNum = queueElement.num;
+        if (proms.length) {
+          await Promise.all(proms);
+          proms.splice(0);
+        }
+
         /*
         if (done?.length) {
           bbn.fn.log(done.slice());
@@ -154,7 +160,7 @@ async function treatQueue(unconditioned = [], forgotten = []) {
           bbn.fn.log(cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks);
         }
 
-        await queueElement.element.update();
+        proms.push(queueElement.element.update());
       }
       else if (queueElement?.element instanceof bbnAttr) {
         if (lastElement?.element === queueElement.element) {
@@ -175,9 +181,7 @@ async function treatQueue(unconditioned = [], forgotten = []) {
           continue;
         }
 
-        if (!attrQueue.includes(attr)) {
-          attrQueue.push(attr);
-        }
+        proms.push(attr.attrUpdate());
         //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
         /*
         if (attr instanceof bbnConditionAttr) {
@@ -211,7 +215,7 @@ async function treatQueue(unconditioned = [], forgotten = []) {
           bbn.fn.log(cp.$options.name + ' - Fn - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + queueElement.fn.toString());
         }
 
-        await queueElement.fn();
+        proms.push(queueElement.fn());
       }
       else {
         bbn.fn.log(["Data in queue", queueElement]);
@@ -222,18 +226,18 @@ async function treatQueue(unconditioned = [], forgotten = []) {
       lastElement = queueElement;
     }
 
+    if (proms.length) {
+      await Promise.all(proms);
+    }
+
+
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
-      //await treatQueue(unconditioned, forgotten);
+      await treatQueue(unconditioned, forgotten);
     }
 
     for (let n in cps) {
       cps[n].$lastBuild = bbn.cp.numTicks;
-    }
-
-    while (attrQueue.length) {
-      const attr = attrQueue.shift();
-      attr.update();
     }
   }
 }

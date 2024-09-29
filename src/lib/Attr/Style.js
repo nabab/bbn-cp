@@ -92,7 +92,7 @@ export default class bbnStyleAttr extends bbnAttr
   
   }
 
-  async update(init) {
+  async attrUpdate(init) {
     if (!this.node.element || this.node.comment) {
       return;
     }
@@ -107,7 +107,7 @@ export default class bbnStyleAttr extends bbnAttr
             && (arr = this.node.element.bbn.$internal.attributes.filter(a => a instanceof bbnStyleAttr)).length
           ) {
             //bbn.fn.warning("UPDATING INTERNAL STYLE ON " + this.node.tag)
-            await arr[0].update(true);
+            await arr[0].attrUpdate(true);
           }
           else if (this.node.element) {
             this.node.element.style.cssText = this.convert();
