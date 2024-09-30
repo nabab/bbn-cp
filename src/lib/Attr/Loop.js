@@ -138,7 +138,7 @@ export default class bbnLoopAttr extends bbnAttr
                 && cp.$nodes[elem.bbnId][n]?.element
                 && !elem.bbnHash.indexOf(n)
               ) {
-                bbn.fn.warning("DELETING")
+                //bbn.fn.warning("DELETING")
                 removeDOM(cp, elem);
                 delete cp.$nodes[elem.bbnId][n];
               }
