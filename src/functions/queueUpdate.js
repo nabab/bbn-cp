@@ -17,5 +17,9 @@ import bbn from "@bbn/bbn";
  * @param {HTMLElement} target - The DOM element to which the directives are applied.
  */
 export default function queueUpdate(item) {
+  if (!item.num) {
+    item.num = bbn.cp.numTicks;
+  }
+
   bbn.cp.queue.push(item);
 }

@@ -96,14 +96,14 @@ export default class bbnClassAttr extends bbnAttr
         };
 
         if (!this.node.element?.bbn?.$internal) {
-          bbn.cp.queueUpdate({component: this.node.component, fn, num: bbn.cp.numTicks, hash: (this.node.hash || 'root') + '-' + this.id});
+          bbn.cp.queueUpdate({component: this.node.component, fn, hash: (this.node.hash || 'root') + '-' + this.id});
         }
         else  {
           await fn();
         }
       }
       else if (this.node.element.className !== cls) {
-        //bbn.fn.warning("REALLY UPDATING 2 CLASS ON " + this.node.tag + ' ' + this.node.hash + ' (' + bbn.cp.numTicks +')');
+        //bbn.fn.warning("REALLY UPDATING 2 CLASS ON " + this.node.tag + ' ' + this.node.hash);
         this.node.element.className = cls;
       }
     }

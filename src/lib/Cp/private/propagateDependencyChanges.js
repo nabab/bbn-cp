@@ -3,7 +3,13 @@ import bbnComputed from "../../Computed/Computed.js";
 
 export default function propagateDependencyChanges(cp, name) {
   if (cp.$deps[name]) {
+    if (!bbn.cp.propagation) {
+      bbn.cp.numTicks++;
+      bbn.cp.propagation = true;
+    }
+
     const num = bbn.cp.numTicks;
+
     const dataObj = cp.$computed[name] ? bbnData.getObject(cp.$computed[name].value) : null;
     cp.$deps[name].forEach((a) => {
       if (a instanceof bbnAttr || a instanceof bbnComputed) {
@@ -18,5 +24,7 @@ export default function propagateDependencyChanges(cp, name) {
         bbn.fn.log("UNKNOWN DEPENDENCY", a);
       }
     });
+
+    bbn.cp.propagation = false;
   }
 }
