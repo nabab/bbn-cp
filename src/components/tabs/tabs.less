@@ -79,7 +79,7 @@ bbn-tabs {
       .bbn-tabs-tab{
         cursor: pointer;
         color: inherit;
-        padding: 0.3rem 1.15rem 0.4rem 1.15rem;
+        padding: 0.3rem 0.5rem 0.3rem 0.5rem;
         line-height: 1.7rem;
         vertical-align: middle;
         > .bbn-router-tab-text{
@@ -123,9 +123,9 @@ bbn-tabs {
         display: none;
         position: absolute;
         bottom: 1px;
-        left: 1.15rem;
-        right: 1.15rem;
-        height: 3px;
+        left: 1.5rem;
+        right: 1.5rem;
+        height: 2px;
       }
       &.bbn-tabs-fixed .bbn-tabs-icons i.bbn-router-tab-close {
         display: none
@@ -137,6 +137,11 @@ bbn-tabs {
         .bbn-tabs-selected {
           display: block;
         }
+      }
+      .bbn-router-tab-close {
+        line-height: 0px;
+        margin-top: 2px;
+        margin-right: 1px;
       }
     }
   }

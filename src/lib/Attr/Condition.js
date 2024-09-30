@@ -16,7 +16,6 @@ export default class bbnConditionAttr extends bbnAttr
     let conditionValue;
     let isTrue = false;
     let isPassed = false;
-    const num = bbn.cp.numTicks;
     for (let i = 0; i < allIfs.length; i++) {
       const ai = allIfs[i];
       if (ai.condition.id === this.id) {

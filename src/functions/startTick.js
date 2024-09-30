@@ -77,6 +77,7 @@ async function treatQueue() {
     let lastNum;
     let cps;
     let done;
+    let fns;
     let unconditioned = [];
     let forgotten = [];
     while (queue.length) {
@@ -104,6 +105,7 @@ async function treatQueue() {
 
         done = [];
         lastElement = null;
+        fns = [];
       }
 
       if (queueElement.element) {
@@ -181,6 +183,14 @@ async function treatQueue() {
           bbn.fn.log(cp.$options.name + ' - Fn - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + queueElement.fn.toString());
         }
 
+        const hash = queueElement.component.$cid + '-' + queueElement.hash;
+        if (fns.includes(hash)) {
+          // If on dropdown don't work
+          //bbn.fn.log(["ALREADY DONE", hash, queueElement, queueElement.fn.toString()]);
+          //continue;
+        }
+
+        fns.push(hash);
         await queueElement.fn();
       }
       else {
@@ -198,6 +208,7 @@ async function treatQueue() {
       await treatQueue(unconditioned, forgotten);
     }
 
+    bbn.cp.numBuild++;
     for (let n in cps) {
       cps[n].$lastBuild = bbn.cp.numTicks;
     }

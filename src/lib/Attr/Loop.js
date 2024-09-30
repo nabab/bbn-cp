@@ -135,10 +135,10 @@ export default class bbnLoopAttr extends bbnAttr
                 continue;
               }
               if (!elem.bbnId.indexOf(this.node.id + '-') 
-                && cp.$nodes[elem.bbnId][n].element
+                && cp.$nodes[elem.bbnId][n]?.element
                 && !elem.bbnHash.indexOf(n)
               ) {
-                //bbn.fn.warning("DELETING")
+                bbn.fn.warning("DELETING")
                 removeDOM(cp, elem);
                 delete cp.$nodes[elem.bbnId][n];
               }
@@ -153,16 +153,14 @@ export default class bbnLoopAttr extends bbnAttr
       }
 
       for (let idx in cp.$nodes) {
-        const obj = cp.$nodes[idx];
-        if (!idx.indexOf(this.node.id + '-')) {
+        if ((idx === this.node.id) || !idx.indexOf(this.node.id + '-')) {
+          const obj = cp.$nodes[idx];
           for (let n in obj) {
-            if ((n !== 'root')
-              && (bbn.fn.substr(n, -5) !== '-root')
-              && !this.list.includes(n)
-              && (n.indexOf(loopHash) === 0)
-            ) {
-              delete obj[n];
-            }
+            bbn.fn.each(oldList, l => {
+              if (((n === l) || !n.indexOf(l + '-')) && !this.list.includes(l)) {
+                delete obj[n];
+              }
+            });
           }
         }
       }

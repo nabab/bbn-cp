@@ -20,14 +20,11 @@ export default class bbnShowAttr extends bbnAttr
       this.attrSet();
     }
 
-    if (this.node.isComponent
-      && this.node.element?.bbn?.$internal
-      && this.node.element.bbn.$internal.attributes.filter(a => a instanceof bbnStyleAttr).length
-    ) {
-      this.node.element.bbn.$internal.attributes.filter(a => a instanceof bbnStyleAttr)[0].attrUpdate(true);
+    if (this.node.element?.bbn?.$internal?.attr?.style) {
+      await this.node.element.bbn.$internal.attr.style.attrUpdate(true);
     }
-    else if (this.node.attributes.filter(a => a instanceof bbnStyleAttr).length) {
-      this.node.attributes.filter(a => a instanceof bbnStyleAttr)[0].attrUpdate(true);
+    else if (this.node.attr?.style) {
+      await this.node.attr.style.attrUpdate(true);
     }
     else if (this.node.element?.style) {
       const isVisible = this.node.element.style?.display !== 'none';

@@ -1,5 +1,3 @@
-import removeFromElements from "./removeFromElements.js";
-
 /**
  * Remove an element from the DOM
  * @param {HTMLElement} ele

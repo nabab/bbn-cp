@@ -678,12 +678,12 @@ export default {
     /**
      * The source of the component.
      * @prop {Object|Function} source
+     */
     source(v) {
       if (this.real) {
         this.currentView.source = v;
       }
     },
-     */
     /**
      * The options object of the component.
      * @prop {Object} options

@@ -418,11 +418,7 @@ const cpDef = {
       this.$emit('route', path)
     },
     route(url, force) {
-      if (!bbn.fn.getRow(this.loaders, {url, loading: true})) {
-        this.getRef('router').route(url, force);
-        return true;
-      }
-
+      this.getRef('router').route(url, force);
       return false;
     },
     register(name, cp) {
@@ -721,7 +717,8 @@ const cpDef = {
       return false;
     };
     bbn.fn.defaultPreLinkFunction = url => {
-      return appui.route(url);
+      appui.route(url);
+      return false;
     };
     bbn.fn.defaultAlertFunction = ele => {
       /** @todo */

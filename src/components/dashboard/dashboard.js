@@ -1057,9 +1057,6 @@ const cpDef = {
       source() {
         //bbn.fn.log("SOURCE CHANGED");
         this.init();
-      },
-      widgets(){
-        //bbn.fn.log("widgets CHANGED");
       }
     }
   };

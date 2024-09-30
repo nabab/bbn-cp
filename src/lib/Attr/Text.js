@@ -10,9 +10,6 @@ export default class bbnTextAttr extends bbnAttr
     if (!init) {
       this.attrSet();
     }
-    else {
-      this.attrSetResult();
-    }
   
     if (!this.comment && this.node.element) {
       if (this.node.tag) {

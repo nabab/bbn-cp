@@ -2375,12 +2375,10 @@ const cpDef = {
             }
           }
           if (this.showable) {
-            bbn.fn.log(["GGGGGGGGGGG", cfg.hidden, cfg.shown, JSON.stringify(cfg, null, 2), cfg.hidden]);
             if ((cfg.hidden !== undefined) && (!bbn.fn.isSame(cfg.hidden, this.currentHidden))) {
               this.currentHidden = cfg.hidden;
             }
             else if ((cfg.shown !== undefined) && !bbn.fn.isSame(this.allFields.filter(x => !cfg.shown.includes(x)), this.currentHidden)) {
-              bbn.fn.warning("WAR!!!");
               this.currentHidden = this.allFields.filter(x => !cfg.shown.includes(x));
             }
 

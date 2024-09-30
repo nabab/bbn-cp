@@ -16,7 +16,9 @@ const updateSequence = function (result, attr) {
       let a = result.seq[i];
       // If the action's data is an instance of bbnData.
       if (a.data instanceof bbnData) {
+        // If it's a given property and not the whole object
         if (a.name) {
+          // we create a specific dep
           if (!a.data.deps[a.name]) {
             a.data.deps[a.name] = [];
           }

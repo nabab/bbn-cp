@@ -17,7 +17,7 @@ const getFn = function(watcher, lev, lastUpdate) {
  */
 bbnData.prototype.prepareUpdate = function(path) {
   if (!this.targetData) {
-    //bbn.fn.log("EEEEE")
+    //bbn.fn.log(["EEEEE", this]);
     return;
   }
 

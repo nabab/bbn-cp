@@ -59,19 +59,19 @@ export default {
     },
     onShow() {
       //bbn.fn.log(["ON SHOW", this.isVisible, this.router?.selected, this.currentIndex, this.isLoaded, this.isLoading, this.ready]);
-      if (this.isVisible && this.router) {
-        if (!this.isLoaded && !this.isLoading) {
-          this.loadView(this.currentCurrent)
-        }
-        else if (!this.ready) {
-          this.$nextTick(() => {
+      this.$nextTick(() => {
+        if (this.isVisible && this.router) {
+          if (!this.isLoaded && !this.isLoading) {
+            this.loadView(this.currentCurrent)
+          }
+          else if (!this.ready) {
             this.onResize();
             this.init();
-          }); 
-        }
+          }
 
-        this.router.navigate();
-      }
+          this.router.navigate();
+        }
+      });
     },
 
     /**
@@ -142,9 +142,11 @@ export default {
             num++;
             title = bbn._('Untitled') + ' ' + num;
           }
+
           d.title = title;
         }
 
+        this.isLoaded = true;
         this.currentTitle = d.title;
 
         const oldUrl = d.url;
@@ -223,7 +225,6 @@ export default {
           this.currentImessages = d.imessages;
         }
 
-        this.isLoaded = true;
         this.init();
 
         /*

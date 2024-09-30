@@ -92,16 +92,16 @@
                      bbn-if="tab.idx === value"
                      :style="{backgroundColor: tab.fcolor || altTextColor}"/>
                 <span bbn-if="!tab.fixed && !tab.pinned && closable"
-                      class="bbn-p bbn-router-tab-close bbn-iblock bbn-top-right bbn-hxspadded"
+                      class="bbn-p bbn-router-tab-close bbn-iblock bbn-top-right"
                       tabindex="-1"
                       :ref="'closer-' + tab.idx"
                       @keydown.left.down.prevent.stop="getRef('menu-' + tab.idx) ? getRef('menu-' + tab.idx).$el.focus() : null"
                       @keydown.space.enter.prevent.stop="$emit('close', tab.idx)"
                       @click.stop.prevent="$emit('close', tab.idx)">
-                  <i class="nf nf-fa-times bbn-xs"/>
+                  <i class="nf nf-fa-times bbn-xxs"/>
                 </span>
                 <bbn-context bbn-if="(tab.menu !== false) && (tab.idx === value)"
-                             class="bbn-iblock bbn-router-tab-menu bbn-p bbn-bottom-right bbn-hxspadded"
+                             class="bbn-iblock bbn-router-tab-menu bbn-p bbn-bottom-right"
                              tabindex="-1"
                              min-width="10rem"
                              tag="span"

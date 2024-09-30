@@ -1,6 +1,4 @@
 import bbnNode from "../Node.js";
-import addToElements from "../../Cp/private/addToElements.js";
-import removeFromElements from "../../Cp/private/removeFromElements.js";
 import removeDOM from "../../Cp/private/removeDOM.js";
 
 const isBefore = (id1, id2) => {
