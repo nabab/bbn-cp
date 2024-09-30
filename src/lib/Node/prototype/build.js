@@ -164,15 +164,12 @@ bbnNode.prototype.nodeBuild = async function(after) {
 
   // Register the element in the component's tracking system
 
-  const proms = [];
   if (!this.comment) {
     for (let i = 0; i < this.attributes.length; i++) {
-      proms.push(this.attributes[i].attrUpdate(true));
+      await this.attributes[i].attrUpdate(true);
     }
   }
   
-  await Promise.allSettled(proms);
-
   await this.nodeInsert(this.element, after);
 
   // Return the created or modified element
