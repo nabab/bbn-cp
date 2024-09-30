@@ -106,6 +106,7 @@ export default class bbnLoopAttr extends bbnAttr
         }
         else {
           const newNode = currentNode || generateNode(cloneNode(cp, node.id), cp, node.parent, hash, loopData);
+
           //bbn.fn.log("INSIDE LOOP", this.node.component.$options.name, prevEle, root)
           ele = await newNode.nodeInit(prevEle || root);
         }
@@ -137,15 +138,17 @@ export default class bbnLoopAttr extends bbnAttr
                 && cp.$nodes[elem.bbnId][n].element
                 && !elem.bbnHash.indexOf(n)
               ) {
-                bbn.fn.warning("DELETING")
+                //bbn.fn.warning("DELETING")
                 removeDOM(cp, elem);
+                delete cp.$nodes[elem.bbnId][n];
               }
               k++;
             }
           }
 
-          bbn.fn.warning("DELETING 0")
+          //bbn.fn.warning("DELETING 0")
           removeDOM(cp, a.element);
+          //delete cp.$nodes[a.id][n];
         }
       }
 

@@ -13,7 +13,7 @@ bbnNode.prototype.nodeConceive = async function() {
 
       const node = this.component.$retrieveNode(item.id, hash) || generateNode(item, this.component, this, hash, this.data);
       const ele = node.element;
-      if (!ele) {
+      if (!ele && !node.isCreating) {
         await node.nodeInit();
       }
       else {

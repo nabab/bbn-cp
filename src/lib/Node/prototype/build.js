@@ -6,6 +6,15 @@ import retrieveSlots from "../../../internals/retrieveSlots.js";
 import stringToTemplate from "../../../internals/stringToTemplate.js";
 
 bbnNode.prototype.nodeBuild = async function(after) {
+  /*
+  if (this.tag === 'td') {
+    bbn.fn.log("BUILDING TD " + this.id + " " + this.hash);
+    bbn.fn.startChrono("CHRONO")
+  }*/
+  if (this.tag === 'template') {
+    //bbn.fn.log("BUILDING TEMPLATE " + this.id + " " + this.hash);
+  }
+
   const parent = this.parentElement || this.component.$el;
   const cp = this.component;
   // Check if the node represents a component and not a comment
@@ -155,12 +164,16 @@ bbnNode.prototype.nodeBuild = async function(after) {
 
   // Register the element in the component's tracking system
 
+  const proms = [];
   if (!this.comment) {
     for (let i = 0; i < this.attributes.length; i++) {
-      await this.attributes[i].attrUpdate(true);
+      proms.push(this.attributes[i].attrUpdate(true));
     }
   }
-  this.nodeInsert(this.element, after);
+  
+  await Promise.allSettled(proms);
+
+  await this.nodeInsert(this.element, after);
 
   // Return the created or modified element
   this.numBuild++;

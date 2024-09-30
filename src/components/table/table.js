@@ -1590,7 +1590,7 @@ const cpDef = {
         return false
       },
       currentMaxRowHeight(){
-        return !!this.maxRowHeight ? this.maxRowHeight + 'px' : 'auto';
+        return this.maxRowHeight ? this.maxRowHeight + 'px' : 'auto';
       }
     },
     methods: {
@@ -2191,6 +2191,9 @@ const cpDef = {
                 bbn-if="!col.fixed && (col.group === tg.value) && (col.showable !== false) && (col.title || col.ftitle)">
               <bbn-checkbox :checked="shownCols[i]"
                             @change="check(col, i)"
+                            bbn-model="shownCols[i]"
+                            :value="true"
+                            :novalue="undefined"
                             :label="col.ftitle || col.title"
                             :contrary="true"/>
             </li>
@@ -2223,14 +2226,15 @@ const cpDef = {
             },
             methods: {
               applyColumnsShown() {
-                let toShow = [],
-                  toHide = [];
+                bbn.fn.log('applyColumnsShown');
+                let toShow = [];
+                let toHide = [];
                 bbn.fn.each(this.source.cols, (a, i) => {
                   if (a.hidden == this.shownCols[i]) {
                     if (this.shownCols[i]) {
-                      toShow.push(i);
+                      toShow.push(a.field || i);
                     } else {
-                      toHide.push(i);
+                      toHide.push(a.field || i);
                     }
                   }
                 });
@@ -2371,6 +2375,7 @@ const cpDef = {
             }
           }
           if (this.showable) {
+            bbn.fn.log(["GGGGGGGGGGG", cfg.hidden, cfg.shown, JSON.stringify(cfg, null, 2), cfg.hidden]);
             if ((cfg.hidden !== undefined) && (!bbn.fn.isSame(cfg.hidden, this.currentHidden))) {
               this.currentHidden = cfg.hidden;
             }
@@ -3230,11 +3235,12 @@ const cpDef = {
           colIndexes = [colIndexes];
         }
         bbn.fn.each(colIndexes, colIndex => {
-          if (this.cols[colIndex]) {
-            if ((this.cols[colIndex].hidden && !hide) || (!this.cols[colIndex].hidden && hide)) {
-              let idx = this.currentHidden.indexOf(colIndex);
+          let col = bbn.fn.isNumber(colIndex) ? this.cols[colIndex] : bbn.fn.getRow(this.cols, {field: colIndex})
+          if (col) {
+            if ((col.hidden && !hide) || (!col.hidden && hide)) {
+              let idx = this.currentHidden.indexOf(col.field || colIndex);
               if (hide && (idx === -1)) {
-                this.currentHidden.push(colIndex);
+                this.currentHidden.push(col.field || colIndex);
               } else if (!hide && (idx > -1)) {
                 this.currentHidden.splice(idx, 1);
               }
@@ -3445,6 +3451,9 @@ const cpDef = {
           else if (bbn.fn.isFunction(col.render)) {
             obj.content = `<div class="bbn-spadded">${col.render(data, col, itemIndex)}</div>`;
           }
+          else if (col.field) {
+            obj.content = `<div class="bbn-spadded">${data[col.field]}</div>`;
+          }
           else {
             obj.content = `<div class="bbn-spadded">${data.text}</div>`;
           }
@@ -3579,7 +3588,7 @@ const cpDef = {
         let initColumn = [];
         bbn.fn.each(this.cols, (a, i) => {
           if (a.hidden) {
-            tmp.push(i);
+            tmp.push(a.field || i);
           }
           else if (initColumn.length <= 10) {
             initColumn.push(i);
@@ -3662,7 +3671,7 @@ const cpDef = {
             let initColumn = [];
             bbn.fn.each(this.cols, (a, i) => {
               if (a.hidden) {
-                tmp.push(i);
+                tmp.push(a.field || i);
               }
               else if (initColumn.length <= 10) {
                 initColumn.push(i);
