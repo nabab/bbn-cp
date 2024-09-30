@@ -3,9 +3,11 @@ import bbnComputed from "../../Computed/Computed.js";
 
 export default function propagateDependencyChanges(cp, name) {
   if (cp.$deps[name]) {
+    let isRootPropagation = false;
     if (!bbn.cp.propagation) {
       bbn.cp.numTicks++;
       bbn.cp.propagation = true;
+      isRootPropagation = true;
     }
 
     const num = bbn.cp.numTicks;
@@ -25,6 +27,8 @@ export default function propagateDependencyChanges(cp, name) {
       }
     });
 
-    bbn.cp.propagation = false;
+    if (isRootPropagation) {
+      bbn.cp.propagation = false;
+    }
   }
 }

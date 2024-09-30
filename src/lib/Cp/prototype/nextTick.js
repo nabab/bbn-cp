@@ -4,21 +4,18 @@ bbnCp.prototype.$nextTick = async function(fn){
   const f = fn ? bbn.fn.analyzeFunction(fn) : {hash: 'nextTick'}; 
   const cp = this;
   return new Promise((resolve) => {
-    this.$tick(() => {
-      setTimeout(() => {
-        bbn.cp.queueUpdate({
-          component: cp,
-          fn() {
-            if (fn) {
-              fn();
-            }
-  
-            resolve();
-          },
-          hash: f.hash,
-          num: bbn.cp.numTicks+2
-        });
-      }, bbn.cp.tickDelay);
-    })
+    setTimeout(() => {
+      bbn.cp.queueUpdate({
+        component: cp,
+        fn() {
+          if (fn) {
+            fn();
+          }
+
+          resolve();
+        },
+        hash: f.hash
+      });
+    }, bbn.cp.tickDelay * 2);
   });
 }

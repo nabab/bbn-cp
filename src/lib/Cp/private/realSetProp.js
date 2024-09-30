@@ -32,7 +32,6 @@ export default function realSetProp(cp, name, value) {
   // If the original value is different from the new value, update the property.
   if (original !== value) {
     cp.$propsCfg[name].value = value;
-    cp.$propsCfg[name].lastUpdate = bbn.cp.numTicks;
     // Update any watchers that might be observing this property.
     propagateDependencyChanges(cp, name);
     updateWatcher(cp, name);

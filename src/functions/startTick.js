@@ -242,7 +242,6 @@ export default function startTick() {
           //lastUpdate = tst;
 
           await treatQueue();
-          bbn.cp.numTicks++;
 
           // Indicate that the current update cycle is complete.
           bbn.cp.isRunning = false;
