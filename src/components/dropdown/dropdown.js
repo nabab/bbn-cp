@@ -150,7 +150,13 @@ const cpDef = {
           return a.data[this.sourceValue] === this.value;
         });
         if (row) {
-          this.currentText = this.clearHtml ? bbn.fn.html2text(row.data[this.sourceText]) : row.data[this.sourceText];
+          let txt = row.data[this.sourceText];
+          if (this.selectedText) {
+            txt = bbn.fn.isFunction(this.selectedText) ?
+              this.selectedText(row.data) :
+              row.data[this.selectedText];
+          }
+          this.currentText = this.clearHtml ? bbn.fn.html2text(txt) : txt;
           //bbn.fn.log(["CHANGIN CURRENT TEXT", this.currentText]);
         }
       }

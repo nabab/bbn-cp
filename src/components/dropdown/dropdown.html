@@ -68,7 +68,7 @@
                 :selected="(value === '') || (value === null)"/>
         <option bbn-for="d in filteredData"
                 :value="d.data[sourceValue]"
-                bbn-html="d.data[sourceListText || sourceText]"
+                bbn-html="d.data[sourceText]"
                 :disabled="!!d.data[sourceDisabled]"/>
       </select>
     </template>
@@ -103,7 +103,7 @@
               :selected="value ? [value] : []"
               @close="isOpened = false"
               :source="filteredData"
-              :source-text="sourceListText || sourceText"
+              :source-text="sourceText"
               :source-value="sourceValue"
               :source-url="sourceUrl"
               :source-icon="sourceIcon"

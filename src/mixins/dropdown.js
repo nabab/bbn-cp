@@ -187,8 +187,8 @@ const dropdown = {
       type: String,
       default: 'disabled'
     },
-    sourceListText: {
-      type: String
+    selectedText: {
+      type: [String, Function]
     }
   },
   data() {
@@ -275,15 +275,28 @@ const dropdown = {
      * @returns {String}
      */
     currentTextValue() {
-      if ((this.value !== undefined) && !bbn.fn.isNull(this.value) && this.sourceValue && this.sourceText && this.currentData?.length) {
+      if ((this.value !== undefined)
+        && !bbn.fn.isNull(this.value)
+        && this.sourceValue
+        && this.sourceText
+        && this.currentData?.length
+      ) {
         let idx = bbn.fn.search(this.currentData, a => {
           return a.data[this.sourceValue] === this.value;
         });
         if (idx > -1) {
-          if (this.clearHtml) {
-            return bbn.fn.html2text(this.currentData[idx].data[this.sourceText]);
+          let txt = this.currentData[idx].data[this.sourceText];
+          if (this.selectedText) {
+            txt = bbn.fn.isFunction(this.selectedText) ?
+              this.selectedText(this.currentData[idx].data) :
+              this.currentData[idx].data[this.selectedText];
           }
-          return this.currentData[idx].data[this.sourceText];
+
+          if (this.clearHtml) {
+            return bbn.fn.html2text(txt);
+          }
+
+          return txt;
         }
       }
       else if (this.value && this.textValue) {
