@@ -21,9 +21,8 @@ bbnNode.prototype.nodeInit = async function(after) {
   await this.nodeSetAll();
   if (!this.loop) {
     await this.nodeBuild(after);
-  }
-  if (!this.loop) {
     await this.nodeConceive();
+    bbn.fn.log("nodeInit", this);
   }
 
   if (this.isComponent) {

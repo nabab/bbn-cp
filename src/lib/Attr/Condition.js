@@ -2,6 +2,26 @@ import bbn from "@bbn/bbn";
 import bbnAttr from "./Attr.js";
 import removeDOM from "../Cp/private/removeDOM.js";
 
+const deleteNodes = (cp, id, hash) => {
+  for (let idx in cp.$nodes) {
+    if (!idx.indexOf(id + '-')) {
+      const obj = cp.$nodes[idx];
+      if (hash) {
+        for (let n in obj) {
+          if ((n === hash) || !n.indexOf(hash + '-')) {
+            delete obj[n];
+          }
+        }
+      }
+      else {
+        delete cp.$nodes[idx];
+      }
+    }
+  }
+};
+
+
+
 /**
  * Takes care of the data reactivity for non primitive values.
  */
@@ -66,6 +86,7 @@ export default class bbnConditionAttr extends bbnAttr
           }
           else if (!node.isCommented) {
             await node.setComment(true);
+            deleteNodes(node.component, node.id, node.hash);
           }
         }
       }
@@ -81,6 +102,7 @@ export default class bbnConditionAttr extends bbnAttr
     }
     else if (!conditionValue && !this.node.isCommented) {
       await this.node.setComment(true);
+      deleteNodes(this.node.component, this.node.id, this.node.hash);
     }
   }
 
