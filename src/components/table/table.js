@@ -991,10 +991,9 @@ const cpDef = {
       jsonConfig() {
         let cfg = this.currentConfig;
         if (this.currentHidden.length > (this.cols.length/2)) {
-          bbn.fn.log("WE ARE IN!!!!");
           cfg = bbn.fn.createObject(cfg);
           cfg.shown = this.allFields.filter(x => !cfg.hidden.includes(x));
-          bbn.fn.log(cfg);
+          //bbn.fn.log("WE ARE IN!!!!", cfg);
           delete cfg.hidden;
         }
 
