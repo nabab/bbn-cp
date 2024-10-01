@@ -167,15 +167,17 @@ const cpDef = {
        * @return {String}
        */
       currentMask(){
-        if ( this.mask ){
+        if (this.mask) {
           return this.mask;
         }
-        switch ( this.type ){
+
+        switch (this.type) {
           case 'months':
             return '00/0000';
           case 'years':
             return '0000';
         }
+
         return '00/00/0000';
       },
       /**
@@ -185,15 +187,17 @@ const cpDef = {
        * @return {String}
        */
       currentValueFormat(){
-        if ( this.valueFormat ){
+        if (this.valueFormat) {
           return this.valueFormat;
         }
-        switch ( this.type ){
+
+        switch (this.type) {
           case 'months':
             return 'YYYY-MM';
           case 'years':
             return 'YYYY';
         }
+
         return 'YYYY-MM-DD';
       },
       /**
@@ -203,16 +207,38 @@ const cpDef = {
        * @return {String}
        */
       currentFormat(){
-        if ( this.format ){
+        if (this.format) {
           return this.format;
         }
-        switch ( this.type ){
+
+        switch (this.type) {
           case 'months':
             return 'MM/YYYY';
           case 'years':
             return 'YYYY';
         }
+
         return 'DD/MM/YYYY';
+      },
+      /**
+       * The current pattern for the bbn-mask.
+       *
+       * @computed currentPattern
+       * @returns {String}
+       */
+      currentPattern(){
+        if (this.pattern) {
+          return this.pattern;
+        }
+
+        switch (this.type) {
+          case 'months':
+            return '[0-3]{1}[0-9]{1}\/{1}[0-9]{4}';
+          case 'years':
+            return '[0-9]{4}';
+        }
+
+        return '[0-3]{1}[0-9]{1}\/{1}[0-1]{1}[0-9]{1}\/{1}[0-9]{4}';
       },
       /**
        * True if the values of the inputValue and the oldInputValue properties are different.
@@ -420,6 +446,7 @@ const cpDef = {
       },
       /**
        * @watch maskedMounted
+       * @param {String} newVal
        * @fires setInputValue
        */
       maskedMounted(newVal){
@@ -429,8 +456,9 @@ const cpDef = {
       },
       /**
        * @watch value
+       * @param {String} newVal
        * @fires setInputValue
-      */
+       */
       value(newVal){
         this.setInputValue(newVal);
       }

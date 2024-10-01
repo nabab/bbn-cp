@@ -11,7 +11,8 @@
               class="bbn-flex-fill"
               :autosize="autosize"
               :inputmode="inputmode"
-              :placeholder="placeholder"/>
+              :placeholder="placeholder"
+              :pattern="currentPattern"/>
   <div bbn-if="isNullable && !readonly && !isDisabled"
        class="bbn-block bbn-h-100 bbn-input-nullable-container">
     <i bbn-if="hasValue" class="nf nf-fa-times_circle bbn-p"

@@ -71,10 +71,13 @@ const cpDef = {
       return this.currentPrefix + this.currentNumber;
     },
     currentCountry(){
-      return bbn.fn.getField(this.countryCodes, 'name', 'prefix', this.currentPrefix);
+      return bbn.fn.getField(this.countryCodes, 'code', 'prefix', this.currentPrefix);
     },
-    maxLength(){
-      return this.maxlength || (this.currentCountry === 'FR' ? 10 : 0);
+    currentMaxlength(){
+      return (this.maxlength > -1) ? this.maxlength : (this.currentCountry === 'FR' ? 10 : 0);
+    },
+    currentPattern(){
+      return `[0-9]${this.currentMaxlength ? ('{0,' + this.currentMaxlength + '}') : '+'}`;
     }
   },
   methods: {

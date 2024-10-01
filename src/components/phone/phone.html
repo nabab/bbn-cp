@@ -21,8 +21,8 @@
              :inputmode="inputmode"
              :placeholder="placeholder"
              class="bbn-phone-input bbn-no-border"
-             pattern="[0-9]"
-             :maxlength="maxLength"
+             :pattern="currentPattern"
+             :maxlength="currentMaxlength"
              type="tel"
              :nullable="nullable"/>
   <input type="hidden"

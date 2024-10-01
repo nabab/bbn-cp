@@ -179,6 +179,16 @@ const cpDef = {
         return this.format || (this.showSecond ? 'DD/MM/YYYY HH:mm:ss' : 'DD/MM/YYYY HH:mm');
       },
       /**
+       * The current pattern for the bbn-mask.
+       *
+       * @computed currentPattern
+       * @returns {String}
+       */
+      currentPattern(){
+        let p = '[0-3]{1}[0-9]{1}\/{1}[0-1]{1}[0-9]{1}\/{1}[0-9]{4}\s{1}[0-2]{1}[0-9]{1}\:{1}[0-5]{1}[0-9]{1}';
+        return this.pattern || (p + this.showSecond ? '\:{1}[0-5]{1}[0-9]{1}' : '');
+      },
+      /**
        * True if the values of the inputValue and the oldInputValue properties are different.
        *
        * @computed intuValueChanged
