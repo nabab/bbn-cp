@@ -30,6 +30,7 @@
                @keyup="keyup"
                @click.stop="click"
                @clickRightButton="click"
+               :button-right-disabled="isDisabled || readonly"
                :disabled="isDisabled"
                autocorrect="off"
                autocapitalize="off"
@@ -64,7 +65,8 @@
                   tabindex="-1"
                   :class="['bbn-combo-select-button', 'bbn-button-right', 'bbn-no-vborder', 'bbn-m', 'bbn-top-right', {
                     'bbn-disabled': !filteredData.length || !!isDisabled || !!readonly
-                  }]"/>
+                  }]"
+                  :disabled="!filteredData.length || !!isDisabled || !!readonly"/>
     </template>
   </div>
   <input type="hidden"

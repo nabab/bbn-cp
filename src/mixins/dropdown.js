@@ -186,6 +186,9 @@ const dropdown = {
     sourceDisabled: {
       type: String,
       default: 'disabled'
+    },
+    sourceListText: {
+      type: String
     }
   },
   data() {

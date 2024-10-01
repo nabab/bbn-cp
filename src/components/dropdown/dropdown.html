@@ -30,7 +30,7 @@
                @click.stop="click"
                @paste="paste"
                @clickrightbutton.stop="click"
-               :button-right-disabled="isDisabled"
+               :button-right-disabled="isDisabled || readonly"
                :disabled="isDisabled"
                autocorrect="off"
                autocapitalize="off"
@@ -68,7 +68,7 @@
                 :selected="(value === '') || (value === null)"/>
         <option bbn-for="d in filteredData"
                 :value="d.data[sourceValue]"
-                bbn-html="d.data[sourceText]"
+                bbn-html="d.data[sourceListText || sourceText]"
                 :disabled="!!d.data[sourceDisabled]"/>
       </select>
     </template>
@@ -103,7 +103,7 @@
               :selected="value ? [value] : []"
               @close="isOpened = false"
               :source="filteredData"
-              :source-text="sourceText"
+              :source-text="sourceListText || sourceText"
               :source-value="sourceValue"
               :source-url="sourceUrl"
               :source-icon="sourceIcon"
