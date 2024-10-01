@@ -68,7 +68,7 @@ async function treatQueue() {
       isDebug = false;
     }
 
-    let queue = bbn.fn.order(bbn.cp.queue.splice(0), 'num');
+    let queue = bbn.cp.queue.splice(0);
     // Process each component in the queue.
     let oneDone = false;
 

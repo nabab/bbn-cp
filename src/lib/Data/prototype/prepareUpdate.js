@@ -28,13 +28,6 @@ bbnData.prototype.prepareUpdate = function(path) {
     return;
   }
 
-  let isRootPropagation = false;
-  if (!bbn.cp.propagation) {
-    bbn.cp.numTicks++;
-    bbn.cp.propagation = true;
-    isRootPropagation = true;
-  }
-
   const propagation = [];
   const impacted = this.getImpacted(path, this.lastUpdate);
   const num = bbn.cp.numTicks;
@@ -77,9 +70,5 @@ bbnData.prototype.prepareUpdate = function(path) {
     }
 
   });
-
-  if (isRootPropagation) {
-    bbn.cp.propagation = false;
-  }
 
 };
