@@ -38,8 +38,12 @@ bbnData.prototype.prepareUpdate = function(path) {
   const propagation = [];
   const impacted = this.getImpacted(path, this.lastUpdate);
   const num = bbn.cp.numTicks;
+  const deps = [];
   this.lastUpdate = num;
-  const deps = (path ? this.deps[path] : this.deps.__bbnRoot) || [];
+  if (path) {
+    deps.push(...(this.deps[path] || []));
+  }
+  deps.push(...(this.deps.__bbnRoot || []));
   deps.forEach(a => {
     if (!(a instanceof bbnComputed) || !this.hasParent(a.component, a.name)) {
       queueUpdate({element: a, num})
