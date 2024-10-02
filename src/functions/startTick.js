@@ -162,6 +162,12 @@ async function treatQueue(num = 0) {
             unconditioned.splice(unconditioned.indexOf(attr.node), 1);
           }
           else if (!attrValue && !unconditioned.includes(attr.node)) {
+            for (let i = 0; i < unconditioned.length; i++) {
+              if (unconditioned[i].id.indexOf(id + '-') === 0) {
+                unconditioned.splice(i, 1);
+                i--;
+              }
+            }
             unconditioned.push(attr.node);
           }
         }
@@ -198,13 +204,11 @@ async function treatQueue(num = 0) {
       lastElement = queueElement;
     }
 
-    bbn.cp.numTicks++;
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       await treatQueue(num + 1);
     }
 
-    bbn.cp.numBuild++;
     for (let n in cps) {
       cps[n].$lastBuild = bbn.cp.numTicks;
     }

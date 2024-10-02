@@ -17,6 +17,7 @@ bbnAttr.prototype.retrieveArgument = function(a, hash, data) {
   let done = false;
   let v;
   const varName = bbn.fn.firstVarElement(a);
+  bbn.fn.log(['retrieve', varName, data, cp.$has(a)])
   // Check if the argument is a key in the provided data.
   for (let i = 0; i < data.length; i++) {
     if (data[i] && (varName in data[i])) {
@@ -38,17 +39,20 @@ bbnAttr.prototype.retrieveArgument = function(a, hash, data) {
     done = true;
     v = cp[a];
   }
-  // Check if the argument is a key in the component's current results and the hash exists.
-  else if (this.node.data[a] !== undefined) {
-    // Return the value from the component's current results.
-    done = true;
-    v = this.node.data[a];
+  // Check if the argument is a key in the component's current results
+  else {
+    const row = bbn.fn.getRow(this.node.attributes, {id: a});
+    if (row) {
+      bbn.fn.log("FOUND")
+      v = row.attrGetValue();
+      done = true;
+    }
   }
 
   // If none of the above conditions are met, throw an error.
   if (!done) {
     bbn.fn.log([hash, data]);
-    throw Error(bbn._("Impossible to find the argument %s in component %s", a, cp.$options.name));
+    throw new Error(bbn._("Impossible to find the argument %s in component %s", a, cp.$options.name));
   }
 
   return v;

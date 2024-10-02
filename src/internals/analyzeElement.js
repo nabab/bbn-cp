@@ -271,8 +271,8 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
           break;
         case 'bbn-slot':
           res.slot = bbn.fn.createObject({
-            id: res.id + '-slot-' + (modelValue || 'default'),
-            slotName: modelValue || 'default',
+            id: res.id + '-slot-' + (modelValue === '_default_' ? 'default' : modelValue),
+            slotName:  modelValue === '_default_' ? 'default' : modelValue,
             slotValue: value,
           });
           break;
