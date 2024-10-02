@@ -10,13 +10,16 @@ export default class bbnDirectiveAttr extends bbnAttr
 
   attrUpdate(init) {
     //bbn.fn.log("UPDATE ATTR DIRECTIVE " + this.name)
-  
     if (!this.inserted) {
       // Check if the "inserted" function exists on this directive
       if (bbn.fn.isFunction(bbn.cp.directives[this.name].inserted)) {
-        // Set the directive as initialized
+        // Set the 'oldValue' property of the directive.
+        this.oldValue = this.value;
+        // Set the 'lastValue' property of the directive.
+        this.lastValue = this.value;
         // Initialize the directive
         bbn.cp.directives[this.name].inserted(this.node.element, this);
+        // Set the directive as initialized
         this.inserted = true;
       }
       else {
@@ -24,6 +27,12 @@ export default class bbnDirectiveAttr extends bbnAttr
       }
     }
     else if (this.isChanged) {
+      // Update the 'lastUpdate' property of the directive.
+      this.lastUpdate = bbn.fn.dateSQL();
+      // Update the 'oldValue' property of the directive.
+      this.oldValue = this.lastValue;
+      // Update the 'lastValue' property of the directive.
+      this.lastValue = this.value;
       // Call the 'update' function of the directive with the target element and directive info.
       bbn.cp.directives[this.name].update(this.node.element, this);
     }

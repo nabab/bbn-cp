@@ -6,10 +6,15 @@ export default function() {
       }
 
       setTimeout(() => {
-        el.focus();
-        bbn.env.focused = el;
+        let element = el;
+        if (el.bbn) {
+          element = el.bbn.getRef('element') || el.bbn.getRef('input') || el.bbn.$el;
+        }
+
+        element.focus();
+        bbn.env.focused = element;
         if (binding.modifiers.includes('selected')) {
-          bbn.fn.selectElementText(el);
+          bbn.fn.selectElementText(element);
         }
       }, 250);
     }

@@ -316,6 +316,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
               modifiers: !!directiveMod ? bbn.fn.map(directiveMod, m => bbn.fn.substr(m, 1)) : [],
               arg: !!directiveArg ? bbn.fn.substr(directiveArg[0], 1) : null,
               oldValue: undefined,
+              lastValue: undefined,
               lastUpdate: null
             });
 
