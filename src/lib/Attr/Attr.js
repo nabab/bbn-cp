@@ -70,7 +70,7 @@ export default class bbnAttr
     }
 
     const hash = this.node.hash || '_root';
-    return (this.result.num <= this.node.component.$numBuild);
+    return this.result.num <= this.node.component.$numBuild;
   }
 
   get isChanged() {

@@ -1,26 +1,7 @@
 import bbn from "@bbn/bbn";
 import bbnAttr from "./Attr.js";
 import removeDOM from "../Cp/private/removeDOM.js";
-
-const deleteNodes = (cp, id, hash) => {
-  for (let idx in cp.$nodes) {
-    if (!idx.indexOf(id + '-')) {
-      const obj = cp.$nodes[idx];
-      if (hash) {
-        for (let n in obj) {
-          if ((n === hash) || !n.indexOf(hash + '-')) {
-            delete obj[n];
-          }
-        }
-      }
-      else {
-        delete cp.$nodes[idx];
-      }
-    }
-  }
-};
-
-
+import deleteNodes from "../Cp/private/deleteNodes.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.

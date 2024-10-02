@@ -17,7 +17,6 @@ bbnAttr.prototype.retrieveArgument = function(a, hash, data) {
   let done = false;
   let v;
   const varName = bbn.fn.firstVarElement(a);
-  bbn.fn.log(['retrieve', varName, data, cp.$has(a)])
   // Check if the argument is a key in the provided data.
   for (let i = 0; i < data.length; i++) {
     if (data[i] && (varName in data[i])) {

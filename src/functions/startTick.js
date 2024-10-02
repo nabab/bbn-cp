@@ -140,7 +140,6 @@ async function treatQueue(num = 0) {
       }
       else if (queueElement?.element instanceof bbnAttr) {
         const attr = queueElement.element;
-        const attrValue = attr.attrGetValue();
         if (isDebug) {
           bbn.fn.log(cp.$options.name + ' - ' + attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
         }
@@ -152,11 +151,12 @@ async function treatQueue(num = 0) {
   
         if (!(attr instanceof bbnConditionAttr) && (unconditioned.includes(attr.node) || unconditioned.filter(a => !a.id.indexOf(id + '-') && !a.hash.indexOf(attr.node.hash || '')).length)) {
           //bbn.fn.log("SKIPPING");
-          //continue;
+          continue;
         }
   
         await attr.attrUpdate();
         //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
+        const attrValue = attr.attrGetValue();
         if (attr instanceof bbnConditionAttr) {
           if (attrValue && unconditioned.includes(attr.node)) {
             unconditioned.splice(unconditioned.indexOf(attr.node), 1);

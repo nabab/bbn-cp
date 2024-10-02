@@ -1,6 +1,7 @@
 import bbnAttr from "./Attr.js";
 import setProp from "../Cp/private/setProp.js";
 import bbnInternalNode from "../Node/Internal.js";
+import bbnSlotNode from "../Node/Slot.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -40,9 +41,12 @@ export default class bbnBindAttr extends bbnAttr
           }
         }
       }
-      for (let n in this.node.props) {
-        if (!this.node.attr[n] && (this.value[n] === undefined)) {
-          delete this.node.props[n];
+
+      if (!(this.node instanceof bbnSlotNode)) {
+        for (let n in this.node.props) {
+          if (!this.node.attr[n] && (this.value[n] === undefined)) {
+            delete this.node.props[n];
+          }
         }
       }
     }
