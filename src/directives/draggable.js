@@ -339,7 +339,6 @@ export default function() {
             holdClick = true;
             clickTimeout = setTimeout(() => {
               if (holdClick) {
-                bbn.fn.log('sisisisi')
                 startDrag(ev, el);
               }
             }, 150);
