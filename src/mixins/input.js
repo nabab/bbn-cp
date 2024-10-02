@@ -142,9 +142,9 @@ const input = {
     },
     /**
      * If true the element will focus on insert
-     * @prop {Boolean} autofocus
+     * @prop {Boolean} [false] focused
      */
-    autofocus: {
+    focused: {
       type: Boolean,
       default: false
     },

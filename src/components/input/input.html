@@ -30,6 +30,7 @@
          bbn-text="prefix"/>
     <input :value="currentValue"
           :type="currentType"
+          bbn-focused.selected="focused"
           :name="name"
           ref="element"
           :readonly="readonly ? 'readonly' : false"
