@@ -55,6 +55,7 @@ const sorter = (a, b) => {
 };
 
 async function treatQueue(num = 0) {
+  bbn.cp.numTicks++;
   let isDebug = false;
   if (bbn.cp.queue.length) {
     //bbn.fn.log("TREATING QUEUE: " + bbn.cp.queue.length);
@@ -203,7 +204,6 @@ async function treatQueue(num = 0) {
       lastElement = queueElement;
     }
 
-    bbn.cp.numTicks++;
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       await treatQueue(num + 1);
