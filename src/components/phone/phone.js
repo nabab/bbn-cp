@@ -51,7 +51,7 @@ const cpDef = {
   data(){
     return {
       countryCodes: bbn.fn.map(countryCodes, c => {
-        c.text = c.prefix;
+        c.text = `${c.name} (${c.prefix})`;
         if (this.icons) {
           c.icon = `fi fi-${c.code.toLowerCase()}`;
           //c.text = `<i class="${icon}"></i><span>${c.text}</span>`;
