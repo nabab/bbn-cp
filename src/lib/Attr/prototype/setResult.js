@@ -52,20 +52,11 @@ bbnAttr.prototype.attrSetResult = function() {
   }
 
   const node = this.node;
-  const r = node.component.$expResults;
-  const hash = node.hash || '_root'; // Default hash to '_root' if not provided.
-
-  // Ensure the result object exists for the given hash.
-  if (!r[this.id]) {
-    r[this.id] = bbn.fn.createObject();
-  }
-
   // Check if the result needs to be updated.
-  if (!(this instanceof bbnModelAttr) && ((r[this.id][hash]?.num || 0) > node.component.$numBuild) && !Object.hasOwn(arguments, 0)) {
-    if (this.value !== r[this.id][hash].value) {
-      this.state = r[this.id][hash].state;
-      this.value = r[this.id][hash].value;
-      updateSequence(r[this.id][hash], this);
+  if (!(this instanceof bbnModelAttr) && ((this.result?.num || 0) > node.component.$numBuild) && !Object.hasOwn(arguments, 0)) {
+    if (this.value !== this.result.value) {
+      this.value = this.result.value;
+      updateSequence(this.result, this);
     }
 
     return this.value;
@@ -81,50 +72,46 @@ bbnAttr.prototype.attrSetResult = function() {
   let isChanged = false;
 
   // Update the value if it has changed.
-  if (this.value !== expValue) {
-    this.value = expValue;
+  if (this.result.value !== expValue) {
+    this.result.value = expValue;
     isChanged = true;
   }
 
   // Create or update the result object based on its state.
-  if (!r[this.id][hash]) {
-    r[this.id][hash] = bbn.fn.createObject({
-      state: 'NEW', // New state.
-      value: expValue,
-    });
+  if (!this.result.num) {
+    this.result.state = 'NEW';
   }
-  else if (r[this.id][hash].state === 'DEL') {
-    r[this.id][hash].value = expValue;
-    r[this.id][hash].state = 'NEW';
+  else if (this.result.state === 'DEL') {
+    this.result.state = 'NEW';
   }
-  else if (r[this.id][hash].state === 'TMP') {
-    if (r[this.id][hash].value !== expValue) {
-      r[this.id][hash].value = expValue;
-      r[this.id][hash].state = 'MOD'; // Modified state.
+  else if (this.result.state === 'TMP') {
+    if (isChanged) {
+      this.result.state = 'MOD'; // Modified state.
     }
     else {
       const dataObj = bbnData.getObject(expValue);
       if (dataObj && (this.node.component.$lastBuild < dataObj.lastUpdate)) {
-        r[this.id][hash].state = 'MOD'; // Modified state.
+        this.result.state = 'MOD'; // Modified state.
+      }
+      else if (isChanged) {
+        this.result.state = 'MOD'; // <Modified> state.
       }
       else {
-        r[this.id][hash].state = 'OK'; // Unchanged state.
+        this.result.state = 'OK'; // Unchanged state.
       }
     }
   }
   else if (isChanged) {
-    if (r[this.id][hash].value !== expValue) {
-      r[this.id][hash].value = expValue;
-    }
-
-    r[this.id][hash].state = 'MOD'; // Modified state.
+    this.result.state = 'MOD'; // Modified state.
   }
 
-  this.state = r[this.id][hash].state;
-
-  r[this.id][hash].seq = res.seq;
-  r[this.id][hash].num = node.component.$numBuild + 1;
-  updateSequence(r[this.id][hash], this);
+  if (this.value !== this.result.value) {
+    this.value = this.result.value;
+  }
+  
+  this.result.seq = res.seq;
+  this.result.num = node.component.$numBuild + 1;
+  updateSequence(this.result, this);
 
   // Return the updated result value.
   return this.value;

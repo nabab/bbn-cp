@@ -1,6 +1,25 @@
 import bbn from "@bbn/bbn";
 import bbnNode from "./Node.js";
 
+const deleteNodes = (cp, id, hash) => {
+  for (let idx in cp.$nodes) {
+    if (!idx.indexOf(id + '-')) {
+      const obj = cp.$nodes[idx];
+      if (hash) {
+        for (let n in obj) {
+          if ((n === hash) || !n.indexOf(hash + '-')) {
+            delete obj[n];
+          }
+        }
+      }
+      else {
+        delete cp.$nodes[idx];
+      }
+    }
+  }
+};
+
+
 /**
  * Takes care of the data reactivity for non primitive values.
  */
@@ -83,6 +102,9 @@ export default class bbnSlotNode extends bbnNode
         if (!ele) {
           ele = this.element || await this.nodeBuild();
         }
+        else {
+          deleteNodes(this.component, this.id, this.hash);
+        }
         //bbn.fn.log(["SLOT PARENT", ele, this.parentElement, ele.parentNode, this.component.$options.name, this.component.$slots[name]]);
         const parent = this.parentElement;
         if (parent.bbn && (parent.bbnCid !== this.component.$cid) && (parent.bbnSlots?.default)) {
@@ -115,6 +137,9 @@ export default class bbnSlotNode extends bbnNode
       ele = await this.setComment(true);
       if (!ele) {
         ele = await this.nodeBuild();
+      }
+      else {
+        deleteNodes(this.component, this.id, this.hash);
       }
     }
 

@@ -57,6 +57,7 @@ const sorter = (a, b) => {
 async function treatQueue() {
   let isDebug = false;
   if (bbn.cp.queue.length) {
+    bbn.cp.numTicks++;
     //bbn.fn.log("TREATING QUEUE: " + bbn.cp.queue.length);
     if (bbn.cp.queue.length > 100000) {
       if (!isDebug) {
@@ -90,7 +91,8 @@ async function treatQueue() {
       if (!cp.$el.isConnected) {
         continue;
       }
-
+      
+      // If number is different from the previous we reinitialize
       if (lastNum !== queueElement.num) {
         unconditioned = [];
         forgotten = [];
@@ -138,42 +140,37 @@ async function treatQueue() {
       }
       else if (queueElement?.element instanceof bbnAttr) {
         const attr = queueElement.element;
+        const attrValue = attr.attrGetValue();
         if (isDebug) {
           bbn.fn.log(cp.$options.name + ' - ' + attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
         }
   
         const id = attr.node.id;
-        if (!(attr instanceof bbnConditionAttr) && !(attr instanceof bbnForgetAttr) && forgotten.includes(id)) {
+        if (!(attr instanceof bbnConditionAttr) && !(attr instanceof bbnForgetAttr) && forgotten.includes(attr.node)) {
           continue;
         }
   
-        if (!(attr instanceof bbnConditionAttr) && (unconditioned.includes(id) || unconditioned.filter(a => id.indexOf(a + '-') === 0).length)) {
-          continue;
+        if (!(attr instanceof bbnConditionAttr) && (unconditioned.includes(attr.node) || unconditioned.filter(a => !a.id.indexOf(id + '-') && !a.hash.indexOf(attr.node.hash || '')).length)) {
+          //bbn.fn.log("SKIPPING");
+          //continue;
         }
   
         await attr.attrUpdate();
         //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
         if (attr instanceof bbnConditionAttr) {
-          if (attr.value && unconditioned.includes(id)) {
-            unconditioned.splice(unconditioned.indexOf(id), 1);
+          if (attrValue && unconditioned.includes(attr.node)) {
+            unconditioned.splice(unconditioned.indexOf(attr.node), 1);
           }
-          else if (!attr.value && !unconditioned.includes(id)) {
-            for (let i = 0; i < unconditioned.length; i++) {
-              if (unconditioned[i].indexOf(id + '-') === 0) {
-                unconditioned.splice(i, 1);
-                i--;
-              }
-            }
-  
-            unconditioned.push(id);
+          else if (!attrValue && !unconditioned.includes(attr.node)) {
+            unconditioned.push(attr.node);
           }
         }
         else if (attr instanceof bbnForgetAttr) {
-          if (!attr.value && forgotten.includes(id)) {
-            forgotten.splice(forgotten.indexOf(id), 1);
+          if (!attrValue && forgotten.includes(attr.node)) {
+            forgotten.splice(forgotten.indexOf(attr.node), 1);
           }
-          else if (attr.value && !forgotten.includes(id)) {
-            forgotten.push(id);
+          else if (attrValue && !forgotten.includes(attr.node)) {
+            forgotten.push(attr.node);
           }
         }
       }

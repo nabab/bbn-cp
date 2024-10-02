@@ -28,7 +28,7 @@ export default class bbnBindAttr extends bbnAttr
 
       bbnAttr.prototype.attrUpdate.apply(this, [init])
       for (let n in this.value) {
-        if (!this.node.attr[n] || (this.node.attr[n] === undefined)) {
+        if (!this.node.attr[n]) {
           this.node.props[n] = this.value[n];
           const cp = this.node.element?.bbn;
           if (!(this.node instanceof bbnInternalNode) && cp?.$props && (cp?.$namespaces?.[n] === 'props')) {
@@ -38,6 +38,11 @@ export default class bbnBindAttr extends bbnAttr
 
             setProp(cp, n, this.value[n]);
           }
+        }
+      }
+      for (let n in this.node.props) {
+        if (!this.node.attr[n] && (this.value[n] === undefined)) {
+          delete this.node.props[n];
         }
       }
     }

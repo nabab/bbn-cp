@@ -39,10 +39,10 @@ bbnAttr.prototype.retrieveArgument = function(a, hash, data) {
     v = cp[a];
   }
   // Check if the argument is a key in the component's current results and the hash exists.
-  else if (hash && bbn.fn.isObject(cp.$expResults[a]) && Object.hasOwn(cp.$expResults[a], hash)) {
+  else if (this.node.data[a] !== undefined) {
     // Return the value from the component's current results.
     done = true;
-    v = cp.$expResults[a][hash].value;
+    v = this.node.data[a];
   }
 
   // If none of the above conditions are met, throw an error.

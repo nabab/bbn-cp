@@ -33,6 +33,12 @@ bbnData.prototype.prepareUpdate = function(path) {
   const num = bbn.cp.numTicks;
   const deps = [];
   this.lastUpdate = num;
+  let root = this.root;
+  while (root.parent) {
+    root.parent.lastUpdate = num;
+    root = root.parent.refs[root.parent.refs.length-1];
+  }
+
   if (path) {
     deps.push(...(this.deps[path] || []));
   }

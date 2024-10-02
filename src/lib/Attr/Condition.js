@@ -128,7 +128,7 @@ export default class bbnConditionAttr extends bbnAttr
         "SET RESULT: " + this.attrSetResult(),
         this.node.data,
         this.node.component[this.exp],
-        this.node.component.$expResults[this.id]
+        this.result
       ])
       */
     }

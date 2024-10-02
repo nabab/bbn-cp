@@ -381,11 +381,6 @@ export default function init(cp) {
       return cp.$el.bbnMap || cp.$cls.bbnMap;
     }
   });
-  Object.defineProperty(cp, '$expResults', {
-    configurable: false,
-    writable: false,
-    value: bbn.fn.createObject()
-  });
   Object.defineProperty(cp, '$schema', {
     configurable: false,
     writable: false,

@@ -14,7 +14,7 @@ bbnAttr.prototype.attrExec = function(data) {
     }
 
     try {
-      // Process each argument using treatArgument.
+      // Process each argument using retrieveArgument.
       res = this.retrieveArgument(a, this.node.hash, newData);
     }
     catch(e) {

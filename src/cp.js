@@ -73,6 +73,7 @@ const possibleAttributes = [
 const cpObj = bbn.fn.createObject({
   tickDelay: 25,
   uid: 0,
+  numBuild: 0,
   numTicks: 0,
   mixins: bbn.fn.createObject({
     basic,

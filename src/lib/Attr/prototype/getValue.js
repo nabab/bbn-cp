@@ -5,12 +5,9 @@ bbnAttr.prototype.attrGetValue = function() {
     return this.value;
   }
 
-  const r = this.node.component.$expResults;
-  const hash = this.node.hash || '_root';
-
   if (this.isLate) {
     this.attrSetResult();
   }
 
-  return r[this.id][hash].value;
+  return this.result.value;
 };

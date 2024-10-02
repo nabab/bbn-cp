@@ -28,8 +28,8 @@ export default class bbnLoopAttr extends bbnAttr
   }
 
   async attrUpdate(init) {
-    //bbn.fn.log("UPDATE ATTR LOOP " + this.exp, this.node.tag, this.isChanged, this.attrGetValue(true));
     if (init || (this.exp && this.isChanged)) {
+      //bbn.fn.log("UPDATE ATTR LOOP " + this.exp, this.node.tag, this.isChanged, this.attrGetValue(true));
       const node = this.node;
       if (node.isOut) {
         bbn.fn.log("NODE IS OUT");
@@ -164,19 +164,6 @@ export default class bbnLoopAttr extends bbnAttr
           }
         }
       }
-
-      for (let i = 0; i < oldList.length; i++) {
-        const n = oldList[i];
-        if (!this.list.includes(n)) {
-          for (let m in cp.$expResults) {
-            const a = cp.$expResults[m];
-            if (a[n]) {
-              delete a[n];
-            }
-          }
-        }
-      }
-
     }
   }
 

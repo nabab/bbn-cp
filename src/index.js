@@ -5,7 +5,6 @@ import "./lib/Data/prototype/getImpacted.js";
 import "./lib/Data/prototype/hasComponent.js";
 import "./lib/Data/prototype/hasParent.js";
 import "./lib/Data/prototype/isSame.js";
-import "./lib/Data/prototype/launchUpdate.js";
 import "./lib/Data/prototype/prepareUpdate.js";
 import "./lib/Data/prototype/removeComponent.js";
 import "./lib/Data/prototype/unset.js";

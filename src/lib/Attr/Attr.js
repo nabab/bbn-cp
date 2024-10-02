@@ -51,15 +51,17 @@ export default class bbnAttr
       });
     }
 
+    Object.defineProperty(this, 'result', {
+      writable: false,
+      configurable: false,
+      value: bbn.fn.createObject({
+        num: 0,
+        state: 'NEW',
+        value: this.value
+      })
+    });
+
     this.node.attributes.push(this);
-  }
-
-  get result() {
-    if (!this.fn || !this.node?.component) {
-      return null;
-    }
-
-    return this.node.component.$expResults?.[this.id]?.[this.node.hash || '_root'] || null;
   }
 
   get isLate() {
@@ -67,13 +69,16 @@ export default class bbnAttr
       return false;
     }
 
-    const r = this.node.component.$expResults;
     const hash = this.node.hash || '_root';
-    return !r[this.id]?.[hash] || (r[this.id][hash].num <= this.node.component.$numBuild);
+    return (this.result.num <= this.node.component.$numBuild);
   }
 
   get isChanged() {
     return this.fn && (this.attrGetState() !== 'OK');
+  }
+
+  get state() {
+    return this.result?.state;
   }
 
 }

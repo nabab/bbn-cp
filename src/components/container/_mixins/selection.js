@@ -145,7 +145,6 @@ export default {
           d.title = title;
         }
 
-        this.isLoaded = true;
         this.currentTitle = d.title;
 
         const oldUrl = d.url;
@@ -213,7 +212,7 @@ export default {
         }
 
         if (Object.hasOwn(d, 'advert')) {
-          this.currentAdvcert = d.advert;
+          this.currentAdvert = d.advert;
         }
 
         if (Object.hasOwn(d, 'help')) {
@@ -224,6 +223,7 @@ export default {
           this.currentImessages = d.imessages;
         }
 
+        this.isLoaded = true;
         this.init();
 
         /*
