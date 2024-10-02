@@ -54,7 +54,7 @@ const sorter = (a, b) => {
   return atA < atB ? -1 : 1;
 };
 
-async function treatQueue() {
+async function treatQueue(num = 0) {
   let isDebug = false;
   if (bbn.cp.queue.length) {
     bbn.cp.numTicks++;
@@ -201,13 +201,17 @@ async function treatQueue() {
     bbn.cp.numTicks++;
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
-      await treatQueue(unconditioned, forgotten);
+      await treatQueue(num + 1);
     }
 
     bbn.cp.numBuild++;
     for (let n in cps) {
       cps[n].$lastBuild = bbn.cp.numTicks;
     }
+  }
+
+  if (!num && bbn.cp.nextQueue.length) {
+    bbn.cp.queue.push(...bbn.cp.nextQueue.splice(0));
   }
 }
 /**

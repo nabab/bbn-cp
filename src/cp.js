@@ -151,6 +151,7 @@ const cpObj = bbn.fn.createObject({
   },
   knownPrefixes: [],
   queue: [],
+  nextQueue: [],
   queueTimer: null,
   loadDelay: 100,
   possibleAttributes,
