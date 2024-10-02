@@ -92,7 +92,7 @@ export default class bbnComputed {
    * Updates the value of the computed property.
    * @param {boolean} [force=false] - Whether to force the update.
    */
-  update(force = false) {
+  computedUpdate(force = false) {
     // If the component is destroyed, return.
     if (this.#component.$isDestroyed) {
       return;
@@ -272,7 +272,7 @@ export default class bbnComputed {
         // If the computed property has not been updated yet, update it.
         if (!this.$computed[name].num) {
           // Update the computed property's value.
-          this.$computed[name].update();
+          this.$computed[name].computedUpdate();
           // Initialize the watcher for the computed property.
           updateWatcher(this, name, true);
         }
@@ -280,7 +280,7 @@ export default class bbnComputed {
           let idx = bbn.cp.queue.indexOf(this.$computed[name]);
           bbn.cp.queue.splice(idx, 1);
           _t.#num--;
-          this.$computed[name].update();
+          this.$computed[name].computedUpdate();
         }
 
         //if (!this.$computed[name].val?.__bbnData) {
@@ -296,7 +296,7 @@ export default class bbnComputed {
     if (setter) {
       def.set = function (v) {
         const res = setter(v);
-        this.$computed[name].update();
+        this.$computed[name].computedUpdate();
         return res;
       };
     }

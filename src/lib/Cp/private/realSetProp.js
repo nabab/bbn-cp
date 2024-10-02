@@ -13,6 +13,7 @@ export default function realSetProp(cp, name, value) {
     name = bbn.fn.camelize(name);
   }
 
+  bbn.cp.numTicks++;
   // Retrieve the original value of the property.
   const original = cp.$propsCfg[name].value;
 

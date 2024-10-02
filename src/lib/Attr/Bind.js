@@ -13,9 +13,9 @@ export default class bbnBindAttr extends bbnAttr
       this.attrGetValue();
     }
   
-    for (let n in this.value) {
+    for (let n in this.result.value) {
       if (!this.node.attr[n]) {
-        this.node.props[n] = this.value[n];
+        this.node.props[n] = this.result.value[n];
       }
     }
   }
@@ -23,28 +23,26 @@ export default class bbnBindAttr extends bbnAttr
 
   async attrUpdate(init) {
     if (init || (this.attrGetState() !== 'OK')) {
-      if (!this.value) {
-        return;
-      }
-
       bbnAttr.prototype.attrUpdate.apply(this, [init])
-      for (let n in this.value) {
-        if (!this.node.attr[n]) {
-          this.node.props[n] = this.value[n];
-          const cp = this.node.element?.bbn;
-          if (!(this.node instanceof bbnInternalNode) && cp?.$props && (cp?.$namespaces?.[n] === 'props')) {
-            if (cp.$internal.attr?.[n]) {
-              cp.$internal.attr[n].attrUpdate(true);
-            }
+      if (this.result.value) {
+        for (let n in this.result.value) {
+          if (!this.node.attr[n]) {
+            this.node.props[n] = this.result.value[n];
+            const cp = this.node.element?.bbn;
+            if (!(this.node instanceof bbnInternalNode) && cp?.$props && (cp?.$namespaces?.[n] === 'props')) {
+              if (cp.$internal.attr?.[n]) {
+                cp.$internal.attr[n].attrUpdate(true);
+              }
 
-            setProp(cp, n, this.value[n]);
+              setProp(cp, n, this.result.value[n]);
+            }
           }
         }
       }
 
       if (!(this.node instanceof bbnSlotNode)) {
         for (let n in this.node.props) {
-          if (!this.node.attr[n] && (this.value[n] === undefined)) {
+          if (!this.node.attr[n] && (this.result.value?.[n] === undefined)) {
             delete this.node.props[n];
           }
         }

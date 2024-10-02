@@ -3,7 +3,7 @@ import queueUpdate from "../../../functions/queueUpdate.js";
 
 const getFn = function(watcher, lev) {
   return async () => {
-    watcher.update(false, lev);
+    watcher.watcherUpdate(false, lev);
   };
 };
 /**

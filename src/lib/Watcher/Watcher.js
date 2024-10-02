@@ -129,7 +129,7 @@ export default class bbnWatcher {
       });
 
       // Triggers an immediate update if needed
-      this.update(true);
+      this.watcherUpdate(true);
     }
 
     // Returns a function to remove the added handler
@@ -142,7 +142,7 @@ export default class bbnWatcher {
    * @param {boolean} init - Indicates whether this is an initial update.
    * @param {number} level - The depth level of the update (used for deep watchers).
    */
-  async update(init, level) {
+  async watcherUpdate(init, level) {
     const last = bbn.cp.numTicks;
     // Retrieves the component reference
     const cp = this.#component;

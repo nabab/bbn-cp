@@ -6,7 +6,7 @@ import queueUpdate from "../../../functions/queueUpdate.js";
 const getFn = function(watcher, lev, lastUpdate) {
   return async () => {
     if ((watcher.lastUpdate || 0) < lastUpdate) {
-      watcher.update(false, lev);
+      watcher.watcherUpdate(false, lev);
     }
   };
 };
@@ -30,7 +30,7 @@ bbnData.prototype.prepareUpdate = function(path) {
 
   const propagation = [];
   const impacted = this.getImpacted(path, this.lastUpdate);
-  const num = bbn.cp.numTicks;
+  let num = bbn.cp.numTicks+1;
   const deps = [];
   this.lastUpdate = num;
   let root = this.root;
@@ -38,7 +38,6 @@ bbnData.prototype.prepareUpdate = function(path) {
     root.parent.lastUpdate = num;
     root = root.parent.refs[root.parent.refs.length-1];
   }
-
   if (path) {
     deps.push(...(this.deps[path] || []));
   }

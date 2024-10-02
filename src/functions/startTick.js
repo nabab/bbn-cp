@@ -57,7 +57,6 @@ const sorter = (a, b) => {
 async function treatQueue(num = 0) {
   let isDebug = false;
   if (bbn.cp.queue.length) {
-    bbn.cp.numTicks++;
     //bbn.fn.log("TREATING QUEUE: " + bbn.cp.queue.length);
     if (bbn.cp.queue.length > 100000) {
       if (!isDebug) {
@@ -136,7 +135,7 @@ async function treatQueue(num = 0) {
           bbn.fn.log(cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks);
         }
 
-        await queueElement.element.update();
+        await queueElement.element.computedUpdate();
       }
       else if (queueElement?.element instanceof bbnAttr) {
         const attr = queueElement.element;
@@ -204,6 +203,7 @@ async function treatQueue(num = 0) {
       lastElement = queueElement;
     }
 
+    bbn.cp.numTicks++;
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       await treatQueue(num + 1);
