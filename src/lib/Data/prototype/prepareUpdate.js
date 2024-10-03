@@ -48,7 +48,7 @@ bbnData.prototype.prepareUpdate = function(path) {
     }
   });
   bbn.fn.each(impacted, it => {
-    if (path.join('.') === 'data.formation.agence') {
+    if (it.path.join('.') === 'data.formation.agence') {
       alert("YES");
     }
     const id = it.component.$cid + '/' + it.path[0];
