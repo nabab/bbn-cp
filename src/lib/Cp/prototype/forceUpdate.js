@@ -13,7 +13,6 @@ bbnCp.prototype.$forceUpdate = async function (fn) {
         resolve()
       },
       hash: f.hash,
-      num: ++bbn.cp.numTicks
     });
   })
 }

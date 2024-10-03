@@ -12,7 +12,6 @@ export default function setData(cp, name, v) {
   }
 
   if (cp.$dataCfg[name].value !== v) {
-    bbn.cp.numTicks++;
     // Getting the bbnData object
     let oldDataObj = bbnData.getObject(cp.$dataCfg[name].value);
     if (oldDataObj) {

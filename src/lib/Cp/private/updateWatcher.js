@@ -46,7 +46,6 @@ export default async function updateWatcher(cp, name) {
         component: cp,
         fn: getFn(cp.$watcher[fullName], lev),
         hash: cp.$cid + '-' + fullName,
-        num: bbn.cp.numTicks + 1
       });
       
     }

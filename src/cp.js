@@ -75,6 +75,7 @@ const cpObj = bbn.fn.createObject({
   uid: 0,
   numBuild: 0,
   numTicks: 0,
+  propagation: false,
   mixins: bbn.fn.createObject({
     basic,
     browserNotification,

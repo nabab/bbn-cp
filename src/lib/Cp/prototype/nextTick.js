@@ -14,7 +14,6 @@ bbnCp.prototype.$nextTick = async function(fn){
         resolve();
       },
       hash: f.hash,
-      num: bbn.cp.numTicks+1
     });
   });
 }

@@ -55,7 +55,6 @@ const sorter = (a, b) => {
 };
 
 async function treatQueue(num = 0) {
-  bbn.cp.numTicks++;
   let isDebug = false;
   if (bbn.cp.queue.length) {
     //bbn.fn.log("TREATING QUEUE: " + bbn.cp.queue.length);
@@ -204,6 +203,8 @@ async function treatQueue(num = 0) {
       lastElement = queueElement;
     }
 
+    bbn.cp.numTicks++;
+
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       await treatQueue(num + 1);
@@ -215,7 +216,12 @@ async function treatQueue(num = 0) {
   }
 
   if (!num && bbn.cp.nextQueue.length) {
-    bbn.cp.queue.push(...bbn.cp.nextQueue.splice(0));
+    while (bbn.cp.nextQueue.length) {
+      if (!bbn.cp.nextQueue[0].num) {
+        bbn.cp.nextQueue[0].num = bbn.cp.numTicks;
+      }
+      bbn.cp.queue.push(bbn.cp.nextQueue.shift());
+    }
   }
 }
 /**
@@ -228,8 +234,6 @@ export default function startTick() {
     throw Error(bbn._("The tick is already started"));
   }
 
-  let lastUpdate;
-
   // Set an interval to periodically check and update components.
   bbn.cp.interval = setInterval(
     async function() {
@@ -240,18 +244,10 @@ export default function startTick() {
 
       bbn.cp.isRunning = true;
 
-      // Using requestAnimationFrame for smooth UI updates.
-      //requestAnimationFrame(async tst => {
-        // Check if there are updates since the last frame and if the queue has items.
-        //if (tst !== lastUpdate) {
-          //lastUpdate = tst;
+      await treatQueue();
 
-          await treatQueue();
-
-          // Indicate that the current update cycle is complete.
-          bbn.cp.isRunning = false;
-        //}
-      //});
+      // Indicate that the current update cycle is complete.
+      bbn.cp.isRunning = false;
     },
     // Interval defined by the tick delay.
     bbn.cp.tickDelay
