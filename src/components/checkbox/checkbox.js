@@ -123,25 +123,32 @@ const cpDef = {
       default: false
     }
   },
-  data() {
-    let state = this.checked;
-    if (state
-      && ((!this.strict && (this.modelValue != this.value))
-        || (this.strict && (this.modelValue !== this.value)))
-    ) {
-      state = false;
-    }
-    else if ((this.strict && (this.modelValue === this.value))
-      || (!this.strict && (this.modelValue == this.value))
-    ) {
-      state = true;
-    }
-
-    return {state};
-  },
   model: {
     prop: 'modelValue',
     event: 'input'
+  },
+  computed: {
+    state(){
+      if (this.checked) {
+        if (this.modelValue === undefined) {
+          return true;
+        }
+
+        if ((!this.strict && (this.modelValue != this.value))
+          || (this.strict && (this.modelValue !== this.value))
+        ) {
+          return false;
+        }
+      }
+
+      if ((this.strict && (this.modelValue === this.value))
+        || (!this.strict && (this.modelValue == this.value))
+      ) {
+        return true;
+      }
+
+      return this.checked;
+    }
   },
   methods: {
     /**
@@ -156,19 +163,9 @@ const cpDef = {
       if (!this.isDisabled && !this.readonly) {
         this.$emit('beforechange', ev, this.state);
         if (!ev?.defaultPrevented) {
-          let emitVal;
-          if (this.modelValue !== undefined) {
-            emitVal = this.state ? this.novalue : this.value;
-          }
-          else {
-            emitVal = this.state ? this.novalue : this.value;
-          }
-          
+          let emitVal = !this.state ? this.valueToSet : this.novalue;
           this.$emit('input', emitVal);
           this.$emit('change', emitVal, this);
-          this.state = !this.state;
-          // This is mandatory for string, I don't know why!
-          this.$forceUpdate();
         }
       }
     },
