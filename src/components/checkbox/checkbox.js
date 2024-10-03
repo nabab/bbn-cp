@@ -163,7 +163,7 @@ const cpDef = {
       if (!this.isDisabled && !this.readonly) {
         this.$emit('beforechange', ev, this.state);
         if (!ev?.defaultPrevented) {
-          let emitVal = !this.state ? this.valueToSet : this.novalue;
+          let emitVal = !this.state ? this.value : this.novalue;
           this.$emit('input', emitVal);
           this.$emit('change', emitVal, this);
         }
