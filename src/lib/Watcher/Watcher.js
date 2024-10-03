@@ -160,6 +160,7 @@ export default class bbnWatcher {
     // bbn.fn.log(["UPDATE WATCHER", this.#component.$options.name, this.#name, this.#val, init, level, dataObj?.lastUpdate, this.#lastUpdate]);
 
     // Checks if the value has changed or if the last update is newer
+    bbn.fn.log(["FOR MIRKO", dataObj?.lastUpdate, this.#lastUpdate])
     if ((this.#old !== this.#val) || (dataObj?.lastUpdate > this.#lastUpdate)) {
       for (let i = 0; i < this.#handlers.length; i++) {
         const a = this.#handlers[i];
