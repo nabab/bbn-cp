@@ -50,7 +50,7 @@ bbnData.prototype.prepareUpdate = function(path) {
   bbn.fn.each(impacted, it => {
     const id = it.component.$cid + '/' + it.path[0];
     if (it.path.join('.') === 'data.formation.agence') {
-      bbn.fn.log(["MIRKO: ", propagation.includes(id), id, it.component.$watcher.data.deep]);
+      bbn.fn.log(["MIRKO: ", propagation.includes(id), id, it.component.$watcher.data.deep, it.component]);
     }
     if (!propagation.includes(id)) {
       propagation.push(id);
