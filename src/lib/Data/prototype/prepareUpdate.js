@@ -61,16 +61,11 @@ bbnData.prototype.prepareUpdate = function(path) {
     while (bits.length) {
       if (it.component.$watcher[bits.join('.')]) {
         const watcher = it.component.$watcher[bits.join('.')];
-        for (let j = 0; j < watcher.handlers.length; j++) {
-          if (level <= 1 || watcher.handlers[j].deep) {
-            bbn.fn.log("WATCHER FOUND ON " + bits.join('.') + " IN " + it.component.$options.name);
-            queueUpdate({
-              component: it.component,
-              fn: getFn(it.component.$watcher[bits.join('.')], level, this.lastUpdate),
-              num
-            });
-          }
-        }
+        queueUpdate({
+          component: it.component,
+          fn: getFn(watcher, level, this.lastUpdate),
+          num
+        });
       }
       bits.pop();
       level++;
