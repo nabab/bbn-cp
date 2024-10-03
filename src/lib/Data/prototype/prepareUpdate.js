@@ -48,10 +48,10 @@ bbnData.prototype.prepareUpdate = function(path) {
     }
   });
   bbn.fn.each(impacted, it => {
-    if (it.path.join('.') === 'data.formation.agence') {
-      alert("YES");
-    }
     const id = it.component.$cid + '/' + it.path[0];
+    if (it.path.join('.') === 'data.formation.agence') {
+      bbn.fn.LOG(["MIRKO: ", propagation.includes(id), id, it.component.$watcher.data.deep]);
+    }
     if (!propagation.includes(id)) {
       propagation.push(id);
       if ((it.level <= 1) && /*(it.path.length === 1) &&*/ it.component.$deps[it.path[0]]) {
