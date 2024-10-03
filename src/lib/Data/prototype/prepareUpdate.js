@@ -48,6 +48,9 @@ bbnData.prototype.prepareUpdate = function(path) {
     }
   });
   bbn.fn.each(impacted, it => {
+    if (path.join('.') === 'data.formation.agence') {
+      alert("YES");
+    }
     const id = it.component.$cid + '/' + it.path[0];
     if (!propagation.includes(id)) {
       propagation.push(id);
@@ -61,7 +64,7 @@ bbnData.prototype.prepareUpdate = function(path) {
     while (bits.length) {
       if (it.component.$watcher[bits.join('.')]) {
         if (level <= 1 || it.component.$watcher[bits.join('.')].deep) {
-          //bbn.fn.log("WATCHER FOUND ON " + bits.join('.') + " IN " + it.component.$options.name);
+          bbn.fn.log("WATCHER FOUND ON " + bits.join('.') + " IN " + it.component.$options.name);
           queueUpdate({
             component: it.component,
             fn: getFn(it.component.$watcher[bits.join('.')], level, this.lastUpdate),
