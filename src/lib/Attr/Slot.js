@@ -1,9 +1,4 @@
-import bbn from "@bbn/bbn";
 import bbnAttr from "./Attr.js";
-import bbnData from "../Data/Data.js";
-import setProp from "../Cp/private/setProp.js";
-import bbnInternalNode from "../Node/Internal.js";
-import initResults from "../Cp/private/initResults.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -38,7 +33,7 @@ export default class bbnSlotAttr extends bbnAttr
     }
   
     if (this.isChanged) {
-      const value = this.getValue();
+      this.attrSerResult();
     }
   }
 }

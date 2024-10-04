@@ -76,17 +76,18 @@
                              :style="{
                                     color: tab.fcolor ? tab.fcolor : null
                                      }"
-                             tabindex="0">
-                  <span bbn-if="tab.icon"
-                        :title="tab.title"
-                        :class="'bbn-tabs-main-icon bbn-iblock bbn-right-smargin ' + (tab.notext ? 'bbn-lg' : 'bbn-m')">
-                    <bbn-icon :content="tab.icon"/>
-                  </span>
-                  <span bbn-if="!tab.notext && tab.title"
-                        class="bbn-router-tab-text"
-                        :title="getTabTitle(tab)"
-                        bbn-html="tab.title.length > maxTitleLength ? cutTitle(tab.title) : tab.title"/>
-                </bbn-context>
+                             tabindex="0"
+                  ><span bbn-if="tab.icon"
+                         :title="tab.title"
+                         :class="['bbn-tabs-main-icon bbn-iblock', tab.notext ? 'bbn-lg' : 'bbn-m', {
+                           'bbn-right-smargin': !tab.notext && tab.title
+                         }]"
+                  ><bbn-icon :content="tab.icon"
+                  /></span><span bbn-if="!tab.notext && tab.title"
+                                 class="bbn-router-tab-text"
+                                 :title="getTabTitle(tab)"
+                                 bbn-html="tab.title.length > maxTitleLength ? cutTitle(tab.title) : tab.title"
+                  /></bbn-context>
                 <div class="bbn-tabs-selected"
                      :ref="'selector-' + tab.idx"
                      bbn-if="tab.idx === value"

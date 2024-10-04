@@ -132,7 +132,7 @@ async function treatQueue(num = 0) {
         }
 
         if (isDebug) {
-          bbn.fn.log(cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks);
+          bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + bbn.cp.propagation.length);
         }
 
         await queueElement.element.computedUpdate();
@@ -140,7 +140,7 @@ async function treatQueue(num = 0) {
       else if (queueElement?.element instanceof bbnAttr) {
         const attr = queueElement.element;
         if (isDebug) {
-          bbn.fn.log(cp.$options.name + ' - ' + attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
+          bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
         }
   
         const id = attr.node.id;
