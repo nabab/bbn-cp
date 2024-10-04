@@ -244,10 +244,12 @@ export default function startTick() {
 
       bbn.cp.isRunning = true;
 
-      await treatQueue();
+      await requestAnimationFrame(async () => {
+        await treatQueue();
+        bbn.cp.isRunning = false;
+      });
 
       // Indicate that the current update cycle is complete.
-      bbn.cp.isRunning = false;
     },
     // Interval defined by the tick delay.
     bbn.cp.tickDelay

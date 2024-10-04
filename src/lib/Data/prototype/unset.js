@@ -27,7 +27,7 @@ bbnData.prototype.unset = function(noParent) {
       }
     }
   }
-  bbn.fn.each(this.children, it => it.unset());
+  this.children.forEach(it => it.unset());
 
   /*
 

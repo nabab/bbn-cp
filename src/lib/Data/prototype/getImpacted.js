@@ -22,7 +22,7 @@ bbnData.prototype.getImpacted = function(path, numTicks, level = 0) {
 
 
   // Iterate over each reference to this data object within components.
-  bbn.fn.each(this.refs, it => {
+  this.refs.forEach(it => {
     // Create a copy of the initial key sequence.
     let bits = seq.slice(); 
     // Prepend the current reference's path to the sequence.

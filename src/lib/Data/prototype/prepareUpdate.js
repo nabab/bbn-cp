@@ -47,7 +47,7 @@ bbnData.prototype.prepareUpdate = function(path) {
       queueUpdate({element: a, num})
     }
   });
-  bbn.fn.each(impacted, it => {
+  impacted.forEach(it => {
     const id = it.component.$cid + '/' + it.path[0];
     if (!propagation.includes(id)) {
       propagation.push(id);

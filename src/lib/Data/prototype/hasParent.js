@@ -10,7 +10,8 @@ import bbnData from "../Data.js";
 bbnData.prototype.hasParent = function(cp, name) {
   // Iterate over each reference to this data object within components.
   let hasParent = false;
-  bbn.fn.each(this.refs, it => {
+  for (let i = 0; i < this.refs.length; i++) {
+    const it = this.refs[i];
     if (!it.parent && (it.component === cp) && (it.path === name)) {
       hasParent = true;
     }
@@ -21,7 +22,7 @@ bbnData.prototype.hasParent = function(cp, name) {
     if (hasParent) {
       return false;
     }
-  });
+  }
 
   return hasParent;
 };
