@@ -12,21 +12,18 @@
          @keyup="keyupEvent"
          @mouseenter="over"
          @mouseleave="out"
-         :value="inputValue"
          @input="inputEvent"
          @paste="pasteEvent"
          @cut="cutEvent"
          :size="currentInputSize"
          class="bbn-radius"
          :inputmode="inputmode"
-         :pattern="pattern"
-  >
+         :pattern="pattern">
   <input :value="value"
          ref="real_masked"
          :name="name"
          :disabled="isDisabled"
          type="hidden"
          :size="size"
-         :maxlength="maxlength"
-  >
+         :maxlength="maxlength">
 </span>
