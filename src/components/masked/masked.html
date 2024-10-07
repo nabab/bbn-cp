@@ -12,7 +12,7 @@
          @keyup="keyupEvent"
          @mouseenter="over"
          @mouseleave="out"
-         @input.stop="inputEvent"
+         @input.stop.prevent="inputEvent"
          @paste="pasteEvent"
          @cut="cutEvent"
          :size="currentInputSize"

@@ -6,7 +6,7 @@
               :required="required"
               :mask="currentMask"
               @hook:mounted="maskedMounted = true"
-              @blur="inputChanged"
+              @input="inputChanged"
               @keydown.enter="inputChanged"
               class="bbn-flex-fill"
               :autosize="autosize"

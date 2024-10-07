@@ -233,15 +233,20 @@ const cpDef = {
       inputChanged(){
         let mask = this.getRef('element'),
             newVal = mask.inputValue,
-            value = !!newVal ? dayjs(newVal, this.currentFormat).format(this.getValueFormat(newVal)) : '';
-        if ( mask.raw(newVal) !== this.oldInputValue ){
-          if ( value && this.min && (value < this.min) ){
-            value = this.min;
+            value = !!newVal ? dayjs(newVal, this.currentFormat) : '';
+        if (!value || value.isValid()) {
+          value = value ? value.format(this.getValueFormat(newVal)) : value;
+          if (mask.raw(newVal) !== this.oldInputValue) {
+            if (value && this.min && (value < this.min)) {
+              value = this.min;
+            }
+
+            if (value && this.max && (value > this.max)) {
+              value = this.max;
+            }
+
+            this.setValue(value);
           }
-          if ( value && this.max && (value > this.max) ){
-            value = this.max;
-          }
-          this.setValue(value);
         }
       },
       /**

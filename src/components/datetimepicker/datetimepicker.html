@@ -5,7 +5,7 @@
               :required="required"
               :mask="currentMask"
               @hook:mounted="maskedMounted = true"
-              @blur="inputChanged"
+              @input="inputChanged"
               @keydown.enter="inputChanged"
               bbn-model="inputValue"
               class="bbn-flex-fill"
