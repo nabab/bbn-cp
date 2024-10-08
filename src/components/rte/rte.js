@@ -30,8 +30,7 @@ const cpDef = {
         blockStyle: {
           text: bbn._('Style'),
           active: false,
-          component: bbnData.immunizeValue({
-            name: 'bbn-rte-style',
+          component: {
             template: `
               <bbn-dropdown class="bbn-rte-style"
                             :source="styles"
@@ -91,13 +90,12 @@ const cpDef = {
               this.rte.styleComponent = this;
               this.rte.setStyle();
             }
-          })
+          }
         },
         fontsize: {
           text: bbn._('Font size'),
           active: false,
           component: {
-            name: 'bbn-rte-fontsize',
             template: `
               <bbn-dropdown class="bbn-rte-fontsize"
                             :source="sizes"
@@ -247,7 +245,6 @@ const cpDef = {
           notext: true,
           active: false,
           component: {
-            name: 'bbn-rte-align',
             template: `
               <bbn-radiobuttons :disabled="!!isDisabled || !!isReadOnly"
                                 bbn-model="currentAlign"
@@ -311,7 +308,6 @@ const cpDef = {
           notext: true,
           active: false,
           component: {
-            name: 'bbn-rte-fontcolor',
             template: `
               <span :class="['bbn-rte-fontcolor', 'bbn-vmiddle', 'bbn-iflex', 'bbn-bordered', 'bbn-radius', {
                       'disabled': !!isDisabled || !!isReadOnly,
@@ -362,7 +358,6 @@ const cpDef = {
           notext: true,
           active: false,
           component: {
-            name: 'bbn-rte-fontbgcolor',
             template: `
             <span :class="['bbn-rte-fontbgcolor', 'bbn-vmiddle', 'bbn-iflex', 'bbn-bordered', 'bbn-radius', {
                     'disabled': !!isDisabled || !!isReadOnly,
