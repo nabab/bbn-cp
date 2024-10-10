@@ -807,7 +807,7 @@ const cpDef = {
      */
     mounted(){
       if ( this.value ){
-        this.setInputValue()
+        this.setInputValue(this.value);
       }
       this.ready = true
     },
