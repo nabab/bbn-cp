@@ -425,7 +425,8 @@ const cpDef = {
             events: events,
             inRange: this.itemsRange.includes(val),
             disabled: !!dis,
-            extra: !!ext
+            extra: !!ext,
+            key: bbn.fn.randomString(32, 32)
           };
       obj.highlight = (this.highlightCurrent && isCurrent)
         || ((bbn.fn.isFunction(this.highlightDates) && this.highlightDates(obj))

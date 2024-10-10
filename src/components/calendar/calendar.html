@@ -72,7 +72,7 @@
             bbn-html="label"
             ref="label"/>
         <template bbn-for="item in items"
-                  :key="item.value">
+                  :key="item.key">
           <div bbn-if="!item.hidden"
               :class="['bbn-calendar-item-box', 'bbn-box', {
                 'bbn-p': selection && !item.disabled,
