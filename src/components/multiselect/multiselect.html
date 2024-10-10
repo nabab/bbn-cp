@@ -12,7 +12,8 @@
                   :readonly="readonly || it.readonly"
                   @change="select(it)"
                   :label="it.text"
-                  class="bbn-hsmargin"/>
+                  class="bbn-hsmargin"
+                  :required="required && !value.length"/>
   </div>
   <bbn-scroll bbn-else
               ref="scroll">

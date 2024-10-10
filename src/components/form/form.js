@@ -695,6 +695,8 @@ const cpDef = {
               });
             }, () => {
               this.isClosing = false;
+            }, {
+              maxWidth: '90%'
             });
           }
           else{
