@@ -18,5 +18,5 @@
     "exists": "existe",
     "The extension": "L'extension",
     "is not allowed": "n'est pas autorisé",
-    "The file \"%s\" is too big!": "Le fichier \"%s\" est trop gros !"
+    "The size of the \"%s\" file is too large": " La taille du fichier \"%s\" est trop importante"
 }

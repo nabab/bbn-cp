@@ -550,7 +550,7 @@ const cpDef = {
           bbn.fn.each(files, f => {
             if (f.size > this.maxFilesize) {
              ok = false;
-             this.alert(bbn._('The file "%s" is too big!', f.name));
+             this.alert(bbn._('The size of the "%s" file is too large', f.name));
              return false;
             }
           });
