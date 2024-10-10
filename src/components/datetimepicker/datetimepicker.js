@@ -338,33 +338,38 @@ const cpDef = {
       */
       inputChanged(){
         let mask = this.getRef('element'),
-            newVal = mask.inputValue,
-            value = !!newVal ? dayjs(newVal, this.currentFormat) : '';
-        if (!value || value.isValid()) {
-          value = value ? value.format(this.getValueFormat(newVal)) : value;
-          if (mask.raw(newVal) !== this.oldInputValue) {
-            if (value && this.min && (value < this.min)) {
-              value = this.min;
-            }
+            maskInput = mask.inputValue,
+            maskVal= mask.raw(maskInput),
+            value = maskVal ? dayjs(maskInput, this.currentFormat) : '';
+        if (value && !value.isValid()) {
+          value = '';
+        }
 
-            if (value && this.max && (value > this.max)) {
-              value = this.max;
-            }
+        if ((maskVal !== this.oldInputValue)
+          && (!value || value.isValid())
+        ) {
+          value = value ? value.format(this.getValueFormat(maskInput)) : value;
+          if (value && this.min && (value < this.min)) {
+            value = this.min;
+          }
 
-            if (this.disableDates
-              && ((bbn.fn.isFunction(this.disableDates) && this.disableDates(value))
-                || (bbn.fn.isArray(this.disableDates) && this.disableDates.includes(value)))
-            ){
-              this.setValue(false);
-            }
-            else {
-              this.setValue(value);
-              this.$nextTick(() => {
-                if (this.value !== value) {
-                  this.$emit('change', value);
-                }
-              });
-            }
+          if (value && this.max && (value > this.max)) {
+            value = this.max;
+          }
+
+          if (this.disableDates
+            && ((bbn.fn.isFunction(this.disableDates) && this.disableDates(value))
+              || (bbn.fn.isArray(this.disableDates) && this.disableDates.includes(value)))
+          ){
+            this.setValue(false);
+          }
+          else {
+            this.setValue(value);
+            this.$nextTick(() => {
+              if (this.value !== value) {
+                this.$emit('change', value);
+              }
+            });
           }
         }
       },

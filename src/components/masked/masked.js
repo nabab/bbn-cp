@@ -603,6 +603,7 @@ const cpDef = {
         if (!this.isDisabled && !this.readonly) {
           const ele = this.getRef('element');
           const isSelection = ele.selectionStart !== ele.selectionEnd;
+          const val = this.raw();
           if (!this.isControlKey(event.keyCode)
             && !this.isTabKey(event.keyCode)
             && !event.ctrlKey
@@ -611,8 +612,8 @@ const cpDef = {
           ) {
             const pos = this.getPos(ele.selectionStart, event);
             ele.setSelectionRange(pos, pos);
-            if (this.value !== this.raw()) {
-              this.emitInput(this.raw());
+            if (this.value !== val) {
+              this.emitInput(val);
             }
           }
 
