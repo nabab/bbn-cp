@@ -203,7 +203,7 @@ async function treatQueue(num = 0) {
       lastElement = queueElement;
     }
 
-    bbn.cp.numTicks++;
+    //bbn.cp.numTicks++;
 
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);

@@ -1342,13 +1342,14 @@ const cpDef = {
      * @fires setSizes
      */
     onResize(){
-      if ( this.ready ){
-        this.$nextTick(() =>{
-          this.setSizes();
-          if ( this.widget ){
-            //this.updateWidget();
+      if (this.ready) {
+        setTimeout(() => {
+          bbn.fn.log("RESIZE");
+          this.setSizes() ;
+          if (this.widget) {
+            this.updateWidget();
           }
-        })
+        }, 50)
       }
     },
     /**
@@ -1416,6 +1417,7 @@ const cpDef = {
     this.container = this.getRef('container');
     this.$nextTick(() => {
       this.ready = true;
+      this.onResize();
     })
   }
 };

@@ -96,34 +96,32 @@ export default class bbnStyleAttr extends bbnAttr
     if (!this.node.element || this.node.comment) {
       return;
     }
-  
+    
     if (init || (this.exp && this.isChanged)) {
-      if (this.node.isComponent
-        && (this.node.id !== '0')
-      ) {
+      // Case external style on component
+      if (this.node.isComponent && (this.node.id !== '0')) {
         let arr;
-        const fn = async () => {
-          if (this.node.element?.bbn?.$internal
-            && (arr = this.node.element.bbn.$internal.attributes.filter(a => a instanceof bbnStyleAttr)).length
-          ) {
-            //bbn.fn.warning("UPDATING INTERNAL STYLE ON " + this.node.tag)
-            await arr[0].attrUpdate(true);
-          }
-          else if (this.node.element) {
-            this.node.element.style.cssText = this.convert();
-          }
-        };
-
-        if (!this.node.element?.bbn?.$internal) {
-          bbn.cp.queueUpdate({component: this.node.component, fn, hash: (this.node.hash || 'root') + '-' + this.id});
+        if (this.node.element?.bbn?.$internal
+          && (arr = this.node.element.bbn.$internal.attributes.filter(a => a instanceof bbnStyleAttr)).length
+        ) {
+          const str = this.convert();
+          this.node.props.style = str;
+          await arr[0].attrUpdate(true);
         }
-        else  {
-          await fn();
+        else {
+          const str = this.convert();
+          if (str !== this.node.props.style) {
+            this.node.props.style = str;
+            this.node.element.style.cssText = str;
+          }
         }
       }
       else {
-        this.node.props[this.name] = this.convert();
-        this.node.element.style.cssText = this.node.props[this.name];
+        const str = this.convert();
+        if (this.node.props.style !== str) {
+          this.node.props.style = str;
+          this.node.element.style.cssText = this.node.props.style;
+        }
       }
     }
   }

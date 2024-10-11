@@ -27,9 +27,14 @@ export default class bbnLoopAttr extends bbnAttr
     await this.attrSet(true);
   }
 
-  async attrUpdate() {
+  async attrUpdate(init) {
     //bbn.fn.log("UPDATE ATTR LOOP " + this.exp, this.node.tag, this.isChanged, this.attrGetValue(true));
     const node = this.node;
+    /*
+    if (!init && !this.isChanged) {
+      return;
+    }*/
+
     if (node.isOut) {
       bbn.fn.log("NODE IS OUT");
       return;
