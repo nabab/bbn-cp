@@ -19,7 +19,7 @@ bbnData.proxyShift = function(targetObj, target) {
     const res = target.shift();
     if (targetObj) {
       //bbn.fn.log("SHIFT");
-      targetObj.prepareUpdate('length');
+      targetObj.prepareUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in shift", target]);

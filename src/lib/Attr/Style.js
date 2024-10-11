@@ -99,25 +99,21 @@ export default class bbnStyleAttr extends bbnAttr
     
     if (init || (this.exp && this.isChanged)) {
       // Case external style on component
+      const str = this.convert();
+      this.node.props.style = str;
       if (this.node.isComponent && (this.node.id !== '0')) {
         let arr;
         if (this.node.element?.bbn?.$internal
           && (arr = this.node.element.bbn.$internal.attributes.filter(a => a instanceof bbnStyleAttr)).length
         ) {
-          const str = this.convert();
-          this.node.props.style = str;
           await arr[0].attrUpdate(true);
         }
-        else {
-          const str = this.convert();
-          this.node.props.style = str;
+        else if (this.node.element && (this.node.element.style.cssText !== str)) {
           this.node.element.style.cssText = str;
         }
       }
-      else {
-        const str = this.convert();
-        this.node.props.style = str;
-        this.node.element.style.cssText = this.node.props.style;
+      else if (this.node.element.style.cssText !== str) {
+        this.node.element.style.cssText = str;
       }
     }
   }

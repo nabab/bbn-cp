@@ -20,7 +20,7 @@ bbnData.proxyPop = function(targetObj, target) {
     const res = target.pop();
     if (targetObj) {
       //bbn.fn.log("POP");
-      targetObj.prepareUpdate('length');
+      targetObj.prepareUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in pop", target]);

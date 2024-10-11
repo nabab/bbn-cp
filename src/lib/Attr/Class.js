@@ -58,24 +58,20 @@ export default class bbnClassAttr extends bbnAttr
     }
 
     if (init || (this.exp && this.isChanged)) {
+      const cls = this.convert();
+      this.node.props.class = cls;
       if (this.node.isComponent && (this.node.id !== '0')) {
         let arr;
         if (this.node.element?.bbn?.$internal
           && (arr = this.node.element.bbn.$internal.attributes.filter(a => a instanceof bbnClassAttr)).length
         ) {
-          const cls = this.convert();
-          this.node.props.class = cls;
           await arr[0].attrUpdate(true);
         }
-        else {
-          const cls = this.convert();
-          this.node.props.class = cls;
+        else if (this.node.element.className !== cls) {
           this.node.element.className = cls;
         }
       }
-      else {
-        const cls = this.convert();
-        this.node.props.class = cls;
+      else if (this.node.element.className !== cls) {
         this.node.element.className = cls;
       }
     }

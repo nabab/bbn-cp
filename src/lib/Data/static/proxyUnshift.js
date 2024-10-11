@@ -18,7 +18,7 @@ bbnData.proxyUnshift = function(targetObj, target, component) {
     });
     const res = target.unshift(...newArgs);
     if (targetObj) {
-      targetObj.prepareUpdate('length');
+      targetObj.prepareUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in unshift", target]);
