@@ -110,18 +110,14 @@ export default class bbnStyleAttr extends bbnAttr
         }
         else {
           const str = this.convert();
-          if (str !== this.node.props.style) {
-            this.node.props.style = str;
-            this.node.element.style.cssText = str;
-          }
+          this.node.props.style = str;
+          this.node.element.style.cssText = str;
         }
       }
       else {
         const str = this.convert();
-        if (this.node.props.style !== str) {
-          this.node.props.style = str;
-          this.node.element.style.cssText = this.node.props.style;
-        }
+        this.node.props.style = str;
+        this.node.element.style.cssText = this.node.props.style;
       }
     }
   }
