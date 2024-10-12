@@ -10,6 +10,11 @@ export default class bbnCp {
       writable: false,
       configurable: false
     });
+    Object.defineProperty(this, '$node', {
+      value: el.bbnSchema,
+      writable: false,
+      configurable: false
+    });
     Object.defineProperty(this, '$nodes', {
       value: bbn.fn.createObject(),
       writable: false,
@@ -238,6 +243,15 @@ export default class bbnCp {
    */
   getComponentName() {
     return this.$options.name;
+  }
+
+  get $rootPath() {
+    let st = this.$node.id;
+    if (this.$parent) {
+      st = this.$parent.$rootPath + '/' + st;
+    }
+
+    return st;
   }
 
 }

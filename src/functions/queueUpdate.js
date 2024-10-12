@@ -1,5 +1,3 @@
-import bbnComputed from "../lib/Computed/Computed.js";
-import bbnConditionAttr from "../lib/Attr/Condition.js";
 import bbn from "@bbn/bbn";
 
 /**

@@ -13,9 +13,6 @@ const sorter = (a, b) => {
     throw new Error("NOT AN ATTR");
   }
 
-  const idCpA = a.node.component.$cid;
-  const idCpB = b.node.component.$cid;
-
   const tmpA = a.id.match(/^([0-9-]+)-([A-z]{1}[A-z0-9-_]+)$/);
   const tmpB = b.id.match(/^([0-9-]+)-([A-z]{1}[A-z0-9-_]+)$/);
   if ((tmpA?.length !== 3) || (tmpB?.length !== 3)) {
@@ -68,139 +65,120 @@ async function treatQueue(num = 0) {
       isDebug = false;
     }
 
-    let queue = bbn.fn.order(bbn.cp.queue.splice(0), 'num');
-    // Process each component in the queue.
+    let tmp = bbn.cp.queue.splice(0);
+    const nums = bbn.fn.unique(tmp.map(q => q.num)).sort();
     let oneDone = false;
-
-    let lastElement;
-    let lastNum;
-    let cps;
-    let done;
-    let fns;
-    let unconditioned = [];
-    let forgotten = [];
-    while (queue.length) {
-      if (isDebug) {
-        if (bbn.cp.numTicks - isDebug > 1000) {
-          throw new Error("Too many ticks");
-        }
-      }
-      const queueElement = queue.shift();
-      const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
-      if (!cp.$el.isConnected) {
-        continue;
-      }
-      
-      // If number is different from the previous we reinitialize
-      if (lastNum !== queueElement.num) {
-        unconditioned = [];
-        forgotten = [];
-        cps = bbn.fn.createObject();
-        lastNum = queueElement.num;
-
-        /*
-        if (done?.length) {
-          bbn.fn.log(done.slice());
-        }*/
-
-        done = [];
-        lastElement = null;
-        fns = [];
-      }
-
-      if (queueElement.element) {
-        if (done.includes(queueElement.element)) {
-          continue;
-        }
-
-        done.push(queueElement.element);
-      }
-
-      if (!cps[cp.$cid]) {
-        cps[cp.$cid] = cp;
-        initResults(cp);
-      }
-
-      // Doing all elements but attributes
-      oneDone = true;
-      // Launch the update process for the component.
-
-
-      if (queueElement?.element instanceof bbnComputed) {
-        if (lastElement?.element === queueElement.element) {
-          continue;
-        }
-
+    for (let i = 0; i < nums.length; i++) {
+      let lastElement = null;
+      let cps = bbn.fn.createObject();
+      let done = [];
+      let fns = [];
+      let removed = [];
+      let forgotten = [];
+      const queue = tmp.filter(q => q.num === nums[i]);
+      const attrs = [];
+      while (queue.length) {
         if (isDebug) {
-          bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + bbn.cp.propagation.length);
+          if (bbn.cp.numTicks - isDebug > 1000) {
+            throw new Error("Too many ticks");
+          }
+        }
+        const queueElement = queue.shift();
+        const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
+        if (!cp.$el.isConnected) {
+          continue;
+        }
+        
+        if (queueElement.element) {
+          if (done.includes(queueElement.element)) {
+            continue;
+          }
+
+          done.push(queueElement.element);
         }
 
-        await queueElement.element.computedUpdate();
+        if (!cps[cp.$cid]) {
+          cps[cp.$cid] = cp;
+          initResults(cp);
+        }
+
+        // Doing all elements but attributes
+        oneDone = true;
+        // Launch the update process for the component.
+
+        if (queueElement.element && (lastElement?.element === queueElement.element)) {
+          continue;
+        }
+
+        if (queueElement?.element instanceof bbnComputed) {
+          if (isDebug) {
+            bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + bbn.cp.propagation.length);
+          }
+
+          await queueElement.element.computedUpdate();
+        }
+        else if (queueElement?.element instanceof bbnAttr) {
+          attrs.push(queueElement.element);
+        }
+        else if (bbn.fn.isFunction(queueElement?.fn)) {
+          if (isDebug) {
+            bbn.fn.log(cp.$options.name + ' - Fn - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + queueElement.fn.toString());
+          }
+
+          const hash = queueElement.component.$cid + '-' + queueElement.hash;
+          if (fns.includes(hash)) {
+            // If on dropdown don't work
+            //bbn.fn.log(["ALREADY DONE", hash, queueElement, queueElement.fn.toString()]);
+            //continue;
+          }
+
+          fns.push(hash);
+          await queueElement.fn();
+        }
+        else {
+          bbn.fn.log(["Data in queue", queueElement]);
+          throw new Error("DATA IN QUEUE");
+          //await queueElement.data.update(true);
+        }
+
+        lastElement = queueElement;
       }
-      else if (queueElement?.element instanceof bbnAttr) {
-        const attr = queueElement.element;
-        if (isDebug) {
-          bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
-        }
-  
-        const id = attr.node.id;
-        if (!(attr instanceof bbnConditionAttr) && !(attr instanceof bbnForgetAttr) && forgotten.includes(attr.node)) {
-          continue;
-        }
-  
-        if (!(attr instanceof bbnConditionAttr) && (unconditioned.includes(attr.node) || unconditioned.filter(a => !a.id.indexOf(id + '-') && !a.hash.indexOf(attr.node.hash || '')).length)) {
-          //bbn.fn.log("SKIPPING");
-          continue;
-        }
-  
-        await attr.attrUpdate();
-        //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
-        const attrValue = attr.attrGetValue();
-        if (attr instanceof bbnConditionAttr) {
-          if (attrValue && unconditioned.includes(attr.node)) {
-            unconditioned.splice(unconditioned.indexOf(attr.node), 1);
+
+      if (attrs.length) {
+        attrs.sort(sorter);
+        for (const attr of attrs) {
+          if (isDebug) {
+            bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
           }
-          else if (!attrValue && !unconditioned.includes(attr.node)) {
-            for (let i = 0; i < unconditioned.length; i++) {
-              if (unconditioned[i].id.indexOf(id + '-') === 0) {
-                unconditioned.splice(i, 1);
-                i--;
-              }
-            }
-            unconditioned.push(attr.node);
+
+          if (!(attr instanceof bbnConditionAttr) && attr.node.condition && !attr.node.condition.attrGetValue()) {
+            continue;
           }
-        }
-        else if (attr instanceof bbnForgetAttr) {
-          if (!attrValue && forgotten.includes(attr.node)) {
-            forgotten.splice(forgotten.indexOf(attr.node), 1);
+    
+          const id = attr.node.id;
+          if (!(attr instanceof bbnConditionAttr) && !(attr instanceof bbnForgetAttr) && forgotten.includes(attr.node)) {
+            continue;
           }
-          else if (attrValue && !forgotten.includes(attr.node)) {
+    
+          if (!(attr instanceof bbnConditionAttr) && (removed.includes(attr.node) || removed.filter(a => !id.indexOf(a.id + '-') && !a.hash.indexOf(attr.node.hash || '')).length)) {
+            continue;
+          }
+
+          await attr.attrUpdate();
+          //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
+          const attrValue = attr.attrGetValue();
+          if (attr instanceof bbnConditionAttr && !attrValue) {
+            removed.push(attr.node);
+          }
+          else if (attr instanceof bbnForgetAttr && attrValue) {
             forgotten.push(attr.node);
           }
         }
       }
-      else if (bbn.fn.isFunction(queueElement?.fn)) {
-        if (isDebug) {
-          bbn.fn.log(cp.$options.name + ' - Fn - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + queueElement.fn.toString());
-        }
 
-        const hash = queueElement.component.$cid + '-' + queueElement.hash;
-        if (fns.includes(hash)) {
-          // If on dropdown don't work
-          //bbn.fn.log(["ALREADY DONE", hash, queueElement, queueElement.fn.toString()]);
-          //continue;
-        }
-
-        fns.push(hash);
-        await queueElement.fn();
+      for (let n in cps) {
+        cps[n].$lastBuild = nums[i];
       }
-      else {
-        bbn.fn.log(["Data in queue", queueElement]);
-        throw new Error("DATA IN QUEUE");
-        //await queueElement.data.update(true);
-      }
-
-      lastElement = queueElement;
     }
 
     //bbn.cp.numTicks++;
@@ -209,19 +187,16 @@ async function treatQueue(num = 0) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       await treatQueue(num + 1);
     }
-
-    for (let n in cps) {
-      cps[n].$lastBuild = bbn.cp.numTicks;
-    }
   }
 
   if (!num && bbn.cp.nextQueue.length) {
-    while (bbn.cp.nextQueue.length) {
-      if (!bbn.cp.nextQueue[0].num) {
-        bbn.cp.nextQueue[0].num = bbn.cp.numTicks;
+    bbn.cp.queue.push(...bbn.cp.nextQueue.splice(0).map(a => {
+      if (!a.num) {
+        a.num = bbn.cp.numTicks;
       }
-      bbn.cp.queue.push(bbn.cp.nextQueue.shift());
-    }
+
+      return a;
+    }));
   }
 }
 /**

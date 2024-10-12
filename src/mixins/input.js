@@ -74,7 +74,7 @@ const input = {
      */
     maxlength: {
       type: [String, Number],
-      default: -1
+      default: 524288
     },
     /**
      * Defines the minlength of the value.
@@ -83,7 +83,7 @@ const input = {
      */
     minlength: {
       type: [String, Number],
-      default: -1
+      default: 0
     },
     /**
      * A function to validate the value before submit.

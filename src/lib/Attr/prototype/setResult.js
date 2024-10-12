@@ -25,6 +25,12 @@ const updateSequence = function (result, attr) {
           if (!a.data.deps[a.name].includes(attr)) {
             a.data.deps[a.name].push(attr);
           }
+          const subData = bbnData.getObject(a.data.value[a.name]);
+          if (subData) {
+            if (!subData.deps.__bbnRoot.includes(attr)) {
+              subData.deps.__bbnRoot.push(attr);
+            }
+          }
         }
         // Add the attribute to the data dependencies if not already present.
         else if (!a.data.deps.__bbnRoot.includes(attr)) {
@@ -62,7 +68,18 @@ bbnAttr.prototype.attrSetResult = function() {
     return this.value;
   }
 
-  const res = Object.hasOwn(arguments, 0) ? {val: arguments[0], seq: []} : this.attrExec();
+  let res;
+  try {
+    res = Object.hasOwn(arguments, 0) ? {val: arguments[0], seq: []} : this.attrExec();
+  }
+  catch (e) {
+    if (this.node.isCommented) {
+      return;
+    }
+
+    throw e;
+  }
+
   let expValue = res.val;
   if (this instanceof bbnConditionAttr || this instanceof bbnForgetAttr) {
     expValue = !!expValue;

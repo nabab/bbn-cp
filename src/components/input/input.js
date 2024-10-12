@@ -62,7 +62,7 @@ const cpDef = {
      * Hides the left button. 
      * @prop {Boolean} [false] autoHideLeft
      */
-      autoHideLeft: {
+    autoHideLeft: {
       type: Boolean,
       default: false
     },
@@ -198,8 +198,8 @@ const cpDef = {
        * @data {Function} currentActionRight
        */
       currentActionRight: bbn.fn.isFunction(this.actionRight) ? this.actionRight : () => this.$emit('clickrightbutton'),
-      currentPattern: null,
-      currentType: null
+      currentPattern: this.pattern,
+      currentType: ['text', 'date', 'search', 'url', 'tel', 'email', 'password', 'hostname', 'ip'].includes(this.type) ? 'text' : this.type
     }
   },
   computed: {
@@ -218,22 +218,13 @@ const cpDef = {
       this.currentValue = '';
     },
     init(){
-      if (this.pattern) {
-        let types = ['text', 'date', 'search', 'url', 'tel', 'email', 'password'];
-        this.currentPattern = this.pattern;
-        this.currentType = types.includes(this.type) ? this.type : 'text';
-      }
-      else if (this.type === 'hostname') {
-        this.currentPattern = bbn.var.regexp.hostname.source;
-        this.currentType = 'text';
-      }
-      else if (this.type === 'ip') {
-        this.currentPattern = bbn.var.regexp.ip.source;
-        this.currentType = 'text';
-      }
-      else {
-        this.currentPattern = this.pattern;
-        this.currentType = this.type;
+      if (!this.pattern) {
+        if (this.type === 'hostname') {
+          this.currentPattern = bbn.var.regexp.hostname.source;
+        }
+        else if (this.type === 'ip') {
+          this.currentPattern = bbn.var.regexp.ip.source;
+        }
       }
     },
     emitValue(v) {
@@ -273,6 +264,14 @@ const cpDef = {
     this.ready = true;
   },
   watch: {
+    maxlength(newVal) {
+      if (this.currentValue.length > newVal) {
+        this.currentValue = this.currentValue.substr(0, newVal);
+      }
+    },
+    pattern(newVal) {
+      this.currentPattern = newVal;
+    },
     value(v) {
       if (this.prefix && (v.indexOf(this.prefix) === 0)) {
         v = bbn.fn.substr(v, this.prefix.length);

@@ -55,7 +55,9 @@ bbnData.prototype.prepareUpdate = function(path) {
         propagateDependencyChanges(it.component, it.path[0]);
       }
     }
+  });
 
+  impacted.forEach(it => {
     const bits = it.path.slice();
     let level = 0;
     while (bits.length) {
