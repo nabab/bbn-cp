@@ -66,11 +66,12 @@
          style="display: flex;">
       <div class="bbn-calendar-container bbn-w-100"
            :style="gridStyle">
-        <div class="bbn-calendar-labels"
-            bbn-if="labels && currentLabels"
-            bbn-for="(label, i) in currentLabels"
-            bbn-html="label"
-            ref="label"/>
+        <template bbn-if="labels && currentLabels.length">
+          <div class="bbn-calendar-labels"
+              bbn-for="(l, i) in currentLabels"
+              bbn-html="l"
+              ref="label"/>
+        </template>
         <template bbn-for="item in items"
                   :key="item.key">
           <div bbn-if="!item.hidden"
