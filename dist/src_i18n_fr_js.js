@@ -1,0 +1,22 @@
+"use strict";
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_i18n_fr_js"],{
+
+/***/ "./src/i18n/fr.js":
+/*!************************!*\
+  !*** ./src/i18n/fr.js ***!
+  \************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n(() => {\n  bbn.fn.autoExtend(\"lng\", {\n    \"Contains\": \"Contient\",\n    \"Is\": \"Est\",\n    \"Is not\": \"N\\u2019est pas\",\n    \"Starts with\": \"Commence par\",\n    \"Does not contain\": \"Ne contient pas\",\n    \"To end by\": \"Se termine par\",\n    \"Is empty\": \"Est vide\",\n    \"Is not empty\": \"N\\u2019est pas vide\",\n    \"Is equal to\": \"Est \\u00e9gal \\u00e0\",\n    \"Is not equal to\": \"N\\u2019est pas \\u00e9gal \\u00e0\",\n    \"Is greater than or equal to\": \"Est sup\\u00e9rieur ou \\u00e9gal \\u00e0\",\n    \"Is greater than\": \"Est sup\\u00e9rieur \\u00e0\",\n    \"Is less than or equal to\": \"Est inf\\u00e9rieur ou \\u00e9gal \\u00e0\",\n    \"Is inferior to\": \"Est inf\\u00e9rieur \\u00e0\",\n    \"Is greater than or equal to\": \"Est post\\u00e9rieur ou \\u00e9gal \\u00e0\",\n    \"Is after\": \"Est post\\u00e9rieur \\u00e0\",\n    \"Is prior to or equal to\": \"Est ant\\u00e9rieur ou \\u00e9gal \\u00e0\",\n    \"Is older than\": \"Est ant\\u00e9rieur \\u00e0\",\n    \"Is true\": \"Est vrai\",\n    \"Is false\": \"Est faux\",\n    \"Is null\": \"Est nul\",\n    \"Is not null\": \"N\\u2019est pas nul\",\n    \"Yes\": \"Oui\",\n    \"No\": \"No\",\n    \"Choose\": \"Choisir\",\n    \"The value you entered for this field is invalid.\": \"La valeur que vous avez saisie pour ce champ n\\u2019est pas valide.\",\n    \"Please fill out this field.\": \"Veuillez remplir ce champ.\",\n    \"Please enter a valid email address.\": \"S\\u2019il vous plaît, mettez une adresse email valide.\",\n    \"Please enter a valid URL.\": \"Veuillez saisir une URL valide.\",\n    \"Please lengthen this text to %d characters or more. You are currently using %d characters.\": \"Veuillez allonger ce texte \\u00e0 %d caractères ou plus. Vous utilisez actuellement %d caractères.\",\n    \"Please shorten this text to no more than %d characters. You are currently using %d characters.\": \"Veuillez raccourcir ce texte \\u00e0 %d caractères maximum. Vous utilisez actuellement %d caractères.\",\n    \"Please enter a number.\": \"Veuillez saisir un nombre.\",\n    \"Please select a valid value.\": \"Veuillez s\\u00e9lectionner une valeur valide.\",\n    \"Please select a value that is no more than %d.\": \"Veuillez s\\u00e9lectionner une valeur qui n\\u2019est pas sup\\u00e9rieure \\u00e0 %d.\",\n    \"Please select a value that is no less than %d.\": \"Veuillez s\\u00e9lectionner une valeur qui n\\u2019est pas inf\\u00e9rieure \\u00e0 %d.\",\n    \"Please match the requested format.\": \"Veuillez faire correspondre le format demand\\u00e9.\",\n    \"Untitled\": \"Sans titre\",\n\t\t\"Impossible to load the component\": \"Impossible de charger le composant\",\n\t\t\"Impossible to find a popup instance. Add a bbn-popup in your root element\": \"Impossible de trouver une instance de popup. Ajoutez un bbn-popup dans votre \\u00e9l\\u00e9ment racine\",\n    \"Impossible to delete the row\": \"Impossible de supprimer la ligne\",\n    \"Deleted successfully\": \"Supprim\\u00e9 avec succès\",\n    \"No data\": \"Pas de donn\\u00e9es\",\n    \"Are you sure you want to delete this group of conditions?\": \"Voulez-vous vraiment supprimer ce groupe de conditions?\",\n    \"Row edition\": \"\\u00e9dition en ligne\",\n    \"Impossible to open a window if either an editor or a URL is not set\": \"Impossible d'ouvrir une fenêtre si un \\u00e9diteur ou une URL n\\u2019est pas d\\u00e9fini\",\n    \"Close:\": \"Fermer\"\n\t});\n})();\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/i18n/fr.js?");
+
+/***/ })
+
+}]);

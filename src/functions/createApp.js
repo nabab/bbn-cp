@@ -21,8 +21,24 @@ export default async function createApp(ele, obj) {
   if (!bbn.isTesting) {
     await import('@bbn/bbn-css/dist/css/bbn-css-' + (bbn.env.theme || 'default') + '.css');
   }
-  
+
+  let translations;
   if (!bbn.cp.interval) {
+    if (bbn.env.lang) {
+      try {
+        const lang = bbn.env.lang || 'en';
+        translations = await import(`../i18n/${lang}.js`);
+        if (translations.default) {
+          translations = cpLang.default;
+        }
+
+        if (translations && bbn.fn.numProperties(translations)) {
+          bbn.fn.translate(translations);
+        }
+      }
+      catch (err) {}
+    }
+
     // Add prefix handling for component names.
     // Define how to handle 'bbn-' prefixed components.
     bbn.cp.addPrefix('bbn-', async components => {
