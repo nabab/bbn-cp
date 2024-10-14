@@ -199,7 +199,7 @@ const cpDef = {
        */
       currentActionRight: bbn.fn.isFunction(this.actionRight) ? this.actionRight : () => this.$emit('clickrightbutton'),
       currentPattern: this.pattern,
-      currentType: ['text', 'date', 'search', 'url', 'tel', 'email', 'password', 'hostname', 'ip'].includes(this.type) ? 'text' : this.type
+      currentType: this.getType()
     }
   },
   computed: {
@@ -251,6 +251,9 @@ const cpDef = {
       ev.stopPropagation();
       ev.stopImmediatePropagation();
       this.currentValue = ev.target.value;
+    },
+    getType(){
+      return ['text', 'date', 'search', 'url', 'tel', 'email', 'password', 'hostname', 'ip'].includes(this.type) ? this.type : 'text';
     }
   },
   created() {
@@ -264,6 +267,9 @@ const cpDef = {
     this.ready = true;
   },
   watch: {
+    type(newVal){
+      this.currentType = this.getType();
+    },
     maxlength(newVal) {
       if (this.currentValue.length > newVal) {
         this.currentValue = this.currentValue.substr(0, newVal);
