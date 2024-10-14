@@ -213,7 +213,7 @@ export default function startTick() {
   bbn.cp.interval = setInterval(
     async function() {
       // Skip if an update is currently running.
-      if (bbn.cp.isRunning || !bbn.cp.queue.length) {
+      if (bbn.cp.isRunning || (!bbn.cp.queue.length && !bbn.cp.nextQueue.length)) {
         return;
       }
 

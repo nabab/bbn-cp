@@ -7,11 +7,12 @@ bbnCp.prototype.$nextTick = async function(fn){
     bbn.cp.nextQueue.push({
       component: cp,
       fn() {
+        let res;
         if (fn) {
-          fn();
+          res = fn();
         }
 
-        resolve();
+        resolve(res);
       },
       hash: f.hash,
     });
