@@ -82,7 +82,7 @@ class bbnData/* extends EventTarget*/ {
     });
 
     /**
-     * @var {Object|Array} data The original data object
+     * @var {Object|Array} targetData The original data object
      */
     Object.defineProperty(this, 'targetData', {
       value: data,

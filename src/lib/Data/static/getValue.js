@@ -8,7 +8,7 @@ import bbnData from "../Data.js";
  */
 bbnData.getValue = function(obj, original) {
   if (obj && (typeof obj === 'object') && (obj instanceof bbnData)) {
-    return obj[original ? 'data' : 'value'];
+    return obj[original ? 'targetData' : 'value'];
   }
 
   throw Error(bbn._("The argument is not a bbnData object"))
