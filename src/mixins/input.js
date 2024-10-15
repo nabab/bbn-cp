@@ -433,7 +433,7 @@ const input = {
                             @hook:mounted="showContent"
                             @close="onCloseTooltip"
                             :element="elem">
-                  <div>${message}</div>
+                  <div class="bbn-vxspadding bbn-hspadding">${message}</div>
                 </bbn-tooltip>
               </div>
             `,
