@@ -373,6 +373,7 @@ const cpDef = {
       this.schema.map(a => {
         currentSchema.push(bbn.fn.extend({}, a, {id: a.id ? a.id : bbn.fn.randomString(20, 30)}))
       });
+      const od = bbnData.getObject(this.source);
       return {
         /**
          * True if the form has been modified.
@@ -385,7 +386,7 @@ const cpDef = {
          */
         popupIndex: false,
         tab: false,
-        _originalData: JSON.stringify(this.source || {}),
+        _originalData: bbn.fn.clone(od ? bbnData.getValue(od, true) : od),
         isPosted: false,
         isLoading: false,
         currentSchema: currentSchema,
@@ -401,7 +402,7 @@ const cpDef = {
     },
     computed: {
       originalData() {
-        return JSON.parse(this._originalData);
+        return this._originalData;
       },
       /**
        * Returns true if the form has a footer.
@@ -618,7 +619,8 @@ const cpDef = {
         }
       },
       commitData() {
-        this._originalData = JSON.stringify(this.source || {});
+        const od = bbnData.getObject(this.source);
+        this._originalData = bbn.fn.clone(od ? bbnData.getValue(od, true) : od);
         this.dirty = false;
       },
       /**
@@ -871,7 +873,8 @@ const cpDef = {
        * 
        */
       reinit(){
-        this._originalData = JSON.stringify(this.source);
+        const od = bbnData.getObject(this.source);
+        this._originalData = bbn.fn.clone(od ? bbnData.getValue(od, true) : od);
         this.dirty = this.isModified();
       },
       focusFirst(fromLast){
