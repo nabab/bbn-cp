@@ -228,6 +228,8 @@ const cpDef = {
        * @param {$event} event Original event.
        * @fires getValueFormat
        * @fires setValue
+       * @emits min
+       * @emits max
        * @emits change
       */
       inputChanged(){
@@ -244,10 +246,12 @@ const cpDef = {
         ) {
           value = value ? value.format(this.getValueFormat(newVal)) : value;
           if (value && this.min && (value < this.min)) {
+            this.$emit('min', value, this.min);
             value = this.min;
           }
 
           if (value && this.max && (value > this.max)) {
+            this.$emit('max', value, this.max);
             value = this.max;
           }
 
