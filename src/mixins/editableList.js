@@ -143,6 +143,7 @@ const editableList = {
       if (!this.originalData) {
         return false;
       }
+
       let data = [],
           orig;
       if (idx === undefined) {
@@ -153,7 +154,8 @@ const editableList = {
         data = bbn.fn.getField(this.currentData, 'data', {index: idx}),
         orig = this.originalData[idx];
       }
-      return JSON.stringify(data) !== JSON.stringify(orig);
+
+      return !bbn.fn.isSame(data, orig);
     },
     /**
      * Adds the given data to the object tmpRow and opens the popup with the form to insert the row.
