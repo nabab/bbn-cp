@@ -354,17 +354,16 @@ const input = {
     setInvalid(message, elem){
       this.$emit('error', message);
       this.validationID = bbn.fn.randomString();
-      if (!!message
-        && message.length
+      if (message?.length
         && (!elem || !bbn.fn.isDom(elem.$el))
       ) {
         elem = this;
       }
+
       if (!this.$el.classList.contains('bbn-state-invalid')) {
         this.$el.classList.add('bbn-state-invalid');
-        if (!!message
-          && message.length
-          && !!elem
+        if (message?.length
+          && elem
           && bbn.fn.isDom(elem.$el)
         ) {
           // Vue version
@@ -412,7 +411,7 @@ const input = {
           */
 
           // BBN version
-          /* let style = document.createElement('style');
+          let style = document.createElement('style');
           style.id = this.validationID + '_style';
           style.innerHTML = `
             #${this.validationID} .bbn-floater {
@@ -428,13 +427,14 @@ const input = {
           const cfg = {
             template: `
               <div :id="id">
-                <bbn-tooltip :source="message"
-                            ref="tooltip"
+                <bbn-tooltip ref="tooltip"
                             :icon="false"
                             position="bottomLeft"
                             @hook:mounted="showContent"
                             @close="onCloseTooltip"
-                            :element="elem"/>
+                            :element="elem">
+                  <div>${message}</div>
+                </bbn-tooltip>
               </div>
             `,
             data() {
@@ -455,7 +455,7 @@ const input = {
             }
           };
           this.$el.appendChild(cont);
-          bbn.cp.createApp(cont, cfg) */
+          bbn.cp.createApp(cont, cfg)
         }
       }
       /*
