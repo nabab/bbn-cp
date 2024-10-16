@@ -7,7 +7,7 @@
                tabindex="-1"
                :position="position"
                :content="getContent()"
-               @close="currentVisible = false"
+               @close="onFloaterClose"
                :component="component"
                :element="element || $el"
                :element-width="false"
