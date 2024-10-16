@@ -386,7 +386,7 @@ const cpDef = {
          */
         popupIndex: false,
         tab: false,
-        _originalData: bbn.fn.clone(od ? bbnData.getValue(od, true) : od),
+        originalData: bbn.fn.clone(od ? bbnData.getValue(od, true) : (od || this.source)),
         isPosted: false,
         isLoading: false,
         currentSchema: currentSchema,
@@ -401,9 +401,6 @@ const cpDef = {
       };
     },
     computed: {
-      originalData() {
-        return this._originalData;
-      },
       /**
        * Returns true if the form has a footer.
        *
@@ -620,7 +617,7 @@ const cpDef = {
       },
       commitData() {
         const od = bbnData.getObject(this.source);
-        this._originalData = bbn.fn.clone(od ? bbnData.getValue(od, true) : od);
+        this.originalData = bbn.fn.clone(od ? bbnData.getValue(od, true) : (od || this.source));
         this.dirty = false;
       },
       /**
@@ -874,7 +871,7 @@ const cpDef = {
        */
       reinit(){
         const od = bbnData.getObject(this.source);
-        this._originalData = bbn.fn.clone(od ? bbnData.getValue(od, true) : od);
+        this.originalData = bbn.fn.clone(od ? bbnData.getValue(od, true) : (od || this.source));
         this.dirty = this.isModified();
       },
       focusFirst(fromLast){
