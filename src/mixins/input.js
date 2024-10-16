@@ -353,119 +353,79 @@ const input = {
     },
     setInvalid(message, elem){
       this.$emit('error', message);
-      this.validationID = bbn.fn.randomString();
-      if (!!message
-        && message.length
+
+      if (message?.length
         && (!elem || !bbn.fn.isDom(elem.$el))
       ) {
         elem = this;
       }
+
       if (!this.$el.classList.contains('bbn-state-invalid')) {
         this.$el.classList.add('bbn-state-invalid');
-        if (!!message
-          && message.length
-          && !!elem
-          && bbn.fn.isDom(elem.$el)
-        ) {
-          // Vue version
-          /*
-          let style = document.createElement('style');
-          style.id = this.validationID + '_style';
-          style.innerHTML = `
-            #${this.validationID} .bbn-floater {
-              background-color: var(--red) !important;
-              color: var(--white) !important;
-            }
-            #${this.validationID} .bbn-floater-arrow:after {
-              background-color: var(--red) !important;
-            }`;
-          window.document.head.appendChild(style)
-          let cont = document.createElement('div');
-          cont.id = this.validationID;
-          cont.innerHTML = `
-            <bbn-tooltip source="${message}"
-                          ref="tooltip"
-                          @hook:mounted="showContent"
+      }
+
+      const validationID = `${this.$cid}-validation`;
+      document.getElementById(`${validationID}-style`)?.remove();
+      document.getElementById(validationID)?.remove();
+
+      if (message?.length
+        && elem
+        && bbn.fn.isDom(elem.$el)
+      ) {
+        let style = document.createElement('style');
+        style.id = `${validationID}-style`;
+        style.innerHTML = `
+          #${validationID} .bbn-floater {
+            background-color: var(--red) !important;
+            color: var(--white) !important;
+          }
+          #${validationID} .bbn-floater-arrow:after {
+            background-color: var(--red) !important;
+          }`;
+        document.head.appendChild(style)
+        let cont = document.createElement('div');
+        const cfg = {
+          template: `
+            <div :id="id">
+              <bbn-tooltip ref="tooltip"
                           :icon="false"
                           position="bottomLeft"
-                          @close="removeEle"
-                          :element="element"/>
-          `;
-          this.$el.appendChild(cont);
-          new Vue({
-            el: `#${this.validationID}`,
-            data(){
-              return {
-                element: elem.$el
-              }
+                          @hook:mounted="showContent"
+                          @close="onCloseTooltip"
+                          :element="elem">
+                <div class="bbn-vxspadding bbn-hspadding bbn-w-100"
+                     style="min-width: max-content"
+                     bbn-html="message"/>
+              </bbn-tooltip>
+            </div>
+          `,
+          data() {
+            return {
+                id: validationID,
+                message: message,
+                elem: elem.$el
+            }
+          },
+          methods: {
+            showContent(){
+              this.getRef('tooltip').show();
             },
-            methods: {
-              showContent(){
-                this.getRef('tooltip').show();
-              },
-              removeEle(){
-                style.remove();
-                this.$el.remove();
-              }
+            onCloseTooltip() {
+              document.getElementById(`${this.id}-style`)?.remove();
+              document.getElementById(this.id)?.remove();
             }
-          })
-          */
-
-          // BBN version
-          /* let style = document.createElement('style');
-          style.id = this.validationID + '_style';
-          style.innerHTML = `
-            #${this.validationID} .bbn-floater {
-              background-color: var(--red) !important;
-              color: var(--white) !important;
-            }
-            #${this.validationID} .bbn-floater-arrow:after {
-              background-color: var(--red) !important;
-            }`;
-          window.document.head.appendChild(style)
-          let cont = document.createElement('div');
-          const validationID = this.validationID;
-          const cfg = {
-            template: `
-              <div :id="id">
-                <bbn-tooltip :source="message"
-                            ref="tooltip"
-                            :icon="false"
-                            position="bottomLeft"
-                            @hook:mounted="showContent"
-                            @close="onCloseTooltip"
-                            :element="elem"/>
-              </div>
-            `,
-            data() {
-              return {
-                  id: validationID,
-                  message: message,
-                  elem: elem.$el
-              }
-            },
-            methods: {
-              showContent(){
-                this.getRef('tooltip').show();
-              },
-              onCloseTooltip() {
-                style.remove();
-                cont.remove();
-              }
-            }
-          };
-          this.$el.appendChild(cont);
-          bbn.cp.createApp(cont, cfg) */
-        }
+          }
+        };
+        this.$el.prepend(cont);
+        bbn.cp.createApp(cont, cfg)
       }
-      /*
-      this.$once('blur', () => {
+
+      const ev = () => {
         this.$emit('removevalidation');
-        if (elem && elem.$el) {
-          elem.$el.focus();
-        }
-      });
-      */
+      };
+
+      this.$off('input', ev);
+      this.$once('input', ev);
     }
   },
   /**
@@ -478,6 +438,8 @@ const input = {
     if ( this.autosize ){
       this.componentClass.push('bbn-auto-width');
     }
+
+    bbn.cp.fetchComponents(['bbn-tooltip']);
   },
   mounted() {
     if (this.autofocus) {
@@ -485,14 +447,12 @@ const input = {
       ele.focus();
     }
     this.$on('removevalidation', () => {
-      if (!!this.validationID
+      if (this.$cid
         && this.$el.classList.contains('bbn-state-invalid')
       ) {
         this.$el.classList.remove('bbn-state-invalid');
-        if (document.getElementById(this.validationID)) {
-          document.getElementById(this.validationID).remove();
-        }
-        this.validationID = false;
+        document.getElementById(`${this.$cid}-validation-style`)?.remove();
+        document.getElementById(`${this.$cid}-validation`)?.remove();
       }
     })
     // I think this code is not necessary, the events are already called. Mirko

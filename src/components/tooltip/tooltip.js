@@ -90,11 +90,20 @@ const cpDef = {
        */
       getContent() {
         let st = bbn.fn.isFunction(this.source) ? this.source() : this.source;
-        if (!this.raw) {
+        if (!this.raw && st?.length) {
           st = '<div class="bbn-vxspadding bbn-hspadding">' + st + '</div>';
         }
 
         return st;
+      },
+      /**
+       * The method called when the floater closes.
+       * @method onFloaterClose
+       * @emits close
+       */
+      onFloaterClose(){
+        this.currentVisible = false;
+        this.$emit('close');
       }
     }
   };
