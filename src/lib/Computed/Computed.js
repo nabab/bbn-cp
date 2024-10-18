@@ -14,6 +14,7 @@ export default class bbnComputed {
   #setter = false;
   #data = false;
   #num = 0;
+  #changed = false;
 
   static queue = [];
 
@@ -68,6 +69,13 @@ export default class bbnComputed {
   }
 
   /**
+   * @returns {*} The current state.
+   */
+  get isChanged() {
+    return this.#changed;
+  }
+
+  /**
    * @returns {string} The name of the computed property.
    */
   get name() {
@@ -104,6 +112,7 @@ export default class bbnComputed {
     }
 
     let forceUpdate = false;
+    //bbn.fn.log("UPDATNG COMPUTED " + this.#name + ' ' + this.#component.$cid);
 
     // Start watching the process before executing the getter.
     bbnData.startWatching();
@@ -111,7 +120,6 @@ export default class bbnComputed {
     let v = this.#getter();
     // Stop watching the process, and gets the array of all data used to get the value
     const deps = bbnData.stopWatching();
-    //bbn.fn.log("UPDATNG COMPUTED " + this.#name + ' ' + this.#component.$cid);
 
     // Only if the new value is different
     // Adding this in the dependencies of each elements from the watching sequence
@@ -154,6 +162,7 @@ export default class bbnComputed {
       prev = a;
     }
 
+    let hasChanged = false;
     if (this.#val !== v) {
       // Taking care of data (object or array)
       if (!bbn.fn.isPrimitive(v)) {
@@ -164,7 +173,6 @@ export default class bbnComputed {
           }
           // If both are arrays we mutate the old one into the new one
           else if (this.#data.isArray && bbn.fn.isArray(v)) {
-            let hasChanged = false;
             for (let i = 0; i < v.length; i++) {
               if (v[i] !== this.#data.value[i]) {
                 if (!v[i].__bbnData && Object.hasOwn(this.#data.value, i) && !bbn.fn.numProperties(bbn.fn.diffObj(v[i], this.#data.value[i]))) {
@@ -199,15 +207,19 @@ export default class bbnComputed {
           }
           // If both are objects we mutate the old one into the new one
           else if (!this.#data.isArray && bbn.fn.isObject(v)) {
-            bbn.fn.mutateObject(this.#data.value, v);
-            //bbn.fn.log(["MUTATE OBJECT", this.#data.value, v]);
-            v = this.#data.value;
+            if (bbn.fn.numProperties(bbn.fn.diffObj(v, this.#data.value))) {
+              bbn.fn.mutateObject(this.#data.value, v);
+              //bbn.fn.log(["MUTATE OBJECT", this.#data.value, v]);
+              v = this.#data.value;
+              hasChanged = true;
+            }
           }
           else {
             // Remove the old data object from the component.
             this.#data.removeComponent(this.#component, this.#name);
             v = this.#component.$treatValue(v, this.#name);
             this.#data = bbnData.getObject(v);
+            hasChanged = true;
           }
 
         }
@@ -227,25 +239,34 @@ export default class bbnComputed {
           if (data) {
             // Add the new data object to the component.
             data.addComponent(this.#component, this.#name); 
+            hasChanged = true;
           }
         }
         else {
           // Treat the value and get the data object.
           v = this.#component.$treatValue(v, this.#name);
           this.#data = bbnData.getObject(v);
+          hasChanged = true;
         }
       }
 
-      if (this.#val !== v) {
+      if (hasChanged || (this.#val !== v)) {
+        this.#changed = true;
         //bbn.fn.log(["UPDATING COMPUTED " + this.#name + " ON " + this.#component.$options.name, bbn.fn.diffObj(this.#val, v)]);
         if (this.#num) {
           // Update the component with the new value.
-          this.#updateComponent(v, forceUpdate);
+          this.#updateComponent(v, forceUpdate || hasChanged);
         }
         else {
           this.#val = v;
         }
       }
+      else {
+        this.#changed = false;
+      }
+    }
+    else {
+      this.#changed = false;
     }
 
     // Update the build number.

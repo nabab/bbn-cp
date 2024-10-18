@@ -18,14 +18,14 @@ export default async function propagateDependencyChanges(cp, name) {
       if (!bbn.cp.propagation.length) {
         if (!propagationFromHere) {
           bbn.cp.numTicks++;
-          //bbn.fn.log("PROPAGATION STARTED ON " + name);
           propagationFromHere = true;
         }
       }
 
       bbn.cp.propagation.push(a);
+      //bbn.fn.log("PROPAGATION STARTED ON " + name, a);
       if (a instanceof bbnAttr || a instanceof bbnComputed) {
-        await bbn.cp.queueUpdate({element: a, num});
+        await bbn.cp.queueUpdate({component: cp, element: a, num});
       }
       else {
         bbn.fn.log("UNKNOWN DEPENDENCY", a);

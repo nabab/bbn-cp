@@ -86,13 +86,21 @@ bbnAttr.prototype.attrSetResult = function() {
     //bbn.fn.log([this.exp, this.id, expValue, this.node.element])
   }
 
+  //const hash = '';
+  //bbn.fn.log(["SET RESULT", this.exp, this.id, expValue, hash, this.node.element]);
   let isChanged = false;
 
   // Update the value if it has changed.
   if (this.result.value !== expValue) {
     this.result.value = expValue;
+    //this.result.hash = hash;
     isChanged = true;
   }
+/*
+  else if (hash !== this.result.hash) {
+    this.result.hash = hash;
+    isChanged = true;
+  }*/
 
   // Create or update the result object based on its state.
   if (!this.result.num) {
@@ -102,12 +110,16 @@ bbnAttr.prototype.attrSetResult = function() {
     this.result.state = 'NEW';
   }
   else if (this.result.state === 'TMP') {
+
     if (isChanged) {
       this.result.state = 'MOD'; // Modified state.
     }
     else {
       const dataObj = bbnData.getObject(expValue);
-      if (dataObj && (this.node.component.$lastBuild < dataObj.lastUpdate)) {
+      if (dataObj?.root?.component?.$computed?.[dataObj?.root?.path]?.isChanged) {
+        this.result.state = 'MOD'; // <Modified> state.
+      }
+      else if (dataObj && (this.node.component.$lastBuild < dataObj.lastUpdate)) {
         this.result.state = 'MOD'; // Modified state.
       }
       else if (isChanged) {
