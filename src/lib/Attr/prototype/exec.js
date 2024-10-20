@@ -1,30 +1,50 @@
 import bbnAttr from "../Attr.js";
+import bbnConditionAttr from "../Condition.js";
+
+const getArgs = (attr, data) => {
+  return attr.args ? attr.args.map(a => {
+    let res;
+    try {
+      // Process each argument using retrieveArgument.
+      res = attr.retrieveArgument(a, attr.node.hash, data);
+    }
+    catch(e) {
+      // Log and rethrow any errors encountered during argument processing.
+      bbn.fn.log(["ERROR IN TREAT ARGUMENT", e, a, attr.node.component, this]);
+      throw Error(e.message + ' (' + bbn._("Expression") + ': ' + attr.exp + ')');
+    }
+
+    return res; // Return the processed argument.
+  }) : [];
+};
 
 bbnAttr.prototype.attrExec = function(data) {
   if (!this.fn) {
     return;
   }
 
+  const newData = data ? [data] : [];
+  if (this.node.data) {
+    newData.push(this.node.data);
+  }
+
+  if (!(this instanceof bbnConditionAttr) && bbn.cp.results.has(this)) {
+    const tmp = bbn.cp.results.get(this);
+    let isSame = true;
+    const preArgs = getArgs(this, newData);
+    bbn.fn.each(preArgs, (a, i) => {
+      if (tmp.args[i] !== a) {
+        isSame = false;
+        return false;
+      }
+    });
+    if (isSame) {
+      return tmp.res;
+    }
+  }
+
   bbnData.startWatching();
-  const args = this.args ? this.args.map(a => {
-    let res;
-    const newData = data ? [data] : [];
-    if (this.node.data) {
-      newData.push(this.node.data);
-    }
-
-    try {
-      // Process each argument using retrieveArgument.
-      res = this.retrieveArgument(a, this.node.hash, newData);
-    }
-    catch(e) {
-      // Log and rethrow any errors encountered during argument processing.
-      bbn.fn.log(["ERROR IN TREAT ARGUMENT", e, a, this.node.component, this]);
-      throw Error(e.message + ' (' + bbn._("Expression") + ': ' + this.exp + ')');
-    }
-
-    return res; // Return the processed argument.
-  }) : [];
+  const args = getArgs(this, newData);
   let val;
   try {
     val = this.fn.bind(this.node.component)(...args);
@@ -35,6 +55,10 @@ bbnAttr.prototype.attrExec = function(data) {
   }
 
   const seq = bbnData.stopWatching();
+  if (!(this instanceof bbnConditionAttr)) {
+    bbn.cp.results.set(this, {args, res: {val, seq}});
+  }
+
   return {val, seq};
 };
 

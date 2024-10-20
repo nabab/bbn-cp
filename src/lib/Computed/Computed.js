@@ -173,9 +173,11 @@ export default class bbnComputed {
           }
           // If both are arrays we mutate the old one into the new one
           else if (this.#data.isArray && bbn.fn.isArray(v)) {
+            this.#data.value.splice(0, this.#data.value.length, ...v);
             for (let i = 0; i < v.length; i++) {
               if (v[i] !== this.#data.value[i]) {
-                if (!v[i].__bbnData && Object.hasOwn(this.#data.value, i) && !bbn.fn.numProperties(bbn.fn.diffObj(v[i], this.#data.value[i]))) {
+                const isPrimitive = bbn.fn.isPrimitive(v[i]);
+                if (!isPrimitive && !v[i].__bbnData && Object.hasOwn(this.#data.value, i) && !bbn.fn.numProperties(bbn.fn.diffObj(v[i], this.#data.value[i]))) {
                   continue;
                 }
 
@@ -185,6 +187,9 @@ export default class bbnComputed {
                 }
                 else if (this.#data.value.includes(v[i])) {
                   bbn.fn.move(this.#data.value, this.#data.value.indexOf(v[i]), i);
+                }
+                else if (isPrimitive) {
+                  this.#data.value.splice(i, 0, v[i]);
                 }
                 else if (v[i].__bbnData) {
                   this.#data.value.splice(i, 0, v[i]);
@@ -341,7 +346,7 @@ export default class bbnComputed {
     // Get the old value and its hash from the computed property
     const oldValue = this.#val;
     // Flag to determine if the computed property needs to be updated
-    let go = value !== oldValue;
+    let go = this.#changed;
 
     if (go || force) {
       // If the new value and old value are not the same

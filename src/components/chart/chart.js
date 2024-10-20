@@ -682,7 +682,8 @@ const cpDef = {
        * The random string
        * @data {String} ['random string'] id
        */
-      id: bbn.fn.randomString()
+      id: bbn.fn.randomString(),
+      resizeTimeout: false
     }
   },
   computed: {
@@ -1309,8 +1310,9 @@ const cpDef = {
             cfg.series = [];
             cfg.labels = [];
           }
-          this.widget = new window.ApexCharts(this.getRef('chart'), cfg)
-          this.widget.render();
+
+        //this.widget = new ApexCharts(this.getRef('chart'), cfg)
+          //this.widget.render();
           this.isInit = true;
         }
       })
@@ -1343,8 +1345,8 @@ const cpDef = {
      */
     onResize(){
       if (this.ready) {
-        setTimeout(() => {
-          bbn.fn.log("RESIZE");
+        clearTimeout(this.resizeTimeout);
+        this.resizeTimeout = setTimeout(() => {
           this.setSizes() ;
           if (this.widget) {
             this.updateWidget();
@@ -1359,6 +1361,7 @@ const cpDef = {
      * @param {Object} cfg
      */
     updateWidget(cfg){
+      return;
       if ( this.widget && this.ready ){
         this.widget.updateOptions(bbn.fn.extend(true, {}, cfg || this.widgetCfg), !!this.isBar, !!this.animation);
       }

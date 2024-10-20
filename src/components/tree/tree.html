@@ -6,8 +6,11 @@
   <div bbn-if="loading" class="loader">
     <bbn-loadicon/> <span bbn-text="_('Loading')"/>...
   </div>
+  <h2 bbn-elseif="isRoot && !filteredData.length"
+      bbn-html="_('No items') + '...'"/>
   <!-- The container: a scroll if root and scrollable, a div otherwise -->
-  <bbn-scroll bbn-elseif="isInit && isLoaded"
+  <bbn-scroll bbn-if="isInit"
+              bbn-show="isLoaded"
              bbn-forget="!isRoot || !scrollable"
              ref="scroll">
     <div class="bbn-tree-helper-container"
@@ -29,7 +32,7 @@
       <node inline-template
             bbn-for="(it, i) in filteredData"
             :source="it"
-            :key="(it.key ? it.key + '-' : '') + 'node-' + level + '-' + i"
+            :key="uid ? it.data[uid] : (it.key ? it.key : 'node-' + level + '-' + i)"
             :idx="it.index"
             :component="it.component || component"
             :selectable="it.selectable !== undefined ? it.selectable : selectable"
@@ -207,9 +210,4 @@
     </ul>
   </bbn-scroll>
   <!-- A loader -->
-  <div bbn-elseif="loading" class="loader">
-    <bbn-loadicon/> <span bbn-text="_('Loading')"/>...
-  </div>
-  <h2 bbn-elseif="isRoot"
-      bbn-html="_('No items') + '...'"/>
 </div>

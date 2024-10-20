@@ -219,10 +219,10 @@ export default function startTick() {
 
       bbn.cp.isRunning = true;
 
-      await requestAnimationFrame(async () => {
+      //await requestAnimationFrame(async () => {
         await treatQueue();
         bbn.cp.isRunning = false;
-      });
+      //});
 
       // Indicate that the current update cycle is complete.
     },

@@ -23,14 +23,20 @@ const insertInSlot = function (parent, node, ele) {
     const slot = ele.bbnSchema.slot?.name || ele.bbnSchema?.attr?.slot?.value || 'default';
     //bbn.fn.log(["IN CP 2 " + cp.$options.name, slot, ele.bbnSchema?.attr?.slot?.value, ele]);
     if (parent.bbnSlots?.[slot]) {
-      let search = {bbnId: ele.bbnId};
+        let search = {bbnId: ele.bbnId};
       if (ele.bbnHash) {
         search.bbnHash = ele.bbnHash;
       }
 
       let idx = bbn.fn.search(parent.bbnSlots[slot], search);
+      if (ele.className === 'bbn-tree-root') {
+        bbn.fn.log("INSERT3", ele, idx, search, parent.bbnSlots[slot]);
+      }
       if ((idx > -1) && parent.bbnSlots[slot][idx].bbnHash && !ele.bbnHash) {
         idx = -1;
+      }
+      if (ele.className === 'bbn-tree-root') {
+        bbn.fn.log("INSERT4", ele, idx);
       }
 
       if (idx > -1) {
@@ -54,6 +60,9 @@ const insertInSlot = function (parent, node, ele) {
 };
 
 bbnNode.prototype.nodeInsert = function(ele, after) {
+  if (ele.className === 'bbn-tree-root') {
+    bbn.fn.log("INSERT", ele);
+  }
   //bbn.fn.log(["INSERT", this.component.$options.name, after, ele]);
   bbn.fn.checkType(ele, [Text, Comment, HTMLElement, SVGElement]);
   let replace = !!this.element;

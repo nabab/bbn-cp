@@ -11,6 +11,10 @@ bbnNode.prototype.nodeConceive = async function() {
         hash = this.hash + (this.hash ? '-root' : 'root');
       }
 
+      if (item.id === "0-1-0-0-0") {
+        bbn.fn.log("CONCEIVE " + item.id + ' ' + item.tag)
+        //bbn.fn.log(["SHOULD CONCEIVE " + (this instanceof bbnInternalNode ? this.component.$options.name : this.tag), this])
+      }
       const node = this.component.$retrieveNode(item.id, hash) || generateNode(item, this.component, this, hash, this.data);
       const ele = node.element;
       if (!ele && !node.isCreating) {

@@ -69,6 +69,7 @@ export default class bbnLoopAttr extends bbnAttr
 
     let num = 0;
     let prevEle;
+
     for (let j in loopValue) {
       if (isArray) {
         j = parseInt(j);
@@ -110,8 +111,6 @@ export default class bbnLoopAttr extends bbnAttr
       }
       else {
         const newNode = currentNode || generateNode(cloneNode(cp, node.id), cp, node.parent, hash, loopData);
-
-        //bbn.fn.log("INSIDE LOOP", this.node.component.$options.name, prevEle, root)
         ele = await newNode.nodeInit(prevEle || root);
       }
 
@@ -152,7 +151,7 @@ export default class bbnLoopAttr extends bbnAttr
 
         //bbn.fn.warning("DELETING 0")
         removeDOM(cp, a.element);
-        //delete cp.$nodes[a.id][n];
+        delete cp.$nodes[a.id][n];
       }
     }
 
@@ -162,6 +161,7 @@ export default class bbnLoopAttr extends bbnAttr
         for (let n in obj) {
           bbn.fn.each(oldList, l => {
             if (((n === l) || !n.indexOf(l + '-')) && !this.list.includes(l)) {
+              //bbn.fn.warning("DELETING 1")
               delete obj[n];
             }
           });

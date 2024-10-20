@@ -5,7 +5,7 @@ bbnNode.prototype.nodeInit = async function(after) {
   if (this.isCreating) {
     throw new Error("Already creating");
   }
-  this.isCreating = true;
+
   const old = this.element;
   if (old && (old.bbnSchema === this)) {
     //await this.update();
@@ -22,6 +22,7 @@ bbnNode.prototype.nodeInit = async function(after) {
     }
   }
 
+  this.isCreating = true;
   await this.nodeSetAll();
   if (!this.loop) {
     await this.nodeBuild(after);

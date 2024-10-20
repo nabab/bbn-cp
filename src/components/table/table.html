@@ -248,9 +248,9 @@
                                     :value="true"
                                     :novalue="false"
                                     :strict="true"
-                                    @click.stop
+                                    @click.stop.prevent
                                     @beforechange="beforeSelect(i, ...arguments)"
-                                    @change="checkSelection(i)"
+                                    @change.stop="checkSelection(i)"
                                     class="bbn-middle bbn-flex"/>
                     </div>
                   </div>
