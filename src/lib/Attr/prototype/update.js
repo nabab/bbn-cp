@@ -3,6 +3,8 @@ import bbnInternalNode from "../../Node/Internal.js";
 import setProp from "../../Cp/private/setProp.js";
 import bbn from "@bbn/bbn";
 
+const noValueAttributes = ['required', 'disabled', 'readonly', 'hidden', 'checked', 'selected', 'multiple'];
+
 bbnAttr.prototype.attrUpdate = async function(init) {
   if (this.name && this.node.element && !this.node.isOut) {
     const name = this.name;
@@ -10,7 +12,17 @@ bbnAttr.prototype.attrUpdate = async function(init) {
     if (init || (this.exp && this.isChanged)) {
       const v = this.attrGetValue();
       this.node.props[name] = v;
-      if (this.node.tag === 'svg') {
+      if (noValueAttributes.includes(name)) {
+        if (!this.node.comment && this.node.element) {
+          if (v && !this.node.element.hasAttribute(name)) {
+            this.node.element.setAttribute(name, '');
+          }
+          else if (!v && this.node.element.hasAttribute(name)) {
+            this.node.element.removeAttribute(name);
+          }
+        }
+      }
+      else if (this.node.tag === 'svg') {
         this.node.element.setAttribute(this.name, v);
       }
       else if (this.node.element?.bbn?.$props && Object.hasOwn(this.node.element.bbn.$props, name)) {

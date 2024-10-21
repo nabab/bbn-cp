@@ -1311,8 +1311,8 @@ const cpDef = {
             cfg.labels = [];
           }
 
-        //this.widget = new ApexCharts(this.getRef('chart'), cfg)
-          //this.widget.render();
+          this.widget = new ApexCharts(this.getRef('chart'), cfg)
+          this.widget.render();
           this.isInit = true;
         }
       })
@@ -1361,7 +1361,6 @@ const cpDef = {
      * @param {Object} cfg
      */
     updateWidget(cfg){
-      return;
       if ( this.widget && this.ready ){
         this.widget.updateOptions(bbn.fn.extend(true, {}, cfg || this.widgetCfg), !!this.isBar, !!this.animation);
       }

@@ -28,24 +28,26 @@ bbnAttr.prototype.attrExec = function(data) {
     newData.push(this.node.data);
   }
 
+  bbnData.startWatching();
+  const args = getArgs(this, newData);
+  const seq = bbnData.stopWatching();
   if (!(this instanceof bbnConditionAttr) && bbn.cp.results.has(this)) {
     const tmp = bbn.cp.results.get(this);
     let isSame = true;
-    const preArgs = getArgs(this, newData);
-    bbn.fn.each(preArgs, (a, i) => {
-      if (tmp.args[i] !== a) {
+    for (let i = 0; i < args.length; i++) {
+      if (tmp.args[i] !== args[i]) {
         isSame = false;
-        return false;
+        break;
       }
-    });
+    }
+
     if (isSame) {
       return tmp.res;
     }
   }
 
-  bbnData.startWatching();
-  const args = getArgs(this, newData);
   let val;
+  bbnData.startWatching();
   try {
     val = this.fn.bind(this.node.component)(...args);
   }
@@ -54,7 +56,7 @@ bbnAttr.prototype.attrExec = function(data) {
     throw Error(e.message + ' (' + bbn._("Expression") + ': ' + this.exp + ')');
   }
 
-  const seq = bbnData.stopWatching();
+  seq.push(...bbnData.stopWatching());
   if (!(this instanceof bbnConditionAttr)) {
     bbn.cp.results.set(this, {args, res: {val, seq}});
   }

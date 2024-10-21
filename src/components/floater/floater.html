@@ -4,7 +4,8 @@
           'bbn-bordered': !modal,
           'bbn-background-internal': !modal,
           'bbn-invisible': !isResized,
-          'bbn-floater-arrowed': !!arrow
+          'bbn-floater-arrowed': !!arrow,
+          'bbn-radius-bottom': !!currentButtons.length
         },
         componentClass
       ]"
@@ -159,6 +160,7 @@
                   :key="b?.key || i"
                   :ref="'button' + i"
                   @ready="t => focusable = t"
+                  class="bbn-noradius-top"
                   bbn-bind="b"/>
     </footer>
   </div>
