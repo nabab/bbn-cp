@@ -113,8 +113,15 @@ const cpDef = {
      * @fires getNumberFromValue
      */
     value(newVal){
-      this.currentPrefix = this.getPrefixFromValue();
-      this.currentNumber = this.getNumberFromValue();
+      const prefix = this.getPrefixFromValue();
+      if (this.currentPrefix !== prefix) {
+        this.currentPrefix = prefix;
+      }
+
+      const number = this.getNumberFromValue();
+      if (this.currentNumber !== number) {
+        this.currentNumber = number;
+      }
     },
     currentValue(newVal){
       this.emitInput(!newVal.length && this.nullable ? this.nullValue : newVal);
