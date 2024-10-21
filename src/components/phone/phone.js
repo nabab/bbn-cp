@@ -74,7 +74,7 @@ const cpDef = {
       return bbn.fn.getField(this.countryCodes, 'code', 'prefix', this.currentPrefix);
     },
     currentMaxlength(){
-      return (this.maxlength > -1) ? this.maxlength : (this.currentCountry === 'FR' ? 10 : 0);
+      return this.currentCountry === 'FR' ? 10 : (this.maxlength > -1 ? this.maxlength : 0);
     },
     currentPattern(){
       return `[0-9]${this.currentMaxlength ? ('{0,' + this.currentMaxlength + '}') : '+'}`;
