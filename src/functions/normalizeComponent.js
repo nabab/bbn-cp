@@ -164,7 +164,7 @@ export default function normalizeComponent(cfg, clsName) {
           bbn.fn.checkType(cfg.components[originalName], 'object', bbn._("Components definitions must be objects (check %s in %s)", componentName, cn));
 
           // Normalize the component configuration recursively.
-          res.components[componentName] = bbn.cp.normalizeComponent(cfg.components[originalName], clsName);
+          res.components[originalName] = bbn.cp.normalizeComponent(cfg.components[originalName], clsName);
 
           // Generate a unique tag name for the sub-component.
           let subName = (clsName || 'bbnsub-' + bbn.fn.randomString(10, 20, 'nl')) + bbn.fn.substr(componentName, 0, 1).toUpperCase() + bbn.fn.camelize(bbn.fn.substr(componentName, 1));
@@ -172,8 +172,8 @@ export default function normalizeComponent(cfg, clsName) {
 
           // Store the generated tag name in componentNames for reference.
           res.componentNames[indexName] = subTag;
-          if (indexName !== componentName) {
-            res.componentNames[componentName] = subTag;
+          if (indexName !== originalName) {
+            res.componentNames[originalName] = subTag;
           }
 
           // Ensure all variations of the component name point to the same tag.
