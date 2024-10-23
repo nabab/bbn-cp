@@ -71,6 +71,14 @@ const cpDef = {
         default: true
       },
       /**
+       * The tabindex of the spinners.
+       * @prop {Number} [o] spinnersTabindex
+       */
+      spinnersTabindex: {
+        type: Number,
+        default: 0
+      },
+      /**
        * @prop {Boolean} [true] onlySpinners
        */
       onlySpinners: {
@@ -242,12 +250,15 @@ const cpDef = {
        * @fires focus
        */
       _focus(e){
+        bbn.fn.log('focus')
         if ( !this.isDisabled && !this.readonly && !this.onlySpinners ){
           //this.currentValue = this.value;
           this.currentValue = this.value === null ? '' : (bbn.fn.isNumber(this.value) ? parseFloat(this.value).toFixed(this.decimals) : this.value);
           this.editMode = true;
+          e.preventDefault();
+          e.stopImmediatePropagation();
           this.$nextTick(() => {
-            this.focus(e);
+            this.getRef('element').focus();
             this.selectText();
           })
         }
@@ -434,6 +445,11 @@ const cpDef = {
           ((bbn.env.money !== undefined) && (bbn.env.money.thousands !== undefined)) ? bbn.env.money.thousands : undefined,
           decimals
         )
+      }
+    },
+    beforeMount(){
+      if (this.$el.hasAttribute('tabindex')) {
+        this.$el.removeAttribute('tabindex');
       }
     },
     watch: {

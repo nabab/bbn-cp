@@ -2,7 +2,7 @@
      @click.stop>
   <div class="bbn-flex-width">
     <div class="bbn-flex-fill">
-      <input tabindex="0"
+      <input :tabindex="tabindex"
              autocomplete="off"
              bbn-model="currentValue"
              :name="name"
@@ -23,7 +23,7 @@
       <input autocomplete="off"
              :value="inputValue"
              :name="name"
-             tabindex="0"
+             :tabindex="tabindex"
              :disabled="isDisabled"
              :readonly="readonly || onlySpinners"
              :required="required"
@@ -36,7 +36,8 @@
              :style="{'paddingRight': spinners ? '0.5rem !important' : ''}"
              :placeholder="placeholder">
       <input type="hidden"
-             :value="value">
+             :value="value"
+             tabindex="-1">
     </div>
     <div bbn-if="spinners"
          :class="['bbn-numeric-buttons', 'bbn-radius-top-right', 'bbn-radius-bottom-right', {'bbn-disabled' : !!readonly || isDisabled}]">
@@ -54,7 +55,7 @@
           ]"
           @click="increment()"
           unselectable="on"
-          tabindex="0"
+          :tabindex="spinnersTabindex"
           :disabled="disableIncrease">
         <div class="bbn-100 bbn-middle">
           <i class="nf nf-fa-caret_up bbn-middle"/>
@@ -75,7 +76,7 @@
           ]"
           @click="decrement()"
           unselectable="on"
-          tabindex="0"
+          :tabindex="spinnersTabindex"
           :disabled="disableDecrease">
         <div class="bbn-100 bbn-middle">
           <i class="nf nf-fa-caret_down bbn-middle"/>
