@@ -343,6 +343,14 @@ const list = {
       default: false
     },
     /**
+     * Sets the placeholder in the search field
+     * @prop {String} ["Search"] searchPlaceholder
+     */
+    searchPlaceholder: {
+      type: Boolean,
+      default: bbn._("Search")
+    },
+    /**
      * @todo not used in the component
      */
     searchFields: {
