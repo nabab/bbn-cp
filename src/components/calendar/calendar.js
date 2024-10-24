@@ -316,10 +316,10 @@ const cpDef = {
       let m = dayjs(this.date, this.getCfg().valueFormat);
       mom = m.isValid() ? m : mom;
     }
-    /* else if ( this.max ){
+    else if ( this.max ){
       let m = dayjs(this.max, this.getCfg().valueFormat);
       mom = m.isValid() ? m : mom;
-    } */
+    }
     return {
       /**
        * Today as 'YYYY-MM-DD' format.
