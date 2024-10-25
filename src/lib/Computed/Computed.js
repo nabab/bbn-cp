@@ -166,8 +166,15 @@ export default class bbnComputed {
     if (this.#val !== v) {
       // Taking care of data (object or array)
       if (!bbn.fn.isPrimitive(v)) {
+        if (![undefined, Object, Array].includes(v.constructor)) {
+          bbn.fn.log("INSIDE " + this.#name)
+          if (this.#data) {
+            this.#data.removeComponent(this.#component, this.#name);
+            this.#data = false;
+          }
+        }
         // Case where the result has not been treated and a data object already exists
-        if (!v.__bbnData && this.#data) {
+        else if (!v.__bbnData && this.#data) {
           if (!bbn.fn.numProperties(bbn.fn.diffObj(this.#val, v))) {
             v = this.#val;
           }
@@ -257,7 +264,7 @@ export default class bbnComputed {
 
       if (hasChanged || (this.#val !== v)) {
         this.#changed = true;
-        //bbn.fn.log(["UPDATING COMPUTED " + this.#name + " ON " + this.#component.$options.name, bbn.fn.diffObj(this.#val, v)]);
+        bbn.fn.log(["UPDATING COMPUTED " + this.#name + " ON " + this.#component.$options.name, bbn.fn.diffObj(this.#val, v)]);
         if (this.#num) {
           // Update the component with the new value.
           this.#updateComponent(v, forceUpdate || hasChanged);

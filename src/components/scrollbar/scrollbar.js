@@ -203,7 +203,7 @@ const cpDef = {
       }
 
       if (this.realScroller && this.realScroller.getRef) {
-        return this.realScroller.getRef('scrollContainer')
+        return this.realScroller.$el
       }
 
       return false;

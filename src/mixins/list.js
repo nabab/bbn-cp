@@ -347,7 +347,7 @@ const list = {
      * @prop {String} ["Search"] searchPlaceholder
      */
     searchPlaceholder: {
-      type: Boolean,
+      type: String,
       default: bbn._("Search")
     },
     /**

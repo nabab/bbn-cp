@@ -65,6 +65,7 @@ bbnAttr.prototype.attrSetResult = function() {
       updateSequence(this.result, this);
     }
 
+    bbn.fn.log("RETURNING RESULT FOR ", this.name);
     return this.value;
   }
 

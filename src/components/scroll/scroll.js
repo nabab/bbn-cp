@@ -296,9 +296,6 @@ const cpDef = {
     };
   },
   computed: {
-    resizerObserved() {
-      return this.scrollable ? this.getRef('scrollContainer') : this.$el;
-    },
     /**
      * Based on the prop fixedFooter and fullScreen, a string is returned containing the classes for the form template.
      *
@@ -307,15 +304,19 @@ const cpDef = {
      */
     elementClass() {
       let st = this.componentClass.join(' ');
-      if (!this.ready) {
-        st += ' bbn-invisible';
-      }
-
       if (!this.scrollable) {
         st = bbn.fn.replaceAll('bbn-resize-emitter', '', st) + ' bbn-w-100';
       }
-      else {
-        st += ' bbn-overlay';
+
+      if (this.disabled) {
+        st += ' bbn-scroll-disabled';
+      }
+
+      if (this.hasX()) {
+        st += ' bbn-scroll-x';
+      }
+      if (this.hasY()) {
+        st += ' bbn-scroll-y';
       }
 
       return st;
@@ -326,8 +327,8 @@ const cpDef = {
      */
     elementStyle() {
       let cfg = {
-        maxWidth: this.maxWidth ? bbn.fn.formatSize(this.maxWidth) : '100%',
-        maxHeight: this.maxHeight ? bbn.fn.formatSize(this.maxHeight) : '100%',
+        maxWidth: '100%',
+        maxHeight: '100%',
         minWidth: this.minWidth ? bbn.fn.formatSize(this.minWidth) : '',
         minHeight: this.minHeight ? bbn.fn.formatSize(this.minHeight) : '',
       };
@@ -342,55 +343,21 @@ const cpDef = {
 
       return cfg;
     },
-    containerClass() {
-      let cls = 'bbn-scroll-container bbn-no-scrollbar';
+    contentClass() {
+      let cls = 'bbn-scroll-content bbn-no-scrollbar';
       if (!this.scrollable) {
         cls += ' bbn-w-100';
         return cls;
       }
 
-      if (this.disabled) {
-        cls += ' bbn-scroll-disabled';
-      }
       if (this.ready && !this.isDragging) {
         cls += ' bbn-scroll-not-dragged';
       }
       if (!this.scrollable) {
         cls += ' bbn-overlay';
       }
-      if (this.hasX()) {
-        cls += ' bbn-scroll-x';
-      }
-      if (this.hasY()) {
-        cls += ' bbn-scroll-y';
-      }
       return cls;
     },
-    /**
-     * @todo not used
-     */
-    contentStyle() {
-      let cfg = {};
-      if (this.minWidth) {
-        cfg.minWidth = this.minWidth;
-      }
-      if (this.minHeight) {
-        cfg.minHeight = this.minHeight;
-      }
-      if (this.maxWidth) {
-        cfg.maxWidth = this.maxWidth;
-      }
-      if (this.maxHeight) {
-        cfg.maxHeight = this.maxHeight;
-      }
-      if (!this.scrollable) {
-        return cfg;
-      }
-
-      cfg.width = (this.axis === 'x') || (this.axis === 'both') ? 'auto' : '100%';
-      cfg.height = (this.axis === 'y') || (this.axis === 'both') ? 'auto' : '100%';
-      return cfg;
-    }
   },
   methods: {
     hashJustChanged(length = 600) {
@@ -436,51 +403,51 @@ const cpDef = {
      * @emits scroll
      */
     onScroll(e) {
-      let ct = this.getRef('scrollContainer');
-      if (ct) {
-        if (this.disabled) {
-          e.preventDefault();
-          return;
-        }
-
-        if (this.hasScrollX && (ct.scrollLeft < 0)) {
-          ct.scrollLeft = 0;
-          e.preventDefault();
-          return;
-        }
-
-        if (this.hasScrollY && (ct.scrollTop < 0)) {
-          ct.scrollTop = 0;
-          e.preventDefault();
-          return;
-        }
-        this.currentX = ct.scrollLeft;
-        this.currentY = ct.scrollTop;
-        this.$emit('scroll', e);
-        if (!e.defaultPrevented) {
-          // Leaving touchscroll act normally
-          if (this.scrollInitial && (this.scrollInitial.touched === true)) {
-            // Removing the finishing delay in case it was pre-recorded
-            clearTimeout(this.scrollTimeout);
-            return;
-          }
-          // Not acting for events sent by scrollTo (scrollbars will write in nextLevel)
-          if (this.hasScrollX && this.$refs.xScroller && bbn.fn.isNumber(this.$refs.xScroller.nextLevel) && (Math.abs(this.currentX - this.$refs.xScroller.nextLevel) < 2)) {
-            return;
-          }
-          // Not acting for events sent by scrollTo (scrollbars will write in nextLevel)
-          if (this.hasScrollY && this.$refs.yScroller && bbn.fn.isNumber(this.$refs.yScroller.nextLevel) && (Math.abs(this.currentY - this.$refs.yScroller.nextLevel) < 2)) {
-            return;
-          }
-          if (!this.scrollInitial) {
-            this.scrollInitial = { x: this.currentX, y: this.currentY };
-          }
-          this.setScrollDelay();
-        }
+      if (!this.scrollable) {
+        return;
       }
+
+      const ct = this.$el;
+      if (this.hasScrollX && (ct.scrollLeft < 0)) {
+        ct.scrollLeft = 0;
+        e.preventDefault();
+        return;
+      }
+
+      if (this.hasScrollY && (ct.scrollTop < 0)) {
+        ct.scrollTop = 0;
+        e.preventDefault();
+        return;
+      }
+      this.currentX = ct.scrollLeft;
+      this.currentY = ct.scrollTop;
+      this.$emit('scroll', e);
+      if (!e.defaultPrevented) {
+        // Leaving touchscroll act normally
+        if (this.scrollInitial && (this.scrollInitial.touched === true)) {
+          // Removing the finishing delay in case it was pre-recorded
+          clearTimeout(this.scrollTimeout);
+          return;
+        }
+        // Not acting for events sent by scrollTo (scrollbars will write in nextLevel)
+        if (this.hasScrollX && this.$refs.xScroller && bbn.fn.isNumber(this.$refs.xScroller.nextLevel) && (Math.abs(this.currentX - this.$refs.xScroller.nextLevel) < 2)) {
+          return;
+        }
+        // Not acting for events sent by scrollTo (scrollbars will write in nextLevel)
+        if (this.hasScrollY && this.$refs.yScroller && bbn.fn.isNumber(this.$refs.yScroller.nextLevel) && (Math.abs(this.currentY - this.$refs.yScroller.nextLevel) < 2)) {
+          return;
+        }
+        if (!this.scrollInitial) {
+          this.scrollInitial = { x: this.currentX, y: this.currentY };
+        }
+        this.setScrollDelay();
+      }
+
+      /* useful?
       if (this.scrollable && e) {
         e.stopImmediatePropagation();
       }
+        */
     },
     setScrollDelay() {
       clearTimeout(this.scrollTimeout);
@@ -778,12 +745,10 @@ const cpDef = {
      * Handles the resize of the scroll
      * @method onResize
      * @fires keepCool
-     * @fires getNaturalDimensions
      * @emits resize
      * @returns Promise
      */
     async onResize(force) {
-
       let res = bbn.cp.mixins.resizer.methods.onResize.apply(this);
       const content = this.getRef('scrollContent');
       let sendResizeContent = false;
@@ -796,7 +761,7 @@ const cpDef = {
         // Setting up the element's measures
         // getting current measures of element and scrollable container
         let container = this.$el;
-        let ct = this.getRef('scrollContainer');
+        let ct = this.$el;
         if (!this.scrollable || !content || !container.clientWidth || !container.clientHeight) {
           return;
         }
@@ -874,124 +839,17 @@ const cpDef = {
             ct.scrollTop = this.currentY;
           }
 
-          this.isResizing = false;
         }
-
+        
+        this.isResizing = false;
         this.$emit('resize');
       }
     },
     /**
-     * Gets the dimensions after a resize
-     * @method getNaturalDimensions
-     * @fires getNaturalDimensions
-     */
-    getNaturalDimensions() {
-      //bbn.fn.log(sc ? "THERE IS A SCROLL" : "THERE IS NO SCROLL");
-      const old = {
-        width: this.naturalWidth,
-        height: this.naturalHeight
-      }
-        
-      if (this.isResizing) {
-        return;
-      }
-          
-      let sc = this.find('bbn-scroll');
-      if (this.scrollable) {
-        const content = this.getRef('scrollContent');
-        if (!content) {
-          return;
-        }
-
-        this.isResizing = true;
-        let oldWidth = this.$el.style.width;
-        let oldHeight = this.$el.style.height;
-        let oldcWidth = content.style.width;
-        let oldcHeight = content.style.height;
-        this.$el.style.width = this.maxWidth ? bbn.fn.formatSize(this.maxWidth) : '100%';
-        this.$el.style.height = this.maxHeight ? bbn.fn.formatSize(this.maxHeight) : '100%';
-        content.style.width = 'auto';
-        content.style.height = 'auto';
-        content.classList.add('resizing');
-        let hasOverlay = this.getRef('scrollContainer').classList.contains('bbn-overlay');
-        if (hasOverlay) {
-          this.getRef('scrollContainer').classList.remove('bbn-overlay');
-        }
-
-        let d = { width: content.offsetWidth, height: content.offsetHeight };
-        if (!d.width || !d.height) {
-          if (sc && (sc.$el.clientWidth === this.$el.clientWidth) && (sc.$el.clientHeight === this.$el.clientHeight)) {
-            sc.getNaturalDimensions();
-            this.naturalWidth = sc.naturalWidth;
-            this.naturalHeight = sc.naturalHeight;
-          }
-          else {
-            this.naturalWidth = 0;
-            this.naturalHeight = 0;
-            // @mirko, this is wrong, by giving 0, we show we don't know the natural dimensions
-            // This causes the floater to open in full screen for the first time
-            //this.naturalWidth = this.$el.offsetWidth;
-            //this.naturalHeight = this.$el.offsetHeight;
-          }
-        }
-        else {
-          this.naturalWidth = d.width;
-          this.naturalHeight = d.height;
-        }
-        this.$el.style.width = oldWidth;
-        this.$el.style.height = oldHeight;
-        content.style.width = oldcWidth;
-        content.style.height = oldcHeight;
-        content.classList.remove('resizing');
-        if (hasOverlay) {
-          this.getRef('scrollContainer').classList.add('bbn-overlay');
-        }
-        this.isResizing = false;
-      }
-      else {
-        if (sc && (sc.$el.clientWidth === this.$el.clientWidth) && (sc.$el.clientHeight === this.$el.clientHeight)) {
-          sc.getNaturalDimensions();
-          this.naturalWidth = sc.naturalWidth;
-          this.naturalHeight = sc.naturalHeight;
-        }
-        else {
-          this.naturalWidth = this.$el.offsetWidth;
-          this.naturalHeight = this.$el.offsetHeight;
-        }
-
-        //this.$forceUpdate();
-        if ((old.width !== this.naturalWidth) || (old.height !== this.naturalHeight)) {
-          if (old.width || old.height) {
-            this.$emit('resizecontent');
-            //bbn.fn.log({ w: this.naturalWidth, h: this.naturalHeight });
-          }
-        }
-      }
-    },
-    /**
      * @method initSize
-     * @fires getNaturalDimensions
      * @fires onResize
      */
     async initSize() {
-      //window.bbn.fn.log("initSize");
-      //await this.$forceUpdate();
-      //throw Error("BOOOOOO");
-      if (this.inFloater === null) {
-        this.inFloater = !!this.closest('bbn-floater');
-      }
-      
-      if (!this.inFloater || !this.closest('bbn-floater').definedWidth || !this.closest('bbn-floater').definedHeight) {
-        await this.getNaturalDimensions();
-        /*
-        if (this.inFloater && !this.naturalWidth && !this.disabled && !this.width) {
-          bbn.fn.log(["WAITING FOR FLOATER", this.inFloater, this.$el, this.scrollable, this.autoresize]);
-          return this.waitReady();
-        }
-          */
-        //bbn.fn.log(bbn._("Init size from %s with ID %s", this.$options.name, this.$cid));
-      }
-
       this.scrollReady = true;
       await this.onResize(true);
       this.ready = true;
@@ -1160,7 +1018,7 @@ const cpDef = {
         this.$emit('reachleft');
       }
       else {
-        let ct = this.getRef('scrollContainer');
+        let ct = this.$el;
         if (ct && (x + ct.clientWidth >= ct.scrollWidth)) {
           this.$emit('reachright');
         }
@@ -1172,7 +1030,7 @@ const cpDef = {
         this.$emit('reachtop');
       }
       else {
-        let ct = this.getRef('scrollContainer');
+        let ct = this.$el;
         if (ct && ct.scrollHeight && (y + ct.clientHeight >= ct.scrollHeight - 10)) {
           this.$emit('reachbottom');
         }
