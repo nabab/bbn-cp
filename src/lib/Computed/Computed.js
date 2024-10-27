@@ -167,7 +167,7 @@ export default class bbnComputed {
       // Taking care of data (object or array)
       if (!bbn.fn.isPrimitive(v)) {
         if (![undefined, Object, Array].includes(v.constructor)) {
-          bbn.fn.log("INSIDE " + this.#name)
+          //bbn.fn.log("INSIDE " + this.#name)
           if (this.#data) {
             this.#data.removeComponent(this.#component, this.#name);
             this.#data = false;
