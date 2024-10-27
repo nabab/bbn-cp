@@ -1042,6 +1042,7 @@ const list = {
           prom.then(d => {
             if (this.isAjax) {
               if (!this.loadingRequestID || (this.loadingRequestID !== loadingRequestID)) {
+                return;
                 this.isLoading = false;
                 this.loadingRequestID = false;
                 throw Error("No loading request");

@@ -7,17 +7,19 @@ import bbnData from "../Data.js";
  * @param {*} path 
  * @returns 
  */
-bbnData.proxyShift = function(targetObj, target) {
+bbnData.proxyShift = function(targetObj, target, component) {
   return () => {
     // The bbnData object of the target array
-    if (target.length) {
-      const subObj = this.getObject(target[0]);
+    const subObj = this.getObject(target[0]);
+    const res = target.shift();
+    if (subObj) {
       if (subObj) {
-        subObj.unset();
+        subObj.removeComponent(component, 0);
       }
     }
-    const res = target.shift();
+
     if (targetObj) {
+      targetObj.fixIndexes(component);
       //bbn.fn.log("SHIFT");
       targetObj.prepareUpdate();
     }

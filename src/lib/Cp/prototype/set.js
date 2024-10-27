@@ -19,7 +19,7 @@ bbnCp.prototype.$set = function (obj, prop, value, writable = true, configurable
       // New treated value
       const dataObj = obj.$treatValue(value, prop);
       // The value is different
-      if (!bbn.fn.isSame(dataObj, obj[prop])) {
+      if (value !== obj[prop]) {
         // It's a prop
         if (obj.$namespaces[prop] === 'props') {
           setProp(obj, prop, value);
@@ -36,7 +36,7 @@ bbnCp.prototype.$set = function (obj, prop, value, writable = true, configurable
     }
   }
   else {
-    // Creating or updating if possible a property to the given object
+    // Creating or updating if possible a property to the given object which is it is a bbnData it will be treated
     Object.defineProperty(obj, prop, {
       value,
       writable,

@@ -60,15 +60,10 @@ bbnAttr.prototype.attrSetResult = function() {
   const node = this.node;
   // Check if the result needs to be updated.
   if (!(this instanceof bbnModelAttr) && ((this.result?.num || 0) > node.component.$numBuild) && !Object.hasOwn(arguments, 0)) {
-    if (this.value !== this.result.value) {
-      this.value = this.result.value;
-      updateSequence(this.result, this);
-    }
-
-    bbn.fn.log("RETURNING RESULT FOR ", this.name);
     return this.value;
   }
 
+  this.result.num = node.component.$numBuild + 1;
   let res;
   try {
     res = Object.hasOwn(arguments, 0) ? {val: arguments[0], seq: []} : this.attrExec();
@@ -104,14 +99,13 @@ bbnAttr.prototype.attrSetResult = function() {
   }*/
 
   // Create or update the result object based on its state.
-  if (!this.result.num) {
+  if (this.result.num === 1) {
     this.result.state = 'NEW';
   }
   else if (this.result.state === 'DEL') {
     this.result.state = 'NEW';
   }
   else if (this.result.state === 'TMP') {
-
     if (isChanged) {
       this.result.state = 'MOD'; // Modified state.
     }
@@ -140,7 +134,6 @@ bbnAttr.prototype.attrSetResult = function() {
   }
   
   this.result.seq = res.seq;
-  this.result.num = node.component.$numBuild + 1;
   updateSequence(this.result, this);
 
   // Return the updated result value.

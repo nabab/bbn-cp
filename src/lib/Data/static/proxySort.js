@@ -7,14 +7,14 @@ import bbnData from "../Data.js";
  * @param {*} path 
  * @returns 
  */
-bbnData.proxySort = function(targetObj, target) {
+bbnData.proxySort = function(targetObj, target, component) {
   return (...args) => {
     const before = JSON.stringify(target);
     const res = target.sort(...args);
     const after = JSON.stringify(target);
     if (targetObj) {
       if (before !== after) {
-        bbn.fn.warning("SORT");
+        targetObj.fixIndexes(component);
         targetObj.prepareUpdate();
       }
     }

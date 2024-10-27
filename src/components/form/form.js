@@ -386,7 +386,7 @@ const cpDef = {
          */
         popupIndex: false,
         tab: false,
-        originalData: bbn.fn.clone(od ? bbnData.getValue(od, true) : (od || this.source)),
+        originalData: bbn.fn.clone(od ? bbnData.getValue(od, true) : this.source),
         isPosted: false,
         isLoading: false,
         currentSchema: currentSchema,
@@ -527,12 +527,14 @@ const cpDef = {
        */
       updateRealButtons() {
         this.$forceUpdate();
+        /*
         if (this.window && bbn.fn.isArray(this.window.currentButtons) && (this.currentMode === 'big')) {
           if (this.window.currentButtons !== this.realButtons) {
             this.window.currentButtons = this.realButtons;
             this.window.$forceUpdate().then(() => this.window.onResize());
           }
         }
+          */
 
         return this.realButtons;
       },
@@ -617,7 +619,7 @@ const cpDef = {
       },
       commitData() {
         const od = bbnData.getObject(this.source);
-        this.originalData = bbn.fn.clone(od ? bbnData.getValue(od, true) : (od || this.source));
+        this.originalData = bbn.fn.clone(od ? bbnData.getValue(od, true) : this.source);
         this.dirty = false;
       },
       /**
@@ -871,7 +873,7 @@ const cpDef = {
        */
       reinit(){
         const od = bbnData.getObject(this.source);
-        this.originalData = bbn.fn.clone(od ? bbnData.getValue(od, true) : (od || this.source));
+        this.originalData = bbn.fn.clone(od ? bbnData.getValue(od, true) : this.source);
         this.dirty = this.isModified();
       },
       focusFirst(fromLast){
@@ -920,6 +922,7 @@ const cpDef = {
           this.window = this.closest("bbn-floater");
           if ( this.window ){
             this.window.addClose(this.closePopup);
+            this.window.componentClass.push('bbn-radius-bottom')
           }
         }
         if ( !this.tab ){

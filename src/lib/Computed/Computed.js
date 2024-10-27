@@ -174,13 +174,13 @@ export default class bbnComputed {
           }
         }
         // Case where the result has not been treated and a data object already exists
-        else if (!v.__bbnData && this.#data) {
+        else if (this.#val?.__bbnData && !v.__bbnData && this.#data) {
           if (!bbn.fn.numProperties(bbn.fn.diffObj(this.#val, v))) {
             v = this.#val;
           }
           // If both are arrays we mutate the old one into the new one
           else if (this.#data.isArray && bbn.fn.isArray(v)) {
-            this.#data.value.splice(0, this.#data.value.length, ...v);
+            //this.#data.value.splice(0, this.#data.value.length, ...v);
             for (let i = 0; i < v.length; i++) {
               if (v[i] !== this.#data.value[i]) {
                 const isPrimitive = bbn.fn.isPrimitive(v[i]);
@@ -264,7 +264,7 @@ export default class bbnComputed {
 
       if (hasChanged || (this.#val !== v)) {
         this.#changed = true;
-        bbn.fn.log(["UPDATING COMPUTED " + this.#name + " ON " + this.#component.$options.name, bbn.fn.diffObj(this.#val, v)]);
+        //bbn.fn.log(["UPDATING COMPUTED " + this.#name + " ON " + this.#component.$options.name, bbn.fn.diffObj(this.#val, v)]);
         if (this.#num) {
           // Update the component with the new value.
           this.#updateComponent(v, forceUpdate || hasChanged);

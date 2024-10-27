@@ -14,21 +14,28 @@ bbnData.proxySplice = function(targetObj, target, component) {
       throw new Error(["Impossible to find the data object", target]);
     }
 
-    let newArgs = [];
-    args.forEach((a, i) => {
-      const idx = target.length + i;
-      const newVal = this.treatValue(a, component, idx, targetObj);
-      newArgs.push(newVal);
-    });
-
-    const res = numDelete === undefined ? target.splice(index) : target.splice(index, numDelete, ...newArgs);
+    const res = numDelete === undefined ? target.splice(index) : target.splice(index, numDelete);
+    let i = index;
     res.forEach(t => {
       let subObj = this.getObject(t);
       if (subObj) {
-        subObj.unset();
+        subObj.removeComponent(component, i);
       }
+      i++;
     });
+
+    let newArgs = [];
+    args.forEach((a, i) => {
+      const idx = target.length + i;
+      //const newVal = this.treatValue(a, component, idx, targetObj);
+      newArgs.push(a);
+    });
+    if (newArgs.length) {
+      target.splice(index, 0, ...newArgs);
+    }
+
     if (targetObj) {
+      targetObj.fixIndexes(component);
       //bbn.fn.log("SPLICE");
       targetObj.prepareUpdate();
     }

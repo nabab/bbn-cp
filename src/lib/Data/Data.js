@@ -90,11 +90,18 @@ class bbnData/* extends EventTarget*/ {
       configurable: true
     });
 
+    const revocable = Proxy.revocable(this.targetData, this.constructor.proxy(component, path, this));
     /**
      * @var {Proxy} value The proxy takes care of subreactivity
      */
     Object.defineProperty(this, 'value', {
-      value: new Proxy(this.targetData, this.constructor.proxy(component, path, this)),
+      value: revocable.proxy,
+      writable: false,
+      configurable: true
+    });
+
+    Object.defineProperty(this, 'revoke', {
+      value: revocable.revoke,
       writable: false,
       configurable: false
     });
@@ -115,15 +122,6 @@ class bbnData/* extends EventTarget*/ {
       value: 0,
       writable: true,
       configurable: true
-    });
-
-    /**
-     * @var {Object} components The components that use this data object, indexed by their unique id (cid)
-     */
-    Object.defineProperty(this, 'components', {
-      value: bbn.fn.createObject(),
-      writable: false,
-      configurable: false
     });
 
     Object.defineProperty(this, 'deps', {

@@ -151,5 +151,6 @@ bbnAttr.prototype.attrUpdate = async function(init) {
         setUndefinedAttribute(this.node, name, v, jsName);
       }
     }
+    
   }
 };

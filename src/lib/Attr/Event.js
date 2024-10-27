@@ -7,7 +7,6 @@ import initResults from "../Cp/private/initResults.js";
  */
 export default class bbnEventAttr extends bbnAttr
 {
-  #applied = false;
   async attrSet() {
 
   }
@@ -34,8 +33,12 @@ export default class bbnEventAttr extends bbnAttr
       }
 
       // Add the event listener to the element.
-      if (this.#applied !== this.node.element) {
-        this.#applied = this.node.element;
+      if (!this.node.element.bbnEventsApplied) {
+        this.node.element.bbnEventsApplied = bbn.fn.createObject();
+      }
+
+      if (!this.node.element.bbnEventsApplied[this.name]) {
+        this.node.element.bbnEventsApplied[this.name] = true;
         this.node.element.addEventListener(this.name, e => {
           //bbn.fn.log("EVENT " + this.name)
           // Check for any specified modifiers and apply them.

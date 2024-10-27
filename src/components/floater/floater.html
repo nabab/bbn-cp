@@ -147,15 +147,20 @@
             bbn-html="footer"
             class="bbn-w-100"
             ref="footer"/>
-    <footer bbn-elseif="currentButtons.length"
+    <footer bbn-else
             class="bbn-w-100 bbn-button-group"
             ref="buttons">
-      <bbn-button bbn-for="(b, i) in shownButtons"
-                  :key="b?.key || i"
+      <bbn-button bbn-for="(button, i) in currentButtons"
+                  :key="button?.key || i"
                   :ref="'button' + i"
                   @ready="t => focusable = t"
-                  class="bbn-noradius-top"
-                  bbn-bind="b"/>
+                  :class="[{
+                    'bbn-noradius-top': true,
+                    'bbn_primary': button.preset === 'submit' || button.primary,
+                    'bbn-no-border-right': i === this.currentButtons.length - 1
+                  }, button.cls || '']"
+                  bbn-bind="button"/>
+          
     </footer>
   </div>
 </div>

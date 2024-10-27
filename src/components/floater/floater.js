@@ -440,7 +440,7 @@ const cpDef = {
       /**
        * @data {Boolean} [false] isInit
        */
-      currentButtons: this.buttons.slice(),
+      currentButtons: this.buttons,
       isInit: false,
       definedWidth: null,
       definedHeight: null,
@@ -456,25 +456,6 @@ const cpDef = {
   computed: {
     hasNoCoordinate() {
       return !this.element && !this.top && !this.right && !this.left && !this.bottom;
-    },
-    /**
-     * @data {Array} [[]] currentButtons
-     */
-    shownButtons() {
-      const res = [];
-      bbn.fn.each(this.currentButtons, (b, i) => {
-        const o = bbn.fn.createObject(b);
-        o.class = ['bbn-no-radius', {
-          'bbn-primary': b.preset === 'submit' || b.primary,
-          'bbn-no-border-right': i === this.currentButtons.length - 1
-        }, b.cls || ''];
-        if (b.cls) {
-          delete o.cls;
-        }
-
-        res.push(o);
-      });
-      return res;
     },
     /**
      * Normalizes the property 'left'.

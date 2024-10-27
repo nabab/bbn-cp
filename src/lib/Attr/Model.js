@@ -7,7 +7,6 @@ import setProp from "../Cp/private/setProp.js";
  */
 export default class bbnModelAttr extends bbnAttr
 {
-  #applied = false;
   async attrUpdate(init) {
     if (!this.name || !this.node.parentElement || (!init && this.node.isOut)) {
       return;
@@ -40,8 +39,12 @@ export default class bbnModelAttr extends bbnAttr
       }
     }
 
-    if (init && (this.node.element !== this.#applied)) {
-      this.#applied = this.node.element;
+    if (!this.node.element.bbnModelApplied) {
+      this.node.element.bbnModelApplied = bbn.fn.createObject();
+    }
+
+    if (init && !this.node.element.bbnModelApplied[this.name]) {
+      this.node.element.bbnModelApplied[this.name] = true;
       const eventName = this.modifiers.includes('lazy') ? 'change' : 'input';
       const ele = this.node.element;
       //bbn.fn.log(["FROM MODEL INIT", eventName, this.name, this.attrGetValue()]);

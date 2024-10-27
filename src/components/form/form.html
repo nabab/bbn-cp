@@ -86,12 +86,17 @@
   </div>
 
   <!-- BIG BUTTONS IN WINDOW -->
-  <div bbn-elseif="!window && realButtons.length && (currentMode === 'big')"
+  <div bbn-elseif="realButtons.length && (currentMode === 'big')"
        class="bbn-form-footer bbn-popup-footer bbn-button-group bbn-flex-width bbn-lg">
     <bbn-button bbn-for="(button, i) in realButtons"
-                :class="[{'bbn-primary': button.preset === 'submit'}, button.cls || '']"
+                :class="[{
+                  'bbn-noradius-top': !!window,
+                  'bbn_primary': button.preset === 'submit' || button.primary,
+                  'bbn-no-border-right': i === this.realButtons.length - 1
+                }, button.cls || '']"
                 :key="button.key || button.text || button.icon || i"
                 ref="butt"
+                bbn-portal="window?.$refs?.buttons"
                 bbn-bind="button"/>
   </div>
   <div class="bbn-overlay bbn-modal"

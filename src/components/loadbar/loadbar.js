@@ -101,7 +101,7 @@ const cpDef = {
        * @return {Array}
        */
       items(){
-        return [].concat(this.loadingItems).concat(this.loadedItems)
+        return [...this.loadingItems, ...this.loadedItems]
       },
       /** 
        * @computed currentItem
