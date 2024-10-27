@@ -31,6 +31,18 @@ export default function disconnected(cp) {
     });
 
     removeComponent(cp.$el.bbnCid);
+    for (let idx in cp.$nodes) {
+      if (cp.$nodes[idx] instanceof bbnNode) {
+        cp.$nodes[idx].attributes.splice(0);
+      }
+      else {
+        for (let n in cp.$nodes[idx]) {
+          cp.$nodes[idx][n].attributes.splice(0);
+        }
+      }
+
+      delete cp.$nodes[idx];
+    }
     // Setting back $isinit
     const destroyed = new Event('hook:destroyed');
     onHook(cp, 'destroyed');
