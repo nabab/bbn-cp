@@ -1,7 +1,6 @@
 <div :class="[componentClass, {
              'bbn-invisible': !ready,
-             'bbn-overlay': (nav || scrollContent),
-             'bbn-w-100': !scrollContent
+             'bbn-100': (nav || scrollContent),
              }]"
       @keydown.esc="onEscape">
   <bbn-splitter :resizable="resizable"
@@ -12,7 +11,7 @@
     <bbn-pane :scrollable="false"
               bbn-forget="!splittable">
       <div :class="{
-                  'bbn-overlay': scrollContent,
+                  'bbn-100': scrollContent,
                   'bbn-flex-height': scrollContent && !hasVerticalTabs,
                   'bbn-flex-width': hasVerticalTabs,
                   'bbn-router-nav': nav,

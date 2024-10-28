@@ -12,24 +12,4 @@
        tabindex="-1">
     <slot/>
   </div>
-  <bbn-scrollbar bbn-if="scrollReady && hasScrollX"
-                 :hidden="isResizing || hiddenX"
-                 orientation="horizontal"
-                 ref="xScroller"
-                 :color="barColor ? barColor : ''"
-                 :scroll-also="scrollAlso"
-                 :initial="currentX"
-                 @scroll="scrollHorizontal"
-                 :offset="offsetX"
-                 :keep-visible="keepVisible"/>
-  <bbn-scrollbar bbn-if="scrollReady && hasScrollY"
-                 :hidden="isResizing || hiddenY"
-                 orientation="vertical"
-                 ref="yScroller"
-                 :color="barColor ? barColor : ''"
-                 :scroll-also="scrollAlso"
-                 :initial="currentY"
-                 @scroll="scrollVertical"
-                 :offset="offsetY"
-                 :keep-visible="keepVisible"/>
 </div>

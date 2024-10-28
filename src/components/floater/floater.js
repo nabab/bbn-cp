@@ -910,8 +910,6 @@ const cpDef = {
 
         let min = 0;
         if (this.element) {
-          coor[a.posStart] -= parentCoor[a.posStart];
-          coor[a.posEnd] -= (parentCoor[a.posEnd] - parentCoor[a.size] - this.element['client' + a.camel]);
           // Fixed position
           if (!!this.position) {
             let isTop = this.position.startsWith('top') || (this.position === 'left') || (this.position === 'right'),

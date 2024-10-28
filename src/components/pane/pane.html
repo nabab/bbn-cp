@@ -1,4 +1,6 @@
-<div :class="[componentClass, 'bbn-background']">
+<div :class="[componentClass, 'bbn-background', {
+  'bbn-flex-fill': !currentConfig?.size
+}]" :style="componentStyle">
   <div bbn-if="splitter"
        :class="{
     'bbn-overlay': splitter.fullSize && !isCollapsed,
