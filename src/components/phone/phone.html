@@ -1,15 +1,21 @@
-<div :class="[componentClass, 'bbn-iflex', 'bbn-textbox', {'bbn-disabled': !!isDisabled}]">
+<div :class="[componentClass, 'bbn-iflex', 'bbn-textbox', {
+       'bbn-disabled': !!isDisabled,
+       'bbn-phone-prefix-readonly': prefixReadonly
+     }]">
   <bbn-dropdown :source="countryCodes"
                 bbn-model="currentPrefix"
                 :disabled="isDisabled"
-                :readonly="readonly"
+                :readonly="readonly || prefixReadonly"
                 :required="required"
                 :placeholder="placeholder ? '+...' : ''"
                 :native="native"
                 source-value="prefix"
                 selected-text="prefix"
                 :clear-html="true"
-                class="bbn-phone-dropdown bbn-right-xsspace bbn-no-border"
+                :class="['bbn-phone-dropdown', , 'bbn-no-border', {
+                  'bbn-right-xsspace': !prefixReadonly
+                }]"
+                :autosize="prefixReadonly"
                 tabindex="-1"/>
   <bbn-input :tabindex="0"
              autocomplete="off"

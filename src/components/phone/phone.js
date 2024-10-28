@@ -45,8 +45,11 @@ const cpDef = {
     icons: {
       type: Boolean,
       default: true
+    },
+    prefixReadonly: {
+      type: Boolean,
+      default: false
     }
-
   },
   data(){
     return {
