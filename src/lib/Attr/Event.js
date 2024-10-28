@@ -33,11 +33,11 @@ export default class bbnEventAttr extends bbnAttr
       }
 
       // Add the event listener to the element.
-      if (!this.node.element.bbnEventsApplied) {
+      if (this.node.element && !this.node.element.bbnEventsApplied) {
         this.node.element.bbnEventsApplied = bbn.fn.createObject();
       }
 
-      if (!this.node.element.bbnEventsApplied[this.name]) {
+      if (this.node.element && !this.node.element.bbnEventsApplied[this.name]) {
         this.node.element.bbnEventsApplied[this.name] = true;
         this.node.element.addEventListener(this.name, e => {
           //bbn.fn.log("EVENT " + this.name)

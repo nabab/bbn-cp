@@ -39,11 +39,11 @@ export default class bbnModelAttr extends bbnAttr
       }
     }
 
-    if (!this.node.element.bbnModelApplied) {
+    if (this.node.element && !this.node.element.bbnModelApplied) {
       this.node.element.bbnModelApplied = bbn.fn.createObject();
     }
 
-    if (init && !this.node.element.bbnModelApplied[this.name]) {
+    if (init && this.node.element && !this.node.element.bbnModelApplied[this.name]) {
       this.node.element.bbnModelApplied[this.name] = true;
       const eventName = this.modifiers.includes('lazy') ? 'change' : 'input';
       const ele = this.node.element;
