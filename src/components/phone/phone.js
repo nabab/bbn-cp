@@ -80,7 +80,12 @@ const cpDef = {
       return this.currentCountry === 'FR' ? 10 : (this.maxlength > -1 ? this.maxlength : 0);
     },
     currentPattern(){
-      return `[0-9]${this.currentMaxlength ? ('{0,' + this.currentMaxlength + '}') : '+'}`;
+      let m = this.currentMaxlength || '';
+      if (m && (this.currentCountry !== 'FR')) {
+        m = '4,' + m;
+      }
+
+      return `[0-9]${m ? ('{' + m + '}') : ''}`;
     }
   },
   methods: {
