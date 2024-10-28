@@ -496,7 +496,10 @@ const cpDef = {
      * @return {Object}
      */
     currentStyle() {
-      let s = {};
+      let s = {
+        width: this.formattedWidth,
+        height: this.formattedHeight
+      };
       if (this.isMaximized) {
         bbn.fn.extend(s, {
           top: 0,
