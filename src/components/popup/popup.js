@@ -145,6 +145,11 @@ const cpDef = {
      */
     showPopup() {
       return this.items.length > 0;
+    },
+    modalStyle(){
+      return {
+        zIndex: this.zIndex + this.popups.length - 2
+      }
     }
   },
   methods: {

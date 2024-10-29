@@ -39,7 +39,7 @@
       <bbn-scroll bbn-elseif="currentColumns.length"
                   :scrollable="scrollable"
                   :autoresize="false"
-                  class="bbn-w-100"
+                  :class="{'bbn-w-100': !scrollable, 'bbn-overlay': scrollable}"
                   ref="scroll"
                   :offset-y="$refs.thead ? [$refs.thead.getBoundingClientRect().height, 0] : [0,0]"
                   @resize="resizeWidth">

@@ -643,14 +643,14 @@ const cpDef = {
           (x !== undefined) &&
           (x !== null)
         ) {
-          promesses.push(this.axisScrollTo(x, anim));
+          promises.push(this.axisScrollTo(x, anim));
         }
         if (
           this.hasScrollY &&
           (y !== undefined) &&
           (y !== null)
         ) {
-          promesses.push(this.axisScrollTo(x, anim, true));
+          promises.push(this.axisScrollTo(x, anim, true));
         }
         Promise.all(promises).then(r2 => {
           resolve();

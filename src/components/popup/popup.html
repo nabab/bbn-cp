@@ -9,10 +9,9 @@
                :container="$el"
                :style="{zIndex: zIndex+i}"
                @close="onClose(i)"/>
-  <div class="bbn-modal bbn-overlay"
-      tabindex="-1"
-      :style="{zIndex: zIndex+items.length-2}"
-      @keydown.esc.prevent.stop="close(items.length-1)"
-      bbn-if="popups.length && (popups[popups.length - 1].modal !== false)"
-  ></div>
+  <div bbn-if="popups.length && (popups[popups.length - 1].modal !== false)"
+       class="bbn-modal bbn-overlay"
+       tabindex="-1"
+       :style="{zIndex: zIndex + popups.length - 2}"
+       @keydown.esc.prevent.stop="close(popups.length - 1)"/>
 </div>
