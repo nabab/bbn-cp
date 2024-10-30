@@ -43,11 +43,6 @@ bbnData.prototype.unset = function(noParent) {
   */
 
   bbnData.inventory.delete(id);
-  Object.defineProperty(this, 'revoked', {
-    value: true,
-    writable: false,
-    configurable: false
-  });
   delete this.targetData.__bbnData;
   delete this.targetData.__bbnKeys;
   delete this.targetData;

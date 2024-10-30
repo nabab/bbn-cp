@@ -951,12 +951,12 @@ const list = {
         /** @todo Is it compatible with the fact of updating the source when given an array */
         let o = this.hierarchy ? bbn.fn.extend(a, {
           index: i,
-          key: this.uid ? data[this.uid] : (this.isAjax ? (i + '-' + this.hashCfg) : i),
+          key: this.uid ? a[this.uid] : (this.isAjax ? (i.toString() + '-' + this.hashCfg) : i),
           _bbn: true
         }) : {
           data: a,
           index: i,
-          key: this.uid ? data[this.uid] : (this.isAjax ? (i + '-' + this.hashCfg) : i),
+          key: this.uid ? a[this.uid] : (this.isAjax ? (i.toString() + '-' + this.hashCfg) : i),
           _bbn: true
         };
 

@@ -19,6 +19,10 @@ const cpDef = {
     bbn.cp.mixins.events
   ],
   props: {
+    type: {
+      type: String,
+      default: 'button'
+    },
     /**
      * The title of the button.
      *

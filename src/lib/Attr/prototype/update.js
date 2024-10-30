@@ -53,10 +53,20 @@ const setPropOnComponent = (node, name, v, jsName) => {
   const ele = node.element;
   const cp = ele?.bbn;
   if (Object.hasOwn(cp?.$props || {}, name)) {
+    bbn.fn.log(["TYPE1", ele[jsName], v, cp?.[name]])
     if (v !== cp[name]) {
       setProp(cp, name, v);
-      if (ele[jsName] !== undefined && !v && ele.hasAttribute(name)) {
-        ele.removeAttribute(name);
+      if ((node.component.$options.name === 'bbn-button') && (name === 'type')) {
+        bbn.fn.log(["TYPE2", ele[jsName]])
+      }
+
+      if (ele[jsName] !== undefined) {
+        if (!v && ele.hasAttribute(name) && !cp.$internal.attr[name]) {
+          ele.removeAttribute(name);
+        }
+        else {
+          ele[jsName] = v;
+        }
       }
     }
     return true;
@@ -141,16 +151,29 @@ bbnAttr.prototype.attrUpdate = async function(init) {
     const jsName = bbn.cp.badCaseAttributes[this.name] || this.name;
     if (init || (this.exp && this.isChanged)) {
       const v = this.attrGetValue();
-      this.node.props[name] = v;
+      let node = this.node;
+      node.props[name] = v;
+      /*
+      if (node instanceof bbnInternalNode) {
+        node = this.node.component.$el?.bbnSchema;
+        if (!Object.hasOwn(node?.attr || {}, name) && !Object.hasOwn(node?.bind?.value || {}, name)) {
+          node.props[name] = v;
+          if ((this.node.component.$options.name === 'bbn-button') && (this.name === 'type')) {
+            bbn.fn.log(["TYPE", this.name, v, node, init, setPropOnComponent(node, name, v, jsName)])
+          }
+        }
+      }
+        */
+
       if (
-        !setNoValueAttribute(this.node, name, v, jsName) &&
-        !setSVGAttribute(this.node, name, v) &&
-        !setPropOnComponent(this.node, name, v, jsName) &&
-        !setRegularAttribute(this.node, name, v, jsName)
+        !setNoValueAttribute(node, name, v, jsName) &&
+        !setSVGAttribute(node, name, v) &&
+        !setPropOnComponent(node, name, v, jsName) &&
+        !setRegularAttribute(node, name, v, jsName)
       ) {
-        setUndefinedAttribute(this.node, name, v, jsName);
+        setUndefinedAttribute(node, name, v, jsName);
       }
     }
-    
+
   }
 };

@@ -189,11 +189,12 @@ export default class bbnComputed {
                 }
 
                 hasChanged = true;
-                if (!Object.hasOwn(this.#data.value, i)) {
-                  this.#data.value.push(v[i]);
-                }
-                else if (this.#data.value.includes(v[i])) {
+
+                if (this.#data.value.includes(v[i])) {
                   bbn.fn.move(this.#data.value, this.#data.value.indexOf(v[i]), i);
+                }
+                else if (!Object.hasOwn(this.#data.value, i)) {
+                  this.#data.value.push(v[i]);
                 }
                 else if (isPrimitive) {
                   this.#data.value.splice(i, 0, v[i]);
@@ -206,7 +207,7 @@ export default class bbnComputed {
                     bbn.fn.mutateObject(this.#data.value[i], v[i]);
                   }
                   else {
-                    this.#data.value.splice(i, !Object.hasOwn() || v.includes(this.#data.value[i]) ? 0 : 1, v[i]);
+                    this.#data.value.splice(i, v.includes(this.#data.value[i]) ? 0 : 1, v[i]);
                   }
                 }
               }
@@ -215,6 +216,7 @@ export default class bbnComputed {
               this.#data.value.splice(v.length);
             }
 
+            this.#data.fixIndexes();
             v = this.#data.value;
           }
           // If both are objects we mutate the old one into the new one

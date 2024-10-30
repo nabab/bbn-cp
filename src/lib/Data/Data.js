@@ -90,21 +90,15 @@ class bbnData/* extends EventTarget*/ {
       configurable: true
     });
 
-    const revocable = Proxy.revocable(this.targetData, this.constructor.proxy(component, path, this));
     /**
      * @var {Proxy} value The proxy takes care of subreactivity
      */
     Object.defineProperty(this, 'value', {
-      value: revocable.proxy,
+      value: new Proxy(this.targetData, this.constructor.proxy(component, path, this)),
       writable: false,
       configurable: true
     });
 
-    Object.defineProperty(this, 'revoke', {
-      value: revocable.revoke,
-      writable: false,
-      configurable: false
-    });
 
     /**
      * @var {Boolean} isArray If the data is an array
