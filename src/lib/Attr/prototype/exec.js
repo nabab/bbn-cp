@@ -42,7 +42,7 @@ bbnAttr.prototype.attrExec = function(data) {
     }
 
     if (isSame) {
-      return tmp.res;
+      //return tmp.res;
     }
   }
 

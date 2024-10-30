@@ -425,6 +425,8 @@ const cpDef = {
         this.setScrollDelay();
       }
 
+      return true;
+
       /* useful?
       if (this.scrollable && e) {
         e.stopImmediatePropagation();

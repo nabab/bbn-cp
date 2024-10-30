@@ -204,13 +204,13 @@ const cpDef = {
     /**
      * @prop {Function} onOpen
      */
-      onOpen: {
+    onOpen: {
       type: Function
     },
     /**
      * @prop {Function} onSelect
      */
-      onSelect: {
+    onSelect: {
       type: Function
     },
     /**
@@ -591,6 +591,20 @@ const cpDef = {
         this.onResize(true);
         this.$nextTick(() => {
           this.isResized = true;
+          const scroll = this.closest('bbn-scroll');
+          if (scroll) {
+            const onScroll = () => {
+              bbn.fn.log("ON SCROLL", this.isVisible)
+              if (this.isVisible) {
+                this.onResize();
+              }
+            };
+
+            scroll.$on('scroll', onScroll);
+            this.$on('hook:beforeDestroy', () => {
+              scroll.$off('scroll', onScroll);
+            });
+          }
         })
       }
     },
@@ -1002,7 +1016,7 @@ const cpDef = {
             }
             else if (coor[a.posEnd] + size > this['lastKnownCt' + a.camel]) {
               if (this[a.posEnd] !== undefined) {
-                coor[a.posEnd] = this['lastKnownCt' + a.camel] - size;
+                //coor[a.posEnd] = this['lastKnownCt' + a.camel] - size;
               }
               scroll = true;
             }
@@ -1051,7 +1065,7 @@ const cpDef = {
         }
         this.currentTop = Math.ceil(r.y.res + offset);
       }
-      bbn.fn.log(["PARENT COOR", parentCoor, coor, r, ok, this.lastKnownWidth, this.lastKnownHeight])
+      //bbn.fn.log(["PARENT COOR", parentCoor, coor, r, ok, this.lastKnownWidth, this.lastKnownHeight])
 
     },
     /**
