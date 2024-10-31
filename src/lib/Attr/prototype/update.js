@@ -14,8 +14,8 @@ const noValueAttributes = ['required', 'disabled', 'readonly', 'hidden', 'checke
  * @returns {boolean} - Returns true if the attribute was handled, false otherwise.
  */
 const setNoValueAttribute = (node, name, v, jsName) => {
-  if ((ele[jsName] !== undefined) && noValueAttributes.includes(name)) {
-    const ele = node.element;
+  const ele = node.element;
+  if (noValueAttributes.includes(name) && (ele?.[jsName] !== undefined)) {
     if (!node.comment && ele) {
       ele[jsName] = !!v;
     }
