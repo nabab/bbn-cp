@@ -299,7 +299,6 @@ const editableList = {
           throw Error(bbn._("Impossible to open a window if either an editor or a URL is not set"))
         }
         popup.onClose = () => {
-          bbn.fn.log("AFTER CLOSER");
           //  this.currentData.push(bbn.fn.clone( this.tmpRow)); // <-- Error. This add a new row into table when it's in edit mode
           this._removeTmp();
           this.editedRow = false;

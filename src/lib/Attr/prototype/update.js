@@ -53,24 +53,21 @@ const setPropOnComponent = (node, name, v, jsName) => {
   const ele = node.element;
   const cp = ele?.bbn;
   if (Object.hasOwn(cp?.$props || {}, name)) {
-    bbn.fn.log(["TYPE1", ele[jsName], v, cp?.[name]])
     if (v !== cp[name]) {
       setProp(cp, name, v);
-      if ((node.component.$options.name === 'bbn-button') && (name === 'type')) {
-        bbn.fn.log(["TYPE2", ele[jsName]])
-      }
+    }
 
-      if (ele[jsName] !== undefined) {
-        if (!v && ele.hasAttribute(name) && !cp.$internal.attr[name]) {
-          ele.removeAttribute(name);
-        }
-        else {
-          ele[jsName] = v;
-        }
+    if (![v, undefined].includes(ele[jsName])) {
+      if (!v && ele.hasAttribute(name) && !cp.$internal.attr[name]) {
+        ele.removeAttribute(name);
+      }
+      else {
+        ele[jsName] = v;
       }
     }
     return true;
   }
+
   return false;
 };
 
@@ -153,17 +150,9 @@ bbnAttr.prototype.attrUpdate = async function(init) {
       const v = this.attrGetValue();
       let node = this.node;
       node.props[name] = v;
-      /*
       if (node instanceof bbnInternalNode) {
         node = this.node.component.$el?.bbnSchema;
-        if (!Object.hasOwn(node?.attr || {}, name) && !Object.hasOwn(node?.bind?.value || {}, name)) {
-          node.props[name] = v;
-          if ((this.node.component.$options.name === 'bbn-button') && (this.name === 'type')) {
-            bbn.fn.log(["TYPE", this.name, v, node, init, setPropOnComponent(node, name, v, jsName)])
-          }
-        }
       }
-        */
 
       if (
         !setNoValueAttribute(node, name, v, jsName) &&
