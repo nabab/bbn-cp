@@ -152,6 +152,9 @@ bbnAttr.prototype.attrUpdate = async function(init) {
       node.props[name] = v;
       if (node instanceof bbnInternalNode) {
         node = this.node.component.$el?.bbnSchema;
+        if (Object.hasOwn(node?.attr || {}, name) || Object.hasOwn(node?.bind?.value || {}, name)) {
+          return;
+        }
       }
 
       if (
