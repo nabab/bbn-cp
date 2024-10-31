@@ -42,7 +42,7 @@ bbnData.prototype.unset = function(noParent) {
   }
   */
 
-  bbnData.inventory.delete(id);
+  delete bbnData.inventory[id];
   delete this.targetData.__bbnData;
   delete this.targetData.__bbnKeys;
   delete this.targetData;

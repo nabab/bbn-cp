@@ -7,7 +7,7 @@ class bbnData/* extends EventTarget*/ {
 
   static lastSequence = null;
 
-  static inventory = new WeakMap();
+  static inventory = bbn.fn.createObject();
 
   static watchSequence = [];
 
@@ -55,7 +55,7 @@ class bbnData/* extends EventTarget*/ {
      */
     const id = Symbol();
     // The object is added to the data inventory
-    bbnData.inventory.set(id, this);
+    bbnData.inventory[id] = this;
     Object.defineProperty(this, 'id', {
       writable: false,
       configurable: false,

@@ -57,7 +57,6 @@ const sorter = (a, b) => {
 async function treatQueue(num = 0) {
   let isDebug = false;
   if (bbn.cp.queue.length) {
-    //bbn.fn.log("TREATING QUEUE: " + bbn.cp.queue.length);
     if (bbn.cp.queue.length > 100000) {
       if (!isDebug) {
         isDebug = bbn.cp.numTicks;
@@ -68,7 +67,9 @@ async function treatQueue(num = 0) {
       isDebug = false;
     }
 
+    //bbn.fn.log("ORDERING WQUEUE");
     let queue = bbn.fn.order(bbn.cp.queue.splice(0), 'num');
+    //bbn.fn.log("FINISHED ORDERING WQUEUE");
     // Process each component in the queue.
     let oneDone = false;
 
@@ -86,6 +87,7 @@ async function treatQueue(num = 0) {
         }
       }
       const queueElement = queue.shift();
+      //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
       if (!cp.$el.isConnected) {
         continue;
@@ -201,6 +203,7 @@ async function treatQueue(num = 0) {
       }
 
       lastElement = queueElement;
+      //bbn.fn.log("FINISED TREATING")
     }
 
     bbn.cp.numTicks++;
@@ -223,6 +226,9 @@ async function treatQueue(num = 0) {
       bbn.cp.queue.push(bbn.cp.nextQueue.shift());
     }
   }
+
+  //bbn.fn.log("FINISHED FUNCTION WITH " +bbn.cp.queue.length);
+
 }
 /**
  * Starts the ticking process for component updates.
