@@ -67,9 +67,10 @@ async function treatQueue(num = 0) {
       isDebug = false;
     }
 
-    //bbn.fn.log("ORDERING WQUEUE");
+    bbn.fn.log("ORDERING FN " + num);
+    bbn.fn.log("ORDERING WQUEUE");
     let queue = bbn.fn.order(bbn.cp.queue.splice(0), 'num');
-    //bbn.fn.log("FINISHED ORDERING WQUEUE");
+    bbn.fn.log("FINISHED ORDERING WQUEUE");
     // Process each component in the queue.
     let oneDone = false;
 
@@ -87,7 +88,7 @@ async function treatQueue(num = 0) {
         }
       }
       const queueElement = queue.shift();
-      //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
+      bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
       if (!cp.$el.isConnected) {
         continue;
@@ -203,14 +204,14 @@ async function treatQueue(num = 0) {
       }
 
       lastElement = queueElement;
-      //bbn.fn.log("FINISED TREATING")
+      bbn.fn.log("FINISED TREATING")
     }
 
     bbn.cp.numTicks++;
 
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
-      await treatQueue(num + 1);
+      //await treatQueue(num + 1);
     }
 
     for (let n in cps) {
@@ -227,37 +228,44 @@ async function treatQueue(num = 0) {
     }
   }
 
-  //bbn.fn.log("FINISHED FUNCTION WITH " +bbn.cp.queue.length);
+  bbn.fn.log("FINISHED FN (" + num + ") WITH " +bbn.cp.queue.length);
 
 }
 /**
  * Starts the ticking process for component updates.
  * Throws an error if the tick process is already running.
  */
-export default function startTick() {
+export default async function startTick() {
   // Check if the tick process is already initiated.
   if (bbn.cp.interval) {
     throw Error(bbn._("The tick is already started"));
   }
 
   // Set an interval to periodically check and update components.
-  bbn.cp.interval = setInterval(
-    async function () {
-      // Skip if an update is currently running.
-      if (bbn.cp.isRunning || !bbn.cp.queue.length) {
+//  bbn.cp.interval = setInterval(
+//    async function () {
+  bbn.fn.log((bbn.cp.isRunning ? "RUNNING" : "NOT RUNNING"));
+  // Skip if an update is currently running.
+      if (bbn.cp.isRunning) {
+        if (bbn.cp.to) {
+          clearTimeout(bbn.cp.to);
+        }
+        bbn.cp.to = setTimeout(() => {
+          startTick();
+        }, 5);
+
         return;
       }
 
       bbn.cp.isRunning = true;
 
-      await requestAnimationFrame(async () => {
-        await treatQueue();
-        bbn.cp.isRunning = false;
-      });
+      bbn.fn.log("RUNNING");
+      await treatQueue();
+      bbn.cp.isRunning = false;
 
       // Indicate that the current update cycle is complete.
-    },
+//    },
     // Interval defined by the tick delay.
     bbn.cp.tickDelay
-  );
+//  );
 }

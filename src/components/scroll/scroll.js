@@ -913,43 +913,6 @@ const cpDef = {
      * @fires keepCool
      * @fires onResize
      */
-    waitReady(ev) {
-      if (!this.autoresize) {
-        if (!this.ready) {
-          this.initSize()
-        }
-        return;
-      }
-
-      if (this.isResizing || !this.$el.clientWidth || !bbn.fn.isInViewport(this.$el)) {
-        return;
-      }
-
-
-      clearTimeout(this.readyTimeout);
-      this.readyTimeout = setTimeout(() => {
-        //bbn.fn.log("WAIT READY SCROLL");
-        this.initSize();
-      }, this.latency)
-    },
-    setObserver() {
-      if (this.$el.clientWidth && !this.scrollObserver) {
-        this.scrollObserver = new MutationObserver(mutations_list => {
-          let mutated = false;
-          mutations_list.forEach(mutation => {
-            if (mutation.addedNodes) {
-              this.waitReady();
-            }
-          });
-        });
-      }
-      //this.scrollObserver.observe(this.getRef('scrollContent'), { subtree: true, childList: true });
-    },
-    unsetObserver() {
-      if (this.scrollObserver) {
-        this.scrollObserver.disconnect();
-      }
-    },
     preResize() {
       /*
       if (this.scrollable && this.$el.offsetParent && this.isActiveResizer()) {
@@ -998,21 +961,7 @@ const cpDef = {
    * @fires waitReady
    */
   mounted() {
-    this.setObserver();
-    this.waitReady();
-    /*
-    this.initSize().then(() => {
-      this.scrollReady = true;
-      bbn.fn.log("PARENT", this.$parent);
-      if ((typeof bbnFloaterCp === 'function') && (this.$parent instanceof bbnFloaterCp)) {
-        throw Error("BOOOOOO");
-      }
-    });
-    //cp.$emit('resizecontent');
-    */
-  },
-  beforeDestroy() {
-    this.unsetObserver();
+    this.initSize();
   },
   watch: {
     /**
