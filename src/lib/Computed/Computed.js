@@ -112,7 +112,7 @@ export default class bbnComputed {
     }
 
     let forceUpdate = false;
-    //bbn.fn.log("UPDATNG COMPUTED " + this.#name + ' ' + this.#component.$cid);
+    bbn.fn.log("UPDATNG COMPUTED " + this.#name + ' ' + this.#component.$cid);
 
     // Start watching the process before executing the getter.
     bbnData.startWatching();
@@ -285,6 +285,7 @@ export default class bbnComputed {
 
     // Update the build number.
     this.#num = this.#component.$numBuild + 1;
+    bbn.fn.log("FINISHED UPDATNG COMPUTED " + this.#name + ' ' + this.#component.$cid);
 
   }
 

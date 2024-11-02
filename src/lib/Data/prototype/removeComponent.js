@@ -5,7 +5,7 @@ import bbnData from "../Data.js";
  * @param {bbnCp} component 
  */
 bbnData.prototype.removeComponent = function(component, path) {
-  //bbn.fn.log(`REMOVING ${path} FROM ${component.$options.name}`)
+  bbn.fn.log(`REMOVING ${path} FROM ${component.$options.name}`)
   if (!(component instanceof bbnCp)) {
     throw Error("bbnData hasComponent must be called with a bbn component");
   }
