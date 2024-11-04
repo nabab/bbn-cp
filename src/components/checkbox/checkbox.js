@@ -70,33 +70,6 @@ const cpDef = {
       type: [String, Boolean, Number]
     },
     /**
-     * Set to true to have required checkbox selection.
-     *
-     * @prop {Boolean} [false] required
-     */
-    required: {
-      type: Boolean,
-      default: false
-    },
-    /**
-     * Set to true to disable the checkbox.
-     *
-     * @prop {Boolean} [false] disabled
-     */
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    /**
-     * Set to true for a readonly checkbox.
-     *
-     * @prop {Boolean} [false] readonly
-     */
-    readonly: {
-      type: Boolean,
-      default: false
-    },
-    /**
      * The accompanying label for the checkbox.
      *
      * @prop {String} label

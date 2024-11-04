@@ -43,9 +43,11 @@ bbnData.prototype.unset = function(noParent) {
   */
 
   delete bbnData.inventory[id];
-  delete this.targetData.__bbnData;
-  delete this.targetData.__bbnKeys;
-  delete this.targetData;
+  if (this.targetData) {
+    delete this.targetData.__bbnData;
+    delete this.targetData.__bbnKeys;
+    delete this.targetData;
+  }
   //bbn.fn.log(["DATA deleted", JSON.stringify(this.targetData)]);
 };
 

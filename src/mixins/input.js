@@ -47,7 +47,7 @@ const input = {
      * @memberof inputComponent
      */
     disabled: {
-      type: [Boolean, Function],
+      type: [Boolean, Function, String, Number],
       default: false
     },
     /**

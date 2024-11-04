@@ -86,14 +86,6 @@ const cpDef = {
       default: 0
     },
     /**
-     * Set to true to disable the component.
-     * @prop {Boolean} [false] disabled
-     */
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    /**
      * Set it to true if you want to be able to edit the filename.
      * @prop {Boolean} [false] editable
      */

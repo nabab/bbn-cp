@@ -107,7 +107,7 @@ const cpDef = {
      * @prop {(Boolean|Function)} [false] disabled
      */
     disabled: {
-      type: [Boolean, Function, String],
+      type: [Boolean, Function, String, Number],
       default: false
     },
     /**
