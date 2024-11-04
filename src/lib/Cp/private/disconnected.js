@@ -30,6 +30,7 @@ export default function disconnected(cp) {
       configurable: true
     });
 
+    //bbn.fn.log("DISCONNECTED: " + cp.$el.tagName + ' / ' + cp.$el.bbnSchema.id);
     removeComponent(cp.$el.bbnCid);
     for (let idx in cp.$nodes) {
       if (cp.$nodes[idx] instanceof bbnNode) {
@@ -47,5 +48,6 @@ export default function disconnected(cp) {
     const destroyed = new Event('hook:destroyed');
     onHook(cp, 'destroyed');
     cp.$el.dispatchEvent(destroyed);
+    //bbn.fn.log("ENDED DISCONNECTED: " + cp.$el.tagName + ' / ' + cp.$el.bbnSchema.id);
   }
 }

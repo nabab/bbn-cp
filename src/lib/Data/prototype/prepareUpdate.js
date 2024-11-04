@@ -44,7 +44,7 @@ bbnData.prototype.prepareUpdate = function(path) {
   deps.push(...(this.deps.__bbnRoot || []));
   deps.forEach(a => {
     if (!(a instanceof bbnComputed) || !this.hasParent(a.component, a.name)) {
-      queueUpdate({component: a.component, element: a, num})
+      queueUpdate({component: a.component || a?.node?.component, element: a, num})
     }
   });
   impacted.forEach(it => {

@@ -1,6 +1,6 @@
 <div :class="[componentClass, {
              'bbn-invisible': !ready,
-             'bbn-100': (nav || scrollContent),
+             'bbn-overlay': (nav || scrollContent),
              }]"
       @keydown.esc="onEscape">
   <bbn-splitter :resizable="resizable"

@@ -176,7 +176,8 @@ const input = {
        * True if the component has a value.
        * @data {Boolean} hasVale
        */
-      originalValue: original
+      originalValue: original,
+      isEmittingValue: false,
     };
   },
   computed: {

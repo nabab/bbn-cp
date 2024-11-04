@@ -6,7 +6,6 @@ import bbnData from "../Data.js";
 const err = "Impossible to find the data object in the values of the component %s with CID %s";
 bbnData.prototype.unset = function(noParent) {
   //bbn.fn.log("UNSET: " + JSON.stringify(this.targetData), this, this.deps.map(d => d.constructor.name));
-  bbn.fn.log("UNSET: " + JSON.stringify(this.targetData));
   const id = this.id;
 
   // Unsetting the children

@@ -105,7 +105,10 @@ bbnAttr.prototype.attrSetResult = function() {
   else if (this.result.state === 'DEL') {
     this.result.state = 'NEW';
   }
-  else if (this.result.state === 'TMP') {
+  else if (isChanged) {
+    this.result.state = 'MOD'; // Modified state.
+  }
+  else {
     if (isChanged) {
       this.result.state = 'MOD'; // Modified state.
     }
@@ -124,9 +127,6 @@ bbnAttr.prototype.attrSetResult = function() {
         this.result.state = 'OK'; // Unchanged state.
       }
     }
-  }
-  else if (isChanged) {
-    this.result.state = 'MOD'; // Modified state.
   }
 
   if (this.value !== this.result.value) {

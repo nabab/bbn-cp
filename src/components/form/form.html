@@ -6,17 +6,18 @@
       @submit.prevent
       @keydown.enter.prevent.stop="submit(false)"
       @keyup.esc="cancel">
-  <div :class="{
-         'bbn-flex-fill': !window && isInit && scrollable || !!fullSize,
+  <div bbn-forget="!hasFooter && !scrollable && !fullSize"
+       :class="{
+         'bbn-flex-fill': !window && isInit && scrollable || fullSize,
          'bbn-w-100': scrollable,
          'bbn-flex-height': !scrollable && hasFooter,
          'bbn-overlay': scrollable && !!window,
        }">
-    <component :is="scrollable ? 'bbn-scroll' : 'div'"
-               :class="{'bbn-overlay': !!fullSize, 'bbn-form-container': true}"
-               :axis="scrollable ? 'y' : null"
-               ref="container"
-               :keep-visible="keepScrollVisible">
+    <bbn-scroll bbn-forget="!scrollable"
+                :class="{'bbn-overlay': !!fullSize, 'bbn-form-container': true}"
+                :axis="scrollable ? 'y' : null"
+                ref="container"
+                :keep-visible="keepScrollVisible">
       <fieldset class="bbn-form-fieldset"
                 :disabled="disabled">
         <div class="bbn-grid-fields bbn-padded"
@@ -45,7 +46,7 @@
       </fieldset>
       <!-- SMALL BUTTONS OUTSIDE WINDOW -->
       <div bbn-if="!hasFooter && !window && realButtons.length && ['small', 'normal'].includes(currentMode)"
-          class="bbn-form-buttons bbn-middle bbn-vpadding">
+           class="bbn-form-buttons bbn-middle bbn-vpadding">
         <bbn-button bbn-for="(button, i) in realButtons"
                     :key="button.key || i"
                     class="bbn-hsmargin"

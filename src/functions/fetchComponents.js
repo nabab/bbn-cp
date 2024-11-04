@@ -81,11 +81,15 @@ export default async function fetchComponents(toDefine) {
 
   // Process each group of components.
   const r = {};
+  const proms = [];
   for (let prefix in groups) {
     const rule = groups[prefix];
-    let res = await rule.handler(rule.components);
-    
-    if (bbn.fn.isArray(res.components)) {
+    proms.push(rule.handler(rule.components));
+  }
+  const results = await Promise.all(proms);
+  bbn.fn.each(results, res => {
+    let rule;
+    if (bbn.fn.isArray(res?.components)) {
       // Define each component in the group.
       bbn.fn.each(res.components, obj => {
         if (!obj.definition || !obj.name) {
@@ -96,6 +100,12 @@ export default async function fetchComponents(toDefine) {
           bbn.fn.translate(obj.lang);
         }
 
+        for (let n in groups) {
+          if (obj.name.indexOf(n) === 0) {
+            rule = groups[n];
+            break;
+          }
+        }
         // Add mixins to the component definition.
         if (rule.mixins) {
           obj.definition.mixins = obj.definition.mixins || [];
@@ -110,7 +120,7 @@ export default async function fetchComponents(toDefine) {
         r[obj.name] = bbn.cp.define(obj.name, obj.definition, obj.template, obj.css);
       });
     }
-  }
+  });
 
   return r;
 }

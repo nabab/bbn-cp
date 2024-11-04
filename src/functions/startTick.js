@@ -67,10 +67,7 @@ async function treatQueue(num = 0) {
       isDebug = false;
     }
 
-    bbn.fn.log("ORDERING FN " + num);
-    bbn.fn.log("ORDERING WQUEUE");
     let queue = bbn.fn.order(bbn.cp.queue.splice(0), 'num');
-    bbn.fn.log("FINISHED ORDERING WQUEUE");
     // Process each component in the queue.
     let oneDone = false;
 
@@ -88,7 +85,7 @@ async function treatQueue(num = 0) {
         }
       }
       const queueElement = queue.shift();
-      bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
+      //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
       if (!cp.$el.isConnected) {
         continue;
@@ -204,7 +201,6 @@ async function treatQueue(num = 0) {
       }
 
       lastElement = queueElement;
-      bbn.fn.log("FINISED TREATING")
     }
 
     bbn.cp.numTicks++;
@@ -228,7 +224,7 @@ async function treatQueue(num = 0) {
     }
   }
 
-  bbn.fn.log("FINISHED FN (" + num + ") WITH " +bbn.cp.queue.length);
+  //bbn.fn.log("FINISHED FN (" + num + ") WITH " +bbn.cp.queue.length);
 
 }
 /**
@@ -244,7 +240,6 @@ export default async function startTick() {
   // Set an interval to periodically check and update components.
 //  bbn.cp.interval = setInterval(
 //    async function () {
-  bbn.fn.log((bbn.cp.isRunning ? "RUNNING" : "NOT RUNNING"));
   // Skip if an update is currently running.
       if (bbn.cp.isRunning) {
         if (bbn.cp.to) {
@@ -259,7 +254,6 @@ export default async function startTick() {
 
       bbn.cp.isRunning = true;
 
-      bbn.fn.log("RUNNING");
       await treatQueue();
       bbn.cp.isRunning = false;
 
