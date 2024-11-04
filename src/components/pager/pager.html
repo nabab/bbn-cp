@@ -1,176 +1,178 @@
 <div bbn-show="element && (numPages || extraControls)"
 		 :class="[componentClass, 'bbn-widget', 'bbn-unselectable']">
-  <div :class="{
-				 'bbn-block': !isMobile || isTablet,
-				 'bbn-w-100': isMobile && !isTablet,
-				 'bbn-c': isMobile && !isTablet
-			 }"
-			 bbn-if="numPages && element?.pageable">
-		<!-- 1ST BUTTON (FIRST) -->
-		<bbn-button icon="nf nf-fa-angle_double_left"
-								:notext="true"
-								:title="_('Go to the first %s', pageName)"
-								:disabled="currentPage <= 2"
-								@click="firstPage"
-								bbn-if="buttons"/>
-		<!-- OR 1ST ICON -->
-		<span bbn-else
-					class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
-					@click="firstPage"
-					:style="{visibility: currentPage <= 2 ? 'hidden' : 'visible'}">
-			<i class="nf nf-fa-angle_double_left bbn-xl bbn-pager-mobile-icon"/>
-		</span>
-		<!-- 2ND BUTTON (PREVIOUS) -->
-		<bbn-button icon="nf nf-fa-angle_left"
-								:notext="true"
-								:title="_('Go to the previous %s', pageName)"
-								:disabled="currentPage == 1"
-								@click="prevPage"
-								bbn-if="buttons"/>
-		<!-- OR 2ND ICON (PREVIOUS) -->
-		<span bbn-else
-					class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
-					@click="prevPage"
-					:style="{visibility: currentPage == 1 ? 'hidden' : 'visible'}">
-			<i class="nf nf-fa-angle_left bbn-xl bbn-pager-mobile-icon"/>
-		</span>
-		<!-- PAGE + NUMERIC SELECTOR -->
-		<span class="bbn-iblock" bbn-text="pageName"/>
-		<bbn-numeric bbn-if="numericSelector"
-								 bbn-model="currentNumericPage"
-								 :min="1"
-								 :max="element.numPages"
-								 class="bbn-narrower bbn-right-sspace"
-								 :disabled="!!element.isLoading"
-								 :readonly="element.numPages == 1"/>
-		<span bbn-else
-		      class="bbn-iblock bbn-right-xsspace"
-					bbn-text="currentPage"/>
-		<!-- OF TOTAL -->
-		<span class="bbn-iblock bbn-right-xsspace"
-					bbn-text="_('of') + ' ' + element.numPages"/>
-		<!-- 3RD BUTTON (NEXT) -->
-		<bbn-button icon="nf nf-fa-angle_right"
-								:notext="true"
-								:title="_('Go to the next %s', pageName)"
-								:disabled="currentPage == element.numPages"
-								@click="nextPage"
-								bbn-if="buttons"/>
-		<!-- OR 3RD ICON (NEXT) -->
-		<span bbn-else
-		      class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
-					@click="nextPage"
-					:style="{visibility: currentPage == element.numPages ? 'hidden' : 'visible'}">
-			<i class="nf nf-fa-angle_right bbn-xl bbn-pager-mobile-icon"/>
-		</span>
-		<!-- 4TH BUTTON (LAST) -->
-		<bbn-button icon="nf nf-fa-angle_double_right"
-								:notext="true"
-								:title="_('Go to the last %s', pageName)"
-								@click="lastPage"
-								:disabled="currentPage >= element.numPages - 1"
-								bbn-if="buttons"/>
-		<!-- OR 4TH ICON (LAST) -->
-		<span bbn-else
-					class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
-					@click="lastPage"
-					:style="{visibility: currentPage >= element.numPages - 1 ? 'hidden' : 'visible'}">
-			<i class="nf nf-fa-angle_double_right bbn-xl bbn-pager-mobile-icon"/>
-		</span>
-		<span bbn-if="(element?.limits?.length > 1) &&
-								(!isMobile || isTablet) &&
-								!!limit"
-					class="bbn-hmargin">
-			<bbn-dropdown :source="element.limits"
-										bbn-model.number="element.currentLimit"
-										@change="currentPage = 1"
-										:disabled="!!element.isLoading"
-										:autosize="true"/>
-			<span bbn-text="itemName + ' ' + _('per') + ' ' + pageName"/>
-		</span>
-	</div>
-	<div bbn-if="element && extraControls"
-			 :class="{
-				 'bbn-block': !isMobile || isTablet,
-				 'bbn-flex-width': isMobile && !isTablet,
-				 'bbn-top-xsspace': isMobile && !isTablet && element.pageable && element.currentData.length,
-				 'bbn-vmiddle': isMobile && !isTablet
-			 }"
-			 :style="{
-				 float: !isMobile || isTablet ? 'right' : 'left',
-				 justifyContent: isMobile && !isTablet ? 'flex-end' : ''
-			 }">
-		<div bbn-if="element.limits?.length &&
-							isMobile &&
-							!isTablet &&
-							element.pageable &&
-							element.currentData.length"
-				 class="bbn-right-space bbn-flex-fill bbn-vmiddle">
-			<bbn-dropdown :source="element.limits"
-										bbn-model.number="element.currentLimit"
-										@change="currentPage = 1"
-										:disabled="!!element.isLoading"
-										:autosize="true"/>
-		</div>
-		<div>
-			<span bbn-if="element.filteredData.length &&
-									element.pageable && element.isAjax"
-						bbn-text="(element.start+1) + (element.currentLimit <= 1 ? '' : '-' + (element.start + element.currentLimit > element.total ? element.total : element.start + element.currentLimit)) + ' / ' + element.total"
-			></span>
-			<span bbn-elseif="element.filteredData.length &&
-											 element.pageable && !element.isAjax"
-						bbn-text="(element.start+1) + '-' + (element.start + element.currentLimit > element.filteredData.length ? element.filteredData.length : element.start + element.currentLimit) + ' ' + _('of') + ' ' + element.filteredData.length"
-			></span>
-			<span bbn-elseif="!isMobile || isTablet"
-						bbn-text="element.total ? _('Total') + ': ' + element.total + ' ' + _('items') : _('No item')"
-			></span>
-			<span bbn-else>
-				<i class="nf nf-fa-hashtag bbn-m bbn-right-sspace"></i><span bbn-text="element.total"></span>
+	<div :class="{'bbn-flex-width': !isMobile}">
+		<div :class="{
+					'bbn-w-100': isMobile,
+					'bbn-flex-fill': !isMobile,
+					'bbn-c': isMobile && !isTablet
+				}"
+				bbn-if="numPages && element?.pageable">
+			<!-- 1ST BUTTON (FIRST) -->
+			<bbn-button icon="nf nf-fa-angle_double_left"
+									:notext="true"
+									:title="_('Go to the first %s', pageName)"
+									:disabled="currentPage <= 2"
+									@click="firstPage"
+									bbn-if="buttons"/>
+			<!-- OR 1ST ICON -->
+			<span bbn-else
+						class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
+						@click="firstPage"
+						:style="{visibility: currentPage <= 2 ? 'hidden' : 'visible'}">
+				<i class="nf nf-fa-angle_double_left bbn-xl bbn-pager-mobile-icon"/>
 			</span>
-			&nbsp;
-			<bbn-button bbn-if="element.currentQuery && element.showQuery"
-									:title="_('View SQL query')"
-									@click="element ? element.showQuery() : () => {}"
-									icon="nf nf-mdi-database"
+			<!-- 2ND BUTTON (PREVIOUS) -->
+			<bbn-button icon="nf nf-fa-angle_left"
 									:notext="true"
-									class="bbn-left-xsspace"/>
-			<bbn-button bbn-if="element.saveable"
-									:disabled="element.isSaved"
-									:title="_('Save current configuration')"
-									@click="onClickSave"
-									icon="nf nf-fa-save"
+									:title="_('Go to the previous %s', pageName)"
+									:disabled="currentPage == 1"
+									@click="prevPage"
+									bbn-if="buttons"/>
+			<!-- OR 2ND ICON (PREVIOUS) -->
+			<span bbn-else
+						class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
+						@click="prevPage"
+						:style="{visibility: currentPage == 1 ? 'hidden' : 'visible'}">
+				<i class="nf nf-fa-angle_left bbn-xl bbn-pager-mobile-icon"/>
+			</span>
+			<!-- PAGE + NUMERIC SELECTOR -->
+			<span class="bbn-iblock" bbn-text="pageName"/>
+			<bbn-numeric bbn-if="numericSelector"
+									bbn-model="currentNumericPage"
+									:min="1"
+									:max="element.numPages"
+									class="bbn-narrower bbn-right-sspace"
+									:disabled="!!element.isLoading"
+									:readonly="element.numPages == 1"/>
+			<span bbn-else
+						class="bbn-iblock bbn-right-xsspace"
+						bbn-text="currentPage"/>
+			<!-- OF TOTAL -->
+			<span class="bbn-iblock bbn-right-xsspace"
+						bbn-text="_('of') + ' ' + element.numPages"/>
+			<!-- 3RD BUTTON (NEXT) -->
+			<bbn-button icon="nf nf-fa-angle_right"
 									:notext="true"
-									class="bbn-left-xsspace"/>
-			<bbn-button bbn-if="(element.filterable || element.showable) && element.reset"
-									:disabled="!element.isChanged"
-									:title="_('Reset to original configuration')"
-									@click="element ? element.reset(false) : () => {}"
-									icon="nf nf-fa-undo"
+									:title="_('Go to the next %s', pageName)"
+									:disabled="currentPage == element.numPages"
+									@click="nextPage"
+									bbn-if="buttons"/>
+			<!-- OR 3RD ICON (NEXT) -->
+			<span bbn-else
+						class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
+						@click="nextPage"
+						:style="{visibility: currentPage == element.numPages ? 'hidden' : 'visible'}">
+				<i class="nf nf-fa-angle_right bbn-xl bbn-pager-mobile-icon"/>
+			</span>
+			<!-- 4TH BUTTON (LAST) -->
+			<bbn-button icon="nf nf-fa-angle_double_right"
 									:notext="true"
-									class="bbn-left-xsspace"/>
-			<bbn-button bbn-if="element.showable && element.openColumnsPicker"
-									:title="_('Columns\' picker')"
-									@click="element ? element.openColumnsPicker() : () => {}"
-									icon="nf nf-fa-columns"
-									:notext="true"
-									class="bbn-left-xsspace"/>
-			<bbn-button bbn-if="element.filterable &&
-												element.multifilter &&
-												element.openMultiFilter"
-									:title="_('Multi Filter')"
-									:class="[
-														'bbn-left-xsspace',
-														{'bbn-red': element.currentFilters && element.currentFilters.conditions.length ? true : false}
-													]"
-									@click="element ? element.openMultiFilter() : () => {}"
-									icon="nf nf-mdi-filter_variant"
-									:notext="true"/>
-			<bbn-button bbn-if="element.isAjax && element.updateData"
-									:title="_('Refresh')"
-									@click="element ? element.updateData() : () => {}"
-									icon="nf nf-fa-refresh"
-									:notext="true"
-									class="bbn-left-xsspace"/>
+									:title="_('Go to the last %s', pageName)"
+									@click="lastPage"
+									:disabled="currentPage >= element.numPages - 1"
+									bbn-if="buttons"/>
+			<!-- OR 4TH ICON (LAST) -->
+			<span bbn-else
+						class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
+						@click="lastPage"
+						:style="{visibility: currentPage >= element.numPages - 1 ? 'hidden' : 'visible'}">
+				<i class="nf nf-fa-angle_double_right bbn-xl bbn-pager-mobile-icon"/>
+			</span>
+			<span bbn-if="(element?.limits?.length > 1) &&
+									(!isMobile || isTablet) &&
+									!!limit"
+						class="bbn-hmargin">
+				<bbn-dropdown :source="element.limits"
+											bbn-model.number="element.currentLimit"
+											@change="currentPage = 1"
+											:disabled="!!element.isLoading"
+											:autosize="true"/>
+				<span bbn-text="itemName + ' ' + _('per') + ' ' + pageName"/>
+			</span>
+		</div>
+		<div bbn-if="element && extraControls"
+				:class="{
+					'bbn-block': !isMobile || isTablet,
+					'bbn-flex-width': isMobile && !isTablet,
+					'bbn-top-xsspace': isMobile && !isTablet && element.pageable && element.currentData.length,
+					'bbn-vmiddle': isMobile && !isTablet
+				}"
+				:style="{
+					float: !isMobile || isTablet ? 'right' : 'left',
+					justifyContent: isMobile && !isTablet ? 'flex-end' : ''
+				}">
+			<div bbn-if="element.limits?.length &&
+								isMobile &&
+								!isTablet &&
+								element.pageable &&
+								element.currentData.length"
+					class="bbn-right-space bbn-flex-fill bbn-vmiddle">
+				<bbn-dropdown :source="element.limits"
+											bbn-model.number="element.currentLimit"
+											@change="currentPage = 1"
+											:disabled="!!element.isLoading"
+											:autosize="true"/>
+			</div>
+			<div>
+				<span bbn-if="element.filteredData.length &&
+										element.pageable && element.isAjax"
+							bbn-text="(element.start+1) + (element.currentLimit <= 1 ? '' : '-' + (element.start + element.currentLimit > element.total ? element.total : element.start + element.currentLimit)) + ' / ' + element.total"
+				></span>
+				<span bbn-elseif="element.filteredData.length &&
+												element.pageable && !element.isAjax"
+							bbn-text="(element.start+1) + '-' + (element.start + element.currentLimit > element.filteredData.length ? element.filteredData.length : element.start + element.currentLimit) + ' ' + _('of') + ' ' + element.filteredData.length"
+				></span>
+				<span bbn-elseif="!isMobile || isTablet"
+							bbn-text="element.total ? _('Total') + ': ' + element.total + ' ' + _('items') : _('No item')"
+				></span>
+				<span bbn-else>
+					<i class="nf nf-fa-hashtag bbn-m bbn-right-sspace"></i><span bbn-text="element.total"></span>
+				</span>
+				&nbsp;
+				<bbn-button bbn-if="element.currentQuery && element.showQuery"
+										:title="_('View SQL query')"
+										@click="element ? element.showQuery() : () => {}"
+										icon="nf nf-mdi-database"
+										:notext="true"
+										class="bbn-left-xsspace"/>
+				<bbn-button bbn-if="element.saveable"
+										:disabled="element.isSaved"
+										:title="_('Save current configuration')"
+										@click="onClickSave"
+										icon="nf nf-fa-save"
+										:notext="true"
+										class="bbn-left-xsspace"/>
+				<bbn-button bbn-if="(element.filterable || element.showable) && element.reset"
+										:disabled="!element.isChanged"
+										:title="_('Reset to original configuration')"
+										@click="element ? element.reset(false) : () => {}"
+										icon="nf nf-fa-undo"
+										:notext="true"
+										class="bbn-left-xsspace"/>
+				<bbn-button bbn-if="element.showable && element.openColumnsPicker"
+										:title="_('Columns\' picker')"
+										@click="element ? element.openColumnsPicker() : () => {}"
+										icon="nf nf-fa-columns"
+										:notext="true"
+										class="bbn-left-xsspace"/>
+				<bbn-button bbn-if="element.filterable &&
+													element.multifilter &&
+													element.openMultiFilter"
+										:title="_('Multi Filter')"
+										:class="[
+															'bbn-left-xsspace',
+															{'bbn-red': element.currentFilters && element.currentFilters.conditions.length ? true : false}
+														]"
+										@click="element ? element.openMultiFilter() : () => {}"
+										icon="nf nf-mdi-filter_variant"
+										:notext="true"/>
+				<bbn-button bbn-if="element.isAjax && element.updateData"
+										:title="_('Refresh')"
+										@click="element ? element.updateData() : () => {}"
+										icon="nf nf-fa-refresh"
+										:notext="true"
+										class="bbn-left-xsspace"/>
+			</div>
 		</div>
 	</div>
 </div>
