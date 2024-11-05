@@ -11,7 +11,7 @@
         @mouseenter="over($event)"
         @mouseleave="out($event)"
         @click.stop.prevent
-        :type="type || 'button'"
+        :type="currentType"
         :disabled="isDisabled"
         :title="titleString"
         :style="currentStyle"

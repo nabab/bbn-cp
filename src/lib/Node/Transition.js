@@ -18,6 +18,7 @@ export default class bbnTransitionNode extends bbnNode
     else {
       const done = await this.setComment(true);
       if (done) {
+        this.isCreating = false;
         return done;
       }
     }

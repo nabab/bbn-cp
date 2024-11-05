@@ -62,6 +62,7 @@ export default class bbnSlotNode extends bbnNode
             if (this.comment) {
               const done = await this.setComment(false);
               if (done) {
+                this.isCreating = false;
                 return done;
               }
             }

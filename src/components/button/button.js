@@ -209,6 +209,13 @@ const cpDef = {
         obj['text-overflow'] = 'ellipsis';
       }
       return obj;
+    },
+    currentType() {
+      if (this.type && ['button', 'submit', 'reset'].includes(this.type)) {
+        return this.type;
+      }
+
+      return 'button';
     }
   },
   methods: {
