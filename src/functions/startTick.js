@@ -2,6 +2,7 @@ import bbn from '@bbn/bbn';
 import bbnConditionAttr from '../lib/Attr/Condition.js';
 import bbnComputed from '../lib/Computed/Computed.js';
 import initResults from '../lib/Cp/private/initResults.js';
+import queueUpdate from './queueUpdate.js';
 
 const sorter = (a, b) => {
   if (!(a instanceof bbnAttr)) {
@@ -220,7 +221,7 @@ async function treatQueue(num = 0) {
       if (!bbn.cp.nextQueue[0].num) {
         bbn.cp.nextQueue[0].num = bbn.cp.numTicks;
       }
-      bbn.cp.queue.push(bbn.cp.nextQueue.shift());
+      queueUpdate(bbn.cp.nextQueue.shift());
     }
   }
 
@@ -260,6 +261,6 @@ export default async function startTick() {
       // Indicate that the current update cycle is complete.
 //    },
     // Interval defined by the tick delay.
-    bbn.cp.tickDelay
+    //bbn.cp.tickDelay
 //  );
 }
