@@ -261,6 +261,6 @@ export default async function startTick() {
       // Indicate that the current update cycle is complete.
 //    },
     // Interval defined by the tick delay.
-    //bbn.cp.tickDelay
+    bbn.cp.tickDelay
 //  );
 }
