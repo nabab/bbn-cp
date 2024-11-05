@@ -5,7 +5,7 @@
           'bbn-background-internal': !modal,
           'bbn-invisible': !isResized,
           'bbn-floater-arrowed': !!arrow,
-          'bbn-floater-radius': !!currentButtons.length,
+          'bbn-lradius': !!currentButtons.length,
           'bbn-floater-resized': isResized,
         },
         componentClass
@@ -157,7 +157,7 @@
                   :class="[{
                     'bbn-noradius-top': true,
                     'bbn_primary': button.preset === 'submit' || button.primary,
-                    'bbn-no-border-right': !!currentButtons[i + 1],
+                    'bbn-no-border-right': i === this.currentButtons.length - 1
                   }, button.cls || '']"
                   bbn-bind="button"/>
     </footer>
