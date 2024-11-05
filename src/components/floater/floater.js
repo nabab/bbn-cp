@@ -347,6 +347,9 @@ const cpDef = {
     scrollHidden: {
       type: Boolean,
       default: false
+    },
+    events: {
+      type: Object
     }
   },
   data() {
@@ -606,6 +609,14 @@ const cpDef = {
             });
           }
         })
+        if (this.component && this.events) {
+          const comp = this.getRef('component');
+          if (comp) {
+            bbn.fn.iterate(this.events, (ev, name) => {
+              comp.$on(name, ev);
+            });
+          }
+        }
       }
     },
     /**
