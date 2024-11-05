@@ -114,4 +114,15 @@ bbn-floater{
   &.bbn-floater-arrowed {
     overflow: unset;
   }
+  &.bbn-floater-radius {
+    border-radius: var(--lradius);
+    footer {
+      .bbn-button:first-child {
+        border-bottom-left-radius: var(--lradius);
+      }
+      .bbn-button:last-child {
+        border-bottom-right-radius: var(--lradius);
+      }
+    }
+  }
 }
