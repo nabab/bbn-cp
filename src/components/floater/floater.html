@@ -157,7 +157,7 @@
                   :class="[{
                     'bbn-noradius-top': true,
                     'bbn_primary': button.preset === 'submit' || button.primary,
-                    'bbn-no-border-right': i === this.currentButtons.length - 1
+                    'bbn-no-border-right': !!currentButtons[i+1]
                   }, button.cls || '']"
                   bbn-bind="button"/>
     </footer>

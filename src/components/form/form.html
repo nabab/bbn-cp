@@ -95,7 +95,7 @@
                 :class="[{
                   'bbn-noradius-top': !!window,
                   'bbn-primary': button.preset === 'submit' || button.primary,
-                  'bbn-no-border-right': i === this.realButtons.length - 1
+                  'bbn-no-border-right': !!realButtons[i+1]
                 }, button.cls || '']"
                 :key="button.key || button.text || button.icon || i"
                 ref="butt"
