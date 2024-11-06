@@ -366,19 +366,21 @@ const input = {
       }
 
       const validationID = `${this.$cid}-validation`;
-      document.getElementById(`${validationID}-style`)?.remove();
-      document.getElementById(validationID)?.remove();
+      const validationStyleID = `${validationID}-style`
+      document.getElementById(validationStyleID)?.remove();
+      document.getElementById(validationID)?.parentElement?.remove();
 
       if (message?.length
         && elem
         && bbn.fn.isDom(elem.$el)
       ) {
         let style = document.createElement('style');
-        style.id = `${validationID}-style`;
+        style.id = validationStyleID;
         style.innerHTML = `
           #${validationID} .bbn-floater {
             background-color: var(--red) !important;
             color: var(--white) !important;
+            position: absolute !important;
           }
           #${validationID} .bbn-floater-arrow:after {
             background-color: var(--red) !important;
@@ -387,13 +389,13 @@ const input = {
         let cont = document.createElement('div');
         const cfg = {
           template: `
-            <div :id="id">
-              <bbn-tooltip ref="tooltip"
-                          :icon="false"
-                          position="bottomLeft"
-                          @hook:mounted="showContent"
-                          @close="onCloseTooltip"
-                          :element="elem">
+            <div class="bbn-abs bbn-pos-bottom">
+              <bbn-tooltip id="${validationID}"
+                           ref="tooltip"
+                           :icon="false"
+                           position="bottomLeft"
+                           @hook:mounted="showContent"
+                           @close="onCloseTooltip">
                 <div class="bbn-vxspadding bbn-hspadding bbn-w-100"
                      style="min-width: max-content"
                      bbn-html="message"/>
@@ -402,9 +404,7 @@ const input = {
           `,
           data() {
             return {
-                id: validationID,
-                message: message,
-                elem: elem.$el
+                message: message
             }
           },
           methods: {
@@ -412,12 +412,12 @@ const input = {
               this.getRef('tooltip').show();
             },
             onCloseTooltip() {
-              document.getElementById(`${this.id}-style`)?.remove();
-              document.getElementById(this.id)?.remove();
+              document.getElementById(validationStyleID)?.remove();
+              this.$el?.remove();
             }
           }
         };
-        this.$el.prepend(cont);
+        this.$el.appendChild(cont);
         bbn.cp.createApp(cont, cfg)
       }
 
@@ -453,7 +453,7 @@ const input = {
       ) {
         this.$el.classList.remove('bbn-state-invalid');
         document.getElementById(`${this.$cid}-validation-style`)?.remove();
-        document.getElementById(`${this.$cid}-validation`)?.remove();
+        document.getElementById(`${this.$cid}-validation`)?.parentElement?.remove();
       }
     })
     // I think this code is not necessary, the events are already called. Mirko
