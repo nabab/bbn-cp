@@ -49,7 +49,14 @@
             bbn-html="errorMessage"/>
       <div bbn-if="it.num > 1"
            class="bbn-iblock bbn-top-left bbn-hsmargin bbn-vxsmargin">
-        <span class="bbn-badge bbn-small bbn-bg-red"
+        <span :class="['bbn-badge', 'bbn-small', {
+                'bbn-bg-white': !!it.type,
+                'bbn-bg-black': !it.type,
+                'bbn-green': it.type === 'success',
+                'bbn-orange': it.type === 'warning',
+                'bbn-red': it.type === 'error',
+                'bbn-blue': it.type === 'info'
+              }]"
               bbn-text="it.num"/>
       </div>
       <div :class="{
