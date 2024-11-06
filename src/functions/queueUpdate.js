@@ -20,4 +20,5 @@ export default function queueUpdate(item) {
   }
 
   bbn.cp.queue.push(item);
+  bbn.cp.startTick();
 }

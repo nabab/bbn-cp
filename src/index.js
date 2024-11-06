@@ -1,6 +1,7 @@
 import {bbn, axios, dayjs} from "@bbn/bbn";
 import bbnData from "./lib/Data/Data.js";
 import "./lib/Data/prototype/addComponent.js";
+import "./lib/Data/prototype/fixIndexes.js";
 import "./lib/Data/prototype/getImpacted.js";
 import "./lib/Data/prototype/hasComponent.js";
 import "./lib/Data/prototype/hasParent.js";

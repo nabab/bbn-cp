@@ -145,6 +145,11 @@ const cpDef = {
      */
     showPopup() {
       return this.items.length > 0;
+    },
+    modalStyle(){
+      return {
+        zIndex: this.zIndex + this.popups.length - 2
+      }
     }
   },
   methods: {
@@ -275,7 +280,7 @@ const cpDef = {
               else if (typeof (tmp) === 'object') {
                 bbn.fn.extendOut(tmp, {
                   //name: bbn.fn.randomString(20, 15).toLowerCase(),
-                  template: '<div class="bbn-overlay">' + (r.content || '') + '</div>',
+                  template: '<div>' + (r.content || '') + '</div>',
                   props: ['source']
                 });
                 this.$options.components[tmp.name] = tmp;

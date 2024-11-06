@@ -344,15 +344,12 @@ const cpDef = {
         let mask = this.getRef('element'),
             maskInput = mask.inputValue,
             maskVal = mask.raw(maskInput),
-            value = maskVal ? dayjs(maskInput, this.currentFormat) : '';
-        if (value && !value.isValid()) {
-          value = '';
-        }
-
+            r = new RegExp(this.currentPattern),
+            dj = maskVal &&  r.test(maskInput) ? dayjs(maskInput, this.currentFormat) : false,
+            value = dj && dj.isValid() ? dj.format(this.getValueFormat(maskInput)) : '';
         if ((maskVal !== this.oldInputValue)
-          && (!value || value.isValid())
+          && (!maskVal || value)
         ) {
-          value = value ? value.format(this.getValueFormat(maskInput)) : value;
           if (value && this.min && (value < this.min)) {
             this.$emit('min', value, this.min);
             value = this.min;

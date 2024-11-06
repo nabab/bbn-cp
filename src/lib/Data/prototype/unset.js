@@ -28,7 +28,6 @@ bbnData.prototype.unset = function(noParent) {
     }
   }
   this.children.forEach(it => it.unset());
-
   /*
 
   if (!noParent && root.parent) {
@@ -43,10 +42,12 @@ bbnData.prototype.unset = function(noParent) {
   }
   */
 
-  bbnData.inventory.delete(id);
-  delete this.targetData.__bbnData;
-  delete this.targetData.__bbnKeys;
-  delete this.targetData;
+  delete bbnData.inventory[id];
+  if (this.targetData) {
+    delete this.targetData.__bbnData;
+    delete this.targetData.__bbnKeys;
+    delete this.targetData;
+  }
   //bbn.fn.log(["DATA deleted", JSON.stringify(this.targetData)]);
 };
 

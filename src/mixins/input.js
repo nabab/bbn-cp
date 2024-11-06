@@ -47,7 +47,7 @@ const input = {
      * @memberof inputComponent
      */
     disabled: {
-      type: [Boolean, Function],
+      type: [Boolean, Function, String, Number],
       default: false
     },
     /**
@@ -176,7 +176,8 @@ const input = {
        * True if the component has a value.
        * @data {Boolean} hasVale
        */
-      originalValue: original
+      originalValue: original,
+      isEmittingValue: false,
     };
   },
   computed: {

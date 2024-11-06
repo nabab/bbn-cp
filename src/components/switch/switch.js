@@ -77,30 +77,6 @@ const cpDef = {
         default: undefined
       },
       /**
-       * True if a value is required.
-       * @prop {Boolean} [false] required
-       */
-      required: {
-        type: Boolean,
-        default: false
-      },
-      /**
-       * Set to true disables the switch.
-       * @prop {Boolean} [false] disabled
-       */
-      disabled: {
-        type: Boolean,
-        default: false
-      },
-      /**
-       * Set to true for a readonly switch.
-       * @prop {Boolean} [false] readonly
-       */
-      readonly: {
-        type: Boolean,
-        default: false
-      },
-      /**
        * Set to true to have the component switched on.
        * @prop {Boolean} [false] checked
        */

@@ -13,12 +13,13 @@ bbnData.proxyPush = function(targetObj, target, component) {
     let newArgs = [];
     args.forEach((a, i) => {
       const idx = target.length + i;
-      const newVal = this.treatValue(a, component, idx, targetObj);
-      newArgs.push(newVal);
+      //const newVal = this.treatValue(a, component, idx, targetObj);
+      newArgs.push(a);
     });
     const res = target.push(...newArgs);
     if (targetObj) {
       //bbn.fn.log("PUSH");
+      //targetObj.prepareUpdate('length');
       targetObj.prepareUpdate();
     }
     else {

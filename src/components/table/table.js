@@ -2435,38 +2435,49 @@ const cpDef = {
           return;
         }
 
-        let row = this.items[index];
-        if (row) {
-          if (this.groupable && row.group) {
-            if (row.expanded) {
-              bbn.fn.fori((d, i) => {
-                if (d && d.selection && (d.data[this.cols[this.group].field] === row.value)) {
-                  this.checkSelection(i, state)
-                }
-              }, this.items, index + row.num, index + 1)
-            }
-          }
-          else if (row.selection) {
-            let idx = this.currentSelected.indexOf(this.uid ? this.currentData[row.index].data[this.uid] : row.index);
-            let isSelected = false;
-            let toggled = false;
-            if (idx > -1) {
-              if ([undefined, false].includes(state)) {
-                toggled = true;
-                this.$emit('unselect', row.data);
-                this.currentSelected.splice(idx, 1);
+
+        // Obliged to add this otherwise there are 2 changes events canceling each other
+        if (!this.isCheckingSelection) {
+          this.isCheckingSelection = [];
+        }
+        if (!this.isCheckingSelection.includes(index)) {
+          this.isCheckingSelection.push(index);
+          let row = this.items[index];
+          if (row) {
+            if (this.groupable && row.group) {
+              if (row.expanded) {
+                bbn.fn.fori((d, i) => {
+                  if (d && d.selection && (d.data[this.cols[this.group].field] === row.value)) {
+                    this.checkSelection(i, state)
+                  }
+                }, this.items, index + row.num, index + 1)
               }
             }
-            else if ([undefined, true].includes(state)) {
-              toggled = true;
-              this.$emit('select', row.data);
-              this.currentSelected.push(this.uid ? this.currentData[row.index].data[this.uid] : row.index);
-              isSelected = true;
-            }
-            if (toggled) {
-              this.$emit('toggle', isSelected, this.currentData[row.index].data);
+            else if (row.selection) {
+              let idx = this.currentSelected.indexOf(this.uid ? this.currentData[row.index].data[this.uid] : row.index);
+              let isSelected = false;
+              let toggled = false;
+              if (idx > -1) {
+                if ([undefined, false].includes(state)) {
+                  toggled = true;
+                  this.$emit('unselect', row.data);
+                  this.currentSelected.splice(idx, 1);
+                }
+              }
+              else if ([undefined, true].includes(state)) {
+                toggled = true;
+                this.$emit('select', row.data);
+                this.currentSelected.push(this.uid ? this.currentData[row.index].data[this.uid] : row.index);
+                isSelected = true;
+              }
+              if (toggled) {
+                this.$emit('toggle', isSelected, this.currentData[row.index].data);
+              }
             }
           }
+          this.$nextTick(() => {
+            this.isCheckingSelection.splice(this.isCheckingSelection.indexOf(index), 1);
+          })
         }
       },
       /**
@@ -2615,9 +2626,10 @@ const cpDef = {
       render(data, column, index) {
         let value = data && this.isValidField(column.field) ? data[column.field] : undefined;
         if (column.render) {
-          return column.render(data, column, index, value)
+          return column.render(data, column, index, value) || '';
         }
-        return this.renderData(data, column, index);
+
+        return this.renderData(data, column, index) || '';
       },
       /**
        * Resets configuration of the table.
@@ -3746,7 +3758,6 @@ const cpDef = {
        * @emit focusout
        */
       focusedRow(newIndex, oldIndex) {
-        bbn.fn.log("WATCH FOC");
         if (bbn.fn.isNumber(oldIndex)) {
           this.$emit('focusout', oldIndex, this.items[oldIndex] ? this.items[oldIndex].index : undefined);
         }

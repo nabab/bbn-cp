@@ -11,12 +11,12 @@ export default class bbnTemplateNode extends bbnNode
       throw new Error("Already creating");
     }
 
-    this.isCreating = true;
     let ele = this.element;
     if (this.loop) {
       return await this.loop.attrSet(true);
     }
     else {
+      this.isCreating = true;
       this.nodeSetAll();
       //bbn.fn.log(["INIT TEMPLATE " + this.id, this.comment, this.isCommented, ele, bbn.fn.isComment(ele)]);
       if (!ele || (this.comment !== bbn.fn.isComment(ele))) {
@@ -29,9 +29,10 @@ export default class bbnTemplateNode extends bbnNode
       else if (this.condition?.isChanged && !this.condition.value) {
         deleteNodes(this.component, this.id, this.hash);
       }
+
+      this.isCreating = false;
     }
 
-    this.isCreating = false;
     return ele;
   }
 }

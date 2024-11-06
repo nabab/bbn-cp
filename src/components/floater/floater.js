@@ -204,13 +204,13 @@ const cpDef = {
     /**
      * @prop {Function} onOpen
      */
-      onOpen: {
+    onOpen: {
       type: Function
     },
     /**
      * @prop {Function} onSelect
      */
-      onSelect: {
+    onSelect: {
       type: Function
     },
     /**
@@ -347,7 +347,7 @@ const cpDef = {
     scrollHidden: {
       type: Boolean,
       default: false
-    }
+    },
   },
   data() {
     let fns = [];
@@ -440,7 +440,7 @@ const cpDef = {
       /**
        * @data {Boolean} [false] isInit
        */
-      currentButtons: this.buttons.slice(),
+      currentButtons: this.buttons,
       isInit: false,
       definedWidth: null,
       definedHeight: null,
@@ -454,24 +454,8 @@ const cpDef = {
     };
   },
   computed: {
-    /**
-     * @data {Array} [[]] currentButtons
-     */
-    shownButtons() {
-      const res = [];
-      bbn.fn.each(this.currentButtons, (b, i) => {
-        const o = bbn.fn.createObject(b);
-        o.class = ['bbn-no-radius', {
-          'bbn-primary': b.preset === 'submit' || b.primary,
-          'bbn-no-border-right': i === this.currentButtons.length - 1
-        }, b.cls || ''];
-        if (b.cls) {
-          delete o.cls;
-        }
-
-        res.push(o);
-      });
-      return res;
+    hasNoCoordinate() {
+      return !this.element && !this.top && !this.right && !this.left && !this.bottom;
     },
     /**
      * Normalizes the property 'left'.
@@ -495,12 +479,7 @@ const cpDef = {
      * @return {String}
      */
     formattedWidth() {
-      return this.formatSize(
-        this.width
-        || (this.isResized ?
-          this.realWidth : this.currentMaxWidth || '100%'
-        )
-      );
+      return this.width ? this.formatSize(this.width) : 'auto';
     },
     /**
      * Normalizes the property 'height'.
@@ -508,12 +487,7 @@ const cpDef = {
      * @return {String}
      */
     formattedHeight() {
-      return this.formatSize(
-        this.height
-        || (this.isResized ?
-          this.realHeight : this.currentMaxHeight || '100%'
-        )
-      );
+      return this.height ? this.formatSize(this.height) : 'auto';
     },
     /**
      * An object of css display properties to apply to the floater.
@@ -522,41 +496,41 @@ const cpDef = {
      * @return {Object}
      */
     currentStyle() {
-      let s;
+      let s = {
+        width: this.formattedWidth,
+        height: this.formattedHeight
+      };
       if (this.isMaximized) {
-        s = {
+        bbn.fn.extend(s, {
           top: 0,
           left: 0,
           width: '100%',
           height: '100%',
-        };
+        });
       }
       else {
-        s = {
-          top: this.formattedTop,
-          left: this.formattedLeft,
-          width: this.formattedWidth,
-          height: this.formattedHeight
-        };
+        if (!this.hasNoCoordinate) {
+          s = {
+            top: this.formattedTop,
+            left: this.formattedLeft,
+            width: this.formattedWidth,
+            height: this.formattedHeight
+          };
+        }
+
         if (this.currentMaxWidth) {
           bbn.fn.extend(s, {
-            maxWidth: this.formatSize(this.currentMaxWidth),
+            maxWidth: this.maxWidth || this.element ? this.formatSize(this.currentMaxWidth) : 'inherit',
             minWidth: this.formatSize(this.currentMinWidth),
             //maxHeight: this.formatSize(Math.min(this.currentMaxHeight, this.scrollMaxHeight - this.currentTop)),
-            maxHeight: this.formatSize(this.currentMaxHeight),
+            maxHeight: this.maxHeight || this.element ? this.formatSize(this.currentMaxHeight) : 'inherit',
             minHeight: this.formatSize(this.currentMinHeight)
           });
         }
       }
 
-      s.visibility = this.isResized && this.isInit ? 'visible' : 'hidden';
+      s.visibility = this.isResized ? 'visible' : 'hidden';
       return s;
-    },
-    containerStyle(){
-      return {
-        width: '100%',
-        height: '100%'
-      }
     },
     HTMLStyle() {
       this.scrollWidth = Math.min(this.scrollWidth, this.currentMaxWidth);
@@ -615,22 +589,31 @@ const cpDef = {
       if (!this.ready) {
         this.ready = true;
         this.onResize(true);
-        this._setMinMax();
-        this.$forceUpdate().then(() => {
-          if (!this.scrollable || this.definedHeight || this.definedWidth) {
-            this.resizeAfterScroll();
-          }
-          else if (this.content) {
+        this.$nextTick(() => {
+          this.isResized = true;
+          const scroll = this.closest('bbn-scroll');
+          if (scroll) {
+            const onScroll = () => {
+              bbn.fn.log("ON SCROLL", this.isVisible)
+              if (this.isVisible) {
+                this.onResize();
+              }
+            };
 
-            const sc = this.getRef('scroll');
-            if (sc) {
-              sc.initSize();
-              this.$nextTick(() => {
-                this.resizeAfterScroll();
-              })
-            }
+            scroll.$on('scroll', onScroll);
+            this.$on('hook:beforeDestroy', () => {
+              scroll.$off('scroll', onScroll);
+            });
           }
         })
+        if (this.component && this.componentEvents) {
+          const comp = this.getRef('component');
+          if (comp) {
+            bbn.fn.iterate(this.componentEvents, (ev, name) => {
+              comp.$on(name, ev);
+            });
+          }
+        }
       }
     },
     /**
@@ -653,7 +636,7 @@ const cpDef = {
         minHeight.push(tmp.height);
       }
 
-      // Min based on element - can't be smaller than the element
+      // Min based on element (like a dropdown!) - can't be smaller than the element
       if (this.element && this.elementWidth) {
         tmp = this.element.getBoundingClientRect();
         if (tmp.width) {
@@ -836,6 +819,7 @@ const cpDef = {
         };
       }
       else {
+
         return {
           top: bbn.fn.isNumber(this.top) ? this.top : null,
           right: bbn.fn.isNumber(this.right) ? this.right : null,
@@ -845,177 +829,9 @@ const cpDef = {
       }
     },
     onResize(force) {
-      let res = bbn.cp.mixins.resizer.methods.onResize.apply(this);
-      if (this.isVisible && this.$el && (res || force)) {
-        //bbn.fn.log("NORMAL RESIZE", this.lastKnownCtHeight, this.lastKnownCtWidth);
-        
-        //return this.realResize();
-      }
-    },
-    async fullResize() {
-      this.isResized = false;
-      this.isResizing = true;
-      await this.$forceUpdate();
-      await this.getRef('scroll').initSize();
-      this.isResizing = false;
-      await this.$forceUpdate();
-      this.onResize(true);
-      this.resizeAfterScroll();
-    },
-    realResize() {
-      return this.onResize(true);
-    },
-    /**
-     * Handles the resize of the component.
-     * @method onResize
-     * @param {Boolean} force
-     * @fires _getCoordinates
-     * @fires init
-     * @fires getRef
-     * @fires keepCool
-     * @fires setResizeMeasures
-     */
-    resizeAfterScroll() {
-      let go = this.isVisible
-          && bbn.fn.isDom(this.$el)
-          && (!this.isInit 
-            || (this.isActiveResizer() && !this.isResized)
-          );
-      if (go) {
-        this._setMinMax();
-      }
-      return new Promise(resolve => {
-        // Should be triggered by the inner scroll once mounted
-        if (go) {
-          if (this.definedWidth
-            && this.definedHeight
-            && (this.definedWidth >= this.currentMinWidth)
-            && (this.definedWidth <= this.currentMaxWidth)
-            && (this.definedHeight >= this.currentMinHeight)
-            && (this.definedHeight <= this.currentMaxHeight)
-          ) {
-            if ((this.realWidth !== this.definedWidth)
-              ||(this.realHeight !== this.definedHeight)
-            ) {
-              this.currentWidth = this.definedWidth;
-              this.realWidth = this.definedWidth;
-              this.currentHeight = this.definedHeight;
-              this.realHeight = this.definedHeight;
-              this.updatePosition();
-              resolve(1);
-              return;
-            }
-
-            //bbn.fn.log("WAITING FOR SCROLL 2");
-            resolve(!this.isInit);
-            return;
-          }
-          else {
-            let scroll = this.getRef('scroll');
-            if (!scroll || !scroll.naturalWidth) {
-              // We do nothing and wait that the scroll does the resize
-              //bbn.fn.log("WAITING FOR SCROLL");
-              this.$nextTick(this.fullResize);
-              resolve(1);
-              return;
-            }
-            //bbn.fn.warning("FLOATER RESIZE");
-            let naturalWidth = scroll.naturalWidth;
-            let naturalHeight = scroll.naturalHeight;
-            let w = scroll.$el.clientWidth;
-            let h = scroll.$el.clientHeight;
-            //bbn.fn.log("NATURAL", naturalHeight, naturalWidth);
-            let dimensions = {
-              w: naturalWidth,
-              h: naturalHeight
-            };
-            let scrollChange = false;
-            if (this.scrollWidth !== dimensions.w) {
-              scrollChange = true;
-              this.scrollWidth = dimensions.w;
-            }
-
-            if (this.scrollHeight !== dimensions.h) {
-              scrollChange = true;
-              this.scrollHeight = dimensions.h;
-            }
-
-            let currentHeight = this.definedHeight || 0;
-            let currentWidth = this.definedWidth || 0;
-            if ( !currentHeight ){
-              currentHeight = this.scrollHeight + this.outHeight;
-            }
-            if ( currentHeight > this.currentMaxHeight ){
-              currentHeight = this.currentMaxHeight;
-            }
-            if ( !currentWidth ){
-              currentWidth = this.scrollWidth;
-            }
-            if ( currentWidth > this.currentMaxWidth ){
-              currentWidth = this.currentMaxWidth;
-            }
-            if ( currentHeight < this.currentMinHeight ){
-              currentHeight = this.currentMinHeight;
-            }
-            if ( currentWidth < this.currentMinWidth ){
-              currentWidth = this.currentMinWidth;
-            }
-            let isChanged = this.isInit ? 0 : 1;
-            if (!this.realWidth || (Math.abs(this.realWidth - currentWidth) > 2)) {
-              isChanged = 1;
-              this.realWidth = currentWidth;
-            }
-            if (!this.realHeight || (Math.abs(this.realHeight - currentHeight) > 2)) {
-              isChanged = 1;
-              this.realHeight = currentHeight;
-            }
-            resolve(isChanged);
-          }
-        }
-        else {
-          resolve(0);
-        }
-      }).then(r => {
-        if (!this.isResized) {
-          this.isResized = true;
-        }
-
-        if (r) {
-          let wasInit = this.isInit;
-          if (!this.isInit) {
-            this.isInit = true;
-          }
-
-          this.isResizing = false;
-          this.setResizeMeasures();
-          this.updatePosition();
-          //bbn.fn.log("AFTER PROMISE ++++++++++++++", this.isResized)
-
-          this.$emit('resize');
-          if (!wasInit) {
-            if (this.onOpen) {
-              this.onOpen(this);
-            }
-            this.$emit('open', this);
-          }
-        }
-        else if (go && this.isInit) {
-          //this.updatePosition();
-          this.isResizing = false;
-        }
-      });
-    },
-    /**
-     * Handles the resize of the scroller.
-     * @method scrollResize
-     * @fires onResize
-     * @fires updateComponents
-     */
-    scrollResize(e, dimensions) {
-      if (!this.scrollResized) {
-        this.scrollResized = true;
-      }
-      e.preventDefault();
+      bbn.cp.mixins.resizer.methods.onResize.apply(this);
+      this._setMinMax();
+      this.updatePosition();
     },
     /**
      * Returns an object of numbers as width and height based on whatever unit given.
@@ -1070,8 +886,13 @@ const cpDef = {
      * @fires onResize
      */
     updatePosition(){
+      if (this.hasNoCoordinate) {
+        return;
+      }
+
       let r = {
         x: {
+          size: 'width',
           camel: 'Width',
           posStart: 'left',
           posEnd: 'right',
@@ -1080,6 +901,7 @@ const cpDef = {
           res: null,
         },
         y: {
+          size: 'height',
           camel: 'Height',
           posStart: 'top',
           posEnd: 'bottom',
@@ -1089,7 +911,10 @@ const cpDef = {
         }
       };
 
-      let coor = this.element ?
+      if (this.element) {
+        bbn.fn.log(JSON.stringify(this.element.getBoundingClientRect()));
+      }
+      const coor = this.element ?
         JSON.parse(JSON.stringify(this.element.getBoundingClientRect()))
         : {
           top: bbn.fn.isNumber(this.top) ? this.top : null,
@@ -1098,10 +923,11 @@ const cpDef = {
           left: bbn.fn.isNumber(this.left) ? this.left : null
         };
       let ok = true;
-
+      const parentResizer = this.getParentResizer();
+      const parentCoor = JSON.parse(JSON.stringify((parentResizer?.$el || this.$el.offsetParent || document.body).getBoundingClientRect()));
       bbn.fn.iterate(r, (a, ax) => {
         let scroll = false;
-        let size = this['real' + a.camel];
+        let size = this['lastKnown' + a.camel];
         if (!size) {
           ok = false;
           return false;
@@ -1117,13 +943,13 @@ const cpDef = {
             if (ax === 'x') {
               if (isLeft) {
                 a.res = this.isHorizontal ? (coor.left - size) : coor.left;
-                if (a.res + size > this['container' + a.camel]) {
+                if (a.res + size > this['lastKnownCt' + a.camel]) {
                   inverted = this.isHorizontal ? coor.right : (coor.right - size)
                 }
               }
               else {
                 a.res = this.isHorizontal ? coor.right : (coor.right - size);
-                if (a.res + size > this['container' + a.camel]) {
+                if (a.res + size > this['lastKnownCt' + a.camel]) {
                   inverted = this.isHorizontal ? (coor.left - size) : coor.left;
                 }
               }
@@ -1131,24 +957,24 @@ const cpDef = {
             else {
               if (isTop) {
                 a.res = this.isHorizontal ? coor.top : (coor.top - size);
-                if (a.res + size > this['container' + a.camel]) {
+                if (a.res + size > this['lastKnownCt' + a.camel]) {
                   inverted = this.isHorizontal ? (coor.bottom - size) : coor.bottom;
                 }
               }
               else {
                 a.res = this.isHorizontal ? (coor.bottom - size) : coor.bottom;
-                if (a.res + size > this['container' + a.camel]) {
+                if (a.res + size > this['lastKnownCt' + a.camel]) {
                   inverted = this.isHorizontal ? coor.top : (coor.top - size);
                 }
               }
             }
             if (!!inverted) {
-              if ((inverted + size) < this['container' + a.camel]) {
+              if ((inverted + size) < this['lastKnownCt' + a.camel]) {
                 a.res = inverted;
               }
               else {
                 a.res = 0;
-                size = this['container' + a.camel];
+                size = this['lastKnownCt' + a.camel];
               }
             }
           }
@@ -1156,8 +982,8 @@ const cpDef = {
           // top right of the element to open downwards
           // otherwise at the bottom left
           // if the floater cannot be put after the element
-          else if (coor[a.ideal] + size > this['container' + a.camel]) {
-            let spaceAfter = this['container' + a.camel] - coor[a.ideal];
+          else if (coor[a.ideal] + size > this['lastKnownCt' + a.camel]) {
+            let spaceAfter = this['lastKnownCt' + a.camel] - coor[a.ideal];
             let spaceBefore = coor[a.nideal];
             // Checking which of before or after is bigger
             let isBeforeBigger = spaceBefore > spaceAfter;
@@ -1181,24 +1007,24 @@ const cpDef = {
         }
         else {
           if ((coor[a.posStart] !== null) || (coor[a.posEnd] !== null)) {
-            a.res = coor[a.posStart] !== null ? coor[a.posStart] : this['container' + a.camel] - coor[a.posEnd] - size;
+            a.res = coor[a.posStart] !== null ? coor[a.posStart] : this['lastKnownCt' + a.camel] - coor[a.posEnd] - size;
           }
           else {
             // If no vertical position at all, centered (same top and bottom)
-            coor[a.posStart] = Math.floor((this['container' + a.camel] - size) / 2)
-                      + ((this['container' + a.camel] - size) % 2);
+            coor[a.posStart] = Math.floor((this['lastKnownCt' + a.camel] - size) / 2)
+                      + ((this['lastKnownCt' + a.camel] - size) % 2);
             if (coor[a.posStart] < 0) {
               coor[a.posStart] = 0;
             }
-            if (coor[a.posStart] + size > this['container' + a.camel]) {
+            if (coor[a.posStart] + size > this['lastKnownCt' + a.camel]) {
               if (this[a.posStart] === undefined) {
-                coor[a.posStart] = this['container' + a.camel] - size;
+                coor[a.posStart] = this['lastKnownCt' + a.camel] - size;
               }
               scroll = true;
             }
-            else if (coor[a.posEnd] + size > this['container' + a.camel]) {
+            else if (coor[a.posEnd] + size > this['lastKnownCt' + a.camel]) {
               if (this[a.posEnd] !== undefined) {
-                coor[a.posEnd] = this['container' + a.camel] - size;
+                //coor[a.posEnd] = this['lastKnownCt' + a.camel] - size;
               }
               scroll = true;
             }
@@ -1210,7 +1036,7 @@ const cpDef = {
                 a.res = 0;
               }
               else {
-                a.res = this['container' + a.camel] - (coor[a.posEnd] || 0) - size;
+                a.res = this['lastKnownCt' + a.camel] - (coor[a.posEnd] || 0) - size;
               }
             }
             a.res = a.res ? a.res + min : min;
@@ -1247,6 +1073,7 @@ const cpDef = {
         }
         this.currentTop = Math.ceil(r.y.res + offset);
       }
+      //bbn.fn.log(["PARENT COOR", parentCoor, coor, r, ok, this.lastKnownWidth, this.lastKnownHeight])
 
     },
     /**
@@ -1470,7 +1297,6 @@ const cpDef = {
         scroll.$once('scroll', () => {
           this.close();
         });
-        this.realResize();
       }
     }
     */
@@ -1583,7 +1409,7 @@ const cpDef = {
       //bbn.fn.log("CHANGING VISIBle")
     },
     isVisible(v) {
-      //bbn.fn.log("CHANGING VISIBILITY")
+      bbn.fn.log("CHANGING VISIBILITY")
       if (v) {
         if (!this.ready) {
           this.init();
@@ -1638,22 +1464,6 @@ const cpDef = {
         }
       }
     },
-    hasButtons(){
-      this.lastKnownCtWidth = 0;
-      this.lastKnownCtHeight = 0;
-      this.realResize();
-    },
-    filteredData: {
-      deep: true,
-      handler(){
-        this.realResize()
-      }
-    },
-    filteredTotal(){
-      if (this.isVisible) {
-        //this.onResize(true);
-      }
-    }
   }
 
 };

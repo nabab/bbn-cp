@@ -19,6 +19,10 @@ const cpDef = {
     bbn.cp.mixins.events
   ],
   props: {
+    type: {
+      type: String,
+      default: 'button'
+    },
     /**
      * The title of the button.
      *
@@ -103,7 +107,7 @@ const cpDef = {
      * @prop {(Boolean|Function)} [false] disabled
      */
     disabled: {
-      type: [Boolean, Function, String],
+      type: [Boolean, Function, String, Number],
       default: false
     },
     /**
@@ -205,6 +209,13 @@ const cpDef = {
         obj['text-overflow'] = 'ellipsis';
       }
       return obj;
+    },
+    currentType() {
+      if (this.type && ['button', 'submit', 'reset'].includes(this.type)) {
+        return this.type;
+      }
+
+      return 'button';
     }
   },
   methods: {

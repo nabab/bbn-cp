@@ -7,14 +7,14 @@ import bbnData from "../Data.js";
  * @param {*} path 
  * @returns 
  */
-bbnData.proxyPop = function(targetObj, target) {
+bbnData.proxyPop = function(targetObj, target, component, path) {
   return () => {
     // The bbnData object of the target array
     const len = target.length;
     if (len) {
       const subObj = this.getObject(target[len - 1]);
       if (subObj) {
-        subObj.unset();
+        subObj.removeComponent(component, len - 1);
       }
     }
     const res = target.pop();

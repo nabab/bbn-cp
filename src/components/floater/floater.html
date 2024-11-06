@@ -4,7 +4,9 @@
           'bbn-bordered': !modal,
           'bbn-background-internal': !modal,
           'bbn-invisible': !isResized,
-          'bbn-floater-arrowed': !!arrow
+          'bbn-floater-arrowed': !!arrow,
+          'bbn-radius': !!currentButtons.length,
+          'bbn-floater-resized': isResized,
         },
         componentClass
       ]"
@@ -16,8 +18,7 @@
       bbn-resizable:container.left.right.bottom="ready && resizable ? $el.parentElement : false">
   <div bbn-if="arrow"
        :class="['bbn-floater-arrow', position]"/>
-  <div :style="containerStyle"
-       class="bbn-flex-height">
+  <div class="bbn-flex-height">
     <div bbn-if="modal"
          class="bbn-overlay bbn-modal"/>
     <header bbn-if="title"
@@ -58,10 +59,9 @@
     </header>
     <div :class="{
           'bbn-flex-fill': footer || title || (buttons && buttons.length),
-          'bbn-h-100': !title && !footer && (!buttons || !buttons.length),
-          'bbn-w-100': true,
           'bbn-flex-height': pageable
-        }">
+        }"
+          bbn-forget="!pageable">
       <div bbn-if="pageable && ready">
         <bbn-pager class="bbn-table-footer bbn-no-border-right bbn-no-border-left bbn-no-border-bottom"
                   :element="pagerElement || _self"
@@ -72,55 +72,50 @@
                   @keyup.stop
                   :extra-controls="false"/>
       </div>
-      <div :class="{'bbn-100': !ready || !pageable, 'bbn-flex-fill': pageable}">
-        <bbn-scroll :latency="latency"
-                    ref="scroll"
-                    @ready="resizeAfterScroll"
-                    @resizecontent="resizeAfterScroll"
-                    :class="{'bbn-flex-fill': pageable}"
-                    :scrollable="scrollable"
-                    :hidden="scrollHidden"
-                    :axis="axis"
-                    :max-width="isMaximized ? '100%' : currentMaxWidth || null"
-                    :max-height="isMaximized ? '100%' : scrollMaxHeight || null"
-                    :min-width="currentMinWidth || null"
-                    :min-height="currentMinHeight > outHeight ? currentMinHeight - outHeight : null">
-          <component bbn-if="component"
-                    ref="component"
-                    :is="component"
-                    bbn-bind="realComponentOptions"/>
-          <slot bbn-elseif="$slots.default.length"/>
-          <div bbn-elseif="!!content"
-              bbn-html="content"
-              :class="scrollable ? 'bbn-block' : 'bbn-overlay'"
-              :style="HTMLStyle"/>
-          <bbn-list bbn-else
-                    :mode="mode"
-                    :no-data="noData"
-                    ref="list"
-                    :suggest="suggest"
-                    :source="filteredData"
-                    :component="itemComponent"
-                    :template="template"
-                    :uid="uid"
-                    :children="children"
-                    :selected="selected"
-                    :scroll-hidden="scrollHidden"
-                    :class="'bbn-floater-list bbn-menulist ' + mode"
-                    origin="floater"
-                    @select="select"
-                    :source-value="sourceValue"
-                    :source-text="sourceText"
-                    :source-url="sourceUrl"
-                    :source-action="sourceAction"
-                    :groupable="groupable"
-                    :source-group="sourceGroup"
-                    :group-component="groupComponent"
-                    :group-style="groupStyle"
-                    :pageable="pageable"
-                    :pager-element="pagerElement"/>
-        </bbn-scroll>
-      </div>
+      <bbn-scroll :latency="latency"
+                  ref="scroll"
+                  :class="{'bbn-flex-fill': pageable || footer || title || buttons?.length}"
+                  :scrollable="scrollable"
+                  :hidden="scrollHidden"
+                  :axis="axis"
+                  :max-width="isMaximized ? '100%' : currentMaxWidth || null"
+                  :max-height="isMaximized ? '100%' : scrollMaxHeight || null"
+                  :min-width="currentMinWidth || null"
+                  :min-height="currentMinHeight > outHeight ? currentMinHeight - outHeight : null">
+        <component bbn-if="component"
+                  ref="component"
+                  :is="component"
+                  bbn-bind="realComponentOptions"/>
+        <slot bbn-elseif="$slots.default.length"/>
+        <div bbn-elseif="!!content"
+            bbn-html="content"
+            :style="HTMLStyle"/>
+        <bbn-list bbn-else
+                  :mode="mode"
+                  :no-data="noData"
+                  ref="list"
+                  :suggest="suggest"
+                  :source="filteredData"
+                  :component="itemComponent"
+                  :template="template"
+                  :uid="uid"
+                  :children="children"
+                  :selected="selected"
+                  :scroll-hidden="scrollHidden"
+                  :class="'bbn-floater-list bbn-menulist ' + mode"
+                  origin="floater"
+                  @select="select"
+                  :source-value="sourceValue"
+                  :source-text="sourceText"
+                  :source-url="sourceUrl"
+                  :source-action="sourceAction"
+                  :groupable="groupable"
+                  :source-group="sourceGroup"
+                  :group-component="groupComponent"
+                  :group-style="groupStyle"
+                  :pageable="pageable"
+                  :pager-element="pagerElement"/>
+      </bbn-scroll>
       <div bbn-if="pageable && ready">
         <bbn-pager class="bbn-table-footer bbn-no-border-right bbn-no-border-left bbn-no-border-bottom"
                   :element="_self"
@@ -152,14 +147,19 @@
             bbn-html="footer"
             class="bbn-w-100"
             ref="footer"/>
-    <footer bbn-elseif="currentButtons.length"
+    <footer bbn-else
             class="bbn-w-100 bbn-button-group"
             ref="buttons">
-      <bbn-button bbn-for="(b, i) in shownButtons"
-                  :key="b?.key || i"
+      <bbn-button bbn-for="(button, i) in currentButtons"
+                  :key="button?.key || i"
                   :ref="'button' + i"
                   @ready="t => focusable = t"
-                  bbn-bind="b"/>
+                  :class="[{
+                    'bbn-noradius-top': true,
+                    'bbn_primary': button.preset === 'submit' || button.primary,
+                    'bbn-no-border-right': !!currentButtons[i+1]
+                  }, button.cls || '']"
+                  bbn-bind="button"/>
     </footer>
   </div>
 </div>

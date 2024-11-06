@@ -13,6 +13,7 @@ const cpDef = {
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.list
      * @mixin bbn.cp.mixins.dimensions
+     * @mixin bbn.cp.mixins.componentInside
      * @mixin bbn.cp.mixins.events
      */
     mixins: 
@@ -20,6 +21,7 @@ const cpDef = {
       bbn.cp.mixins.basic,
       bbn.cp.mixins.list,
       bbn.cp.mixins.dimensions,
+      bbn.cp.mixins.componentInside,
       bbn.cp.mixins.events
     ],
     props: {

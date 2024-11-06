@@ -93,7 +93,7 @@ bbnData.prototype.addComponent = function(component, path, parent) {
   */
 
   if (!this.refs.filter(
-    b => (b.component === component) && (JSON.stringify(b.path) === JSON.stringify(path))
+    b => (b.component === component) && (b.path === path)
   ).length
   ) {
     this.refs.unshift({

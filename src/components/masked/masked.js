@@ -114,9 +114,15 @@ const cpDef = {
         /**
          * The current input value.
          *
-         * @data inputValue {String} inoutValue
+         * @data {String} inputValue
         */
-        inputValue: ''
+        inputValue: '',
+        /**
+         * The current input position.
+         *
+         * @data {Number} currentPos
+        */
+       currentPos: 0
       }
     },
     computed: {
@@ -372,6 +378,7 @@ const cpDef = {
        */
       setInputValue(value){
         this.writeInputValue(!value && !this.isFocused ? '' : this.getInputValue(value));
+        this.getRef('element').setSelectionRange(this.currentPos, this.currentPos);
       },
       /**
        * Gets the input value.
@@ -522,12 +529,12 @@ const cpDef = {
             }
 
             // Get the correct cursor position
-            let pos = this.getPos(ele.selectionStart, event);
+            this.currentPos = this.getPos(ele.selectionStart, event);
             // Not special key and not valid char
             if (!this.isSpecialKey(event.keyCode)
               && !event.metaKey
-              && (!this.isValidChar(event.key, pos)
-                || (ele.value.charAt(pos) !== this.promptChar))
+              && (!this.isValidChar(event.key, this.currentPos)
+                || (ele.value.charAt(this.currentPos) !== this.promptChar))
             ) {
               event.preventDefault();
             }
@@ -537,13 +544,13 @@ const cpDef = {
               event.preventDefault();
               // Delete from a selection
               if (isSelection) {
-                let pos = ele.selectionStart,
-                    afterPos = ele.selectionStart;
+                this.currentPos = ele.selectionStart;
+                let afterPos = ele.selectionStart;
                 value = ele.value;
-                while (pos < (ele.selectionEnd)) {
-                  let i = this.getPos(pos);
+                while (this.currentPos < (ele.selectionEnd)) {
+                  let i = this.getPos(this.currentPos);
                   value = value.slice(0, i) + this.promptChar + value.slice(i + 1);
-                  pos++;
+                  this.currentPos++;
                 }
 
                 this.writeInputValue(value);
@@ -552,32 +559,32 @@ const cpDef = {
               // Normal backspace and canc
               else {
                 if (this.isBackspaceKey(event.keyCode)
-                  && (pos > 0)
+                  && (this.currentPos > 0)
                 ) {
-                  this.writeInputValue(ele.value.slice(0, pos - 1) + this.promptChar + ele.value.slice(pos));
-                  pos--;
+                  this.writeInputValue(ele.value.slice(0, this.currentPos - 1) + this.promptChar + ele.value.slice(this.currentPos));
+                  this.currentPos--;
                 }
                 else if (this.isCancKey(event.keyCode)
-                  && (pos < this.maxPos)
+                  && (this.currentPos < this.maxPos)
                 ) {
-                  if (ele.value.charAt(pos) === this.promptChar) {
-                    pos = this.getPos(pos + 1);
-                    if (pos >= this.maxPos) {
-                      pos = this.maxPos - 1;
+                  if (ele.value.charAt(this.currentPos) === this.promptChar) {
+                    this.currentPos = this.getPos(this.currentPos + 1);
+                    if (this.currentPos >= this.maxPos) {
+                      this.currentPos = this.maxPos - 1;
                     }
                   }
 
-                  this.writeInputValue(ele.value.slice(0, pos) + this.promptChar + ele.value.slice(pos + 1));
+                  this.writeInputValue(ele.value.slice(0, this.currentPos) + this.promptChar + ele.value.slice(this.currentPos + 1));
                 }
 
-                ele.setSelectionRange(pos, pos);
+                ele.setSelectionRange(this.currentPos, this.currentPos);
               }
             }
             else if (!this.isSpecialKey(event.keyCode)
               && !event.metaKey
             ) {
-              this.writeInputValue(ele.value.slice(0, pos) + ele.value.slice(pos + 1));
-              ele.setSelectionRange(pos, pos);
+              this.writeInputValue(ele.value.slice(0, this.currentPos) + ele.value.slice(this.currentPos + 1));
+              ele.setSelectionRange(this.currentPos, this.currentPos);
             }
           }
 
@@ -610,11 +617,12 @@ const cpDef = {
             && !event.metaKey
             && !isSelection
           ) {
-            const pos = this.getPos(ele.selectionStart, event);
-            ele.setSelectionRange(pos, pos);
+            this.currentPos = this.getPos(ele.selectionStart, event);
             if (this.value !== val) {
               this.emitInput(val);
             }
+
+            ele.setSelectionRange(this.currentPos, this.currentPos);
           }
 
           this.keyup(event);
@@ -629,13 +637,15 @@ const cpDef = {
        * @fires raw
        * @emits input
        */
-      inputEvent(){
+      inputEvent(event){
         if (!this.isDisabled
           && !this.readonly
           && (this.value !== this.raw())
         ) {
           this.inputValue = this.getInputValue(this.raw());
+          this.currentPos = this.getPos(this.getRef('element').selectionStart);
           this.emitInput(this.raw());
+          this.getRef('element').setSelectionRange(this.currentPos, this.currentPos);
         }
       },
       /**
@@ -647,13 +657,15 @@ const cpDef = {
        * @fires blur
        */
       blurEvent(event){
-        if ( !this.isDisabled && !this.readonly ){
+        if (!this.isDisabled && !this.readonly) {
           this.blur(event)
         }
 
         if (!this.value && this.inputValue?.length) {
           this.writeInputValue('');
         }
+
+        this.currentPos = 0;
       },
       /**
        * The method called on focus event.
@@ -667,10 +679,12 @@ const cpDef = {
       focusEvent(event){
         if (!this.isDisabled && !this.readonly) {
           this.focus(event)
+          this.currentPos = this.getPos(this.getRef('element').selectionStart);
           this.setInputValue();
           if (!this.value) {
             this.$nextTick(() => {
-              this.getRef('element').setSelectionRange(0, 0);
+              this.currentPos = 0;
+              this.getRef('element').setSelectionRange(this.currentPos, this.currentPos);
             });
           }
         }
@@ -690,15 +704,15 @@ const cpDef = {
       pasteEvent(event){
         if ( !this.isDisabled && !this.readonly ){
           const ele = this.getRef('element');
+          this.currentPos = this.getPos(ele.selectionStart);
           let text = event.clipboardData ? event.clipboardData.getData('text') : '',
-              pos = this.getPos(ele.selectionStart),
               val = this.value.toString();
-          const p = this.getIdxRange(0, pos);
+          const p = this.getIdxRange(0, this.currentPos);
           event.preventDefault();
-          text = this.clearText(text, pos);
+          text = this.clearText(text, this.currentPos);
           val = val.slice(p.start, p.end) + text + val.slice(p.end);
           val = val.slice(0, this.maxLen);
-          pos = p.end + text.length + 1;
+          this.currentPos = p.end + text.length + 1;
           this.setInputValue(val);
           const prompt = ele.value.indexOf(this.promptChar);
           if (prompt > -1) {
@@ -725,22 +739,22 @@ const cpDef = {
       cutEvent(event){
         if ( !this.isDisabled && !this.readonly ){
           const ele = this.getRef('element');
+          this.currentPos = this.getPos(ele.selectionStart);
           let sel = document.getSelection(),
               text = sel.toString(),
               oriPos = ele.selectionStart,
-              pos = this.getPos(oriPos),
-              p = this.getIdxRange(0, pos),
+              p = this.getIdxRange(0, this.currentPos),
               val = this.value.toString(),
               ival = ele.value;
           event.preventDefault();
           document.execCommand('copy');
-          text = this.clearText(text, pos);
+          text = this.clearText(text, this.currentPos);
           val = val.slice(p.start, p.end) + val.slice(p.end + text.length);
           val = val.slice(0, this.maxLen);
-          while (pos < (ele.selectionEnd)) {
-            let i = this.getPos(pos);
+          while (this.currentPos < (ele.selectionEnd)) {
+            let i = this.getPos(this.currentPos);
             ival = ival.slice(0, i) + this.promptChar + ival.slice(i + 1);
-            pos++;
+            this.currentPos++;
           }
           this.writeInputValue(ival);
           const prompt = ele.value.indexOf(this.promptChar);
@@ -810,6 +824,7 @@ const cpDef = {
       if ( this.value ){
         this.setInputValue(this.value);
       }
+
       this.ready = true
     },
     watch: {
@@ -831,8 +846,8 @@ const cpDef = {
        */
       mask(){
         this.$nextTick(() => {
-          let pos = this.value.length;
-          this.getRef('element').setSelectionRange(pos, pos);
+          this.currentPos = this.value.length;
+          this.getRef('element').setSelectionRange(this.currentPos, this.currentPos);
         });
       }
     }

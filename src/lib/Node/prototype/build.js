@@ -166,11 +166,21 @@ bbnNode.prototype.nodeBuild = async function(after) {
 
   if (!this.comment) {
     for (let i = 0; i < this.attributes.length; i++) {
-      await this.attributes[i].attrUpdate(true);
+      if (!(this.attributes[i] instanceof bbnDirectiveAttr)) {
+        await this.attributes[i].attrUpdate(true);
+      }
     }
   }
   
   await this.nodeInsert(this.element, after);
+
+  if (!this.comment) {
+    for (let i = 0; i < this.attributes.length; i++) {
+      if (this.attributes[i] instanceof bbnDirectiveAttr) {
+        await this.attributes[i].attrUpdate(true);
+      }
+    }
+  }
 
   // Return the created or modified element
   this.numBuild++;

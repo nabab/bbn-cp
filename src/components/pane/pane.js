@@ -110,6 +110,24 @@ const cpDef = {
     };
   },
   computed: {
+    currentConfig() {
+      if (!this.splitter) {
+        return {};
+      }
+
+      return bbn.fn.getRow(this.splitter.panes, {pane: this});
+    },
+    componentStyle() {
+      if (this.currentConfig?.size) {
+        return {
+          [this.isHorizontal ? 'minWidth' : 'minHeight']: this.currentConfig.size
+        }
+      }
+
+      return {};
+
+      
+    },
     isHorizontal() {
       return this.splitter && this.splitter.isHorizontal;
     }

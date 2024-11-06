@@ -765,7 +765,6 @@ const cpDef = {
       let preloaded = [
         'container',
         'router',
-        'scrollbar',
         'scroll',
         'floater',
         'popup'

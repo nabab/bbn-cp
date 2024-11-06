@@ -152,6 +152,20 @@ const cpDef = {
         positions: {}
       };
     },
+    computed: {
+      isTop() {
+        return this.position.indexOf('top') > -1;
+      },
+      isBottom() {
+        return this.position.indexOf('bottom') > -1;
+      },
+      isLeft() {
+        return this.position.indexOf('left') > -1;
+      },
+      isRight() {
+        return this.position.indexOf('right') > -1;
+      }
+    },
     methods: {
       /**
        * @method _sanitize
@@ -209,57 +223,64 @@ const cpDef = {
         let idx = bbn.fn.search(this.items, {
           content: o.content,
           type: o.type,
-          icon: o.icon
+          icon: o.icon,
         });
         if (idx > -1) {
           o.num += this.items[idx].num;
           this.items.splice(idx, 1);
         }
-        this.items.push(o);
-        this._updatePositions();
-        if ( o.delay ){
-          setTimeout(() => {
-            this.close(o.id);
-          }, o.delay);
-        }
+
+        this.positions[o.id] = 1;// -100; (having it below doesn't work)
+        this.items.unshift(o);
+        this.$forceUpdate();
+        setTimeout(() => {
+          this.$nextTick(() => {
+            this._updatePositions();
+            if (o.delay) {
+              setTimeout(() => {
+                this.close(o.id);
+              }, o.delay);
+            }
+          });
+        }, 250)
+
       },
       /**
        * @method _updatePositions
        * @fires getRef
        */
-      _updatePositions(){
-        let p = {};
-        let pos = 0;
+      _updatePositions() {
+        let pos = 1;
         let ids = [];
+        //bbn.fn.log("UPDATING POSITIONS");
         bbn.fn.each(this.items, a => {
           let cp = this.getRef('it' + a.id);
           let s;
           if (cp) {
             s = cp.$el.getBoundingClientRect().height;
           }
-          if (a.closing) {
-            p[a.id] = this.positions[a.id];
-          }
-          else {
-            p[a.id] = pos;
+
+          if (!a.closing) {
+            this.positions[a.id] = pos;
             if (s) {
               pos += s;
             }
           }
+
+          if (cp) {
+            this.$nextTick(() => {
+              cp.$forceUpdate();
+            })
+          }
+
           ids.push(a.id);
         });
-        bbn.fn.iterate(bbn.fn.diffObj(this.positions, p), (a, k) => {
-          if (a.type === 'updated') {
-            this.positions[k] = a.newData;
+
+        for (let p in this.positions) {
+          if (!ids.includes(p)) {
+            delete this.positions[p];
           }
-          else if (a.type === 'created') {
-            this.positions[k] = a.data;
-          }
-          else if (a.type === 'deleted') {
-            delete this.positions[k];
-          }
-        });
-        this.$forceUpdate();
+        }
       },
       /**
        * @method close
@@ -271,8 +292,13 @@ const cpDef = {
           if (callCallback && this.items[idx].onClose && bbn.fn.isFunction(this.items[idx].onClose)){
             this.items[idx].onClose(this.items[idx]);
           }
-          this.items.splice(idx, 1);
+          this.items[idx].closing = true;
+          const id = this.items[idx].id;
+          this.positions[id] = - this.getRef('it' + id).$el.clientHeight;
           this._updatePositions();
+          setTimeout(() => {
+            this.items.splice(idx, 1);
+          }, 1000);
         }
       },
       /**

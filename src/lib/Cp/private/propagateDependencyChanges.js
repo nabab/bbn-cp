@@ -1,7 +1,7 @@
 import bbn from "@bbn/bbn";
 import bbnComputed from "../../Computed/Computed.js";
 
-export default async function propagateDependencyChanges(cp, name) {
+export default function propagateDependencyChanges(cp, name) {
   let propagationFromHere = false;
 
   if (cp.$deps[name]) {
@@ -25,7 +25,7 @@ export default async function propagateDependencyChanges(cp, name) {
       bbn.cp.propagation.push(a);
       //bbn.fn.log("PROPAGATION STARTED ON " + name, a);
       if (a instanceof bbnAttr || a instanceof bbnComputed) {
-        await bbn.cp.queueUpdate({component: cp, element: a, num});
+        bbn.cp.queueUpdate({component: cp, element: a, num});
       }
       else {
         bbn.fn.log("UNKNOWN DEPENDENCY", a);

@@ -2,6 +2,7 @@ import bbn from '@bbn/bbn';
 import bbnConditionAttr from '../lib/Attr/Condition.js';
 import bbnComputed from '../lib/Computed/Computed.js';
 import initResults from '../lib/Cp/private/initResults.js';
+import queueUpdate from './queueUpdate.js';
 
 const sorter = (a, b) => {
   if (!(a instanceof bbnAttr)) {
@@ -12,6 +13,9 @@ const sorter = (a, b) => {
     bbn.fn.log(b);
     throw new Error("NOT AN ATTR");
   }
+
+  const idCpA = a.node.component.$cid;
+  const idCpB = b.node.component.$cid;
 
   const tmpA = a.id.match(/^([0-9-]+)-([A-z]{1}[A-z0-9-_]+)$/);
   const tmpB = b.id.match(/^([0-9-]+)-([A-z]{1}[A-z0-9-_]+)$/);
@@ -54,7 +58,6 @@ const sorter = (a, b) => {
 async function treatQueue(num = 0) {
   let isDebug = false;
   if (bbn.cp.queue.length) {
-    //bbn.fn.log("TREATING QUEUE: " + bbn.cp.queue.length);
     if (bbn.cp.queue.length > 100000) {
       if (!isDebug) {
         isDebug = bbn.cp.numTicks;
@@ -65,168 +68,192 @@ async function treatQueue(num = 0) {
       isDebug = false;
     }
 
-    let tmp = bbn.cp.queue.splice(0);
-    const nums = bbn.fn.unique(tmp.map(q => q.num)).sort();
+    let queue = bbn.fn.order(bbn.cp.queue.splice(0), 'num');
+    // Process each component in the queue.
     let oneDone = false;
-    for (let i = 0; i < nums.length; i++) {
-      let lastElement = null;
-      let cps = bbn.fn.createObject();
-      let done = [];
-      let fns = [];
-      let removed = [];
-      let forgotten = [];
-      const queue = tmp.filter(q => q.num === nums[i]);
-      const attrs = [];
-      while (queue.length) {
-        if (isDebug) {
-          if (bbn.cp.numTicks - isDebug > 1000) {
-            throw new Error("Too many ticks");
-          }
-        }
-        const queueElement = queue.shift();
-        const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
-        if (!cp.$el.isConnected) {
-          continue;
-        }
-        
-        if (queueElement.element) {
-          if (done.includes(queueElement.element)) {
-            continue;
-          }
 
-          done.push(queueElement.element);
+    let lastElement;
+    let lastNum;
+    let cps;
+    let done;
+    let fns;
+    let unconditioned = [];
+    let forgotten = [];
+    while (queue.length) {
+      if (isDebug) {
+        if (bbn.cp.numTicks - isDebug > 1000) {
+          throw new Error("Too many ticks");
         }
-
-        if (!cps[cp.$cid]) {
-          cps[cp.$cid] = cp;
-          initResults(cp);
-        }
-
-        // Doing all elements but attributes
-        oneDone = true;
-        // Launch the update process for the component.
-
-        if (queueElement.element && (lastElement?.element === queueElement.element)) {
-          continue;
-        }
-
-        if (queueElement?.element instanceof bbnComputed) {
-          if (isDebug) {
-            bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + bbn.cp.propagation.length);
-          }
-
-          await queueElement.element.computedUpdate();
-        }
-        else if (queueElement?.element instanceof bbnAttr) {
-          attrs.push(queueElement.element);
-        }
-        else if (bbn.fn.isFunction(queueElement?.fn)) {
-          if (isDebug) {
-            bbn.fn.log(cp.$options.name + ' - Fn - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + queueElement.fn.toString());
-          }
-
-          const hash = queueElement.component.$cid + '-' + queueElement.hash;
-          if (fns.includes(hash)) {
-            // If on dropdown don't work
-            //bbn.fn.log(["ALREADY DONE", hash, queueElement, queueElement.fn.toString()]);
-            //continue;
-          }
-
-          fns.push(hash);
-          await queueElement.fn();
-        }
-        else {
-          bbn.fn.log(["Data in queue", queueElement]);
-          throw new Error("DATA IN QUEUE");
-          //await queueElement.data.update(true);
-        }
-
-        lastElement = queueElement;
+      }
+      const queueElement = queue.shift();
+      //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
+      const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
+      if (!cp.$el.isConnected) {
+        continue;
       }
 
-      if (attrs.length) {
-        attrs.sort(sorter);
-        for (const attr of attrs) {
-          if (isDebug) {
-            bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
-          }
+      // If number is different from the previous we reinitialize
+      if (lastNum !== queueElement.num) {
+        unconditioned = [];
+        forgotten = [];
+        cps = bbn.fn.createObject();
+        lastNum = queueElement.num;
 
-          if (!(attr instanceof bbnConditionAttr) && attr.node.condition && !attr.node.condition.attrGetValue()) {
-            continue;
-          }
-    
-          const id = attr.node.id;
-          if (!(attr instanceof bbnConditionAttr) && !(attr instanceof bbnForgetAttr) && forgotten.includes(attr.node)) {
-            continue;
-          }
-    
-          if (!(attr instanceof bbnConditionAttr) && (removed.includes(attr.node) || removed.filter(a => !id.indexOf(a.id + '-') && !a.hash.indexOf(attr.node.hash || '')).length)) {
-            continue;
-          }
+        /*
+        if (done?.length) {
+          bbn.fn.log(done.slice());
+        }*/
 
-          await attr.attrUpdate();
-          //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
-          const attrValue = attr.attrGetValue();
-          if (attr instanceof bbnConditionAttr && !attrValue) {
-            removed.push(attr.node);
+        done = [];
+        lastElement = null;
+        fns = [];
+      }
+
+      if (queueElement.element) {
+        if (done.includes(queueElement.element)) {
+          continue;
+        }
+
+        done.push(queueElement.element);
+      }
+
+      if (!cps[cp.$cid]) {
+        cps[cp.$cid] = cp;
+        initResults(cp);
+      }
+
+      // Doing all elements but attributes
+      oneDone = true;
+      // Launch the update process for the component.
+
+
+      if (queueElement?.element instanceof bbnComputed) {
+        if (lastElement?.element === queueElement.element) {
+          continue;
+        }
+
+        if (isDebug) {
+          bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + bbn.cp.propagation.length);
+        }
+
+        await queueElement.element.computedUpdate();
+      }
+      else if (queueElement?.element instanceof bbnAttr) {
+        const attr = queueElement.element;
+        if (isDebug) {
+          bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
+        }
+
+        const id = attr.node.id;
+        if (!(attr instanceof bbnConditionAttr) && !(attr instanceof bbnForgetAttr) && forgotten.includes(attr.node)) {
+          continue;
+        }
+
+        if (!(attr instanceof bbnConditionAttr) && (unconditioned.includes(attr.node) || unconditioned.filter(a => !a.id.indexOf(id + '-') && !a.hash.indexOf(attr.node.hash || '')).length)) {
+          //bbn.fn.log("SKIPPING");
+          continue;
+        }
+
+        await attr.attrUpdate();
+        //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
+        const attrValue = attr.attrGetValue();
+        if (attr instanceof bbnConditionAttr) {
+          if (attrValue && unconditioned.includes(attr.node)) {
+            unconditioned.splice(unconditioned.indexOf(attr.node), 1);
           }
-          else if (attr instanceof bbnForgetAttr && attrValue) {
+          else if (!attrValue && !unconditioned.includes(attr.node)) {
+            for (let i = 0; i < unconditioned.length; i++) {
+              if (unconditioned[i].id.indexOf(id + '-') === 0) {
+                unconditioned.splice(i, 1);
+                i--;
+              }
+            }
+            unconditioned.push(attr.node);
+          }
+        }
+        else if (attr instanceof bbnForgetAttr) {
+          if (!attrValue && forgotten.includes(attr.node)) {
+            forgotten.splice(forgotten.indexOf(attr.node), 1);
+          }
+          else if (attrValue && !forgotten.includes(attr.node)) {
             forgotten.push(attr.node);
           }
         }
       }
+      else if (bbn.fn.isFunction(queueElement?.fn)) {
+        if (isDebug) {
+          bbn.fn.log(cp.$options.name + ' - Fn - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + queueElement.fn.toString());
+        }
 
-      for (let n in cps) {
-        cps[n].$lastBuild = nums[i];
+        const hash = queueElement.component.$cid + '-' + queueElement.hash;
+        if (fns.includes(hash)) {
+          // If on dropdown don't work
+          //bbn.fn.log(["ALREADY DONE", hash, queueElement, queueElement.fn.toString()]);
+          //continue;
+        }
+
+        fns.push(hash);
+        await queueElement.fn();
       }
+      else {
+        bbn.fn.log(["Data in queue", queueElement]);
+        throw new Error("DATA IN QUEUE");
+        //await queueElement.data.update(true);
+      }
+
+      lastElement = queueElement;
     }
 
-    //bbn.cp.numTicks++;
+    bbn.cp.numTicks++;
 
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
-      //await treatQueue(num + 1);
+      await treatQueue(num + 1);
+    }
+
+    for (let n in cps) {
+      cps[n].$lastBuild = bbn.cp.numTicks;
     }
   }
 
   if (!num && bbn.cp.nextQueue.length) {
-    bbn.cp.queue.push(...bbn.cp.nextQueue.splice(0).map(a => {
-      if (!a.num) {
-        a.num = bbn.cp.numTicks;
+    while (bbn.cp.nextQueue.length) {
+      if (!bbn.cp.nextQueue[0].num) {
+        bbn.cp.nextQueue[0].num = bbn.cp.numTicks;
       }
-
-      return a;
-    }));
+      queueUpdate(bbn.cp.nextQueue.shift());
+    }
   }
+
+  //bbn.fn.log("FINISHED FN (" + num + ") WITH " +bbn.cp.queue.length);
+
 }
 /**
  * Starts the ticking process for component updates.
  * Throws an error if the tick process is already running.
  */
-export default function startTick() {
+export default async function startTick() {
   // Check if the tick process is already initiated.
   if (bbn.cp.interval) {
     throw Error(bbn._("The tick is already started"));
   }
 
-  // Set an interval to periodically check and update components.
-  bbn.cp.interval = setInterval(
-    async function() {
-      // Skip if an update is currently running.
-      if (bbn.cp.isRunning || (!bbn.cp.queue.length && !bbn.cp.nextQueue.length)) {
-        return;
-      }
+  // Skip if an update is currently running.
+  if (bbn.cp.isRunning) {
+    if (bbn.cp.to) {
+      clearTimeout(bbn.cp.to);
+    }
+    bbn.cp.to = setTimeout(() => {
+      startTick();
+    }, 5);
 
-      bbn.cp.isRunning = true;
+    return;
+  }
 
-      await requestAnimationFrame(async () => {
-        await treatQueue();
-        bbn.cp.isRunning = false;
-      });
-
-      // Indicate that the current update cycle is complete.
-    },
-    // Interval defined by the tick delay.
-    bbn.cp.tickDelay
-  );
+  bbn.cp.isRunning = true;
+  await requestAnimationFrame(async () => {
+    await treatQueue();
+    bbn.cp.isRunning = false;
+  });
+//  );
 }

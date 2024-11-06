@@ -69,13 +69,6 @@ const cpDef = {
         default: true
       },
       /**
-       * @prop {Boolean} [false] disabled
-       */
-      disabled: {
-        type: Boolean,
-        default: false
-      },
-      /**
        * @prop {String} thumbNot
        */
       thumbNot : {

@@ -343,6 +343,14 @@ const list = {
       default: false
     },
     /**
+     * Sets the placeholder in the search field
+     * @prop {String} ["Search"] searchPlaceholder
+     */
+    searchPlaceholder: {
+      type: String,
+      default: bbn._("Search")
+    },
+    /**
      * @todo not used in the component
      */
     searchFields: {
@@ -943,12 +951,12 @@ const list = {
         /** @todo Is it compatible with the fact of updating the source when given an array */
         let o = this.hierarchy ? bbn.fn.extend(a, {
           index: i,
-          key: this.uid ? data[this.uid] : (this.isAjax ? (i + '-' + this.hashCfg) : i),
+          key: this.uid ? a[this.uid] : (this.isAjax ? (i.toString() + '-' + this.hashCfg) : i),
           _bbn: true
         }) : {
           data: a,
           index: i,
-          key: this.uid ? data[this.uid] : (this.isAjax ? (i + '-' + this.hashCfg) : i),
+          key: this.uid ? a[this.uid] : (this.isAjax ? (i.toString() + '-' + this.hashCfg) : i),
           _bbn: true
         };
 
@@ -1034,6 +1042,7 @@ const list = {
           prom.then(d => {
             if (this.isAjax) {
               if (!this.loadingRequestID || (this.loadingRequestID !== loadingRequestID)) {
+                return;
                 this.isLoading = false;
                 this.loadingRequestID = false;
                 throw Error("No loading request");

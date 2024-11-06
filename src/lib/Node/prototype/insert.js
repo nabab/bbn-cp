@@ -23,7 +23,7 @@ const insertInSlot = function (parent, node, ele) {
     const slot = ele.bbnSchema.slot?.name || ele.bbnSchema?.attr?.slot?.value || 'default';
     //bbn.fn.log(["IN CP 2 " + cp.$options.name, slot, ele.bbnSchema?.attr?.slot?.value, ele]);
     if (parent.bbnSlots?.[slot]) {
-      let search = {bbnId: ele.bbnId};
+        let search = {bbnId: ele.bbnId};
       if (ele.bbnHash) {
         search.bbnHash = ele.bbnHash;
       }

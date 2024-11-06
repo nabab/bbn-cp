@@ -283,13 +283,20 @@ const cpDef = {
         v = bbn.fn.substr(v, this.prefix.length);
       }
 
-      if (this.currentValue !== v) {
-        this.currentValue = v || '';
+      if (!this.isEmittingValue) {
+        if (this.currentValue !== v) {
+          this.currentValue = v || '';
+        }
       }
     },
     currentValue(v) {
-      if (this.value !== (this.prefix || '') + this.currentValue) {
-        this.emitValue(v);
+      if (!this.isEmittingValue) {
+        this.isEmittingValue = true;
+        if (this.value !== (this.prefix || '') + this.currentValue) {
+          this.emitValue(v);
+        }
+
+        this.isEmittingValue = false;
       }
     },
     required(v){

@@ -4,14 +4,9 @@
   position: relative;
   box-sizing: border-box;
   margin: 0;
-  > .bbn-router-scroller::-webkit-scrollbar {
-    height: 0px;
-    width: 0px;
-    background: transparent;
-  }
   .bbn-router-nav {
     .bbn-router-nav:not(.bbn-router-nav-bc) {
-      padding-top: ~"var(--sspace)";
+      padding-top: var(--sspace);
       height: 100%;
     }
     &.bbn-router-nav-bc .bbn-router-breadcrumb-master{
@@ -21,7 +16,7 @@
       padding-top: 0;
     }
     .bbn-pane .bbn-router-nav:not(.bbn-router-nav-bc) .bbn-router-nav:not(.bbn-router-nav-bc){
-      padding-top: ~"var(--sspace)";
+      padding-top: var(--sspace);
     }
 
     .bbn-router-nav.bbn-router-nav-verticaltabs {
@@ -208,6 +203,6 @@
 }
 .bbn-state-hover, .bbn-state-selected {
   .bbn-router-search-result {
-    filter: ~"saturate(1.8)";
+    filter: saturate(1.8);
   }
 }

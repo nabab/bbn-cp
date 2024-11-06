@@ -14,6 +14,7 @@
                :right="isLeft ? undefined : 0"
                :title="false"
                :scrollable="true"
+               
                @resize="_updatePositions"
                @hook.destroy="_updatePositions">
     <div :class="{

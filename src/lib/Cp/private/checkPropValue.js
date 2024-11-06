@@ -53,7 +53,10 @@ export default function checkPropValue(cp, name, cfg, value) {
 
   // Type checking for the property value.
   if (cfg.type && isDefined && ![null, undefined, ''].includes(v)) {
-    bbn.fn.checkType(v, cfg.type, bbn._("Wrong type for %s in component %s", name, cp.$options.name));
+    // Accepting number instead of boolean
+    if (!bbn.fn.isNumber(v) || cfg.type.includes(Number) || !cfg.type.includes(Boolean)) {
+      bbn.fn.checkType(v, cfg.type, bbn._("Wrong type for %s in component %s", name, cp.$options.name));
+    }
   }
 
   // Custom validation for the property.

@@ -13,11 +13,13 @@ bbnData.proxyUnshift = function(targetObj, target, component) {
     let newArgs = [];
     args.forEach((a, i) => {
       const idx = target.length + i;
-      const newVal = this.treatValue(a, component, idx, targetObj);
-      newArgs.push(newVal);
+      //const newVal = this.treatValue(a, component, idx, targetObj);
+      newArgs.push(a);
     });
     const res = target.unshift(...newArgs);
+
     if (targetObj) {
+      targetObj.fixIndexes(component);
       targetObj.prepareUpdate();
     }
     else {

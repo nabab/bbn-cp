@@ -7,7 +7,7 @@ class bbnData/* extends EventTarget*/ {
 
   static lastSequence = null;
 
-  static inventory = new WeakMap();
+  static inventory = bbn.fn.createObject();
 
   static watchSequence = [];
 
@@ -55,7 +55,7 @@ class bbnData/* extends EventTarget*/ {
      */
     const id = Symbol();
     // The object is added to the data inventory
-    bbnData.inventory.set(id, this);
+    bbnData.inventory[id] = this;
     Object.defineProperty(this, 'id', {
       writable: false,
       configurable: false,
@@ -96,8 +96,9 @@ class bbnData/* extends EventTarget*/ {
     Object.defineProperty(this, 'value', {
       value: new Proxy(this.targetData, this.constructor.proxy(component, path, this)),
       writable: false,
-      configurable: false
+      configurable: true
     });
+
 
     /**
      * @var {Boolean} isArray If the data is an array
@@ -115,15 +116,6 @@ class bbnData/* extends EventTarget*/ {
       value: 0,
       writable: true,
       configurable: true
-    });
-
-    /**
-     * @var {Object} components The components that use this data object, indexed by their unique id (cid)
-     */
-    Object.defineProperty(this, 'components', {
-      value: bbn.fn.createObject(),
-      writable: false,
-      configurable: false
     });
 
     Object.defineProperty(this, 'deps', {
