@@ -208,7 +208,7 @@ async function treatQueue(num = 0) {
 
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
-      //await treatQueue(num + 1);
+      await treatQueue(num + 1);
     }
 
     for (let n in cps) {
@@ -238,29 +238,22 @@ export default async function startTick() {
     throw Error(bbn._("The tick is already started"));
   }
 
-  // Set an interval to periodically check and update components.
-//  bbn.cp.interval = setInterval(
-//    async function () {
   // Skip if an update is currently running.
-      if (bbn.cp.isRunning) {
-        if (bbn.cp.to) {
-          clearTimeout(bbn.cp.to);
-        }
-        bbn.cp.to = setTimeout(() => {
-          startTick();
-        }, 5);
+  if (bbn.cp.isRunning) {
+    if (bbn.cp.to) {
+      clearTimeout(bbn.cp.to);
+    }
+    bbn.cp.to = setTimeout(() => {
+      startTick();
+    }, 5);
 
-        return;
-      }
+    return;
+  }
 
-      bbn.cp.isRunning = true;
-
-      await treatQueue();
-      bbn.cp.isRunning = false;
-
-      // Indicate that the current update cycle is complete.
-//    },
-    // Interval defined by the tick delay.
-    bbn.cp.tickDelay
+  bbn.cp.isRunning = true;
+  await requestAnimationFrame(async () => {
+    await treatQueue();
+    bbn.cp.isRunning = false;
+  });
 //  );
 }
