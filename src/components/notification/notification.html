@@ -1,21 +1,21 @@
-<div :class="componentClass">
+<div :class="[componentClass, {
+       'bbn-notification-top': isTop,
+       'bbn-notification-bottom': isBottom,
+       'bbn-notification-left': isLeft,
+       'bbn-notification-right': isRight
+     }]">
   <bbn-floater bbn-for="(it, idx) in items"
                :ref="'it' + it.id"
                :key="it.id"
                :focused="false"
-               :container="$root.$el"
-               :class="{
-                  'bbn-notification-transition': positions[it.id] !== undefined,
+               :container="container || $root.$el"
+               :class="['bbn-abs', {
+                  'bbn-notification-adding': it.adding && !it.closing,
                   'bbn-notification-closing': !!it.closing
-               }"
-               :top="isTop && (positions[it.id] !== undefined) ? positions[it.id] : undefined"
-               :bottom="isTop || (positions[it.id] === undefined) ? undefined : positions[it.id]"
-               :left="isLeft ? 0 : undefined"
-               :right="isLeft ? undefined : 0"
+               }]"
                :title="false"
                :scrollable="true"
-               
-               @resize="_updatePositions"
+               @resized="() => onFloaterResize(it)"
                @hook.destroy="_updatePositions">
     <div :class="{
         'bbn-notification-content': true,
@@ -55,8 +55,7 @@
       <div :class="{
           'bbn-notification-closer': true,
           'bbn-top-right': true,
-          'bbn-vxsmargin': true,
-          'bbn-hsmargin': true,
+          'bbn-xsmargin': true,
           'bbn-p': true,
           'bbn-white': !!it.type
       }"

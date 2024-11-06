@@ -42,12 +42,12 @@
     </div>
 
     <!-- MAIN -->
-    <div :class="{
-      'bbn-flex-fill': scrollable,
-      'bbn-w-100': !scrollable,
-      'bbn-appui-center': true
-    }"
-    bbn-if="ready">
+    <div bbn-if="ready"
+         :class="{
+           'bbn-flex-fill': scrollable,
+           'bbn-w-100': !scrollable,
+           'bbn-appui-center': true
+         }">
       <bbn-router :root="root"
                   :source="source"
                   :storage="!!nav"

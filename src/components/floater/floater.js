@@ -591,6 +591,7 @@ const cpDef = {
         this.onResize(true);
         this.$nextTick(() => {
           this.isResized = true;
+          this.$emit('resized', this);
           const scroll = this.closest('bbn-scroll');
           if (scroll) {
             const onScroll = () => {

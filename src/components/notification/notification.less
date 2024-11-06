@@ -1,7 +1,36 @@
 /* LESS Document */
 .bbn-notification {
-  .bbn-floater.bbn-floater-resized.bbn-notification-transition {
-    transition: top 0.5s ease-in-out !important;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  height: 100%;
+  &.bbn-notification-top {
+    justify-content: start;
+  }
+  &.bbn-notification-bottom {
+    justify-content: end;
+  }
+  &.bbn-notification-left {
+    align-items: start;
+  }
+  &.bbn-notification-right {
+    align-items: end;
+  }
+  .bbn-floater.bbn-floater-resized {
+    position: relative !important;
+    display: block !important;
+    top: unset !important;
+    left: unset !important;
+    right: unset !important;
+    bottom: unset !important;
+    transition: 0.25s ease-in-out !important;
+    &:not(.bbn-notification-closing):not(.bbn-notification-adding) {
+      transform: translateY(100%) !important;
+      transition: none !important;
+    }
+    &.bbn-notification-closing {
+      transform: translateY(100%) !important;
+    }
   }
   .bbn-notification-icon {
     margin-right: 1rem;

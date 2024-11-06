@@ -106,6 +106,12 @@ const cpDef = {
         type: Number,
         default: 10
       },
+      /**
+       * @prop {HTMLElement} container
+       */
+      container: {
+        type: HTMLElement
+      }
     },
     data(){
       let bits = this.position.split('-');
@@ -145,11 +151,7 @@ const cpDef = {
         /**
          * @data {Boolean} isLeft
          */
-        isLeft: pos.h.left,
-        /**
-         * @data {Object} [{}] positions
-         */
-        positions: {}
+        isLeft: pos.h.left
       };
     },
     computed: {
@@ -167,6 +169,16 @@ const cpDef = {
       }
     },
     methods: {
+      /**
+       * @method onFloaterResize
+       * @param {Object} obj
+       * @fires $nextTick
+       */
+      onFloaterResize(obj){
+        this.$nextTick(() => {
+         obj.adding = true;
+        })
+      },
       /**
        * @method _sanitize
        * @param {Object} obj
@@ -215,7 +227,6 @@ const cpDef = {
       },
       /**
        * @method add
-       * 
        * @param {Object} o
        */
       add(o) {
@@ -226,61 +237,27 @@ const cpDef = {
           icon: o.icon,
         });
         if (idx > -1) {
-          o.num += this.items[idx].num;
-          this.items.splice(idx, 1);
+          this.items[idx].num++;
+          if (idx !== (this.items.length - 1)) {
+            this.items.push(...this.items.splice(idx, 1));
+          }
         }
-
-        this.positions[o.id] = 1;// -100; (having it below doesn't work)
-        this.items.unshift(o);
-        this.$forceUpdate();
-        setTimeout(() => {
-          this.$nextTick(() => {
-            this._updatePositions();
-            if (o.delay) {
-              setTimeout(() => {
-                this.close(o.id);
-              }, o.delay);
-            }
-          });
-        }, 250)
-
-      },
-      /**
-       * @method _updatePositions
-       * @fires getRef
-       */
-      _updatePositions() {
-        let pos = 1;
-        let ids = [];
-        //bbn.fn.log("UPDATING POSITIONS");
-        bbn.fn.each(this.items, a => {
-          let cp = this.getRef('it' + a.id);
-          let s;
-          if (cp) {
-            s = cp.$el.getBoundingClientRect().height;
-          }
-
-          if (!a.closing) {
-            this.positions[a.id] = pos;
-            if (s) {
-              pos += s;
-            }
-          }
-
-          if (cp) {
+        else {
+          o.adding = false;
+          this.items.push(o);
+          this.$forceUpdate();
+          setTimeout(() => {
             this.$nextTick(() => {
-              cp.$forceUpdate();
-            })
-          }
-
-          ids.push(a.id);
-        });
-
-        for (let p in this.positions) {
-          if (!ids.includes(p)) {
-            delete this.positions[p];
-          }
+              if (o.delay) {
+                setTimeout(() => {
+                  this.close(o.id);
+                }, o.delay);
+              }
+            });
+          }, 250)
         }
+
+
       },
       /**
        * @method close
@@ -293,12 +270,9 @@ const cpDef = {
             this.items[idx].onClose(this.items[idx]);
           }
           this.items[idx].closing = true;
-          const id = this.items[idx].id;
-          this.positions[id] = - this.getRef('it' + id).$el.clientHeight;
-          this._updatePositions();
           setTimeout(() => {
             this.items.splice(idx, 1);
-          }, 1000);
+          }, 250);
         }
       },
       /**
@@ -360,13 +334,6 @@ const cpDef = {
         o = this._sanitize(o, 'info', timeout);
         this.add(o);
       },
-    },
-    /**
-     * @event beforeMount
-     * @fires _updatePositions
-     */
-    beforeMount(){
-      this._updatePositions();
     }
   };
 
