@@ -768,10 +768,7 @@ const cpDef = {
         if ( miniatures ){
           let scroll = miniatures.getRef('scroll');
           if (scroll) {
-            let xScroller = scroll.getRef('xScroller');
-            if (xScroller) {
-              xScroller.scrollTo(miniatures.$refs.items[val]);
-            }
+            scroll.scrollToX(miniatures.$refs.items[val]);
           }
         }
         this.$emit('changeSlide', val);
