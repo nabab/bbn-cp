@@ -1,15 +1,16 @@
-<div :class="[componentClass, {
+<div :class="[componentClass, 'bbn-sradius', {
        'bbn-notification-top': isTop,
        'bbn-notification-bottom': isBottom,
        'bbn-notification-left': isLeft,
-       'bbn-notification-right': isRight
+       'bbn-notification-right': isRight,
+       'bbn-xxspadded': !!items.length
      }]">
   <bbn-floater bbn-for="(it, idx) in items"
                :ref="'it' + it.id"
                :key="it.id"
                :focused="false"
                :container="container || $root.$el"
-               :class="['bbn-abs', {
+               :class="['bbn-abs', 'bbn-sradius', {
                   'bbn-notification-adding': it.adding && !it.closing,
                   'bbn-notification-closing': !!it.closing
                }]"
