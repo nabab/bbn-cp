@@ -25,7 +25,6 @@
         'bbn-white': !!it.type,
         'bbn-light': true,
         'bbn-m': true,
-        'bbn-lpadded': true,
         'bbn-bg-green': it.type === 'success',
         'bbn-bg-orange': it.type === 'warning',
         'bbn-bg-red': it.type === 'error',
@@ -49,7 +48,7 @@
             class="bbn-iblock"
             bbn-html="errorMessage"/>
       <div bbn-if="it.num > 1"
-           class="bbn-iblock bbn-top-left bbn-hsmargin bbn-vxsmargin">
+           class="bbn-top-left bbn-xsmargin">
         <span :class="['bbn-badge', 'bbn-small', {
                 'bbn-bg-white': !!it.type,
                 'bbn-bg-black': !it.type,
@@ -68,7 +67,7 @@
           'bbn-white': !!it.type
       }"
           @click="close(it.id, true)">
-          <i class="bbn-lg nf nf-fa-times"/>
+        <i class="bbn-m nf nf-fa-times"/>
       </div>
     </div>
   </bbn-floater>
