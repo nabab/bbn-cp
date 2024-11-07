@@ -903,20 +903,19 @@ export default {
           });
         }
 
-        window.addEventListener("beforeunload", e => {
-          e = e || window.event;
-          //if ( $(".bbn-tabnabbn-unsaved").length ){
-          if (this.isDirty) {
-            // doesn't use that string but a default string...
-            let st = bbn._('You have unsaved data, are you sure you want to leave?');
-            // For IE and Firefox prior to version 4
-            if (e) {
-              e.returnValue = st;
+        bbn.fn.log(["SETTING EVENT ON BEFORE UNLOAD", this]);
+        if (!window.onbeforeunload) {
+          window.onbeforeunload = function(e) {
+            bbn.fn.log(["BEFORE UNLOAD", this.isDirty]);
+            if (this.isDirty) {
+              // doesn't use that string but a default string...
+              e.returnValue = ' ';
+              e.preventDefault();
             }
-            // For Safari
-            return st;
-          }
-        });
+
+            return false;
+          };
+        }
 
       }
     },

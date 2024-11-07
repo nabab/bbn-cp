@@ -91,6 +91,15 @@ class bbnData/* extends EventTarget*/ {
     });
 
     /**
+     * @var {String} path The original path
+     */
+    Object.defineProperty(this, 'path', {
+      value: path,
+      writable: false,
+      configurable: false
+    });
+
+    /**
      * @var {Proxy} value The proxy takes care of subreactivity
      */
     Object.defineProperty(this, 'value', {

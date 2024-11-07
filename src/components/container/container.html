@@ -9,7 +9,7 @@
      :style="visual ? visualStyle : {}"
      bbn-portal="portal"
      bbn-show="(!router?.isVisual && isVisible) || isVisualVisible || isPane">
-  <div class="bbn-container-full-screen"
+  <div class="bbn-container-full-screen bbn-flex-height"
        bbn-forget="!fullScreen">
     <transition name="fade"
                 @enter="enter"

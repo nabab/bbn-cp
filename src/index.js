@@ -8,6 +8,7 @@ import "./lib/Data/prototype/hasParent.js";
 import "./lib/Data/prototype/isSame.js";
 import "./lib/Data/prototype/prepareUpdate.js";
 import "./lib/Data/prototype/removeComponent.js";
+import "./lib/Data/prototype/setData.js";
 import "./lib/Data/prototype/unset.js";
 import "./lib/Data/static/addSequence.js";
 import "./lib/Data/static/getObject.js";

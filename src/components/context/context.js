@@ -158,7 +158,8 @@ const cpDef = {
     },
     methods: {
       select(item, idx, dataIndex, ev) {
-        const ev2 = this.$emit('select', item, idx, dataIndex, ev);
+        return;
+        const ev2 = this.$emit('select', item, idx, dataIndex);
         if (!ev2.defaultPrevented && this.sourceAction) {
           const action = bbn.fn.isFunction(this.sourceAction) ? this.sourceAction(item) : this.sourceAction;
           if (action && item[action]) {

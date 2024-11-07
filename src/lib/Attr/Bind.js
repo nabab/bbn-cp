@@ -23,6 +23,7 @@ export default class bbnBindAttr extends bbnAttr
 
   async attrUpdate(init) {
     if (init || (this.attrGetState() !== 'OK')) {
+      //bbn.fn.log("CHANGE ON BIND")
       bbnAttr.prototype.attrUpdate.apply(this, [init])
       if (this.result.value) {
         for (let n in this.result.value) {

@@ -32,25 +32,6 @@ class bbnDataFacade {
   }
 
 
-  *[Symbol.iterator]() {
-    let node = this.__bbn_node;
-    const done = [];
-    bbn.fn.log("KEYS", keys);
-    while (node) {
-      if (node.hasData) {
-        const keys = node.data.__bbn_keys();
-        for (let i = 0; i < keys.length; i++) {
-          if (done.indexOf(keys[i]) === -1) {
-            done.push(keys[i]);
-            yield keys[i];
-          }
-        }
-      }
-
-      node = node.parent;
-    }
-  }
-
   get(key) {
     if (key.indexOf('__bbn_') === 0) {
       return this[key];
@@ -60,8 +41,8 @@ class bbnDataFacade {
     while (node) {
       if (node.hasData && (node.data.__bbn_keys.indexOf(key) > -1)) {
         const dataObj = bbnData.getObject(node.data.__bbn_data[key]);
-        if (dataObj) {
-          bbnData.addSequence(node.component, '', dataObj);
+          if (dataObj) {
+            bbnData.addSequence(node.component, '', dataObj);
         }
 
         return node.data.__bbn_data[key];
@@ -74,6 +55,7 @@ class bbnDataFacade {
   }
 
   set(key, value) {
+    bbn.fn.log("SET DATA IN NODE");
     let node = this.__bbn_node;
     let firstData;
     while (node) {

@@ -52,8 +52,21 @@ bbnAttr.prototype.attrExec = function(data) {
     val = this.fn.bind(this.node.component)(...args);
   }
   catch (e) {
-    bbn.fn.log(["ERROR IN EXEC", e, this.node.component, args, this.fn.toString(), this, bbn.cp.queue, bbnComputed.queue, bbnData.queue]);
-    throw Error(e.message + ' (' + bbn._("Expression") + ': ' + this.exp + ')');
+    bbn.fn.log(
+      "*****************",
+      "Error in attrExec",
+      "*****************",
+      e,
+      "COMPONENT: " + this.node.component.$options.name,
+      this.node.component,
+      "ARGUMENTS",
+      args,
+      "FUNCTION: " + this.exp,
+      "ATTRIBUTE " + this.name,
+      this,
+      "*****************",
+    );
+    throw e;
   }
 
   seq.push(...bbnData.stopWatching());

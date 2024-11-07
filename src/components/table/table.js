@@ -1361,11 +1361,26 @@ const cpDef = {
                 || this.expander(data[i], i))
             )
           ) {
+            let rowKey;
+            if (this.uid) {
+              rowKey = a[this.uid];
+            }
+            else if (a.__bbnData) {
+              const obj = bbnData.getObject(a);
+              rowKey = obj.uid;
+              bbn.fn.log("rowKey", rowKey);
+            }
+            else if (Object.hasOwn(data[i], 'key')) {
+              rowKey = data[i].key;
+            }
+            else {
+              rowKey = rowIndex;
+            }
             o = {
               index: data[i].index,
               data: a,
               rowIndex,
-              rowKey: this.uid ? a[this.uid] : data[i].key || rowIndex,
+              rowKey,
             };
             if (isGroup) {
               if (!currentGroupValue) {
@@ -2493,7 +2508,6 @@ const cpDef = {
         this.isTableDataUpdating = true;
         this.allRowsChecked = false;
         this.currentExpanded = [];
-        this._removeTmp();
         this.editedRow = false;
         this.editedIndex = false;
         this.$forceUpdate();
