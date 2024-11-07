@@ -6,25 +6,22 @@
       <div :class="{'bbn-flex-width': !isVertical, 'bbn-flex-height': isVertical}"
            bbn-forget="!scrollable">
         <div bbn-if="scrollable"
-            class="bbn-tabs-button bbn-tabs-button-prev bbn-p">
-          <div class="bbn-100 bbn-middle"
-              @click="scrollTabs('left')">
-            <div class="bbn-block">
-              <i class="nf nf-fa-angle_left bbn-xlarge"/>
-            </div>
-          </div>
+            class="bbn-tabs-button bbn-tabs-button-prev bbn-p bbn-middle bbn-header"
+            @click="scrollTabs('left')">
+          <i class="nf nf-fa-angle_left bbn-xlarge"/>
         </div>
         <div :class="{
           'bbn-flex-fill': scrollable,
           'bbn-w-100': !scrollable
-        }">
+        }"
+              :style="{backgroundColor: parentBackground}">
           <bbn-scroll bbn-forget="!scrollable"
                       ref="horizontal-scroll"
                       bbn-bind="scrollCfg"
                       style="height: 100%"
                       @ready="onScrollReady">
             <ul ref="tabgroup"
-                :class="['bbn-background', 'bbn-tabs-tabs', 'bbn-bordered-bottom', {
+                :class="['bbn-tabs-tabs', 'bbn-bordered-bottom', {
                   'bbn-flex-fill': !isVertical && !scrollable,
                   'bbn-overflow-v': !scrollable,
                   'bbn-flex-width': fill
@@ -44,6 +41,7 @@
                           'bbn-radius-bottom': position === 'bottom',
                           'bbn-radius-left': position === 'left',
                           'bbn-radius-right': position === 'right',
+                          'bbn-background': !tab.color,
                           'bbn-iblock': !isVertical,
                           'bbn-flex-fill': fill,
                           'bbn-c': fill,
@@ -119,13 +117,9 @@
           </bbn-scroll>
         </div>
         <div bbn-if="scrollable"
-            class="bbn-tabs-button bbn-tabs-button-next bbn-p">
-          <div class="bbn-100 bbn-middle"
-              @click="scrollTabs('right')">
-            <div class="bbn-block">
-              <i class="nf nf-fa-angle_right bbn-xlarge"/>
-            </div>
-          </div>
+            class="bbn-tabs-button bbn-tabs-button-next bbn-p bbn-middle bbn-header"
+            @click="scrollTabs('right')">
+          <i class="nf nf-fa-angle_right bbn-xlarge"/>
         </div>
       </div>
     </div>

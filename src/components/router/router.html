@@ -18,7 +18,8 @@
                   'bbn-router-nabbn-bc': nav && isBreadcrumb,
                   'bbn-router-nabbn-verticaltabs': hasVerticalTabs
                   }"
-           bbn-forget="!nav && !scrollContent">
+           bbn-forget="!nav && !scrollContent"
+           :style="{backgroundColor: parentContainer?.currentView?.bcolor || 'inherit'}">
         <!-- START OF BREADCRUMB -->
         <div bbn-if="nav && isBreadcrumb && !isVisual"
             ref="breadcrumb"

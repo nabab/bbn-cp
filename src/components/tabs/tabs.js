@@ -74,6 +74,14 @@ const cpDef = {
       }
     },
     computed: {
+      parentBackground() {
+        const container = this.closest('bbn-container');
+        if (container) {
+          return container.currentView.bcolor || 'inherit';
+        }
+
+        return 'inherit';
+      },
       /**
        * Returns the scroll configuration
        * @computed scrollCfg
