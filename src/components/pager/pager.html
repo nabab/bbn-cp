@@ -5,90 +5,91 @@
 					'bbn-w-100': isMobile,
 					'bbn-flex-fill': !isMobile,
 					'bbn-c': isMobile && !isTablet
-				}"
-				bbn-if="numPages && element?.pageable">
-			<!-- 1ST BUTTON (FIRST) -->
-			<bbn-button icon="nf nf-fa-angle_double_left"
-									:notext="true"
-									:title="_('Go to the first %s', pageName)"
-									:disabled="currentPage <= 2"
-									@click="firstPage"
-									bbn-if="buttons"/>
-			<!-- OR 1ST ICON -->
-			<span bbn-else
-						class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
-						@click="firstPage"
-						:style="{visibility: currentPage <= 2 ? 'hidden' : 'visible'}">
-				<i class="nf nf-fa-angle_double_left bbn-xl bbn-pager-mobile-icon"/>
-			</span>
-			<!-- 2ND BUTTON (PREVIOUS) -->
-			<bbn-button icon="nf nf-fa-angle_left"
-									:notext="true"
-									:title="_('Go to the previous %s', pageName)"
-									:disabled="currentPage == 1"
-									@click="prevPage"
-									bbn-if="buttons"/>
-			<!-- OR 2ND ICON (PREVIOUS) -->
-			<span bbn-else
-						class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
-						@click="prevPage"
-						:style="{visibility: currentPage == 1 ? 'hidden' : 'visible'}">
-				<i class="nf nf-fa-angle_left bbn-xl bbn-pager-mobile-icon"/>
-			</span>
-			<!-- PAGE + NUMERIC SELECTOR -->
-			<span class="bbn-iblock" bbn-text="pageName"/>
-			<bbn-numeric bbn-if="numericSelector"
-									bbn-model="currentNumericPage"
-									:min="1"
-									:max="element.numPages"
-									class="bbn-narrower bbn-right-sspace"
-									:disabled="!!element.isLoading"
-									:readonly="element.numPages == 1"/>
-			<span bbn-else
-						class="bbn-iblock bbn-right-xsspace"
-						bbn-text="currentPage"/>
-			<!-- OF TOTAL -->
-			<span class="bbn-iblock bbn-right-xsspace"
-						bbn-text="_('of') + ' ' + element.numPages"/>
-			<!-- 3RD BUTTON (NEXT) -->
-			<bbn-button icon="nf nf-fa-angle_right"
-									:notext="true"
-									:title="_('Go to the next %s', pageName)"
-									:disabled="currentPage == element.numPages"
-									@click="nextPage"
-									bbn-if="buttons"/>
-			<!-- OR 3RD ICON (NEXT) -->
-			<span bbn-else
-						class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
-						@click="nextPage"
-						:style="{visibility: currentPage == element.numPages ? 'hidden' : 'visible'}">
-				<i class="nf nf-fa-angle_right bbn-xl bbn-pager-mobile-icon"/>
-			</span>
-			<!-- 4TH BUTTON (LAST) -->
-			<bbn-button icon="nf nf-fa-angle_double_right"
-									:notext="true"
-									:title="_('Go to the last %s', pageName)"
-									@click="lastPage"
-									:disabled="currentPage >= element.numPages - 1"
-									bbn-if="buttons"/>
-			<!-- OR 4TH ICON (LAST) -->
-			<span bbn-else
-						class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
-						@click="lastPage"
-						:style="{visibility: currentPage >= element.numPages - 1 ? 'hidden' : 'visible'}">
-				<i class="nf nf-fa-angle_double_right bbn-xl bbn-pager-mobile-icon"/>
-			</span>
-			<span bbn-if="(element?.limits?.length > 1) &&
-									(!isMobile || isTablet) &&
-									!!limit"
-						class="bbn-hmargin">
-				<bbn-dropdown :source="element.limits"
-											bbn-model.number="element.currentLimit"
-											@change="currentPage = 1"
-											:disabled="!!element.isLoading"
-											:autosize="true"/>
-				<span bbn-text="itemName + ' ' + _('per') + ' ' + pageName"/>
-			</span>
+				}">
+			<template bbn-if="numPages && element?.pageable">
+				<!-- 1ST BUTTON (FIRST) -->
+				<bbn-button icon="nf nf-fa-angle_double_left"
+										:notext="true"
+										:title="_('Go to the first %s', pageName)"
+										:disabled="currentPage <= 2"
+										@click="firstPage"
+										bbn-if="buttons"/>
+				<!-- OR 1ST ICON -->
+				<span bbn-else
+							class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
+							@click="firstPage"
+							:style="{visibility: currentPage <= 2 ? 'hidden' : 'visible'}">
+					<i class="nf nf-fa-angle_double_left bbn-xl bbn-pager-mobile-icon"/>
+				</span>
+				<!-- 2ND BUTTON (PREVIOUS) -->
+				<bbn-button icon="nf nf-fa-angle_left"
+										:notext="true"
+										:title="_('Go to the previous %s', pageName)"
+										:disabled="currentPage == 1"
+										@click="prevPage"
+										bbn-if="buttons"/>
+				<!-- OR 2ND ICON (PREVIOUS) -->
+				<span bbn-else
+							class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
+							@click="prevPage"
+							:style="{visibility: currentPage == 1 ? 'hidden' : 'visible'}">
+					<i class="nf nf-fa-angle_left bbn-xl bbn-pager-mobile-icon"/>
+				</span>
+				<!-- PAGE + NUMERIC SELECTOR -->
+				<span class="bbn-iblock" bbn-text="pageName"/>
+				<bbn-numeric bbn-if="numericSelector"
+										bbn-model="currentNumericPage"
+										:min="1"
+										:max="element.numPages"
+										class="bbn-narrower bbn-right-sspace"
+										:disabled="!!element.isLoading"
+										:readonly="element.numPages == 1"/>
+				<span bbn-else
+							class="bbn-iblock bbn-right-xsspace"
+							bbn-text="currentPage"/>
+				<!-- OF TOTAL -->
+				<span class="bbn-iblock bbn-right-xsspace"
+							bbn-text="_('of') + ' ' + element.numPages"/>
+				<!-- 3RD BUTTON (NEXT) -->
+				<bbn-button icon="nf nf-fa-angle_right"
+										:notext="true"
+										:title="_('Go to the next %s', pageName)"
+										:disabled="currentPage == element.numPages"
+										@click="nextPage"
+										bbn-if="buttons"/>
+				<!-- OR 3RD ICON (NEXT) -->
+				<span bbn-else
+							class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
+							@click="nextPage"
+							:style="{visibility: currentPage == element.numPages ? 'hidden' : 'visible'}">
+					<i class="nf nf-fa-angle_right bbn-xl bbn-pager-mobile-icon"/>
+				</span>
+				<!-- 4TH BUTTON (LAST) -->
+				<bbn-button icon="nf nf-fa-angle_double_right"
+										:notext="true"
+										:title="_('Go to the last %s', pageName)"
+										@click="lastPage"
+										:disabled="currentPage >= element.numPages - 1"
+										bbn-if="buttons"/>
+				<!-- OR 4TH ICON (LAST) -->
+				<span bbn-else
+							class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
+							@click="lastPage"
+							:style="{visibility: currentPage >= element.numPages - 1 ? 'hidden' : 'visible'}">
+					<i class="nf nf-fa-angle_double_right bbn-xl bbn-pager-mobile-icon"/>
+				</span>
+				<span bbn-if="(element?.limits?.length > 1) &&
+										(!isMobile || isTablet) &&
+										!!limit"
+							class="bbn-hmargin">
+					<bbn-dropdown :source="element.limits"
+												bbn-model.number="element.currentLimit"
+												@change="currentPage = 1"
+												:disabled="!!element.isLoading"
+												:autosize="true"/>
+					<span bbn-text="itemName + ' ' + _('per') + ' ' + pageName"/>
+				</span>
+			</template>
 		</div>
 		<div bbn-if="element && extraControls"
 				:class="{
