@@ -15,7 +15,7 @@ export default {
      */
     scrollable: {
       type: Boolean,
-      default: false
+      default: true
     },
     /**
      * Defines if the component is disabled.

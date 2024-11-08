@@ -670,7 +670,7 @@ const cpDef = {
               menu.push({
                 text: a.text,
                 icon: a.icon ? a.icon : '',
-                action: a.action
+                action: () => a.action(node)
               });
             })
           }

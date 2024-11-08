@@ -1362,13 +1362,12 @@ const cpDef = {
             )
           ) {
             let rowKey;
-            if (this.uid) {
-              rowKey = a[this.uid];
-            }
-            else if (a.__bbnData) {
+            if (a.__bbnData) {
               const obj = bbnData.getObject(a);
               rowKey = obj.uid;
-              bbn.fn.log("rowKey", rowKey);
+            }
+            else if (this.uid) {
+              rowKey = a[this.uid];
             }
             else if (Object.hasOwn(data[i], 'key')) {
               rowKey = data[i].key;
