@@ -368,6 +368,7 @@ const cpDef = {
       return {
         id: bbn.fn.randomInt(1000, 9999),
         data: file,
+        extraData: {},
         status: status || 'ready',
         fromUser: fromUser,
         fromPaste: !!fromPaste,
@@ -595,6 +596,15 @@ const cpDef = {
                         this.setName(fr.id, f.name, false)
                       }
 
+                      if (bbn.fn.isObject(f)) {
+                        fr.extraData = {};
+                        bbn.fn.iterate(f, (v, i) => {
+                          if (!['name', 'size', 'extension'].includes(i)) {
+                            fr.extraData[i] = v;
+                          }
+                        });
+                      }
+
                       if ( this.setStatusSuccess(fr.id) ){
                         this.$nextTick(() => {
                           this.$emit('success', fr.id, f.name || fr.data.name, bbn.fn.extendOut(f, {original: fr.data.name}), res);
@@ -707,18 +717,19 @@ const cpDef = {
     setValue(){
       let value = bbn.fn.map(this.filesSuccess, f => {
         if (this.isFile(f)) {
-          return {
+          return bbn.fn.extend(true, {
             name: f.data.name,
             size: f.data.size,
             original: f.data.original,
             extension: bbn.fn.substr(f.data.name, f.data.name.lastIndexOf('.'))
-          }
+          }, f.extraData || {});
         }
+
         return bbn.fn.extend(true, {}, f.data, {
           size: f.data.size,
           original: f.data.original,
           extension: bbn.fn.substr(f.data.name, f.data.name.lastIndexOf('.'))
-        });
+        }, f.extraData || {});
       })
       //bbn.fn.log('bbn-upload setValue', bbn.fn.clone(value));
       this.emitInput(this.json ? JSON.stringify(value) : value)
