@@ -312,13 +312,20 @@ const cpDef = {
   },
   data(){
     let mom = dayjs();
-    if ( this.date ){
+    if (this.date) {
       let m = dayjs(this.date, this.getCfg().valueFormat);
       mom = m.isValid() ? m : mom;
     }
-    else if ( this.max ){
-      let m = dayjs(this.max, this.getCfg().valueFormat);
-      mom = m.isValid() ? m : mom;
+    else {
+      if (this.min) {
+        let m = dayjs(this.min, this.getCfg().valueFormat);
+        mom = m.isValid() && mom.isBefore(m) ? m : mom;
+      }
+
+      if (this.max) {
+        let m = dayjs(this.max, this.getCfg().valueFormat);
+        mom = m.isValid() && mom.isAfter(m) ? m : mom;
+      }
     }
     return {
       /**
