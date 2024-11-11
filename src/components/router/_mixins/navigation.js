@@ -951,30 +951,25 @@ export default {
         throw Error("The view with index " + idx + " doesn't exist");
       }
 
-      setTimeout(() => {
-        bbn.fn.map(bbn.fn.filter(this.views, { selected: true }), a => {
-          if (a.idx !== idx) {
-            a.selected = false;
-            if (this.urls[a.uid] && this.urls[a.uid].currentSelected) {
-              this.urls[a.uid].$tick();
-            }
-          }
-        });
-  
-        if (this.views[idx]) {
-          if (!this.views[idx].selected && !this.views[idx].pane) {
-            this.views[idx].selected = true;
-          }
-  
-          if (this.urls[this.views[idx].uid]) {
-            //this.urls[this.views[idx].uid].$tick();
-            this.activeContainer = this.urls[this.views[idx].uid];
-          }
-  
-          this.views[idx].last = bbn.fn.timestamp();
+      bbn.fn.map(bbn.fn.filter(this.views, { selected: true }), a => {
+        if (a.selected && (a.idx !== idx)) {
+          a.selected = false;
         }
-  
-      }, this.activeContainer ? 0 : 250);
+      });
+
+      if (this.views[idx]) {
+        if (!this.views[idx].selected && !this.views[idx].pane) {
+          this.views[idx].selected = true;
+        }
+
+        if (this.urls[this.views[idx].uid]) {
+          this.activeContainer = this.urls[this.views[idx].uid];
+        }
+
+        this.views[idx].last = bbn.fn.timestamp();
+      }
+
+      //this.move(idx, this.views.length - 1);
 
       //bbn.fn.log("In selected watcher " + idx, bbn.fn.filter(this.views, {selected: true}), bbn.fn.filter(this.views, {idx}), this.views);
     },

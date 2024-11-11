@@ -14,7 +14,6 @@
         display: inline-block;
         transform: rotate(0deg);
         transition-duration: 0.3s;
-        //transition-delay: 0.3s;
       }
       .bbn-panelbar-header-icon.bbn-panelbar-header-icon-rotate {
         transform: rotate(90deg);
@@ -39,11 +38,6 @@
         padding-right: 2rem;
       }
     }
-    .bbn-panelbar-selected, .bbn-panelbar-content{
-      //height: 100%;
-      transition: all 2s;
-      transition: height 0.8s;
-    }
     .buttons{
       button{
         border: 0;
@@ -51,7 +45,10 @@
     }
   }
   
-
+  .bbn-panelbar-content{
+    //height: 100%;
+    transition: all 0.5s ease-in-out;
+  }
 
   .bbn-panelbar-inline{
     display: inline;

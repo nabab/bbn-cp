@@ -15,8 +15,7 @@ const cpDef = {
     mixins: 
     [
       bbn.cp.mixins.basic, 
-      bbn.cp.mixins.localStorage, 
-      bbn.cp.mixins.resizer
+      bbn.cp.mixins.localStorage
     ],
     props: {
       /**
@@ -99,6 +98,7 @@ const cpDef = {
     },
     data(){
       return {
+        isResizing: false,
         selectedValues: [],
         /**
          * @data {Number} [null] size

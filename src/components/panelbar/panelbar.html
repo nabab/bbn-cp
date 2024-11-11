@@ -12,57 +12,48 @@
                   'bbn-panelbar-center': (align === 'center'),
                   'bbn-panelbar-start': (align === 'left'),
                   'bbn-panelbar-end': (align === 'right'),
-                }]"
-          >
+                }]">
             <div bbn-html="s.header"
                 @click="multiple ? multiselect(idx) : select(idx)"
                 :class="{
                   'bbn-p':true,
                   'bbn-panelbar-inline': s.headerComponent,
                   'bbn-panelbar-right-padded': s.headerComponent || headerComponent
-                }"
-            ></div>
+                }"/>
             <component bbn-if="s.headerComponent"
                       :is="s.headerComponent"
-                      bbn-bind="source[idx]['headerOptions']"
-            ></component>
+                      bbn-bind="source[idx]['headerOptions']"/>
             <component bbn-if="headerComponent && !s.headerComponent"
                       :is="headerComponent"
-                      bbn-bind="headerOptions"
-            ></component>
+                      bbn-bind="headerOptions"/>
           </div>
         </div>
-        <div :class="['bbn-border-box', {
+        <div :class="['bbn-border-box', 'bbn-panelbar-content', {
               'bbn-w-100': !scrollable,
               'bbn-panelbar-selected' : isSelected(idx),
               'bbn-flex-fill': isSelected(idx) && (flex || source[idx].flex || scrollable)
             }]"
             :style="getStyle(idx)"
-        >
+            @transitionend="isResizing = false"
+            @transitionstart="isResizing = true">
           <component :is="scrollable ? 'bbn-scroll' : 'div'"
-                     :class="{'bbn-w-100': !scrollable}"
-                     :key="idx"
-          >
+                     :class="['bbn-abs', {'bbn-w-100': !scrollable}]"
+                     :key="idx">
             <div bbn-if="!s.component && !component"
-                 bbn-html="s.content"
-            ></div>
+                 bbn-html="s.content"/>
             <div bbn-elseif="!s.component && component"
-                :class="['bbn-panelbar-content', {'bbn-w-100': !scrollable}]"
-            >
+                :class="['bbn-panelbar-content', {'bbn-w-100': !scrollable}]">
               <component :is="component"
                         bbn-bind="componentOptions"
                         :class="{'bbn-w-100': !scrollable}"
-                        @hook:mounted="$emit('componentmounted', component, componentOptions, s)"
-              ></component>
+                        @hook:mounted="$emit('componentmounted', component, componentOptions, s)"/>
             </div>
             <div bbn-elseif="(s.component)"
-                :class="['bbn-panelbar-content', {'bbn-w-100': !scrollable}]"
-            >
+                :class="[{'bbn-w-100': !scrollable}]">
               <component :is="s.component"
                          bbn-bind="source[idx]['componentOptions']"
                          :class="{'bbn-w-100': !scrollable}"
-                         @hook:mounted="$emit('componentmounted', s.component, s.componentOptions, s)"
-              ></component>
+                         @hook:mounted="$emit('componentmounted', s.component, s.componentOptions, s)"/>
             </div>
           </component>
         </div>

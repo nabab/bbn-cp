@@ -2,6 +2,8 @@ bbn-scroll {
   width: 100%;
   height: 100%;
   float: left;
+  max-width: inherit;
+  max-height: inherit;
 
   scrollbar-color: var(--primary-background) var(--primary-text);
   &.bbn-scroll-x:not(.bbn-scroll-disabled) {
@@ -13,8 +15,6 @@ bbn-scroll {
   > .bbn-scroll-content {
     width: auto;
     height: auto;
-    max-width: inherit;
-    max-height: inherit;
     box-sizing: content-box;
     &.bbn-overlay{
       overflow: hidden !important;
