@@ -34,20 +34,20 @@ const cpDef = {
     
       const templates = {
         text: {
-          view: '<div bbn-text="currentValue"></div>',
-          edit: '<bbn-input bbn-model="currentValue"></bbn-input>'
+          view: '<div bbn-text="currentValue"/>',
+          edit: '<bbn-input bbn-model="currentValue"/>'
         },
         multilines: {
-          view: '<div bbn-text="currentValue" style="white-space: pre-wrap; word-break: break-word"></div>',
-          edit: '<bbn-textarea bbn-model="currentValue" class="bbn-100"></bbn-textarea>'
+          view: '<div bbn-text="currentValue" style="white-space: pre-wrap; word-break: break-word"/>',
+          edit: '<bbn-textarea bbn-model="currentValue" class="bbn-100"/>'
         },
         inline: {
           view: '<div bbn-text="value"></div>',
-          edit: '<bbn-inline-editor bbn-model="currentValue"></bbn-inline-editor>'
+          edit: '<bbn-inline-editor bbn-model="currentValue"/>'
         },
         component: {
           view: '<div bbn-text="currentValue" style="white-space: pre-wrap; word-break: break-word"></div>',
-          edit: '<div class="bbn-100"><component :is="component" bbn-bind="componentOptions" bbn-model="currentValue"></component></div>'
+          edit: '<div class="bbn-100"><component :is="component" bbn-bind="componentOptions" bbn-model="currentValue"/></div>'
         },
         html: {
           view: `<div  @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"
@@ -57,36 +57,43 @@ const cpDef = {
     
                 </div>`,
           edit: `<div :class="['component-container', 'bbn-block-html', alignClass ]">
-                  <bbn-rte bbn-model="currentValue">
-                  </bbn-rte>
+                  <bbn-rte bbn-model="currentValue"/>
+                </div>`
+        },
+        markdown: {
+          view: `<div  @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"
+                      :class="['component-container', 'bbn-block-html', alignClass]"
+                      bbn-html="currentValue"
+                      :style="style"/>`,
+          edit: `<div :class="['component-container', 'bbn-block-html', alignClass ]">
+                  <bbn-markdown bbn-model="currentValue"/>
                 </div>`
         },
         title: {
           view: `<div @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"  :class="['component-container', 'bbn-block-title', {'has-hr': source.hr}, alignClass]":style="style">
                   <hr bbn-if="source.hr">
-                  <component :is="cpHTML(source.tag, 'title')" :source="source"></component>
+                  <component :is="cpHTML(source.tag, 'title')" :source="source"/>
                   <hr bbn-if="source.hr">
                  </div>`,
           edit: `<div :class="['component-container','bbn-cms-block-edit' ,'bbn-block-title', 'bbn-flex-height', {'has-hr': source.hr}, alignClass]" :style="style">
                   <div class="edit-title bbn-w-100">
-                    <hr bbn-show="source.hr"><component :is="cpHTML(source.tag,'title')" :source="source"></component><hr bbn-if="source.hr">
+                    <hr bbn-show="source.hr"><component :is="cpHTML(source.tag,'title')" :source="source"/><hr bbn-if="source.hr">
                   </div>
                   <div class="bbn-grid-fields bbn-vspadded bbn-w-100">
                     <label bbn-text="_('Title tag')"></label>
                     <div>
-                      <bbn-dropdown :source="tags" bbn-model="source.tag"></bbn-dropdown>
+                      <bbn-dropdown :source="tags" bbn-model="source.tag"/>
                     </div>
-                    <label bbn-text="_('Title text')"></label>
-                    <bbn-input bbn-model="currentValue"></bbn-input>
-                    <label>Title color</label>
+                    <label bbn-text="_('Title text')"/>
+                    <bbn-input bbn-model="currentValue"/>
+                    <label bbn-text="_('Title color')"/>
                       <div>
-                        <bbn-colorpicker @change="setColor"
-                        ></bbn-colorpicker>
+                        <bbn-colorpicker @change="setColor"/>
                       </div>
-                    <label bbn-text="_('Title alignment')"></label>
-                    <bbn-block-align-buttons></bbn-block-align-buttons>
-                    <label bbn-text="_('Line')"></label>
-                    <bbn-checkbox bbn-model="source.hr"></bbn-checkbox>
+                    <label bbn-text="_('Title alignment')"/>
+                    <bbn-block-align-buttons/>
+                    <label bbn-text="_('Line')"/>
+                    <bbn-checkbox bbn-model="source.hr"/>
                   </div>
                 </div>`
         },
@@ -98,58 +105,51 @@ const cpDef = {
               <img :src="$parent.path + source.src"
                     style="heigth:500px;width:100%"
                    :style="style"
-                   :alt="source.alt ? source.alt : ''"
-              >
+                   :alt="source.alt ? source.alt : ''">
             </a>
             <img bbn-else
                  :src="$parent.path + source.src"
                  :style="style"
-                 :alt="source.alt ? source.alt : ''"
-            >
+                 :alt="source.alt ? source.alt : ''">
             <p class="image-caption bbn-l bbn-s bbn-vsmargin"
                bbn-if="source.caption"
-               bbn-html="source.caption"
-            ></p>
+               bbn-html="source.caption"/>
             <!--error when using decodeuricomponent on details of home image-->
             <a class="image-details-title bbn-l bbn-vsmargin bbn-w-100"
                bbn-if="source.details_title"
                bbn-html="(source.details_title)"
                :href="source.href"
-               target="_blank"
-            ></a>
+               target="_blank"/>
             <p class="image-details bbn-l bbn-vsmargin"
                bbn-if="source.details"
-               bbn-html="(source.details)"
-            ></p>
+               bbn-html="(source.details)"/>
           </div>`,
           edit:     `
           <div class="component-container bbn-block-image" :class="alignClass">
             <div class="bbn-padded">
               <div class="bbn-grid-fields bbn-vspadded">
-                <label bbn-text="_('Upload your image')"></label>
+                <label bbn-text="_('Upload your image')"/>
                 <bbn-upload :save-url="'upload/save/' + ref"
                             remove-url="test/remove"
                             :json="true"
                             :paste="true"
                             :multiple="false"
                             bbn-model="image"
-                            @success="imageSuccess"
-                ></bbn-upload>
+                            @success="imageSuccess"/>
     
-                <label bbn-text="_('Image size')"></label>
+                <label bbn-text="_('Image size')"/>
                 <bbn-cursor bbn-model="source.style['width']"
                             unit="%"
                             :min="0"
                             :max="100"
-                            :step="20"
-                ></bbn-cursor>
+                            :step="20"/>
     
-                <label bbn-text="_('Image alignment')"></label>
-                <bbn-block-align-buttons></bbn-block-align-buttons>
+                <label bbn-text="_('Image alignment')"/>
+                <bbn-block-align-buttons/>
               </div>
             </div>
             <img :src="$parent.path + source.src" :style="style">
-            <p class="image-caption bbn-l bbn-s bbn-vsmargin" bbn-if="source.caption" bbn-html="source.caption"></p>
+            <p class="image-caption bbn-l bbn-s bbn-vsmargin" bbn-if="source.caption" bbn-html="source.caption"/>
           </div>
                     `
         },
@@ -157,49 +157,44 @@ const cpDef = {
           view: `
           <div :class="['component-container', 'bbn-block-carousel', 'bbn-w-100',  alignClass]" :style="style" bbn-if="show">
             <div bbn-for="(group, idx) in carouselSource"
-                 bbn-if="idx === currentCarouselIdx"
-            >
+                 bbn-if="idx === currentCarouselIdx">
               <bbn-cms-carousel-control :source="idx"
                                         :key="idx"
-                                        bbn-if="carouselSource.length > 3"
-              ></bbn-cms-carousel-control>
+                                        bbn-if="carouselSource.length > 3"/>
               <div :class="['bbn-w-100',carouselCols]">
-                <bbn-cms-block-gallery-item bbn-for="(image, imgIdx) in group" :source="image" :key="imgIdx" :index="imgIdx"></bbn-cms-block-gallery-item>
+                <bbn-cms-block-gallery-item bbn-for="(image, imgIdx) in group" :source="image" :key="imgIdx" :index="imgIdx"/>
               </div>
             </div>
           </div>
           `,
-          edit: `<div>edit</div>`
+          edit: `<div bbn-text="_('Edit')"/>`
         },
         gallery: {
           view: `
           <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="style" bbn-if="show">
-            <bbn-cms-block-gallery-item bbn-for="(image, idx) in source.source" :source="image" :key="idx" :index="idx"></bbn-cms-block-gallery-item>
+            <bbn-cms-block-gallery-item bbn-for="(image, idx) in source.source" :source="image" :key="idx" :index="idx"/>
           </div>
           `,
           edit: `
           <div>
             <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="style" bbn-if="show">
               <!-- GIVE HREF TO VIEW FULL IMAGE -->
-              <bbn-cms-block-gallery-item bbn-for="(image, idx) in currentValue" :source="image" :key="idx" :index="idx"></bbn-cms-block-gallery-item>
+              <bbn-cms-block-gallery-item bbn-for="(image, idx) in currentValue" :source="image" :key="idx" :index="idx"/>
             </div>
             <div class="bbn-grid-fields bbn-padded">
-              <label>Columns number</label>
+              <label bbn-text="_('Columns number')"/>
               <div>
                 <bbn-dropdown bbn-model="source.columns"
-                              :source="tinyNumbers"
-                ></bbn-dropdown>
+                              :source="tinyNumbers"/>
               </div>
-              <label bbn-text="_('Upload your images')"></label>
+              <label bbn-text="_('Upload your images')"/>
               <bbn-upload :save-url="'upload/save/' + ref"
                           remove-url="test/remove"
                           :data="{gallery: true}"
                           :paste="true"
                           :multiple="true"
                           bbn-model="currentValue"
-                          @success="imageSuccess"
-              ></bbn-upload>
-    
+                          @success="imageSuccess"/>    
             </div>
           </div>
           `
@@ -216,56 +211,46 @@ const cpDef = {
                          :youtube="youtube"
                          :source="source.src"
               ></bbn-video-->
-              <iframe
-                      :style="style"
-    
+              <iframe :style="style"
                       :autoplay="false"
-    
-                      :src="source.src"
-               ></iframe>
+                      :src="source.src"/>
             </div>`,
           edit: `
           <div class="component-container" id="video-container">
             <div class="bbn-grid-fields bbn-padded">
-              <label bbn-text="_('Video source')"></label>
-              <bbn-input bbn-model="currentValue"></bbn-input>
-              <label>Muted</label>
+              <label bbn-text="_('Video source')"/>
+              <bbn-input bbn-model="currentValue"/>
+              <label bbn-text="_('Muted')"/>
               <div>
                 <bbn-button :notext="true"
                             :title="_('Mute the video')"
                             @click="muted = !muted"
-                            :icon="muted ? 'nf nf-oct-mute' : 'nf nf-oct-unmute'"
-                >
-                </bbn-button>
+                            :icon="muted ? 'nf nf-oct-mute' : 'nf nf-oct-unmute'"/>
               </div>
-              <label>Autoplay</label>
+              <label bbn-text="_('Autoplay')"/>
               <div>
                 <bbn-button :notext="true"
                             :title="_('Autoplay')"
                             @click="autoplay = !autoplay"
-                            :icon="autoplay ? 'nf nf-fa-pause' : 'nf nf-fa-play'"
-                >
-                </bbn-button>
+                            :icon="autoplay ? 'nf nf-fa-pause' : 'nf nf-fa-play'"/>
               </div>
-              <label>Video alignment</label>
-              <bbn-block-align-buttons></bbn-block-align-buttons>
-              <label>Video width</label>
+              <label bbn-text="_('Video alignment')"/>
+              <bbn-block-align-buttons/>
+              <label bbn-text="_('Video width')"/>
               <div>
                 <bbn-cursor bbn-model="source.style['width']"
                             :min="100"
                             :max="1000"
                             :step="10"
-                            class="bbn-w-70"
-                ></bbn-cursor>
+                            class="bbn-w-70"/>
               </div>
-              <label>Video height</label>
+              <label bbn-text="_('Video height')"/>
               <div>
                 <bbn-cursor bbn-model="source.style['height']"
                             :min="100"
                             :max="1000"
                             :step="10"
-                            class="bbn-w-70"
-                ></bbn-cursor>
+                            class="bbn-w-70"/>
               </div>
             </div>
             <div :class="alignClass">
@@ -275,8 +260,7 @@ const cpDef = {
                         :autoplay="autoplay"
                         :muted="muted"
                         :youtube="youtube"
-                        :source="currentValue"
-              ></bbn-video>
+                        :source="currentValue"/>
             </div>
           </div>
           `
@@ -287,43 +271,39 @@ const cpDef = {
                   <hr :style="style">
                   <div class="block-line-edit-command bbn-padded">
                     <div class="bbn-grid-fields bbn-vspadded">
-                      <label>Line width</label>
+                      <label bbn-text="_('Line width')"/>
                       <div>
                         <bbn-cursor bbn-model="source.style['width']"
                                     :min="0"
                                     :max="100"
-                                    unit="%"
-                        ></bbn-cursor>
+                                    unit="%"/>
                       </div>
-                      <label>Line height</label>
+                      <labelbbn-text="_('Line height')"/>
                       <div>
                         <bbn-cursor bbn-model="source.style['border-width']"
                                     :min="1"
                                     :max="10"
-                                    unit="px"
-                        ></bbn-cursor>
+                                    unit="px"/>
                       </div>
-                      <label>Line style</label>
+                      <label bbn-text="_('Line style')"/>
                       <div>
                         <bbn-dropdown bbn-model="source.style['border-style']"
-                                      :source="borderStyle"
-                        ></bbn-dropdown>
+                                      :source="borderStyle"/>
                       </div>
     
-                      <label>Line color</label>
+                      <label bbn-text="_('Line color')"/>
                       <div>
-                        <bbn-colorpicker bbn-model="source.style['border-color']"
-                        ></bbn-colorpicker>
+                        <bbn-colorpicker bbn-model="source.style['border-color']"/>
                       </div>
-                      <label>Line alignment</label>
-                      <bbn-block-align-buttons></bbn-block-align-buttons>
+                      <label bbn-text="_('Line alignment')"/>
+                      <bbn-block-align-buttons/>
                     </div>
                   </div>
                  </div>`
         },
         space: {
           view: `<div class="component-container" :style="style">
-                  <div class="block-space-view"></div>
+                  <div class="block-space-view"/>
                 </div>`,
           edit: `
               <div class="component-container" :style="style">
@@ -331,8 +311,7 @@ const cpDef = {
                   <bbn-cursor bbn-model="source.style.height"
                               unit="px"
                               :min="0"
-                              :step="50"
-                  ></bbn-cursor>
+                              :step="50"/>
                 </div>
               </div>`
         }
@@ -459,6 +438,7 @@ const cpDef = {
          * @prop {(Object|Null|String)} currentValue
          */
         currentValue: this.value ? bbn.fn.clone(this.value) : (this.source.nullable ? null : ''),
+        componentObject: null,
       }
     },
     computed: {
@@ -674,12 +654,16 @@ const cpDef = {
        * @return {Object}
        */
       getComponentObject(type) {
+        if (!bbnEditableCp.templates[type]) {
+          throw new Error('The component type ' + type + ' is not defined');
+        }
+
         return {
           props: {
             value: {},
             source: {},
           },
-          template: this.isEditing ? bbnEditableCp.templates[type]['edit'] : bbnEditableCp.templates[type]['view'],
+          template: this.isEditing ? bbnEditableCp.templates[type].edit : bbnEditableCp.templates[type].view,
           data(){
             let tmp = Object.keys(bbnEditableCp.titleTemplates).map((a)=>{return a = {text:a, value:a}});
             return {

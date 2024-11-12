@@ -364,9 +364,10 @@ const cpDef = {
       /**
        * @prop String mode Mode for buttons: normal or big
        */
-       mode: {
+      mode: {
          type: String
-       }
+      },
+
     },
     data(){
       let currentSchema = [];
@@ -397,7 +398,8 @@ const cpDef = {
         canSubmit: false,
         canCancel: false,
         sourceTimeout: 0,
-        isClosing: false
+        isClosing: false,
+        sourceDataId: this.source.__bbnData
       };
     },
     computed: {
@@ -1071,6 +1073,13 @@ const cpDef = {
       source: {
         deep: true,
         handler() {
+          const sourceDataId = this.source.__bbnData;
+          if (sourceDataId !== this.sourceDataId) {
+            this.sourceDataId = sourceDataId;
+            this.commitData();
+            return;
+          }
+
           //bbn.fn.log(["SOURCE CHANGED", JSON.stringify(this.getModifications()), this.originalData, JSON.stringify(this.source)]);
           this.dirty = this.isModified();
           this.canSubmit = this._canSubmit();
