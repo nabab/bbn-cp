@@ -233,12 +233,12 @@ const cpDef = {
 
         switch (this.type) {
           case 'months':
-            return '[0-3]{1}[0-9]{1}\/{1}[0-9]{4}';
+            return '[0-3]{1}[0-9]{1}\\\/{1}[0-9]{4}';
           case 'years':
             return '[0-9]{4}';
         }
 
-        return '[0-3]{1}[0-9]{1}\/{1}[0-1]{1}[0-9]{1}\/{1}[0-9]{4}';
+        return '[0-3]{1}[0-9]{1}\\\/{1}[0-1]{1}[0-9]{1}\\\/{1}[0-9]{4}';
       },
       /**
        * True if the values of the inputValue and the oldInputValue properties are different.
