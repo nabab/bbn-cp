@@ -1074,7 +1074,7 @@ const cpDef = {
         deep: true,
         handler() {
           const sourceDataId = this.source.__bbnData;
-          if (sourceDataId !== this.sourceDataId) {
+          if (sourceDataId && (sourceDataId !== this.sourceDataId)) {
             this.sourceDataId = sourceDataId;
             this.commitData();
             return;

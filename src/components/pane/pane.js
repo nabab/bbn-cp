@@ -110,6 +110,13 @@ const cpDef = {
     };
   },
   computed: {
+    resizer() {
+      if (this.splitter && this.currentConfig.index) {
+        return this.splitter.resizers[(this.currentConfig.index/2) - 1];
+      }
+
+      return null;
+    },
     currentConfig() {
       if (!this.splitter) {
         return {};
