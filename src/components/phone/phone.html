@@ -13,9 +13,10 @@
                 selected-text="prefix"
                 :clear-html="true"
                 class="bbn-phone-dropdown bbn-no-border"
-                tabindex="prefixReadonly ? -1 : 0"
-                :autosize="prefixReadonly"/>
-  <bbn-input tabindex="0"
+                :tabindex="prefixReadonly ? -1 : (tabindex || 0)"
+                :autosize="prefixReadonly"
+                @focus="onDropDownFocus"/>
+  <bbn-input :tabindex="tabindex || 0"
              autocomplete="off"
              bbn-model="currentNumber"
              :name="name"
@@ -29,7 +30,8 @@
              :pattern="currentPattern"
              :maxlength="currentMaxlength"
              type="tel"
-             :nullable="nullable"/>
+             :nullable="nullable"
+             @focus="onInputFocus"/>
   <input type="hidden"
-          :value="value">
+         :value="value">
 </div>

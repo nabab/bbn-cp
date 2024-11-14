@@ -39,7 +39,7 @@
                :nullable="isNullable"
                :force-nullable="isNullable"
                :placeholder="placeholder"
-               :tabindex="isDisabled ? -1 : 0"
+               :tabindex="isDisabled ? -1 : (tabindex || 0)"
                :button-right="currentIcon"
                :autosize="autosize"
                :readonly="true"
@@ -61,7 +61,8 @@
               @change="selectOnNative"
               @focus="ev => {isOpened = true; focus(ev)}"
               @click="isOpened = true"
-              :disabled="!!isDisabled || !!readonly">
+              :disabled="!!isDisabled || !!readonly"
+              :tabindex="isDisabled ? -1 : (tabindex || 0)">
         <option :value="isNullable ? null : ''"
                 bbn-html="isNullable && !((value === '') || (value === null)) ? _('Clear') : placeholder"
                 :disabled="!isNullable"

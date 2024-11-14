@@ -39,7 +39,7 @@
                :nullable="isNullable"
                :force-nullable="isNullable"
                :placeholder="placeholder"
-               :tabindex="isDisabled ? -1 : 0"
+               :tabindex="isDisabled ? -1 : (tabindex || 0)"
                :button-right="currentIcon"
                :autosize="autosize"
                :readonly="readonly"/>
@@ -52,7 +52,8 @@
               @change="isOpened = false"
               @focus="isOpened = true"
               @click="isOpened = true"
-              :disabled="!!isDisabled || !!readonly">
+              :disabled="!!isDisabled || !!readonly"
+              :tabindex="isDisabled ? -1 : (tabindex || 0)">
         <option value=""
                 bbn-html="placeholder"
                 :disabled="!isNullable"

@@ -80,12 +80,11 @@ const cpDef = {
       return this.currentCountry === 'FR' ? 9 : (this.maxlength > -1 ? this.maxlength : 0);
     },
     currentPattern(){
-      let m = this.currentMaxlength || '';
-      if (m && (this.currentCountry !== 'FR')) {
-        m = '4,' + m;
+      if (this.currentCountry === 'FR') {
+        return `[1-9]{1}[0-9]{8}`;
       }
 
-      return `[0-9]${m ? ('{' + m + '}') : ''}`;
+      return '[0-9]' + (this.currentMaxlength ? `{1,${this.currentMaxlength}}` : '');
     }
   },
   methods: {
@@ -112,6 +111,20 @@ const cpDef = {
       }
 
       return '';
+    },
+    onInputFocus(e){
+      if (e?.target?.bbn
+        && (e.target.tagName === 'BBN-INPUT')
+      ) {
+        e.target.bbn.getRef('element').focus();
+      }
+    },
+    onDropDownFocus(e){
+      if (e?.target?.bbn
+        && (e.target.tagName === 'BBN-DROPDOWN')
+      ) {
+        e.target.bbn.getRef('input').getRef('element').focus();
+      }
     }
   },
   watch: {
