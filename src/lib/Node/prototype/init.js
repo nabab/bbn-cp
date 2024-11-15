@@ -3,6 +3,10 @@ import deleteNodes from "../../Cp/private/deleteNodes.js";
 
 bbnNode.prototype.nodeInit = async function(after) {
   if (this.isCreating) {
+    if (this.element) {
+      return this.element;
+    }
+
     throw new Error("Already creating");
   }
 

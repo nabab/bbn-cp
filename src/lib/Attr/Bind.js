@@ -24,7 +24,8 @@ export default class bbnBindAttr extends bbnAttr
   async attrUpdate(init) {
     if (init || (this.attrGetState() !== 'OK')) {
       //bbn.fn.log("CHANGE ON BIND")
-      bbnAttr.prototype.attrUpdate.apply(this, [init])
+      await bbnAttr.prototype.attrUpdate.apply(this, [init]);
+      const proms = [];
       if (this.result.value) {
         for (let n in this.result.value) {
           if (!this.node.attr[n]) {
@@ -32,7 +33,7 @@ export default class bbnBindAttr extends bbnAttr
             const cp = this.node.element?.bbn;
             if (!(this.node instanceof bbnInternalNode) && cp?.$props && (cp?.$namespaces?.[n] === 'props')) {
               if (cp.$internal.attr?.[n]) {
-                cp.$internal.attr[n].attrUpdate(true);
+                proms.push(cp.$internal.attr[n].attrUpdate(true));
               }
 
               setProp(cp, n, this.result.value[n]);
@@ -40,6 +41,8 @@ export default class bbnBindAttr extends bbnAttr
           }
         }
       }
+
+      await Promise.all(proms);
 
       if (!(this.node instanceof bbnSlotNode)) {
         for (let n in this.node.props) {
