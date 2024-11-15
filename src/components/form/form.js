@@ -735,18 +735,31 @@ const cpDef = {
        * @method isValid
        */
       isValid(force, callValidation = true, onlyFirst = true) {
+        const elems = this.findAll('.bbn-input-component');
         let ok = true;
-        let elems = this.findAll('.bbn-input-component');
         let firstFound = null;
         if (bbn.fn.isArray(elems)) {
           bbn.fn.each(elems, ele => {
-            if ((bbn.fn.isFunction(ele.isValid) && !ele.isValid(ele, callValidation))
-              || (bbn.fn.isFunction(ele.validation) && !ele.validation())
-            ) {
-              //bbn.fn.log("VALIDITY PROB", ele);
+            const invalid = bbn.fn.isFunction(ele.isValid) && !ele.isValid(ele, false);
+            if (invalid || (bbn.fn.isFunction(ele.validation) && !ele.validation())) {
               ok = false;
               if (bbn.fn.isNull(firstFound)) {
                 firstFound = ele;
+                if (bbn.fn.isFunction(ele.focus)) {
+                  firstFound.focus();
+                  if (this.scrollable) {
+                    this.getRef('container').scrollTo(0, firstFound);
+                  }
+                }
+              }
+
+              if (callValidation
+                && invalid
+                && (!onlyFirst || (ele === firstFound))
+              ) {
+                this.$nextTick(() => {
+                  ele.isValid(ele, callValidation, true);
+                })
               }
             }
             if (!ok && !!onlyFirst) {
@@ -754,15 +767,11 @@ const cpDef = {
             }
           });
         }
-        if (!ok && bbn.fn.isFunction(firstFound.focus)) {
-          firstFound.focus();
-          if (this.scrollable) {
-            this.getRef('container').scrollTo(0, firstFound);
-          }
-        }
+
         if (ok && this.validation && callValidation) {
           ok = this.validation(this.source, this.originalData, force)
         }
+
         return !!ok;
       },
       /**

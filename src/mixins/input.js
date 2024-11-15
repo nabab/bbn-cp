@@ -257,7 +257,7 @@ const input = {
      * @return {Boolean}
      * @memberof inputComponent
      */
-    isValid(e, setError = true){
+    isValid(e, setError = true, setOnFocus = false){
       const $this = bbn.cp.isComponent(e) ? e : this,
             ele = $this.$refs.element || false,
             inp = $this.$refs.input || false,
@@ -330,7 +330,7 @@ const input = {
               mess = bbn._('Please match the requested format.');
             }
             if (setError) {
-              this.setInvalid(customMessage || mess, $this);
+              this.setInvalid(customMessage || mess, $this, setOnFocus);
             }
             return false;
           }
@@ -352,7 +352,7 @@ const input = {
       }
       return true;
     },
-    setInvalid(message, elem){
+    setInvalid(message, elem, setOnFocus){
       this.$emit('error', message);
 
       if (message?.length
@@ -366,57 +366,116 @@ const input = {
       }
 
       const validationID = `${this.$cid}-validation`;
-      const validationStyleID = `${validationID}-style`
-      document.getElementById(validationStyleID)?.remove();
+      const validationStyleID = `${validationID}-style`;
+      const styleExists = document.getElementById(validationStyleID);
+
       document.getElementById(validationID)?.parentElement?.remove();
 
       if (message?.length
         && elem
         && bbn.fn.isDom(elem.$el)
       ) {
-        let style = document.createElement('style');
-        style.id = validationStyleID;
-        style.innerHTML = `
-          #${validationID} .bbn-floater {
-            background-color: var(--red) !important;
-            color: var(--white) !important;
-            position: absolute !important;
-          }
-          #${validationID} .bbn-floater-arrow:after {
-            background-color: var(--red) !important;
-          }`;
-        document.head.appendChild(style)
         let cont = document.createElement('div');
+        const scroll = elem.closest('.bbn-scroll');
+        let onScroll = false;
+        const onClose = () => {
+          elem.$emit('removevalidation');
+        };
         const cfg = {
           template: `
-            <div class="bbn-abs bbn-pos-bottom">
-              <bbn-tooltip id="${validationID}"
-                           ref="tooltip"
-                           :icon="false"
-                           position="bottomLeft"
-                           @hook:mounted="showContent"
-                           @close="onCloseTooltip">
-                <div class="bbn-vxspadding bbn-hspadding bbn-w-100"
-                     style="min-width: max-content"
-                     bbn-html="message"/>
-              </bbn-tooltip>
-            </div>
+            <bbn-floater id="${validationID}"
+                          ref="floater"
+                          :icon="false"
+                          @close="onFloaterClose"
+                          :element="ele"
+                          :element-width="false"
+                          :arrow="true"
+                          :scrollable="false"
+                          position="bottomLeft"
+                          :auto-hide="500"
+                          :distance="8"
+                          tabindex="-1"
+                          :class="{'bbn-invisible': invisible}"
+                          @hook:mounted="onFloaterMounted">
+              <div class="bbn-vxspadding bbn-hspadding bbn-w-100"
+                    style="min-width: max-content"
+                    bbn-html="message"/>
+            </bbn-floater>
           `,
           data() {
             return {
-                message: message
+                ele: elem.$el,
+                invisible: true,
+                message,
+                scroll,
+                setOnFocus
             }
           },
           methods: {
-            showContent(){
-              this.getRef('tooltip').show();
+            onFloaterClose(){
+              if (this.scroll) {
+                scroll.$off('scroll', onScroll);
+              }
+
+              if (this.setOnFocus) {
+                elem.$off('focus', onClose);
+              }
+
+              onClose();
             },
-            onCloseTooltip() {
-              document.getElementById(validationStyleID)?.remove();
-              this.$el?.remove();
+            onFloaterMounted(){
+              this.$nextTick(() => {
+                if (this.scroll) {
+                  const floater = this.getRef('floater');
+                  onScroll = () => {
+                    const scrollRect = scroll.$el.getBoundingClientRect();
+                    const rect = floater.$el.getBoundingClientRect();
+                    this.invisible = rect.bottom > (scrollRect.bottom - 1);
+                  }
+                  onScroll();
+                  scroll.$on('scroll', onScroll);
+                }
+
+                if (this.setOnFocus) {
+                  elem.$on('focus', onClose);
+                }
+
+                elem.$emit('validationmounted', this);
+              });
+            }
+          },
+          beforeDestroy(){
+            if (this.scroll) {
+              scroll.$off('scroll', onScroll);
+            }
+
+            if (this.setOnFocus) {
+              elem.$off('focus', onClose);
             }
           }
         };
+
+        if (!styleExists) {
+          let style = document.createElement('style');
+          style.id = validationStyleID;
+          style.innerHTML = `
+            #${validationID} {
+              background-color: var(--error-text) !important;
+              color: var(--error-background) !important;
+              border-radius: var(--default-border-radius) !important;
+              border-color: var(--error-border) !important;
+            }
+            #${validationID} .bbn-floater-arrow {
+              left: 9px !important;
+            }
+            #${validationID} .bbn-floater-arrow:after {
+              background-color: var(--error-text) !important;
+              border-color: var(--error-border) !important;
+            }
+          `;
+          document.head.appendChild(style);
+        }
+
         this.$el.appendChild(cont);
         bbn.cp.createApp(cont, cfg)
       }

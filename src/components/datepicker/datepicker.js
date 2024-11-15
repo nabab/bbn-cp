@@ -351,12 +351,22 @@ const cpDef = {
           && (!maskVal || value)
         ) {
           if (value && this.min && (value < this.min)) {
-            this.$emit('min', value, this.min);
+            const ev = new CustomEvent('min', {cancelable: true});
+            this.$emit('min', ev, value, this.min, this);
+            if (ev.defaultPrevented) {
+              return;
+            }
+
             value = this.min;
           }
 
           if (value && this.max && (value > this.max)) {
-            this.$emit('max', value, this.max);
+            const ev = new CustomEvent('max', {cancelable: true});
+            this.$emit('max', ev, value, this.max, this);
+            if (ev.defaultPrevented) {
+              return;
+            }
+
             value = this.max;
           }
 
