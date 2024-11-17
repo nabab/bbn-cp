@@ -61,7 +61,8 @@ async function treatQueue(num = 0) {
     if (bbn.cp.queue.length > 100000) {
       if (!isDebug) {
         isDebug = bbn.cp.numTicks;
-        bbn.fn.log("SETTING DEBUG MODE");
+        bbn.fn.log("SETTING DEBUG MODE", bbn.cp.queue);
+        debugger;
       }
     }
     else if (isDebug) {
