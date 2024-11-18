@@ -218,12 +218,18 @@ const cpDef = {
       this.currentValue = '';
     },
     init(){
-      if (!this.pattern) {
-        if (this.type === 'hostname') {
+      if (this.pattern?.length) {
+        this.currentPattern = this.pattern;
+      }
+      else {
+        if (this.currentType === 'hostname') {
           this.currentPattern = bbn.var.regexp.hostname.source;
         }
-        else if (this.type === 'ip') {
+        else if (this.currentType === 'ip') {
           this.currentPattern = bbn.var.regexp.ip.source;
+        }
+        else {
+          this.currentPattern = '';
         }
       }
     },
@@ -267,9 +273,6 @@ const cpDef = {
     this.ready = true;
   },
   watch: {
-    type(newVal){
-      this.currentType = this.getType();
-    },
     maxlength(newVal) {
       if (this.currentValue.length > newVal) {
         this.currentValue = this.currentValue.substr(0, newVal);
@@ -311,7 +314,8 @@ const cpDef = {
       }
     },
     type(newVal) {
-      this.init()
+      this.currentType = this.getType();
+      this.init();
     }
   }
 };

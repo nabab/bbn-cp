@@ -270,7 +270,6 @@ const input = {
             ele = $this.$refs.element || false,
             inp = $this.$refs.input || false,
             customMessage = $this.validationMessage || ($this.$el.hasAttribute('validationMessage') ? $this.$el.getAttribute('validationMessage') : false);
-            bbn.fn.log('customMessage', customMessage, $this.validationMessage, $this.$el.validationMessage);
       let check = elem => {
         if ( elem && elem.validity ){
           let validity = elem.validity,
