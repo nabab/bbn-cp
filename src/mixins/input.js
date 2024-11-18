@@ -94,14 +94,6 @@ const input = {
       type: [Function]
     },
     /**
-     * A custon message to show on input validation.
-     * @prop {String} validationMessage
-     * @memberof inputComponent
-     */
-    validationMessage: {
-      type: String
-    },
-    /**
      * The attribute tabindex of the input component.
      * @prop {Number} tabindex
      * @memberof inputComponent
@@ -269,8 +261,7 @@ const input = {
       const $this = bbn.cp.isComponent(e) ? e : this,
             ele = $this.$refs.element || false,
             inp = $this.$refs.input || false,
-            customMessage = $this.validationMessage || ($this.$el.hasAttribute('validationMessage') ? $this.$el.getAttribute('validationMessage') : false);
-            bbn.fn.log('customMessage', customMessage, $this.validationMessage, $this.$el.validationMessage);
+            customMessage = $this.$el.hasAttribute('validationMessage') ? $this.$el.getAttribute('validationMessage') : false;
       let check = elem => {
         if ( elem && elem.validity ){
           let validity = elem.validity,
