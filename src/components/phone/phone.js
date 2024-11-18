@@ -74,14 +74,14 @@ const cpDef = {
       return this.currentPrefix + this.currentNumber;
     },
     currentCountry(){
-      return bbn.fn.getField(this.countryCodes, 'code', 'prefix', this.currentPrefix);
+      return this.currentPrefix ? bbn.fn.getField(this.countryCodes, 'code', 'prefix', this.currentPrefix) : '';
     },
     currentMaxlength(){
       return this.currentCountry === 'FR' ? 9 : (this.maxlength > -1 ? this.maxlength : 0);
     },
     currentPattern(){
       if (this.currentCountry === 'FR') {
-        return `[1-9]{1}[0-9]{8}`;
+        return '[1-9]{1}\\s{1}[0-9]{2}\\s{1}[0-9]{2}\\s{1}[0-9]{2}\\s{1}[0-9]{2}';
       }
 
       return '[0-9]' + (this.currentMaxlength ? `{1,${this.currentMaxlength}}` : '');
@@ -114,7 +114,9 @@ const cpDef = {
     },
     onInputFocus(e){
       if (e?.target?.bbn
-        && (e.target.tagName === 'BBN-INPUT')
+        && ((e.target.tagName === 'BBN-INPUT')
+          || (e.target.tagName === 'BBN-MASKED')
+        )
       ) {
         e.target.bbn.getRef('element').focus();
       }
