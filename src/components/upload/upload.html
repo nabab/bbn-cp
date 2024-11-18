@@ -68,8 +68,8 @@
                          style="text-align: right"
                          bar-class="bbn-background-tertiary"/>
       </div>
-      <div>
-        <div bbn-if="isEnabled && (f.edit === false)">
+      <div class="bbn-flex bbn-nowrap">
+        <template bbn-if="isEnabled && (f.edit === false)">
           <i bbn-if="(f.status === 'success') && !!downloadable && !!downloadUrl && !uploading"
             class="bbn-large nf nf-fa-download bbn-p bbn-right-sspace"
             @click="download(f)"
@@ -87,20 +87,20 @@
             @click="remove(f)"
             :title="currentText.remove"/>
           <bbn-loadicon bbn-if="f.status === 'progress'"/>
-        </div>
-        <div bbn-elseif="isEnabled && (f.edit !== false) && !uploading">
+        </template>
+        <template bbn-elseif="isEnabled && (f.edit !== false) && !uploading">
           <i class="bbn-large nf nf-fa-check bbn-p bbn-right-sspace"
              @click="saveEdit(f)"
              :title="currentText.save"/>
           <i class="bbn-large nf nf-fa-close bbn-p"
              @click="cancelEdit(f)"
              :title="currentText.cancel"/>
-        </div>
-        <div bbn-elseif="(f.status === 'success') && !!downloadable && !!downloadUrl && !uploading">
+        </template>
+        <template bbn-elseif="(f.status === 'success') && !!downloadable && !!downloadUrl && !uploading">
           <i class="bbn-large nf nf-fa-download bbn-p"
              @click="download(f)"
              :title="currentText.download"/>
-        </div>
+        </template>
       </div>
     </div>
     <div bbn-if="!currentData.length && !isEnabled"
