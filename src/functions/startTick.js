@@ -62,7 +62,7 @@ async function treatQueue(num = 0) {
       if (!isDebug) {
         isDebug = bbn.cp.numTicks;
         bbn.fn.log("SETTING DEBUG MODE", bbn.cp.queue);
-        debugger;
+        //debugger;
       }
     }
     else if (isDebug) {

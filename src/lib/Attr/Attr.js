@@ -51,12 +51,6 @@ export default class bbnAttr
       });
     }
 
-    Object.defineProperty(this, 'ownDeps', {
-      writable: false,
-      configurable: false,
-      value: []
-    });
-
     Object.defineProperty(this, 'result', {
       writable: false,
       configurable: false,

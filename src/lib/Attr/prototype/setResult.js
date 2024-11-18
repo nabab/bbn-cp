@@ -4,18 +4,6 @@ import bbnAttr from "../Attr.js";
 import bbnConditionAttr from "../Condition.js";
 import bbnModelAttr from "../Model.js";
 
-const checkDeps = function (data, name) {
-  let i = 0;
-  while (i < data.deps[name].length) {
-    if ((data.deps[name][i] instanceof bbnAttr) && !data.deps[name][i].node?.element) {
-      data.deps[name].splice(i, 1);
-      bbn.fn.log("DEL")
-    }
-    else {
-      i++;
-    }
-  }
-};
 /**
  * Updates the dependency sequence for a given result and attribute.
  * @param {Object} result - The result object containing state and sequence information.
@@ -23,41 +11,30 @@ const checkDeps = function (data, name) {
  */
 const updateSequence = function (result, attr) {
   if (result.seq.length && (result.state !== 'OK')) {
-    const checkedNames = [];
     // Iterate through the sequence of actions in the result.
     for (let i = 0; i < result.seq.length; i++) {
       let a = result.seq[i];
       // If the action's data is an instance of bbnData.
       if (a.data instanceof bbnData) {
-        // A property or the whole object
-        let name = a.name || '__bbnRoot';
-        if (a.data.isArray && (name === 'length')) {
-          name = '__bbnRoot';
-        }
-
-        // we create a specific dep
-        if (!a.data.deps[name]) {
-          a.data.deps[name] = [];
-        }
-
-        if (!checkedNames.includes(name)) {
-          checkDeps(a.data, name);
-          checkedNames.push(name);
-        }
-
-        if (!a.data.deps[name].includes(attr)) {
-          a.data.deps[name].push(attr);
-          attr.ownDeps.push({data: a.data, name});
-        }
-
-        if (name !== '__bbnRoot') {
-          const subData = bbnData.getObject(a.data.value[name]);
+        // If it's a given property and not the whole object
+        if (a.name) {
+          // we create a specific dep
+          if (!a.data.deps[a.name]) {
+            a.data.deps[a.name] = [];
+          }
+          if (!a.data.deps[a.name].includes(attr)) {
+            a.data.deps[a.name].push(attr);
+          }
+          const subData = bbnData.getObject(a.data.value[a.name]);
           if (subData) {
             if (!subData.deps.__bbnRoot.includes(attr)) {
               subData.deps.__bbnRoot.push(attr);
-              attr.ownDeps.push({data: subData, name: '__bbnRoot'});
             }
           }
+        }
+        // Add the attribute to the data dependencies if not already present.
+        else if (!a.data.deps.__bbnRoot.includes(attr)) {
+          a.data.deps.__bbnRoot.push(attr);
         }
       }
       else {
@@ -68,8 +45,6 @@ const updateSequence = function (result, attr) {
 
         if (!a.component.$deps[a.name].includes(attr)) {
           a.component.$deps[a.name].push(attr);
-          attr.ownDeps.push({component: a.component, name: a.name});
-          bbn.fn.log("PUSH " + a.name + " " + a.component.$deps[a.name].length)
         }
       }
     }
