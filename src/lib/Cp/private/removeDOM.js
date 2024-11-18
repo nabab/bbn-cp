@@ -20,14 +20,14 @@ const cleanUp = function (ele) {
  * @param {HTMLElement} ele
  */
 export default function removeDOM(cp, ele, replacer) {
-  if (ele.parentNode) {
+  if (ele?.parentNode) {
     if (replacer) {
       ele.parentNode.replaceChild(replacer, ele);
     }
     else {
       ele.parentNode.removeChild(ele);
     }
-    new Promise((resolve) => {
+    new Promise(() => {
       cleanUp(ele);
     });
   }
