@@ -463,8 +463,9 @@ const cpDef = {
         let current = bbn.fn.getRow(this.currentData, {'data.name': file.data.name});
         if (current) {
           if (file.fromUser) {
-            this.$emit('error', {file: file.data.name, message: bbn._('The file exists!')})
-            this.alert(bbn._('The file') + ` "${file.data.name}" ` + bbn._('exists') + '!')
+            const message = bbn._('The file "%s" exists', file.data.name)
+            this.$emit('error', file.data.name, message)
+            this.alert(message)
             return false;
           }
           else {
@@ -479,8 +480,14 @@ const cpDef = {
           if (!extensions.includes(ext)
             && file.fromUser
           ) {
-            this.$emit('error', {file: file.data.name, message: bbn._('The extension') + ` "${ext}" ` + bbn._('is not allowed') + '!'});
-            this.alert(bbn._('The extension') + ` "${ext}" ` + bbn._('is not allowed') + '!');
+            const message = bbn._('The extension "%s" is not allowed', ext);
+            this.$emit('error', file.data.name, message);
+            const ev = new CustomEvent('extensionexists', {cancelable: true});
+            this.$emit('extensionexists', ev, message, this);
+            if (!ev.defaultPrevented) {
+              this.alert(message);
+            }
+
             return false;
           }
         }

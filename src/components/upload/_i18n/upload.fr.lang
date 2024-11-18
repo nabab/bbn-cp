@@ -13,10 +13,7 @@
     "Cancel": "Annuler",
     "Write the filename without the extension": "Ecrire le nom de fichier sans l'extension",
     "Upload": "T\u00e9l\u00e9charger",
-    "The file exists!": "Le fichier existe!",
-    "The file": "Le fichier",
-    "exists": "existe",
-    "The extension": "L'extension",
-    "is not allowed": "n'est pas autorisé",
+    "The file \"%s\" exists": "Le fichier \"%s\" existe",
+    "The extension \"%s\" is not allowed": "L'extension \"%s\" n'est pas autorisé",
     "The size of the \"%s\" file is too large": " La taille du fichier \"%s\" est trop importante"
 }
