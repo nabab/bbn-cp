@@ -16,18 +16,19 @@
                       @click="prev(true)"
                       :title="_('Previous') + ' ' + currentCfg.stepSkipText"
                       :notext="true"
-                      class="bbn-right-xsspace"/>
-          <bbn-button icon="nf nf-fa-angle_left"
+                      :class="['bbn-calendar-arrow', 'bbn-right-xsspace', {'hidden': isPrevSkipDisabled}]"/>
+          <bbn-button :class="['bbn-calendar-arrow', {'hidden': isPrevDisabled}]"
+                      icon="nf nf-fa-angle_left"
                       @click="prev(false)"
                       :title="_('Previous') + ' ' + currentCfg.stepText"
                       :notext="true"/>
         </template>
         <template bbn-elseif="arrows && !arrowsButtons">
           <i bbn-if="currentCfg.stepSkip"
-             class="nf nf-fa-angle_double_left bbn-p bbn-hsmargin"
+             :class="['bbn-calendar-arrow', 'nf nf-fa-angle_double_left', 'bbn-p', 'bbn-hsmargin', {'hidden': isPrevSkipDisabled}]"
              @click="prev(true)"
              :title="_('Previous') + ' ' + currentCfg.stepSkipText"/>
-          <i class="nf nf-fa-angle_left bbn-p bbn-hsmargin"
+          <i :class="['bbn-calendar-arrow', 'nf nf-fa-angle_left', 'bbn-p', 'bbn-hsmargin', {'hidden': isPrevDisabled}]"
              @click="prev(false)"
              :title="_('Previous') + ' ' + currentCfg.stepText"/>
         </template>
@@ -40,7 +41,8 @@
           </span>
         </div>
         <template bbn-if="arrows && arrowsButtons">
-          <bbn-button icon="nf nf-fa-angle_right"
+          <bbn-button :class="['bbn-calendar-arrow', {'hidden': isNextDisabled}]"
+                      icon="nf nf-fa-angle_right"
                       @click="next(false)"
                       :title="_('Next') + ' ' + currentCfg.stepText"
                       :notext="true"/>
@@ -49,14 +51,15 @@
                       @click="next(true)"
                       :title="_('Next') + ' ' + currentCfg.stepSkipText"
                       :notext="true"
-                      class="bbn-left-xsspace"/>
+                      :class="['bbn-calendar-arrow', 'bbn-left-xsspace', {'hidden': isNextSkipDisabled}]"/>
         </template>
         <template bbn-elseif="arrows && !arrowsButtons">
-          <i class="nf nf-fa-angle_right bbn-p bbn-hsmargin"
+          <i :class="['bbn-calendar-arrow', 'nf nf-fa-angle_right', 'bbn-p', 'bbn-hsmargin', {'hidden': isNextDisabled}]"
              @click="next(false)"
              :title="_('Next') + ' ' + currentCfg.stepText"/>
           <i bbn-if="currentCfg.stepSkip"
-             class="nf nf-fa-angle_double_right bbn-p bbn-hsmargin"
+             bbn-show="!isNextDisabled"
+             :class="['bbn-calendar-arrow', 'nf nf-fa-angle_double_right', 'bbn-p', 'bbn-hsmargin', {'hidden': isNextSkipDisabled}]"
              @click="next(true)"
              :title="_('Next') + ' ' + currentCfg.stepSkipText"/>
         </template>
