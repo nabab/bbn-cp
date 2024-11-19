@@ -403,6 +403,17 @@ const cpDef = {
         return this.getCfg();
       }
       return {}
+    },
+    isPrevDisabled(){
+      if (this.currentCfg?.step
+        && this.currentCfg?.valueFormat
+        && bbn.fn.isFunction(this.currentCfg?.make)
+      ) {
+        let check = dayjs(this.currentDate).subtract(...this.currentCfg.step).format(this.currentCfg.valueFormat);
+        return !this.min || (check < this.min);
+      }
+
+      return true;
     }
   },
   methods: {
@@ -839,12 +850,7 @@ const cpDef = {
       skip = typeof skip === 'boolean' ? skip : false;
       if ( this.currentCfg && this.currentCfg.step && bbn.fn.isFunction(this.currentCfg.make) ){
         let check = dayjs(this.currentDate).add(...this.currentCfg[skip && this.currentCfg.stepSkip ? 'stepSkip' : 'step']).format(this.currentCfg.valueFormat);
-        if ( this.max && (check > this.max) ){
-          this.currentDate = dayjs(this.max, this.currentCfg.valueFormat);
-        }
-        else{
-          this.currentDate = dayjs(check, this.currentCfg.valueFormat);
-        }
+        this.currentDate = dayjs(this.max && (check > this.max) ? this.max : check, this.currentCfg.valueFormat);
         let ev = new Event('next', {cancelable: true});
         this.$emit('next', ev, this);
         if (ev.defaultPrevented) {
@@ -865,12 +871,7 @@ const cpDef = {
       skip = typeof skip === 'boolean' ? skip : false;
       if ( this.currentCfg && this.currentCfg.step && bbn.fn.isFunction(this.currentCfg.make) ){
         let check = dayjs(this.currentDate).subtract(...this.currentCfg[skip && this.currentCfg.stepSkip ? 'stepSkip' : 'step']).format(this.currentCfg.valueFormat);
-        if ( this.min && (check < this.min) ){
-          this.currentDate = dayjs(this.min, this.currentCfg.valueFormat);
-        }
-        else {
-          this.currentDate = dayjs(check, this.currentCfg.valueFormat);
-        }
+        this.currentDate = dayjs(this.min && (check < this.min) ? this.min : check, this.currentCfg.valueFormat);
         let ev = new Event('prev');
         this.$emit('prev', ev, this);
         if (ev.defaultPrevented) {
