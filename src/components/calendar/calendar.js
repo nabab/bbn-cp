@@ -410,7 +410,40 @@ const cpDef = {
         && bbn.fn.isFunction(this.currentCfg?.make)
       ) {
         let check = dayjs(this.currentDate).subtract(...this.currentCfg.step).format(this.currentCfg.valueFormat);
-        return !this.min || (check < this.min);
+        return this.min && (check < this.min);
+      }
+
+      return true;
+    },
+    isNextDisabled(){
+      if (this.currentCfg?.step
+        && this.currentCfg?.valueFormat
+        && bbn.fn.isFunction(this.currentCfg?.make)
+      ) {
+        let check = dayjs(this.currentDate).add(...this.currentCfg.step).format(this.currentCfg.valueFormat);
+        return this.max && (check > this.max);
+      }
+
+      return true;
+    },
+    isPrevSkipDisabled(){
+      if (this.currentCfg?.stepSkip
+        && this.currentCfg?.valueFormat
+        && bbn.fn.isFunction(this.currentCfg?.make)
+      ) {
+        let check = dayjs(this.currentDate).subtract(...this.currentCfg.stepSkip).format(this.currentCfg.valueFormat);
+        return this.min && (check < this.min);
+      }
+
+      return true;
+    },
+    isNextSkipDisabled(){
+      if (this.currentCfg?.stepSkip
+        && this.currentCfg?.valueFormat
+        && bbn.fn.isFunction(this.currentCfg?.make)
+      ) {
+        let check = dayjs(this.currentDate).add(...this.currentCfg.stepSkip).format(this.currentCfg.valueFormat);
+        return this.max && (check > this.max);
       }
 
       return true;
