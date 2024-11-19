@@ -197,9 +197,7 @@ const cpDef = {
        * The action performed by the right button.
        * @data {Function} currentActionRight
        */
-      currentActionRight: bbn.fn.isFunction(this.actionRight) ? this.actionRight : () => this.$emit('clickrightbutton'),
-      currentPattern: this.pattern,
-      currentType: this.getType()
+      currentActionRight: bbn.fn.isFunction(this.actionRight) ? this.actionRight : () => this.$emit('clickrightbutton')
     }
   },
   computed: {
@@ -210,28 +208,31 @@ const cpDef = {
      */
     currentInputSize(){
       return this.autosize ? (this.value ? this.value.toString().length : 1) : 0
+    },
+    currentPattern(){
+      if (this.pattern?.length) {
+        return this.pattern;
+      }
+      else {
+        if (this.currentType === 'hostname') {
+          return bbn.var.regexp.hostname.source;
+        }
+        else if (this.currentType === 'ip') {
+          return bbn.var.regexp.ip.source;
+        }
+        else {
+          return '';
+        }
+      }
+    },
+    currentType(){
+      return ['text', 'date', 'search', 'url', 'tel', 'email', 'password', 'hostname', 'ip'].includes(this.type) ? this.type : 'text';
     }
   },
   methods: {
     clear(){
       this.emitInput(this.prefix || (this.nullable ? null : ''));
       this.currentValue = '';
-    },
-    init(){
-      if (this.pattern?.length) {
-        this.currentPattern = this.pattern;
-      }
-      else {
-        if (this.currentType === 'hostname') {
-          this.currentPattern = bbn.var.regexp.hostname.source;
-        }
-        else if (this.currentType === 'ip') {
-          this.currentPattern = bbn.var.regexp.ip.source;
-        }
-        else {
-          this.currentPattern = '';
-        }
-      }
     },
     emitValue(v) {
       if (this.prefix && (v.indexOf(this.prefix) !== 0)) {
@@ -259,11 +260,8 @@ const cpDef = {
       this.currentValue = ev.target.value;
     },
     getType(){
-      return ['text', 'date', 'search', 'url', 'tel', 'email', 'password', 'hostname', 'ip'].includes(this.type) ? this.type : 'text';
+      
     }
-  },
-  created() {
-    this.init();
   },
   mounted(){
     if (this.value !== this.currentValue) {
@@ -277,9 +275,6 @@ const cpDef = {
       if (this.currentValue.length > newVal) {
         this.currentValue = this.currentValue.substr(0, newVal);
       }
-    },
-    pattern(newVal) {
-      this.currentPattern = newVal;
     },
     value(v) {
       if (this.prefix && (v.indexOf(this.prefix) === 0)) {
@@ -312,10 +307,6 @@ const cpDef = {
           ele.removeAttribute('required');
         }
       }
-    },
-    type(newVal) {
-      this.currentType = this.getType();
-      this.init();
     }
   }
 };
