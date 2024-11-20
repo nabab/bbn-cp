@@ -406,44 +406,44 @@ const cpDef = {
     },
     isPrevDisabled(){
       if (this.currentCfg?.step
-        && this.currentCfg?.valueFormat
+        && this.currentCfg?.titleFormat
         && bbn.fn.isFunction(this.currentCfg?.make)
       ) {
-        let check = dayjs(this.currentDate).subtract(...this.currentCfg.step).format(this.currentCfg.valueFormat);
-        return this.min && (check < this.min);
+        let check = dayjs(this.currentDate).subtract(...this.currentCfg.step).format(this.currentCfg.titleFormat);
+        return this.min && (check < dayjs(this.min, this.currentCfg.valueFormat).format(this.currentCfg.titleFormat));
       }
 
       return true;
     },
     isNextDisabled(){
       if (this.currentCfg?.step
-        && this.currentCfg?.valueFormat
+        && this.currentCfg?.titleFormat
         && bbn.fn.isFunction(this.currentCfg?.make)
       ) {
-        let check = dayjs(this.currentDate).add(...this.currentCfg.step).format(this.currentCfg.valueFormat);
-        return this.max && (check > this.max);
+        let check = dayjs(this.currentDate).add(...this.currentCfg.step).format(this.currentCfg.titleFormat);
+        return this.max && (check > dayjs(this.max, this.currentCfg.valueFormat).format(this.currentCfg.titleFormat));
       }
 
       return true;
     },
     isPrevSkipDisabled(){
       if (this.currentCfg?.stepSkip
-        && this.currentCfg?.valueFormat
+        && this.currentCfg?.titleFormat
         && bbn.fn.isFunction(this.currentCfg?.make)
       ) {
-        let check = dayjs(this.currentDate).subtract(...this.currentCfg.stepSkip).format(this.currentCfg.valueFormat);
-        return this.min && (check < this.min);
+        let check = dayjs(this.currentDate).subtract(...this.currentCfg.stepSkip).format(this.currentCfg.titleFormat);
+        return this.min && (check < dayjs(this.min, this.currentCfg.valueFormat).format(this.currentCfg.titleFormat));
       }
 
       return true;
     },
     isNextSkipDisabled(){
       if (this.currentCfg?.stepSkip
-        && this.currentCfg?.valueFormat
+        && this.currentCfg?.titleFormat
         && bbn.fn.isFunction(this.currentCfg?.make)
       ) {
-        let check = dayjs(this.currentDate).add(...this.currentCfg.stepSkip).format(this.currentCfg.valueFormat);
-        return this.max && (check > this.max);
+        let check = dayjs(this.currentDate).add(...this.currentCfg.stepSkip).format(this.currentCfg.titleFormat);
+        return this.max && (check > dayjs(this.max, this.currentCfg.valueFormat).format(this.currentCfg.titleFormat));
       }
 
       return true;
