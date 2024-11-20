@@ -28,7 +28,7 @@
              :class="['bbn-calendar-arrow', 'nf nf-fa-angle_double_left', 'bbn-p', 'bbn-hsmargin', {'hidden': isPrevSkipDisabled}]"
              @click="prev(true)"
              :title="_('Previous') + ' ' + currentCfg.stepSkipText"/>
-          <i :class="['bbn-calendar-arrow', 'nf nf-fa-angle_left', 'bbn-p', 'bbn-hsmargin', {'hidden': isPrevDisabled}]"
+          <i :class="['bbn-calendar-arrow', 'nf nf-fa-angle_left', 'bbn-p', 'bbn-hsmargin', {'hidden': !!isPrevDisabled}]"
              @click="prev(false)"
              :title="_('Previous') + ' ' + currentCfg.stepText"/>
         </template>

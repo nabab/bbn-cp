@@ -405,12 +405,15 @@ const cpDef = {
       return {}
     },
     isPrevDisabled(){
-      if (this.currentCfg?.step
+      if (this.currentDate
+        && this.currentCfg?.step
         && this.currentCfg?.titleFormat
+        && this.currentCfg?.valueFormat
         && bbn.fn.isFunction(this.currentCfg?.make)
       ) {
-        let check = dayjs(this.currentDate).subtract(...this.currentCfg.step).format(this.currentCfg.titleFormat);
-        return this.min && (check < dayjs(this.min, this.currentCfg.valueFormat).format(this.currentCfg.titleFormat));
+        const titleFormat = bbn.fn.isFunction(this.currentCfg.titleFormat) ? this.currentCfg.titleFormat() : this.currentCfg.titleFormat;
+        const check = dayjs(this.currentDate).subtract(...this.currentCfg.step).format(titleFormat);
+        return this.min && (check < dayjs(this.min, this.currentCfg.valueFormat).format(titleFormat));
       }
 
       return true;
@@ -418,10 +421,12 @@ const cpDef = {
     isNextDisabled(){
       if (this.currentCfg?.step
         && this.currentCfg?.titleFormat
+        && this.currentCfg?.valueFormat
         && bbn.fn.isFunction(this.currentCfg?.make)
       ) {
-        let check = dayjs(this.currentDate).add(...this.currentCfg.step).format(this.currentCfg.titleFormat);
-        return this.max && (check > dayjs(this.max, this.currentCfg.valueFormat).format(this.currentCfg.titleFormat));
+        const titleFormat = bbn.fn.isFunction(this.currentCfg.titleFormat) ? this.currentCfg.titleFormat() : this.currentCfg.titleFormat;
+        const check = dayjs(this.currentDate).add(...this.currentCfg.step).format(titleFormat);
+        return this.max && (check > dayjs(this.max, this.currentCfg.valueFormat).format(titleFormat));
       }
 
       return true;
@@ -429,10 +434,12 @@ const cpDef = {
     isPrevSkipDisabled(){
       if (this.currentCfg?.stepSkip
         && this.currentCfg?.titleFormat
+        && this.currentCfg?.valueFormat
         && bbn.fn.isFunction(this.currentCfg?.make)
       ) {
-        let check = dayjs(this.currentDate).subtract(...this.currentCfg.stepSkip).format(this.currentCfg.titleFormat);
-        return this.min && (check < dayjs(this.min, this.currentCfg.valueFormat).format(this.currentCfg.titleFormat));
+        const titleFormat = bbn.fn.isFunction(this.currentCfg.titleFormat) ? this.currentCfg.titleFormat() : this.currentCfg.titleFormat;
+        const check = dayjs(this.currentDate).subtract(...this.currentCfg.stepSkip).format(titleFormat);
+        return this.min && (check < dayjs(this.min, this.currentCfg.valueFormat).format(titleFormat));
       }
 
       return true;
@@ -440,10 +447,12 @@ const cpDef = {
     isNextSkipDisabled(){
       if (this.currentCfg?.stepSkip
         && this.currentCfg?.titleFormat
+        && this.currentCfg?.valueFormat
         && bbn.fn.isFunction(this.currentCfg?.make)
       ) {
-        let check = dayjs(this.currentDate).add(...this.currentCfg.stepSkip).format(this.currentCfg.titleFormat);
-        return this.max && (check > dayjs(this.max, this.currentCfg.valueFormat).format(this.currentCfg.titleFormat));
+        const titleFormat = bbn.fn.isFunction(this.currentCfg.titleFormat) ? this.currentCfg.titleFormat() : this.currentCfg.titleFormat;
+        const check = dayjs(this.currentDate).add(...this.currentCfg.stepSkip).format(titleFormat);
+        return this.max && (check > dayjs(this.max, this.currentCfg.valueFormat).format(titleFormat));
       }
 
       return true;
