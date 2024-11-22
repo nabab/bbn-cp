@@ -23,6 +23,7 @@ import "./lib/Data/static/proxyShift.js";
 import "./lib/Data/static/proxySort.js";
 import "./lib/Data/static/proxySplice.js";
 import "./lib/Data/static/proxyUnshift.js";
+import "./lib/Data/static/recognize.js";
 import "./lib/Data/static/startWatching.js";
 import "./lib/Data/static/stopWatching.js";
 import "./lib/Data/static/treatValue.js";

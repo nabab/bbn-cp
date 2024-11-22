@@ -175,67 +175,9 @@ export default class bbnComputed {
         }
         // Case where the result has not been treated and a data object already exists
         else if (this.#val?.__bbnData && !v.__bbnData && this.#data) {
-          if (!bbn.fn.numProperties(bbn.fn.diffObj(this.#val, v))) {
-            v = this.#val;
-          }
-          // If both are arrays we mutate the old one into the new one
-          else if (this.#data.isArray && bbn.fn.isArray(v)) {
-            //this.#data.value.splice(0, this.#data.value.length, ...v);
-            for (let i = 0; i < v.length; i++) {
-              if (v[i] !== this.#data.value[i]) {
-                const isPrimitive = bbn.fn.isPrimitive(v[i]);
-                if (!isPrimitive && !v[i].__bbnData && Object.hasOwn(this.#data.value, i) && !bbn.fn.numProperties(bbn.fn.diffObj(v[i], this.#data.value[i]))) {
-                  continue;
-                }
-
-                hasChanged = true;
-
-                if (this.#data.value.includes(v[i])) {
-                  bbn.fn.move(this.#data.value, this.#data.value.indexOf(v[i]), i);
-                }
-                else if (!Object.hasOwn(this.#data.value, i)) {
-                  this.#data.value.push(v[i]);
-                }
-                else if (isPrimitive) {
-                  this.#data.value.splice(i, 0, v[i]);
-                }
-                else if (v[i].__bbnData) {
-                  this.#data.value.splice(i, 0, v[i]);
-                }
-                else if (!bbn.fn.isSame(v[i], this.#data.value[i])) {
-                  if (bbn.fn.isObject(v[i], this.#data.value[i])) {
-                    bbn.fn.mutateObject(this.#data.value[i], v[i]);
-                  }
-                  else {
-                    this.#data.value.splice(i, v.includes(this.#data.value[i]) ? 0 : 1, v[i]);
-                  }
-                }
-              }
-            }
-            if (this.#data.value.length > v.length) {
-              this.#data.value.splice(v.length);
-            }
-
-            this.#data.fixIndexes();
-            v = this.#data.value;
-          }
-          // If both are objects we mutate the old one into the new one
-          else if (!this.#data.isArray && bbn.fn.isObject(v)) {
-            if (bbn.fn.numProperties(bbn.fn.diffObj(v, this.#data.value))) {
-              bbn.fn.mutateObject(this.#data.value, v);
-              //bbn.fn.log(["MUTATE OBJECT", this.#data.value, v]);
-              v = this.#data.value;
-              hasChanged = true;
-            }
-          }
-          else {
-            // Remove the old data object from the component.
-            this.#data.removeComponent(this.#component, this.#name);
-            v = this.#component.$treatValue(v, this.#name);
-            this.#data = bbnData.getObject(v);
-            hasChanged = true;
-          }
-
+          const o = bbnData.recognize(v, this.#data.value, this.#component, this.#name);
+          v = o.value;
+          hasChanged = o.changed;
         }
         // Case where the result is already treated (by another property and/or another component)
         else if (v.__bbnData) {
