@@ -254,6 +254,7 @@ const cpDef = {
         if (ev.defaultPrevented) {
           return;
         }
+
         if (d == 1) {
           window.document.location.href = bbn.env.path;
         }

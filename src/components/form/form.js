@@ -791,8 +791,10 @@ const cpDef = {
           if (this.disabled) {
             return;
           }
-          let ev = new Event('submit', {cancelable: true});
-          this.$emit('submit', ev, this);
+
+          const ev = new CustomEvent('submit', {cancelable: true});
+          const ev2 = this.$emit('submit', ev, this);
+          ev2.preventDefault();
           if ( ev.defaultPrevented ){
             return;
           }

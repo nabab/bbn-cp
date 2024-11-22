@@ -26,6 +26,7 @@ bbnCp.prototype.$emit = function (eventName, ...args) {
   }
 
   const ev = new CustomEvent(eventName, bbn.fn.createObject({
+    cancelable: true,
     detail: {
       __bbnEvent: true,
       __bbnCid: this.$cid,
