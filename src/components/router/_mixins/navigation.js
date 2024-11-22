@@ -905,15 +905,11 @@ export default {
 
         bbn.fn.log(["SETTING EVENT ON BEFORE UNLOAD", this]);
         if (!window.onbeforeunload) {
-          window.onbeforeunload = function(e) {
+          window.onbeforeunload = e => {
             bbn.fn.log(["BEFORE UNLOAD", this.isDirty]);
             if (this.isDirty) {
-              // doesn't use that string but a default string...
-              e.returnValue = ' ';
               e.preventDefault();
             }
-
-            return false;
           };
         }
 
