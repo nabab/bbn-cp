@@ -113,7 +113,7 @@ class bbnData/* extends EventTarget*/ {
      * @var {Boolean} isArray If the data is an array
      */
     Object.defineProperty(this, 'isArray', {
-      value: data instanceof Array,
+      value: !!(data instanceof Array),
       writable: false,
       configurable: true
     });
