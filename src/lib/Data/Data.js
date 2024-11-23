@@ -19,6 +19,12 @@ class bbnData/* extends EventTarget*/ {
 
   static queue = [];
 
+  static isUpdating = 0;
+
+  static updated = [];
+
+  static toUpdate = [];
+
   #uid;
   /**
    * Constructor

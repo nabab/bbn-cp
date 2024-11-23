@@ -70,6 +70,7 @@ export default class bbnLoopAttr extends bbnAttr
     let num = 0;
     let prevEle;
 
+    bbn.cp.loopLevel++;
     for (let j in loopValue) {
       if (isArray) {
         j = parseInt(j);
@@ -119,6 +120,7 @@ export default class bbnLoopAttr extends bbnAttr
       num++;
     }
 
+    bbn.cp.loopLevel--;
     const loopHash = oHash ? bbn.fn.substr(oHash, 0, -1) : '';
     for (let n in cp.$nodes[this.node.id]) {
       const a = cp.$nodes[this.node.id][n];

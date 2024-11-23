@@ -58,6 +58,8 @@ bbnAttr.prototype.attrSetResult = function() {
   }
 
   const node = this.node;
+  const component = node.component;
+  const result = this.result;
   // Check if the result needs to be updated.
   if (!(this instanceof bbnModelAttr) && ((this.result?.num || 0) > node.component.$numBuild) && !Object.hasOwn(arguments, 0)) {
     return this.value;
@@ -77,7 +79,7 @@ bbnAttr.prototype.attrSetResult = function() {
   }
 
   let expValue = res.val;
-  if (this instanceof bbnConditionAttr || this instanceof bbnForgetAttr) {
+  if (this instanceof bbnConditionAttr || this instanceof bbnForgetAttr || this instanceof bbnShowAttr) {
     expValue = !!expValue;
     //bbn.fn.log([this.exp, this.id, expValue, this.node.element])
   }
@@ -88,8 +90,15 @@ bbnAttr.prototype.attrSetResult = function() {
 
   // Update the value if it has changed.
   if (this.result.value !== expValue) {
-    this.result.value = expValue;
+    /*
+    const o = bbnData.recognize(expValue, this.result.value, component, this);
+    if (this.result.value !== o.value) {
+      this.result.value = o.value;
+    }
     //this.result.hash = hash;
+    isChanged = o.changed;
+    */
+    this.result.value = expValue;
     isChanged = true;
   }
 /*

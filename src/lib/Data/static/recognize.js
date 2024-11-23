@@ -182,7 +182,7 @@ const mutate = function(newObj, oldObj) {
  */
 bbnData.recognize = function(v, oldData, component, path) {
   let isChanged = false;
-  if (v !== oldData) {
+  if (oldData && (v !== oldData)) {
     const newDataObject = bbnData.getObject(v);
     const tmp = bbnData.getObject(oldData);
     const oldDataObject = tmp?.targetData ? tmp : false;
@@ -198,7 +198,6 @@ bbnData.recognize = function(v, oldData, component, path) {
       }
       // Case where the result has not been treated and a data object already exists
       else if (!newDataObject && oldDataObject) {
-        bbnData.isUpdating++;
         if (oldDataObject.isArray && bbn.fn.isArray(v)) {
           isChanged = mutateArray(v, oldDataObject.value);
           v = oldDataObject.value;
@@ -213,15 +212,6 @@ bbnData.recognize = function(v, oldData, component, path) {
           // Remove the old data object from the component.
           isChanged = oldDataObject.removeComponent(component, path);
           v = component.$treatValue(v, path);
-        }
-
-        bbnData.isUpdating--;
-        if (!bbnData.isUpdating) {
-          bbnData.updated.splice(0);
-          while (bbnData.toUpdate.length) {
-            const d = bbnData.toUpdate.shift();
-            d.data.prepareUpdate(d.path);
-          }
         }
       }
       // Case where the result is already treated (by another property and/or another component)

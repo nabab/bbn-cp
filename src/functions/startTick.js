@@ -80,6 +80,12 @@ async function treatQueue(num = 0) {
     let fns;
     let unconditioned = [];
     let forgotten = [];
+    const rnd = bbn.fn.randomString();
+    bbn.fn.startChrono(rnd);
+    if (queue.length === 210) {
+      bbn.fn.log(queue.slice());
+    }
+    bbn.fn.log("TREATING QUEUE: " + queue.length + '"' + rnd + '" (' + num + ' / ' + bbn.cp.numTicks + ')');
     while (queue.length) {
       if (isDebug) {
         if (bbn.cp.numTicks - isDebug > 1000) {
@@ -205,8 +211,6 @@ async function treatQueue(num = 0) {
       lastElement = queueElement;
     }
 
-    bbn.cp.numTicks++;
-
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       await treatQueue(num + 1);
@@ -214,6 +218,11 @@ async function treatQueue(num = 0) {
 
     for (let n in cps) {
       cps[n].$lastBuild = bbn.cp.numTicks;
+    }
+
+    const duration = bbn.fn.stopChrono(rnd);
+    if (duration > 1000) {
+      bbn.fn.log("TREATING QUEUE DURATION: " + duration + '"' + rnd + '" (' + num + ' / ' + bbn.cp.numTicks + ')');
     }
   }
 
