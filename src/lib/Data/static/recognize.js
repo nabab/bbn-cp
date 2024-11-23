@@ -169,16 +169,15 @@ const mutate = function(newObj, oldObj) {
       throw new Error("The new object is not an object");
     }
   }
-
-  return false;
 };
 
 /**
- * Unshifts one or more elements to the beginning of an array and updates the data object
- * @param {Array} target 
- * @param {*} component 
- * @param {*} path 
- * @returns 
+ * 
+ * @param {*} v The new value to be set 
+ * @param {*} oldData The current value
+ * @param {*} component The component
+ * @param {*} path The path
+ * @returns {value: {*}, changed: {Bool}} An object with the new value or the old one modified, and a boolean indicating if the value has changed
  */
 bbnData.recognize = function(v, oldData, component, path) {
   let isChanged = false;
