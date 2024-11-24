@@ -17,7 +17,7 @@ export default function propagateDependencyChanges(cp, name) {
       bbn.cp.propagationData.push(dataObj.uid);
     }
 
-    bbn.fn.log("PROPAGATING DEPENDENCY CHANGES FOR " + name + " IN " + cp.$options.name + " " + cp.$cid);
+    //bbn.fn.log("PROPAGATING DEPENDENCY CHANGES FOR " + name + " IN " + cp.$options.name + " " + cp.$cid);
     for (let i = 0; i < cp.$deps[name].length; i++) {
       const a = cp.$deps[name][i];
       if (bbn.cp.propagation.includes(a)) {

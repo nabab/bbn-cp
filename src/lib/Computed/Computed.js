@@ -118,9 +118,6 @@ export default class bbnComputed {
     bbnData.startWatching();
     // Get the new value using the getter.
     let v = this.#getter();
-    if (this.#name === 'items') {
-      bbn.fn.log('ITEMS :' + v?.length);
-    }
     // Stop watching the process, and gets the array of all data used to get the value
     const deps = bbnData.stopWatching();
 
@@ -178,6 +175,9 @@ export default class bbnComputed {
         }
         // Case where the result has not been treated and a data object already exists
         else if (this.#val?.__bbnData && !v.__bbnData && this.#data) {
+          if (this.#name === 'realButtons') {
+            bbn.fn.log(["ABPUT TO RECO", this.#data, v])
+          }
           const o = bbnData.recognize(v, this.#data.value, this.#component, this.#name);
           v = o.value;
           hasChanged = o.changed;
