@@ -272,9 +272,12 @@ export default class bbnComputed {
         else if (bbn.cp.queue.includes(this.$computed[name])) {
           let idx = bbn.cp.queue.indexOf(this.$computed[name]);
           bbn.cp.queue.splice(idx, 1);
-          _t.#num--;
-          this.$computed[name].computedUpdate();
-        }
+          _t.computedUpdate();
+        }/*
+        else if (_t.num <= this.$numBuild) {
+          _t.computedUpdate();
+        }*/
+
 
         //if (!this.$computed[name].val?.__bbnData) {
           // Add the computed property to the sequence.

@@ -1,6 +1,6 @@
 export default function initResults(cp) {
   //bbn.fn.warning("Init result on " + cp.$options.name)
-  cp.$numBuild++;
+  cp.$numBuild = bbn.cp.numTicks;
   return;
   for (let n1 in cp.$nodes) {
     if (cp.$nodes[n1] instanceof bbnNode) {

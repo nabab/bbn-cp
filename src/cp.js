@@ -78,8 +78,6 @@ const cpObj = bbn.fn.createObject({
   numBuild: 0,
   numTicks: 0,
   loopLevel: 0,
-  propagation: [],
-  propagationData: [],
   htmlClasses: {},
   mixins: bbn.fn.createObject({
     basic,

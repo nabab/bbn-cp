@@ -1,4 +1,4 @@
-import updateWatcher from "../Cp/private/updateWatcher.js";
+import initResults from "../Cp/private/initResults.js";
 import bbnNode from "./Node.js";
 
 /**
@@ -6,6 +6,11 @@ import bbnNode from "./Node.js";
  */
 export default class bbnInternalNode extends bbnNode
 {
+  nodeInit(after) {
+    const ele = bbnNode.prototype.nodeInit.call(this, [after]);
+    initResults(this.component);
+    return ele;
+  }
   nodeBuild() {
     this.element = this.component.$el;
     if (!this.comment) {

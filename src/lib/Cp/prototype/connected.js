@@ -7,6 +7,7 @@ import updateData from "../private/updateData.js";
 import generateNode from "../private/generateNode.js";
 import mapDependencies from "../../../internals/mapDependencies.js";
 import retrieveSlots from "../../../internals/retrieveSlots.js";
+import initResults from "../private/initResults.js";
 
 /**
  * Starts everything up when the component enters the DOM

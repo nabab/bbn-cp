@@ -35,6 +35,9 @@ export default class bbnEventAttr extends bbnAttr
       if (this.node.element && init) {//} && !this.node.element.bbnEventsApplied[this.name]) {
         //this.node.element.bbnEventsApplied[this.name] = true;
         this.node.element.addEventListener(this.name, e => {
+          const node = this.node;
+          const cp = node.component;
+          initResults(cp);
           //bbn.fn.log("EVENT " + this.name)
           // Check for any specified modifiers and apply them.
           if (this.modifiers.length) {
@@ -76,7 +79,7 @@ export default class bbnEventAttr extends bbnAttr
                 }
                 else {
                   // Process and push other arguments.
-                  args.push(this.retrieveArgument(a, this.node.hash, [this.node.data]));
+                  args.push(this.retrieveArgument(a, node.hash, [node.data]));
                 }
               });
             }
@@ -87,17 +90,17 @@ export default class bbnEventAttr extends bbnAttr
 
             //bbn.fn.log(['check event', bbnData.watchStarted, bbnData.isWatching]);
 
-            if (this.node.component.$namespaces[this.exp] === 'method') {
+            if (cp.$namespaces[this.exp] === 'method') {
               if (e.detail?.args) {
-                this.node.component.$methods[this.exp].bind(this.node.component)(...e.detail.args);
+                cp.$methods[this.exp].bind(cp)(...e.detail.args);
               }
               else {
-                this.node.component.$methods[this.exp].bind(this.node.component)(e);
+                cp.$methods[this.exp].bind(cp)(e);
               }
             }
             else {
               // Bind the event handler to the component and execute it with the processed arguments.
-              this.fn.bind(this.node.component)(...args);
+              this.fn.bind(cp)(...args);
             }
           }
 

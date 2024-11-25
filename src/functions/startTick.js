@@ -139,7 +139,7 @@ async function treatQueue(num = 0) {
         }
 
         if (isDebug) {
-          bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + bbn.cp.propagation.length);
+          bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks);
         }
 
         await queueElement.element.computedUpdate();

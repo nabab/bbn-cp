@@ -1,6 +1,7 @@
 import bbn from "@bbn/bbn";
 import bbnAttr from "./Attr.js";
 import setProp from "../Cp/private/setProp.js";
+import initResults from "../Cp/private/initResults.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -44,19 +45,21 @@ export default class bbnModelAttr extends bbnAttr
       const ele = this.node.element;
       //bbn.fn.log(["FROM MODEL INIT", eventName, this.name, this.attrGetValue()]);
       ele.addEventListener(eventName, e => {
-        const data = this.node.data;
+        const node = this.node;
+        const cp = node.component;
+        const data = node.data;
+        //initResults(cp);
         //bbn.fn.log(["FROM MODEL EVENT", eventName, ele, e.target, e]);
         if (!this.node.parentElement) {
           e.stopImmediatePropagation();
           return;
         }
-        if (this.node.isComponent && (ele !== e.target)) {
+        if (node.isComponent && (ele !== e.target)) {
           e.stopImmediatePropagation();
           return;
         }
 
-        const cpSource = this.node.component;
-        if (!cpSource.$isMounted) {
+        if (!cp.$isMounted) {
           //return;
         }
 
@@ -99,21 +102,21 @@ export default class bbnModelAttr extends bbnAttr
             if (data && varName in data) {
               data[varName] = eventValue;
             }
-            else if (Object.hasOwn(cpSource.$namespaces, varName)) {
-              switch (cpSource.$namespaces[varName]) {
+            else if (Object.hasOwn(cp.$namespaces, varName)) {
+              switch (cp.$namespaces[varName]) {
                 case 'props':
-                  setProp(cpSource, varName, eventValue);
+                  setProp(cp, varName, eventValue);
                   break;
                 case 'data':
                 case 'computed':
-                  cpSource[varName] = eventValue;
+                  cp[varName] = eventValue;
                   break;
                 default:
-                  throw new Error("Invalid namespace 1: " + cpSource.$namespaces[m.exp]);
+                  throw new Error("Invalid namespace 1: " + cp.$namespaces[m.exp]);
               }
             }
             else {
-              bbn.fn.log(last, this, eventValue, oldValue, cpSource);
+              bbn.fn.log(last, this, eventValue, oldValue, cp);
               throw new Error("Invalid model variable 5: " + m.exp);
             }
           }
@@ -141,7 +144,7 @@ export default class bbnModelAttr extends bbnAttr
                 }
               }
               else {
-                bbn.fn.log(last, this, eventValue, oldValue, cpSource);
+                bbn.fn.log(last, this, eventValue, oldValue, cp);
                 throw new Error("Invalid model variable 6: " + m.exp);
               }
             }
