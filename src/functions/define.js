@@ -39,8 +39,6 @@ export default function define(name, obj, tplSt, css) {
   const cpCfg = bbn.cp.normalizeComponent(obj, publicName);
   Object.freeze(cpCfg);
 
-  // Determine the class to use based on the tag name.
-  const cls = cpCfg.tag && bbn.cp.tagExtensions[cpCfg.tag] ? bbn.cp.tagExtensions[cpCfg.tag] : 'bbnHtml';
 
   // Store component configuration in bbn.cp.statics.
   bbn.cp.statics[name] = bbnData.immunizeValue(bbn.fn.createObject({
@@ -80,26 +78,22 @@ export default function define(name, obj, tplSt, css) {
     }
   }
   
-  // Generate and globally expose HTML and Cp classes.
-  window[publicName] = generateHtmlClass(publicName, (new Function(`return ${cls};`))());
   // Generating the code for the private class based on the component config
   //const privateClassCode = makePrivateClass(privateName, cpCfg);
   //bbn.fn.log('generateCpClass', publicName);
   window[publicName + 'Cp'] = generateCpClass(publicName, cpCfg);
+  // Register the component and add it to the known components list.
+  bbn.cp.known.push(name);
+  const idx = bbn.cp.unknown.indexOf(name);
+  if (idx > -1) {
+    bbn.cp.unknown.splice(idx, 1);
+  }
+
+  const ev = new CustomEvent('bbn-loaded-' + name);
+  document.dispatchEvent(ev);
   //bbn.fn.log("fnCode", fnCode);
   //bbn.fn.log(makePrivateFunction(privateName, cpCfg));
   // Evaluating that code: defining the private class
   // Retrieving the class object
-
-  // Define arguments for custom element registration.
-  const args = [name, window[publicName]];
-  if (cpCfg.tag) {
-    args.push({extends: cpCfg.tag});
-  }
-
-  // Register the component and add it to the known components list.
-  bbn.cp.known.push(name);
-  // Assigning the public class to the component's tag
-  customElements.define(...args);
   return cpCfg;
 }

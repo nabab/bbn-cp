@@ -10,7 +10,7 @@ bbnData.prototype.removeComponent = function(component, path) {
     throw Error("bbnData hasComponent must be called with a bbn component");
   }
 
-  if ((path !== undefined) && (typeof path !== 'string')) {
+  if (typeof path === 'number') {
     path = path.toString();
   }
 

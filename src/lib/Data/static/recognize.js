@@ -16,8 +16,7 @@ const retrieveData = function (v, res, path) {
         let p = path.slice();
         p.push(n);
         if (v[n].__bbnData) {
-          let tmp = bbnData.getObject(v[n]);
-          res[p.join('.')] = tmp.uid;
+          res[p.join('.')] = v[n].__bbnData.uid;
         }
         else if ([undefined, Object, Array].includes(v.constructor)) {
           retrieveData(v[n], res, p);
@@ -29,7 +28,7 @@ const retrieveData = function (v, res, path) {
   return res;
 };
 
-const mutateArray = function(newArr, oldArr) {
+const mutateArray = function(newArr, oldArr, component, path, parent) {
   const rnd = bbn.fn.randomString();
   bbn.fn.startChrono(rnd);
   const newHash = newArr.map(v => retrieveData(v));
@@ -41,26 +40,45 @@ const mutateArray = function(newArr, oldArr) {
       if (bbn.fn.numProperties(newHash[i])) {
         let idx = bbn.fn.search(oldHash, newHash[i]);
         if (idx === i) {
-          if (mutate(newArr[i], oldArr[i])) {
+          if (mutate(newArr[i], oldArr[i], component, i, oldArr)) {
             changed = true;
           }
         }
         // If it's before it means it's double --> problem
         else if (idx > i) {
           bbn.fn.move(oldArr, idx, i);
-          mutate(newArr[i], oldArr[i]);
+          mutate(newArr[i], oldArr[i], component, path, oldArr);
           toFix = true;
           changed = true;
         }
         else {
-          oldArr.splice(i, 0, newArr[i]);
+          oldArr.splice(i, 0, component.$treatValue(newArr[i], i, oldArr.__bbnData));
           toFix = true;
           changed = true;
         }
       }
+      else if (Object.hasOwn(oldArr, i)) {
+        if (bbn.fn.isObject(newArr[i], oldArr[i])) {
+          if (newArr[i].__bbnData) {
+            oldArr[i] = component.$treatValue(newArr[i], i, oldArr.__bbnData);
+            changed = true;
+          }
+          else if (mutateObject(newArr[i], oldArr[i], component, i, oldArr)) {
+            changed = true;
+          }
+        }
+        else if (bbn.fn.isArray(newArr[i], oldArr[i])) {
+          if (mutateArray(newArr[i], oldArr[i], component, path, oldArr)) {
+            changed = true;
+          }
+        }
+        else {
+          oldArr[i] = component.$treatValue(newArr[i], i, oldArr.__bbnData);
+          changed = true;
+        }
+      }
       else {
-        oldArr.splice(i, 0, newArr[i]);
-        toFix = true;
+        oldArr.push(component.$treatValue(newArr[i], i, oldArr.__bbnData));
         changed = true;
       }
     }
@@ -73,15 +91,14 @@ const mutateArray = function(newArr, oldArr) {
   }
 
   if (toFix) {
-    const oldDataObj = bbnData.getObject(oldArr);
-    oldDataObj.fixIndexes();
+    oldArr.__bbnData.fixIndexes();
   }
 
-  bbn.fn.log(["MUTATE ARRAY", newArr.length, newArr, oldArr, bbn.fn.stopChrono(rnd)]);
+  //bbn.fn.log(["MUTATE ARRAY", newArr.length, newArr, oldArr, bbn.fn.stopChrono(rnd)]);
   return changed;
 };
 
-const mutateObject = function(newObj, oldObj) {
+const mutateObject = function(newObj, oldObj, component, path, parent) {
   const rnd = bbn.fn.randomString();
   bbn.fn.startChrono(rnd);
   let changed = false;
@@ -89,11 +106,11 @@ const mutateObject = function(newObj, oldObj) {
   for (let n in newObj) {
     if (oldObj[n] !== newObj[n]) {
       if (bbn.fn.isPrimitive(newObj[n])) {
-        oldObj[n] = newObj[n];
+        oldObj[n] = component.$treatValue(newObj[n], n, oldObj.__bbnData);
         changed = true;
       }
       else if (!Object.hasOwn(oldObj, n) || bbn.fn.isPrimitive(oldObj[n])) {
-        oldObj[n] = newObj[n];
+        oldObj[n] = component.$treatValue(newObj[n], n, oldObj.__bbnData);
         changed = true;
       }
       else if (oldObj[n].__bbnData) {
@@ -101,38 +118,38 @@ const mutateObject = function(newObj, oldObj) {
         if (oldObjData) {
           const newObjectData = bbnData.getObject(newObj[n]);
           if (newObjectData) {
-            oldObj[n] = newObj[n];
+            oldObj[n] = component.$treatValue(newObj[n], n, oldObj.__bbnData);
           }
           else if (oldObjData.isArray) {
             if (bbn.fn.isArray(newObj[n])) {
-              if (mutateArray(newObj[n], oldObj[n])) {
+              if (mutateArray(newObj[n], oldObj[n], component, n, oldObj)) {
                 changed = true;
               }
             }
             else {
-              oldObj[n] = newObj[n];
+              oldObj[n] = component.$treatValue(newObj[n], n, oldObj.__bbnData);
             }
           }
           else {
             if (bbn.fn.isObject(newObj[n])) {
-              if (mutateObject(newObj[n], oldObj[n])) {
+              if (mutateObject(newObj[n], oldObj[n], component, n, oldObj)) {
                 changed = true;
               }
             }
             else {
-              oldObj[n] = newObj[n];
+              oldObj[n] = component.$treatValue(newObj[n], n, oldObj.__bbnData);
               changed = true;
             }
           }
         }
         else {
-          if (mutate(newObj[n], oldObj[n])) {
+          if (mutate(newObj[n], oldObj[n], component, n, oldObj)) {
             changed = true;
           }
         }
       }
       else {
-        oldObj[n] = newObj[n];
+        oldObj[n] = component.$treatValue(newObj[n], n, oldObj.__bbnData);
         changed = true;
       }
     }
@@ -147,15 +164,14 @@ const mutateObject = function(newObj, oldObj) {
     }
   }
 
-  bbn.fn.log(["MUTATE OBJECT", newObj, oldObj, bbn.fn.stopChrono(rnd)]);
+  //bbn.fn.log(["MUTATE OBJECT", newObj, oldObj, bbn.fn.stopChrono(rnd)]);
   return changed;
 };
 
-const mutate = function(newObj, oldObj) {
-  const oldObjData = bbnData.getObject(oldObj);
-  if (oldObjData?.isArray) {
+const mutate = function(newObj, oldObj, component, path, parent) {
+  if (oldObj.__bbnData?.isArray) {
     if (bbn.fn.isArray(newObj)) {
-      return mutateArray(newObj, oldObj);
+      return mutateArray(newObj, oldObj, component, path, parent);
     }
     else {
       throw new Error("The new object is not an array");
@@ -163,7 +179,7 @@ const mutate = function(newObj, oldObj) {
   }
   else {
     if (bbn.fn.isObject(newObj, oldObj)) {
-      return mutateObject(newObj, oldObj);
+      return mutateObject(newObj, oldObj, component, path, parent);
     }
     else {
       throw new Error("The new object is not an object");
@@ -181,11 +197,10 @@ const mutate = function(newObj, oldObj) {
  */
 bbnData.recognize = function(v, oldData, component, path) {
   let isChanged = false;
-  if (oldData && (v !== oldData)) {
-    const newDataObject = bbnData.getObject(v);
-    const tmp = bbnData.getObject(oldData);
-    const oldDataObject = tmp?.targetData ? tmp : false;
-    bbn.fn.log(['RECO', path, oldDataObject?.isArray, v?.length, v, oldData, tmp, newDataObject]);
+  if (v !== oldData) {
+    const newDataObject = v?.__bbnData;
+    const oldDataObject = oldData?.__bbnData?.targetData ? oldData?.__bbnData : false;
+    //bbn.fn.log(['RECO', path, oldDataObject?.isArray, v?.length, v, oldData, tmp, newDataObject]);
     if (!bbn.fn.isPrimitive(v)) {
       if (![undefined, Object, Array].includes(v.constructor)) {
         //bbn.fn.log("INSIDE " + this.#name)
@@ -196,14 +211,14 @@ bbnData.recognize = function(v, oldData, component, path) {
         isChanged = true;
       }
       // Case where the result has not been treated and a data object already exists
-      else if (!newDataObject && oldDataObject) {
+      else if (!newDataObject && oldDataObject && (oldDataObject.root.component === component) && (oldDataObject.root.path === path)) {
         if (oldDataObject.isArray && bbn.fn.isArray(v)) {
-          isChanged = mutateArray(v, oldDataObject.value);
+          isChanged = mutateArray(v, oldDataObject.value, component, path);
           v = oldDataObject.value;
         }
         // If both are objects we mutate the old one into the new one
         else if (!oldDataObject.isArray && bbn.fn.isObject(v)) {
-          isChanged = mutateObject(v, oldDataObject.value);
+          isChanged = mutateObject(v, oldDataObject.value, component, path);
           //bbn.fn.log(["MUTATE OBJECT", this.#data.value, v]);
           v = oldDataObject.value;
         }

@@ -4,7 +4,7 @@ import propagateDependencyChanges from "../../Cp/private/propagateDependencyChan
 import queueUpdate from "../../../functions/queueUpdate.js";
 
 const getFn = function(watcher, lev, lastUpdate) {
-  return async () => {
+  return () => {
     if ((watcher.lastUpdate || 0) < lastUpdate) {
       watcher.watcherUpdate(false, lev);
     }
@@ -23,7 +23,6 @@ bbnData.prototype.prepareUpdate = function(path) {
 
   if (!this.refs.length) {
     bbn.fn.log(["UNSET " + (path || 'NO PATH') + ": " + JSON.stringify(this.targetData), this]);
-    debugger;
     this.unset();
     return;
   }

@@ -1,6 +1,6 @@
 import bbnHtml from "./Html.js";
 import bbnAnonCp from "../Cp/Anon.js";
-import "../../cp.js";
+import bbnProtoHtml from "./Proto.js";
 import stringToTemplate from "../../internals/stringToTemplate.js";
 import connectedCallback from "../../internals/connectedCallback.js";
 import disconnectedCallback from "../../internals/disconnectedCallback.js";

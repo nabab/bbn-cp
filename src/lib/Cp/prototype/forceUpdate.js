@@ -7,9 +7,9 @@ bbnCp.prototype.$forceUpdate = async function (fn) {
     bbn.cp.queueUpdate({
       num: bbn.cp.numTicks + 1,
       component: this,
-      fn: async () => {
+      fn: () => {
         if (fn) {
-          await fn();
+          fn();
         }
 
         resolve()

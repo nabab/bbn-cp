@@ -1,38 +1,20 @@
-import "../../cp.js";
-import connectedCallback from "../../internals/connectedCallback.js";
-import disconnectedCallback from "../../internals/disconnectedCallback.js";
-import createCid from "../../internals/createCid.js";
-
-/**
- * Create the bbn component class which extends the HTMLElement class
- */
+import bbnProtoHtml from "./Proto.js";
 export default class bbnRowHtml extends HTMLTableRowElement
 {
-  bbnCid;
-
   constructor() {
     super();
-    Object.defineProperty(this, 'bbnCid', {
-      value: createCid(),
-      writable: false,
-      configurable: false
-    });
+    bbnProtoHtml.construct.call(this);
   }
 
   connectedCallback() {
-    return connectedCallback(this);
+    return bbnProtoHtml.connectedCallback.call(this);
   } 
 
   disconnectedCallback() {
-    return disconnectedCallback(this);
+    return bbnProtoHtml.disconnectedCallback.call(this, [this]);
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    return bbn.cp.attributeChangedCallback(this, name, oldValue, newValue);
+    return bbnProtoHtml.attributeChangedCallback.call(this, [this, name, oldValue, newValue]);
   }
-
-  bbnUpdate(newSchema) {
-    return bbn.cp.bbnUpdate(this, newSchema);
-  }
-
 }

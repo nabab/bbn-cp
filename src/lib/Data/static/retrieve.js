@@ -7,5 +7,4 @@ import bbnData from "../Data.js";
  * @returns 
  */
 bbnData.retrieve = function(id) {
-  return bbnData.inventory[id];
 }

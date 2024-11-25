@@ -8,6 +8,10 @@ bbnData.prototype.unset = function(noParent) {
   //bbn.fn.log("UNSET: " + JSON.stringify(this.targetData), this, this.deps.map(d => d.constructor.name));
   const id = this.id;
 
+  if (this.root.path === 'realButtons') {
+    debugger;
+  }
+
   // Unsetting the children
   while (this.children.length) {
     this.children.pop().unset(true);
@@ -17,6 +21,9 @@ bbnData.prototype.unset = function(noParent) {
     const it = this.refs.shift();
     const cp = it.component;
     if (cp) {
+      if (cp.$computed[it.path]) {
+        cp.$computed[it.path].setData(false);
+      }
       if (!noParent && it.parent) {
         let idx = it.parent.children.indexOf(this);
         if (idx > -1) {
@@ -42,11 +49,14 @@ bbnData.prototype.unset = function(noParent) {
   }
   */
 
-  delete bbnData.inventory[id];
   if (this.targetData) {
     delete this.targetData.__bbnData;
     delete this.targetData.__bbnKeys;
     delete this.targetData;
+    delete this.value;
+    for (let n in this.deps) {
+      delete this.deps[n];
+    }
   }
   //bbn.fn.log(["DATA deleted", JSON.stringify(this.targetData)]);
 };

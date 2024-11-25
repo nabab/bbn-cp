@@ -12,10 +12,10 @@ bbnCp.prototype.$tick = function(...fns) {
   return new Promise(resolve => {
     bbn.cp.queueUpdate({
       component: this,
-      fn: async () => {
+      fn: () => {
         for (let i = 0; i < fns.length; i++) {
           if (bbn.fn.isFunction(fns[i])) {
-            await fns[i]();
+            fns[i]();
           }
         }
 

@@ -9,9 +9,10 @@
 export default function generateHtmlClass(name, clsExtends = bbnHtml) {
   // Convert the class name from camel case to CSS-style (kebab-case).
   const eleName = bbn.fn.camelToCss(name);
+  //bbn.fn.log("GENERATE HTML CLASS", name, "FROM", clsExtends);
 
   // Define the new component class, extending from clsExtends.
-  const newCpClass = class extends clsExtends {
+  return class extends clsExtends {
     // Static getter for the bbnTag property.
     static get bbnTag() {
       return eleName;
@@ -19,27 +20,27 @@ export default function generateHtmlClass(name, clsExtends = bbnHtml) {
 
     // Static getter for the bbnSlots property.
     static get bbnSlots() {
-      return bbn.cp.statics[eleName].slots;
+      return bbn.cp.statics[eleName]?.slots;
     }
 
     // Static getter for the bbnTpl (template) property.
     static get bbnTpl() {
-      return bbn.cp.statics[eleName].tpl;
+      return bbn.cp.statics[eleName]?.tpl;
     }
 
     // Static getter for the bbnCfg (configuration) property.
     static get bbnCfg() {
-      return bbn.cp.statics[eleName].cfg;
+      return bbn.cp.statics[eleName]?.cfg;
     }
 
     // Static getter for the bbnCls (class) property.
     static get bbnCls() {
-      return bbn.cp.statics[eleName].cls;
+      return bbn.cp.statics[eleName]?.cls;
     }
 
     // Static getter for the bbnMap property.
     static get bbnMap() {
-      return bbn.cp.statics[eleName].map;
+      return bbn.cp.statics[eleName]?.map;
     }
 
     // Static getter for the bbnFn (function) property.
@@ -50,7 +51,4 @@ export default function generateHtmlClass(name, clsExtends = bbnHtml) {
     // Static property to track if the component is mapped.
     static bbnMapped = false;
   }
-
-  // Return the newly created class.
-  return newCpClass;
 }

@@ -6,19 +6,20 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnTextAttr extends bbnAttr
 {
-  async attrUpdate(init) {
+  attrUpdate(init) {
     if (!init) {
       this.attrSet();
     }
   
-    if (!this.comment && this.node.element) {
-      if (this.node.tag) {
-        if (this.node.element.innerText !== this.value) {
-          this.node.element.innerText = this.value;
+    const node = this.node;
+    if (!this.comment && node.element) {
+      if (node.tag) {
+        if (node.element.innerText !== this.value) {
+          node.element.innerText = this.value;
         }
       }
-      else if (this.node.element.nodeValue !== this.value) {
-        this.node.element.nodeValue = this.value;
+      else if (node.element.nodeValue !== this.value) {
+        node.element.nodeValue = this.value;
       }
     }
   }

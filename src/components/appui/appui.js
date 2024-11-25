@@ -831,7 +831,7 @@ const cpDef = {
         );
       }
 
-      bbn.cp.fetchComponents(preloaded.map(c => 'bbn-' + c));
+      //bbn.cp.fetchComponents(preloaded.map(c => 'bbn-' + c));
 
       this.$on('focusin', () => this.isFocused = true);
       this.$on('focusout', () => this.isFocused = false);

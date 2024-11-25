@@ -9,7 +9,7 @@ bbnData.immunizeValue = function(value, deep) {
   if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor)) {
     // Removing data object if any
     if (value.__bbnData) {
-      const dataObj = this.getObject(value);
+      const dataObj = value.__bbnData;
       if (dataObj) {
         dataObj.unset();
       }

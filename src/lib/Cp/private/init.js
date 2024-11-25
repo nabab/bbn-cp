@@ -221,7 +221,7 @@ export default function init(cp) {
    * Unique ID for each component, used for global registration
    */
   Object.defineProperty(cp, '$origin', {
-    value: cp.$el.bbnComponentId && (cp.$el.bbnComponentId !== cp.$cid) ? bbn.cp.getComponent(cp.$el.bbnComponentId)?.bbn || cp : cp,
+    value: cp.bbnComponent,
     writable: false,
     configurable: false
   });
@@ -368,14 +368,6 @@ export default function init(cp) {
   });
   */
 
-  if (cp === cp.$root) {
-    cp.$fetchTimeout = null;
-    Object.defineProperty(cp, '$unknownComponents', {
-      value: [],
-      writable: false,
-      configurable: false
-    });
-  }
   Object.defineProperty(cp, '$currentMap', {
     get() {
       return cp.$el.bbnMap || cp.$cls.bbnMap;

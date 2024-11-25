@@ -2,7 +2,7 @@ import queueUpdate from "../../../functions/queueUpdate.js";
 
 
 const getFn = function(watcher, lev) {
-  return async () => {
+  return () => {
     watcher.watcherUpdate(false, lev);
   };
 };
@@ -14,7 +14,7 @@ const getFn = function(watcher, lev) {
  * @param {boolean} init - Whether this is an initial update.
  * @param {boolean} root - True for the main object.
  */
-export default async function updateWatcher(cp, name) {
+export default function updateWatcher(cp, name) {
   // If the component doesn't have a watcher, do nothing.
   if (!cp.$watcher || cp.$isDestroyed) {
     return;

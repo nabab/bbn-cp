@@ -1,13 +1,14 @@
 import bbnAttr from "../Attr.js";
 import bbnInternalNode from "../../Node/Internal.js";
 
-bbnAttr.prototype.attrSet = async function(init) {
-  if (this.exp && !this.node.comment) {
+bbnAttr.prototype.attrSet = function(init) {
+  const node = this.node;
+  if (this.exp && !node.comment) {
     this.attrSetResult();
   }
 
-  if (this.name && !this.node.comment && (this.node.props[this.name] !== this.value)) {
-    this.node.props[this.name] = this.value;
+  if (this.name && !node.comment && (node.props[this.name] !== this.value)) {
+    node.props[this.name] = this.value;
   }
 
 }

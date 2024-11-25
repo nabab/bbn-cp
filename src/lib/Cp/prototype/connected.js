@@ -6,6 +6,7 @@ import registerChild from "../private/registerChild.js";
 import updateData from "../private/updateData.js";
 import generateNode from "../private/generateNode.js";
 import mapDependencies from "../../../internals/mapDependencies.js";
+import retrieveSlots from "../../../internals/retrieveSlots.js";
 
 /**
  * Starts everything up when the component enters the DOM
@@ -29,13 +30,37 @@ import mapDependencies from "../../../internals/mapDependencies.js";
  * @returns {undefined}
  */
 
-bbnCp.prototype.$connected = async function () {
+bbnCp.prototype.$connected = function () {
   // Check we are in the DOm
   //bbn.fn.warning("CALLBACK ON " + this.$options.name + " / " + this.$el.bbnSchema.id + " INIT: " + this.$isInit + " MOUNTED: " + this.$isMounted);
   if (!this.$el.isConnected) {
     bbn.fn.log("CONNECTED CALLBACK: not connected or already initialized", this.$el.isConnected, bbn.cp.getComponent(this.$el.bbnCid));
     return;
   }
+
+  let realSlots = this.$options.name === 'bbn-anon' ? retrieveSlots(this.$el.bbnTpl || this.items) : bbn.fn.clone(this.$el.constructor.bbnSlots);
+  if (!Object.keys(realSlots || {}).length) {
+    // Ensure a default slot is always available
+    realSlots = { default: [] }; 
+  }
+  Object.defineProperty(this.$el, 'bbnRealSlots', {
+    value: realSlots,
+    writable: false,
+    configurable: false
+  });
+  bbn.fn.iterate(this.$el.bbnTmpSlots, (a, n) => {
+    if (realSlots[n]) {
+      realSlots[n].push(...a.splice(0));
+    }
+    else {
+      bbn.fn.warning("NO SLOT " + n);
+    }
+  });
+  // Alias for accessing slots directly
+  Object.defineProperty(this.$el, 'bbnSlots', {
+    get() { return this.bbnRealSlots; }
+  });
+
   if (Object.hasOwn(this, '$isInit')) {
     bbn.fn.log("WTF " + this.constructor.name);
     return;
@@ -56,11 +81,33 @@ bbnCp.prototype.$connected = async function () {
       */
   }
 
+  // just after definition to know what is the default model prop
+  if (Object.hasOwn(this.$node.model || {}, '_default_') && bbn.cp.statics[this.$node.tag]?.cfg?.model) {
+    const modelCfg = bbn.cp.statics[this.$node.tag]?.cfg?.model;
+    Object.defineProperty(this.$node.model._default_, 'name', {
+      value: modelCfg.prop,
+      configurable: false,
+      writable: false
+    });
+    this.$node.model[modelCfg.prop] = this.$node.model._default_;
+    delete this.$node.model._default_;
+    delete this.$node.props._default_;
+    this.$node.props[modelCfg.prop] = this.$node.model[modelCfg.prop].value;
+  }
+
   init(this);
 
   // An anon component won't have props nor this method
   /** @todo check if the above assertion is true (source?) */
   this.$setUpProps();
+
+
+
+
+
+
+
+
 
   // Setting up the config
   const cfg = this.$cfg;
@@ -87,7 +134,7 @@ bbnCp.prototype.$connected = async function () {
 
   // Sending beforeCreate event
   const beforeCreate = new Event('hook:beforecreate');
-  await onHook(this, 'beforeCreate');
+  onHook(this, 'beforeCreate');
   this.$el.dispatchEvent(beforeCreate);
 
   if (!this.$el.bbnDirectives) {
@@ -141,13 +188,13 @@ bbnCp.prototype.$connected = async function () {
     // If no template it's a functional component
     if (this.$tpl['0']) {
       Object.defineProperty(this, '$internal', {
-        value: generateNode(this.$tpl['0'], this, this.$el),
+        value: generateNode(this.$tpl['0'], this, this.$el, this.$node.root, this.$node.rootHash),
         writable: false,
         configurable: false
       });
     }
     const created = new Event('hook:created');
-    await onHook(this, 'created');
+    onHook(this, 'created');
     this.$el.dispatchEvent(created);
     Object.defineProperty(this, '$isCreated', {
       value: true,
@@ -156,9 +203,24 @@ bbnCp.prototype.$connected = async function () {
     });
   }
 
+  // just after definition to know what is the default model prop
+  if (this.$el.bbnSchema.model?._default_ && this.$cfg?.model) {
+    const modelCfg = this.$cfg.model;
+    Object.defineProperty(this.$el.bbnSchema.model._default_, 'name', {
+      value: modelCfg.prop,
+      configurable: false,
+      writable: false
+    });
+    this.$el.bbnSchema.model[modelCfg.prop] = this.$el.bbnSchema.model._default_;
+    delete this.$el.bbnSchema.model._default_;
+    delete this.$el.bbnSchema.props._default_;
+    this.$el.bbnSchema.props[modelCfg.prop] = this.$el.bbnSchema.model[modelCfg.prop].value;
+  }
+
+
   // Sets the current template schema and creates the DOM
   if (this.$internal) {
-    await this.$internal.nodeInit();
+    this.$internal.nodeInit();
   }
 
   // registering current object to parent and setting root
@@ -168,7 +230,7 @@ bbnCp.prototype.$connected = async function () {
 
   // Sending beforeMount event
   const beforeMount = new Event('hook:beforemount');
-  await onHook(this, 'beforeMount');
+  onHook(this, 'beforeMount');
   this.$el.dispatchEvent(beforeMount);
 
 
@@ -187,7 +249,7 @@ bbnCp.prototype.$connected = async function () {
   if (!this.$isMounted) {
     // Sending mounted event
     const mounted = new Event('hook:mounted');
-    await onHook(this, 'mounted');
+    onHook(this, 'mounted');
     this.$el.dispatchEvent(mounted);
     Object.defineProperty(this, '$isMounted', {
       value: true,

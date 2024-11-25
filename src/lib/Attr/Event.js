@@ -7,11 +7,11 @@ import initResults from "../Cp/private/initResults.js";
  */
 export default class bbnEventAttr extends bbnAttr
 {
-  async attrSet() {
+  attrSet() {
 
   }
 
-  async attrUpdate(init) {
+  attrUpdate(init) {
     if (!init) {
       //bbn.fn.log("UPDATE ATTR EVENT " + this.name)
     }

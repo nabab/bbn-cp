@@ -6,7 +6,7 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnHtmlAttr extends bbnAttr
 {
-  async attrUpdate(init) {
+  attrUpdate(init) {
     if (!init) {
       //bbn.fn.log("UPDATE ATTR " + this.name)
     }

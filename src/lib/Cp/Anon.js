@@ -34,7 +34,7 @@ export default class bbnAnonCp extends bbnCp {
 
 }
 
-  async $connected() {
+  $connected() {
     //bbn.fn.log("ANON!!! ",this.$el.bbnSchema.props?.is);
     if (!this.$el.bbnTpl) {
       this.$el.bbnTpl = bbnAnonHtml.bbnTpl;
@@ -86,7 +86,7 @@ export default class bbnAnonCp extends bbnCp {
     }
 
     //bbn.fn.log("CONNCTRED CALLED IN ANON", this.$el);
-    await bbnCp.prototype.$connected.apply(this);
+    bbnCp.prototype.$connected.apply(this);
   }
 
   get source() {

@@ -8,7 +8,7 @@ import deleteNodes from "../Cp/private/deleteNodes.js";
  */
 export default class bbnConditionAttr extends bbnAttr
 {
-  async attrSet() {
+  attrSet() {
     if (this.node.loop) {
       return;
     }
@@ -58,15 +58,15 @@ export default class bbnConditionAttr extends bbnAttr
             isTrue = true;
             if (node.isCommented) {
               if (node.forget) {
-                await node.forget.attrUpdate();
+                node.forget.attrUpdate();
               }
               else {
-                await node.setComment(false);
+                node.setComment(false);
               }
             }
           }
           else if (!node.isCommented) {
-            await node.setComment(true);
+            node.setComment(true);
             deleteNodes(node.component, node.id, node.hash);
           }
         }
@@ -75,25 +75,25 @@ export default class bbnConditionAttr extends bbnAttr
 
     if (conditionValue && this.node.isCommented) {
       if (this.node.forget) {
-        await this.node.forget.attrUpdate();
+        this.node.forget.attrUpdate();
       }
       else {
-        await this.node.setComment(false);
+        this.node.setComment(false);
       }
     }
     else if (!conditionValue && !this.node.isCommented) {
-      await this.node.setComment(true);
+      this.node.setComment(true);
       deleteNodes(this.node.component, this.node.id, this.node.hash);
     }
   }
 
-  async attrUpdate(init) {
+  attrUpdate(init) {
     if (!init) {
       if (this.node.isOut) {
         return;
       }
       
-      await this.attrSet();
+      this.attrSet();
 
       /*
       bbn.fn.log([
@@ -139,7 +139,7 @@ export default class bbnConditionAttr extends bbnAttr
     else {
       const isComment = !this.attrGetValue(init);
       if (!isComment && this.node.forget) {
-        await this.node.forget.attrUpdate();
+        this.node.forget.attrUpdate();
       }
     }
   }

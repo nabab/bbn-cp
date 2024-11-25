@@ -1,8 +1,20 @@
 import bbn from "@bbn/bbn";
-import initResults from "../../Cp/private/initResults.js";
 import bbnAttr from "../Attr.js";
 import bbnConditionAttr from "../Condition.js";
 import bbnModelAttr from "../Model.js";
+import bbnShowAttr from "../Show.js";
+
+const checkDeps = function (data, name) {
+  let i = 0;
+  while (i < data.deps[name].length) {
+    if ((data.deps[name][i] instanceof bbnAttr)) {
+      data.deps[name].splice(i, 1);
+    }
+    else {
+      i++;
+    }
+  }
+};
 
 /**
  * Updates the dependency sequence for a given result and attribute.
@@ -16,6 +28,10 @@ const updateSequence = function (result, attr) {
       let a = result.seq[i];
       // If the action's data is an instance of bbnData.
       if (a.data instanceof bbnData) {
+        if (!a.data.targetData) {
+          continue;
+        }
+
         // If it's a given property and not the whole object
         if (a.name) {
           // we create a specific dep
@@ -25,6 +41,7 @@ const updateSequence = function (result, attr) {
           if (!a.data.deps[a.name].includes(attr)) {
             a.data.deps[a.name].push(attr);
           }
+
           const subData = bbnData.getObject(a.data.value[a.name]);
           if (subData) {
             if (!subData.deps.__bbnRoot.includes(attr)) {
@@ -45,6 +62,8 @@ const updateSequence = function (result, attr) {
 
         if (!a.component.$deps[a.name].includes(attr)) {
           a.component.$deps[a.name].push(attr);
+          attr.ownDeps.push({component: a.component, name: a.name});
+          //bbn.fn.log("PUSH " + a.name + " " + a.component.$deps[a.name].length)
         }
       }
     }
@@ -65,13 +84,13 @@ bbnAttr.prototype.attrSetResult = function() {
     return this.value;
   }
 
-  this.result.num = node.component.$numBuild + 1;
+  result.num = component.$numBuild + 1;
   let res;
   try {
     res = Object.hasOwn(arguments, 0) ? {val: arguments[0], seq: []} : this.attrExec();
   }
   catch (e) {
-    if (this.node.isCommented) {
+    if (node.isCommented) {
       return;
     }
 
@@ -89,16 +108,16 @@ bbnAttr.prototype.attrSetResult = function() {
   let isChanged = false;
 
   // Update the value if it has changed.
-  if (this.result.value !== expValue) {
+  if (result.value !== expValue) {
     /*
-    const o = bbnData.recognize(expValue, this.result.value, component, this);
-    if (this.result.value !== o.value) {
-      this.result.value = o.value;
+    const o = bbnData.recognize(expValue, result.value, component, this);
+    if (result.value !== o.value) {
+      result.value = o.value;
     }
-    //this.result.hash = hash;
+    //result.hash = hash;
     isChanged = o.changed;
     */
-    this.result.value = expValue;
+    result.value = expValue;
     isChanged = true;
   }
 /*
@@ -108,42 +127,42 @@ bbnAttr.prototype.attrSetResult = function() {
   }*/
 
   // Create or update the result object based on its state.
-  if (this.result.num === 1) {
-    this.result.state = 'NEW';
+  if (result.num === 1) {
+    result.state = 'NEW';
   }
-  else if (this.result.state === 'DEL') {
-    this.result.state = 'NEW';
+  else if (result.state === 'DEL') {
+    result.state = 'NEW';
   }
   else if (isChanged) {
-    this.result.state = 'MOD'; // Modified state.
+    result.state = 'MOD'; // Modified state.
   }
   else {
     if (isChanged) {
-      this.result.state = 'MOD'; // Modified state.
+      result.state = 'MOD'; // Modified state.
     }
     else {
       const dataObj = bbnData.getObject(expValue);
       if (dataObj?.root?.component?.$computed?.[dataObj?.root?.path]?.isChanged) {
-        this.result.state = 'MOD'; // <Modified> state.
+        result.state = 'MOD'; // <Modified> state.
       }
-      else if (dataObj && (this.node.component.$lastBuild < dataObj.lastUpdate)) {
-        this.result.state = 'MOD'; // Modified state.
+      else if (dataObj && (component.$lastBuild < dataObj.lastUpdate)) {
+        result.state = 'MOD'; // Modified state.
       }
       else if (isChanged) {
-        this.result.state = 'MOD'; // <Modified> state.
+        result.state = 'MOD'; // <Modified> state.
       }
       else {
-        this.result.state = 'OK'; // Unchanged state.
+        result.state = 'OK'; // Unchanged state.
       }
     }
   }
 
-  if (this.value !== this.result.value) {
-    this.value = this.result.value;
+  if (this.value !== result.value) {
+    this.value = result.value;
   }
   
-  this.result.seq = res.seq;
-  updateSequence(this.result, this);
+  result.seq = res.seq;
+  updateSequence(result, this);
 
   // Return the updated result value.
   return this.value;

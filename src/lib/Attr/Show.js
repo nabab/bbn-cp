@@ -7,11 +7,11 @@ import bbnStyleAttr from "./Style.js";
  */
 export default class bbnShowAttr extends bbnAttr
 {
-  async attrSet() {
+  attrSet() {
     this.node.props[this.name] = this.attrGetValue();
   }
 
-  async attrUpdate(init) {
+  attrUpdate(init) {
     if (this.comment) {
       return;
     }
@@ -21,10 +21,10 @@ export default class bbnShowAttr extends bbnAttr
     }
 
     if (this.node.element?.bbn?.$internal?.attr?.style) {
-      await this.node.element.bbn.$internal.attr.style.attrUpdate(true);
+      this.node.element.bbn.$internal.attr.style.attrUpdate(true);
     }
     else if (this.node.attr?.style) {
-      await this.node.attr.style.attrUpdate(true);
+      this.node.attr.style.attrUpdate(true);
     }
     else if (this.node.element?.style) {
       const isVisible = this.node.element.style?.display !== 'none';

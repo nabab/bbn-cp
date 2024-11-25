@@ -6,16 +6,16 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnForgetAttr extends bbnAttr
 {
-  async attrSet(init) {
+  attrSet(init) {
     if (init) {
       this.attrSetResult();
       if (!this.node.condition || this.node.condition.value) {
-        await this.node.setComment(this.value);
+        this.node.setComment(this.value);
       }
     }
   }
 
-  async attrUpdate(init) {
+  attrUpdate(init) {
 
     const node = this.node;
 
@@ -47,16 +47,16 @@ export default class bbnForgetAttr extends bbnAttr
           }
         }
         else if (node.comment && node.condition) {
-          await node.nodeConceive();
+          node.nodeConceive();
         }
 
         if (!node.comment) {
-          await node.setComment(true);
+          node.setComment(true);
         }
       }
       else {
         if (node.comment) {
-          await node.setComment(false);
+          node.setComment(false);
         }
 
         if (!this.node.comment) {
@@ -74,7 +74,7 @@ export default class bbnForgetAttr extends bbnAttr
           }
 
           if (!childDone && this.node.condition) {
-            await this.node.nodeConceive();
+            this.node.nodeConceive();
           }
         }
       }

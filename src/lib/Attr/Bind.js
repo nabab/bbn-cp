@@ -8,7 +8,7 @@ import bbnSlotNode from "../Node/Slot.js";
  */
 export default class bbnBindAttr extends bbnAttr
 {
-  async attrSet(init) {
+  attrSet(init) {
     if (this.fn) {
       this.attrGetValue();
     }
@@ -21,11 +21,10 @@ export default class bbnBindAttr extends bbnAttr
   }
 
 
-  async attrUpdate(init) {
+  attrUpdate(init) {
     if (init || (this.attrGetState() !== 'OK')) {
       //bbn.fn.log("CHANGE ON BIND")
-      await bbnAttr.prototype.attrUpdate.apply(this, [init]);
-      const proms = [];
+      bbnAttr.prototype.attrUpdate.apply(this, [init])
       if (this.result.value) {
         for (let n in this.result.value) {
           if (!this.node.attr[n]) {
@@ -33,7 +32,7 @@ export default class bbnBindAttr extends bbnAttr
             const cp = this.node.element?.bbn;
             if (!(this.node instanceof bbnInternalNode) && cp?.$props && (cp?.$namespaces?.[n] === 'props')) {
               if (cp.$internal.attr?.[n]) {
-                proms.push(cp.$internal.attr[n].attrUpdate(true));
+                cp.$internal.attr[n].attrUpdate(true);
               }
 
               setProp(cp, n, this.result.value[n]);
@@ -41,8 +40,6 @@ export default class bbnBindAttr extends bbnAttr
           }
         }
       }
-
-      await Promise.all(proms);
 
       if (!(this.node instanceof bbnSlotNode)) {
         for (let n in this.node.props) {

@@ -123,45 +123,6 @@ export default class bbnComputed {
 
     // Only if the new value is different
     // Adding this in the dependencies of each elements from the watching sequence
-    let prev = false;
-    for (let i = 0; i < deps.length; i++) {
-      const a = deps[i];
-      if (a.data instanceof bbnData) {
-        bbn.fn.each(a.data.refs, r => {
-          if (r.parent === prev) {
-            deps.splice(i - 1, 1);
-            i--;
-            a = deps[i];
-            return false;
-          }
-        });
-
-        if (a.name) {
-          if (!a.data.deps[a.name]) {
-            a.data.deps[a.name] = [];
-          }
-          if (!a.data.deps[a.name].includes(this)) {
-            a.data.deps[a.name].push(this);
-          }
-        }
-        // Add the attribute to the data dependencies if not already present.
-        if (!a.data.deps.__bbnRoot.includes(this)) {
-          a.data.deps.__bbnRoot.push(this);
-        }
-      }
-      else if (a.component && a.name && a.component.$namespaces[a.name] && ((a.component !== this.#component) || (a.name !== this.#name))) {
-        if (!a.component.$deps[a.name]) {
-          a.component.$deps[a.name] = [];
-        }
-
-        if (!a.component.$deps[a.name].includes(this)) {
-          a.component.$deps[a.name].push(this); // Add this computed property to the component's dependencies.
-        }
-      }
-
-      prev = a;
-    }
-
     let hasChanged = false;
     if (this.#val !== v) {
       // Taking care of data (object or array)
@@ -174,34 +135,42 @@ export default class bbnComputed {
           }
         }
         // Case where the result has not been treated and a data object already exists
-        else if (this.#val?.__bbnData && !v.__bbnData && this.#data) {
-          if (this.#name === 'realButtons') {
-            bbn.fn.log(["ABPUT TO RECO", this.#data, v])
-          }
-          const o = bbnData.recognize(v, this.#data.value, this.#component, this.#name);
+        else if (this.#data && (this.#data.root?.component === this.#component) && (this.#data.root?.path === this.#name) && !v.__bbnData) {
+          const o = bbnData.recognize(v, this.#val, this.#component, this.#name);
           v = o.value;
           hasChanged = o.changed;
+          if (v?.__bbnData && (v.__bbnData !== this.#data)) {
+            this.#data = v.__bbnData;
+          }
         }
         // Case where the result is already treated (by another property and/or another component)
-        else if (v.__bbnData) {
-          const data = bbnData.retrieve(v.__bbnData); 
-          if (v.__bbnData !== this.#data?.id) {
+        else if ((v.__bbnData?.root?.component === this.#component) && (v.__bbnData?.root?.path === this.#name)){
+          const data = v.__bbnData;
+          if (data !== this.#data) {
             // Existing different data object
             if (this.#data) {
               // Remove the old data object from the component.
               this.#data.removeComponent(this.#component, this.#name);
               this.#data = false;
             }
+
+            // Retrieve the new data object.
+            if (data) {
+              this.#data = data;
+              // Add the new data object to the component.
+              data.addComponent(this.#component, this.#name);
+              hasChanged = true;
+            }
           }
 
-          // Retrieve the new data object.
-          if (data) {
-            // Add the new data object to the component.
-            data.addComponent(this.#component, this.#name); 
-            hasChanged = true;
-          }
         }
         else {
+          if (this.#data) {
+            // Remove the old data object from the component.
+            this.#data.removeComponent(this.#component, this.#name);
+            this.#data = false;
+          }
+
           // Treat the value and get the data object.
           v = this.#component.$treatValue(v, this.#name);
           this.#data = bbnData.getObject(v);
@@ -210,6 +179,50 @@ export default class bbnComputed {
       }
 
       if (hasChanged || (this.#val !== v)) {
+        // Taking care of dependencies only if the result has changed
+        let prev = false;
+        for (let i = 0; i < deps.length; i++) {
+          const a = deps[i];
+          if (a.data instanceof bbnData) {
+            if (!a.data.targetData) {
+              continue;
+            }
+
+            bbn.fn.each(a.data.refs, r => {
+              if (r.parent === prev) {
+                deps.splice(i - 1, 1);
+                i--;
+                a = deps[i];
+                return false;
+              }
+            });
+    
+            if (a.name) {
+              if (!a.data.deps[a.name]) {
+                a.data.deps[a.name] = [];
+              }
+              if (!a.data.deps[a.name].includes(this)) {
+                a.data.deps[a.name].push(this);
+              }
+            }
+            // Add the attribute to the data dependencies if not already present.
+            if (!a.data.deps.__bbnRoot.includes(this)) {
+              a.data.deps.__bbnRoot.push(this);
+            }
+          }
+          else if (a.component && a.name && a.component.$namespaces[a.name] && ((a.component !== this.#component) || (a.name !== this.#name))) {
+            if (!a.component.$deps[a.name]) {
+              a.component.$deps[a.name] = [];
+            }
+    
+            if (!a.component.$deps[a.name].includes(this)) {
+              a.component.$deps[a.name].push(this); // Add this computed property to the component's dependencies.
+            }
+          }
+    
+          prev = a;
+        }
+
         this.#changed = true;
         //bbn.fn.log(["UPDATING COMPUTED " + this.#name + " ON " + this.#component.$options.name, bbn.fn.diffObj(this.#val, v)]);
         if (this.#num) {
@@ -289,6 +302,16 @@ export default class bbnComputed {
     });
     // The computed property is defined on the component with the getter and setter.
     Object.defineProperty(this.#component, this.#name, def);
+  }
+
+  setData(data) {
+    if (!data) {
+      this.#data = false;
+    }
+
+    if (data instanceof bbnData) {
+      this.#data = data;
+    }
   }
 
   /**
