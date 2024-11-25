@@ -52,7 +52,7 @@ bbnNode.prototype.nodeBuild = function(after) {
       const cls = realTag && bbn.cp.tagExtensions[realTag] ? bbn.cp.tagExtensions[realTag] : 'bbnHtml';
       // Generate and globally expose HTML and Cp classes.
       const publicName = bbn.fn.camelize(tag);
-      window[publicName] = generateHtmlClass(publicName, (new Function(`return ${cls};`))());
+      window[publicName] = generateHtmlClass(publicName, bbn.cp.tagExtensions[realTag] ? realTag : null);
       // Define arguments for custom element registration.
       const args = [tag, window[publicName]];
       if (isDiff) {

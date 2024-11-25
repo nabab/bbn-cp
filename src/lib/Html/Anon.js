@@ -1,29 +1,29 @@
-import bbnHtml from "./Html.js";
 import bbnAnonCp from "../Cp/Anon.js";
 import bbnProtoHtml from "./Proto.js";
 import stringToTemplate from "../../internals/stringToTemplate.js";
-import connectedCallback from "../../internals/connectedCallback.js";
-import disconnectedCallback from "../../internals/disconnectedCallback.js";
 
 const tmp = stringToTemplate('<slot/>', true, 'bbn-anon');
 
-export default class bbnAnonHtml extends bbnHtml
+export default class bbnAnonHtml extends HTMLElement
 {
   constructor() {
     super();
+    bbnProtoHtml.construct.call(this);
   }
 
   connectedCallback() {
-    return connectedCallback(this);
+    return bbnProtoHtml.connectedCallback.call(this);
   } 
 
   disconnectedCallback() {
-    return disconnectedCallback(this);
+    return bbnProtoHtml.disconnectedCallback.call(this, [this]);
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    return bbn.cp.attributeChangedCallback(this, name, oldValue, newValue);
+    return bbnProtoHtml.attributeChangedCallback.call(this, [this, name, oldValue, newValue]);
   }
+
+  static bbnTag = 'bbn-anon';
 
   static bbnFn = bbnAnonCp;
 

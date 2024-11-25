@@ -39,6 +39,19 @@ export default function define(name, obj, tplSt, css) {
   const cpCfg = bbn.cp.normalizeComponent(obj, publicName);
   Object.freeze(cpCfg);
 
+  if (!window[publicName]) {
+    // Generate and globally expose HTML and Cp classes.
+    window[publicName] = generateHtmlClass(publicName, cpCfg.tag || null);
+    // Define arguments for custom element registration.
+    const args = [name, window[publicName]];
+    if (cpCfg.tag) {
+      args.push({ extends: cpCfg.tag });
+    }
+
+    // Assigning the public class to the component's tag
+    //bbn.fn.log(['define', ...args]);
+    customElements.define(...args);
+  }
 
   // Store component configuration in bbn.cp.statics.
   bbn.cp.statics[name] = bbnData.immunizeValue(bbn.fn.createObject({

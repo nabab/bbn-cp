@@ -6,7 +6,7 @@ export default async function fetchComponents (cp) {
   if (bbn.cp.unknown.length) {
     while (bbn.cp.unknown.length) {
       let unknown = bbn.cp.unknown[0];
-      const res = await bbn.cp.fetchComponents([unknown]);
+      await bbn.cp.fetchComponents([unknown]);
     }
 
     return true;

@@ -24,7 +24,7 @@ const bbnProtoHtml = {
 
   connectedCallback() {
     const tag = this.constructor.bbnTag;
-    if (bbn.cp.statics[tag]) {
+    if (bbn.cp.statics[tag] || (tag === 'bbn-anon')) {
       return connectedCallback(this);
     }
     else {

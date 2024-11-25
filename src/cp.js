@@ -80,6 +80,7 @@ const cpObj = bbn.fn.createObject({
   loopLevel: 0,
   propagation: [],
   propagationData: [],
+  htmlClasses: {},
   mixins: bbn.fn.createObject({
     basic,
     browserNotification,

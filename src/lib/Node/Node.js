@@ -272,19 +272,21 @@ export default class bbnNode
 
   get realTag() {
     if (this.tag) {
+      let index = Object.values(this.component?.$cfg?.componentNames || []).indexOf(this.tag);
       // Determine the tag name, adjusting for custom components if necessary
       let tag = this.tag;
       if (bbn.cp.tagAliases[this.tag]) {
         tag = bbn.cp.tagAliases[this.tag];
+      }
+      else if (index > -1) {
+        index = Object.keys(this.component?.$cfg?.componentNames)[index];
+        tag = this.component.$cfg.components[index].tag || this.component.$cfg.componentNames[index];
       }
       else if (this.attr?.is) {
         tag = this.attr.is.attrGetValue();
         if (bbn.fn.isObject(tag)) {
           tag = tag.tag || tag.name || 'bbn-anon';
         }
-      }
-      else if (this.component.$cfg.componentNames[tag]) {
-        tag = this.component.$cfg.componentNames[tag];
       }
 
       return tag;
