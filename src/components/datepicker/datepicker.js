@@ -407,6 +407,7 @@ const cpDef = {
         else {
           this.inputValue = '';
         }
+
         this.oldInputValue = this.inputValue;
         this.updateCalendar();
       },
@@ -436,6 +437,10 @@ const cpDef = {
      * @event mounted
      */
     mounted(){
+      if (this.maskedMounted) {
+        this.setInputValue(this.value);
+      }
+
       this.ready = true;
     },
     watch: {

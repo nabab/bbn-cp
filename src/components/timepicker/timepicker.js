@@ -303,6 +303,11 @@ const cpDef = {
       if ( this.value ){
         this.setValue(this.value);
       }
+
+      if (this.maskedMounted) {
+        this.setInputValue(this.value);
+      }
+
       this.ready = true;
     },
     watch: {

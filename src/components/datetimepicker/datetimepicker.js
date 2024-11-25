@@ -424,6 +424,10 @@ const cpDef = {
      *
      */
     mounted(){
+      if (this.maskedMounted) {
+        this.setInputValue(this.value);
+      }
+
       this.ready = true;
     },
     watch: {
