@@ -48,7 +48,7 @@ export default class bbnModelAttr extends bbnAttr
         const node = this.node;
         const cp = node.component;
         const data = node.data;
-        //initResults(cp);
+        initResults(cp);
         //bbn.fn.log(["FROM MODEL EVENT", eventName, ele, e.target, e]);
         if (!this.node.parentElement) {
           e.stopImmediatePropagation();

@@ -55,7 +55,10 @@ const sorter = (a, b) => {
   return atA < atB ? -1 : 1;
 };
 
-async function treatQueue(num = 0) {
+async function treatQueue(num = 0, cps) {
+  if (!cps) {
+    cps = bbn.fn.createObject();
+  }
   let isDebug = false;
   if (bbn.cp.queue.length) {
     if (bbn.cp.queue.length > 100000) {
@@ -75,7 +78,6 @@ async function treatQueue(num = 0) {
 
     let lastElement;
     let lastNum;
-    let cps;
     let done;
     let fns;
     let unconditioned = [];
@@ -102,7 +104,7 @@ async function treatQueue(num = 0) {
       if (lastNum !== queueElement.num) {
         unconditioned = [];
         forgotten = [];
-        cps = bbn.fn.createObject();
+        //cps = bbn.fn.createObject();
         lastNum = queueElement.num;
 
         /*
@@ -214,7 +216,7 @@ async function treatQueue(num = 0) {
 
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
-      await treatQueue(num + 1);
+      await treatQueue(num + 1, cps);
     }
 
     for (let n in cps) {

@@ -8,7 +8,7 @@ export default class bbnInternalNode extends bbnNode
 {
   nodeInit(after) {
     const ele = bbnNode.prototype.nodeInit.call(this, [after]);
-    initResults(this.component);
+    this.component.$numBuild = 1;
     return ele;
   }
   nodeBuild() {

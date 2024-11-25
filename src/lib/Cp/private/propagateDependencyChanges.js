@@ -38,7 +38,7 @@ export default function propagateDependencyChanges(cp, name) {
 
       propagation.push(a);
       if (!propagationCp.includes(acp)) {
-        //initResults(acp);
+        initResults(acp);
         propagationCp.push(acp);
       }
 

@@ -178,8 +178,52 @@ export default class bbnComputed {
         }
       }
 
+      let prev = false;
+      for (let i = 0; i < deps.length; i++) {
+        const a = deps[i];
+        if (a.data instanceof bbnData) {
+          if (!a.data.targetData) {
+            continue;
+          }
+
+          bbn.fn.each(a.data.refs, r => {
+            if (r.parent === prev) {
+              deps.splice(i - 1, 1);
+              i--;
+              a = deps[i];
+              return false;
+            }
+          });
+  
+          if (a.name) {
+            if (!a.data.deps[a.name]) {
+              a.data.deps[a.name] = [];
+            }
+            if (!a.data.deps[a.name].includes(this)) {
+              a.data.deps[a.name].push(this);
+            }
+          }
+          // Add the attribute to the data dependencies if not already present.
+          if (!a.data.deps.__bbnRoot.includes(this)) {
+            a.data.deps.__bbnRoot.push(this);
+          }
+        }
+        else if (a.component && a.name && a.component.$namespaces[a.name] && ((a.component !== this.#component) || (a.name !== this.#name))) {
+          if (!a.component.$deps[a.name]) {
+            a.component.$deps[a.name] = [];
+          }
+  
+          if (!a.component.$deps[a.name].includes(this)) {
+            a.component.$deps[a.name].push(this); // Add this computed property to the component's dependencies.
+          }
+        }
+  
+        prev = a;
+      }
+      
       if (hasChanged || (this.#val !== v)) {
         // Taking care of dependencies only if the result has changed
+        /*
         let prev = false;
         for (let i = 0; i < deps.length; i++) {
           const a = deps[i];
@@ -221,7 +265,7 @@ export default class bbnComputed {
           }
     
           prev = a;
-        }
+        }*/
 
         this.#changed = true;
         //bbn.fn.log(["UPDATING COMPUTED " + this.#name + " ON " + this.#component.$options.name, bbn.fn.diffObj(this.#val, v)]);
@@ -273,10 +317,7 @@ export default class bbnComputed {
           let idx = bbn.cp.queue.indexOf(this.$computed[name]);
           bbn.cp.queue.splice(idx, 1);
           _t.computedUpdate();
-        }/*
-        else if (_t.num <= this.$numBuild) {
-          _t.computedUpdate();
-        }*/
+        }
 
 
         //if (!this.$computed[name].val?.__bbnData) {
