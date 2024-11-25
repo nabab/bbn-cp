@@ -9,7 +9,7 @@ import bbnInternalNode from "../../Node/Internal.js";
 
 
 const allowed = ['id', 'args', 'attr', 'condition', 'conditionId', 'dependencies', 'directives', 'events', 'exp', 'fn', 'forget', 'hash', 'loop', 'loopIndex', 'loopItem', 'model', 'pre', 'tag', 'text'];
-export default function generateNode(model, cp, parent, hash, data)
+export default function generateNode(model, cp, parent, root, rootHash, hash, data)
 {
   let node;
   if (!model || !model.id) {
@@ -41,5 +41,5 @@ export default function generateNode(model, cp, parent, hash, data)
     throw Error("Invalid model");
   }
 
-  return new node(model, cp, parent, hash || '', data);
+  return new node(model, cp, parent, root, rootHash, hash || '', data);
 }

@@ -13,7 +13,7 @@ export default class bbnSlotNode extends bbnNode
     return this.#tag;
   }
 
-  async nodeInit() {
+  nodeInit() {
     if (this.isCreating) {
       throw new Error("Already creating");
     }
@@ -60,14 +60,14 @@ export default class bbnSlotNode extends bbnNode
             this.#tag = 'bbn-anon';
             this.props[item.slot.slotValue] = this.bind.attrGetValue();
             if (this.comment) {
-              const done = await this.setComment(false);
+              const done = this.setComment(false);
               if (done) {
                 this.isCreating = false;
                 return done;
               }
             }
 
-            ele = this.element || await this.nodeBuild();
+            ele = this.element || this.nodeBuild();
             if (ele?.bbn && !ele.bbn?.$isCreated) {
               ele.bbn.$connected();
             }
@@ -80,9 +80,9 @@ export default class bbnSlotNode extends bbnNode
         }
       }
       else {
-        ele = await this.setComment(true);
+        ele = this.setComment(true);
         if (!ele) {
-          ele = this.element || await this.nodeBuild();
+          ele = this.element || this.nodeBuild();
         }
         else {
           deleteNodes(this.component, this.id, this.hash);
@@ -116,9 +116,9 @@ export default class bbnSlotNode extends bbnNode
     }
 
     if (!ele) {
-      ele = await this.setComment(true);
+      ele = this.setComment(true);
       if (!ele) {
-        ele = await this.nodeBuild();
+        ele = this.nodeBuild();
       }
       else {
         deleteNodes(this.component, this.id, this.hash);

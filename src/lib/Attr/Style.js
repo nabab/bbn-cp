@@ -92,7 +92,7 @@ export default class bbnStyleAttr extends bbnAttr
   
   }
 
-  async attrUpdate(init) {
+  attrUpdate(init) {
     if (!this.node.element || this.node.comment) {
       return;
     }
@@ -106,7 +106,7 @@ export default class bbnStyleAttr extends bbnAttr
         if (this.node.element?.bbn?.$internal
           && (arr = this.node.element.bbn.$internal.attributes.filter(a => a instanceof bbnStyleAttr)).length
         ) {
-          await arr[0].attrUpdate(true);
+          arr[0].attrUpdate(true);
         }
         else if (this.node.element && (this.node.element.style.cssText !== str)) {
           this.node.element.style.cssText = str;

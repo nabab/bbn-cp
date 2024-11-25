@@ -16,7 +16,7 @@ function treatForHash(value, depth = null, level = 0, visited = null) {
   }
 
   if (value?.__bbnData) {
-    const data = bbnData.retrieve(value.__bbnData);
+    const data = value.__bbnData;
     if (data) {
       value = "__BBN_DATA__" + data.uid;
     }

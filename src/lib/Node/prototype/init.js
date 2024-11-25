@@ -1,7 +1,7 @@
 import bbnNode from "../Node.js";
 import deleteNodes from "../../Cp/private/deleteNodes.js";
 
-bbnNode.prototype.nodeInit = async function(after) {
+bbnNode.prototype.nodeInit = function(after) {
   if (this.isCreating) {
     if (this.element) {
       return this.element;
@@ -17,7 +17,7 @@ bbnNode.prototype.nodeInit = async function(after) {
       return old;
     }
 
-    const isLaunched = await this.setComment(this.comment);
+    const isLaunched = this.setComment(this.comment);
     if (isLaunched) {
       if (this.comment) {
         deleteNodes(this.component, this.id, this.hash);
@@ -27,10 +27,10 @@ bbnNode.prototype.nodeInit = async function(after) {
   }
 
   this.isCreating = true;
-  await this.nodeSetAll();
+  this.nodeSetAll();
   if (!this.loop) {
-    await this.nodeBuild(after);
-    await this.nodeConceive();
+    this.nodeBuild(after);
+    this.nodeConceive();
   }
 
   if (this.isComponent) {

@@ -5,7 +5,7 @@ import bbnData from "../Data.js";
  * @param {bbnCp} component 
  */
 bbnData.prototype.setData = function(data) {
-  if (data.__bbnData && (data.__bbnData !== this.id)) {
+  if (data.__bbnData && (data.__bbnData !== this)) {
     throw Error("The data object is already part of another bbnData object");
   }
   /**
@@ -15,7 +15,7 @@ bbnData.prototype.setData = function(data) {
     enumerable: false,
     configurable: true,
     writable: true,
-    value: this.id
+    value: this
   });
   /**
    * @var {Object|Array} targetData The original data object

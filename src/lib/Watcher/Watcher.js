@@ -140,7 +140,7 @@ export default class bbnWatcher {
    * @param {boolean} init - Indicates whether this is an initial update.
    * @param {number} level - The depth level of the update (used for deep watchers).
    */
-  async watcherUpdate(init, level) {
+  watcherUpdate(init, level) {
     const last = bbn.cp.numTicks;
     // Retrieves the component reference
     const cp = this.#component;
@@ -167,7 +167,7 @@ export default class bbnWatcher {
           a.isInit = true;
 
           // Executes the handler function with the new and old values
-          await a.fn.apply(cp, [this.#val, this.#old]);
+          a.fn.apply(cp, [this.#val, this.#old]);
           this.#num++;
 
           // Logs for debugging purposes (commented out)

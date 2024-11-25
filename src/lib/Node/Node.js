@@ -110,14 +110,35 @@ export default class bbnNode
    * @param {String} id
    * @param {String} hash
    */
-  constructor(node, cp, parent, hash, data) {
+  constructor(node, cp, parent, root, rootHash, hash, data) {
     if (!bbnNode.root) {
+      // The very first node to be built is the root of the app
       Object.defineProperty(bbnNode, 'root', {
         value: this,
         writable: false,
         configurable: false
       });
+      // The very first will have an individual root for loops set to false
+      // So next nodes will follow until the first loop opens up
+      Object.defineProperty(this, 'root', {
+        writable: false,
+        configurable: false,
+        value: false
+      });
     }
+    else {
+      Object.defineProperty(this, 'root', {
+        writable: false,
+        configurable: false,
+        value: root
+      });
+    }
+    
+    Object.defineProperty(this, 'rootHash', {
+      writable: false,
+      configurable: false,
+      value: rootHash
+    });
     
     if (!(cp instanceof bbnCp) || !node || (typeof hash !== 'string')) {
       throw new Error("Invalid arguments");
@@ -221,12 +242,12 @@ export default class bbnNode
     return this.#comment;
   }
 
-  async setComment(v) {
+  setComment(v) {
     if (this.#comment !== !!v) {
       //bbn.fn.log(["SET COMMENT", v, this.#comment, this.id, this, this.component.$options.name]);
       this.#comment = !!v;
       if (this.element && (bbn.fn.isComment(this.element) !== this.#comment)) {
-        return await this.nodeInit();
+        return this.nodeInit();
       }
     }
   }
@@ -253,8 +274,8 @@ export default class bbnNode
     if (this.tag) {
       // Determine the tag name, adjusting for custom components if necessary
       let tag = this.tag;
-      if ((tag === this.component.$options.name) && this.component.$cfg.tag) {
-        tag = this.component.$cfg.tag;
+      if (bbn.cp.tagAliases[this.tag]) {
+        tag = bbn.cp.tagAliases[this.tag];
       }
       else if (this.attr?.is) {
         tag = this.attr.is.attrGetValue();

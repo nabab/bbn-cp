@@ -19,15 +19,15 @@ export default class bbnLoopAttr extends bbnAttr
     });
   }
 
-  async attrSet(init) {
-    await this.attrUpdate(init);
+  attrSet(init) {
+    this.attrUpdate(init);
   }
 
-  async init() {
-    await this.attrSet(true);
+  init() {
+    this.attrSet(true);
   }
 
-  async attrUpdate(init) {
+  attrUpdate(init) {
     //bbn.fn.log("UPDATE ATTR LOOP " + this.exp, this.node.tag, this.isChanged, this.attrGetValue(true));
     const node = this.node;
     /*
@@ -40,7 +40,6 @@ export default class bbnLoopAttr extends bbnAttr
       return;
     }
     const cp = node.component;
-    const proms = [];
 
     // Evaluate the loop expression and determine its type.
     let loopValue = this.attrGetValue();
@@ -56,7 +55,7 @@ export default class bbnLoopAttr extends bbnAttr
     let root = node.element;
     //bbn.fn.log(["IN LOOP " + node.id, root, node, node.hash, cp.$retrieveNode(node.id, node.hash), cp.$retrieveNode(node.id, node.hash)?.element]);
     if (!root) {
-      root = await node.nodeBuild();
+      root = node.nodeBuild();
     }
 
     const isArray = bbn.fn.isArray(loopValue);
@@ -70,6 +69,7 @@ export default class bbnLoopAttr extends bbnAttr
     let num = 0;
     let prevEle;
 
+    bbn.cp.loopLevel++;
     for (let j in loopValue) {
       if (isArray) {
         j = parseInt(j);
@@ -81,12 +81,12 @@ export default class bbnLoopAttr extends bbnAttr
       }
 
 
-      let key = j;
+      let key;
       if (node.attr?.key?.exp) {
         key = node.attr.key.attrExec(loopData).val;
       }
-      else if (node.attr?.key?.value !== undefined) {
-        key = loopValue[j][node.attr.key.value];
+      else if (loopValue[j].__bbnData) {
+        key = loopValue[j].__bbnData.uid;
       }
       else {
         key = bbnData.hash(loopData);
@@ -110,8 +110,8 @@ export default class bbnLoopAttr extends bbnAttr
         }
       }
       else {
-        const newNode = currentNode || generateNode(cloneNode(cp, node.id), cp, node.parent, hash, loopData);
-        ele = await newNode.nodeInit(prevEle || root);
+        const newNode = currentNode || generateNode(cloneNode(cp, node.id), cp, node.parent, node, hash, hash, loopData);
+        ele = newNode.nodeInit(prevEle || root);
       }
 
       prevEle = ele;
@@ -119,6 +119,7 @@ export default class bbnLoopAttr extends bbnAttr
       num++;
     }
 
+    bbn.cp.loopLevel--;
     const loopHash = oHash ? bbn.fn.substr(oHash, 0, -1) : '';
     for (let n in cp.$nodes[this.node.id]) {
       const a = cp.$nodes[this.node.id][n];

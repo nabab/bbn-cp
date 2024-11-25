@@ -1,4 +1,9 @@
 import { bbn } from "@bbn/bbn";
+import bbnAttr from "../Attr/Attr.js";
+
+const getId = function() {
+  return ++bbnData.idx;
+};
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -6,8 +11,6 @@ import { bbn } from "@bbn/bbn";
 class bbnData/* extends EventTarget*/ {
 
   static lastSequence = null;
-
-  static inventory = bbn.fn.createObject();
 
   static watchSequence = [];
 
@@ -18,6 +21,14 @@ class bbnData/* extends EventTarget*/ {
   static stoppers = [];
 
   static queue = [];
+
+  static idx = 0;
+
+  static isUpdating = 0;
+
+  static updated = [];
+
+  static toUpdate = [];
 
   #uid;
   /**
@@ -51,18 +62,6 @@ class bbnData/* extends EventTarget*/ {
 
     this.#uid = bbn.fn.randomString();
     /**
-     * @var {Symbol} id The unique id of the bbnData object
-     */
-    const id = Symbol();
-    // The object is added to the data inventory
-    bbnData.inventory[id] = this;
-    Object.defineProperty(this, 'id', {
-      writable: false,
-      configurable: false,
-      value: id
-    });
-
-    /**
      * @var {Array} children The children bbnData objects (which have this object as parent)
      */
     Object.defineProperty(this, 'children', {
@@ -75,10 +74,9 @@ class bbnData/* extends EventTarget*/ {
      * @var {Symbol} __bbnData The special property added to the data object to identify it as being part of a bbnData object
      */
     Object.defineProperty(data, '__bbnData', {
-      enumerable: false,
       configurable: true,
       writable: true,
-      value: this.id
+      value: this
     });
 
     /**
@@ -138,7 +136,7 @@ class bbnData/* extends EventTarget*/ {
     Object.defineProperty(this, 'refs', {
       value: [{
         component,
-        path: typeof path !== 'string' ? path.toString() : path,
+        path: this.path,
         root: true,
         parent: parent || null
       }],
@@ -159,9 +157,15 @@ class bbnData/* extends EventTarget*/ {
   }
 
   get uid() {
-    return this.root.component.$cid + '-' + this.root.component.path + '-' + this.#uid;
+    let path = '';
+    if (this.root.component.path instanceof bbnAttr) {
+      path = this.root.component.path.id;
+    }
+    else if (this.root.component.path) {
+      path += this.root.component.path;
+    }
+    return this.root.component.$cid + '-' + (path ? path + '-' : '') + this.#uid;
   }
 }
-
 
 export default bbnData;

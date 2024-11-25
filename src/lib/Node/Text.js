@@ -25,10 +25,11 @@ export default class bbnTextNode extends bbnNode
       configurable: false
     });
   
+    const node = this;
     Object.defineProperty(this.element, 'bbnSchema', {
-      value: this,
-      writable: false,
-      configurable: false
+      get() {
+        return node;
+      }
     });
   
     if (this.data) {
@@ -55,8 +56,13 @@ export default class bbnTextNode extends bbnNode
     }
   
     if (bbn.cp.isComponent(parent)) {
-      if (parent.bbnSlots?.default?.length || bbn.fn.removeExtraSpaces(this.element.textContent)) {
-        parent.bbnSlots.default.push(this.element);
+      if (!parent.bbnTmpSlots.default) {
+        parent.bbnTmpSlots.default = [];
+      }
+      const slots = parent.bbnSlots || parent.bbnTmpSlots;
+      if (bbn.fn.removeExtraSpaces(this.element.textContent) && slots.default) {
+        bbn.fn.log("IN SLOT DEFAULT ", this.element);
+        slots.default.push(this.element);
       }
     }
     else if (parent !== cp.$el) {

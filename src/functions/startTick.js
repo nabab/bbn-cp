@@ -69,7 +69,7 @@ async function treatQueue(num = 0) {
       isDebug = false;
     }
 
-    let queue = bbn.fn.order(bbn.cp.queue.splice(0), 'num');
+    let queue = bbn.cp.queue.splice(0);
     // Process each component in the queue.
     let oneDone = false;
 
@@ -80,6 +80,9 @@ async function treatQueue(num = 0) {
     let fns;
     let unconditioned = [];
     let forgotten = [];
+    const rnd = bbn.fn.randomString();
+    bbn.fn.startChrono(rnd);
+    //bbn.fn.log("TREATING QUEUE: " + queue.length + '"' + rnd + '" (' + num + ' / ' + bbn.cp.numTicks + ')');
     while (queue.length) {
       if (isDebug) {
         if (bbn.cp.numTicks - isDebug > 1000) {
@@ -87,6 +90,8 @@ async function treatQueue(num = 0) {
         }
       }
       const queueElement = queue.shift();
+      const isAttr = queueElement.element instanceof bbnAttr;
+      const isComputed = queueElement.element instanceof bbnComputed;
       //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
       if (!cp.$el.isConnected) {
@@ -139,23 +144,25 @@ async function treatQueue(num = 0) {
 
         await queueElement.element.computedUpdate();
       }
-      else if (queueElement?.element instanceof bbnAttr) {
+      else if (isAttr) {
         const attr = queueElement.element;
         if (isDebug) {
           bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
         }
 
         const id = attr.node.id;
-        if (!(attr instanceof bbnConditionAttr) && !(attr instanceof bbnForgetAttr) && forgotten.includes(attr.node)) {
-          continue;
+        if (!(attr instanceof bbnConditionAttr)) {
+          if (!(attr instanceof bbnForgetAttr) && forgotten.includes(attr.node)) {
+            continue;
+          }
+
+          if (unconditioned.includes(attr.node) || unconditioned.filter(a => !a.id.indexOf(id + '-') && !a.hash.indexOf(attr.node.hash || '')).length) {
+            continue;
+          }
         }
 
-        if (!(attr instanceof bbnConditionAttr) && (unconditioned.includes(attr.node) || unconditioned.filter(a => !a.id.indexOf(id + '-') && !a.hash.indexOf(attr.node.hash || '')).length)) {
-          //bbn.fn.log("SKIPPING");
-          continue;
-        }
 
-        await attr.attrUpdate();
+        attr.attrUpdate();
         //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
         const attrValue = attr.attrGetValue();
         if (attr instanceof bbnConditionAttr) {
@@ -205,8 +212,6 @@ async function treatQueue(num = 0) {
       lastElement = queueElement;
     }
 
-    bbn.cp.numTicks++;
-
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       await treatQueue(num + 1);
@@ -214,6 +219,11 @@ async function treatQueue(num = 0) {
 
     for (let n in cps) {
       cps[n].$lastBuild = bbn.cp.numTicks;
+    }
+
+    const duration = bbn.fn.stopChrono(rnd);
+    if (duration > 1000) {
+      bbn.fn.log("TREATING QUEUE DURATION: " + duration + '"' + rnd + '" (' + num + ' / ' + bbn.cp.numTicks + ')');
     }
   }
 
@@ -246,7 +256,7 @@ export default async function startTick() {
     }
     bbn.cp.to = setTimeout(() => {
       startTick();
-    }, 5);
+    }, 1);
 
     return;
   }

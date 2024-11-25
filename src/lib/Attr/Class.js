@@ -52,7 +52,7 @@ export default class bbnClassAttr extends bbnAttr
     return bbn.fn.removeEmpty(bbn.fn.unique(cls)).join(' ');
   }
 
-  async attrUpdate(init) {
+  attrUpdate(init) {
     if (!this.node.element || this.node.comment) {
       return;
     }
@@ -65,7 +65,7 @@ export default class bbnClassAttr extends bbnAttr
         if (this.node.element?.bbn?.$internal
           && (arr = this.node.element.bbn.$internal.attributes.filter(a => a instanceof bbnClassAttr)).length
         ) {
-          await arr[0].attrUpdate(true);
+          arr[0].attrUpdate(true);
         }
         else if (this.node.element.className !== cls) {
           this.node.element.className = cls;

@@ -3,7 +3,7 @@ import bbnData from "../Data.js";
 /**
  * Adds a component to the original bbnData object linked to it
  * @param {bbnCp} component 
- * @param {String} path 
+ * @param {bbnAttr|String} path 
  * @returns {Boolean}
  */
 
@@ -13,6 +13,8 @@ import bbnData from "../Data.js";
  * filteredData[0].data.prop.list
  * row.prop.list
  */
+
+/*
 const cp1 = 1;
 const example = {
   data: [{prop: {list: []}}, {prop: {list: []}}, {prop: {list: []}}],
@@ -64,6 +66,7 @@ const example = {
     }
   }]
 };
+*/
 
 
 bbnData.prototype.addComponent = function(component, path, parent) {
@@ -71,11 +74,7 @@ bbnData.prototype.addComponent = function(component, path, parent) {
     throw Error(bbn._("bbnData hasComponent must be called with a bbn component"));
   }
 
-  if (typeof path !== 'string') {
-    if (!path.toString) {
-      throw Error(bbn._("The path must be a string"));
-    }
-
+  if (typeof path === 'number') {
     path = path.toString();
   }
 

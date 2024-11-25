@@ -22,28 +22,33 @@ const insertInSlot = function (parent, node, ele) {
   if ((parent.bbnCid !== cp.$cid) && cp.$isComponent(parent)) {
     const slot = ele.bbnSchema.slot?.name || ele.bbnSchema?.attr?.slot?.value || 'default';
     //bbn.fn.log(["IN CP 2 " + cp.$options.name, slot, ele.bbnSchema?.attr?.slot?.value, ele]);
-    if (parent.bbnSlots?.[slot]) {
+    if (!parent.bbnTmpSlots[slot]) {
+      parent.bbnTmpSlots[slot] = [];
+    }
+
+    const parentSlots = parent.bbn?.$isInit ? parent.bbnSlots : parent.bbnTmpSlots;
+    if (parentSlots?.[slot]) {
         let search = {bbnId: ele.bbnId};
       if (ele.bbnHash) {
         search.bbnHash = ele.bbnHash;
       }
 
-      let idx = bbn.fn.search(parent.bbnSlots[slot], search);
-      if ((idx > -1) && parent.bbnSlots[slot][idx].bbnHash && !ele.bbnHash) {
+      let idx = bbn.fn.search(parentSlots[slot], search);
+      if ((idx > -1) && parentSlots[slot][idx].bbnHash && !ele.bbnHash) {
         idx = -1;
       }
 
       if (idx > -1) {
-        const mounted = !!parent.bbnSlots[slot][idx].parentNode;
+        const mounted = !!parentSlots[slot][idx].parentNode;
         //bbn.fn.log(["REPLACE", parent.bbnSlots[slot][idx], ele, search]);
         if (mounted) {
-          parent.bbnSlots[slot][idx].parentNode.replaceChild(ele, parent.bbnSlots[slot][idx]);
+          parentSlots[slot][idx].parentNode.replaceChild(ele, parentSlots[slot][idx]);
         }
 
-        parent.bbnSlots[slot].splice(idx, 1, ele);
+        parentSlots[slot].splice(idx, 1, ele);
       }
       else {
-        parent.bbnSlots[slot].push(ele);
+        parentSlots[slot].push(ele);
       }
     }
 

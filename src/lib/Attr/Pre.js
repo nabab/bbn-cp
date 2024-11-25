@@ -6,7 +6,7 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnPreAttr extends bbnAttr
 {
-  async attrSet() {
+  attrSet() {
   }
 
   async attrUpdate() {

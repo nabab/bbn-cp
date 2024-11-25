@@ -1,10 +1,10 @@
 import bbnNode from "../Node.js";
 
-bbnNode.prototype.nodeUpdate = async function() {
+bbnNode.prototype.nodeUpdate = function() {
   return;
   if (!this.comment) {
     for (let i = 0; i < this.attributes.length; i++) {
-      await this.attributes[i].attrUpdate(false);
+      this.attributes[i].attrUpdate(false);
       if (this.comment) {
         break;
       }
@@ -25,7 +25,7 @@ bbnNode.prototype.nodeUpdate = async function() {
   }
   else if (this.component.$currentMap[this.id].items?.length) {
     bbn.fn.log("INSODE TREAT TIEMSSS")
-    await treatItems(this.component, this.component.$currentMap[this.id].items, this.hash, forgotten ? parent : this.element, forgotten ? hashList : null);
+    treatItems(this.component, this.component.$currentMap[this.id].items, this.hash, forgotten ? parent : this.element, forgotten ? hashList : null);
   }
   */
 };

@@ -5,7 +5,7 @@ import bbnData from "../Data.js";
  * @param {bbnCp} component 
  */
 bbnData.prototype.fixIndexes = function(component) {
-  if (this.isArray) {
+  if (this.isArray && this.targetData) {
     for (let i = 0; i < this.targetData.length; i++) {
       const o = bbnData.getObject(this.targetData[i]);
       if (o) {

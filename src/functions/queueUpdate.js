@@ -19,6 +19,13 @@ export default function queueUpdate(item) {
     item.num = bbn.cp.numTicks;
   }
 
+  if (item.element) {
+    const idx = bbn.fn.search(bbn.cp.queue, {element: item.element});
+    if (idx > -1) {
+      bbn.cp.queue.splice(idx, 1);
+    }
+  }
+
   bbn.cp.queue.push(item);
   bbn.cp.startTick();
 }

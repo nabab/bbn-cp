@@ -8,7 +8,16 @@ export default function propagateDependencyChanges(cp, name) {
     // The key for updating
   
     let num = bbn.cp.numTicks;
-    const dataObj = cp.$computed[name] ? bbnData.getObject(cp.$computed[name].value) : null;
+    const dataObj = bbnData.getObject(cp[name]);
+    if (dataObj) {
+      if (bbn.cp.propagationData.includes(dataObj.uid)) {
+        return;
+      }
+
+      bbn.cp.propagationData.push(dataObj.uid);
+    }
+
+    //bbn.fn.log("PROPAGATING DEPENDENCY CHANGES FOR " + name + " IN " + cp.$options.name + " " + cp.$cid);
     for (let i = 0; i < cp.$deps[name].length; i++) {
       const a = cp.$deps[name][i];
       if (bbn.cp.propagation.includes(a)) {
@@ -37,6 +46,10 @@ export default function propagateDependencyChanges(cp, name) {
 
   if (propagationFromHere) {
     bbn.cp.propagation.splice(0);
+    bbn.cp.propagationData.splice(0);
+  }
+  else if (!bbn.cp.propagation.length && bbn.cp.propagationData.length) {
+    bbn.cp.propagationData.splice(0);
   }
 
 }

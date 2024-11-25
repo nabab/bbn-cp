@@ -6,25 +6,25 @@ import deleteNodes from "../Cp/private/deleteNodes.js";
  */
 export default class bbnTemplateNode extends bbnNode
 {
-  async nodeInit(after) {
+  nodeInit(after) {
     if (this.isCreating) {
       throw new Error("Already creating");
     }
 
     let ele = this.element;
     if (this.loop) {
-      return await this.loop.attrSet(true);
+      return this.loop.attrSet(true);
     }
     else {
       this.isCreating = true;
       this.nodeSetAll();
       //bbn.fn.log(["INIT TEMPLATE " + this.id, this.comment, this.isCommented, ele, bbn.fn.isComment(ele)]);
       if (!ele || (this.comment !== bbn.fn.isComment(ele))) {
-        ele = await this.nodeBuild(after);
+        ele = this.nodeBuild(after);
       }
       
       if (!this.pre && (!this.condition || this.condition.value) && (!this.parent?.condition || this.parent.condition.value)) {
-        await this.nodeConceive();
+        this.nodeConceive();
       }
       else if (this.condition?.isChanged && !this.condition.value) {
         deleteNodes(this.component, this.id, this.hash);

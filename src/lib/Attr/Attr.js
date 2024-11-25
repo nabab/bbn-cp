@@ -61,6 +61,12 @@ export default class bbnAttr
       })
     });
 
+    Object.defineProperty(this, 'ownDeps', {
+      writable: false,
+      configurable: false,
+      value: []
+    });
+
     this.node.attributes.push(this);
   }
 

@@ -144,7 +144,7 @@ const setUndefinedAttribute = (node, name, v, jsName) => {
  * @param {boolean} init - Indicates whether this is the initial call (e.g., during initialization).
  * @returns {Promise<void>} - Resolves when the attribute has been updated.
  */
-bbnAttr.prototype.attrUpdate = async function(init) {
+bbnAttr.prototype.attrUpdate = function(init) {
   if (this.name && this.node.element && !this.node.isOut) {
     const name = this.name;
     const jsName = bbn.cp.badCaseAttributes[this.name] || this.name;

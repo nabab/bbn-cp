@@ -77,7 +77,9 @@ const cpObj = bbn.fn.createObject({
   uid: 0,
   numBuild: 0,
   numTicks: 0,
+  loopLevel: 0,
   propagation: [],
+  propagationData: [],
   mixins: bbn.fn.createObject({
     basic,
     browserNotification,
@@ -112,6 +114,7 @@ const cpObj = bbn.fn.createObject({
   version: 1,
   spaceHash: bbn.fn.hash(' '),
   known: ['bbn-anon'],
+  unknown: [],
   interval: null,
   statics: bbn.fn.createObject(),
   /** @var {Array} directives List of existing directives */
@@ -151,6 +154,10 @@ const cpObj = bbn.fn.createObject({
     'tr': 'bbnRowHtml',
     'td': 'bbnCellHtml',
     'th': 'bbnCellHtml'
+  },
+  tagAliases: {
+    'bbn-button': 'button',
+    'bbn-form': 'form',
   },
   knownPrefixes: [],
   queue: [],

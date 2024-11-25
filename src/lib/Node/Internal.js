@@ -6,15 +6,15 @@ import bbnNode from "./Node.js";
  */
 export default class bbnInternalNode extends bbnNode
 {
-  async nodeBuild() {
+  nodeBuild() {
     this.element = this.component.$el;
     if (!this.comment) {
       for (let i = 0; i < this.attributes.length; i++) {
-        await this.attributes[i].attrSet();
-        await this.attributes[i].attrUpdate(true);
+        this.attributes[i].attrSet();
+        this.attributes[i].attrUpdate(true);
       }
     }
 
-    await this.nodeConceive();
+    this.nodeConceive();
   }
 }

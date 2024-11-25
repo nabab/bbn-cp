@@ -2,7 +2,7 @@ import bbnNode from "../Node.js";
 import generateNode from "../../Cp/private/generateNode.js";
 import bbnInternalNode from "../Internal.js";
 
-bbnNode.prototype.nodeConceive = async function() {
+bbnNode.prototype.nodeConceive = function() {
   if (this.items && (!this.comment || (!this.loop && (!this.condition || this.condition.value)))) {
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i];
@@ -11,10 +11,10 @@ bbnNode.prototype.nodeConceive = async function() {
         hash = this.hash + (this.hash ? '-root' : 'root');
       }
 
-      const node = this.component.$retrieveNode(item.id, hash) || generateNode(item, this.component, this, hash, this.data);
+      const node = this.component.$retrieveNode(item.id, hash) || generateNode(item, this.component, this, this.root, this.rootHash, hash, this.data);
       const ele = node.element;
       if (!ele && !node.isCreating) {
-        await node.nodeInit();
+        node.nodeInit();
       }
       else {
         //bbn.fn.log("UPDATE " + node.id + ' ' + node.tag)

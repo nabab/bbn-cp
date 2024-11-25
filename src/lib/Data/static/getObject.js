@@ -7,9 +7,5 @@ import "./retrieve.js";
  * @returns {bbnData|null}
  */
 bbnData.getObject = function(value) {
-  if (value && (typeof value === 'object') && value.__bbnData) {
-    return this.retrieve(value.__bbnData);
-  }
-
-  return null;
+  return value?.__bbnData || null;
 }

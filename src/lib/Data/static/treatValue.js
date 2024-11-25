@@ -22,7 +22,7 @@ bbnData.treatValue = function(value, component, path, parent) {
     // Will remove from the sequence the subsequent calls to the data
     let dataObj;
     if (value.__bbnData) {
-      dataObj = this.retrieve(value.__bbnData);
+      dataObj = value.__bbnData;
       dataObj.addComponent(component, path, parent);
     }
     else {

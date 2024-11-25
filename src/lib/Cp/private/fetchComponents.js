@@ -3,10 +3,13 @@
  * @returns {Array|null}
  */
 export default async function fetchComponents (cp) {
-  if (cp.$root.$unknownComponents.length) {
-    let unknown = cp.$root.$unknownComponents.splice(0, cp.$root.$unknownComponents.length);
-    const res = await bbn.cp.fetchComponents(unknown);
-    return res;
+  if (bbn.cp.unknown.length) {
+    while (bbn.cp.unknown.length) {
+      let unknown = bbn.cp.unknown[0];
+      const res = await bbn.cp.fetchComponents([unknown]);
+    }
+
+    return true;
   }
 
   return false;
