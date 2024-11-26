@@ -19,7 +19,7 @@ bbnCp.prototype.$on = function (event, handler, remove, bound) {
   }
 
   if (!remove && this.$events[event][hash]) {
-    //throw Error(bbn._("The event %s is already set in %s", event, this.$options.name));
+    //throw new Error(bbn._("The event %s is already set in %s", event, this.$options.name));
   }
 
   this.$events[event][hash] = (ev) => {

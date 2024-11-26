@@ -169,13 +169,13 @@ const cpDef = {
       const cm = this.constructor.cm;
 
       if (!this.mode || !this.theme) {
-        throw Error("You must provide a language and a theme");
+        throw new Error("You must provide a language and a theme");
       }
       if (!cm.languageExtensions[this.mode] && !['js', 'less', 'purephp'].includes(this.mode)) {
-        throw Error("Unknown language");
+        throw new Error("Unknown language");
       }
       if (!cm.theme[this.theme]) {
-        throw Error("Unknown theme");
+        throw new Error("Unknown theme");
       }
       const state = cm.state;
       const cpt = state.Compartment;
@@ -201,7 +201,7 @@ const cpDef = {
         extensions.push(this.compartments.language.of(cm.languageExtensions[this.mode]));
       }
       else {
-        throw Error("Language unrecognized!");
+        throw new Error("Language unrecognized!");
       }
 
       this.compartments.theme = new cpt;

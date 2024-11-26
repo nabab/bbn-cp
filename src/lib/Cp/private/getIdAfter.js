@@ -11,7 +11,7 @@ export default function getIdAfter(cp, id) {
 
   // Ensures that the ID exists
   if (!cp.$currentMap[id]) {
-    throw Error(bbn._("The ID is invalid in getIdAfter for %s", cp.$options.name));
+    throw new Error(bbn._("The ID is invalid in getIdAfter for %s", cp.$options.name));
   }
 
   const bits = id.split("-");

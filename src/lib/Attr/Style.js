@@ -84,7 +84,7 @@ export default class bbnStyleAttr extends bbnAttr
     else if (css) {
       // If the styles object is not valid, log the object for debugging and throw an error.
       bbn.fn.log("convertStyles", css);
-      throw Error(bbn._("Can't understand style"));
+      throw new Error(bbn._("Can't understand style"));
     }
   
     // Return the consolidated style string.

@@ -90,6 +90,7 @@ export default class bbnConditionAttr extends bbnAttr
   attrUpdate(init) {
     if (!init) {
       if (this.node.isOut) {
+        bbn.fn.log("CONDITION IS OUT");
         return;
       }
       

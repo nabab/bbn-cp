@@ -248,7 +248,7 @@ async function treatQueue(num = 0, cps) {
 export default async function startTick() {
   // Check if the tick process is already initiated.
   if (bbn.cp.interval) {
-    throw Error(bbn._("The tick is already started"));
+    throw new Error(bbn._("The tick is already started"));
   }
 
   // Skip if an update is currently running.

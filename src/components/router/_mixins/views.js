@@ -148,7 +148,7 @@ export default {
   
           if (!node.comment && ['bbn-container', 'bbns-container'].includes(node?.tag)) {
             if (node.props.url === undefined) {
-              throw Error(bbn._("You cannot use containers in router without defining a URL property"));
+              throw new Error(bbn._("You cannot use containers in router without defining a URL property"));
             }
             if (!this.hasRealContainers) {
               this.hasRealContainers = true;
@@ -166,7 +166,7 @@ export default {
       bbn.fn.each(this.source, (a, i) => {
         if (a.url === '') {
           if (a.load) {
-            throw Error(bbn._("You cannot use containers with empty URL for loading"));
+            throw new Error(bbn._("You cannot use containers with empty URL for loading"));
           }
           this.hasEmptyURL = true;
         }
@@ -271,7 +271,7 @@ export default {
       obj.url = bbn.fn.replaceAll('//', '/', obj.url);
 
       if (obj.uid) {
-        throw Error(bbn._("The object already has a uid"));
+        throw new Error(bbn._("The object already has a uid"));
       }
 
       let uid = bbn.fn.randomString(20);
@@ -327,7 +327,7 @@ export default {
 
       if (bbn.fn.getRow(this.views, {url: obj.url})) {
         bbn.fn.log(bbn.fn.getRow(this.views, {url: obj.url}) === obj, obj)
-        throw Error(bbn._("The container already exists"));
+        throw new Error(bbn._("The container already exists"));
       }
       let isValid = this.isValidIndex(idx);
       obj.idx = isValid ? idx : this.views.length;
@@ -505,7 +505,7 @@ export default {
         this.views.splice(0, this.views.length);
         bbn.fn.each(v, a => {
           if (!bbn.fn.isString(a.url)) {
-            throw Error(bbn._("The container must have a valid URL"));
+            throw new Error(bbn._("The container must have a valid URL"));
           }
   
           // Setting current if URL starts with default URL

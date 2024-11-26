@@ -9,7 +9,7 @@ export default {
      */
     registerRouter(router) {
       if (this.subrouter && (this.subrouter !== router)) {
-        throw Error(bbn._('The router %s already exists', router.getBaseURL() || '__root__'));
+        throw new Error(bbn._('The router %s already exists', router.getBaseURL() || '__root__'));
       }
 
       this.subrouter = router;
@@ -21,7 +21,7 @@ export default {
      */
     unregisterRouter(router){
       if (!this.subrouter) {
-        throw Error(bbn._('The router %s was not registered', router.getBaseURL() || '__root__'));
+        throw new Error(bbn._('The router %s was not registered', router.getBaseURL() || '__root__'));
       }
 
       this.subrouter = null;

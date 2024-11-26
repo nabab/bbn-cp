@@ -13,7 +13,7 @@ export default function normalizeComponent(cfg, clsName) {
   // Check if the configuration object is valid.
   if (!bbn.fn.isObject(cfg)) {
     bbn.fn.log(cfg, clsName);
-    throw Error("Components definition must be objects");
+    throw new Error("Components definition must be objects");
   }
 
   // Initialize the result object with standard component properties.
@@ -119,7 +119,7 @@ export default function normalizeComponent(cfg, clsName) {
         bbn.fn.checkType(cfg.computed, 'object', bbn._("The computed must be an object in %s", cn));
         for (let computedName in cfg.computed) {
           if ((typeof (cfg.computed[computedName]) !== 'function') && !cfg.computed[computedName]?.get) {
-            throw Error(bbn._("The computed must be a single function or an object with at least a get function (check %s in %s)", computedName, cn));
+            throw new Error(bbn._("The computed must be a single function or an object with at least a get function (check %s in %s)", computedName, cn));
           }
 
           res.computed[computedName] = bbn.fn.createObject({
@@ -189,7 +189,7 @@ export default function normalizeComponent(cfg, clsName) {
         if (cfg.model) {
           bbn.fn.checkType(cfg.model, 'object', bbn._("Model configuration must be objects, check %s", cn));
           if (!['input', 'change'].includes(cfg.model.event) || !bbn.fn.isString(cfg.model.prop)) {
-            throw Error(bbn._("The model configuration must have an event (input or change) and a prop (check %s)", cfg.model, cn));
+            throw new Error(bbn._("The model configuration must have an event (input or change) and a prop (check %s)", cfg.model, cn));
           }
           res.model = cfg.model;
         }
@@ -282,7 +282,7 @@ export default function normalizeComponent(cfg, clsName) {
         }
         else if (!["mixins", "componentNames", "name", "__bbnComponent"].includes(name)) {
           if (name.indexOf('__bbn') !== 0) {
-            throw Error(bbn._("Unrecognized index %s in the config object for %s", name, cn));
+            throw new Error(bbn._("Unrecognized index %s in the config object for %s", name, cn));
           }
         }
 

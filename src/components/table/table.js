@@ -1067,7 +1067,7 @@ const cpDef = {
             }
 
             if (!o) {
-              throw Error(bbn._("Wrong parameter for toolbar"))
+              throw new Error(bbn._("Wrong parameter for toolbar"))
             }
 
             r.push(o);
@@ -2523,10 +2523,7 @@ const cpDef = {
           }
 
           this.$forceUpdate();
-          const pager = this.getRef('pager');
-          if (pager) {
-            pager.$forceUpdate();
-          }
+          this.updatePager();
 
           this.isTableDataUpdating = false;
         });
@@ -3363,8 +3360,9 @@ const cpDef = {
         return res;
       },
       updatePager() {
-        if (this.hasPager) {
-          this.getRef('pager').$forceUpdate();
+        const pager = this.getRef('pager');
+        if (pager?.$forceUpdate) {
+          pager.$forceUpdate();
         }
       },
       /**

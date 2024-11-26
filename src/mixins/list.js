@@ -1045,7 +1045,7 @@ const list = {
                 return;
                 this.isLoading = false;
                 this.loadingRequestID = false;
-                throw Error("No loading request");
+                throw new Error("No loading request");
               }
 
               this.isLoading = false;

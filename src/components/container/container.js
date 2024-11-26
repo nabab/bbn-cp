@@ -85,7 +85,7 @@ const cpDef = {
    */
   async mounted() {
     if ( !this.router ){
-      throw Error(bbn._("bbn-container cannot be rendered without a bbn-router"));
+      throw new Error(bbn._("bbn-container cannot be rendered without a bbn-router"));
     }
 
     this.screenshotMounted();

@@ -90,14 +90,14 @@ export default function generateCpClass(publicClass, obj) {
         res = f(iface);
         if (res) {
           if (!bbn.fn.isObject(res)) {
-            throw Error(bbn._("If the static method returns it must be an object"));
+            throw new Error(bbn._("If the static method returns it must be an object"));
           }
           bbn.fn.iterate(res, (v, n) => {
             if (this[n] === undefined) {
               this[n] = bbnData.immunizeValue(v);
             }
             else {
-              throw Error(bbn._("The static method cannot override an existing property"));
+              throw new Error(bbn._("The static method cannot override an existing property"));
             }
           });
         }

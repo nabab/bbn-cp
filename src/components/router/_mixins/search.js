@@ -117,7 +117,7 @@ export default {
      */
     search(url) {
       if (!bbn.fn.isString(url)) {
-        throw Error(bbn._('The component bbn-container must have a valid URL defined (Search)'));
+        throw new Error(bbn._('The component bbn-container must have a valid URL defined (Search)'));
       }
       let r = bbn.fn.search(this.views, "url", url);
       if (r === -1) {

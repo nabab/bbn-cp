@@ -134,7 +134,7 @@ const cpDef = {
        */
       currentStyle(){
         if (!bbnSliderCp.orientations[this.orientation]) {
-          throw Error(bbn._("Impossible to get an orientation for the slider"));
+          throw new Error(bbn._("Impossible to get an orientation for the slider"));
         }
         let o = {visibility: 'hidden'};
         let or = bbn.fn.createObject(bbnSliderCp.orientations[this.orientation]);

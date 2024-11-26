@@ -7,7 +7,7 @@
  */
 export default function initDefaults(defaults){
   if ( typeof defaults !== 'object' ){
-    throw Error("The default object sent for defaults is not an object");
+    throw new Error("The default object sent for defaults is not an object");
   }
 
   bbn.fn.extend(true, bbn.cp.defaults, defaults);

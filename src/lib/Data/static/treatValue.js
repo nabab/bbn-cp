@@ -31,7 +31,7 @@ bbnData.treatValue = function(value, component, path, parent) {
 
     value = dataObj.value;
     if (value.__bbnComponent) {
-      throw Error(bbn._("The data object is a component definition"));
+      throw new Error(bbn._("The data object is a component definition"));
     }
   }
 

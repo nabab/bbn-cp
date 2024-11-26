@@ -1137,7 +1137,7 @@ const cpDef = {
        */
       edit(val){
         //if adding a new block
-        throw Error('watch')
+        throw new Error('watch')
         if ( ( val === false ) && ( this.newBlock === true ) ){
           this.parent.source.lines.push(this.source)
           this.parent.lines.push({

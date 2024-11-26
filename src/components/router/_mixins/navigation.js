@@ -310,7 +310,7 @@ export default {
      */
     getRoute(url, force) {
       if (!bbn.fn.isString(url)) {
-        throw Error(bbn._('The bbn-container must have a valid URL defined'));
+        throw new Error(bbn._('The bbn-container must have a valid URL defined'));
       }
 
       if (!url && this.hasEmptyURL) {
@@ -381,7 +381,7 @@ export default {
     async route(url, force) {
       //bbn.fn.warning("ROUTING " + url + ' / CURRENT: ' + this.currentURL);
       if (!bbn.fn.isString(url)) {
-        throw Error(bbn._('The component bbn-container must have a valid URL defined (URL is not a string)'));
+        throw new Error(bbn._('The component bbn-container must have a valid URL defined (URL is not a string)'));
       }
 
       /** @var {Boolean} ok Will prevent the route to happen if false */
@@ -494,7 +494,7 @@ export default {
             }
             // Otherwise the container is activated ie made visible
             else {
-              throw Error(bbn._("Impossible to find the container for URL %s", url));
+              throw new Error(bbn._("Impossible to find the container for URL %s", url));
             }
           }
         }
@@ -515,11 +515,11 @@ export default {
       const url = v?.current || v?.url;
 
       if (!bbn.fn.isString(url) && !bbn.fn.isNumber(url)) {
-        throw Error(bbn._('The component bbn-container must have a valid URL defined (URL given to route is not a string)'));
+        throw new Error(bbn._('The component bbn-container must have a valid URL defined (URL given to route is not a string)'));
       }
 
       if (!this.isValidIndex(this.selected)) {
-        throw Error(bbn._('The selected index in bbn-router is not valid for navigation'));
+        throw new Error(bbn._('The selected index in bbn-router is not valid for navigation'));
       }
 
       if (this.urls[uid] && (url !== this.currentURL)) {
@@ -601,17 +601,17 @@ export default {
     */
     activate(url, container) {
       if (!bbn.fn.isString(url)) {
-        throw Error(bbn._('The component bbn-container must have a valid URL defined (activate)'));
+        throw new Error(bbn._('The component bbn-container must have a valid URL defined (activate)'));
       }
       if (!container) {
         let row = this.views.filter(a => (a.url === url) || !url.indexOf(a.url));
         if (!row.length) {
-          throw Error(bbn._("Impossible to find a container for the URL %s", url));
+          throw new Error(bbn._("Impossible to find a container for the URL %s", url));
         }
 
         row = row[0];
         if (!this.urls[row.uid]) {
-          throw Error(bbn._("The container for the URL %s is not registered", row.url));
+          throw new Error(bbn._("The container for the URL %s is not registered", row.url));
         }
         container = this.urls[row.uid];
       }
@@ -665,7 +665,7 @@ export default {
     */
     changeURL(url, title, replace) {
       if (!bbn.fn.isString(url)) {
-        throw Error(bbn._('The component bbn-container must have a valid URL defined (change URL)'));
+        throw new Error(bbn._('The component bbn-container must have a valid URL defined (change URL)'));
       }
       if (!bbn.env.isInit) {
         return;
@@ -849,7 +849,7 @@ export default {
     */
     async callRouter(url, st) {
       if (!bbn.fn.isString(url)) {
-        throw Error(bbn._('The component bbn-container must have a valid URL defined (from callRouter)'));
+        throw new Error(bbn._('The component bbn-container must have a valid URL defined (from callRouter)'));
       }
       if (this.parent) {
         let containers = this.ancestors('bbn-container');
@@ -944,7 +944,7 @@ export default {
     },
     selected(idx) {
       if ((idx !== false) && !this.views[idx]) {
-        throw Error("The view with index " + idx + " doesn't exist");
+        throw new Error("The view with index " + idx + " doesn't exist");
       }
 
       bbn.fn.map(bbn.fn.filter(this.views, { selected: true }), a => {

@@ -6,7 +6,7 @@ import bbnData from "../Data.js";
  */
 bbnData.prototype.setData = function(data) {
   if (data.__bbnData && (data.__bbnData !== this)) {
-    throw Error("The data object is already part of another bbnData object");
+    throw new Error("The data object is already part of another bbnData object");
   }
   /**
    * @var {Symbol} __bbnData The special property added to the data object to identify it as being part of a bbnData object

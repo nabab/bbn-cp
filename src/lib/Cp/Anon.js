@@ -57,7 +57,7 @@ export default class bbnAnonCp extends bbnCp {
     if (cfg && cfg.computed) {
       bbn.fn.iterate(cfg.computed, (computed, name) => {
         if (name.substr(0, 1) === '$') {
-          throw Error(bbn._("Properties starting with the dollar sign are reserved"));
+          throw new Error(bbn._("Properties starting with the dollar sign are reserved"));
         }
 
         new bbnComputed(this, name, computed.get, computed.set);
@@ -72,7 +72,7 @@ export default class bbnAnonCp extends bbnCp {
       });
       bbn.fn.iterate(cfg.methods, (fn, name) => {
         if (name.substr(0, 1) === '$') {
-          throw Error(bbn._("Properties starting with the dollar sign are reserved"));
+          throw new Error(bbn._("Properties starting with the dollar sign are reserved"));
         }
 
         if (this[name] === undefined) {

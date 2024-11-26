@@ -71,7 +71,7 @@ const example = {
 
 bbnData.prototype.addComponent = function(component, path, parent) {
   if (!(component instanceof bbnCp)) {
-    throw Error(bbn._("bbnData hasComponent must be called with a bbn component"));
+    throw new Error(bbn._("bbnData hasComponent must be called with a bbn component"));
   }
 
   if (typeof path === 'number') {

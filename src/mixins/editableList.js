@@ -201,7 +201,7 @@ const editableList = {
      */
     edit(row, winOptions, index) {
       if (!this.editable) {
-        throw Error(_("The component is not editable, you cannot use the edit function"));
+        throw new Error(_("The component is not editable, you cannot use the edit function"));
       }
       if ( !winOptions ){
         winOptions = {};
@@ -296,7 +296,7 @@ const editableList = {
             },
           };
         } else {
-          throw Error(bbn._("Impossible to open a window if either an editor or a URL is not set"))
+          throw new Error(bbn._("Impossible to open a window if either an editor or a URL is not set"))
         }
         popup.onClose = () => {
           //  this.currentData.push(bbn.fn.clone( this.tmpRow)); // <-- Error. This add a new row into table when it's in edit mode

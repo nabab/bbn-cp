@@ -234,6 +234,24 @@ export default class bbnNode
     return this.parent && !this.parentElement && !this.parent?.isComponent;
   }
 
+  get isValid() {
+    if (this.root === false) {
+      return true;
+    }
+
+    let res;
+    if (!this.root.loop.list.includes(this.rootHash)) {
+      res = false;
+      bbn.fn.log("INVALID NODE", this);
+      deleteNodes(this.component, this.id, this.hash, true);
+    }
+    else {
+      res = this.root.isValid;
+    }
+
+    return res;
+  }
+
   get comment() {
     if (['template', 'transition'].includes(this.tag)) {
       return true;

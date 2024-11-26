@@ -33,7 +33,7 @@ export default function realDefineComponent(name, r, mixins){
     }
     catch (e) {
       bbn.fn.log(r.script)
-      throw Error("Impossible to evaluate the content of tha component " + name);
+      throw new Error("Impossible to evaluate the content of tha component " + name);
     }
     if ( typeof res === 'object' ){
       if ( !res.mixins ){

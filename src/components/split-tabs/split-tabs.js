@@ -902,7 +902,7 @@ const cpDef = {
             this.add(bbn.fn.extend(d, {slot: false, loading: false, load: true, real: false, loaded: true}));
             setTimeout(() => {
               if ( !this.urls[d.url] ){
-                throw Error(bbn._("Impossible to find the container for URL") + ' ' + d.url);
+                throw new Error(bbn._("Impossible to find the container for URL") + ' ' + d.url);
               }
               //bbn.fn.log("LOADED " + d.url, url);
               this.urls[d.url].setLoaded(true);
@@ -916,7 +916,7 @@ const cpDef = {
           setTimeout(() => {
             bbn.fn.log(d.url, d, ';;;;;');
             if ( !this.urls[d.url] ){
-              throw Error(bbn._("Impossible to find the container for URL") + ' ' + d.url);
+              throw new Error(bbn._("Impossible to find the container for URL") + ' ' + d.url);
             }
             this.urls[d.url].setLoaded(true);
             this.urls[d.url].init();

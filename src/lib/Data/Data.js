@@ -40,24 +40,24 @@ class bbnData/* extends EventTarget*/ {
    */
   constructor(data, component, path, parent) {
     if (data instanceof bbnData) {
-      throw Error("bbnData cannot be initialized with a bbnData");
+      throw new Error("bbnData cannot be initialized with a bbnData");
     }
 
     if (!(component instanceof bbnCp)) {
-      throw Error("bbnData must be initialized with a bbn component");
+      throw new Error("bbnData must be initialized with a bbn component");
     }
 
     if (!data || (typeof data !== 'object') || ![undefined, Object, Array].includes(data.constructor)) {
       bbn.fn.log(data);
-      throw Error("The object given is not compatible with bbnData");
+      throw new Error("The object given is not compatible with bbnData");
     }
 
     if (data?.__bbnData) {
-      throw Error("bbnData cannot be initialized multiple times");
+      throw new Error("bbnData cannot be initialized multiple times");
     }
 
     if (parent && !(parent instanceof bbnData)) {
-      throw Error("parent must be a bbnData");
+      throw new Error("parent must be a bbnData");
     }
 
     this.#uid = bbn.fn.randomString();

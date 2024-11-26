@@ -3,7 +3,7 @@ import removeDOM from "../../Cp/private/removeDOM.js";
 
 const isBefore = (id1, id2) => {
   if (id1 === id2) {
-    throw Error("Cannot compare the same ID in isBefore");
+    throw new Error("Cannot compare the same ID in isBefore");
   }
 
   const bits1 = id1.split('-');

@@ -5,7 +5,7 @@ export default function cloneNode(cp, id)
 {
   const element = cp.$currentMap[id];
   if (!element) {
-    throw Error("Impossible to find the element " + id + " in " + cp.$options.name);
+    throw new Error("Impossible to find the element " + id + " in " + cp.$options.name);
   }
 
   const clone = bbn.fn.createObject();

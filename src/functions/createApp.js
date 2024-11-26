@@ -102,7 +102,7 @@ export default async function createApp(ele, obj) {
   }
   bbn.fn.iterate(tmp.inlineTemplates, (tpl, tag) => {
     if (!obj.components[tag]) {
-      throw Error("Impossible to find the sub component %s", tag);
+      throw new Error("Impossible to find the sub component %s", tag);
     }
     obj.components[tag].template = tpl;
   });

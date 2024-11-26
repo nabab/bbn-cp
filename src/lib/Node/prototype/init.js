@@ -2,28 +2,33 @@ import bbnNode from "../Node.js";
 import deleteNodes from "../../Cp/private/deleteNodes.js";
 
 bbnNode.prototype.nodeInit = function(after) {
+  const old = this.element;
   if (this.isCreating) {
-    if (this.element) {
-      return this.element;
+    if (old) {
+      bbn.fn.log("ALREADY CREATING");
+      return old;
     }
 
     throw new Error("Already creating");
   }
 
-  const old = this.element;
   if (old && (old.bbnSchema === this)) {
     //await this.update();
     if (this.comment && (this.comment === bbn.fn.isComment(old))) {
       return old;
     }
 
+    if (this.comment) {
+      deleteNodes(this.component, this.id, this.hash);
+    }
+
     const isLaunched = this.setComment(this.comment);
     if (isLaunched) {
-      if (this.comment) {
-        deleteNodes(this.component, this.id, this.hash);
-      }
       return isLaunched;
     }
+  }
+  else if (old) {
+    bbn.fn.log("ALREADY INITIALIZED");
   }
 
   this.isCreating = true;

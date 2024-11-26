@@ -40,16 +40,16 @@ export default {
         bbn.fn.log(["It exists", this.urls[cp.routerUid].$numBuild, this.numRegistered, this.views[0].real]);
         if (this.urls[cp.routerUid]) {
           //this.urls[cp.url].$el.parentNode.removeChild(this.urls[cp.url].$el);
-          throw Error(bbn._('Two containers cannot have the same URL defined (' + cp.url + ')'));
+          throw new Error(bbn._('Two containers cannot have the same URL defined (' + cp.url + ')'));
         }
         else {
-          throw Error(bbn._("The container shouldn't register twice"));
+          throw new Error(bbn._("The container shouldn't register twice"));
         }
       }
 
       let idx = this.search(cp.url);
       if (idx === false) {
-        throw Error(bbn._('Impossible to find the view for URL %s', cp.url));
+        throw new Error(bbn._('Impossible to find the view for URL %s', cp.url));
       }
 
       cp.isRegistered = true;
@@ -84,7 +84,7 @@ export default {
     unregister(cp) {
       //bbn.fn.log("UNREGISTERING " + cp.url);
       if (!bbn.fn.isString(cp.url)) {
-        throw Error(bbn._('The component bbn-container must have a URL defined'));
+        throw new Error(bbn._('The component bbn-container must have a URL defined'));
       }
       this.numRegistered--;
       let idx = this.search(cp.url),

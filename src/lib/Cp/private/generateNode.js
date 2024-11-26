@@ -13,7 +13,7 @@ export default function generateNode(model, cp, parent, root, rootHash, hash, da
 {
   let node;
   if (!model || !model.id) {
-    throw Error("No model or no id in model");
+    throw new Error("No model or no id in model");
   }
 
   if (model.id === '0') {
@@ -38,7 +38,7 @@ export default function generateNode(model, cp, parent, root, rootHash, hash, da
     node = bbnNode;
   }
   else {
-    throw Error("Invalid model");
+    throw new Error("Invalid model");
   }
 
   return new node(model, cp, parent, root, rootHash, hash || '', data);

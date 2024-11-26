@@ -44,8 +44,4 @@ export default class bbnAnonHtml extends HTMLElement
     }
   }, 'bbnAnonHtml');
 
-  static get bbnCls() {
-    return bbnAnonCp;
-  }
-
 }

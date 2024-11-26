@@ -423,14 +423,14 @@ const cpDef = {
     },
     register(name, cp) {
       if (this.registeredComponents[name]) {
-        throw Error(bbn._("%s is already registered", name));
+        throw new Error(bbn._("%s is already registered", name));
       }
 
       if (cp) {
         this.registeredComponents[name] = cp;
       }
       else {
-        throw Error(bbn._("The component that should be registered as %s does not exist", name));
+        throw new Error(bbn._("The component that should be registered as %s does not exist", name));
       }
     },
     unregister(name, ignore) {
@@ -438,7 +438,7 @@ const cpDef = {
         delete this.registeredComponents[name];
       }
       else if (!ignore) {
-        throw Error(bbn._("The component") + ' ' + name + ' ' + bbn._("is not registered"));
+        throw new Error(bbn._("The component") + ' ' + name + ' ' + bbn._("is not registered"));
       }
     },
     getRegistered(name, ignore) {
@@ -450,7 +450,7 @@ const cpDef = {
       }
 
       if (!ignore) {
-        throw Error(bbn._("The component") + ' ' + name + ' ' + bbn._("cannot be found"));
+        throw new Error(bbn._("The component") + ' ' + name + ' ' + bbn._("cannot be found"));
       }
     },
     getField: bbn.fn.getField,
@@ -755,7 +755,7 @@ const cpDef = {
   },
   created() {
     if (window.appui) {
-      throw Error("Impossible to have 2 bbn-appui components on a same page. bbn-appui is meant to hold a whole web app");
+      throw new Error("Impossible to have 2 bbn-appui components on a same page. bbn-appui is meant to hold a whole web app");
     }
     else {
       window.appui = this;

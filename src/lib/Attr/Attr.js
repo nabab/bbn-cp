@@ -14,7 +14,7 @@ export default class bbnAttr
    */
   constructor(def, node, name) {
     if (!def?.id || !node?.id) {
-      throw Error("bbnAttr must be initialized with an id");
+      throw new Error("bbnAttr must be initialized with an id");
     }
 
     Object.defineProperty(this, 'id', {

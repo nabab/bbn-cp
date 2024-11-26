@@ -90,7 +90,7 @@ const cpDef = {
         }
       });
       if (num < 2) {
-        throw Error(bbn._("You cannot have more then one mode disabled"))
+        throw new Error(bbn._("You cannot have more then one mode disabled"))
       }
 
       return {

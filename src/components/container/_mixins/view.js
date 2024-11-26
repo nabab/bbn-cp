@@ -254,7 +254,7 @@ export default {
       set(v){
         if (this.currentView && (this.currentView.url !== v)) {
           if (bbn.fn.getRow(this.router.views, {url: v})) {
-            throw Error(bbn._("The URL already exists"));
+            throw new Error(bbn._("The URL already exists"));
           }
 
           this.currentView.url = v;

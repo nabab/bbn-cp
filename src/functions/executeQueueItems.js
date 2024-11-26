@@ -28,7 +28,7 @@ export default function executeQueueItems(items){
           else{
             bbn.fn.log("PROMISE REJECT OF" + a.name, a);
             a.reject();
-            throw Error(bbn._("Impossible to load the component") + ' ' + a.name);
+            throw new Error(bbn._("Impossible to load the component") + ' ' + a.name);
           }
         })
       }

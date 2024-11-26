@@ -11,7 +11,7 @@ export default function getIdParent(cp, id) {
 
   // Ensures that the ID exists
   if (!cp.$currentMap[id]) {
-    throw Error(bbn._("The ID is invalid in getIdParent for %s", cp.$options.name));
+    throw new Error(bbn._("The ID is invalid in getIdParent for %s", cp.$options.name));
   }
 
   const bits = id.split("-");

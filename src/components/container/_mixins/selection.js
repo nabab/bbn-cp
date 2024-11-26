@@ -88,7 +88,7 @@ export default {
     */
     async loadView(url, force, index) {
       if (!url) {
-        throw Error(bbn._("Impossible to get the view without an URL"));
+        throw new Error(bbn._("Impossible to get the view without an URL"));
       }
 
       //bbn.fn.log("LOADING VIEW " + url);

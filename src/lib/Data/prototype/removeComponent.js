@@ -7,7 +7,7 @@ import bbnData from "../Data.js";
 bbnData.prototype.removeComponent = function(component, path) {
   //bbn.fn.log(`REMOVING ${path} FROM ${component.$options.name}`)
   if (!(component instanceof bbnCp)) {
-    throw Error("bbnData hasComponent must be called with a bbn component");
+    throw new Error("bbnData hasComponent must be called with a bbn component");
   }
 
   if (typeof path === 'number') {
@@ -21,7 +21,7 @@ bbnData.prototype.removeComponent = function(component, path) {
   if (path !== undefined) {
     const idx = bbn.fn.search(this.refs, {component, path});
     if (idx === -1) {
-      throw Error(`The component ${component.$options.name} with path ${path} is not in the list of references`);
+      throw new Error(`The component ${component.$options.name} with path ${path} is not in the list of references`);
     }
     else {
       if (this.refs[idx].root) {
