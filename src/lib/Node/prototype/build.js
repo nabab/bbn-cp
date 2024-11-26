@@ -16,12 +16,10 @@ bbnNode.prototype.nodeBuild = function(after) {
     //bbn.fn.log("BUILDING TEMPLATE " + this.id + " " + this.hash);
   }
 
-  const parent = this.parentElement || this.component.$el;
   const cp = this.component;
   // Check if the node represents a component and not a comment
   // Retrieve the source component based on node's componentId or default to cp
   // Attempt to retrieve an existing element with the same ID and hash
-  let hash = this.hash;
   this.oldElement = this.element;
   // Flag to determine if the existing element should be replaced
   // Create the appropriate DOM element based on the node type
@@ -110,7 +108,8 @@ bbnNode.prototype.nodeBuild = function(after) {
       }
 
       // Create the element
-      this.element = !isDiff && (tag === this.tag) ? cp.$currentMap[this.id].templateElement.cloneNode() : Object.assign(
+      const clone = cp.$currentMap[this.id].templateElement.tagName.toLowerCase() === realTag;
+      this.element = clone ? cp.$currentMap[this.id].templateElement.cloneNode() : Object.assign(
         document.createElement(...constructorArgs),
         {}
       );
