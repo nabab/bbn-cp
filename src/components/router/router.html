@@ -3,7 +3,9 @@
              'bbn-overlay': (nav || scrollContent),
              }]"
       @keydown.esc="onEscape">
-  <bbn-splitter :resizable="resizable"
+  <bbn-loader bbn-if="changingConfig"/>
+  <bbn-splitter bbn-if="!changingConfig"
+                :resizable="resizable"
                 :collapsible="collapsible"
                 :full-size="scrollContent"
                 bbn-forget="!splittable"
@@ -15,8 +17,8 @@
                   'bbn-flex-height': scrollContent && !hasVerticalTabs,
                   'bbn-flex-width': hasVerticalTabs,
                   'bbn-router-nav': nav,
-                  'bbn-router-nabbn-bc': nav && isBreadcrumb,
-                  'bbn-router-nabbn-verticaltabs': hasVerticalTabs
+                  'bbn-router-nav-bc': nav && isBreadcrumb,
+                  'bbn-router-nav-verticaltabs': hasVerticalTabs
                   }"
            bbn-forget="!nav && !scrollContent"
            :style="{backgroundColor: parentContainer?.currentView?.bcolor || 'inherit'}">
@@ -219,6 +221,7 @@
   </bbn-splitter>
   <bbn-floater bbn-if="!single && showRouterCfg"
                :modal="true"
+               :top="0"
                :title="false"
                width="100%"
                :closable="false"

@@ -101,7 +101,7 @@ export default {
       this.isLoading = true;
       if (!this.currentView.pane) {
         //bbn.fn.log(["GETTING VIEW " + finalURL, url, this.router.parseURL(url), this.router.baseURL, this.getFullCurrentURL()]);
-        this.currentURL = url;
+        //this.currentURL = url;
       }
 
       this.router.$emit('update', this.router.views);

@@ -2,11 +2,15 @@ import bbn from "@bbn/bbn";
 import bbnNode from "../Node.js";
 import addUnknownComponent from "../../Cp/private/addUnknownComponent.js";
 import fetchComponents from "../../Cp/private/fetchComponents.js";
-import retrieveSlots from "../../../internals/retrieveSlots.js";
 import generateHtmlClass from "../../../internals/generateHtmlClass.js";
 import stringToTemplate from "../../../internals/stringToTemplate.js";
+import announceComponent from "../../Cp/private/announceComponent.js";
 
 bbnNode.prototype.nodeBuild = function(after) {
+  if (!this.isValid) {
+    return;
+  }
+
   /*
   if (this.tag === 'td') {
     bbn.fn.log("BUILDING TD " + this.id + " " + this.hash);
@@ -134,6 +138,10 @@ bbnNode.prototype.nodeBuild = function(after) {
           'bbnMap': { value: tpl.map, writable: false, configurable: false },
           'bbnInlineTemplates': { value: tpl.inlineTemplates, writable: false, configurable: false }
         });
+      }
+
+      if (this.isComponent) {
+        announceComponent(this.component, this.element);
       }
     }
   }

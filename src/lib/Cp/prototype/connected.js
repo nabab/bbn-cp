@@ -8,6 +8,7 @@ import generateNode from "../private/generateNode.js";
 import mapDependencies from "../../../internals/mapDependencies.js";
 import retrieveSlots from "../../../internals/retrieveSlots.js";
 import initResults from "../private/initResults.js";
+import tryMount from "../private/tryMount.js";
 
 /**
  * Starts everything up when the component enters the DOM
@@ -225,9 +226,11 @@ bbnCp.prototype.$connected = function () {
   }
 
   // registering current object to parent and setting root
-  if (this.$parent) {
-    registerChild(this.$parent, this);
+  if (this.$origin) {
+    registerChild(this);
   }
+
+  
 
   // Sending beforeMount event
   const beforeMount = new Event('hook:beforemount');
@@ -246,17 +249,6 @@ bbnCp.prototype.$connected = function () {
     configurable: true
   });
   this.$el.dispatchEvent(new CustomEvent('connected'));
-
-  if (!this.$isMounted) {
-    // Sending mounted event
-    const mounted = new Event('hook:mounted');
-    onHook(this, 'mounted');
-    this.$el.dispatchEvent(mounted);
-    Object.defineProperty(this, '$isMounted', {
-      value: true,
-      writable: false, 
-      configurable: false
-    });
-  }
+  tryMount(this);
 
 }

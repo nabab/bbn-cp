@@ -2,7 +2,7 @@ import bbn from "@bbn/bbn";
 import bbnAttr from "./Attr.js";
 import cloneNode from "../Cp/private/cloneNode.js";
 import generateNode from "../Cp/private/generateNode.js";
-import removeDOM from "../Cp/private/removeDOM.js";
+import deleteNodes from "../Cp/private/deleteNodes.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -143,16 +143,14 @@ export default class bbnLoopAttr extends bbnAttr
               && !elem.bbnHash.indexOf(n)
             ) {
               //bbn.fn.warning("DELETING")
-              removeDOM(cp, elem);
-              delete cp.$nodes[elem.bbnId][n];
+              deleteNodes(cp, elem.bbnId, n, true);
             }
             k++;
           }
         }
 
         //bbn.fn.warning("DELETING 0")
-        removeDOM(cp, a.element);
-        delete cp.$nodes[a.id][n];
+        deleteNodes(cp, this.node.id, n, true);
       }
     }
 
@@ -163,7 +161,7 @@ export default class bbnLoopAttr extends bbnAttr
           bbn.fn.each(oldList, l => {
             if (((n === l) || !n.indexOf(l + '-')) && !this.list.includes(l)) {
               //bbn.fn.warning("DELETING 1")
-              delete obj[n];
+              deleteNodes(cp, idx, n, true);
             }
           });
         }

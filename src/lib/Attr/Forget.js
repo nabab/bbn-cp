@@ -30,8 +30,9 @@ export default class bbnForgetAttr extends bbnAttr
 
     if (!init) {
       const parent = node.parentElement;
+      // The element will be forgotten, i.e. passed but not its children.
       if (this.value) {
-        if (node.element.childNodes.length) {
+        if (node.element?.childNodes.length) {
           // Iterate over each item in the node.
           while (node.element.childNodes.length) {
             if (!node.element.parentNode && node.parentElement.bbnSlots) {
@@ -41,11 +42,15 @@ export default class bbnForgetAttr extends bbnAttr
                 node.element.removeChild(node.element.childNodes[0]);
               }
             }
-            else {
+            else if (node.element.parentNode) {
               node.element.parentNode.insertBefore(node.element.childNodes[0], node.element);
+            }
+            else {
+              node.parentElement.insertBefore(node.element.childNodes[0], node.element);
             }
           }
         }
+        // Case where it was a condition which has just been set to true, the children must be conceived.
         else if (node.comment && node.condition) {
           node.nodeConceive();
         }
@@ -57,6 +62,9 @@ export default class bbnForgetAttr extends bbnAttr
       else {
         if (node.comment) {
           node.setComment(false);
+        }
+        if (!node.element) {
+          node.nodeInit();
         }
 
         if (!this.node.comment) {

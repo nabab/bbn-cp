@@ -79,11 +79,7 @@ export default {
         return false;
       }
 
-      if (this.isVisual) {
-        return obj.view.pane || false;
-      }
-
-      return obj.pane || false;
+      return obj.view?.pane || obj.pane || false;
     },
     addPane(paneId) {
       if (this.splittable) {

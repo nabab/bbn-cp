@@ -253,7 +253,8 @@ export default {
       },
       set(v){
         if (this.currentView && (this.currentView.url !== v)) {
-          if (bbn.fn.getRow(this.router.views, {url: v})) {
+          let found = bbn.fn.getRow(this.router.views, {url: v})
+          if (found && (found !== this.currentView)) {
             throw new Error(bbn._("The URL already exists"));
           }
 

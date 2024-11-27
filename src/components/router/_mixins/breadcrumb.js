@@ -157,6 +157,7 @@ export default {
       }
     },
     breadcrumb(v) {
+      this.changeConfig();
       this.isBreadcrumb = v;
     },
     /**

@@ -21,7 +21,8 @@ bbnData.prototype.removeComponent = function(component, path) {
   if (path !== undefined) {
     const idx = bbn.fn.search(this.refs, {component, path});
     if (idx === -1) {
-      throw new Error(`The component ${component.$options.name} with path ${path} is not in the list of references`);
+      bbn.fn.warning(`The component ${component.$options.name} with path ${path} is not in the list of references`);
+      //throw new Error(`The component ${component.$options.name} with path ${path} is not in the list of references`);
     }
     else {
       if (this.refs[idx].root) {

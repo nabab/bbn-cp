@@ -6,4 +6,8 @@ export default function unregisterChild(cp, child) {
   if (idx > -1) {
     cp.$children.splice(idx, 1);
   }
+  idx = cp.$components.indexOf(child);
+  if (idx > -1) {
+    cp.$components.splice(idx, 1);
+  }
 }

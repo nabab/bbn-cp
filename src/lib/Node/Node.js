@@ -1,6 +1,3 @@
-import bbn from "@bbn/bbn";
-import removeDOM from "../Cp/private/removeDOM.js";
-
 class bbnDataFacade {
   __bbn_node;
   __bbn_data;
@@ -239,17 +236,7 @@ export default class bbnNode
       return true;
     }
 
-    let res;
-    if (!this.root.loop.list.includes(this.rootHash)) {
-      res = false;
-      bbn.fn.log("INVALID NODE", this);
-      deleteNodes(this.component, this.id, this.hash, true);
-    }
-    else {
-      res = this.root.isValid;
-    }
-
-    return res;
+    return this.root.loop.list.includes(this.rootHash);
   }
 
   get comment() {

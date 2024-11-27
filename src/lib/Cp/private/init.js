@@ -251,10 +251,20 @@ export default function init(cp) {
   });
 
   /**
- * Array of bbnComponentObject instances direct descendants of the current one
- * @return {Array}
- */
+   * Array of bbnComponentObject instances direct descendants of the current one
+   * @return {Array}
+   */
   Object.defineProperty(cp, '$children', {
+    value: [],
+    writable: false,
+    configurable: false
+  });
+
+  /**
+   * Array of bbnComponentObject instances direct created by the current one
+   * @return {Array}
+   */
+  Object.defineProperty(cp, '$components', {
     value: [],
     writable: false,
     configurable: false
@@ -394,9 +404,11 @@ export default function init(cp) {
   addNamespace(cp, '$cid', 'internal');
   addNamespace(cp, '$event', 'internal');
   addNamespace(cp, '$parent', 'internal');
+  addNamespace(cp, '$origin', 'internal');
   addNamespace(cp, '$options', 'internal');
   addNamespace(cp, '$namespaces', 'internal');
   addNamespace(cp, '$children', 'internal');
+  addNamespace(cp, '$components', 'internal');
   addNamespace(cp, '$refs', 'internal');
   addNamespace(cp, '$slots', 'internal');
   addNamespace(cp, '$isCreated', 'internal');

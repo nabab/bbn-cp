@@ -155,16 +155,16 @@ const cpDef = {
         set(v) {
           switch (v) {
             case 'visual':
-              this.router.isVisual = true;
+              this.router.currentVisual = true;
               this.router.isBreadcrumb = false;
               break;
             case 'breadcrumb':
               this.router.isBreadcrumb = true;
-              this.router.isVisual = false;
+              this.router.currentVisual = false;
               break;
             default:
               this.router.isBreadcrumb = false;
-              this.router.isVisual = false;
+              this.router.currentVisual = false;
               break;
           }
         }

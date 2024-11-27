@@ -7,9 +7,16 @@ export default {
        * @data {Boolean} visual
        */
       showRouterCfg: false,
+      changingConfig: false,
     }
   },
   methods: {
+    changeConfig() {
+      this.changingConfig = true;
+      setTimeout(() => {
+        this.changingConfig = false;
+      }, 1500);
+    },
     /**
      * @method setconfig
      * @fires setStorage

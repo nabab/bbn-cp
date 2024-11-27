@@ -455,7 +455,7 @@ const cpDef = {
   },
   computed: {
     hasNoCoordinate() {
-      return !this.element && !this.top && !this.right && !this.left && !this.bottom;
+      return !this.element && (this.top === undefined) && (this.right === undefined) && (this.left === undefined) && (this.bottom === undefined);
     },
     /**
      * Normalizes the property 'left'.

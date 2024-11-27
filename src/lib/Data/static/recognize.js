@@ -52,7 +52,7 @@ const mutateArray = function(newArr, oldArr, component, path, parent) {
           changed = true;
         }
         else {
-          oldArr.splice(i, 0, component.$treatValue(newArr[i], i, oldArr.__bbnData));
+          oldArr.splice(i, 0, newArr[i]);
           toFix = true;
           changed = true;
         }
@@ -60,7 +60,7 @@ const mutateArray = function(newArr, oldArr, component, path, parent) {
       else if (Object.hasOwn(oldArr, i)) {
         if (bbn.fn.isObject(newArr[i], oldArr[i])) {
           if (newArr[i].__bbnData) {
-            oldArr[i] = component.$treatValue(newArr[i], i, oldArr.__bbnData);
+            oldArr[i] = newArr[i];
             changed = true;
           }
           else if (mutateObject(newArr[i], oldArr[i], component, i, oldArr)) {
@@ -73,12 +73,12 @@ const mutateArray = function(newArr, oldArr, component, path, parent) {
           }
         }
         else {
-          oldArr[i] = component.$treatValue(newArr[i], i, oldArr.__bbnData);
+          oldArr[i] = newArr[i];
           changed = true;
         }
       }
       else {
-        oldArr.push(component.$treatValue(newArr[i], i, oldArr.__bbnData));
+        oldArr.push(newArr[i]);
         changed = true;
       }
     }
@@ -106,11 +106,11 @@ const mutateObject = function(newObj, oldObj, component, path, parent) {
   for (let n in newObj) {
     if (oldObj[n] !== newObj[n]) {
       if (bbn.fn.isPrimitive(newObj[n])) {
-        oldObj[n] = component.$treatValue(newObj[n], n, oldObj.__bbnData);
+        oldObj[n] = newObj[n];
         changed = true;
       }
       else if (!Object.hasOwn(oldObj, n) || bbn.fn.isPrimitive(oldObj[n])) {
-        oldObj[n] = component.$treatValue(newObj[n], n, oldObj.__bbnData);
+        oldObj[n] = newObj[n];
         changed = true;
       }
       else if (oldObj[n].__bbnData) {
@@ -118,7 +118,7 @@ const mutateObject = function(newObj, oldObj, component, path, parent) {
         if (oldObjData) {
           const newObjectData = bbnData.getObject(newObj[n]);
           if (newObjectData) {
-            oldObj[n] = component.$treatValue(newObj[n], n, oldObj.__bbnData);
+            oldObj[n] = newObj[n];
           }
           else if (oldObjData.isArray) {
             if (bbn.fn.isArray(newObj[n])) {
@@ -127,7 +127,7 @@ const mutateObject = function(newObj, oldObj, component, path, parent) {
               }
             }
             else {
-              oldObj[n] = component.$treatValue(newObj[n], n, oldObj.__bbnData);
+              oldObj[n] = newObj[n];
             }
           }
           else {
@@ -137,7 +137,7 @@ const mutateObject = function(newObj, oldObj, component, path, parent) {
               }
             }
             else {
-              oldObj[n] = component.$treatValue(newObj[n], n, oldObj.__bbnData);
+              oldObj[n] = newObj[n];
               changed = true;
             }
           }

@@ -55,11 +55,14 @@ export default {
        * If true visual mode is used for nav (instead of tabs or breadcrumbs)
        * @data {Boolean} visual
        */
-      isVisual: this.visual,
+      currentVisual: this.visual,
       visualStyleContainer: bbn.fn.createObject(),
     }
   },
   computed: {
+    isVisual() {
+      return this.currentVisual && !this.parentContainer;
+    },
     visualContainerStyle() {
       if (!this.isVisual) {
         return {};
@@ -288,12 +291,10 @@ export default {
      * @fires setConfig
      */
     isVisual(v) {
-      this.$nextTick(() => {
-        if (this.ready) {
-          this.setConfig();
-          this.onResize();
-        }
-      })
+      if (this.ready) {
+        this.changeConfig();
+        this.setConfig();
+      }
     },
   },
   beforeMount() {
@@ -301,7 +302,7 @@ export default {
       let storage = this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
       if (storage) {
         if (storage.visual !== undefined) {
-          this.isVisual = storage.visual;
+          this.currentVisual = storage.visual;
         }
   
         if (storage.orientation) {

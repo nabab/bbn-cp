@@ -1,5 +1,3 @@
-import bbn from "@bbn/bbn";
-import removeDOM from "./removeDOM.js";
 /**
  * Adds or updates the given element to the `$elements` object property of a `bbnCp` component.
  * 

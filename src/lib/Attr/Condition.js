@@ -1,6 +1,5 @@
 import bbn from "@bbn/bbn";
 import bbnAttr from "./Attr.js";
-import removeDOM from "../Cp/private/removeDOM.js";
 import deleteNodes from "../Cp/private/deleteNodes.js";
 
 /**
@@ -88,8 +87,10 @@ export default class bbnConditionAttr extends bbnAttr
   }
 
   attrUpdate(init) {
+    const node = this.node;
+    const cp = node.component;
     if (!init) {
-      if (this.node.isOut) {
+      if (node.isOut) {
         bbn.fn.log("CONDITION IS OUT");
         return;
       }
@@ -119,28 +120,20 @@ export default class bbnConditionAttr extends bbnAttr
     // If the condition is true, treat the element.
 
     // Special handling for specific node tags like 'template', 'transition', 'slot'.
-    if (this.node.forget?.value || ['template', 'transition', 'slot'].includes(this.node.tag)) {
-      if (this.node.items) {
+    if (node.forget?.value || ['template', 'transition', 'slot'].includes(this.node.tag)) {
+      if (node.items) {
         if (!this.attrGetValue()) {
-          // Iterate over each item in the node.
-          bbn.fn.each(this.node.items, it => {
-            let e = this.node.component.$retrieveElement(it.id, this.node.hash);
-            // Remove the element if it exists and is not a comment.
-            if (e) {
-              bbn.fn.log("REMOVE CHILDREN");
-              removeDOM(this.node.component, e);
-            }
-          });
+          deleteNodes(cp, node.id, node.hash);
         }
-        else if ((this.node.tag === 'template') && !this.node.element){
-          this.node.nodeInit();
+        else if ((node.tag === 'template') && !node.element) {
+          node.nodeInit();
         }
       }
     }
     else {
       const isComment = !this.attrGetValue(init);
       if (!isComment && this.node.forget) {
-        this.node.forget.attrUpdate();
+        node.forget.attrUpdate();
       }
     }
   }
