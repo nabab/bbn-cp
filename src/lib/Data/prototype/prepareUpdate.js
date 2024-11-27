@@ -33,7 +33,7 @@ bbnData.prototype.prepareUpdate = function(path) {
   const deps = [];
   this.lastUpdate = num;
   let root = this.root;
-  while (root.parent) {
+  while (root?.parent) {
     root.parent.lastUpdate = num;
     root = root.parent.refs[root.parent.refs.length-1];
   }
