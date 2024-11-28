@@ -8,7 +8,7 @@ export default function disconnectedCallback(ele) {
   if (ele.bbn) {
     disconnected(ele.bbn)
   }
-  if (ele.bbnComponent.$components && ele.bbnComponent.$components.includes(ele)) {
+  if (ele.bbnComponent?.$components && ele.bbnComponent.$components.includes(ele)) {
     ele.bbnComponent.$components.splice(ele.bbnComponent.$components.indexOf(ele), 1);
   }
 }
