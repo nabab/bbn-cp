@@ -6,6 +6,47 @@
  * @param {string} name - The name of the property or method being added to the namespace.
  * @param {string} type - The type of the namespace being added (e.g., 'prop', 'method').
  */
+const reserved = [
+  "await",
+  "break",
+  "case",
+  "catch",
+  "class",
+  "const",
+  "continue",
+  "debugger",
+  "default",
+  "delete",
+  "do",
+  "else",
+  "export",
+  "extends",
+  "false",
+  "finally",
+  "for",
+  "function",
+  "if",
+  "import",
+  "in",
+  "instanceof",
+  "let",
+  "new",
+  "null",
+  "return",
+  "static",
+  "super",
+  "switch",
+  "this",
+  "throw",
+  "true",
+  "try",
+  "typeof",
+  "var",
+  "void",
+  "while",
+  "with",
+  "yield"
+];
 export default function addNamespace(cp, name, type) {
   if (!(cp instanceof bbnCp)) {
     throw new Error("No component in addNamespace");
@@ -18,7 +59,7 @@ export default function addNamespace(cp, name, type) {
   }
 
   // Checks if the name is among the list of reserved names in the bbn.var.reserved array
-  if (bbn.var.reserved.includes(name)) {
+  if (reserved.includes(name)) {
     throw new Error(bbn._("The name %s is reserved", name));
   }
 
@@ -39,3 +80,4 @@ export default function addNamespace(cp, name, type) {
   // If no conflicts, adds the name to the $namespaces object with its type
   cp.$namespaces[name] = type;
 }
+
