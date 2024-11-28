@@ -23,7 +23,7 @@ export default function tryMount(cp, child) {
     return;
   }
 
-  if (!cp.$components.filter(a => !(a instanceof bbnCp) || !a.$isMounted || !a.$el.parentNode).length) {
+  if (!cp.$components.filter(a => !(a instanceof bbnCp) || !a.$isMounted).length) {
     //bbn.fn.log("SUCCEED MOUNT ON " + fullId(cp));
     // Sending mounted event
     const mounted = new Event('hook:mounted');
@@ -44,15 +44,23 @@ export default function tryMount(cp, child) {
     }
     if (cp.$el.parentNode) {
       timeouts[cp.$cid] = setTimeout(() => {
+        if (cp.$isRoot) {
+          let i = 0;
+          while (cp.$components[i]) {
+            if ((cp.$components[i] instanceof HTMLElement) && !cp.$components[i].parentNode) {
+              cp.$components.splice(i, 1);
+            }
+            else {
+              i++;
+            }
+          }
+        }
         if (!cp.$isMounted) {
           tryMount(cp);
         }
 
         delete timeouts[cp.$cid];
       }, 5*bbn.cp.tickDelay);
-    }
-    else {
-      delete timeouts[cp.$cid];
     }
   }
 }
