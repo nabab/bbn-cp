@@ -141,7 +141,7 @@ bbnNode.prototype.nodeBuild = function(after) {
       }
 
       if (this.isComponent) {
-        announceComponent(this.component, this.element);
+        announceComponent(cp, this.element);
       }
     }
   }

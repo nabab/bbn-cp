@@ -3,7 +3,7 @@
              'bbn-overlay': (nav || scrollContent),
              }]"
       @keydown.esc="onEscape">
-  <bbn-loader bbn-if="changingConfig"/>
+  <bbn-loader bbn-if="changingConfig || !ready"/>
   <bbn-splitter bbn-if="!changingConfig"
                 :resizable="resizable"
                 :collapsible="collapsible"
@@ -236,5 +236,4 @@
       </div>
     </div>
   </bbn-floater>
-  <bbn-loader bbn-if="!ready"/>
 </div>

@@ -20,6 +20,6 @@ bbnCp.prototype.$nextTick = async function(fn){
         hash: f.hash,
       });
       bbn.cp.startTick();
-    }, 10*bbn.cp.tickDelay)
+    }, bbn.cp.tickDelay)
   });
 }

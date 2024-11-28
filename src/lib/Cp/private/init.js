@@ -221,7 +221,7 @@ export default function init(cp) {
    * Unique ID for each component, used for global registration
    */
   Object.defineProperty(cp, '$origin', {
-    value: cp.bbnComponent,
+    value: cp.$el.bbnComponent,
     writable: false,
     configurable: false
   });

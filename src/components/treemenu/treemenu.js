@@ -236,7 +236,7 @@ const cpDef = {
        */
       reset(){
         let tree = this.getRef('tree');
-        if (bbn.cp.isComponent(tree)) {
+        if (tree instanceof bbnCp) {
           tree.reset();
         }
       },

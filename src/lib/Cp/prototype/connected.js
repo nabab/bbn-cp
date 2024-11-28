@@ -16,7 +16,6 @@ import tryMount from "../private/tryMount.js";
  * - Sets up the props
  * - Triggers beforecreate
  * - Sets $parent
- * - Launches $addToElements in order to add the element to the $elements property
  * - Sets $root
  * - Adds namespaces for computed and methods
  * - Sets up the properties based on attributes

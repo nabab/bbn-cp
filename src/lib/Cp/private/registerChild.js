@@ -7,10 +7,10 @@ export default function registerChild(child) {
   bbn.fn.checkType(child, bbnCp, "The child must be a bbn component");
   const parent = child.$parent;
   const origin = child.$origin;
-  const idx = cp.$components.indexOf(child.$el);
+  const idx = origin.$components.indexOf(child.$el);
   if (idx === -1) {
     bbn.fn.warning("The child is not a child of the component");
-    bbn.fn.log(cp.$options.name, child.$options.name);
+    bbn.fn.log(origin.$options.name, child.$options.name);
     return;
   }
 

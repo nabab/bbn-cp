@@ -1,13 +1,19 @@
+import tryMount from "./tryMount.js";
+
 /**
  * Unregister the given child of the component from the $children array
  */
-export default function unregisterChild(cp, child) {
-  let idx = cp.$children.indexOf(child);
+export default function unregisterChild(child) {
+  let idx = child.$parent.$children.indexOf(child);
   if (idx > -1) {
-    cp.$children.splice(idx, 1);
+    child.$parent.$children.splice(idx, 1);
   }
-  idx = cp.$components.indexOf(child);
+
+  idx = child.$origin.$components.indexOf(child);
   if (idx > -1) {
-    cp.$components.splice(idx, 1);
+    child.$origin.$components.splice(idx, 1);
+  }
+  if (!child.$origin.$isMounted) {
+    tryMount(child.$origin);
   }
 }

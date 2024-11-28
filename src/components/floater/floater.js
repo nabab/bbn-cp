@@ -1285,9 +1285,11 @@ const cpDef = {
    * @fires closeAll
    */
   mounted() {
-    if (this.isVisible) {
-      this.init();
-    }
+    this.$nextTick(() => {
+      if (this.isVisible) {
+        this.init();
+      }
+    });
     
     /* Useful ?
     let ancestors = this.ancestors('bbn-floater');

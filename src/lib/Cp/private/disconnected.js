@@ -21,9 +21,7 @@ export default function disconnected(cp) {
     onHook(cp, 'beforeDestroy');
     cp.$el.dispatchEvent(beforeDestroy);
     
-    if (cp.$parent) {
-      unregisterChild(cp.$parent, cp);
-    }
+    unregisterChild(cp);
     Object.defineProperty(cp, '$isDestroyed', {
       value: true,
       writable: false,

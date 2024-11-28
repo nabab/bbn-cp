@@ -526,11 +526,11 @@ const cpDef = {
        */
       reset(){
         this.isLoaded = false;
-        //this.$set(this, 'currentData', []);
-        //this.$forceUpdate();
-        //this.$nextTick(() => {
+        this.$set(this, 'currentData', []);
+        this.$forceUpdate();
+        this.$nextTick(() => {
           this.updateData();
-        //})
+        })
       },
       /**
        * Resizes the root scroller.
