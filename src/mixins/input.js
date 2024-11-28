@@ -484,8 +484,8 @@ const input = {
           document.head.appendChild(style);
         }
 
-        this.$el.appendChild(cont);
-        bbn.cp.createApp(cont, cfg)
+        //this.$el.appendChild(cont);
+        //bbn.cp.createApp(cont, cfg)
       }
 
       const ev = () => {
