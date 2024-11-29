@@ -44,6 +44,10 @@ const cpDef = {
          */
        pattern: {
         type: String
+      },
+      autoPosition: {
+        type: Boolean,
+        default: false
       }
     },
     data(){
@@ -682,10 +686,11 @@ const cpDef = {
           this.currentPos = this.getPos(this.getRef('element').selectionStart);
           this.setInputValue();
           if (!this.value) {
-            this.$nextTick(() => {
-              this.currentPos = 0;
-              this.getRef('element').setSelectionRange(this.currentPos, this.currentPos);
-            });
+            this.currentPos = 0;
+            this.getRef('element').setSelectionRange(this.currentPos, this.currentPos);
+          }
+          else if (this.autoPosition) {
+
           }
         }
       },
