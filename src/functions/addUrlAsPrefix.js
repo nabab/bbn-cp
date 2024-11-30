@@ -45,12 +45,21 @@ export default function addUrlAsPrefix(prefix, url, mixins) {
         catch (e) {
           throw new Error(e);
         }
-        if (!bbn.fn.isEmpty(mixins) && definition) {
+
+        if (mixins && definition) {
           if (!definition.mixins) {
             definition.mixins = [];
           }
 
-          definition.mixins.push(...(bbn.fn.isObject(mixins) ? [mixins] : mixins));
+          if (bbn.fn.isObject(mixins)) {
+            mixins = [mixins];
+          }
+
+          bbn.fn.each(mixins, m => {
+            if (!definition.mixins.includes(m)) {
+              definition.mixins.push(m);
+            }
+          });
         }
 
         res.components.push(bbn.fn.createObject({

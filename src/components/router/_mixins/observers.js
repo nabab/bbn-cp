@@ -49,8 +49,7 @@ export default {
      * The called method on the switching to false of the "observer Dirty" property value
      * @method observerClear
      * @param {Object} obs
-     * @fires getIndex
-     * @fires $delete
+     * @fires getInde
      * @fires $nextTick
      * @fires $forceUpdate
      * @fires observationTower.observerClear
@@ -59,8 +58,8 @@ export default {
       let ele = this.$el.querySelector(".bbn-observer-" + obs.element);
       if (ele) {
         let idx = this.getIndex(ele);
-        if ((idx !== false) && (this.views[idx].events['bbnObs' + obs.element + obs.id] !== undefined)) {
-          this.$delete(this.views[idx].events, 'bbnObs' + obs.element + obs.id);
+        if ((idx !== false) && ('bbnObs' + obs.element + obs.id in this.views[idx].events)) {
+          delete this.views[idx].events['bbnObs' + obs.element + obs.id];
           this.$nextTick(() => {
             //this.$forceUpdate();
           });

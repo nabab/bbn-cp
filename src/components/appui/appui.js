@@ -202,10 +202,6 @@ const cpDef = {
     prefix: {
       type: String
     },
-    componentsPath: {
-      type: String,
-      default: 'components/'
-    },
     componentsMixin: {
       type: Object
     },

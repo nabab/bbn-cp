@@ -74,7 +74,7 @@ import bbnParser from "./lib/Parser/Parser.js";
 import bbnWatcher from "./lib/Watcher/Watcher.js";
 import bbnAnonCp from "./lib/Cp/Anon.js";
 import "./lib/Cp/prototype/connected.js";
-import "./lib/Cp/prototype/delete.js";
+import "./lib/Cp/prototype/create.js";
 import "./lib/Cp/prototype/destroy.js";
 import "./lib/Cp/prototype/emit.js";
 import "./lib/Cp/prototype/forceUpdate.js";

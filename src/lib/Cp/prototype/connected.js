@@ -7,7 +7,6 @@ import updateData from "../private/updateData.js";
 import generateNode from "../private/generateNode.js";
 import mapDependencies from "../../../internals/mapDependencies.js";
 import retrieveSlots from "../../../internals/retrieveSlots.js";
-import initResults from "../private/initResults.js";
 import tryMount from "../private/tryMount.js";
 
 /**

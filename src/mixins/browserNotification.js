@@ -111,11 +111,10 @@ const browserNotification = {
      * @method removeBrowserNotification
      * @memberof browserNotificationComponent
      * @param {String} id
-     * @fires $delete
      */
     removeBrowserNotification(id){
       if (id && (id in this.browserNotifications)){
-        this.$delete(this.browserNotifications, id);
+        delete this.browserNotifications[id];
       }
     }
   },
