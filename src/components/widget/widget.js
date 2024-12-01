@@ -254,7 +254,7 @@ const cpDef = {
       },
       /**
        * The padding value to assign to the content element.
-       * If "true" the class "bbn-padded" will be assigned
+       * If "true" the class "bbn-padding" will be assigned
        * @prop {Boolean|Number|String} [false] padding
        */
       padding: {

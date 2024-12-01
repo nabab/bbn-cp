@@ -4,7 +4,7 @@
      :tabindex="!!keyboard ? 0 : -1"
      bbn-focused="!!keyboard">
   <div bbn-if="ready"
-       :class="{'bbn-w-100': !fullSlide, 'bbn-overlay': fullSlide, 'bbn-padded' : !fullSlide}">
+       :class="{'bbn-w-100': !fullSlide, 'bbn-overlay': fullSlide, 'bbn-padding' : !fullSlide}">
     <!-- position aboslute -->
     <div class="bbn-l bbn-slideshow-count bbn-abs"
          bbn-if="showCount">
@@ -48,7 +48,7 @@
           <div :class="[{'bbn-w-100': !fullSlide, 'bbn-overlay': fullSlide}, 'bbn-flex-width']">
             <!--Left arrow-->
             <div bbn-if="arrows && (arrowsPosition === 'default') && (items.length > 1)"
-                 class="bbn-middle bbn-padded bbn-slideshow-arrow-left"
+                 class="bbn-middle bbn-padding bbn-slideshow-arrow-left"
                  @mouseover="arrowsPreview('prev', true)"
                  @mouseleave="arrowsPreview('prev', false)">
               <i bbn-show="showArrowLeft"
@@ -77,7 +77,7 @@
                          (it.animation ? 'bbn-slideshow-effect-' + it.animation : ''),
                          it.cls || '',
                          'bbn-vmiddle',
-                         'bbn-lpadded',
+                         'bbn-lpadding',
                          'bbn-block',
                          'bbn-lg',
                          {'bbn-h-100': fullSlide, 'bbn-abs': fullSlide}
@@ -144,7 +144,7 @@
             </div>
             <!-- Right arrow-->
             <div bbn-if="arrows && (arrowsPosition === 'default') && (items.length > 1)"
-                 class="bbn-middle bbn-padded bbn-slideshow-arrow-right"
+                 class="bbn-middle bbn-padding bbn-slideshow-arrow-right"
                  @mouseover="arrowsPreview('next', true)"
                  @mouseleave="arrowsPreview('next', false)">
               <i bbn-show="showArrowRight"
@@ -175,7 +175,7 @@
           </div>
         </div>
         <div bbn-if="showInfo && items[currentIndex] && items[currentIndex][sourceInfo] && items[currentIndex][sourceInfo].length"
-             class="bbn-middle bbn-padded bbn-slideshow-info"
+             class="bbn-middle bbn-padding bbn-slideshow-info"
              bbn-html="items[currentIndex][sourceInfo]"/>
         <!-- Miniatures -->
         <div bbn-if=" [true, 'image', 'circle'].includes(preview)" :class="[

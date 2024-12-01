@@ -9,7 +9,7 @@
       <i class="nf nf-fa-clipboard bbn-right-smargin"/>
       <span bbn-text="_('Clipboard is empty')"/>
     </div>
-    <div class="bbn-large bbn-c bbn-w-100 bbn-vpadded" bbn-else>
+    <div class="bbn-large bbn-c bbn-w-100 bbn-vpadding" bbn-else>
       <bbn-input :placeholder="_('Search clipboard')"
                  :button-right="(search === '') ? 'nf nf-fa-search' : 'nf nf-fa-close'"
                  bbn-model="search"
@@ -17,7 +17,7 @@
                  ref="search"
                  @clickrightbutton="unsearch"/>
     </div>
-    <div class="bbn-w-100 bbn-hpadded"
+    <div class="bbn-w-100 bbn-hpadding"
          bbn-if="items.length">
       <bbn-button bbn-if="!search.length"
                   @click="clear"
@@ -81,7 +81,7 @@
         </bbn-list>
       </bbn-scroll>
     </div>
-    <div class="bbn-w-100 bbn-padded bbn-primary">
+    <div class="bbn-w-100 bbn-padding bbn-primary">
       <input class="bbn-textbox bbn-w-100 bbn-s"
              tabindex="-1"
              :disabled="!isOpened"

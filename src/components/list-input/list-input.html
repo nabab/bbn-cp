@@ -28,7 +28,7 @@
       <component bbn-else
                 :is="li.data.url && !li.data[children] ? 'a' : 'span'"
                 @click.prevent="() => {}"
-                class="bbn-w-100 bbn-vxspadded bbn-hspadded"
+                class="bbn-w-100 bbn-vxspadding bbn-hspadding"
                 :href="li.data.url || null">
         <span class="space" bbn-if="selection || (mode === 'options')">
           <i bbn-if="li.data.selected"
@@ -40,7 +40,7 @@
         <span class="text" bbn-html="li.data[sourceText]"></span>
       </component>
       <div bbn-if="!currentComponent && li.data[children] && li.data[children].length"
-          class="bbn-block bbn-abs bbn-vxspadded bbn-hspadded"
+          class="bbn-block bbn-abs bbn-vxspadding bbn-hspadding"
           style="right: 0px"
       >
         <i class="nf nf-fa-chevron_right"></i>

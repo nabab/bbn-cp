@@ -35,7 +35,6 @@
                :min-width="getRef('li' + overIdx)?.clientWidth || 0"
                :children="children"
                :element="getRef('li' + overIdx)"
-               :scroll-hidden="true"
                @mouseenter="activeIdx = overIdx"
                @mouseleave="overIdx = -1"
                :focused="false"

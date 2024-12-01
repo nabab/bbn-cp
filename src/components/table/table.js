@@ -1804,7 +1804,7 @@ const cpDef = {
           if ( this.pageable ){
             this.getPopup({
               title: bbn._('Warning'),
-              content: '<div class="bbn-padded bbn-c">' + bbn._('What do you want to export?') + '</div>',
+              content: '<div class="bbn-padding bbn-c">' + bbn._('What do you want to export?') + '</div>',
               buttons: [{
                 text: bbn._('Cancel'),
                 action: () => {
@@ -1883,7 +1883,7 @@ const cpDef = {
             scrollable: true,
             component: {
               template: `
-<div class="bbn-block bbn-spadded">
+<div class="bbn-block bbn-spadding">
   <h3 @click="showValues = !showValues"
       bbn-text="showValues ? _('Hide the values') : _('Show the values')"
       class="bbn-p"></h3>
@@ -2191,7 +2191,7 @@ const cpDef = {
             :scrollable="true"
             :prefilled="true"
             @success="applyColumnsShown">
-    <div class="bbn-padded">
+    <div class="bbn-padding">
       <ul bbn-if="source.titleGroups">
         <li bbn-for="(tg, idx) in source.titleGroups">
           <h3>
@@ -3469,13 +3469,13 @@ const cpDef = {
             obj.componentOptions = col.options;
           }
           else if (bbn.fn.isFunction(col.render)) {
-            obj.content = `<div class="bbn-spadded">${col.render(data, col, itemIndex)}</div>`;
+            obj.content = `<div class="bbn-spadding">${col.render(data, col, itemIndex)}</div>`;
           }
           else if (col.field) {
-            obj.content = `<div class="bbn-spadded">${data[col.field]}</div>`;
+            obj.content = `<div class="bbn-spadding">${data[col.field]}</div>`;
           }
           else {
-            obj.content = `<div class="bbn-spadded">${data.text}</div>`;
+            obj.content = `<div class="bbn-spadding">${data.text}</div>`;
           }
           this.getPopup().open(obj);
         }

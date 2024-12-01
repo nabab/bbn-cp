@@ -952,7 +952,7 @@ const cpDef = {
                   @success="success" 
                   :action="source.root + 'actions/finder/' + (!source.new ? 'rename' : 'new_dir')"
                   >
-          <div class="bbn-grid-fields bbn-l bbn-padded">
+          <div class="bbn-grid-fields bbn-l bbn-padding">
             <label>`+ bbn._('Name') +`</label>
             <div>
               <bbn-input bbn-if="!source.new" 

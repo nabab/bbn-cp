@@ -101,7 +101,7 @@ export default {
         &nbsp;
       </div>
       <div bbn-if="!source.view.fixed"
-            class="bbn-vmiddle bbn-h-100 bbn-hpadded"
+            class="bbn-vmiddle bbn-h-100 bbn-hpadding"
             @mousedown.prevent.stop="close"
             @mouseup.prevent.stop
             :style="!isHover ? lastColors : {}">

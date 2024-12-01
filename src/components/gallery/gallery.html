@@ -1,6 +1,6 @@
 <div :class="[componentClass, {'bbn-flex-height': scrollable, 'bbn-gallery-sorting': isSorting}]">
   <div bbn-if="toolbar"
-       class="bbn-l bbn-widget bbn-gallery-toolbar bbn-spadded bbn-vmiddle">
+       class="bbn-l bbn-widget bbn-gallery-toolbar bbn-spadding bbn-vmiddle">
     <component bbn-if="isObject(toolbar) || isComponent(toolbar)"
                :is="toolbar"/>
     <template bbn-else>
@@ -103,7 +103,7 @@
       <div ref="gallery"
            class="bbn-flex-fill">
         <div bbn-if="isLoading"
-            :class="['bbn-background', 'bbn-middle', 'bbn-padded', {
+            :class="['bbn-background', 'bbn-middle', 'bbn-padding', {
               'bbn-overlay': scrollable,
             }]">
           <bbn-loadicon class="bbn-vmiddle"

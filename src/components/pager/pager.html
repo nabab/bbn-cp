@@ -16,7 +16,7 @@
 										bbn-if="buttons"/>
 				<!-- OR 1ST ICON -->
 				<span bbn-else
-							class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
+							class="bbn-iblock bbn-hxspadding bbn-p bbn-pager-mobile-icon"
 							@click="firstPage"
 							:style="{visibility: currentPage <= 2 ? 'hidden' : 'visible'}">
 					<i class="nf nf-fa-angle_double_left bbn-xl bbn-pager-mobile-icon"/>
@@ -30,7 +30,7 @@
 										bbn-if="buttons"/>
 				<!-- OR 2ND ICON (PREVIOUS) -->
 				<span bbn-else
-							class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
+							class="bbn-iblock bbn-hxspadding bbn-p bbn-pager-mobile-icon"
 							@click="prevPage"
 							:style="{visibility: currentPage == 1 ? 'hidden' : 'visible'}">
 					<i class="nf nf-fa-angle_left bbn-xl bbn-pager-mobile-icon"/>
@@ -59,7 +59,7 @@
 										bbn-if="buttons"/>
 				<!-- OR 3RD ICON (NEXT) -->
 				<span bbn-else
-							class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
+							class="bbn-iblock bbn-hxspadding bbn-p bbn-pager-mobile-icon"
 							@click="nextPage"
 							:style="{visibility: currentPage == element.numPages ? 'hidden' : 'visible'}">
 					<i class="nf nf-fa-angle_right bbn-xl bbn-pager-mobile-icon"/>
@@ -73,7 +73,7 @@
 										bbn-if="buttons"/>
 				<!-- OR 4TH ICON (LAST) -->
 				<span bbn-else
-							class="bbn-iblock bbn-hxspadded bbn-p bbn-pager-mobile-icon"
+							class="bbn-iblock bbn-hxspadding bbn-p bbn-pager-mobile-icon"
 							@click="lastPage"
 							:style="{visibility: currentPage >= element.numPages - 1 ? 'hidden' : 'visible'}">
 					<i class="nf nf-fa-angle_double_right bbn-xl bbn-pager-mobile-icon"/>

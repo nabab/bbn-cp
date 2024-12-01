@@ -2,7 +2,7 @@
   <div bbn-if="master"
        :class="['bbn-breadcrumb-container', {'bbn-flex-height': content}]"
   >
-    <div class="bbn-h-100 bbn-alt bbn-bordered-bottom bbn-no-border-top bbn-no-border-right bbn-vmiddle bbn-hspadded"
+    <div class="bbn-h-100 bbn-alt bbn-bordered-bottom bbn-no-border-top bbn-no-border-right bbn-vmiddle bbn-hspadding"
          :style="{
            backgroundColor: backgroundColor,
            color: fontColor
@@ -23,7 +23,7 @@
                      tabindex="0"
                      :context="true"
         >
-          <span class="bbn-hxspadded">
+          <span class="bbn-hxspadding">
             <i bbn-if="isNumber(selected) && source[selected] && !!source[selected].icon"
                :class="[source[selected].icon]"
             ></i>
@@ -66,7 +66,7 @@
                     backgroundColor: isNumber(sn.selected) && sn.source[sn.selected] && !!sn.source[sn.selected].bcolor ? sn.source[sn.selected].bcolor : '',
                     color: isNumber(sn.selected) && sn.source[sn.selected] && !!sn.source[sn.selected].fcolor ? sn.source[sn.selected].fcolor : fontColor
                   }"
-                  class="bbn-hxspadded"
+                  class="bbn-hxspadding"
             >
               <i bbn-if="isNumber(sn.selected) && sn.source[sn.selected] && !!sn.source[sn.selected].icon"
                  :class="sn.source[sn.selected].icon"

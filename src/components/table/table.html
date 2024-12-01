@@ -29,7 +29,7 @@
     <div :class="['bbn-w-100', 'bbn-table-container', {'bbn-flex-fill': scrollable}]">
       <!--<div bbn-if="initStarted || isLoading"-->
       <div bbn-if="initStarted || isResizing"
-           :class="['bbn-middle', 'bbn-background', 'bbn-text', 'bbn-padded', {'bbn-overlay': !!scrollable, 'bbn-w-100': !scrollable}]"
+           :class="['bbn-middle', 'bbn-background', 'bbn-text', 'bbn-padding', {'bbn-overlay': !!scrollable, 'bbn-w-100': !scrollable}]"
            style="z-index: 5">
         <bbn-loadicon class="bbn-vmiddle"
                       :size="24"/>
@@ -167,7 +167,7 @@
                   left: !!scrollable && getRef('scroll') ? getRef('scroll').currentX + 'px' : ''
                 }">
               <td :colspan="currentColumns ? currentColumns.length : 1">
-                <div class="bbn-spadded bbn-background bbn-c">
+                <div class="bbn-spadding bbn-background bbn-c">
                   <div bbn-if="!isLoading"
                        bbn-html="noData || ' '"/>
                   <div bbn-elseif="loader"
@@ -199,7 +199,7 @@
                       width: currentColumns[0].realWidth
                     }, getTrStyle(d.data)]">
                   <div @click="toggleExpanded(d.index)"
-                      class="bbn-table-expander bbn-p bbn-unselectable bbn-spadded bbn-c"
+                      class="bbn-table-expander bbn-p bbn-unselectable bbn-spadding bbn-c"
                       bbn-if="d.expander"
                       @keydown.space="toggleExpanded(d.index)"
                       tabindex="0">
@@ -214,14 +214,14 @@
                       borderRight: '0px',
                       overflow: 'unset'
                   }">
-                  <div :class="[currentClass(cols[group], d.data, i), {'bbn-spadded': !cols[group].component}]"
+                  <div :class="[currentClass(cols[group], d.data, i), {'bbn-spadding': !cols[group].component}]"
                         :style="{
                           width: lastKnownWidth - groupCols[currentColumns[0].isLeft ? 0 : 1].cols[0].realWidth - borderLeft - borderRight + 'px',
                           backgroundColor: 'transparent !important'
                         }">
                     <component bbn-if="cols[group].component"
                               :is="cols[group].component"
-                              class="bbn-spadded"
+                              class="bbn-spadding"
                               :source="d.data"/>
                     <div bbn-else
                           bbn-html="render(d.data, cols[group], d.index) + (d.expanded ? '' : ' (' + d.num + ')')"/>
@@ -243,7 +243,7 @@
                       width: currentColumns[1].realWidth
                     }"
                     bbn-if="d.selection">
-                  <div class="bbn-block bbn-spadded">
+                  <div class="bbn-block bbn-spadding">
                     <div class="bbn-c bbn-w-100">
                       <bbn-checkbox :checked="d.selected"
                                     :value="true"
@@ -273,7 +273,7 @@
                         }">
                     <component bbn-if="typeof(expander) !== 'function'"
                               :is="expander"
-                              class="bbn-spadded"
+                              class="bbn-spadding"
                               :source="d.data" />
                     <component bbn-elseif="(typeof(expander(d)) === 'object')"
                               :is="expander(d)"
@@ -325,7 +325,7 @@
                       width: col.realWidth
                     }"
                     :ref="'td' + i">
-                  <div class="bbn-block bbn-spadded"
+                  <div class="bbn-block bbn-spadding"
                         :style="{maxHeight: currentMaxRowHeight}">
                     <!-- Checkboxes -->
                     <div bbn-if="col.isSelection" class="bbn-c bbn-w-100">
@@ -482,7 +482,7 @@
                 @unset="unsetCurrentFilter"
                 class="bbn-w-100"/>
     <div bbn-if="multifilter"
-         class="bbn-table-filter-link bbn-p bbn-b bbn-i bbn-w-100 bbn-bottom-padded bbn-left-padded bbn-right-padded bbn-r"
+         class="bbn-table-filter-link bbn-p bbn-b bbn-i bbn-w-100 bbn-bottom-padding bbn-left-padding bbn-right-padding bbn-r"
          @click="openMultiFilter">
       <i class="zmdi zmdi-filter-list"/>
       <span bbn-text="_('Open the full filter')"/>

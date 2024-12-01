@@ -18,7 +18,7 @@
       <component bbn-else
                  :is="li.data && li.data.url && !li.data[children] ? 'a' : 'span'"
                  @click.prevent="() => {}"
-                 class="bbn-block bbn-padded"
+                 class="bbn-block bbn-padding"
                  :title="li.data[sourceText]"
                  :href="li.data && li.data.url ? li.data.url : null"
                  :key="li.key">

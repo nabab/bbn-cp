@@ -10,7 +10,7 @@
           height: '100%',
           width: '100%'
         }">
-    <div :class="['bbn-column-list-header', 'bbn-spadded', , 'bbn-vmiddle', 'bbn-unselectable', {
+    <div :class="['bbn-column-list-header', 'bbn-spadding', , 'bbn-vmiddle', 'bbn-unselectable', {
            'bbn-flex-width': !collapsed,
            'bbn-flex-height': collapsed
          }]"
@@ -38,7 +38,7 @@
              letterSpacing: collapsed ? (isMobile ? '' : '-0.2rem') : ''
            }"
            bbn-if="title !== undefined"/>
-      <div class="bbn-column-list-toolbar bbn-alt-background bbn-vmiddle bbn-xspadded bbn-radius bbn-flex-fill"
+      <div class="bbn-column-list-toolbar bbn-alt-background bbn-vmiddle bbn-xspadding bbn-radius bbn-flex-fill"
           :style="{
             'min-height': !collapsed ? '2rem' : '4rem',
             'justify-content': 'flex-end',
@@ -60,7 +60,7 @@
                   style="height: 100%; width: auto; aspect-ratio: 1"/>
     </div>
     <div bbn-if="!collapsed"
-        :class="['bbn-column-list-main', 'bbn-vpadded', 'bbn-rel', {'bbn-flex-fill': !!scrollable}]"
+        :class="['bbn-column-list-main', 'bbn-vpadding', 'bbn-rel', {'bbn-flex-fill': !!scrollable}]"
         style="width: 100%">
       <div class="bbn-rel"
            style="width: 100%; height: 100%">
@@ -70,7 +70,7 @@
                    :is="scrollable ? 'bbn-scroll' : 'div'"
                    axis="y"
                    ref="scroll">
-          <div :class="['bbn-column-list-items', 'bbn-hpadded', {
+          <div :class="['bbn-column-list-items', 'bbn-hpadding', {
                  'bbn-overlay': !!scrollable,
                  'bbn-middle': !!scrollable && !items.length
                 }]">
@@ -92,7 +92,7 @@
               </div>
             </template>
             <div bbn-elseif="isLoaded && !!noData"
-                 class="bbn-c bbn-background bbn-radius bbn-spadded"
+                 class="bbn-c bbn-background bbn-radius bbn-spadding"
                  bbn-text="noData"/>
           </div>
         </component>

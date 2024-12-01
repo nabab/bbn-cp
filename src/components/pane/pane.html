@@ -3,7 +3,7 @@
 }]" :style="componentStyle">
   <div :class="isHorizontal ? 'bbn-flex-width bbn-h-100' : 'bbn-flex-height bbn-w-100'"
        bbn-if="splitter">
-    <div bbn-if="resizer"
+    <div bbn-if="(currentConfig?.prevResizable !== undefined) || (currentConfig?.prevCollapsible !== undefined)"
          :class="[
             'bbn-unselectable',
             'bbn-middle',
@@ -11,15 +11,15 @@
             'bbn-light',
             'bbn-header',
             splitter.currentOrientation,
-            {'bbn-splitter-resizer': !!resizer.pane2},
-            splitter.realResizerClass(resizer)
+            {'bbn-splitter-resizer': !!currentConfig?.nextResizable},
+            splitter.realResizerClass(currentConfig)
           ]"
           ref="resizer"
           :style="{
               [isHorizontal ? 'width' : 'height']: '1rem',
             }"
-          @mousedown.prevent.stop="splitter.resizeStart($event, resizer)"
-          @touchstart.passive="splitter.resizeStart($event, resizer)"/>
+          @mousedown.prevent.stop="splitter.resizeStart($event, currentConfig)"
+          @touchstart.passive="splitter.resizeStart($event, currentConfig)"/>
     <div :class="{
       'bbn-flex-fill': splitter.fullSize && !isCollapsed,
       'bbn-w-100': ((isCollapsed && title) || !splitter.fullSize) && ((splitter.panes.length === 1) || !isHorizontal),

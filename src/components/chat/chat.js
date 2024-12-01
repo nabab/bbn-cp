@@ -1488,7 +1488,7 @@ const cpDef = {
      */
     info: {
       template: `
-<div class="bbn-spadded">
+<div class="bbn-spadding">
 <div bbn-if="(participants.length > 1) || info.title || titleVisible"
       class="bbn-header bbn-c"
 >` + bbn._('TITLE') + `</div>
@@ -1514,7 +1514,7 @@ const cpDef = {
     ></i>
   </div>
 </div>
-<div class="bbn-spadded bbn-bordered bbn-grid bbn-no-border-top"
+<div class="bbn-spadding bbn-bordered bbn-grid bbn-no-border-top"
     style="grid-template-columns: max-content auto max-content"
 >
   <template bbn-for="p in currentParticipants">
@@ -1891,7 +1891,7 @@ const cpDef = {
          */
         users: {
           template: `
-<div class="bbn-vpadded bbn-overlay">
+<div class="bbn-vpadding bbn-overlay">
 <bbn-tree :source="users"></bbn-tree>
 </div>
           `,

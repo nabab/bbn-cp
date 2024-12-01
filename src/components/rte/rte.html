@@ -26,7 +26,7 @@
 								position="topLeft"
 								:title="false">
 			<bbn-toolbar :source="currentButtons"
-									class="bbn-rte-toolbar bbn-header bbn-radius-top bbn-no-border bbn-spadded"
+									class="bbn-rte-toolbar bbn-header bbn-radius-top bbn-no-border bbn-spadding"
 									:button-space="false"/>
 		</bbn-floater>
 
@@ -35,14 +35,14 @@
 	     class="bbn-iflex-height"
 			 style="min-height: 100%; width: 100%;">
 		<bbn-toolbar :source="currentButtons"
-								 class="bbn-rte-toolbar bbn-header bbn-radius-top bbn-no-border bbn-spadded"
+								 class="bbn-rte-toolbar bbn-header bbn-radius-top bbn-no-border bbn-spadding"
 								 :button-space="false"/>
 		<div class="bbn-flex-fill"
 				 :style="textboxStyle"
 				 @mouseup.stop="getRef('element').focus()">
 			<bbn-scroll bbn-forget="!currentHeight"
                   @ready="setContent">
-				<div class="bbn-spadded bbn-rte-element"
+				<div class="bbn-spadding bbn-rte-element"
 						 style="min-height: max(4rem, 100%)"
 						 contenteditable="true"
 						 ref="element"

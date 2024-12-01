@@ -160,8 +160,9 @@ const cpDef = {
         }
       },
       overIdx(nv, ov) {
-        if (nv > -1) {
+        if ((nv > -1) && (ov > -1)) {
           this.isChanging = true;
+          bbn.fn.log(this.getRef('floater'));
           this.$forceUpdate().then(() => {
             setTimeout(() => {
               this.isChanging = false;
@@ -170,6 +171,7 @@ const cpDef = {
                 if (floater) {
                   floater.updateData();
                   floater.onResize(true);
+                  floater.updatePosition();
                 }
               }, 50);
             })

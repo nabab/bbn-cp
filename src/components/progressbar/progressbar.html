@@ -22,7 +22,7 @@
        :style="style"/>
   <div :class="['bbn-wrap', realValuePosition, 'bbn-no-border']"
        style="height: 100%">
-    <div :class="['bbn-progress-status', {'bbn-hspadded': (orientation === 'horizontal')}]"
+    <div :class="['bbn-progress-status', {'bbn-hspadding': (orientation === 'horizontal')}]"
          bbn-text="(showValue ? (value + ( showUnit ? unit : '' ) ) : '') + (!!text ? ( showValue ? ' ' : '') + '(' + text + ')' : '')"
          :style="textColor.length ? 'color: '+ textColor + '!important' : ''"/>
   </div>

@@ -442,7 +442,7 @@ const cpDef = {
         if (!okText) {
           okText = this.okText;
         }
-        o.content = '<div class="' + (this.isMobile || this.isTablet ? 'bbn-padded' : 'bbn-lpadded') + ' bbn-large bbn-c" style="min-width: ' + (this.isMobile || this.isTablet ? '15' : '30') + 'em">' + o.content + '</div>';
+        o.content = '<div class="' + (this.isMobile || this.isTablet ? 'bbn-padding' : 'bbn-lpadding') + ' bbn-large bbn-c" style="min-width: ' + (this.isMobile || this.isTablet ? '15' : '30') + 'em">' + o.content + '</div>';
         o.buttons = [{
           text: okText,
           cls: 'bbn-primary',
@@ -540,7 +540,7 @@ const cpDef = {
           o.title = false;
         }
 
-        o.content = '<div class="' + (this.isMobile || this.isTablet ? 'bbn-padded' : 'bbn-lpadded') + ' bbn-large bbn-c" style="min-width: ' + (this.isMobile || this.isTablet ? '15' : '30') + 'em">' + o.content + '</div>';
+        o.content = '<div class="' + (this.isMobile || this.isTablet ? 'bbn-padding' : 'bbn-lpadding') + ' bbn-large bbn-c" style="min-width: ' + (this.isMobile || this.isTablet ? '15' : '30') + 'em">' + o.content + '</div>';
         o.buttons = [{
           text: noText,
           icon: 'nf nf-fa-times_circle',

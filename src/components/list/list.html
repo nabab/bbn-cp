@@ -19,7 +19,7 @@
             && ((idx === 0)
               || (idx === start)
               || (li.data[sourceGroup] !== filteredData[idx-1].data[sourceGroup]))"
-          class="bbn-list-group-li bbn-m bbn-header bbn-hspadded bbn-unselectable bbn-vmiddle"
+          class="bbn-list-group-li bbn-m bbn-header bbn-hspadding bbn-unselectable bbn-vmiddle"
           :style="groupStyle"
           :group="li.data[sourceGroup]">
         <component bbn-if="groupComponent"
@@ -28,7 +28,7 @@
                    :key="'groupComponent' + li.key"/>
         <div bbn-else
              bbn-text="li.data[sourceGroup]"
-             class="bbn-spadded"/>
+             class="bbn-spadding"/>
       </li>
       <li bbn-if="!pageable
             || ((idx >= start)
@@ -74,7 +74,7 @@
                 bbn-html="li.data[sourceText]"></span>
         </component>
         <div bbn-if="!currentComponent && li.data[children] && li.data[children].length"
-             :class="['bbn-block', 'bbn-top-right', 'bbn-hspadded', 'bbn-h-100', {
+             :class="['bbn-top-right', 'bbn-hspadding', 'bbn-h-100', {
               'bbn-vmiddle': (origin === 'floater')
              }]">
           <i class="nf nf-fa-chevron_right"/>

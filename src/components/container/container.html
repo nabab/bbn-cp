@@ -23,7 +23,7 @@
           bbn-show="isVisible || router?.isVisual">
         <!-- The header -->
         <div bbn-if="!isPane && (visual || fullScreen)"
-            :class="'bbn-transition-bcolor bbn-b bbn-spadded bbn-flex-width ' + (isVisible ? ' bbn-m' : '')"
+            :class="'bbn-transition-bcolor bbn-b bbn-spadding bbn-flex-width ' + (isVisible ? ' bbn-m' : '')"
             :style="{
               fontSize: isVisible && !router?.visualShowAll ? null : '10rem',
               backgroundColor: bcolor || router?.bcolor,
@@ -102,10 +102,10 @@
           <!-- If error showing status -->
           <div bbn-elseif="isVisible && errorStatus"
                class="bbn-overlay bbn-middle bbn-lg">
-            <div class="bbn-lpadded bbn-state-error bbn-block bbn-nowrap">
+            <div class="bbn-lpadding bbn-state-error bbn-block bbn-nowrap">
               <h1 bbn-text="errorStatus.status"/>
               <div bbn-text="url"/>
-              <div class="bbn-vlpadded bbn-b"
+              <div class="bbn-vlpadding bbn-b"
                    bbn-text="errorStatus.statusText"/>
               <div class="bbn-c">
                 <bbn-button @click="close"
@@ -153,48 +153,48 @@
           <!-- Semi-transparent dark layer these buttons are not used -->
           <div class="bbn-bottom-left bbn-w-100 bbn-bg-black"
                style="opacity: 0.6; color: transparent">
-            <div class="bbn-w-50 bbn-spadded">
-              <!--span class="bbn-spadded bbn-p">
+            <div class="bbn-w-50 bbn-spadding">
+              <!--span class="bbn-spadding bbn-p">
                 <i class="nf nf-fa-bars"/>
               </span-->
             </div>
-            <div class="bbn-w-50 bbn-right bbn-spadded">
-              <span class="bbn-spadded bbn-p"
+            <div class="bbn-w-50 bbn-right bbn-spadding">
+              <span class="bbn-spadding bbn-p"
                     bbn-if="!pinned && !fixed">
                 <i class="nf nf-fa-times"/>
               </span>
-              <span class="bbn-spadded bbn-p"
+              <span class="bbn-spadding bbn-p"
                     bbn-elseif="pinned">
                 <i class="nf nf-mdi-pin"/>
               </span>
-              <span class="bbn-spadded bbn-p">
+              <span class="bbn-spadding bbn-p">
                 <i class="nf nf-oct-pin"/>
               </span>
             </div>
           </div>
           <!-- These buttons are the real ones (white) -->
           <div class="bbn-bottom-left bbn-w-100 bbn-white">
-            <div class="bbn-w-50 bbn-spadded">
+            <div class="bbn-w-50 bbn-spadding">
               &nbsp;
-              <!--bbn-context class="bbn-spadded bbn-iblock bbn-p"
+              <!--bbn-context class="bbn-spadding bbn-iblock bbn-p"
                            tag="span"
                            :source="showMenu">
                 <i class="nf nf-fa-bars"
                    @click.stop="pin"/>
               </bbn-context-->
             </div>
-            <div class="bbn-w-50 bbn-right bbn-spadded">
+            <div class="bbn-w-50 bbn-right bbn-spadding">
               <span bbn-if="!pinned && !fixed"
                     @click.stop="pin"
-                    class="bbn-spadded bbn-p">
+                    class="bbn-spadding bbn-p">
                 <i class="nf nf-oct-pin"/>
               </span>
-              <span class="bbn-spadded bbn-p"
+              <span class="bbn-spadding bbn-p"
                     @click.stop="close"
                     bbn-if="!pinned && !fixed">
                 <i class="nf nf-fa-times"/>
               </span>
-              <span class="bbn-spadded bbn-p"
+              <span class="bbn-spadding bbn-p"
                     @click.stop="unpin"
                     bbn-elseif="pinned && !fixed">
                 <i class="nf nf-mdi-pin_off"/>

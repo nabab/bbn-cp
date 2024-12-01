@@ -13,7 +13,7 @@
         </span>
     </div>
     <ul ref="container"
-        :class="['bbn-spadded', {'bbn-invisible': !showIcons || !ready}]"
+        :class="['bbn-spadding', {'bbn-invisible': !showIcons || !ready}]"
         bbn-if="ready"
         :style="{zIndex: zIndex}">
       <li bbn-for="it in items"
@@ -42,7 +42,7 @@
               :left="0"
               :right="0"
               :top="floaterTop">
-    <div class="bbn-spadded bbn-fisheye-floater-content">
+    <div class="bbn-spadding bbn-fisheye-floater-content">
       <span bbn-for="it in items"
             :key="it.index"
             bbn-draggable="!it.fixed"
@@ -51,7 +51,7 @@
             class="bbn-w-100 bbn-c bbn-smargin bbn-p"
             @click="onClick(it.data, it.index)">
         <div class="bbn-w-100 bbn-middle">
-          <i :class="[it.data.icon, 'bbn-fisheye-floater-icon', 'bbn-box', ' bbn-xxspadded', 'bbn-middle']"></i>
+          <i :class="[it.data.icon, 'bbn-fisheye-floater-icon', 'bbn-box', ' bbn-xxspadding', 'bbn-middle']"></i>
         </div>
         <div class="bbn-w-100 bbn-top-sspace"
             bbn-text="it.data[sourceText]"/>

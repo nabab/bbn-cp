@@ -2,7 +2,7 @@
   <component :is="scrollable ? 'bbn-scroll' : 'div'"
              axis="x"
              ref="scroll">
-    <div :class="['bbn-collapsable-columns-container', 'bbn-grid', 'bbn-padded', {'bbn-h-100': !!scrollable}]"
+    <div :class="['bbn-collapsable-columns-container', 'bbn-grid', 'bbn-padding', {'bbn-h-100': !!scrollable}]"
          :style="{'grid-auto-rows': !!scrollable ? '100%': ''}">
       <bbn-column-list  bbn-for="(col, idx) in filteredData"
                         :source="col.data[children]"

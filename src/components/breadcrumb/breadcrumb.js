@@ -422,7 +422,7 @@ const cpDef = {
      */
     listItem: {
       template: `
-<span class="bbn-w-100 bbn-vxspadded bbn-hspadded">
+<span class="bbn-w-100 bbn-vxspadding bbn-hspadding">
 <span class="bbn-flex-width bbn-vmiddle">
   <span class="text bbn-flex-fill">
     <template bbn-for="p in source.parents">
@@ -430,7 +430,7 @@ const cpDef = {
               backgroundColor: p.source[p.selected].bcolor || false,
               color: p.source[p.selected].fcolor || false
             }"
-            class="bbn-hxspadded">
+            class="bbn-hxspadding">
         <i bbn-if="p.source[p.selected].icon"
             :class="p.source[p.selected].icon"/>
         <span bbn-html="p.source[p.selected].title || '` + bbn._('Untitled') + `'"/>
@@ -441,7 +441,7 @@ const cpDef = {
             backgroundColor: source.bcolor || false,
             color: source.fcolor || false
           }"
-          class="bbn-hxspadded">
+          class="bbn-hxspadding">
       <i bbn-if="source.icon"
           class="source.icon"/>
       <span bbn-html="source.text || '` + bbn._('Untitled') + `'"/>
@@ -452,7 +452,7 @@ const cpDef = {
               backgroundColor: c.source[c.selected].bcolor || false,
               color: c.source[c.selected].fcolor || false
             }"
-            :class="['bbn-hxspadded', {'bbn-b': !!source.children[i+1]}]">
+            :class="['bbn-hxspadding', {'bbn-b': !!source.children[i+1]}]">
         <i bbn-if="c.source[c.selected].icon"
             class="c.source[c.selected].icon"/>
         <span bbn-html="c.source[c.selected].title || '` + bbn._('Untitled') + `'"></span>

@@ -4,7 +4,7 @@
   >
     <div bbn-for="(chat, i) in currentChats"
          bbn-if="isReady && (chat.visible || chat.minimized)"
-         :class="['bbn-right-sspace', 'bbn-vmiddle', 'bbn-p', 'bbn-reactive', 'bbn-hxspadded', {
+         :class="['bbn-right-sspace', 'bbn-vmiddle', 'bbn-p', 'bbn-reactive', 'bbn-hxspadding', {
            'bbn-state-active': chat.active,
            'bbn-state-selected': !chat.active && !!chat.unread
          }]"
@@ -46,7 +46,7 @@
        class="bbn-chat-users bbn-widget bbn-flex-height"
        :style="{bottom: bottomCoord}"
   >
-    <div class="bbn-header bbn-spadded bbn-no-border-top bbn-no-hborder bbn-flex-width">
+    <div class="bbn-header bbn-spadding bbn-no-border-top bbn-no-hborder bbn-flex-width">
       <div class="bbn-flex-fill bbn-l bbn-unselectable">
         <span class="bbn-b" bbn-text="_('CHAT')"></span>
         <span>(</span>
@@ -72,7 +72,7 @@
     </div>
     <div class="bbn-flex-fill">
       <bbn-scroll bbn-if="isReady">
-        <diV class="bbn-spadded">
+        <diV class="bbn-spadding">
           <div class="bbn-box bbn-c bbn-unselectable"
                bbn-text="_('CURRENT CHATS')"
           ></div>
@@ -83,7 +83,7 @@
                     @select="onSelectChat"
           ></bbn-list>
           <div bbn-else
-               class="bbn-spadded bbn-c bbn-unselectable"
+               class="bbn-spadding bbn-c bbn-unselectable"
                bbn-text="_('None')"
           ></div>
           <div class="bbn-box bbn-c bbn-unselectable"
@@ -96,7 +96,7 @@
                     @select="onSelectUser"
           ></bbn-list>
           <div bbn-else
-               class="bbn-spadded bbn-c bbn-unselectable"
+               class="bbn-spadding bbn-c bbn-unselectable"
                bbn-text="_('You are offline')"
           ></div>
         </diV>
@@ -135,7 +135,7 @@
          @focusout="cp.deactivate(idx)"
          tabindex="0"
     >
-      <div :class="['bbn-header', 'bbn-spadded', 'bbn-grid', {
+      <div :class="['bbn-header', 'bbn-spadding', 'bbn-grid', {
              'bbn-state-active': active,
              'bbn-state-selected': !active && !!unread
            }]"
@@ -211,7 +211,7 @@
                       @reachtop="loadMoreMessages"
                       @hook:mounted="scrollEnd"
           >
-            <div class="bbn-padded">
+            <div class="bbn-padding">
               <div bbn-for="(msg, midx) in messages"
                    :key="midx"
               >
@@ -229,7 +229,7 @@
                      }]"
                      :style="{justifyContent: msg.user === userId ? 'flex-end' : 'flex-start'}"
                 >
-                  <span :class="['bbn-chat-conversation-message', 'bbn-box', 'bbn-vxspadded', 'bbn-hspadded', 'bbn-no-border', 'bbn-flex', {
+                  <span :class="['bbn-chat-conversation-message', 'bbn-box', 'bbn-vxspadding', 'bbn-hspadding', 'bbn-no-border', 'bbn-flex', {
                           'bbn-alt-background': !msg.unread,
                           'bbn-border-background-alt': !msg.unread && msg.user === userId,
                           'bbn-primary': msg.unread,
@@ -280,7 +280,7 @@
              style="min-height: 2rem"
              class="bbn-flex-width"
         >
-          <div class="bbn-middle bbn-bordered-left bbn-bordered-top bbn-bordered-bottom bbn-alt-background bbn-hxspadded">
+          <div class="bbn-middle bbn-bordered-left bbn-bordered-top bbn-bordered-bottom bbn-alt-background bbn-hxspadding">
             <bbn-emoji @select="addEmoji"></bbn-emoji>
           </div>
           <bbn-input class="bbn-chat-conversation-input bbn-flex-fill bbn-no-radius"

@@ -795,7 +795,7 @@ const cpDef = {
                     @click= "clickMiniature(it , i)"
                     :class="[
                       (mainComponent.currentIndex === i ? 'nf nf-fa-dot_circle_o' : 'nf nf-fa-circle'),
-                      'bbn-padded',
+                      'bbn-padding',
                       'bbn-slideshow-circleMiniature',
                       'bbn-p',
                       {'bbn-primary-text-alt': mainComponent.currentIndex === i}

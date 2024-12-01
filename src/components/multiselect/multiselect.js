@@ -179,7 +179,7 @@ const cpDef = {
           height: bbn.env.height - 100,
           template(d){
             return `
-              <div class="bbn-hpadded bbn-nl">
+              <div class="bbn-hpadding bbn-nl">
                 <div class="bbn-block-left">
                   <h3>${d.text}</em></h3>
                 </div>

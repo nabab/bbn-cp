@@ -1,8 +1,8 @@
-<div :class="[componentClass, 'bbn-box', 'bbn-spadded', {'bbn-disabled': disabled}]">
+<div :class="[componentClass, 'bbn-box', 'bbn-spadding', {'bbn-disabled': disabled}]">
   <div bbn-if="ready && showList"
        style="z-index: 2">
     <div bbn-for="(f, idx) in currentData"
-         :class="['bbn-flex-width', 'bbn-bordered', 'bbn-spadded', 'bbn-vmiddle', 'bbn-radius', {
+         :class="['bbn-flex-width', 'bbn-bordered', 'bbn-spadding', 'bbn-vmiddle', 'bbn-radius', {
            'bbn-alt-background': (f.status !== 'progress') && (f.status !== 'error'),
            'bbn-background-tertiary': f.status === 'progress',
            'bbn-bg-red': f.status === 'error',
@@ -119,7 +119,7 @@
            @click="onTextClick"
            bbn-text="dragDrop ? currentText.uploadOrDrop : currentText.uploadButton"
            @drop="dropEvent"/>
-      <div class="bbn-box bbn-spadded"
+      <div class="bbn-box bbn-spadding"
            ref="pasteContainer"
            bbn-if="paste && canAddFile"
            style="z-index: 2"
@@ -127,7 +127,7 @@
            @paste="pasteEvent">
         <i class="nf nf-fa-paste bbn-large"/>
       </div>
-      <div class="bbn-box bbn-spadded bbn-p"
+      <div class="bbn-box bbn-spadding bbn-p"
            ref="uploadButton"
            bbn-if="!autoUpload && !!filesReady.length"
            style="z-index: 2"

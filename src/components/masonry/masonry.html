@@ -1,7 +1,7 @@
 <div :class="[componentClass, {'bbn-ovaerlay': scrollable}]">
   <slot></slot>
   <div bbn-if="isLoading"
-      :class="['bbn-background', 'bbn-middle', 'bbn-padded', {
+      :class="['bbn-background', 'bbn-middle', 'bbn-padding', {
         'bbn-overlay': scrollable,
       }]">
     <bbn-loadicon class="bbn-vmiddle"

@@ -546,7 +546,7 @@ const cpDef = {
     bbn-droppable="!!col.gallery.isSorting && !!col.gallery.uid"
     @drop="changeOrder">
   <span :class="{
-          'bbn-spadded': !loaded || ((source.data.is_image !== undefined) && !source.data.is_image),
+          'bbn-spadding': !loaded || ((source.data.is_image !== undefined) && !source.data.is_image),
           'bbn-c': !loaded || ((source.data.is_image !== undefined) && !source.data.is_image)
         }"
         style="display: block">
@@ -569,7 +569,7 @@ const cpDef = {
                   bbn-if="!loaded && !error"/>
     <i bbn-elseif="error && !loaded" class="bbn-red nf nf-mdi-image_off"/>
     <span bbn-if="showOverlay && loaded"
-          class="bbn-gallery-overlay bbn-widget bbn-ellipsis bbn-radius-bottom bbn-hxspadded"
+          class="bbn-gallery-overlay bbn-widget bbn-ellipsis bbn-radius-bottom bbn-hxspadding"
           bbn-text="source.data[col.gallery.overlayName]"
           :title="source.data[col.gallery.overlayName]"/>
     <i bbn-if="col.gallery.zoomable && loaded && !col.gallery.isSelecting && !col.gallery.isSorting"
@@ -847,10 +847,10 @@ const cpDef = {
         name: 'selected',
         template: `
 <div class="bbn-rel">
-  <i class="bbn-top-right nf nf-fa-close bbn-red bbn-vxspadded bbn-hspadded bbn-lg bbn-p"
+  <i class="bbn-top-right nf nf-fa-close bbn-red bbn-vxspadding bbn-hspadding bbn-lg bbn-p"
      @click="unselect"/>
   <i bbn-if="(itemData.is_image !== undefined) && !itemData.is_image"
-     class="bbn-gallery-selected-file nf nf-fa-file bbn-xxxl bbn-radius bbn-bordered bbn-spadded bbn-c"
+     class="bbn-gallery-selected-file nf nf-fa-file bbn-xxxl bbn-radius bbn-bordered bbn-spadding bbn-c"
      style="display: block"/>
   <img bbn-else
        :src="imgSrc"

@@ -94,7 +94,7 @@
                                 && bc.views[bc.selected]
                                 && !bc.views[bc.selected].fixed
                                 && !bc.views[bc.selected].pinned"
-                          class="bbn-p bbn-iblock bbn-top-right bbn-hxspadded bbn-xs"
+                          class="bbn-p bbn-iblock bbn-top-right bbn-hxspadding bbn-xs"
                           @mousedown.prevent.stop="bc.close(bc.selected)"
                           @mouseup.prevent.stop>
                           <i class="nf nf-fa-times"/>
@@ -102,7 +102,7 @@
                         <bbn-context bbn-if="isNumber(bc.selected) && bc.views[bc.selected] && bc.views[bc.selected].menu"
                                     :source="() => bc.getMenuFn(bc.selected)"
                                     tag="span"
-                                    class="bbn-p bbn-iblock bbn-bottom-right bbn-hxspadded bbn-xs">
+                                    class="bbn-p bbn-iblock bbn-bottom-right bbn-hxspadding bbn-xs">
                           <i class="nf nf-fa-caret_down"/>
                         </bbn-context>
 

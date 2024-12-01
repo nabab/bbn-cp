@@ -688,8 +688,9 @@ const cpDef = {
         // The final object to send
         let r = {},
             uid = this.uid || this.tree.uid;
+        
         // If the uid field is defined
-        if ( uid ){
+        if (uid && (this.tree.data[uid] === undefined)) {
           // If an item has been given we send the corresponding data, or otherwise an empty string
           if ( this.node ){
             r[uid] = this.node.data && this.node.data[uid] ? this.node.data[uid] : '';

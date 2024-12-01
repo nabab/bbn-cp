@@ -5,7 +5,7 @@
        bbn-text="_('Loading')"
        style="z-index: 1"/>
   <div :class="['bbn-widget', 'bbn-flex-height', {'bbn-overlay': type === 'weeks'}]">
-    <div class="bbn-calendar-header bbn-header bbn-xspadded bbn-no-border-left bbn-no-border-right bbn-no-border-top">
+    <div class="bbn-calendar-header bbn-header bbn-xspadding bbn-no-border-left bbn-no-border-right bbn-no-border-top">
       <component bbn-if="headerComponent"
                  :is="headerComponent"/>
       <div bbn-else
@@ -65,7 +65,7 @@
         </template>
       </div>
     </div>
-    <div class="bbn-flex-fill bbn-spadded"
+    <div class="bbn-flex-fill bbn-spadding"
          style="display: flex;">
       <div class="bbn-calendar-container bbn-w-100"
            :style="gridStyle">
@@ -80,7 +80,7 @@
           <div bbn-if="!item.hidden"
               :class="['bbn-calendar-item-box', 'bbn-box', {
                 'bbn-p': selection && !item.disabled,
-                'bbn-spadded': !itemDetails && itemPadding,
+                'bbn-spadding': !itemDetails && itemPadding,
                 'bbn-tertiary': item.highlight && !(selection && (item.value === currentValue)),
                 'bbn-background-effect-tertiary': item.isCurrent && item.inRange && (item.value !== currentValue),
                 'bbn-background-effect-primary': item.inRange && (item.value === currentValue),

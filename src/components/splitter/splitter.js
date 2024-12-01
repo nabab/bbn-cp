@@ -519,10 +519,14 @@ const cpDef = {
               if (this.resizable && (pane.resizable !== false) && (prev !== false)) {
                 o.pane1 = prev;
                 o.pane2 = idx;
+                pane.prevResizable = prev;
+                pane.nextResizable = idx;
               }
               if (this.collapsible && (pane.collapsible !== false) && (prevc !== false)) {
                 o.panec1 = prevc;
                 o.panec2 = idx;
+                pane.prevCollapsible = prevc;
+                pane.nextCollapsible = idx;
               }
 
               this.resizers.push(o);
@@ -562,6 +566,8 @@ const cpDef = {
               ) {
                 o.pane1 = idx;
                 o.pane2 = next;
+                pane.prevResizable = idx;
+                pane.nextResizable = next;
               }
               if (
                 this.collapsible &&
@@ -572,6 +578,8 @@ const cpDef = {
               ) {
                 o.panec1 = idx;
                 o.panec2 = nextc;
+                pane.prevCollapsible = idx;
+                pane.nextCollapsible = nextc;
               }
             }
             if (o.panec2 || o.pane2) {

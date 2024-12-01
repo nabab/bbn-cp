@@ -12,12 +12,12 @@
     'bbn-autocomplete-container-native': native
   }]">
     <div bbn-if="sourceIcon && hasValue && !!currentItemIcon"
-         class="bbn-left-xspadded">
+         class="bbn-left-xspadding">
       <i :class="currentItemIcon"
          @click.stop="click" />
     </div>
     <div bbn-if="sourceImg && hasValue && !!currentItemImg"
-         class="bbn-left-xspadded">
+         class="bbn-left-xspadding">
       <img :src="currentItemImg"
            @click.stop="click"
            :alt="currentItemImg">

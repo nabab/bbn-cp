@@ -209,7 +209,7 @@ const cpDef = {
           <div class="bbn-splashscreen-dots bbn-c">
             <i bbn-for="idx in indexes"
                @click="select(idx)"
-               :class="['bbn-padded', 'bbn-p', 'nf nf-fa-circle', {
+               :class="['bbn-padding', 'bbn-p', 'nf nf-fa-circle', {
                  ' bbn-primary-text': value !== idx,
                  'bbn-primary-text-alt': value === idx
                }]"

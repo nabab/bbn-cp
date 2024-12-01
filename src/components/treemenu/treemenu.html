@@ -1,7 +1,7 @@
 <div :class="[{'bbn-widget': true, 'bbn-h-100': true}, componentClass]">
   <div class="bbn-flex-height">
 
-    <div class="bbn-block bbn-w-100 bbn-vpadded bbn-c"
+    <div class="bbn-block bbn-w-100 bbn-vpadding bbn-c"
          bbn-if="menus && menus.length">
       <bbn-dropdown bbn-model="currentMenu"
                     :source="menus"
@@ -12,7 +12,7 @@
                     @click.stop
                     @mouseup.stop.prevent/>
     </div>
-    <div class="bbn-block bbn-w-100 bbn-bottom-padded bbn-c" bbn-if="search">
+    <div class="bbn-block bbn-w-100 bbn-bottom-padding bbn-c" bbn-if="search">
       <bbn-input name="search"
                  bbn-model="searchExp"
                  style="width: 80%"

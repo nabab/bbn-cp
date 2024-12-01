@@ -19,7 +19,7 @@
                   bbn-bind="s.options"
                   :key="'item' + i"/>
         <div bbn-elseif="!s.end && (s.content !== undefined)"
-            class="bbn-block bbn-spadded"
+            class="bbn-block bbn-spadding"
             bbn-html="s.content"
             :key="'item' + i"
             :ref="'item' + i"/>
@@ -46,7 +46,7 @@
                   bbn-bind="s.options"
                   :key="'item' + i"/>
         <div bbn-elseif="s.end && (s.content !== undefined)"
-            class="bbn-block bbn-spadded"
+            class="bbn-block bbn-spadding"
             bbn-html="s.content"
             :key="'item' + i"/>
         <bbn-button bbn-elseif="s.end && ((s.url || s.action) && (s.text || s.icon))"

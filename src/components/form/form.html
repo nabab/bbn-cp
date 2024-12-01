@@ -20,7 +20,7 @@
                 :keep-visible="keepScrollVisible">
       <fieldset class="bbn-form-fieldset"
                 :disabled="disabled">
-        <div class="bbn-grid-fields bbn-padded"
+        <div class="bbn-grid-fields bbn-padding"
             bbn-if="schema && schema.length">
           <template bbn-for="field in currentSchema"
                     bbn-if="field.field && !field.buttons && (field.editable !== false)">
@@ -58,14 +58,14 @@
            :style="'grid-template-columns: repeat(' + realButtons.length + ', 1fr);'">
         <bbn-button bbn-for="(button, i) in realButtons"
                     :key="i"
-                    :class="{'bbn-primary': button.preset === 'submit', 'bbn-spadded': true}"
+                    :class="{'bbn-primary': button.preset === 'submit', 'bbn-spadding': true}"
                     bbn-bind="button"/>
       </div>
       <!-- SMALL BUTTONS IN WINDOW -->
       <div bbn-elseif="!hasFooter && realButtons.length && ['small', 'normal'].includes(currentMode)"
           class="bbn-form-buttons bbn-w-100 bbn-vpadding bbn-c">
         <bbn-button bbn-for="(button, i) in realButtons"
-                    :class="['bbn-hxspadded', {'bbn-primary': button.preset === 'submit'}]"
+                    :class="['bbn-hxspadding', {'bbn-primary': button.preset === 'submit'}]"
                     :key="button.key || i"
                     bbn-bind="button"/>
       </div>

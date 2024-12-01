@@ -12,7 +12,7 @@
     <div class="bbn-flex-width bbn-emoji-container">
       <div class="bbn-flex bbn-alt-background">
         <div bbn-for="l in list"
-            :class="['bbn-reactive', 'bbn-bordered', 'bbn-xspadded', 'bbn-p', 'bbn-m', {'bbn-state-selected': l.icon === category}]"
+            :class="['bbn-reactive', 'bbn-bordered', 'bbn-xspadding', 'bbn-p', 'bbn-m', {'bbn-state-selected': l.icon === category}]"
             :title="l.text"
             @click="category = l.icon"
         >
@@ -21,9 +21,9 @@
       </div>
       <div class="bbn-flex-fill">
         <bbn-scroll ref="scroll">
-          <div class="bbn-grid bbn-xspadded bbn-emoji-grid">
+          <div class="bbn-grid bbn-xspadding bbn-emoji-grid">
             <div bbn-for="(tit, ico) in items"
-                class="bbn-reactive bbn-p bbn-xspadded bbn-m"
+                class="bbn-reactive bbn-p bbn-xspadding bbn-m"
                 :title="tit"
                 @click="select(ico)"
             >

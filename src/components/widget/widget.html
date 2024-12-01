@@ -3,9 +3,9 @@
   <!-- HEADER -->
   <div class="bbn-header bbn-no-border bbn-bordered-bottom bbn-unselectable"
        bbn-if="title">
-    <div class="bbn-flex-width bbn-vxspadded bbn-vmiddle">
+    <div class="bbn-flex-width bbn-vxspadding bbn-vmiddle">
       <!-- BUTTONS LEFT -->
-      <div class="bbn-header-buttons bbn-widget-button-left bbn-hxspadded">
+      <div class="bbn-header-buttons bbn-widget-button-left bbn-hxspadding">
         <i bbn-if="isClosable"
             :title="_('Close')"
             @click="close"
@@ -21,7 +21,7 @@
             :class="b.icon"/>
       </div>
       <!-- TITLE -->
-      <div :class="['bbn-widget-title', 'bbn-flex-fill', 'bbn-hpadded', {'bbn-middle': !!icon}]">
+      <div :class="['bbn-widget-title', 'bbn-flex-fill', 'bbn-hpadding', {'bbn-middle': !!icon}]">
         <i bbn-if="icon" :class="[icon, 'bbn-right-sspace']"/>
         <h3 :style="dashboard && dashboard.sortable ? 'cursor: move' : ''"
             :class="['bbn-no-margin', {'bbn-iblock': !!icon}]"
@@ -36,7 +36,7 @@
             } : false"/>
       </div>
       <!-- BUTTONS RIGHT -->
-      <div class="bbn-header-buttons bbn-widget-button-right bbn-hxspadded">
+      <div class="bbn-header-buttons bbn-widget-button-right bbn-hxspadding">
         <i bbn-for="(b, idx) in realButtonsRight"
             :title="b.text"
             @click="actionButton(b.action, uid)"
@@ -46,7 +46,7 @@
   </div>
 
   <!-- MAIN CONTENT -->
-  <div :class="['bbn-content', 'bbn-radius-bottom', 'bbn-no-border', {'bbn-padded': !component || (contentPadding === true)}]"
+  <div :class="['bbn-content', 'bbn-radius-bottom', 'bbn-no-border', {'bbn-padding': !component || (contentPadding === true)}]"
        :style="{
          padding: contentPadding ? contentPadding : null,
          minHeight: isLoading && (!currentItems || !currentItems.length) ? '15em' : null
@@ -89,7 +89,7 @@
                :is="noDataComponent"/>
     <div bbn-else>
       <slot>
-        <div bbn-html="noData" class="bbn-widget-content bbn-w-100 bbn-c bbn-padded"/>
+        <div bbn-html="noData" class="bbn-widget-content bbn-w-100 bbn-c bbn-padding"/>
       </slot>
     </div>
     <!-- GO FULL PAGE -->

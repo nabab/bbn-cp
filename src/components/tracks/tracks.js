@@ -533,7 +533,7 @@ const cpDef = {
               @mouseleave="isMouseOver = false"
               @click="edit">
           <div bbn-if="isResizing"
-                class="bbn-tracks-item-resizing-times bbn-alt-background bbn-alt-text bbn-spadded bbn-radius"
+                class="bbn-tracks-item-resizing-times bbn-alt-background bbn-alt-text bbn-spadding bbn-radius"
                 style="z-index: 1">
             <div class="bbn-vmiddle bbn-no-wrap">
               <i class="nf nf-md-calendar_start bbn-right-sspace bbn-lg"/>
@@ -545,7 +545,7 @@ const cpDef = {
             </div>
           </div>
           <div bbn-else-if="isMouseOver && !main.isResizing"
-                class="bbn-tracks-item-overlay bbn-c bbn-alt-background bbn-alt-text bbn-spadded bbn-radius">
+                class="bbn-tracks-item-overlay bbn-c bbn-alt-background bbn-alt-text bbn-spadding bbn-radius">
             <div bbn-if="source.title"
                   bbn-html="source.title"
                   class="bbn-bottom-sspace bbn-primary-text-alt"/>
@@ -703,7 +703,7 @@ const cpDef = {
                   @failure="failure"
                   @cancel="cancel"
                   ref="form">
-          <div class="bbn-padded bbn-grid-fields">
+          <div class="bbn-padding bbn-grid-fields">
             <span class="bbn-label">` + bbn._('Start') + `</span>
             <bbn-datetimepicker bbn-model="source.row.start"
                                 :show-second="true"
@@ -762,7 +762,7 @@ const cpDef = {
                   :buttons="[]"
                   @hook:mounted="setForm"
                   :validation="validation">
-          <div class="bbn-hspadded bbn-bottom-spadded bbn-vmiddle bbn-flex-width"
+          <div class="bbn-hspadding bbn-bottom-spadding bbn-vmiddle bbn-flex-width"
                 style="gap: var(--space); align-items: flex-end">
             <div class="bbn-flex-fill bbn-flex-wrap bbn-vmiddle"
                   style="gap: var(--space); align-items: flex-end; flex-wrap: wrap !important">

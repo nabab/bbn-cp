@@ -79,7 +79,7 @@ const cpDef = {
                   <div class="edit-title bbn-w-100">
                     <hr bbn-show="source.hr"><component :is="cpHTML(source.tag,'title')" :source="source"/><hr bbn-if="source.hr">
                   </div>
-                  <div class="bbn-grid-fields bbn-vspadded bbn-w-100">
+                  <div class="bbn-grid-fields bbn-vspadding bbn-w-100">
                     <label bbn-text="_('Title tag')"></label>
                     <div>
                       <bbn-dropdown :source="tags" bbn-model="source.tag"/>
@@ -126,8 +126,8 @@ const cpDef = {
           </div>`,
           edit:     `
           <div class="component-container bbn-block-image" :class="alignClass">
-            <div class="bbn-padded">
-              <div class="bbn-grid-fields bbn-vspadded">
+            <div class="bbn-padding">
+              <div class="bbn-grid-fields bbn-vspadding">
                 <label bbn-text="_('Upload your image')"/>
                 <bbn-upload :save-url="'upload/save/' + ref"
                             remove-url="test/remove"
@@ -181,7 +181,7 @@ const cpDef = {
               <!-- GIVE HREF TO VIEW FULL IMAGE -->
               <bbn-cms-block-gallery-item bbn-for="(image, idx) in currentValue" :source="image" :key="idx" :index="idx"/>
             </div>
-            <div class="bbn-grid-fields bbn-padded">
+            <div class="bbn-grid-fields bbn-padding">
               <label bbn-text="_('Columns number')"/>
               <div>
                 <bbn-dropdown bbn-model="source.columns"
@@ -217,7 +217,7 @@ const cpDef = {
             </div>`,
           edit: `
           <div class="component-container" id="video-container">
-            <div class="bbn-grid-fields bbn-padded">
+            <div class="bbn-grid-fields bbn-padding">
               <label bbn-text="_('Video source')"/>
               <bbn-input bbn-model="currentValue"/>
               <label bbn-text="_('Muted')"/>
@@ -269,8 +269,8 @@ const cpDef = {
           view: `<div class="component-container"><hr :style="style"></div>`,
           edit: `<div class="block-line-edit component-container">
                   <hr :style="style">
-                  <div class="block-line-edit-command bbn-padded">
-                    <div class="bbn-grid-fields bbn-vspadded">
+                  <div class="block-line-edit-command bbn-padding">
+                    <div class="bbn-grid-fields bbn-vspadding">
                       <label bbn-text="_('Line width')"/>
                       <div>
                         <bbn-cursor bbn-model="source.style['width']"
