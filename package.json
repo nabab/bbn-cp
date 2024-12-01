@@ -84,6 +84,6 @@
     "simple-keyboard": "^3.7.87",
     "tern": "^0.24.3",
     "thememirror": "^2.0.1",
-    "tui-image-editor": "^3.15.3"
+    "tui-image-editor": "^3.7.2"
   }
 }
