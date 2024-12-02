@@ -686,7 +686,7 @@ const cpDef = {
         if (!this.isDisabled && !this.readonly) {
           this.focus(event)
           if (!this.value) {
-            this.currentPos = 0;
+            this.currentPos = this.getPos(0);
           }
           else if (this.autoPosition) {
             this.currentPos = this.getPos(this.value.length);
