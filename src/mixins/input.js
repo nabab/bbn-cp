@@ -383,7 +383,6 @@ const input = {
         && elem
         && bbn.fn.isDom(elem.$el)
       ) {
-        let cont = document.createElement('div');
         const scroll = elem.closest('.bbn-scroll');
         let onScroll = false;
         const onClose = () => {
@@ -484,8 +483,7 @@ const input = {
           document.head.appendChild(style);
         }
 
-        //this.$el.appendChild(cont);
-        //bbn.cp.createApp(cont, cfg)
+        this.$create(cfg, this.$el)
       }
 
       const ev = () => {
