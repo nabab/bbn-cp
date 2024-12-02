@@ -41,6 +41,6 @@ export default function removeDOM(cp, ele, replacer) {
   }
   else {
     ele.remove();
-    bbn.fn.log("Element not found in the DOM", ele);
+    //bbn.fn.log("Element not found in the DOM", ele);
   }
 }

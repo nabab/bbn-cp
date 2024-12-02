@@ -65,6 +65,11 @@ export default {
       errorStatus: null,
     };
   },
+  computed: {
+    args() {
+      return (this.currentView ? bbn.fn.substr(this.currentCurrent, this.currentURL.length) : '').split('/');
+    }
+  },
   methods: {
     setRouter() {
       this.router = this.closest('bbn-router');
@@ -139,6 +144,9 @@ export default {
       this.router.enter(this);
     },
 
+    hasArguments(num = 1) {
+      return this.args.length >= num;
+    },
 
     onResize() {
       if (this.isVisible && this.ready) {
