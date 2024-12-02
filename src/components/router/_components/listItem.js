@@ -1,6 +1,6 @@
 export default {
   template: `
-  <div class="bbn-w-100 bbn-vmiddle bbn-bordered-bottom"
+  <div class="bbn-w-100 bbn-vmiddle bbn-border-bottom"
        style="height: 2.5rem"
        @mouseenter="isHover = true"
        @mouseleave="isHover = false">

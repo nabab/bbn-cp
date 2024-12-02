@@ -309,7 +309,7 @@ const cpDef = {
           active: false,
           component: {
             template: `
-              <span :class="['bbn-rte-fontcolor', 'bbn-vmiddle', 'bbn-iflex', 'bbn-bordered', 'bbn-radius', {
+              <span :class="['bbn-rte-fontcolor', 'bbn-vmiddle', 'bbn-iflex', 'bbn-border', 'bbn-radius', {
                       'disabled': !!isDisabled || !!isReadOnly,
                       'bbn-background': !isDisabled && !isReadOnly
                     }]">
@@ -359,7 +359,7 @@ const cpDef = {
           active: false,
           component: {
             template: `
-            <span :class="['bbn-rte-fontbgcolor', 'bbn-vmiddle', 'bbn-iflex', 'bbn-bordered', 'bbn-radius', {
+            <span :class="['bbn-rte-fontbgcolor', 'bbn-vmiddle', 'bbn-iflex', 'bbn-border', 'bbn-radius', {
                     'disabled': !!isDisabled || !!isReadOnly,
                     'bbn-background': !isDisabled && !isReadOnly
                   }]">

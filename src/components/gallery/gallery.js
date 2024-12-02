@@ -850,11 +850,11 @@ const cpDef = {
   <i class="bbn-top-right nf nf-fa-close bbn-red bbn-vxspadding bbn-hspadding bbn-lg bbn-p"
      @click="unselect"/>
   <i bbn-if="(itemData.is_image !== undefined) && !itemData.is_image"
-     class="bbn-gallery-selected-file nf nf-fa-file bbn-xxxl bbn-radius bbn-bordered bbn-spadding bbn-c"
+     class="bbn-gallery-selected-file nf nf-fa-file bbn-xxxl bbn-radius bbn-border bbn-spadding bbn-c"
      style="display: block"/>
   <img bbn-else
        :src="imgSrc"
-       class="bbn-radius bbn-bordered"
+       class="bbn-radius bbn-border"
        :alt="altSrc">
 </div>
         `,

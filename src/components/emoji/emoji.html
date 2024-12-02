@@ -12,7 +12,7 @@
     <div class="bbn-flex-width bbn-emoji-container">
       <div class="bbn-flex bbn-alt-background">
         <div bbn-for="l in list"
-            :class="['bbn-reactive', 'bbn-bordered', 'bbn-xspadding', 'bbn-p', 'bbn-m', {'bbn-state-selected': l.icon === category}]"
+            :class="['bbn-reactive', 'bbn-border', 'bbn-xspadding', 'bbn-p', 'bbn-m', {'bbn-state-selected': l.icon === category}]"
             :title="l.text"
             @click="category = l.icon"
         >

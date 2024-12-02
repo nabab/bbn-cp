@@ -184,7 +184,7 @@
         <span class="bbn-left-sspace" bbn-text="_('Loading...')"></span>
       </div>
       <div bbn-if="showInfo"
-           class="bbn-flex-fill bbn-bordered bbn-no-top-border bbn-alt-background"
+           class="bbn-flex-fill bbn-border bbn-no-top-border bbn-alt-background"
       >
         <div class="bbn-flex-height">
           <div class="bbn-flex-fill">
@@ -206,7 +206,7 @@
         </div>
       </div>
       <template bbn-else>
-        <div class="bbn-flex-fill bbn-bordered bbn-no-vborder">
+        <div class="bbn-flex-fill bbn-border bbn-no-vborder">
           <bbn-scroll ref="scroll"
                       @reachtop="loadMoreMessages"
                       @hook:mounted="scrollEnd"
@@ -280,7 +280,7 @@
              style="min-height: 2rem"
              class="bbn-flex-width"
         >
-          <div class="bbn-middle bbn-bordered-left bbn-bordered-top bbn-bordered-bottom bbn-alt-background bbn-hxspadding">
+          <div class="bbn-middle bbn-border-left bbn-border-top bbn-border-bottom bbn-alt-background bbn-hxspadding">
             <bbn-emoji @select="addEmoji"></bbn-emoji>
           </div>
           <bbn-input class="bbn-chat-conversation-input bbn-flex-fill bbn-no-radius"

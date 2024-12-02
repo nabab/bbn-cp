@@ -804,7 +804,7 @@ const cpDef = {
                 ></i>
                 <div bbn-else
                      @click= "clickMiniature(it , i)"
-                     :class="['bbn-slideshow-zoom', 'bbn-bordered-internal', {
+                     :class="['bbn-slideshow-zoom', 'bbn-border-internal', {
                        'bbn-primary-border': mainComponent.currentIndex === i,
                        'bbn-right-xsspace': !!items[i+1]
                      }]"

@@ -296,6 +296,7 @@ export default {
         url = this.views[0].url;
       }
 
+      bbn.fn.log("DEFAULT URL: " + url + ' FROM ' + this.fullBaseURL);
       return url;
     },
 

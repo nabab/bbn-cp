@@ -49,11 +49,11 @@
         <template bbn-if="numCols">
           <div bbn-for="(c, i) in cols"
                bbn-if="i % 2 !== 0"
-               :class="['bbn-tracks-col-header', 'bbn-bordered-top', 'bbn-bordered-bottom', 'bbn-bordered-right', 'bbn-middle', 'bbn-spadding', {'bbn-bordered-right': !!cols[i + 1]}]"
+               :class="['bbn-tracks-col-header', 'bbn-border-top', 'bbn-border-bottom', 'bbn-border-right', 'bbn-middle', 'bbn-spadding', {'bbn-border-right': !!cols[i + 1]}]"
                bbn-text="c.label"
                :style="{'grid-area': '1 / ' + i + ' / 1 / span 2'}"/>
           <div bbn-for="(c, i) in numCols"
-               :class="['bbn-tracks-col-cell', 'bbn-c', {'bbn-bordered-right': c !== numCols}]"/>
+               :class="['bbn-tracks-col-cell', 'bbn-c', {'bbn-border-right': c !== numCols}]"/>
           <item bbn-for="item in filteredData"
                 :source="item"
                 :key="item.key"

@@ -16,7 +16,7 @@
               :button-right-disabled="(!!max && (value.length >= max)) || isDisabled || !!readonly"
               :button-right-title="_('Add')"/>
     <div bbn-elseif="mode === 'dropdown'"
-         class="bbn-bordered bbn-radius bbn-flex-width">
+         class="bbn-border bbn-radius bbn-flex-width">
       <bbn-dropdown :source="source"
                     :readonly="!!readonly || (max && (value.length > max))"
                     :disabled="isDisabled"

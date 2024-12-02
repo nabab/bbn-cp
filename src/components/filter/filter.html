@@ -5,7 +5,7 @@
   <div class="bbn-form-full"
        bbn-for="(condition, idx) in conditions"
        bbn-if="multi">
-    <div :class="'bbn-filter-items bbn-filter-bordered bbn-iflex bbn-filter-' + (currentLogic === 'OR' ? 'or' : 'and')"
+    <div :class="'bbn-filter-items bbn-filter-border bbn-iflex bbn-filter-' + (currentLogic === 'OR' ? 'or' : 'and')"
          style="align-items: baseline">
       <div class="bbn-filter-logic">
         <span bbn-if="idx"
@@ -65,7 +65,7 @@
   <div class="bbn-form-full">
     <div :class="{
         'bbn-iflex': true,
-        'bbn-filter-bordered': fields.length > 1,
+        'bbn-filter-border': fields.length > 1,
         'bbn-filter-items': true,
         'bbn-filter-temp': true,
         'bbn-filter-or': currentLogic === 'OR',

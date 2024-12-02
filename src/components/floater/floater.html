@@ -1,7 +1,7 @@
 <div :class="[
         {
           'bbn-reset': true,
-          'bbn-bordered': !modal,
+          'bbn-border': !modal,
           'bbn-background-internal': !modal,
           'bbn-invisible': !isResized,
           'bbn-floater-arrowed': !!arrow,
@@ -25,7 +25,7 @@
             ref="header"
             :class="{
               'bbn-header': headerTitle,
-              'bbn-bordered-bottom': true,
+              'bbn-border-bottom': true,
               'bbn-unselectable': true,
               'bbn-w-100': !isResizing
             }"

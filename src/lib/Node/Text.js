@@ -61,7 +61,7 @@ export default class bbnTextNode extends bbnNode
       }
       const slots = parent.bbnSlots || parent.bbnTmpSlots;
       if (bbn.fn.removeExtraSpaces(this.element.textContent) && slots.default) {
-        bbn.fn.log("IN SLOT DEFAULT ", this.element);
+        //bbn.fn.log("IN SLOT DEFAULT ", this.element);
         slots.default.push(this.element);
       }
     }

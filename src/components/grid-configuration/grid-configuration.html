@@ -18,7 +18,7 @@
            class="bbn-grid-configuration-container bbn-grid"
            :style="{gridTemplateColumns: 'repeat(' + cols + ', ' + realCellSize + ')'}">
         <div bbn-for="colidx in cols"
-             :class="['bbn-bordered', {'bbn-state-selected': (currentRow >= rowidx) && (currentCol >= colidx)}]"
+             :class="['bbn-border', {'bbn-state-selected': (currentRow >= rowidx) && (currentCol >= colidx)}]"
              @mouseenter="mouseEnter(colidx, rowidx)"
              @mouseleave="mouseLeave()"
              @click="$emit('select', [colidx, rowidx])"

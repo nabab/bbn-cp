@@ -1514,7 +1514,7 @@ const cpDef = {
     ></i>
   </div>
 </div>
-<div class="bbn-spadding bbn-bordered bbn-grid bbn-no-border-top"
+<div class="bbn-spadding bbn-border bbn-grid bbn-no-border-top"
     style="grid-template-columns: max-content auto max-content"
 >
   <template bbn-for="p in currentParticipants">
