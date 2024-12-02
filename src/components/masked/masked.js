@@ -382,7 +382,9 @@ const cpDef = {
        */
       setInputValue(value){
         this.writeInputValue(!value && !this.isFocused ? '' : this.getInputValue(value));
-        this.getRef('element').setSelectionRange(this.currentPos, this.currentPos);
+        setTimeout(() => {
+          this.getRef('element').setSelectionRange(this.currentPos, this.currentPos);
+        }, 0);
       },
       /**
        * Gets the input value.
@@ -683,15 +685,17 @@ const cpDef = {
       focusEvent(event){
         if (!this.isDisabled && !this.readonly) {
           this.focus(event)
-          this.currentPos = this.getPos(this.getRef('element').selectionStart);
-          this.setInputValue();
           if (!this.value) {
             this.currentPos = 0;
-            this.getRef('element').setSelectionRange(this.currentPos, this.currentPos);
           }
           else if (this.autoPosition) {
-
+            this.currentPos = this.getPos(this.value.length);
           }
+          else {
+            this.currentPos = this.getPos(this.getRef('element').selectionStart);
+          }
+
+          this.setInputValue();
         }
       },
       /**
