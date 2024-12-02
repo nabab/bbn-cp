@@ -400,7 +400,7 @@ const cpDef = {
         canCancel: false,
         sourceTimeout: 0,
         isClosing: false,
-        sourceDataId: this.source.__bbnData
+        sourceDataId: this.source.__bbnData.uid
       };
     },
     computed: {
@@ -935,11 +935,17 @@ const cpDef = {
         if (!this.window && this.windowed) {
           this.window = this.closest("bbn-floater");
           if ( this.window ){
-            this.window.$once('hook:mounted', () => {
-              this.$nextTick(() => {
-                this.windowFooter = this.window.getRef('buttons');
+            if (!this.window.$isMounted) {
+              this.window.$once('hook:mounted', () => {
+                this.$nextTick(() => {
+                  this.windowFooter = this.window.getRef('buttons');
+                });
               });
-            });
+            }
+            else {
+              this.windowFooter = this.window.getRef('buttons');
+            }
+
             this.window.addClose(this.closePopup);
             this.window.componentClass.push('bbn-radius-bottom')
           }
@@ -1046,6 +1052,7 @@ const cpDef = {
         }
       }
       this.init();
+
     },
     /**
      * Registers in each container until root.
@@ -1090,7 +1097,7 @@ const cpDef = {
       source: {
         deep: true,
         handler() {
-          const sourceDataId = this.source.__bbnData;
+          const sourceDataId = this.source.__bbnData.uid;
           if (sourceDataId && (sourceDataId !== this.sourceDataId)) {
             this.sourceDataId = sourceDataId;
             this.commitData();

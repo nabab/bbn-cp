@@ -39,15 +39,19 @@ const cpDef = {
         default: '_'
       },
       /**
-         * Defines the pattern of this elemenet
-         * @prop {String} pattern
-         */
+       * Defines the pattern of this elemenet
+       * @prop {String} pattern
+       */
        pattern: {
         type: String
       },
+      /**
+       * At focus sets the cursor to the first free position
+       * @prop {Boolean} [true] autoPosition
+       */
       autoPosition: {
         type: Boolean,
-        default: false
+        default: true
       }
     },
     data(){
@@ -126,7 +130,7 @@ const cpDef = {
          *
          * @data {Number} currentPos
         */
-       currentPos: 0
+        currentPos: 0
       }
     },
     computed: {
@@ -380,11 +384,16 @@ const cpDef = {
        * @fires getInputValue
        * @fires writeInputValue
        */
-      setInputValue(value){
+      setInputValue(value, changePos = true){
         this.writeInputValue(!value && !this.isFocused ? '' : this.getInputValue(value));
-        setTimeout(() => {
-          this.getRef('element').setSelectionRange(this.currentPos, this.currentPos);
-        }, 0);
+        if (changePos) {
+          setTimeout(() => {
+            this.getRef('element').setSelectionRange(this.currentPos, this.currentPos);
+          }, 0);
+        }
+        else {
+          this.currentPos = this.getRef('element').selectionStart;
+        }
       },
       /**
        * Gets the input value.
@@ -461,6 +470,16 @@ const cpDef = {
         }
 
         return ((pos < 0) || (pos > this.maxPos)) ? originalPos : pos;
+      },
+      /**
+       * Gets the first available cursor position.
+       * @method getFirstAvailablePos
+       * @param {String} value
+       * @returns int
+       */
+      getFirstAvailablePos(value){
+        let val = this.getInputValue(value || this.value);
+        return val.indexOf(this.promptChar) || 0;
       },
       /**
        * Finds and returns the start and the end position of the value by two points of the inputValue.
@@ -681,21 +700,27 @@ const cpDef = {
        * @fires setInputValue
        * @fires getRef
        * @fires focus
+       * @fires getPos
+       * @fires getFirstAvailablePos
        */
       focusEvent(event){
         if (!this.isDisabled && !this.readonly) {
-          this.focus(event)
+          this.focus(event);
+          this.currentPos = this.getPos(this.getRef('element').selectionStart);
+          let changePos = true;
           if (!this.value) {
             this.currentPos = this.getPos(0);
           }
           else if (this.autoPosition) {
-            this.currentPos = this.getPos(this.value.length);
-          }
-          else {
-            this.currentPos = this.getPos(this.getRef('element').selectionStart);
+            if (this.value.length < this.maxLen) {
+              this.currentPos = this.getFirstAvailablePos();
+            }
+            else {
+              changePos = false;
+            }
           }
 
-          this.setInputValue();
+          this.setInputValue(this.value, changePos);
         }
       },
       /**
