@@ -394,6 +394,7 @@ const cpDef = {
         currentMode: this.mode ? this.mode : (this.closest('bbn-floater') ? 'big' : 'normal'),
         _isSetting: false,
         window: null,
+        windowFooter: false,
         isInit: false,
         canSubmit: false,
         canCancel: false,
@@ -934,6 +935,11 @@ const cpDef = {
         if (!this.window && this.windowed) {
           this.window = this.closest("bbn-floater");
           if ( this.window ){
+            this.window.$once('hook:mounted', () => {
+              this.$nextTick(() => {
+                this.windowFooter = this.window.getRef('buttons');
+              });
+            });
             this.window.addClose(this.closePopup);
             this.window.componentClass.push('bbn-radius-bottom')
           }

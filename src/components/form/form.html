@@ -90,7 +90,7 @@
   <div bbn-elseif="realButtons.length && (currentMode === 'big')"
        :class="['bbn-form-footer', 'bbn-popup-footer', 'bbn-button-group', 'bbn-flex-width', {'bbn-lg': !window}]"
        :style="{minHeight: !window ? '3rem' : ''}"
-       bbn-portal="window?.$refs?.buttons">
+       bbn-portal="windowFooter">
     <bbn-button bbn-for="(button, i) in realButtons"
                 :class="[{
                   'bbn-noradius-top': !!window,
