@@ -1007,7 +1007,7 @@ const cpDef = {
      * @fires onResize
      * @fires init
      */
-    mounted(){
+    beforeMount(){
       this.ready  = true;
       this.onResize();
       /**
