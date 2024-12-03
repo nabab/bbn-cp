@@ -2207,7 +2207,7 @@ const cpDef = {
            * @emits nodeclick
            * @memberof bbn-tree-node
            */
-          clickOnNode(ev){
+          clickOnNode(ev) {
             this.$emit('nodeclick', this, ev);
           },
           /**

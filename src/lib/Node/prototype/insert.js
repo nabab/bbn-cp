@@ -75,6 +75,10 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
   }
 
   if (insertInSlot(parent, this, ele)) {
+    if (this.oldElement) {
+      delete this.oldElement;
+    }
+
     return;
   }
   else if (replace && this.oldElement) {
@@ -88,6 +92,7 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
 
     //bbn.fn.log("REMOVE " + (bbn.fn.isComment(this.oldElement) ? 'COMMENT' : (this.tag || 'TEXT')) + ' AND REPLACE WITH '+ (bbn.fn.isComment(this.element) ? 'COMMENT' : (this.tag || 'TEXT')));
     removeDOM(this.component, this.oldElement, this.element);
+    delete this.oldElement;
   }
   // First time is done in a linear direction
   else if (!this.component.$numBuild) {
@@ -178,4 +183,7 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
     }
   }
 
+  if (this.oldElement) {
+    delete this.oldElement;
+  }
 };

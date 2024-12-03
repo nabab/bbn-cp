@@ -252,6 +252,18 @@ export default class bbnNode
       //bbn.fn.log(["SET COMMENT", v, this.#comment, this.id, this, this.component.$options.name]);
       this.#comment = !!v;
       if (this.element && (bbn.fn.isComment(this.element) !== this.#comment)) {
+        if (this.#comment) {
+          for (let n in this.props) {
+            delete this.props[n];
+          }
+
+          this.attributes.forEach(a => {
+            a.result.num = 0;
+            a.result.state = 'NEW';
+            a.result.value = undefined;
+          });
+        }
+
         return this.nodeInit();
       }
     }

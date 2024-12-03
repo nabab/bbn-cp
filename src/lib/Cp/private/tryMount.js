@@ -44,23 +44,22 @@ export default function tryMount(cp, child) {
     }
     if (cp.$el.parentNode) {
       timeouts[cp.$cid] = setTimeout(() => {
-        if (cp.$isRoot) {
-          let i = 0;
-          while (cp.$components[i]) {
-            if ((cp.$components[i] instanceof HTMLElement) && !cp.$components[i].parentNode) {
-              cp.$components.splice(i, 1);
-            }
-            else {
-              i++;
-            }
+        let i = 0;
+        while (cp.$components[i]) {
+          if ((cp.$components[i] instanceof HTMLElement) && !cp.$components[i].isConnected) {
+            cp.$components.splice(i, 1);
+          }
+          else {
+            i++;
           }
         }
+
         if (!cp.$isMounted) {
           tryMount(cp);
         }
 
         delete timeouts[cp.$cid];
-      }, 5*bbn.cp.tickDelay);
+      }, 2*bbn.cp.tickDelay);
     }
   }
 }

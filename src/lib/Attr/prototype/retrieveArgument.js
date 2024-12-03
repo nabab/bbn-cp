@@ -12,18 +12,24 @@ import bbnAttr from "../Attr.js";
  * @returns {*} The resolved value of the argument.
  * @throws {Error} Throws an error if the argument cannot be resolved.
  */
-bbnAttr.prototype.retrieveArgument = function(a, hash, data) {
+bbnAttr.prototype.retrieveArgument = function(a, hash, dataArr) {
   const cp = this.node.component;
   let done = false;
   let v;
   const varName = bbn.fn.firstVarElement(a);
   // Check if the argument is a key in the provided data.
-  for (let i = 0; i < data.length; i++) {
-    if (data[i] && (varName in data[i])) {
-      // Return the value from the provided data.
-      done = true;
-      return bbn.fn.getProperty(data[i], a);
+
+  bbn.fn.each(dataArr, data => {
+    if (!done) {
+      if (data && ((data[varName] !== undefined) || Object.hasOwn(data, varName))) {
+        // Return the value from the provided data.
+        done = true;
+        v = data[varName];
+      }
     }
+  });
+  if (done) {
+    return v;
   }
 
   // Check if the argument corresponds to a function in the component.

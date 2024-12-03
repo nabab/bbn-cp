@@ -46,11 +46,13 @@ const expToFn = (cp, loopVars, a, node, type) => {
       else {
         a.fn = new Function(...args, stFn);
       }
+      a.stFn = stFn;
     }
     else {
       let stFn = 'const $_bbnRes = (' + (a.exp || (node.type === 'else' ? 'true' : '')) + ')\n';
       stFn += `return $_bbnRes;\n`;
       a.fn = new Function(...args, stFn);
+      a.stFn = stFn;
       if (type === 'model') {
         a.setter = new Function('bbnValue', ...args, a.exp + ' = bbnValue; return bbnValue;');
       }
