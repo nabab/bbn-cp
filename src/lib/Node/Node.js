@@ -256,21 +256,12 @@ export default class bbnNode
           for (let n in this.props) {
             delete this.props[n];
           }
-
-          this.attributes.forEach(a => {
-            a.result.num = 0;
-            a.result.state = 'NEW';
-            a.result.value = undefined;
-          });
         }
 
         return this.nodeInit();
       }
     }
   }
-
-
-
 
   setData(data) {
     bbn.fn.log("SET DATA COMMENTED");
