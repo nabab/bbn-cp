@@ -28,7 +28,8 @@
         }"
         :class="{'bbn-ellipsis': ellipsis}"/>
   <span bbn-elseif="!notext"><slot/></span>
-  <span bbn-if="icon && (iconPosition === 'right')" class="bbn-iblock bbn-m">
+  <span bbn-if="icon && (iconPosition === 'right')"
+        :class="['bbn-button-icon', {'bbn-middle': notext}]">
     <i :class="icon"/>
   </span>
   <div bbn-if="secondary"
