@@ -84,7 +84,8 @@ export default class bbnSlotNode extends bbnNode
         if (!ele) {
           ele = this.element || this.nodeBuild();
         }
-        else {
+        else if (this.numBuild) {
+          bbn.fn.log(["DELETE NODES", this.id, this.hash]);
           deleteNodes(this.component, this.id, this.hash);
         }
         //bbn.fn.log(["SLOT PARENT", ele, this.parentElement, ele.parentNode, this.component.$options.name, this.component.$slots[name]]);
@@ -120,7 +121,8 @@ export default class bbnSlotNode extends bbnNode
       if (!ele) {
         ele = this.nodeBuild();
       }
-      else {
+      else if (this.numBuild) {
+        bbn.fn.log(["DELETE NODES2", this.id, this.hash]);
         deleteNodes(this.component, this.id, this.hash);
       }
     }

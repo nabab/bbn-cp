@@ -1,5 +1,6 @@
 import bbn from "@bbn/bbn";
 import bbnAttr from "./Attr.js";
+import removeDOM from "../Cp/private/removeDOM.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -39,7 +40,7 @@ export default class bbnForgetAttr extends bbnAttr
               const idx = node.parentElement.bbnSlots[node.attr?.slot?.value || 'default'].indexOf(node.element);
               if (idx > -1) {
                 node.parentElement.bbnSlots[node.attr?.slot?.value || 'default'].splice(idx, 0, node.element.childNodes[0]);
-                node.element.removeChild(node.element.childNodes[0]);
+                removeDOM(node.element.childNodes[0].bbnComponent, node.element.childNodes[0]);
               }
             }
             else if (node.element.parentNode) {

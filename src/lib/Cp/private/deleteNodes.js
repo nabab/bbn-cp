@@ -1,5 +1,23 @@
 import removeDOM from './removeDOM.js';
 
+const checkOwnDeps = node => {
+  bbn.fn.each(node.attributes, a => {
+    bbn.fn.each(a.ownDeps, o => {
+      if (o.data) {
+        let idx = o.data.deps[o.name].indexOf(a);
+        if (idx > -1) {
+          o.data.deps[o.name].splice(idx, 1);
+        }
+
+        idx = o.data.deps.__bbnRoot.indexOf(a);
+        if (idx > -1) {
+          o.data.deps.__bbnRoot.splice(idx, 1);
+        }
+      }
+    })
+  })
+};
+
 export default function deleteNodes(cp, id, hash, full) {
   const indexes = Object.keys(cp.$nodes).filter(idx => !idx.indexOf(id + '-') || (full && (idx === id)));
   indexes.sort((a, b) => {
@@ -27,23 +45,9 @@ export default function deleteNodes(cp, id, hash, full) {
     if (hash) {
       for (let n in obj) {
         if ((n === hash) || !n.indexOf(hash + '-')) {
-          bbn.fn.each(obj[n].attributes, a => {
-            bbn.fn.each(a.ownDeps, o => {
-              if (o.data) {
-                let idx = o.data.deps[o.name].indexOf(a);
-                if (idx > -1) {
-                  o.data.deps[o.name].splice(idx, 1);
-                }
-      
-                idx = o.data.deps.__bbnRoot.indexOf(a);
-                if (idx > -1) {
-                  o.data.deps.__bbnRoot.splice(idx, 1);
-                }
-              }
-            })
-          })
-
+          checkOwnDeps(obj[n]);
           if (obj[n].element) {
+            obj[n].element.removed = true;
             removeDOM(cp, obj[n].element);
           }
 
@@ -52,27 +56,26 @@ export default function deleteNodes(cp, id, hash, full) {
       }
     }
     else {
-      bbn.fn.each(cp.$nodes[idx].attributes, a => {
-        bbn.fn.each(a.ownDeps, o => {
-          if (o.data) {
-            let idx = o.data.deps[o.name].indexOf(a);
-            if (idx > -1) {
-              o.data.deps[o.name].splice(idx, 1);
-            }
-  
-            idx = o.data.deps.__bbnRoot.indexOf(a);
-            if (idx > -1) {
-              o.data.deps.__bbnRoot.splice(idx, 1);
-            }
-          }
-        })
-      })
+      if (obj instanceof bbnNode) {
+        checkOwnDeps(obj);
+        if (obj.element) {
+          obj.element.removed = true;
+          removeDOM(cp, obj.element);
+        }
 
-      if (obj.element) {
-        removeDOM(cp, obj.element);
+        delete cp.$nodes[idx];
       }
+      else {
+        for (let n in obj) {
+          checkOwnDeps(obj[n]);
+          if (obj[n].element) {
+            obj[n].element.removed = true;
+            removeDOM(cp, obj[n].element);
+          }
 
-      delete cp.$nodes[idx];
+          delete obj[n];
+        }
+      }
     }
   });
 }

@@ -26,7 +26,7 @@ export default class bbnTemplateNode extends bbnNode
       if (!this.pre && (!this.condition || this.condition.value) && (!this.parent?.condition || this.parent.condition.value)) {
         this.nodeConceive();
       }
-      else if (this.condition?.isChanged && !this.condition.value) {
+      else if (this.condition && !this.condition.value && !this.isCommented) {
         deleteNodes(this.component, this.id, this.hash);
       }
 

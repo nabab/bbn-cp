@@ -727,7 +727,7 @@ const cpDef = {
           this.$emit('cancel', ev, this);
           this.reset();
           if ( this.window ){
-            this.window.close();
+            this.window.close(true);
           }
         }
       },

@@ -121,50 +121,15 @@ export default class bbnLoopAttr extends bbnAttr
 
     bbn.cp.loopLevel--;
     const loopHash = oHash ? bbn.fn.substr(oHash, 0, -1) : '';
-    for (let n in cp.$nodes[this.node.id]) {
-      const a = cp.$nodes[this.node.id][n];
+    for (let n in cp.$nodes[node.id]) {
+      const a = cp.$nodes[node.id][n];
       if ((n !== 'root')
         && (bbn.fn.substr(n, -5) !== '-root')
         && !this.list.includes(n)
-        && (n.indexOf(loopHash) === 0)
+        && !n.indexOf(loopHash)
       ) {
-        //bbn.fn.log(["CLEANIONG!", a, n, JSON.stringify(this.list)]);
-        if (bbn.fn.isComment(a.element)) {
-          let k = 0;
-          const elems = a.element?.parentNode ? Array.prototype.slice.call(a.element.parentNode.childNodes) : [];
-          while (elems.length) {
-            const elem = elems.shift();
-            if (!elem.bbnId) {
-              k++;
-              continue;
-            }
-            if (!elem.bbnId.indexOf(this.node.id + '-') 
-              && cp.$nodes[elem.bbnId][n]?.element
-              && !elem.bbnHash.indexOf(n)
-            ) {
-              //bbn.fn.warning("DELETING")
-              deleteNodes(cp, elem.bbnId, n, true);
-            }
-            k++;
-          }
-        }
-
-        //bbn.fn.warning("DELETING 0")
-        deleteNodes(cp, this.node.id, n, true);
-      }
-    }
-
-    for (let idx in cp.$nodes) {
-      if ((idx === this.node.id) || !idx.indexOf(this.node.id + '-')) {
-        const obj = cp.$nodes[idx];
-        for (let n in obj) {
-          bbn.fn.each(oldList, l => {
-            if (((n === l) || !n.indexOf(l + '-')) && !this.list.includes(l)) {
-              //bbn.fn.warning("DELETING 1")
-              deleteNodes(cp, idx, n, true);
-            }
-          });
-        }
+        bbn.fn.warning("DELETING 0")
+        deleteNodes(cp, node.id, n, true); 
       }
     }
   }

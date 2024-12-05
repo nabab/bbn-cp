@@ -8,11 +8,13 @@ import deleteNodes from "../Cp/private/deleteNodes.js";
 export default class bbnConditionAttr extends bbnAttr
 {
   attrSet() {
-    if (this.node.loop) {
+    const node = this.node;
+    const cp = node.component;
+    if (node.loop) {
       return;
     }
 
-    const allIfs = this.node.parent.items.filter(a => (a.conditionId === this.node.conditionId));
+    const allIfs = this.node.parent.items.filter(a => (a.conditionId === node.conditionId));
     let conditionValue;
     let isTrue = false;
     let isPassed = false;
@@ -41,48 +43,52 @@ export default class bbnConditionAttr extends bbnAttr
         }
       }
       else {
-        const node = this.node.component.$retrieveElement(ai.id, this.node.hash)?.bbnSchema;
-
-        if (node?.condition) {
-          if (isTrue || (node.condition.type === 'else')) {
-            if (node.condition.value !== !isTrue) {
-              node.condition.attrSetResult(!isTrue);
+        const otherCondNode = cp.$retrieveElement(ai.id, node.hash)?.bbnSchema;
+        if (otherCondNode?.condition) {
+          if (isTrue || (otherCondNode.condition.type === 'else')) {
+            if (otherCondNode.condition.value !== !isTrue) {
+              otherCondNode.condition.attrSetResult(!isTrue);
             }
           }
           else {
-            node.condition.attrGetValue();
+            otherCondNode.condition.attrGetValue();
           }
 
-          if (node.condition.value) {
+          if (otherCondNode.condition.value) {
             isTrue = true;
-            if (node.isCommented) {
+            if (otherCondNode.isCommented) {
               if (node.forget) {
-                node.forget.attrUpdate();
+                otherCondNode.forget.attrUpdate();
               }
               else {
-                node.setComment(false);
+                otherCondNode.setComment(false);
               }
             }
           }
-          else if (!node.isCommented) {
-            node.setComment(true);
-            deleteNodes(node.component, node.id, node.hash);
+          else if (!otherCondNode.isCommented) {
+            if (otherCondNode.numBuild) {
+              deleteNodes(otherCondNode.component, otherCondNode.id, otherCondNode.hash);
+            }
+            otherCondNode.setComment(true);
           }
         }
       }
     }
 
-    if (conditionValue && this.node.isCommented) {
-      if (this.node.forget) {
-        this.node.forget.attrUpdate();
+    if (conditionValue && node.isCommented) {
+      if (node.forget) {
+        node.forget.attrUpdate();
       }
       else {
-        this.node.setComment(false);
+        node.setComment(false);
       }
     }
-    else if (!conditionValue && !this.node.isCommented) {
-      this.node.setComment(true);
-      deleteNodes(this.node.component, this.node.id, this.node.hash);
+    else if (!conditionValue && !node.isCommented) {
+      if (node.numBuild) {
+        deleteNodes(cp, node.id, node.hash);
+      }
+
+      node.setComment(true);
     }
   }
 
@@ -123,6 +129,7 @@ export default class bbnConditionAttr extends bbnAttr
     if (node.forget?.value || ['template', 'transition', 'slot'].includes(this.node.tag)) {
       if (node.items) {
         if (!this.attrGetValue()) {
+          //bbn.fn.log(["DELETE NODES7", node.id, node.hash]);
           deleteNodes(cp, node.id, node.hash);
         }
         else if ((node.tag === 'template') && !node.element) {

@@ -141,6 +141,9 @@ bbnNode.prototype.nodeBuild = function(after) {
       }
 
       if (this.isComponent) {
+        if (this.tag === 'bbn-treemenu') {
+          bbn.fn.log("BUILDING TREE MENU", cp, this.element);
+        }
         announceComponent(cp, this.element);
       }
     }
@@ -165,6 +168,7 @@ bbnNode.prototype.nodeBuild = function(after) {
       'bbnIndex': { value: this.loopIndex, writable: false, configurable: false }
     });
   }
+
   if (!this.comment && this.directives) {
     Object.defineProperty(this.element, 'bbnDirectives', {
       value: bbn.fn.createObject(),
@@ -184,7 +188,6 @@ bbnNode.prototype.nodeBuild = function(after) {
   }
   
   this.nodeInsert(this.element, after);
-
   if (!this.comment) {
     for (let i = 0; i < this.attributes.length; i++) {
       if (this.attributes[i] instanceof bbnDirectiveAttr) {

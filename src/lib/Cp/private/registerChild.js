@@ -10,7 +10,7 @@ export default function registerChild(child) {
   const idx = origin.$components.indexOf(child.$el);
   if (idx === -1) {
     bbn.fn.warning("The child is not a child of the component");
-    bbn.fn.log(origin.$options.name, child.$options.name);
+    bbn.fn.log([origin.$options.name, child.$options.name, origin, child.$el, origin.$components.indexOf(child)]);
     return;
   }
 

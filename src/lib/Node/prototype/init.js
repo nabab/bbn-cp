@@ -18,7 +18,7 @@ bbnNode.prototype.nodeInit = function(after) {
       return old;
     }
 
-    if (this.comment) {
+    if (this.comment && this.numBuild && !(old instanceof Comment)) {
       deleteNodes(this.component, this.id, this.hash);
     }
 

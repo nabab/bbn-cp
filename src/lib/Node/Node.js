@@ -256,6 +256,10 @@ export default class bbnNode
           for (let n in this.props) {
             delete this.props[n];
           }
+
+          if (this.isComponent && this.component.$components.includes(this.element)) {
+            this.component.$components.splice(this.component.$components.indexOf(this.element), 1);
+          }
         }
 
         return this.nodeInit();

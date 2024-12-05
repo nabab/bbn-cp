@@ -6,17 +6,6 @@ import tryMount from "./tryMount.js";
  * @param {HTMLElement} ele
  */
 export default function removeDOM(cp, ele, replacer) {
-  if (cp.$nodes[ele.bbnId]) {
-    if (!ele.bbnHash) {
-      if (cp.$nodes[ele.bbnId]?.element === ele) {
-        cp.$nodes[ele.bbnId].element = null;
-      }
-    }
-    else if (cp.$nodes[ele.bbnId]?.[ele.bbnHash]?.element === ele) {
-      cp.$nodes[ele.bbnId][ele.bbnHash].element = null;
-    }
-  }
-
   if (ele.bbnComponent) {
     let idx = ele.bbnComponent.$components.indexOf(ele);
     if (idx > -1) {

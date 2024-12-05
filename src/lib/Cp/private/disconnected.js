@@ -48,13 +48,4 @@ export default function disconnected(cp) {
     cp.$el.dispatchEvent(destroyed);
     //bbn.fn.log("ENDED DISCONNECTED: " + cp.$el.tagName + ' / ' + cp.$el.bbnSchema.id);
   }
-  else {
-    let idx = cp.$el.bbnComponent.$components.indexOf(cp);
-    if (idx === -1) {
-      idx = cp.$el.bbnComponent.$components.indexOf(cp.$el);
-    }
-    if (idx > -1) {
-      cp.$el.bbnComponent.$components.splice(idx, 1);
-    }
-  }
 }
