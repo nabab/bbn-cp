@@ -332,9 +332,9 @@ export default {
         while (bits.length) {
           let st = bits.join('/');
           let idx = this.search(st);
-          if ((idx !== false) && this.urls[this.views[idx].uid]) {
+          if ((idx !== false) && this.views[idx].uid) {
             //bbn.fn.log("really getRoute", this.views[idx].url)
-            return this.urls[this.views[idx].uid].disabled ? '' : this.views[idx].url;
+            return this.views[idx].disabled ? '' : this.views[idx].url;
           }
 
           bits.pop();
@@ -609,10 +609,21 @@ export default {
         if (!row.length) {
           throw new Error(bbn._("Impossible to find a container for the URL %s", url));
         }
-
+        
         row = row[0];
         if (!this.urls[row.uid]) {
-          throw new Error(bbn._("The container for the URL %s is not registered", row.url));
+          const ct = bbn.fn.getRow(this.$components, a => a?.bbnSchema?.props.uid === row.uid);
+          if (ct) {
+            bbn.fn.warning("CT FOUND")
+            ct.$on('hook:created', e => {
+              bbn.fn.warning("CREATED HOOK", e);
+              
+            })
+          }
+          else {
+            return;
+            throw new Error(bbn._("The container for the URL %s is not registered", row.url));
+          }
         }
         container = this.urls[row.uid];
       }
