@@ -1,20 +1,15 @@
 <div :class="[componentClass]"
      tabindex="-1">
   <div class="bbn-w-100">
-    <bbn-input bbn-if="mode === 'input'"
-               bbn-model="currentInput"
+    <bbn-input bbn-if="mode === 'double'"
+               bbn-model="currentTextInput"
               :readonly="!!readonly || (max && (value.length > max))"
               :disabled="isDisabled"
               @keydown="keydown"
               @focus="isOpened = true"
               ref="input"
-              @ready="ready = true"
               class="bbn-w-100"
-              :placeholder="max && (value.length > max) ? _('Max number of') + ' ' + max : (this.placeholder || _('Value'))"
-              :action-right="add"
-              button-right="nf nf-fa-plus"
-              :button-right-disabled="(!!max && (value.length >= max)) || isDisabled || !!readonly"
-              :button-right-title="_('Add')"/>
+              :placeholder="max && (value.length > max) ? _('Max number of') + ' ' + max : (this.textPlaceholder || _('Text'))"/>
     <div bbn-elseif="mode === 'dropdown'"
          class="bbn-border bbn-radius bbn-flex-width">
       <bbn-dropdown :source="source"
@@ -30,6 +25,20 @@
                   @click="add"
                   :disabled="isDisabled || (max && (value.length > max)) || !currentInput.length"/>
     </div>
+    <bbn-input bbn-if="mode !== 'dropdown'"
+               bbn-model="currentInput"
+              :readonly="!!readonly || (max && (value.length > max))"
+              :disabled="isDisabled"
+              @keydown="keydown"
+              @focus="isOpened = true"
+              ref="input"
+              @ready="ready = true"
+              class="bbn-w-100"
+              :placeholder="max && (value.length > max) ? _('Max number of') + ' ' + max : (this.placeholder || _('Value'))"
+              :action-right="add"
+              button-right="nf nf-fa-plus"
+              :button-right-disabled="(!!max && (value.length >= max)) || isDisabled || !!readonly"
+              :button-right-title="_('Add')"/>
   </div>
   <div class="bbn-w-100">
     <div bbn-for="(v, idx) in value"
@@ -54,10 +63,8 @@
                :auto-hide="true"
                @select="select"
                @close="isOpened = false"
-               :source="filteredData"
-  ></bbn-floater>
+               :source="filteredData"/>
   <input class="bbn-hidden"
-         ref="input"
          :value="value"
          :readonly="readonly"
          :required="required">

@@ -451,6 +451,8 @@ const cpDef = {
        * @data {Array} [[]] forms
        */
       forms: [],
+      buttonsContainer: false,
+      numButtonsInContainer: 0
     };
   },
   computed: {
@@ -591,6 +593,7 @@ const cpDef = {
         this.onResize(true);
         this.$nextTick(() => {
           this.isResized = true;
+          this.updateButtonsInContainer();
           this.$emit('resized', this);
           const scroll = this.closest('bbn-scroll');
           if (scroll) {
@@ -1271,6 +1274,23 @@ const cpDef = {
       }
 
       return bbn.cp.mixins.list.methods.updateData.apply(this);
+    },
+    updateButtonsInContainer() {
+      if (this.currentButtons.length) {
+        this.numButtonsInContainer = this.currentButtons.length;
+      }
+      else {
+        if (!this.buttonsContainer) {
+          this.buttonsContainer = this.getRef('buttons');
+        }
+
+        if (this.buttonsContainer) {
+          this.numButtonsInContainer = this.buttonsContainer.children.length;
+        }
+        else if (this.numButtonsInContainer) {
+          this.numButtonsInContainer = 0;
+        }
+      }
     }
   },
   /**

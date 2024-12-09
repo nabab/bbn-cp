@@ -185,4 +185,7 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
   if (this.oldElement) {
     delete this.oldElement;
   }
+
+  const create = new Event('hook:create');
+  ele.dispatchEvent(create);
 };

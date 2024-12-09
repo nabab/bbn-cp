@@ -59,7 +59,7 @@ const cpDef = {
     mode: {
       type: String,
       default: 'input',
-      validator: v => ['input', 'dropdown'].includes(v)
+      validator: v => ['input', 'dropdown', 'double'].includes(v)
     },
     sourceText: {
       type: String,
@@ -68,11 +68,15 @@ const cpDef = {
     sourceValue: {
       type: String,
       default: 'value'
+    },
+    textPlaceholder: {
+      type: String,
+      default: bbn._("Type a text")
     }
   },
   data(){
     let isJSON = this.value && bbn.fn.isString(this.value);
-    let value = this.value ? (isJSON ? JSON.parse(this.value) : bbn.fn.clone(this.value)) : [];
+    let value = this.value ? (isJSON ? JSON.parse(this.value) : this.value) : [];
     if (!bbn.fn.isArray(value)) {
       throw new Error("The value of bbn-values must be an array");
     }
@@ -80,7 +84,8 @@ const cpDef = {
       isJSON: isJSON,
       currentValue: value,
       oldValue: bbn.fn.clone(value),
-      currentInput: ''
+      currentInput: '',
+      currentTextInput: ''
     };
   },
   computed: {
@@ -105,6 +110,10 @@ const cpDef = {
         e.stopPropagation();
         if (this.$refs.list && (this.$refs.list.overIdx > -1)) {
           this.currentInput = this.filteredData[this.$refs.list.overIdx];
+        }
+
+        if ((this.mode === 'double') && !this.currentInput.length) {
+          this.add();
         }
 
         this.add();
