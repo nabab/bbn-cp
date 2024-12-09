@@ -67,7 +67,7 @@ export default {
   },
   computed: {
     args() {
-      return (this.currentView ? bbn.fn.substr(this.currentCurrent, this.currentURL.length) : '').split('/');
+      return bbn.fn.removeEmpty((this.currentView ? bbn.fn.substr(this.currentCurrent, this.currentURL.length) : '').split('/'));
     }
   },
   methods: {

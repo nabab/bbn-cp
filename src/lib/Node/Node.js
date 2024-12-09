@@ -253,10 +253,6 @@ export default class bbnNode
       this.#comment = !!v;
       if (this.element && (bbn.fn.isComment(this.element) !== this.#comment)) {
         if (this.#comment) {
-          for (let n in this.props) {
-            delete this.props[n];
-          }
-
           if (this.isComponent && this.component.$components.includes(this.element)) {
             this.component.$components.splice(this.component.$components.indexOf(this.element), 1);
           }

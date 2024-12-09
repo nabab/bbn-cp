@@ -128,7 +128,6 @@ export default class bbnLoopAttr extends bbnAttr
         && !this.list.includes(n)
         && !n.indexOf(loopHash)
       ) {
-        bbn.fn.warning("DELETING 0")
         deleteNodes(cp, node.id, n, true); 
       }
     }
