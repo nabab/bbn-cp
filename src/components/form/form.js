@@ -937,9 +937,11 @@ const cpDef = {
         if (this.window) {
           if (!this.window.$isMounted) {
             this.window.$once('hook:mounted', () => {
-              this.windowFooter = this.window.getRef('buttons');
               this.$nextTick(() => {
-                this.window.updateButtonsInContainer();
+                this.windowFooter = this.window.getRef('buttons');
+                this.$nextTick(() => {
+                  this.window.updateButtonsInContainer();
+                });
               });
             });
           }
