@@ -119,7 +119,7 @@ export default class bbnParser {
       }
     } else if (this.#curTag === false) {
       throw new Error('No tag name 1');
-    } else if (/[A-z0-9-]/.test(html[i])) {
+    } else if (/[A-z0-9-_]/.test(html[i])) {
       this.#curTag += html[i];
     } else {
       this.processTag(html, i, tags);
@@ -218,10 +218,10 @@ export default class bbnParser {
 
   handleAttributeClosing(html, i, tags) {
     if (this.#openedTag && html[i] === '/' && html[i + 1] === '>') {
-      this.#openedTag = tags[tags.length - 1] || false;
-      this.state = 'text';
       html[i] = '></' + this.#openedTag + '>';
       html[i + 1] = '';
+      this.#openedTag = tags[tags.length - 1] || false;
+      this.state = 'text';
     } else if (html[i] === '>') {
       this.finalizeAttribute(tags);
     }

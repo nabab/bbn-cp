@@ -127,7 +127,7 @@ export default class bbnModelAttr extends bbnAttr
             if (res?.seq?.length) {
               const last = res.seq[res.seq.length - 1];
               if (last.data) {
-                last.data.value[last.name] = eventValue;
+                last.data.value[last.data.getLastRequestedProp()] = eventValue;
                 //bbn.fn.log(["SETTING DATA", eventValue, last, last.data.value, res.seq])
               }
               else if ((Object.hasOwn(last.component.$namespaces, last.name))) {

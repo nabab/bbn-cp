@@ -437,7 +437,7 @@ const cpDef = {
         /**
          * @prop {(Object|Null|String)} currentValue
          */
-        currentValue: this.value ? bbn.fn.clone(this.value) : (this.source.nullable ? null : ''),
+        currentValue: this.value || (this.source.nullable ? null : ''),
         componentObject: null,
       }
     },
@@ -683,6 +683,7 @@ const cpDef = {
           computed: {
             currentValue: {
               get() {
+                bbn.fn.log("GETTING CURRENT VALUE", this)
                 return this.value
               },
               set(v) {

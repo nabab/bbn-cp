@@ -31,6 +31,7 @@ class bbnData/* extends EventTarget*/ {
   static toUpdate = [];
 
   #uid;
+  #lastRequestedProp;
   /**
    * Constructor
    * @param {Object} data A regular object or array i.e. it mustn't be a class instance
@@ -150,6 +151,14 @@ class bbnData/* extends EventTarget*/ {
       parent.children.push(this);
     }
 
+  }
+
+  setLastRequestedProp(prop) {
+    this.#lastRequestedProp = prop;
+  }
+
+  getLastRequestedProp() {
+    return this.#lastRequestedProp;
   }
 
   get root() {

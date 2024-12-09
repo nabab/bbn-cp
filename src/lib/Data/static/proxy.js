@@ -25,6 +25,7 @@ bbnData.proxy = function(component, path, targetObj) {
         return realValue;
       }
 
+      targetObj.setLastRequestedProp(key);
       if (bbn.fn.isFunction(realValue)) {
         if (targetObj?.isArray && bbn.fn.isString(key)) {
           const fnName = bbn.fn.camelize('proxy-' + key);
@@ -39,11 +40,11 @@ bbnData.proxy = function(component, path, targetObj) {
         realValue = t.treatValue(realValue, component, key, targetObj);
       }
       
+      bbnData.addSequence(component, key, targetObj);
       if ((realValue === undefined) && !Object.hasOwn(target, key)) {
         return realValue;
       }
 
-      bbnData.addSequence(component, key, targetObj);
 
       return realValue;
     },

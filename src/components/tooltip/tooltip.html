@@ -14,12 +14,11 @@
                :arrow="true"
                :distance="distance"
                :auto-hide="500"
-               :scrollable="false">
-    <slot></slot>
-    <span class="bbn-p bbn-tooltip-icon bbn-left-xsspace"
-          ref="helper"
-          bbn-if="icon">
-      <i :class="[icon, 'bbn-m']"/>
-    </span>
-  </bbn-floater>
+               :scrollable="false"/>
+  <slot></slot>
+  <span class="bbn-p bbn-tooltip-icon bbn-left-xsspace"
+        ref="helper"
+        bbn-if="icon">
+    <i :class="[icon, 'bbn-m']"/>
+  </span>
 </component>

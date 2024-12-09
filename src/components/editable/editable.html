@@ -1,8 +1,7 @@
 <div :class="['bbn-iblock', componentClass]"
      @focusout="focusout"
      @mouseenter="over = true"
-     @mouseleave="over = false"
-     >
+     @mouseleave="over = false">
   <component bbn-if="isEditing && component"
             :is="component"
             bbn-model="currentValue"
@@ -28,15 +27,12 @@
     }">
     <i :class="'bbn-p inline ' + editIcon"
       @click.stop="edit"
-      bbn-if="!isEditing"
-    ></i>
+      bbn-if="!isEditing"/>
     <i :class="'bbn-p inline ' + cancelIcon"
       @click.stop="onCancel"
-      bbn-if="isEditing" 
-    ></i>
+      bbn-if="isEditing"/>
     <i :class="'bbn-p inline ' + saveIcon"
       @click.stop="save"
-      bbn-if="isEditing" 
-    ></i>
+      bbn-if="isEditing"/>
   </div>
 </div>

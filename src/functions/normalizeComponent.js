@@ -16,6 +16,8 @@ export default function normalizeComponent(cfg, clsName) {
     throw new Error("Components definition must be objects");
   }
 
+  cfg = bbnData.immunizeValue(cfg, true);
+
   // Initialize the result object with standard component properties.
   const res = bbnData.immunizeValue(bbn.fn.createObject({
     props: bbn.fn.createObject(),
