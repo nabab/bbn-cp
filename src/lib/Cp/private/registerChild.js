@@ -15,7 +15,9 @@ export default function registerChild(child) {
   }
 
   origin.$components.splice(idx, 1, child);
-  parent.$children.push(child);
+  if (parent) {
+    parent.$children.push(child);
+    parent.$emit('bbn-register-child', child);
+  }
   origin.$emit('bbn-register-component', child);
-  parent.$emit('bbn-register-child', child);
 }

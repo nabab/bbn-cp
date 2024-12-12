@@ -237,6 +237,7 @@ const cpDef = {
      * @watch  currentSelectValue
      */
     currentSelectValue(newVal) {
+      bbn.fn.log(newVal, this.value, 'lll');
       if (this.ready && (newVal !== this.value)) {
         this.emitInput(newVal);
         this.$emit('change', newVal);
@@ -253,7 +254,8 @@ const cpDef = {
       }
       this.currentFilters.conditions.splice(...args);
     },
-    value(v) {
+    value(v, ov) {
+      bbn.fn.log(["CHANGE VALUE", v, ov])
       if (v !== this.currentSelectValue) {
         this.currentSelectValue = v;
       }

@@ -373,14 +373,15 @@ const dropdown = {
      * @memberof dropdownComponent
      */
     onSelect(item, idx, dataIndex, e) {
-      //bbn.fn.log(["SELECT FROM DROPDOWN", item, idx, dataIndex, e])
+      bbn.fn.log(["SELECT FROM DROPDOWN", item, this.uid || this.sourceValue, this.ready, idx, dataIndex, e])
       if (item && (!e || !e.defaultPrevented)) {
         if (this.sourceAction && item[this.sourceAction] && bbn.fn.isFunction(item[this.sourceAction])) {
           item[this.sourceAction](item);
         }
-        else if (item[this.uid || this.sourceValue] !== undefined) {
-          //bbn.fn.log(["SELECT 2 FROM DROPDOWN", item, idx, dataIndex, e])
+        else if (item[this.sourceValue] !== undefined) {
+          bbn.fn.log(["SELECT 2 FROM DROPDOWN", this.value, this.currentSelectValue, item[this.sourceValue]])
           this.currentSelectValue = item[this.sourceValue];
+          bbn.fn.log(["SELECT 2 FROM DROPDOWN", this.value, this.currentSelectValue, item[this.sourceValue]])
         }
       }
 
