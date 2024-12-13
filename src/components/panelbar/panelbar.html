@@ -51,7 +51,7 @@
             <div bbn-elseif="(s.component)"
                 :class="[{'bbn-w-100': !scrollable}]">
               <component :is="s.component"
-                         bbn-bind="source[idx]['componentOptions']"
+                         bbn-bind="s.componentOptions"
                          :class="{'bbn-w-100': !scrollable}"
                          @hook:mounted="$emit('componentmounted', s.component, s.componentOptions, s)"/>
             </div>
