@@ -600,7 +600,7 @@ export default {
      * @param {String} url 
      */
     setCurrent(url){
-      if ( url.indexOf(this.url) === 0 ){
+      if (url.indexOf(this.url) === 0) {
         this.currentCurrent = url;
         return true;
       }
@@ -904,7 +904,7 @@ export default {
       this.isLoading = v;
     },
     current(v){
-      if (v.indexOf(this.url) === 0){
+      if (v.indexOf(this.url) === 0) {
         this.currentCurrent = v;
       }
       if (this.real) {
@@ -915,7 +915,8 @@ export default {
      * @watch currentCurrent
      * @param {String} newVal 
      * @param {String} oldVal 
-    currentCurrent(v) {
+     *
+    currentCurrent(v, ov) {
       if (this.subrouter && v) {
         //bbn.fn.log("currentCurrent", this.currentView, v);
         this.subrouter.route(this.subrouter.parseURL(this.getFullURL()));

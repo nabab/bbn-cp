@@ -285,11 +285,10 @@ const cpDef = {
       };
     },
 
-    /*
     observerEmit(newVal, obs){
       bbn.fn.log("OBS EMIT", newVal, obs);
-      let ele = $(".bbn-observer-" + obs.element, this.$el);
-      if ( ele.length ){
+      let ele = this.$el.querySelector(".bbn-observer-" + obs.element);
+      if (ele) {
         let idx = this.getIndex(ele);
         if ( idx !== false ){
           let i = bbn.fn.search(this.observers, {id: obs.id, element: obs.element});
@@ -306,7 +305,6 @@ const cpDef = {
         }
       }
     },
-    */
 
     /**
      * Sends event beforeRoute (cancellable) and launch real routing
@@ -1053,19 +1051,17 @@ const cpDef = {
   watch: {
     currentURL(newVal, oldVal){
       if ( this.ready ){
-        this.$nextTick(() => {
-          if ( this.activeContainer ){
-            this.changeURL(newVal, this.activeContainer.title);
-          }
-          else if ( this.isLoading ){
-            this.changeURL(newVal, bbn._("Loading"));
-          }
-          let idx = this.search(newVal);
-          if ((idx !== false) && (this.selected !== idx)){
-            this.selected = idx;
-          }
-          this.$emit('change', newVal);
-        });
+        if ( this.activeContainer ){
+          this.changeURL(newVal, this.activeContainer.title);
+        }
+        else if ( this.isLoading ){
+          this.changeURL(newVal, bbn._("Loading"));
+        }
+        let idx = this.search(newVal);
+        if ((idx !== false) && (this.selected !== idx)){
+          this.selected = idx;
+        }
+        this.$emit('change', newVal);
         this.$emit('route', newVal);
         
       }

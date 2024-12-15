@@ -195,10 +195,10 @@ const cpDef = {
         if ( this.currentIndex !== idx ){
           this.currentIndex = idx;
           if ( this.items[idx].items ){
-            let $item = $(this.$el).find(" > ul > li").eq(idx),
+            let $item = this.$el.querySelector(" > ul > li")[idx],
                 offset = $item.offset(),
-                h = $(this.$root.$el).height(),
-                w = $(this.$root.$el).width();
+                h = this.$root.$el.clientHeight,
+                w = this.$root.$el.clientWidth;
             this.items[idx].right = offset.left > (w * 0.6) ? Math.round(w - offset.left) : null;
             this.items[idx].left = offset.left <= (w * 0.6) ? Math.round(offset.left + $item[0].clientWidth) : null;
             this.items[idx].bottom = offset.top > (h * 0.6) ? Math.round(h - offset.top - $item[0].clientHeight) : null;
@@ -214,7 +214,7 @@ const cpDef = {
       close(e){
         this.currentIndex = false;
         if ( !this.level && this.focused ){
-          $(this.focused).focus();
+          this.focused.focus();
         }
       },
       closeAll(){
@@ -224,7 +224,7 @@ const cpDef = {
         }
         else{
           if ( this.focused ){
-            $(this.focused).focus();
+            this.focused.focus();
           }
           this.$emit('close');
           this.focus = false;
@@ -266,24 +266,10 @@ const cpDef = {
         if ( !this.focused ){
           this.focused = bbn.env.focused;
         }
-        this.currentHeight = $(this.$el).children().height();
-        this.currentWidth = $(this.$el).children().width();
+        this.currentHeight = this.$el.children[0].clientHeight;
+        this.currentWidth = this.$el.children[0].clientWidth;
         this.$el.children[0].focus();
         this.ready = true;
-          /*
-        let style = {},
-            h = $(this.$el).children().height();
-        if ( this.bottom ){
-          if ( this.bottom - h < 0 ){
-            style.top = '0px';
-          }
-          else{
-            style.top = Math.round(this.bottom - h) + 'px';
-          }
-          style.height = Math.round(h + 2) + 'px';
-          $(this.$el).css(style)
-        }
-          */
       })
     },
     beforeDestroy(){

@@ -1686,17 +1686,14 @@ const cpDef = {
           },
           beforeEnter(){
             if ( this.animation ){
-              //alert("beforeEnter " + $(this.$refs.container).height());
             }
           },
           enter(){
             if ( this.animation ){
-              //alert("enter " + $(this.$refs.container).height());
             }
           },
           afterEnter(){
             if ( this.animation ){
-              //alert("afterEnter " + $(this.$refs.container).height());
             }
           },
           /**

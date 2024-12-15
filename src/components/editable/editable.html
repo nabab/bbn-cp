@@ -6,12 +6,12 @@
             :is="component"
             bbn-model="currentValue"
             bbn-bind="componentOptions"/>
-  <component bbn-elseif="isEditing"
+  <component bbn-elseif="isEditing && componentObject"
             :is="componentObject"
             bbn-model="currentValue"
             :source="source"
             :class="{'edit-block' : isEditing}"/>
-  <component bbn-else
+  <component bbn-elseif="componentObject"
              :is="componentObject"
              bbn-model="currentValue"
              :source="source"
@@ -19,10 +19,12 @@
   <div :style="{
       position: 'absolute',
       top: '0px',
-      right: '-8rem',
+      right: isEditing ? '-8rem' : undefined,
+      left: isEditing ? undefined : '-8rem',
       width: '8rem',
-      paddingLeft: '1rem',
-      textAlign: 'left',
+      paddingRight: isEditing ? '0' : '1rem',
+      paddingLeft: isEditing ? '1rem' : '0',
+      textAlign: isEditing ? 'left' : 'right',
       display: isEditing || over ? 'block' : 'none'
     }">
     <i :class="'bbn-p inline ' + editIcon"

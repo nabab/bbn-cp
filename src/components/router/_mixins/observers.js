@@ -1,28 +1,5 @@
 export default {
   methods: {
-    /*
-    observerEmit(newVal, obs){
-      bbn.fn.log("OBS EMIT", newVal, obs);
-      let ele = $(".bbn-observer-" + obs.element, this.$el);
-      if ( ele.length ){
-        let idx = this.getIndex(ele);
-        if ( idx !== false ){
-          let i = bbn.fn.search(this.observers, {id: obs.id, element: obs.element});
-          if ( (i > -1) && (this.observers[i].value !== newVal) ){
-            if ( idx === this.selected ){
-              this.$emit('bbnobs' + obs.element + obs.id, newVal);
-              this.observers[i].value = newVal;
-            }
-            else{
-              this.observers[i].value = newVal;
-              this.$set(this.views[idx].events, 'bbnObs' + obs.element + obs.id, newVal);
-            }
-          }
-        }
-      }
-    },
-    */
-
     /**
      * @method observerEmit
      * @param newVal

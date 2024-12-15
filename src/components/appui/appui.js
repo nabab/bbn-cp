@@ -520,19 +520,6 @@ const cpDef = {
       return p.alert.apply(p, arguments);
     },
 
-    measure() {
-      /*
-      let w = $(this.$el).width(),
-          h = $(this.$el).height();
-      if ( w && h && ((w !== this.width) || (h !== this.height)) ){
-        this.width = w;
-        this.height = h;
-        this.$emit("resize", {width: this.width, height: this.height});
-      }
-      */
-    },
-
-
     /**
      * Get messages from service worker
      * @param {Object} message

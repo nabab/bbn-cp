@@ -403,7 +403,7 @@ const cpDef = {
       }
     },
     data(){
-      return {
+      const data = {
         /**
          * @data {Boolean} [false] over
          */
@@ -439,7 +439,9 @@ const cpDef = {
          */
         currentValue: this.value || (this.source.nullable ? null : ''),
         componentObject: null,
-      }
+      };
+
+      return data;
     },
     computed: {
       /**
@@ -658,7 +660,7 @@ const cpDef = {
           throw new Error('The component type ' + type + ' is not defined');
         }
 
-        return {
+        return bbnData.immunizeValue({
           props: {
             value: {},
             source: {},
@@ -683,7 +685,7 @@ const cpDef = {
           computed: {
             currentValue: {
               get() {
-                bbn.fn.log("GETTING CURRENT VALUE", this)
+                bbn.fn.log("GETTING CURRENT VALUE", type, this.value, this.$el.bbnSchema.model.value.value, this)
                 return this.value
               },
               set(v) {
@@ -1077,18 +1079,12 @@ const cpDef = {
             }
           },
 
-        }
+        });
       },
     },
 
-    /**
-     * @event beforeMount
-     * @fires getComponentObject
-     */
-    beforeCreate() {
-      this.componentObject = {};
-    },
-    created() {
+    beforeMount() {
+      bbn.fn.log(this.value, this.currentValue, '-------');
       this.componentObject = this.getComponentObject(this.type);
     },
     /**
