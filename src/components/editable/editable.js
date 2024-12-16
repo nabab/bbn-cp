@@ -339,21 +339,21 @@ const cpDef = {
        */
       editIcon: {
         type: String,
-        default: 'nf nf-fa-edit bbn-xlarge bbn-blue'
+        default: 'nf nf-fa-edit bbn-m bbn-blue'
       },
       /**
        * @prop {String} ['nf nf-fa-check bbn-xlarge bbn-green'] saveIcon
        */
       saveIcon: {
         type: String,
-        default: 'nf nf-fa-check bbn-xlarge bbn-green'
+        default: 'nf nf-fa-check bbn-m bbn-green'
       },
       /**
        * @prop {String} ['nf nf-fa-check bbn-xlarge bbn-red'] cancelIcon
        */
       cancelIcon: {
         type: String,
-        default: 'nf nf-fa-close bbn-xlarge bbn-red'
+        default: 'nf nf-fa-close bbn-m bbn-red'
       },
       /**
        * The aduio's URL

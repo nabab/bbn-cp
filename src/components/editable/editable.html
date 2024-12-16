@@ -18,22 +18,23 @@
              :class="{'edit-block' : isEditing}"/>
   <div :style="{
       position: 'absolute',
-      top: '0px',
-      right: isEditing ? '-8rem' : undefined,
-      left: isEditing ? undefined : '-8rem',
-      width: '8rem',
-      paddingRight: isEditing ? '0' : '1rem',
-      paddingLeft: isEditing ? '1rem' : '0',
+      top: isEditing ? '-2rem' : '0px',
+      left: isEditing ? '0px' : '-2.5rem',
       textAlign: isEditing ? 'left' : 'right',
       display: isEditing || over ? 'block' : 'none'
-    }">
-    <i :class="'bbn-p inline ' + editIcon"
+    }"
+    :class="['bbn-abs', 'bbn-hpadding', {
+      'bbn-background': isEditing,
+      'bbn-border': isEditing,
+      'bbn-vxspadding': isEditing,
+    }]">
+    <i :class="'bbn-p ' + editIcon"
       @click.stop="edit"
       bbn-if="!isEditing"/>
-    <i :class="'bbn-p inline ' + cancelIcon"
+    <i :class="'bbn-p ' + cancelIcon"
       @click.stop="onCancel"
       bbn-if="isEditing"/>
-    <i :class="'bbn-p inline ' + saveIcon"
+    <i :class="'bbn-p ' + saveIcon"
       @click.stop="save"
       bbn-if="isEditing"/>
   </div>
