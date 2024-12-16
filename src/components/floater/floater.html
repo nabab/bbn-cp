@@ -18,7 +18,7 @@
       bbn-resizable:container.left.right.bottom="ready && resizable ? $el.parentElement : false">
   <div bbn-if="arrow"
        :class="['bbn-floater-arrow', position]"/>
-  <div class="bbn-flex-height">
+  <div :class="{'bbn-flex-height': scrollable || footer || title || currentButtons?.length || numButtonsInContainer}">
     <div bbn-if="modal"
          class="bbn-overlay bbn-modal"/>
     <header bbn-if="title"
@@ -58,7 +58,7 @@
       </div>
     </header>
     <div :class="{
-          'bbn-flex-fill': footer || title || (buttons && buttons.length),
+          'bbn-flex-fill': scrollable || footer || title || currentButtons?.length || numButtonsInContainer,
           'bbn-flex-height': pageable
         }"
           bbn-forget="!pageable">
@@ -74,7 +74,7 @@
       </div>
       <bbn-scroll :latency="latency"
                   ref="scroll"
-                  :class="{'bbn-flex-fill': !pageable && (footer || title || currentButtons?.length || buttonsContainer?.children?.length)}"
+                  :class="{'bbn-flex-fill': !pageable && (scrollable || footer || title || currentButtons?.length || numButtonsInContainer)}"
                   :scrollable="scrollable"
                   :hidden="scrollHidden"
                   :axis="axis"
@@ -148,6 +148,7 @@
             class="bbn-w-100"
             ref="footer"/>
     <footer bbn-else
+            bbn-show="currentButtons?.length || numButtonsInContainer"
             class="bbn-w-100 bbn-button-group"
             ref="buttons">
       <bbn-button bbn-for="(button, i) in currentButtons"
