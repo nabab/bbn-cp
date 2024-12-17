@@ -508,6 +508,77 @@ const cpDef = {
           if ((typeof a.action === 'string') && bbn.fn.isFunction(this[a.action])) {
             obj.action = this[a.action];
           }
+
+          if (a.preset) {
+            switch (a.preset) {
+              case 'cancel':
+                obj.disabled = !!a.disabled || !this._canCancel();
+                if (obj.action === undefined) {
+                  obj.action = () => {
+                    this.cancel();
+                  };
+                }
+
+                if (obj.text === undefined) {
+                  obj.text = this.cancelText;
+                }
+
+                if (obj.icon === undefined) {
+                  obj.icon = this.cancelIcon;
+                }
+
+                if (obj.iconPosition === undefined) {
+                  obj.iconPosition = this.cancelIconPosition;
+                }
+
+                break;
+              case 'reset':
+                obj.disabled = !!a.disabled || (!this.dirty && !this.prefilled);
+                if (obj.action === undefined) {
+                  obj.action = () => {
+                    this.reset();
+                  };
+                }
+
+                if (obj.text === undefined) {
+                  obj.text = this.resetText;
+                }
+
+                if (obj.icon === undefined) {
+                  obj.icon = this.resetIcon;
+                }
+
+                if (obj.iconPosition === undefined) {
+                  obj.iconPosition = this.resetIconPosition;
+                }
+
+                break;
+              case 'submit':
+                obj.disabled = !!a.disabled || !this.canSubmit;
+                if (obj.action === undefined) {
+                  obj.action = () => {
+                    this.submit();
+                  };
+                }
+
+                if (obj.text === undefined) {
+                  obj.text = this.submitText;
+                }
+
+                if (obj.icon === undefined) {
+                  obj.icon = this.submitIcon;
+                }
+
+                if (obj.iconPosition === undefined) {
+                  obj.iconPosition = this.submitIconPosition;
+                }
+
+                break;
+              default:
+                obj.disabled = !!a.disabled;
+                break;
+            }
+          }
         }
 
         if (obj) {
