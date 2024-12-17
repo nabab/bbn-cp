@@ -574,9 +574,6 @@ const cpDef = {
                 }
 
                 break;
-              default:
-                obj.disabled = !!a.disabled;
-                break;
             }
           }
         }
