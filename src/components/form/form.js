@@ -816,9 +816,10 @@ const cpDef = {
               firstFound = ele;
               if (bbn.fn.isFunction(ele.focus)) {
                 firstFound.focus();
-                if (this.scrollable) {
-                  this.getRef('container').scrollTo(0, firstFound);
-                }
+              }
+
+              if (this.scrollable) {
+                this.getRef('container').scrollTo(firstFound, firstFound);
               }
             }
 

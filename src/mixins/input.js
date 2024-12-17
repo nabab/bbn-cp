@@ -437,7 +437,10 @@ const input = {
                   onScroll = () => {
                     const scrollRect = scroll.$el.getBoundingClientRect();
                     const rect = floater.$el.getBoundingClientRect();
-                    this.invisible = rect.bottom > (scrollRect.bottom - 1);
+                    this.invisible = (rect.bottom > (scrollRect.bottom - 1))
+                     || (rect.top < (scrollRect.top + 1))
+                     || (rect.right > (scrollRect.right - 1))
+                     || (rect.left < (scrollRect.left + 1));
                   }
                   onScroll();
                   scroll.$on('scroll', onScroll);

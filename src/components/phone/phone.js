@@ -60,7 +60,7 @@ const cpDef = {
      */
     prefixAutosize: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
   data(){
