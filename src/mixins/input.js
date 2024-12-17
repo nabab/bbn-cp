@@ -442,8 +442,8 @@ const input = {
                      || (rect.right > (scrollRect.right - 1))
                      || (rect.left < (scrollRect.left + 1));
                   }
-                  onScroll();
                   scroll.$on('scroll', onScroll);
+                  this.$nextTick(onScroll);
                 }
 
                 if (this.setOnFocus) {
