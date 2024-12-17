@@ -46,7 +46,19 @@ const cpDef = {
       type: Boolean,
       default: true
     },
+    /**
+     * Sets the prefix dropdown as readonly
+     * @prop {Boolean} [false] prefixReadonly
+     */
     prefixReadonly: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * Sets the autosize property of the prefix dropdown
+     * @prop {Boolean} [false] prefixAutosize
+     */
+    prefixAutosize: {
       type: Boolean,
       default: false
     }

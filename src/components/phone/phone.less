@@ -20,9 +20,17 @@
       height: 100%;
     }
   }
-  &.bbn-phone-prefix-readonly {
+  &.bbn-phone-prefix-readonly,
+  &.bbn-phone-prefix-autosize {
     .bbn-phone-dropdown {
       width: unset;
+      input {
+        width: auto;
+      }
+    }
+  }
+  &.bbn-phone-prefix-readonly {
+    .bbn-phone-dropdown {
       .bbn-button-right {
         display: none;
       }
