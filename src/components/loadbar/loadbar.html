@@ -3,7 +3,8 @@
         @click="info = !info"
         ref="bar">
     <span class="bbn-loadbar-state bbn-hxspadding bbn-c bbn-block bbn-middle bbn-text">
-      <bbn-loadicon bbn-if="currentItem.loading"/>
+      <bbn-loadicon bbn-if="currentItem.loading"
+                    class="bbn-vmiddle"/>
       <i bbn-elseif="currentItem.error"
          class="nf nf-fa-times_circle bbn-red"/>
       <i bbn-elseif="currentItem.success"
