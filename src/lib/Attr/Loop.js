@@ -121,6 +121,7 @@ export default class bbnLoopAttr extends bbnAttr
 
     bbn.cp.loopLevel--;
     const loopHash = oHash ? bbn.fn.substr(oHash, 0, -1) : '';
+
     for (let n in cp.$nodes[node.id]) {
       const a = cp.$nodes[node.id][n];
       if ((n !== 'root')

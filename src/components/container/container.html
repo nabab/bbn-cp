@@ -116,7 +116,8 @@
             </div>
           </div>
           <!-- If loading showing loader -->
-          <bbn-loader bbn-elseif="isVisible && (!ready || !isLoaded)"/>
+          <bbn-loader bbn-elseif="isVisible && (!ready || !isLoaded)"
+                      class="bbn-overlay bbn-middle"/>
           <!-- Thumbnail image -->
           <div bbn-if="!isVisible && visual && thumbnail"
               style="overflow: hidden"

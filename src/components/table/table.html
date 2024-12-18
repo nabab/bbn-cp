@@ -381,7 +381,7 @@
                                     bbn-bind="getEditableOptions(col, d.data)"
                                     :is="getEditableComponent(col, d.data)"
                                     @click.stop
-                                    bbn-model="editedRow[col.field]"
+                                    bbn-model="getProp(editedRow, col.field)"
                                     style="width: 100%"/>
                         <!--<bbn-field bbn-elseif="(editMode === 'inline') && isValidField(col.field) && (col.editable !== false)"
                                     bbn-bind="col"
@@ -393,7 +393,7 @@
                                   bbn-bind="col"
                                   @click.stop
                                   :key="d.rowKey"
-                                  :value="d.data[col.field]"
+                                  :value="getProp(d.data, col.field)"
                                   :data="d.data"/>
                         <div bbn-elseif="!col.buttons && col.render"
                               bbn-html="col.render(d.data, col, i)"/>
@@ -418,7 +418,7 @@
                           </span>
                         </bbn-context>
                       </template>
-                      <template bbn-elseif="col.buttons && (colButtons === col.index)">
+                      <div bbn-elseif="col.buttons && (colButtons === col.index)">
                         <bbn-button bbn-for="(button, bi) in buttonSource(d.data, col, i)"
                                     :key="bi"
                                     bbn-bind="button"
@@ -426,7 +426,7 @@
                                     @focusout.prevent.stop
                                     @click.prevent.stop="_execCommand(button, d.data, col, i, $event)"
                                     style="margin: 0 .1rem"/>
-                      </template>
+                      </div>
                       <template bbn-elseif="col.buttons">
                         <bbn-button bbn-for="(button, bi) in (Array.isArray(col.buttons) ? col.buttons : col.buttons(d.data, col, i))"
                                     :key="bi"

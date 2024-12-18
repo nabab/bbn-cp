@@ -1,5 +1,8 @@
 const data = {
   methods: {
+    getProp(obj, prop) {
+      return bbn.fn.getProperty(obj, prop);
+    },
     /**
      * Defines how to render the data.
      * @method renderData
@@ -13,7 +16,11 @@ const data = {
         return '';
       }
 
-      let v = data[cfg.field] || '';
+      if (cfg.field.indexOf('.') > -1) {
+        //debugger;
+      }
+
+      let v = this.getProp(data, cfg.field) || '';
       if ( cfg.icon ){
         return '<i class="' + cfg.icon + '"> </i>'
       }

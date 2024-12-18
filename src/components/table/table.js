@@ -1094,7 +1094,7 @@ const cpDef = {
       let ok = true;
       if (this.tmpRow) {
         bbn.fn.each(this.columns, a => {
-          if (a.field && a.required && !this.tmpRow[a.field]) {
+          if (a.field && a.required && !getProp(this.tmpRow, a.field)) {
             ok = false;
             return false;
           }
@@ -1202,7 +1202,7 @@ const cpDef = {
             if (col.source && col.field) {
               tmpData[col.field] = {};
               bbn.fn.each(data, function (d) {
-                tmpData[col.field][d.index] = d.data[col.field];
+                tmpData[col.field][d.index] = this.getProp(d.data, col.field);
                 //d.data[col.field] = d.data[col.field] ? bbn.fn.getField(col.source, col.sourceText ? col.sourceText : 'text', col.sourceValue ? col.sourceValue : 'value', d.data[col.field]) || '' : '';
               })
             }
@@ -1716,11 +1716,12 @@ const cpDef = {
         let row = [];
         bbn.fn.each(this.cols, b => {
           if (!b.hidden && !b.buttons && b.field) {
-            if (typeof o[b.field] === 'string') {
-              span.innerHTML = o[b.field];
+            const val = this.getProp(o, b.field);
+            if (typeof val === 'string') {
+              span.innerHTML = val;
               row.push(span.textContent.trim());
             } else {
-              row.push(o[b.field]);
+              row.push(val);
             }
           }
         });
@@ -2461,7 +2462,7 @@ const cpDef = {
           if (this.groupable && row.group) {
             if (row.expanded) {
               bbn.fn.fori((d, i) => {
-                if (d && d.selection && (d.data[this.cols[this.group].field] === row.value)) {
+                if (d && d.selection && (this.getProp(d.data, this.cols[this.group].field) === row.value)) {
                   this.checkSelection(i, state)
                 }
               }, this.items, index + row.num, index + 1)
@@ -2545,7 +2546,7 @@ const cpDef = {
         col.field &&
         this.originalData &&
         this.originalData[row.index] &&
-        (row.data[col.field] != this.originalData[row.index][col.field])
+        (this.getProp(row.data, col.field) != this.getProp(this.originalData[row.index], col.field))
     },
     /**
      * Returns the css class of the given column.
@@ -2634,7 +2635,7 @@ const cpDef = {
      * @returns {Function}
      */
     render(data, column, index) {
-      let value = data && this.isValidField(column.field) ? data[column.field] : undefined;
+      let value = data && this.isValidField(column.field) ? this.getProp(data, column.field) : undefined;
       if (column.render) {
         return column.render(data, column, index, value) || '';
       }
@@ -2835,8 +2836,8 @@ const cpDef = {
         this.cols[this.group] &&
         this.cols[this.group].field
       ) {
-        if (d.data[this.cols[this.group].field] !== undefined) {
-          return this.currentExpandedValues.includes(d.data[this.cols[this.group].field]);
+        if (this.getProp(d.data, this.cols[this.group].field) !== undefined) {
+          return this.currentExpandedValues.includes(this.getProp(d.data, this.cols[this.group].field));
         }
         return true;
       }
@@ -2864,10 +2865,10 @@ const cpDef = {
             else if ((this.group !== false)
               && this.cols[this.group]
               && this.cols[this.group].field
-              && (item.data[this.cols[this.group].field] !== undefined)
-              && !this.currentExpandedValues.includes(item.data[this.cols[this.group].field])
+              && (this.getProp(item.data, this.cols[this.group].field) !== undefined)
+              && !this.currentExpandedValues.includes(this.getProp(item.data, this.cols[this.group].field))
             ) {
-              this.currentExpandedValues.push(item.data[this.cols[this.group].field]);
+              this.currentExpandedValues.push(this.getProp(item.data, this.cols[this.group].field));
             }
           });
           this.allExpanded = false;
@@ -2878,10 +2879,10 @@ const cpDef = {
           (this.group !== false) &&
           this.cols[this.group] &&
           this.cols[this.group].field &&
-          (this.currentData[idx].data[this.cols[this.group].field] !== undefined)
+          (this.getProp(this.currentData[idx].data, this.cols[this.group].field) !== undefined)
         ) {
-          let groupValue = this.currentData[idx].data[this.cols[this.group].field],
-            groupIndex = this.currentExpandedValues.indexOf(groupValue);
+          let groupValue = this.getProp(this.currentData[idx].data, this.cols[this.group].field);
+          let groupIndex = this.currentExpandedValues.indexOf(groupValue);
           if (groupIndex > -1) {
             this.currentExpandedValues.splice(groupIndex, 1);
           } else {
@@ -3472,7 +3473,7 @@ const cpDef = {
           obj.content = `<div class="bbn-spadding">${col.render(data, col, itemIndex)}</div>`;
         }
         else if (col.field) {
-          obj.content = `<div class="bbn-spadding">${data[col.field]}</div>`;
+          obj.content = `<div class="bbn-spadding">${getProp(data, col.field)}</div>`;
         }
         else {
           obj.content = `<div class="bbn-spadding">${data.text}</div>`;
@@ -3914,6 +3915,7 @@ const cpDef = {
   }
 };
 
+import { Obj } from 'tern';
 import cpHtml from './table.html';
 import cpStyle from './table.less';
 let cpLang = {};

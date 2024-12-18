@@ -94,10 +94,6 @@ export default class bbnAnonCp extends bbnCp {
   }
 
   $setUpProps() {
-    if (this.$options.name === 'bbn-anon') {
-      bbn.fn.log(["GGGGG", this.$cfg.props]);
-    }
-
     if (!this.$cfg.props.source) {
       this.$cfg.props.source = bbn.fn.createObject({
         type: [String, Object, Array],

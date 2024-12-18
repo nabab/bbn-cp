@@ -1,6 +1,6 @@
-<div :class="[componentClass]"
+<div :class="[componentClass, 'bbn-iblock']"
      tabindex="-1">
-  <div class="bbn-w-100">
+  <div>
     <bbn-input bbn-if="mode === 'double'"
                bbn-model="currentTextInput"
               :readonly="!!readonly || (max && (value.length > max))"
@@ -42,7 +42,7 @@
               :button-right-disabled="(!!max && (value.length >= max)) || isDisabled || !!readonly"
               :button-right-title="_('Add')"/>
   </div>
-  <div class="bbn-w-100">
+  <div>
     <div bbn-for="(v, idx) in value"
          class="bbn-vxspadding bbn-hspadding bbn-iblock">
       <span class="bbn-right-xshmargin"

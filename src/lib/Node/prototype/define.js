@@ -40,12 +40,12 @@ bbnNode.prototype.nodeDefine = function(node, data) {
         return null;
       }
 
-      let parent = this.parent.comment 
-          && (this.parent.forget?.value || ['template', 'transition', 'slot'].includes(this.parent.tag)) ?
-           this.parent.element?.parentNode
-           : this.parent.element;
+      let parent = this.parent;
+      while (parent.comment) {
+        parent = parent.parent;
+      }
 
-      return parent || this.component.$el;
+      return parent?.element || null;
     }
   });
 

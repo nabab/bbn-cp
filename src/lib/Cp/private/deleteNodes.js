@@ -14,7 +14,14 @@ const checkOwnDeps = node => {
           o.data.deps.__bbnRoot.splice(idx, 1);
         }
       }
+
     })
+
+    let idx = bbn.fn.search(bbn.cp.queue, {element: a});
+    while (idx > -1) {
+      bbn.cp.queue.splice(idx, 1);
+      idx = bbn.fn.search(bbn.cp.queue, {element: a});
+    }
   })
 };
 
