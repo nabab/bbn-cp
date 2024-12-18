@@ -1094,7 +1094,7 @@ const cpDef = {
       let ok = true;
       if (this.tmpRow) {
         bbn.fn.each(this.columns, a => {
-          if (a.field && a.required && !getProp(this.tmpRow, a.field)) {
+          if (a.field && a.required && !this.getProp(this.tmpRow, a.field)) {
             ok = false;
             return false;
           }
@@ -1133,6 +1133,7 @@ const cpDef = {
         return [];
       }
       // The final result
+      const cp = this;
       let res = [],
         isGroup = this.groupable && (this.group !== false) && this.cols[this.group] && this.cols[this.group].field,
         groupField = isGroup ? this.cols[this.group].field : false,
@@ -1198,10 +1199,10 @@ const cpDef = {
         }, '!==')) {
           /** @var will contain the original value of the column to reset it once the array is sorted */
           let tmpData = {};
-          bbn.fn.each(this.cols, function (col) {
+          bbn.fn.each(this.cols, col => {
             if (col.source && col.field) {
               tmpData[col.field] = {};
-              bbn.fn.each(data, function (d) {
+              bbn.fn.each(data, d => {
                 tmpData[col.field][d.index] = this.getProp(d.data, col.field);
                 //d.data[col.field] = d.data[col.field] ? bbn.fn.getField(col.source, col.sourceText ? col.sourceText : 'text', col.sourceValue ? col.sourceValue : 'value', d.data[col.field]) || '' : '';
               })
