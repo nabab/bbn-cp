@@ -108,9 +108,9 @@ const cpDef = {
     },
     /**
      * Defines if the scroll has to be hidden for one of the axis or both
-     * @prop {Boolean|String} [false] hidden
+     * @prop {Boolean|String} [false] invisible
      */
-    hidden: {
+    invisible: {
       type: [Boolean, String],
       default: false
     },
@@ -223,16 +223,16 @@ const cpDef = {
        */
       containerPadding: '0px',
       /**
-       * Defines if the scroll has to be hidden basing on the prop hidden
+       * Defines if the scroll has to be hidden basing on the prop invisible
        * @data {Boolean} hiddenX
        */
-      hiddenX: (this.hidden === true) || ((this.hidden === 'x')),
+      hiddenX: (this.invisible === true) || ((this.invisible === 'x')),
       /**
        * @todo not used
-       * Defines if the scroll has to be hidden basing on the prop hidden
+       * Defines if the scroll has to be hidden basing on the prop invisible
        * @data {Boolean} hiddenY
        */
-      hiddenY: (this.hidden === true) || ((this.hidden === 'y')),
+      hiddenY: (this.invisible === true) || ((this.invisible === 'y')),
       /**
        * Defines if the scroll container must have the class 'bbn-overlay'
        * @data {Number} currentWidth 
