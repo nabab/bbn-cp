@@ -78,7 +78,7 @@
             <bbn-button type="button"
                         @click="$refs.form.submit()"
                         :text="_('Log in')"/>
-            <div :class="['bbn-w-100', 'bbn-r', currentFontSizeClass]"
+            <div :class="['bbn-flex-fill', 'bbn-r', currentFontSizeClass]"
                  bbn-if="passwordLink">
               <a class="bbn-p"
                  @click="currentMode = 'lost'"
@@ -136,7 +136,7 @@
           <div bbn-if="note"
                class="bbn-s bbn-i"
                bbn-text="note"/>
-          <div class="bbn-c bbn-vmargin bbn-flex-width bbn-w-100">
+          <div class="bbn-c bbn-vmargin bbn-w-100">
             <bbn-button type="button"
                         @click="$refs.form.submit()"
                         :text="_('Send')"/>
