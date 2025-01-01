@@ -1,4 +1,4 @@
-import bbnData from "../Data.js";
+import bbnData from "../../Data.js";
 
 /**
  * Pops the last element of an array and updates the data object

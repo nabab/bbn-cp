@@ -87,4 +87,7 @@ export default class bbnAttr
     return this.result?.state;
   }
 
+  get uid() {
+    return this.node.uid + '-' + this.name;
+  }
 }

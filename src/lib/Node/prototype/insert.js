@@ -1,4 +1,4 @@
-import bbnNode from "../Node.js";
+import bbnNode from "../../Node.js";
 import removeDOM from "../../Cp/private/removeDOM.js";
 
 const isBefore = (id1, id2) => {

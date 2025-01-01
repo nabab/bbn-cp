@@ -1,4 +1,4 @@
-import bbnCp from "../Cp.js";
+import bbnCp from "../../Cp.js";
 
 /**
  * Checks if the component has a property (or whatever) with the given name

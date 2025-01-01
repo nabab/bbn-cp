@@ -1,4 +1,4 @@
-import bbnCp from "../Cp.js";
+import bbnCp from "../../Cp.js";
 import addNamespace from "../private/addNamespace.js";
 import onHook from "../private/onHook.js";
 import init from "../private/init.js";
@@ -37,6 +37,12 @@ bbnCp.prototype.$connected = function () {
     //bbn.fn.log("CONNECTED CALLBACK: not connected or already initialized", this.$el.isConnected, bbn.cp.getComponent(this.$el.bbnCid), this);
     return;
   }
+
+  Object.defineProperty(this, '$isConnected', {
+    value: true,
+    writable: false, 
+    configurable: false
+  });
 
   let realSlots = this.$options.name === 'bbn-anon' ? retrieveSlots(this.$el.bbnTpl || this.items) : bbn.fn.clone(this.$el.constructor.bbnSlots);
   if (!Object.keys(realSlots || {}).length) {

@@ -1,4 +1,4 @@
-import bbnData from "../Data.js";
+import bbnData from "../../Data.js";
 
 bbnData.addSequence = function(component, name, data = null) {
   if (name.toString) {

@@ -238,7 +238,7 @@ export default {
           o.url = this.url;
         }
 
-        return bbn.fn.getRow(this.router.views, o)
+        return bbn.fn.getRow(this.router.views || [], o)
       }
 
       return null;

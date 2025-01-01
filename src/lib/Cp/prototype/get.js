@@ -1,4 +1,4 @@
-import bbnCp from "../Cp.js";
+import bbnCp from "../../Cp.js";
 
 /**
  * Gets the given property from the given object using static method

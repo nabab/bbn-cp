@@ -1,4 +1,4 @@
-import bbnData from "../Data.js";
+import bbnData from "../../Data.js";
 
 /**
  * Removes a component from the data object

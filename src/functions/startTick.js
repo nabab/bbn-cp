@@ -1,6 +1,6 @@
 import bbn from '@bbn/bbn';
 import bbnConditionAttr from '../lib/Attr/Condition.js';
-import bbnComputed from '../lib/Computed/Computed.js';
+import bbnComputed from '../lib/Computed.js';
 import initResults from '../lib/Cp/private/initResults.js';
 import queueUpdate from './queueUpdate.js';
 

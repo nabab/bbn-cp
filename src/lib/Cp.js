@@ -1,6 +1,6 @@
 import { bbn } from "@bbn/bbn";
-import "../../cp.js";
-import addComponent from "../../internals/addComponent.js";
+import "../cp.js";
+import addComponent from "../internals/addComponent.js";
 export default class bbnCp {
 
   constructor(el) {

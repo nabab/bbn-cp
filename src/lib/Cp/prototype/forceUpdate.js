@@ -1,4 +1,4 @@
-import bbnCp from "../Cp.js";
+import bbnCp from "../../Cp.js";
 import initResults from "../private/initResults.js";
 
 bbnCp.prototype.$forceUpdate = async function (fn) {

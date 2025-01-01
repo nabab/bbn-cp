@@ -1,4 +1,4 @@
-import bbnData from "../Data.js";
+import bbnData from "../../Data.js";
 
 /**
  * Add a special property to an object in order to prevent it from being reactive

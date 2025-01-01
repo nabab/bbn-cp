@@ -1,4 +1,4 @@
-import bbnData from "../Data.js";
+import bbnData from "../../Data.js";
 
 /**
  * Determines whether a piece of data is part of a computed data property.

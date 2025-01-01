@@ -141,7 +141,7 @@ const cpDef = {
      * @return {String}
      */
     columnsCfg() {
-      return this.panes.length && this.isHorizontal ? this.getFormatted() : 'auto';
+      return this.panes.length && this.isHorizontal ? this.getFormatted() : '100%';
     },
     /**
      * What will be actually in the CSS for grid-template-rows.
@@ -149,7 +149,7 @@ const cpDef = {
      * @return {String}
      */
     rowsCfg() {
-      return this.panes.length && !this.isHorizontal ? this.getFormatted() : 'auto';
+      return this.panes.length && !this.isHorizontal ? this.getFormatted() : '100%';
     },
     /**
      * X or y depending on the current orientation.
@@ -227,13 +227,12 @@ const cpDef = {
         let sz = '';
         // If position is not the one expected it means a resizer is before so it's added as a column
         while (a.position > pos) {
-          sz += lastVisibleResizer && !a.title ? '0 ' : 'max-content ';
           lastVisibleResizer = true;
           pos++;
         }
         // If the pane is collapsed we just mark its size at 0
         if (a.collapsed) {
-          sz += a.title ? 'max-content ' : '0 ';
+          sz += a.title ? 'max-content' : '0';
         }
         // If it's a number it will be a sum with the existing diff
         else {
@@ -740,17 +739,15 @@ const cpDef = {
      * @param {Event} e 
      * @param {Object} rs 
      */
-    resizeStart(e, rs) {
+    resizeStart(e, pane) {
+      bbn.fn.log(pane);
       if (e.target.tagName.toLowerCase() === 'i') {
         e.target.click();
         return
       }
       if (this.isResizable
         && !this.isResizing
-        && this.panes[rs.pane1]
-        && !this.panes[rs.pane1].collapsed
-        && this.panes[rs.pane2]
-        && !this.panes[rs.pane2].collapsed
+        && pane.prevResizable
       ) {
         this.isResizing = true;
         document.body.addEventListener("touchmove", this.resizeDrag, { passive: true });
@@ -759,18 +756,18 @@ const cpDef = {
         document.body.addEventListener("touchcancel", this.resizeEnd);
         document.body.addEventListener("mouseup", this.resizeEnd);
         document.body.addEventListener("mouseleave", this.resizeEnd);
-        let vue1 = this.find('bbn-pane', rs.pane1),
-          vue2 = this.find('bbn-pane', rs.pane2),
-          pos = e.target.getBoundingClientRect(),
-          pos1 = vue1.$el.getBoundingClientRect(),
-          pos2 = vue2.$el.getBoundingClientRect();
-        if (!this.panes[rs.pane1].size && !this.panes[rs.pane2].size) {
-          this.$set(this.panes[rs.pane1], "size", this.currentOrientation === 'horizontal' ? pos1.width : pos1.height);
-          this.$set(this.panes[rs.pane2], "size", this.currentOrientation === 'horizontal' ? pos2.width : pos2.height);
+        let vue1 = pane.prevResizable.pane,
+            vue2 = pane,
+            pos = e.target.getBoundingClientRect(),
+            pos1 = vue1.$el.getBoundingClientRect(),
+            pos2 = vue2.$el.getBoundingClientRect();
+        if (!pane.prevResizable.pane.size && !pane.size) {
+          pane.prevResizable.pane.size = this.currentOrientation === 'horizontal' ? pos1.width : pos1.height;
+          pane.size = this.currentOrientation === 'horizontal' ? pos2.width : pos2.height;
           this.$forceUpdate();
         }
         this.resizeCfg = {
-          resizer: rs,
+          resizer: pane,
           panes: [vue1, vue2],
           min: -pos1[this.currentSizeType.toLowerCase()] + this.minPaneSize,
           max: pos2[this.currentSizeType.toLowerCase()] - this.minPaneSize - this.resizerSize

@@ -1,4 +1,4 @@
-import bbnCp from "../Cp.js";
+import bbnCp from "../../Cp.js";
 import setProp from "../private/setProp.js";
 import setUpData from "../private/setUpData.js";
 

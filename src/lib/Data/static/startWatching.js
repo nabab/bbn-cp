@@ -1,4 +1,4 @@
-import bbnData from "../Data.js";
+import bbnData from "../../Data.js";
 
 bbnData.startWatching = function() {
   const currentSequence = this.watchSequence.splice(0);

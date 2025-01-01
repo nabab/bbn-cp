@@ -1,5 +1,5 @@
 import { bbn } from "@bbn/bbn";
-import bbnAttr from "../Attr/Attr.js";
+import bbnAttr from "./Attr.js";
 
 const getId = function() {
   return ++bbnData.idx;

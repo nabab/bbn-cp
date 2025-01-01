@@ -1,4 +1,4 @@
-import bbnNode from "../Node.js";
+import bbnNode from "../../Node.js";
 
 bbnNode.prototype.nodeUpdate = function() {
   return;

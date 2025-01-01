@@ -1,4 +1,4 @@
-import bbnCp from "../Cp.js";
+import bbnCp from "../../Cp.js";
 import generateNode from "../private/generateNode.js";
 import stringToTemplate from "../../../internals/stringToTemplate.js";
 import retrieveSlots from "../../../internals/retrieveSlots.js";

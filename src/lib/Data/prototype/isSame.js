@@ -1,4 +1,4 @@
-import bbnData from "../Data.js";
+import bbnData from "../../Data.js";
 
 bbnData.prototype.isSame = function(obj) {
   if (obj?.__bbnProxy) {

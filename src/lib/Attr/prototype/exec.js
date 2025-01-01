@@ -1,4 +1,4 @@
-import bbnAttr from "../Attr.js";
+import bbnAttr from "../../Attr.js";
 import bbnConditionAttr from "../Condition.js";
 
 const getArgs = (attr, data) => {

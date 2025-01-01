@@ -1,5 +1,5 @@
 import bbn from "@bbn/bbn";
-import bbnData from "../Data.js";
+import bbnData from "../../Data.js";
 
 /**
  * Returns a set of functions to be used by the proxy of bbnData objects

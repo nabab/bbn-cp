@@ -1,5 +1,5 @@
 import {bbn, axios, dayjs} from "@bbn/bbn";
-import bbnData from "./lib/Data/Data.js";
+import bbnData from "./lib/Data.js";
 import "./lib/Data/prototype/addComponent.js";
 import "./lib/Data/prototype/fixIndexes.js";
 import "./lib/Data/prototype/getImpacted.js";
@@ -27,13 +27,15 @@ import "./lib/Data/static/recognize.js";
 import "./lib/Data/static/startWatching.js";
 import "./lib/Data/static/stopWatching.js";
 import "./lib/Data/static/treatValue.js";
-import bbnNode from "./lib/Node/Node.js";
+import bbnNode from "./lib/Node.js";
 import "./lib/Node/prototype/build.js";
 import "./lib/Node/prototype/conceive.js";
 import "./lib/Node/prototype/define.js";
 import "./lib/Node/prototype/init.js";
 import "./lib/Node/prototype/insert.js";
 import "./lib/Node/prototype/setAll.js";
+import "./lib/Node/prototype/setClass.js";
+import "./lib/Node/prototype/setStyle.js";
 import "./lib/Node/prototype/update.js";
 import bbnComponentNode from "./lib/Node/Component.js";
 import bbnInternalNode from "./lib/Node/Internal.js";
@@ -41,7 +43,7 @@ import bbnSlotNode from "./lib/Node/Slot.js";
 import bbnTemplateNode from "./lib/Node/Template.js";
 import bbnTextNode from "./lib/Node/Text.js";
 import bbnTransitionNode from "./lib/Node/Transition.js";
-import bbnAttr from "./lib/Attr/Attr.js";
+import bbnAttr from "./lib/Attr.js";
 import "./lib/Attr/prototype/retrieveArgument.js";
 import "./lib/Attr/prototype/exec.js";
 import "./lib/Attr/prototype/getState.js";
@@ -66,12 +68,13 @@ import bbnShowAttr from "./lib/Attr/Show.js";
 import bbnSlotAttr from "./lib/Attr/Slot.js";
 import bbnStyleAttr from "./lib/Attr/Style.js";
 import bbnTextAttr from "./lib/Attr/Text.js";
+import bbnTransitionAttr from "./lib/Attr/Transition.js";
 import bbnHtml from "./lib/Html/Html.js";
 import bbnAnonHtml from "./lib/Html/Anon.js";
-import bbnCp from "./lib/Cp/Cp.js";
-import bbnComputed from "./lib/Computed/Computed.js";
-import bbnParser from "./lib/Parser/Parser.js";
-import bbnWatcher from "./lib/Watcher/Watcher.js";
+import bbnCp from "./lib/Cp.js";
+import bbnComputed from "./lib/Computed.js";
+import bbnParser from "./lib/Parser.js";
+import bbnWatcher from "./lib/Watcher.js";
 import bbnAnonCp from "./lib/Cp/Anon.js";
 import "./lib/Cp/prototype/connected.js";
 import "./lib/Cp/prototype/create.js";
@@ -128,6 +131,7 @@ export {
   bbnSlotAttr,
   bbnStyleAttr,
   bbnTextAttr,
+  bbnTransitionAttr,
   bbnAnonCp,
   bbnData,
   bbnCp,

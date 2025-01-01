@@ -1,5 +1,5 @@
 import bbn from "@bbn/bbn";
-import bbnNode from "../Node.js";
+import bbnNode from "../../Node.js";
 import addUnknownComponent from "../../Cp/private/addUnknownComponent.js";
 import fetchComponents from "../../Cp/private/fetchComponents.js";
 import generateHtmlClass from "../../../internals/generateHtmlClass.js";

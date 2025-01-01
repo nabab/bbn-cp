@@ -1,7 +1,7 @@
 <form :action="action"
       :method="method"
       :autocomplete="autocomplete"
-      :class="currentClass"
+      :class="[componentClass, currentClass]"
       :style="currentStyle"
       @submit.prevent
       @keydown.enter.prevent.stop="submit(false)"

@@ -1,4 +1,4 @@
-import bbnAttr from "../Attr.js";
+import bbnAttr from "../../Attr.js";
 import bbnInternalNode from "../../Node/Internal.js";
 import bbn from "@bbn/bbn";
 import setNoValueAttribute from "../private/setNoValueAttribute.js";

@@ -1,4 +1,4 @@
-import bbnCp from "../Cp.js";
+import bbnCp from "../../Cp.js";
 
 bbnCp.prototype.$retrieveNode = function (id, hash) {
   let res = this.$nodes[id] || null;

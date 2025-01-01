@@ -1,4 +1,4 @@
-import bbnNode from "../Node.js";
+import bbnNode from "../../Node.js";
 import bbnConditionAttr from "../../Attr/Condition.js";
 import bbnLoopAttr from "../../Attr/Loop.js";
 

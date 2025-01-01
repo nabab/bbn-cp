@@ -1,5 +1,5 @@
 import bbn from "@bbn/bbn";
-import bbnCp from "../Cp/Cp.js";
+import bbnCp from "./Cp.js";
 
 /**
  * Class representing a computed property watcher.

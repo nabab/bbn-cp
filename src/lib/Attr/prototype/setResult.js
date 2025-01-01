@@ -1,5 +1,5 @@
 import bbn from "@bbn/bbn";
-import bbnAttr from "../Attr.js";
+import bbnAttr from "../../Attr.js";
 import bbnConditionAttr from "../Condition.js";
 import bbnModelAttr from "../Model.js";
 import bbnShowAttr from "../Show.js";

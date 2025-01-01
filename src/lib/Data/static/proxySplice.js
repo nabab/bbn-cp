@@ -1,5 +1,5 @@
 import bbn from "@bbn/bbn";
-import bbnData from "../Data.js";
+import bbnData from "../../Data.js";
 
 /**
  * Splices the elements of an array and updates the data object

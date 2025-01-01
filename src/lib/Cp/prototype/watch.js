@@ -1,5 +1,5 @@
-import bbnWatcher from "../../Watcher/Watcher.js";
-import bbnCp from "../Cp.js";
+import bbnWatcher from "../../Watcher.js";
+import bbnCp from "../../Cp.js";
 import updateWatcher from "../private/updateWatcher.js";
 
 /**

@@ -14,20 +14,33 @@ import * as lint from "@codemirror/lint";
 import * as state from "@codemirror/state";
 import * as search from "@codemirror/search";
 import * as view from "@codemirror/view";
-import * as html from "@codemirror/lang-html";
 import * as bbnCpCM from "@bbn/codemirror-lang-bbn-cp";
-import * as javascript from "@codemirror/lang-javascript";
-import * as php from "@codemirror/lang-php";
 import * as css from "@codemirror/lang-css";
+import * as javascript from "@codemirror/lang-javascript";
 import * as json from "@codemirror/lang-json";
+import * as html from "@codemirror/lang-html";
+import * as less from "@codemirror/lang-less";
 import * as markdown from "@codemirror/lang-markdown";
+import * as php from "@codemirror/lang-php";
+import * as python from "@codemirror/lang-python";
 import * as xml from "@codemirror/lang-xml";
+import * as yaml from "@codemirror/lang-yaml";
 import * as theme from "thememirror";
 import { abbreviationTracker } from '@emmetio/codemirror6-plugin';
 
 // Mapping of language extensions to their respective CodeMirror language supports
 
-
+const ignoredKeys = [].concat(...bbn.var.keys.leftRight, ...bbn.var.keys.upDown, ...bbn.var.keys.confirm, ...bbn.var.keys.dels);
+function myHtml() {
+  const myHtmlLang = html.htmlLanguage.configure({dialect: 'selfClosing'});
+  return new LanguageSupport(myHtmlLang)
+}
+function myPhp() {
+  return php.php({
+    baseLanguage: myHtml().language,
+    plain: false
+  });
+}
 /**
  * @file Defines the bbn-code component.
  * @description `bbn-code` is a text editor designed for code editing. It supports various languages and provides a range of tools and configurations to enhance the coding experience.
@@ -37,16 +50,34 @@ import { abbreviationTracker } from '@emmetio/codemirror6-plugin';
 const cpDef = {
   statics() {
     return {
+      modeCode: {
+        bbn: 'bbn',
+        css: 'css',
+        html: 'html',
+        js: 'javascript',
+        json: 'json',
+        less: 'less',
+        md: 'markdown',
+        php: 'php',
+        py: 'python',
+        scss: 'css',
+        sql: 'sql',
+        xml: 'xml',
+        yaml: 'yaml',
+      },
       cm: {
         languageExtensions: {
-          javascript: [new LanguageSupport(javascript.javascriptLanguage)],
-          html: [new LanguageSupport(html.htmlLanguage)],
+          bbn: [new LanguageSupport(bbnCpCM.bbnLanguage)],
           css: [new LanguageSupport(css.cssLanguage)],
-          php: [new LanguageSupport(php.phpLanguage)],
+          html: [myHtml()],
+          javascript: [new LanguageSupport(javascript.javascriptLanguage)],
           json: [new LanguageSupport(json.jsonLanguage)],
+          less: [new LanguageSupport(less.lessLanguage)],
           markdown: [new LanguageSupport(markdown.markdownLanguage)],
+          php: [myPhp()],
+          python: [new LanguageSupport(python.pythonLanguage)],
           xml: [new LanguageSupport(xml.xmlLanguage)],
-          bbn: [new LanguageSupport(bbnCpCM.bbnLanguage)]
+          yaml: [new LanguageSupport(yaml.yamlLanguage)],
         },
         autocomplete,
         commands,
@@ -58,19 +89,21 @@ const cpDef = {
         search,
         view,
         bbn: bbnCpCM,
+        css,
         html,
         javascript,
-        php,
-        css,
         json,
+        less,
         markdown,
+        php,
+        python,
         xml,
+        yaml,
         theme,
         // Emmet abbreviation tracker for improved code writing efficiency
         elmet: abbreviationTracker(),
         extensions: {
           lineNumbers: view.lineNumbers(),
-          lineWrapping: view.EditorView.lineWrapping,
           highlightActiveLineGutter: view.highlightActiveLineGutter(),
           highlightSpecialChars: view.highlightSpecialChars(),
           history: commands.history(),
@@ -145,11 +178,103 @@ const cpDef = {
       // Editor widget/view instance
       widget: null,
       // Holds compartments for dynamic editor configurations
-      compartments: bbnData.immunizeValue(bbn.fn.createObject()) 
+      compartments: bbnData.immunizeValue(bbn.fn.createObject()),
+      currentTheme: this.theme,
     }
   },
 
   methods: {
+    themeSettings() {
+      const cp = this;
+      this.getPopup({
+        title: false,
+        modal: false,
+        closable: false,
+        component: {
+          template: `
+<div class="bbn-block bbn-xlpadding bbn-c bbn-lg">
+  <bbn-dropdown class="bbn-xl bbn-b bbn-wide" :source="themes" bbn-model="currentTheme"/><br><br>
+  <bbn-button @click="prev" :text="_('Previous')"/> &nbsp; 
+  <bbn-button bbn-if="isPlaying" @click="stop" :text="_('Stop')"/>
+  <bbn-button bbn-else @click="play" :text="_('Play')"/>  &nbsp; 
+  <bbn-button @click="next" :text="_('Next')"/><br><br>
+  <bbn-button @click="select" :text="_('Close')"/> &nbsp; 
+  <bbn-button @click="cancel" :text="_('Back to original')"/> 
+</div>
+  `,
+          data(){
+            const keys = Object.keys(cp.constructor.cm.theme);
+            const themes = [];
+            bbn.fn.each(keys, k => {
+              if (k !== 'createTheme') {
+                themes.push({text: k, value: k});
+              }
+            })
+            return {
+              cp,
+              themes,
+              originalTheme: cp.currentTheme,
+              currentTheme: cp.currentTheme,
+              interval: null,
+              isPlaying: false,
+              currentIndex: bbn.fn.search(themes, {value: cp.currentTheme}),
+            }
+          },
+          methods: {
+            close() {
+              clearInterval(this.interval);
+              this.closest('bbn-floater').close(true);
+            },
+            cancel() {
+              this.cp.currentTheme = this.originalTheme;
+              this.close();
+            },
+            select() {
+              this.close();
+            },
+            stop() {
+              if (this.isPlaying) {
+                clearInterval(this.interval);
+                this.isPlaying = false;
+              }
+            },
+            play() {
+              if (!this.isPlaying) {
+                this.isPlaying = true;
+                this.interval = setInterval(() => {
+                  this.next();
+                }, 2000);
+              }
+            },
+            prev() {
+              if (this.themes[this.currentIndex - 1]) {
+                this.currentIndex--;
+              }
+              else {
+                this.currentIndex = this.themes.length - 1;
+              }
+
+              this.currentTheme = this.themes[this.currentIndex].value;
+            },
+            next() {
+              if (this.themes[this.currentIndex + 1]) {
+                this.currentIndex++;
+              }
+              else {
+                this.currentIndex = 0;
+              }
+
+              this.currentTheme = this.themes[this.currentIndex].value;
+            }
+          },
+          watch: {
+            currentTheme(v) {
+              this.cp.currentTheme = v;
+            }
+          }
+        }
+      })
+    },
     updateDoc() {
       // Emit update event with the current document
       this.$emit('update', this.currentDoc); 
@@ -168,13 +293,13 @@ const cpDef = {
 
       const cm = this.constructor.cm;
 
-      if (!this.mode || !this.theme) {
+      if (!this.mode || !this.currentTheme) {
         throw new Error("You must provide a language and a theme");
       }
       if (!cm.languageExtensions[this.mode] && !['js', 'less', 'purephp'].includes(this.mode)) {
         throw new Error("Unknown language");
       }
-      if (!cm.theme[this.theme]) {
+      if (!cm.theme[this.currentTheme]) {
         throw new Error("Unknown theme");
       }
       const state = cm.state;
@@ -185,33 +310,28 @@ const cpDef = {
       extensions.push(this.compartments.wrap.of(cm.view.EditorView.lineWrapping));
       this.compartments.tabSize = new cpt;
       extensions.push(this.compartments.tabSize.of(state.EditorState.tabSize.of(this.tabSize)));
+      // push each basic extension
+      for (let n in cm.extensions) {
+        extensions.push(cm.extensions[n]);
+      }
+      this.compartments.theme = new cpt;
+      extensions.push(this.compartments.theme.of(cm.theme[this.currentTheme]));
+      this.compartments.readonly = new cpt;
+      extensions.push(this.compartments.readonly.of(state.EditorState.readOnly.of(this.disabled || this.readonly)));
+
+      const idx = this.constructor.modeCode[this.mode] ? this.constructor.modeCode[this.mode] : this.mode;
+      if (!cm.languageExtensions[idx]) {
+        throw new Error("Language not recognized");
+      }
 
       // Adding language and theme specific extensions
       this.compartments.language = new cpt;
-      if (this.mode === "js") {
-        extensions.push(this.compartments.language.of(cm.javascript.javascript()));
-      }
-      else if (this.mode === "less") {
-        extensions.push(this.compartments.language.of(cm.css.css()));
-      }
-      else if (this.mode === "purephp") {
-        extensions.push(this.compartments.language.of(cm.php.php({plain: true})));
-      }
-      else if (cm.languageExtensions[this.mode]) {
-        extensions.push(this.compartments.language.of(cm.languageExtensions[this.mode]));
-      }
-      else {
-        throw new Error("Language unrecognized!");
-      }
-
-      this.compartments.theme = new cpt;
-      extensions.push(this.compartments.theme.of(cm.theme[this.theme]));
-      this.compartments.readonly = new cpt;
-      extensions.push(this.compartments.readonly.of(state.EditorState.readOnly.of(this.disabled || this.readonly)));
+      extensions.push(this.compartments.language.of(cm.languageExtensions[idx]));
 
       return extensions; // Return the configured extensions
     },
     onChange(tr) {
+      bbn.fn.log(tr)
       this.widget.update([tr]); // Update the editor widget with the transaction
       let value = this.widget.state.doc.toString(); // Get the current document's content
       if (value !== this.value) {
@@ -244,56 +364,73 @@ const cpDef = {
         lineWrapping: this.wrap, 
       }));
     },
+    beautifyCode(code, mode) {
+      let newValue = '';
+
+      if (!mode) {
+        mode = this.mode;
+      }
+
+      // JavaScript beautification
+      if (['javascript', 'js'].includes(mode)) {
+        const options = { indent_size: 2, space_in_empty_paren: true };
+        newValue = js_beautify(code, options);
+      }
+      // CSS and LESS beautification
+      else if (['css', 'less'].includes(mode)) {
+        const options = { indent_size: 2, space_in_empty_paren: true };
+        newValue = css_beautify(code, options);
+      }
+      // HTML beautification
+      else if (['html'].includes(mode)) {
+        const options = { indent_size: 2, space_in_empty_paren: true, wrap_attributes: 'force-aligned' };
+        newValue = html_beautify(code, options);
+      }
+      // PHP beautification
+      else if (['php', 'purephp'].includes(mode)) {
+        const options = { indent_size: 2, space_in_empty_paren: true };
+        if (this.mode === 'purephp') {
+          options.plain = true;
+        }
+        newValue = html_beautify(code, options);
+      }
+
+      return newValue;
+    },
+    beautify() {
+      // Beautify the code based on the mode
+      let newValue = this.beautifyCode(this.widget.state.doc.toString(), this.mode);
+      if (newValue) {
+        // Apply the beautified content as a change
+        this.widget.dispatch({
+          changes: {
+            from: 0,
+            to: this.widget.state.doc.toString().length,
+            insert: newValue
+          }
+        })
+      }
+    },
+    // Custom key handling for code beautification and autocompletion
     onKeyDown(event) {
       this.lastKeyDown = event;
-      // Custom key handling for code beautification and autocompletion
-      bbn.fn.log("CODE KEY DOWN", event)
-      if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'f') {
-        // Beautify the code based on the mode
-        let newValue = "";
-        // JavaScript beautification
-        if (['javascript', 'js'].includes(this.mode)) {
-          const options = { indent_size: 2, space_in_empty_paren: true };
-          newValue = js_beautify(this.widget.state.doc.toString(), options);
+      const currentCompletions = this.constructor.cm.autocomplete.currentCompletions(this.widget.state);
+      // Beautify code on Ctrl+Shift+F
+      if (!currentCompletions.length) {
+        if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'f') {
+          this.beautify();
         }
-        // CSS and LESS beautification
-        else if (['css', 'less'].includes(this.mode)) {
-          const options = { indent_size: 2, space_in_empty_paren: true };
-          newValue = css_beautify(this.widget.state.doc.toString(), options);
-        }
-        // HTML beautification
-        else if (['html'].includes(this.mode)) {
-          const options = { indent_size: 2, space_in_empty_paren: true, wrap_attributes: 'force-aligned' };
-          newValue = html_beautify(this.widget.state.doc.toString(), options);
-        }
-        // PHP beautification
-        else if (['php', 'purephp'].includes(this.mode)) {
-          const options = { indent_size: 2, space_in_empty_paren: true };
-          if (this.mode === 'purephp') {
-            options.plain = true;
-          }
-          newValue = html_beautify(this.widget.state.doc.toString(), options);
-        }
-
-        if (newValue) {
-          // Apply the beautified content as a change
-          this.widget.dispatch({
-            changes: {
-              from: 0,
-              to: this.widget.state.doc.toString().length,
-              insert: newValue
-            }
-          })
+        // Trigger autocomplete on '.' press
+        else if (!['Escape', 'Space', 'Enter', 'Return'].includes(event.key) && !ignoredKeys.includes(event.which)) {
+          bbn.fn.log("STARTING COMPLETIONS")
+          this.constructor.cm.autocomplete.startCompletion(this.widget);
         }
       }
-      // Trigger autocomplete on '.' press
-      if (['Escape', 'Space'].includes(event.key)) {
-        this.constructor.cm.autocomplete.closeCompletion(this.widget)
-      }
-      else if (![].concat(...bbn.var.keys.leftRight, ...bbn.var.keys.upDown).includes(event.which)
-        && !this.constructor.cm.autocomplete.currentCompletions(this.widget.state).length
-      ) {
-        this.constructor.cm.autocomplete.startCompletion(this.widget);
+      else {
+        if (['Escape', 'Space', 'Enter', 'Return'].includes(event.key)) {
+          bbn.fn.log("CLOSIG COMPLETIONS")
+          this.constructor.cm.autocomplete.closeCompletion(this.widget)
+        }
       }
       /*
       */
@@ -342,6 +479,22 @@ const cpDef = {
       this.widget.dispatch({
         effects: this.compartments.tabSize.reconfigure(this.constructor.cm.state.EditorState.tabSize.of(v))
       });
+    },
+    theme(v) {
+      if (this.currentTheme !== v) {
+        this.currentTheme = v;
+      }
+    },
+    currentTheme(v) {
+      if (!this.constructor.cm.theme[v]) {
+        throw new Error("Unknown theme");
+      }
+
+      if (this.widget) {
+        this.widget.dispatch({
+          effects: this.compartments.theme.reconfigure(this.constructor.cm.theme[v])
+        });
+      }
     },
     wrap(v) {
       this.widget.dispatch({

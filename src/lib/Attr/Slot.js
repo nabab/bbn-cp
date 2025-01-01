@@ -1,4 +1,4 @@
-import bbnAttr from "./Attr.js";
+import bbnAttr from "../Attr.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.

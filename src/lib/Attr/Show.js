@@ -1,5 +1,5 @@
 import bbn from "@bbn/bbn";
-import bbnAttr from "./Attr.js";
+import bbnAttr from "../Attr.js";
 import bbnStyleAttr from "./Style.js";
 
 /**
@@ -12,24 +12,20 @@ export default class bbnShowAttr extends bbnAttr
   }
 
   attrUpdate(init) {
-    if (this.comment) {
+    const node = this.node instanceof bbnInternalNode && !this.node.component.$isRoot ? this.node.element.bbnSchema : this.node;
+    if (node.comment) {
       return;
     }
-
+    
     if (!init) {
       this.attrSet();
     }
 
-    if (this.node.element?.bbn?.$internal?.attr?.style) {
-      this.node.element.bbn.$internal.attr.style.attrUpdate(true);
-    }
-    else if (this.node.attr?.style) {
-      this.node.attr.style.attrUpdate(true);
-    }
-    else if (this.node.element?.style) {
-      const isVisible = this.node.element.style?.display !== 'none';
-      if (isVisible !== this.value) {
-        this.node.element.style.display = this.value ? '' : 'none';
+    if (init || (this.exp && this.isChanged)) {
+      const isVisible = node.element.style?.display !== 'none';
+      if (isVisible != this.value) {
+        node.styles[this.uid] = {display: this.value ? '' : 'none'};
+        node.nodeSetStyle();
       }
     }
   }

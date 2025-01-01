@@ -1,5 +1,5 @@
 import bbn from "@bbn/bbn";
-import bbnAttr from "./Attr.js";
+import bbnAttr from "../Attr.js";
 import setProp from "../Cp/private/setProp.js";
 import initResults from "../Cp/private/initResults.js";
 

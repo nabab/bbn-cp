@@ -1,4 +1,4 @@
-import bbnCp from '../lib/Cp/Cp.js';
+import bbnCp from '../lib/Cp.js';
 
 const dropdown = {
   props: {

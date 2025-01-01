@@ -1,5 +1,5 @@
 import bbn from "@bbn/bbn";
-import bbnCp from "../Cp.js";
+import bbnCp from "../../Cp.js";
 
 /**
  * Emits a new event with variable arguments

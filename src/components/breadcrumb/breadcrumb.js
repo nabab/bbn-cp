@@ -114,7 +114,7 @@ const cpDef = {
       return this.scrollable ? {
         axis: 'x',
         container: true,
-        hidden: true
+        invisible: true
       } : {};
     },
     /**

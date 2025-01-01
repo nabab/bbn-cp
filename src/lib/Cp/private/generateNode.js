@@ -1,9 +1,10 @@
 import bbn from "@bbn/bbn";
-import bbnNode from "../../Node/Node.js";
+import bbnNode from "../../Node.js";
 import bbnTextNode from "../../Node/Text.js";
 import bbnComponentNode from "../../Node/Component.js";
 import bbnSlotNode from "../../Node/Slot.js";
 import bbnTemplateNode from "../../Node/Template.js";
+import bbnSvgNode from "../../Node/Svg.js";
 import bbnTransitionNode from "../../Node/Transition.js";
 import bbnInternalNode from "../../Node/Internal.js";
 
@@ -30,6 +31,9 @@ export default function generateNode(model, cp, parent, root, rootHash, hash, da
   }
   else if (model.tag === 'template') {
     node = bbnTemplateNode;
+  }
+  else if (model.tag === 'svg') {
+    node = bbnSvgNode;
   }
   else if (model.tag === 'transition') {
     node = bbnTransitionNode;

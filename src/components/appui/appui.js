@@ -94,12 +94,7 @@ const cpDef = {
      * @prop {Object} [{'span'}] cfg
      */
     cfg: {
-      type: Object,
-      default() {
-        return {
-          tag: 'span'
-        }
-      }
+      type: Object
     },
     /**
      * @prop {Array} [[]] source

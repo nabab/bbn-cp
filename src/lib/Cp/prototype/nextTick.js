@@ -1,5 +1,5 @@
 import queueUpdate from "../../../functions/queueUpdate.js";
-import bbnCp from "../Cp.js";
+import bbnCp from "../../Cp.js";
 
 bbnCp.prototype.$nextTick = async function(fn){
   const f = fn ? bbn.fn.analyzeFunction(fn) : {hash: 'nextTick'}; 

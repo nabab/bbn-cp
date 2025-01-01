@@ -98,11 +98,6 @@ const cpDef = {
        */
       isCollapsed: this.collapsed,
       /**
-       * The current resizable state.
-       * @data {Boolean} isResizable
-       */
-      isResizable: this.resizable,
-      /**
        * The splitter to which the pane belongs.
        * @data {bbnCp} splitter
        */
@@ -110,6 +105,12 @@ const cpDef = {
     };
   },
   computed: {
+    isResizable() {
+      return this.resizable || (this.splitter && this.splitter.resizable && (this.resizable !== false));
+    },
+    isCollapsible() {
+      return this.collapsible || (this.splitter && this.splitter.collapsible && (this.collapsible !== false));
+    },
     resizer() {
       if (this.splitter && this.currentConfig.index) {
         return this.splitter.resizers[this.currentConfig.index];
@@ -137,6 +138,20 @@ const cpDef = {
     },
     isHorizontal() {
       return this.splitter && this.splitter.isHorizontal;
+    },
+    prevResizable() {
+      if (this.splitter && this.isResizable) {
+        let i = this.currentConfig.index - 1;
+        while (i >= 0) {
+          if (this.splitter.panes[i].pane.isResizable && !this.splitter.panes[i].hidden) {
+            return this.splitter.panes[i];
+          }
+
+          i--;
+        }
+      }
+
+      return null;
     }
   },
   watch:{
@@ -155,10 +170,6 @@ const cpDef = {
   mounted(){
     this.splitter = this.closest('bbn-splitter');
     if (this.splitter){
-      if (this.resizable === undefined) {
-        this.isResizable = this.splitter.resizable;
-      }
-
       this.selfEmit(true);
       this.splitter.init();
       setTimeout(() => {

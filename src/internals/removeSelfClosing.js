@@ -1,4 +1,4 @@
-import bbnParser from "../lib/Parser/Parser.js";
+import bbnParser from "../lib/Parser.js";
 
 /**
  * Remove the self closing tags and return an HTML string

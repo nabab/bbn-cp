@@ -69,7 +69,7 @@ const cpDef = {
             /**
              * @prop {Boolean} [false] hidden
              */
-            hidden: {
+            invisible: {
               type: Boolean,
               default: false
             },
@@ -497,7 +497,7 @@ const cpDef = {
         let ev = new Event('close', {cancelable: true});
         this.$emit('close', uid, widget);
         if ( !ev.defaultPrevented ){
-          this.updateWidget(uid, {hidden: true});
+          this.updateWidget(uid, {invisible: true});
         }
       },
       /**
@@ -544,7 +544,7 @@ const cpDef = {
           let w = bbn.fn.getRow(this.widgets, {key: key});
           if ( w && (w.closable !== false) ){
             this.updateWidget(key, {
-              hidden: hidden === undefined ? !w.hidden : hidden
+              invisible: hidden === undefined ? !w.invisible : hidden
             });
           }
         }
@@ -826,7 +826,7 @@ const cpDef = {
       setWidgetStorage(idx){
         this.setStorage({
           uid: this.widgets[idx].uid,
-          hidden: this.widgets[idx].hidden,
+          invisible: this.widgets[idx].invisible,
           limit: this.widgets[idx].limit
         }, this.widgets[idx].storageFullName, true);
       },

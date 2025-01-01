@@ -1,4 +1,4 @@
-import bbnData from "../Data.js";
+import bbnData from "../../Data.js";
 import bbn from "@bbn/bbn";
 import propagateDependencyChanges from "../../Cp/private/propagateDependencyChanges.js";
 import queueUpdate from "../../../functions/queueUpdate.js";

@@ -1,6 +1,6 @@
 import bbn from "@bbn/bbn";
 import "../cp.js";
-import bbnData from '../lib/Data/Data.js';
+import bbnData from '../lib/Data.js';
 
 /**
  * Normalizes the configuration of a component, ensuring it adheres to the expected structure and types.

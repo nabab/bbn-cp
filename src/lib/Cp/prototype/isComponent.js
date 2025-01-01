@@ -1,4 +1,4 @@
-import bbnCp from "../Cp.js";
+import bbnCp from "../../Cp.js";
 
 bbnCp.prototype.$isComponent = function (node) {
   if (node.tag && this.$cfg.componentNames[node.tag]) {

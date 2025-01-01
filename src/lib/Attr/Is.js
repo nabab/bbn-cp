@@ -1,5 +1,5 @@
 import bbn from "@bbn/bbn";
-import bbnAttr from "./Attr.js";
+import bbnAttr from "../Attr.js";
 import removeDOM from "../Cp/private/removeDOM.js";
 
 /**

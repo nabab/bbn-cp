@@ -1,4 +1,4 @@
-import bbnNode from "../Node.js";
+import bbnNode from "../../Node.js";
 import generateNode from "../../Cp/private/generateNode.js";
 import bbnInternalNode from "../Internal.js";
 

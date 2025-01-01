@@ -76,7 +76,7 @@
                   ref="scroll"
                   :class="{'bbn-flex-fill': !pageable && (scrollable || footer || title || currentButtons?.length || numButtonsInContainer)}"
                   :scrollable="scrollable"
-                  :hidden="scrollHidden"
+                  :invisible="scrollHidden"
                   :axis="axis"
                   :max-width="isMaximized ? '100%' : currentMaxWidth || null"
                   :max-height="isMaximized ? '100%' : scrollMaxHeight || null"

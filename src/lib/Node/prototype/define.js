@@ -1,6 +1,5 @@
-import bbnNode from "../Node.js";
-import bbnAttr from "../../Attr/Attr.js";
-import getIdParent from "../../Cp/private/getIdParent.js";
+import bbnNode from "../../Node.js";
+import bbnAttr from "../../Attr.js";
 
 const allowed = [
   'id',
@@ -82,6 +81,9 @@ bbnNode.prototype.nodeDefine = function(node, data) {
             }
             else if (n === 'bbn-show') {
               v = new bbnShowAttr(node[a][n], this, n);
+            }
+            else if (n === 'bbn-transition') {
+              v = new bbnTransitionAttr(node[a][n], this, n);
             }
             else if (n === 'is') {
               v = new bbnIsAttr(node[a][n], this, n);

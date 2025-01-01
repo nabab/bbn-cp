@@ -1,5 +1,5 @@
 import bbn from "@bbn/bbn";
-import bbnAttr from "./Attr.js";
+import bbnAttr from "../Attr.js";
 import cloneNode from "../Cp/private/cloneNode.js";
 import generateNode from "../Cp/private/generateNode.js";
 import deleteNodes from "../Cp/private/deleteNodes.js";

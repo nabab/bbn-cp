@@ -1,4 +1,4 @@
-import bbnAttr from "../Attr.js";
+import bbnAttr from "../../Attr.js";
 
 bbnAttr.prototype.attrGetState = function() {
   if (!this.exp) {

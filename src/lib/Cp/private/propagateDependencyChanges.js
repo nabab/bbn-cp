@@ -1,5 +1,5 @@
 import bbn from "@bbn/bbn";
-import bbnComputed from "../../Computed/Computed.js";
+import bbnComputed from "../../Computed.js";
 import initResults from "./initResults.js";
 
 const propagation = [];

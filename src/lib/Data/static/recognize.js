@@ -1,4 +1,4 @@
-import bbnData from "../Data.js";
+import bbnData from "../../Data.js";
 
 const retrieveData = function (v, res, path) {
   if (!res) {

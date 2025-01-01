@@ -1,4 +1,4 @@
-import bbnCp from "../Cp.js";
+import bbnCp from "../../Cp.js";
 
 bbnCp.prototype.$once = function(event, handler){
     this.$off(event, handler);

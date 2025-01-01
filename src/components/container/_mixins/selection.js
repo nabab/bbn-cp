@@ -335,16 +335,12 @@ export default {
       }
     },
     async selectionMounted() {
+      bbn.fn.warning("SELECTION MOUNTED");
 
       if (!this.router.ready) {
         bbn.fn.warning("ROUTER NOT READY");
         this.router.$on('ready', () => {
-          bbn.fn.warning("ROUTER INITING");
-          if (this.currentSelected) {
-            this.show();
-          }
-  
-          this.init();
+          this.selectionMounted();
         });
       }
       else{
@@ -369,7 +365,7 @@ export default {
      * @method init
      */
     init() {
-      if (this.isVisible && (this.real || (this.isLoaded && !this.ready))) {
+      if (this.router && this.isVisible && (this.real || (this.isLoaded && !this.ready))) {
         //bbn.fn.log("INIT " + this.currentURL, this.real,this.currentScript, this.currentView )
         let res;
 
@@ -417,7 +413,7 @@ export default {
           // Adding also a few funciton to interact with the tab
           let cont = this;
           const definition = bbn.fn.extend(true, res ? res : {}, {
-            template: '<div class="' + (this.router.scrollContent ? '' : 'bbn-w-100') + '">' + this.currentView.content + '</div>',
+            template: '<div class="' + (this.router?.scrollContent ? '' : 'bbn-w-100') + '">' + this.currentView.content + '</div>',
             methods: {
               getContainer(){
                 if (!this._bbn_container) {

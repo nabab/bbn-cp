@@ -1,6 +1,6 @@
 import bbn from "@bbn/bbn";
-import propagateDependencyChanges from "../Cp/private/propagateDependencyChanges.js";
-import updateWatcher from "../Cp/private/updateWatcher.js";
+import propagateDependencyChanges from "./Cp/private/propagateDependencyChanges.js";
+import updateWatcher from "./Cp/private/updateWatcher.js";
 
 /**
  * Class representing a computed property.

@@ -6,7 +6,7 @@
     "Position on the right side": "Posiziona sul lato destro",
     "Are you sure you want to discard the changes you made in this page?": "Sei sicuro di voler eliminare le modifiche apportate in questa pagina?",
     "The component bbn-container must have a URL defined": "Il componente bbn-container deve avere un URL definito",
-    "Two containers cannot have the same URL defined (": "Due contenitori non possono avere lo stesso URL definito (",
+    "Two containers cannot have the same URL defined": "Due contenitori non possono avere lo stesso URL definito",
     "The bbn-container must have a valid URL defined": "Bbn-container deve avere un URL valido definito",
     "Untitled": "Senza titolo",
     "Impossible to find a container for the URL %s": "Impossibile trovare un contenitore per l'URL %s",

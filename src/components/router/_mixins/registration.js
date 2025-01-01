@@ -40,7 +40,7 @@ export default {
         bbn.fn.log(["It exists", this.urls[cp.routerUid].$numBuild, this.numRegistered, this.views[0].real]);
         if (this.urls[cp.routerUid]) {
           //this.urls[cp.url].$el.parentNode.removeChild(this.urls[cp.url].$el);
-          throw new Error(bbn._('Two containers cannot have the same URL defined (' + cp.url + ')'));
+          throw new Error(bbn._('Two containers cannot have the same URL defined') + '(' + cp.url + ')');
         }
         else {
           throw new Error(bbn._("The container shouldn't register twice"));

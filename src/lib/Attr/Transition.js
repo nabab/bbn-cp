@@ -4,7 +4,7 @@ import bbnAttr from "../Attr.js";
 /**
  * Takes care of the data reactivity for non primitive values.
  */
-export default class bbnHtmlAttr extends bbnAttr
+export default class bbnTransitionAttr extends bbnAttr
 {
   attrUpdate(init) {
     if (!init) {

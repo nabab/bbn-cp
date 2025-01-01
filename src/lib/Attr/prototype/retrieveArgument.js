@@ -1,4 +1,4 @@
-import bbnAttr from "../Attr.js";
+import bbnAttr from "../../Attr.js";
 
 /**
  * Processes an argument for a function call within the context of a web component.

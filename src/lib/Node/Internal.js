@@ -1,5 +1,5 @@
 import initResults from "../Cp/private/initResults.js";
-import bbnNode from "./Node.js";
+import bbnNode from "../Node.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.

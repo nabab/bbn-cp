@@ -1,4 +1,4 @@
-import bbnComputed from "../lib/Computed/Computed.js";
+import bbnComputed from "../lib/Computed.js";
 import setUpProp from "../lib/Cp/private/setUpProp.js";
 
 /**

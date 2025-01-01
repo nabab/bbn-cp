@@ -1,6 +1,6 @@
-import bbnComputed from "../Computed/Computed.js";
-import bbnCp from "./Cp.js";
-import bbnData from "../Data/Data.js";
+import bbnComputed from "../Computed.js";
+import bbnCp from "../Cp.js";
+import bbnData from "../Data.js";
 import setUpProp from "./private/setUpProp.js";
 
 export default class bbnAnonCp extends bbnCp {
