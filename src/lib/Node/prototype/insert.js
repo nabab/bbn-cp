@@ -150,7 +150,8 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
     rootHash += rootHash ? rootHash + '-root' : 'root';
     const loopRoot = this.component.$retrieveElement(this.id, rootHash);
     if (!loopRoot) {
-      //bbn.fn.log(["APPEND IN LOOP", this.tag, ele])
+      bbn.fn.log(["APPEND IN LOOP", this.tag, ele])
+      debugger;
       parent.appendChild(ele);
     }
     else {

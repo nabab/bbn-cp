@@ -53,8 +53,8 @@ export default class bbnLoopAttr extends bbnAttr
 
     let root = node.element;
     if (root && !root.parentNode) {
-      //node.parentElement.appendChild(root);
-      debugger;
+      node.parentElement.appendChild(root);
+      //debugger;
     }
 
     const breakFn = node.attr['bbn-break'] ? node.component[node.attr['bbn-break'].exp] : false;

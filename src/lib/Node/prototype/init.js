@@ -36,7 +36,6 @@ bbnNode.prototype.nodeInit = function(after) {
   this.isCreating = true;
   this.nodeSetAll();
   if (!this.loop) {
-    //if (this.parent.isComponent && !(this.parent instanceof bbnInternalNode)) {}
     this.nodeBuild(after);
     if (this.isComponent && this.element) {
       if (!this.element.bbn) {

@@ -188,6 +188,9 @@ bbnProtoHtml.$connected = function () {
   // Sets the current template schema and creates the DOM
   if (this.$internal) {
     this.$internal.nodeInit();
+    for (let n in this.$internal.events) {
+      this.addEventListener(n, this.$internal.events[n].handler);
+    }
   }
 
   // registering current object to parent and setting root

@@ -1,5 +1,4 @@
 import bbnAttr from "../Attr.js";
-import bbnInternalNode from "../../Node/Internal.js";
 
 bbnAttr.prototype.attrSet = function(init) {
   const node = this.node;

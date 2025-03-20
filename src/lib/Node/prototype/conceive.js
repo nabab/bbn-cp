@@ -1,6 +1,5 @@
 import bbnNode from "../Node.js";
 import generateNode from "../../Html/private/generateNode.js";
-import bbnInternalNode from "../Internal.js";
 
 bbnNode.prototype.nodeConceive = function() {
   if (this.items && (!this.comment || (!this.loop && (!this.condition || this.condition.value)))) {

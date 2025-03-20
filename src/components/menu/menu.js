@@ -149,7 +149,6 @@ const cpDef = {
       overIdx(nv, ov) {
         if ((nv > -1) && (ov > -1)) {
           this.isChanging = true;
-          bbn.fn.log(this.getRef('floater'));
           this.$forceUpdate().then(() => {
             setTimeout(() => {
               this.isChanging = false;
