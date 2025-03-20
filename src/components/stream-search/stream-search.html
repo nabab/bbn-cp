@@ -1,0 +1,44 @@
+<div :class="[componentClass, 'bbn-overlay', 'bbn-flex-height']"
+     tabindex="-1">
+  <div class="bbn-w-100 bbn-xl bbn-c bbn-vlpadding">
+    <bbn-input :placeholder="placeholder"
+                :style="{width: '75%', textAlign: 'left'}"
+                type="search"
+                ref="input"
+                @keydown="onKeydown"
+                :nullable="isNullable"
+                autocomplete="off"
+                bbn-model="filterString"
+                bbn-focused.selected
+                :loading="isAjax && isLoading"
+                button-right="nf nf-fa-search"/>
+  </div>
+  <div class="bbn-flex-fill">
+    <bbn-scroll bbn-if="currentData.length && !isDisabled && !readonly"
+                axis="y">
+      <bbn-list :element="$el"
+                ref="list"
+                :auto-hide="false"
+                :suggest="suggest"
+                :component="searchComponent"
+                :source-items="null"
+                @select="select"
+                :source-url="sourceUrl"
+                :source-action="sourceAction"
+                :source-text="sourceText"
+                source-value="hash"
+                uid="hash"
+                :pageable="currentData.length > limit"
+                :pager-element="_self"
+                :source="currentData"/>
+    </bbn-scroll>
+  </div>
+  <div bbn-if="numPages > 1"
+       class="bbn-w-100">
+    <bbn-pager ref="pager"/>
+  </div>
+  <input type="hidden"
+         bbn-model="value"
+         ref="element"
+         :name="name">
+</div>

@@ -23,14 +23,14 @@ export default {
                 bbn-show="p.view.loading"/>
             <div :class="['bbn-router-breadcrumb-element', 'bbn-h-100', 'bbn-vmiddle', {'bbn-router-breadcrumb-dirty': p.view.dirty}]">
               <span bbn-if="p.view.icon"
-                    :title="p.view.title"
+                    :title="p.view.label"
                     :class="'bbn-router-breadcrumb-element-icon bbn-h-100 bbn-vmiddle bbn-right-xsspace' + (p.view.notext ? ' bbn-lg' : ' bbn-m')">
                 <i :class="p.view.icon"/>
               </span>
               <span bbn-if="!p.view.notext"
                     class="bbn-router-breadcrumb-element-text"
-                    :title="p.view.title && (p.view.title.length > p.maxTitleLength) ? p.view.title : ''"
-                    bbn-html="p.view.title ? shortTitle(p) : '` + bbn._('Untitled') + `'"/>
+                    :title="p.view.label && (p.view.label.length > p.maxTitleLength) ? p.view.label : ''"
+                    bbn-html="p.view.label ? shortTitle(p) : '` + bbn._('Untitled') + `'"/>
             </div>
           </div>
           <div>
@@ -53,14 +53,14 @@ export default {
                bbn-show="source.view.loading"/>
           <div :class="['bbn-router-breadcrumb-element', 'bbn-h-100', 'bbn-vmiddle', {'bbn-router-breadcrumb-dirty': source.view.dirty}]">
             <span bbn-if="source.view.icon"
-                  :title="source.view.title"
+                  :title="source.view.label"
                   :class="'bbn-router-breadcrumb-element-icon bbn-h-100 bbn-vmiddle bbn-right-xsspace' + (source.view.notext ? ' bbn-lg' : ' bbn-m')">
               <i :class="source.view.icon"/>
             </span>
             <span bbn-if="!source.view.notext"
                   class="bbn-router-breadcrumb-element-text"
-                  :title="source.view.title && (source.view.title.length > source.maxTitleLength) ? source.view.title : ''"
-                  bbn-html="source.view.title ? (source.parents.length? shortTitle(source): source.view.title) : '` + bbn._('Untitled') + `'"/>
+                  :title="source.view.label && (source.view.label.length > source.maxTitleLength) ? source.view.label : ''"
+                  bbn-html="source.view.label ? (source.parents.length? shortTitle(source): source.view.label) : '` + bbn._('Untitled') + `'"/>
           </div>
         </div>
   
@@ -84,14 +84,14 @@ export default {
                 bbn-show="p.view.loading"/>
             <div :class="['bbn-router-breadcrumb-element', 'bbn-h-100', 'bbn-vmiddle', {'bbn-router-breadcrumb-dirty': p.view.dirty}]">
               <span bbn-if="p.view.icon"
-                    :title="p.view.title"
+                    :title="p.view.label"
                     :class="'bbn-router-breadcrumb-element-icon bbn-h-100 bbn-vmiddle bbn-right-xsspace' + (p.view.notext ? ' bbn-lg' : ' bbn-m')">
                 <i :class="p.view.icon"/>
               </span>
               <span bbn-if="!p.view.notext"
                     class="bbn-router-breadcrumb-element-text"
-                    :title="p.view.title && (p.view.title.length > p.maxTitleLength) ? p.view.title : ''"
-                    bbn-html="p.view.title ? shortTitle(p) : '` + bbn._('Untitled') + `'"/>
+                    :title="p.view.label && (p.view.label.length > p.maxTitleLength) ? p.view.label : ''"
+                    bbn-html="p.view.label ? shortTitle(p) : '` + bbn._('Untitled') + `'"/>
                </div>
           </div>
         </div>
@@ -168,9 +168,9 @@ export default {
       }
     },
     shortTitle(src) {
-      return src.view.title.length > src.maxTitleLength ?
-        bbn.fn.shorten(src.view.title, src.maxTitleLength) :
-        src.view.title;
+      return src.view.label.length > src.maxTitleLength ?
+        bbn.fn.shorten(src.view.label, src.maxTitleLength) :
+        src.view.label;
     }
   }
   

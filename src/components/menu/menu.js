@@ -41,19 +41,6 @@ const cpDef = {
        sourceValue: {
         default: 'text'
       },
-      /**
-       * @prop {} ['url'] sourceUrl
-       */
-       sourceUrl: {
-        default: 'url'
-      },
-      /**
-       * @prop {String} ['items'] children
-       */
-      children: {
-        type: String,
-        default: 'items'
-      }
     },
     data() {
       return {
@@ -86,7 +73,7 @@ const cpDef = {
       clickLi(idx, ev) {
         //bbn.fn.log("clickLi", idx, this.overIdx);
         if (this.filteredData[idx]) {
-          if (this.filteredData[idx].data[this.children] && this.filteredData[idx].data[this.children].length) {
+          if (this.filteredData[idx].data[this.sourceItems] && this.filteredData[idx].data[this.sourceItems].length) {
             this.overIdx = this.overIdx === idx ? -1 : idx;
           }
           else {

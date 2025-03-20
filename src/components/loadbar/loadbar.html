@@ -10,7 +10,7 @@
       <i bbn-elseif="currentItem.success"
          class="nf nf-fa-check bbn-green"/>
       <i bbn-elseif="currentItem.abort"
-         class="nf nf-mdi-stop bbn-orange"/>
+         class="nf nf-md-stop bbn-orange"/>
     </span>
     <span class="bbn-flex-fill">
       <span class="bbn-overlay">
@@ -29,16 +29,16 @@
                :element="$el.parentNode"
                ref="floater"
                :auto-hide="true"
-               :title="_('Requests\' history')"
+               :label="_('Requests\' history')"
                :closable="true"
-               :container="$root.$el"
+               :container="$root"
                :scrollable="true"
                @close="info = false"
                width="100%"
                max-height="60vw">
     <div class="bbn-padding bbn-w-100">
       <bbn-input class="bbn-w-100"
-                 button-right="nf nf-mdi-send"
+                 button-right="nf nf-md-send"
                  bbn-model="link"
                  @keydown.enter="go"
                  :focused="true"
@@ -57,7 +57,7 @@
               <i bbn-elseif="it.success"
                  class="nf nf-fa-check bbn-green"/>
               <i bbn-elseif="it.abort"
-                 class="nf nf-mdi-stop bbn-orange"/>
+                 class="nf nf-md-stop bbn-orange"/>
             </span>
             <div class="bbn-loadbar-time bbn-c bbn-s">
               <span bbn-text="renderDuration(it.duration || duration(it))"/>

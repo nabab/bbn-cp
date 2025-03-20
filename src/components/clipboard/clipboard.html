@@ -22,7 +22,7 @@
       <bbn-button bbn-if="!search.length"
                   @click="clear"
                   tabindex="-1"
-                  :text="_('Clear all')"/>
+                  :label="_('Clear all')"/>
       <textarea class="bbn-invisible"
                 ref="textarea"
                 tabindex="-1"
@@ -37,7 +37,7 @@
                   @remove="remove">
           <div bbn-pre>
             <div class="bbn-w-100 bbn-flex-width">
-              <div :title="text"
+              <div :title="source.text"
                   class="bbn-clipboard-text bbn-block-left bbn-flex-fill">
                 <i :class="[
                   'nf nf-oct-pin',
@@ -49,33 +49,33 @@
                 <bbn-context tag="span"
                             class="bbn-right-space"
                             :source="[
-                  {text: _('Copy plain text'), icon: 'nf nf-mdi-cursor_text', action: () => {closest('bbn-clipboard').setClipboard(uid, 'plain')}},
-                  {text: _('Copy rich text'), icon: 'nf nf-mdi-code_tags', disabled: !content, action: () => {closest('bbn-clipboard').setClipboard(uid, 'html')}},
-                  {text: _('Copy as image'), icon: 'nf nf-fa-image', disabled: !type || (type.indexOf('image/')) !== 0, action: () => {closest('bbn-clipboard').setClipboard(uid, 'image')}},
-                  {text: _('Save'), icon: 'nf nf-fa-file_o', action: () => {closest('bbn-clipboard').save(uid)}},
-                  {text: _('Save as...'), icon: 'nf nf-fa-file_o', action: () => {closest('bbn-clipboard').saveAs(uid)}},
-                  {text: _('Pin'), icon: 'nf nf-mdi-pin', action: () => {source.pinned = true;}, disabled: source.pinned},
-                  {text: _('Unpin'), icon: 'nf nf-mdi-pin_off', action: () => {source.pinned = false;}, disabled: !source.pinned},
-                  {text: _('Share'), icon: 'nf nf-fa-share', action: () => {}},
-                  {text: _('Remove'), icon: 'nf nf-fa-trash_o', action: () => closest('bbn-clipboard').remove({uid: source.uid})},
+                  {text: _('Copy plain text'), icon: 'nf nf-md-cursor_text', action: () => closest('bbn-clipboard').setClipboard(uid, 'plain')},
+                  {text: _('Copy rich text'), icon: 'nf nf-md-code_tags', disabled: !source.content, action: () => closest('bbn-clipboard').setClipboard(uid, 'html')},
+                  {text: _('Copy as image'), icon: 'nf nf-fa-image', disabled: !source.type || (source.type.indexOf('image/')) !== 0, action: () => closest('bbn-clipboard').setClipboard(uid, 'image')},
+                  {text: _('Save'), icon: 'nf nf-fa-file_o', action: () => closest('bbn-clipboard').save(uid)},
+                  {text: _('Save as...'), icon: 'nf nf-fa-file_o', action: () => closest('bbn-clipboard').saveAs(uid)},
+                  {text: _('Pin'), icon: 'nf nf-md-pin', action: () => {source.pinned = true;}, disabled: source.pinned},
+                  {text: _('Unpin'), icon: 'nf nf-md-pin_off', action: () => {source.pinned = false;}, disabled: !source.pinned},
+                  {text: _('Share'), icon: 'nf nf-fa-share', action: () => null},
+                  {text: _('Remove'), icon: 'nf nf-fa-trash_o', action: () => closest('bbn-clipboard').removeItem({uid: source.uid})},
                 ]">
-                  <i class="nf nf-mdi-dots_vertical"/>
+                  <i class="nf nf-md-dots_vertical"/>
                 </bbn-context>
-                <span bbn-text="text"/>
+                <span bbn-text="source.text"/>
               </div>
               <div :class="{
                     'bbn-block-right': true,
                     'bbn-narrow': true,
                     'bbn-r': true,
-                    'bbn-green': stype === 'html',
-                    'bbn-red': stype === 'javascript',
-                    'bbn-purple': type.indexOf('application/') === 0,
-                    'bbn-blue': stype === 'php',
-                    'bbn-orange': ['css', 'less', 'scss'].includes(stype),
-                    'bbn-darkgrey': stype === 'text',
-                    'bbn-pink': stype && (stype.indexOf('image/') === 0)
+                    'bbn-green': source.stype === 'html',
+                    'bbn-red': source.stype === 'javascript',
+                    'bbn-purple': source.type.indexOf('application/') === 0,
+                    'bbn-blue': source.stype === 'php',
+                    'bbn-orange': ['css', 'less', 'scss'].includes(source.stype),
+                    'bbn-darkgrey': source.stype === 'text',
+                    'bbn-pink': source.stype && (source.stype.indexOf('image/') === 0)
                   }"
-                    bbn-text="stype"/>
+                    bbn-text="source.stype"/>
             </div>
           </div>
         </bbn-list>

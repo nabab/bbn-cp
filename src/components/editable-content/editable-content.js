@@ -36,11 +36,11 @@ const cpDef = {
         default: 'nf nf-fa-save'
       },
       /**
-       * @prop {String} ['nf nf-mdi-cancel'] cancelIcon
+       * @prop {String} ['nf nf-md-cancel'] cancelIcon
        */
       cancelIcon: {
         type: String,
-        default: 'nf nf-mdi-cancel'
+        default: 'nf nf-md-cancel'
       },
       /**
        * @prop {(String|Function)} help

@@ -1,5 +1,4 @@
-import bbn from "@bbn/bbn";
-import bbnAttr from "../Attr.js";
+import bbnAttr from "./Attr.js";
 import bbnStyleAttr from "./Style.js";
 
 /**
@@ -21,12 +20,9 @@ export default class bbnShowAttr extends bbnAttr
       this.attrSet();
     }
 
-    if (init || (this.exp && this.isChanged)) {
-      const isVisible = node.element.style?.display !== 'none';
-      if (isVisible != this.value) {
-        node.styles[this.uid] = {display: this.value ? '' : 'none'};
-        node.nodeSetStyle();
-      }
+    if (init || (this.exp && (this.isLate || this.isChanged))) {
+      node.styles[this.uid] = this.value ? {} : {display: 'none'};
+      node.nodeSetStyle();
     }
   }
 }

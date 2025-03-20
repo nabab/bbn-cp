@@ -56,7 +56,7 @@ export default {
 
 
     async saveScreenshot(scale = 0.1, timeout = 0) {
-      if (this.router.db && (this.currentView.idx === this.router.selected) && !this.isPane) {
+      if (this.router.db && (this.currentIndex === this.router.selected) && !this.isPane) {
         let img       = await this.takeScreenshot(scale, timeout, true);
         let num_tries = 0;
         while (!img && (num_tries < 5)) {
@@ -101,13 +101,10 @@ export default {
               && bbn.fn.isActiveInterface(600)
               && !this.router.visualShowAll
           ) {
+            //debugger;
             let scroll = this.getRef('scroll');
             if (!scroll) {
               return exit();
-            }
-
-            if (scroll.$el) {
-              scroll = scroll.$el;
             }
 
             let w  = scroll.clientWidth;
@@ -118,8 +115,8 @@ export default {
               return exit();
             }
 
-            ct.style.width = s + 'px !important';
-            ct.style.height = s + 'px !important';
+            scroll.style.maxWidth = s + 'px !important';
+            scroll.style.maxHeight = s + 'px !important';
             html2canvas(ct, {
               width: s,
               height: s,

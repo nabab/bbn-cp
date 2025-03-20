@@ -1,6 +1,5 @@
 <div :class="[componentClass]" 
-     tabindex="-1"
->
+     tabindex="-1">
   <bbn-form :scrollable="false" ref="form" :buttons="false" @submit="add">
     <div class="bbn-grid-fields" style="grid-template-columns: minmax(auto,max-content) auto 3rem">
       <template bbn-for="v in items">
@@ -8,23 +7,32 @@
         <div bbn-text="v.value"/>
         <div>
           <bbn-button icon="nf nf-fa-minus"
-                      @click="remove(v.key)"
-                      @keyup.enter="remove(v.key)"
+                      @click="removeItem(v.key)"
+                      @keyup.enter="removeItem(v.key)"
                       text="_('Delete')"
+                      :tabindex="currentTabIndex"
                       :notext="true"/>
         </div>
       </template>
       <template bbn-if="!max || (items.length <= max)">
         <div>
-          <bbn-input bbn-model="currentKey" :required="true" ref="key" :placeholder="_('key')"/>
+          <bbn-input bbn-model="currentKey"
+                     :required="true"
+                     ref="key"
+                     :tabindex="currentTabIndex"
+                     :placeholder="_('key')"/>
         </div>
         <div>
-          <bbn-input bbn-model="currentValue" :required="true" :placeholder="_('value')"/>
+          <bbn-input bbn-model="currentValue"
+                     :required="true"
+                     :placeholder="_('value')"
+                     :tabindex="currentTabIndex"/>
         </div>
         <div>
           <bbn-button icon="nf nf-fa-plus"
                       @click="getRef('form').submit()"
                       @keyup.enter="getRef('form').submit()"
+                      :tabindex="currentTabIndex"
                       text="_('Add')"
                       :notext="true"/>
         </div>

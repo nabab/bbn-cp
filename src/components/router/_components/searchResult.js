@@ -8,7 +8,7 @@ export default {
         bbn-text="source.score"/>
   <span bbn-text="_('Opened container')"/>
   <em bbn-text="'URL: ' + source.url"></em><br>
-  <span class="bbn-lg" bbn-text="source.title"></span>
+  <span class="bbn-lg" bbn-text="source.label"></span>
 </div>
 <div class="bbn-hlpadding bbn-h-100 bbn-r"
       style="vertical-align: middle"

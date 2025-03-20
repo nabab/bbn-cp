@@ -235,11 +235,13 @@ const cpDef = {
             let parent = el.offsetParent;
             let width;
             if (parent) {
-              width = parent.getBoundingClientRect().width - 100;
+              width = this.$position(parent).width - 100;
             }
-            else {
+
+            if (!parent || (width < 100)) {
               width = 400;
             }
+
             this.widget = new iro.ColorPicker(el, bbn.fn.extend(true, {width: width}, this.currentCfg));
             this.setEvents();
             this.find('bbn-input,bbn-button').focus();
@@ -368,7 +370,7 @@ const cpDef = {
           this.showFloater = true;
         }
       },
-      keydown(ev) {
+      onKeydown(ev) {
         if (!this.showFloater) {
           if ((ev.code === 'Space') || (ev.code === 'ArrowDown')) {
             this.showFloater = true;

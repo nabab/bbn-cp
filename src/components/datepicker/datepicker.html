@@ -1,4 +1,5 @@
-<div :class="[componentClass, 'bbn-textbox', {'bbn-input-nullable': isNullable}]">
+<div :class="[componentClass, 'bbn-textbox', {'bbn-input-nullable': isNullable}]"
+     tabindex="-1">
   <bbn-button bbn-if="buttonPosition === 'left'"
               icon="nf nf-fa-calendar"
               @click="isOpened = !isOpened"
@@ -15,7 +16,8 @@
               bbn-model="inputValue"
               class="bbn-flex-fill"
               :autosize="autosize"
-              :inputmode="inputmode"
+              :tabindex="currentTabIndex"
+              :inputmode="$el.inputmode"
               :placeholder="placeholder"
               :pattern="currentPattern"/>
   <div bbn-if="isNullable && !readonly && !isDisabled"

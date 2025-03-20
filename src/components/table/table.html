@@ -1,15 +1,27 @@
-<div :class="[{'bbn-overlay': scrollable, 'bbn-block': !scrollable}, componentClass, 'bbn-border']">
-  <div :class="{'bbn-overlay': scrollable, 'bbn-flex-height': scrollable, 'bbn-block': !scrollable}"
+<div :class="[{
+    'bbn-overlay': scrollable,
+    'bbn-block': !scrollable
+  },
+  componentClass,
+  'bbn-border'
+]">
+  <div :class="{
+    'bbn-overlay': scrollable,
+    'bbn-flex-height': scrollable,
+    'bbn-block': !scrollable
+  }"
        :style="scrollable && groupCols.length ? {} : {
          width: totalWidth
        }"
        bbn-if="cols.length">
+    <!-- Toolbar -->
     <div bbn-if="hasToolbar"
-         class="bbn-table-toolbar bbn-header"
+         class="bbn-table-toolbar bbn-header bbn-no-border"
          ref="toolbar">
-      <bbn-toolbar bbn-if="toolbarButtons.length || (search && !isString(toolbar) && !isObject(toolbar))"
+      <bbn-toolbar bbn-if="toolbarButtons.length || (search && !bbn.fn.isString(toolbar) && !isObject(toolbar))"
                    :source="toolbarButtons"
-                   :slot-before="toolbarSlotBefore">
+                   :slot-before="toolbarSlotBefore"
+                   class="bbn-spadding bbn-no-border-left bbn-no-border-right bbn-no-border-top">
         <slot name="toolbar"></slot>
         <div slot="right"
              bbn-if="search"
@@ -26,10 +38,19 @@
       <component bbn-else
                  :is="toolbar"/>
     </div>
+    <!-- Main container -->
     <div :class="['bbn-w-100', 'bbn-table-container', {'bbn-flex-fill': scrollable}]">
       <!--<div bbn-if="initStarted || isLoading"-->
       <div bbn-if="initStarted || isResizing"
-           :class="['bbn-middle', 'bbn-background', 'bbn-text', 'bbn-padding', {'bbn-overlay': !!scrollable, 'bbn-w-100': !scrollable}]"
+           :class="[
+            'bbn-middle',
+            'bbn-background',
+            'bbn-text',
+            'bbn-padding',
+            {
+              'bbn-overlay': !!scrollable,
+              'bbn-w-100': !scrollable
+            }]"
            style="z-index: 5">
         <bbn-loadicon class="bbn-vmiddle"
                       :size="24"/>
@@ -41,129 +62,86 @@
                   :autoresize="false"
                   :class="{'bbn-w-100': !scrollable, 'bbn-overlay': scrollable}"
                   ref="scroll"
-                  :offset-y="$refs.thead ? [$refs.thead.getBoundingClientRect().height, 0] : [0,0]"
+                  :disabled="!scrollable"
+                  :offset-y="scrollOffset"
                   @resize="resizeWidth">
+        <!-- Table -->
         <table :style="{width: totalWidth}"
                ref="table"
                aria-describedby="table"
-               class="bbn-table-table">
+               :class="['bbn-table-' + cssRuleName, 'bbn-table-table']">
+          <!-- Colgroups -->
           <colgroup bbn-for="(groupCol, groupIndex) in groupCols"
                     bbn-if="groupCol.cols.length">
             <col bbn-for="(col, i) in groupCol.cols"
-                bbn-show="!col.hidden"
-                :style="{width: col.realWidth + 'px'}"
+                bbn-show="!col.invisible"
+                :style="{width: col.realWidth ? col.realWidth + 'px' : 'auto'}"
                 :key="groupIndex + '-'+ i">
           </colgroup>
+          <!-- Thead -->
           <thead bbn-if="titles" ref="thead">
-            <tr bbn-if="titleGroups">
+            <!-- Group titles -->
+            <tr bbn-if="titleGroups" class="bbn-table-tr-groups-titles">
               <template bbn-for="(groupCol, groupIndex) in groupCols">
-                <th bbn-if="!!groupCol.cols.length"
-                    bbn-for="(col, i) in titleGroupsCells(groupIndex)"
-                    :colspan="col.colspan"
-                    scope="colgroup"
-                    :style="{
-                      zIndex: (col.left !== undefined) || (col.right !== undefined) ? 4 : 3,
-                      top: '0px',
-                      left: col.left !== undefined ? (col.left + 'px') : '',
-                      right: col.right !== undefined ? (col.right + 'px') : '',
-                      width: col.width + 'px'
-                    }"
-                    :class="['bbn-table-fixed-cell', {
-                      'bbn-table-fixed-cell-left': groupIndex === 0,
-                      'bbn-table-fixed-cell-left-last': (groupIndex === 0) && !titleGroupsCells(groupIndex)[i+1],
-                      'bbn-table-fixed-cell-right': groupIndex === 2,
-                      'bbn-table-cell-first': (groupIndex === 1) && (i === 0)
-                    }]"
-                    :title="col.text">
-                  <component bbn-if="col.component"
-                            :is="col.component"
-                            :source="col"/>
-                  <div class="bbn-100 bbn-table-title-group" bbn-else>
-                    <div :class="[col.cls, 'bbn-ellipsis']"
-                        :style="col.style"
-                        bbn-html="col.text"/>
-                  </div>
-                </th>
+                <bbn-table-head-group bbn-if="!!groupCol.cols.length"
+                                      bbn-for="(col, i) in titleGroupsCells(groupIndex)"
+                                      :source="col"
+                                      :group-index="groupIndex"
+                                      :index="i"/>
+
               </template>
             </tr>
             <!-- Titles -->
-            <tr>
+            <tr class="bbn-table-tr-titles">
               <template bbn-for="(groupCol, groupIndex) in groupCols">
-                <th bbn-for="(col, i) in groupCol.cols"
-                    bbn-show="!col.hidden"
-                    :style="{
-                      left: col.left !== undefined ? (col.left + 'px') : '',
-                      right: col.right !== undefined ? (col.right + 'px') : '',
-                      width: col.realWidth + 'px',
-                      zIndex: (col.left !== undefined) || (col.right !== undefined) ? 4 : 3,
-                      top: titleGroups ? '39px' : '0px'
-                    }"
-                    :class="['bbn-table-fixed-cell', {
-                      'bbn-table-fixed-cell-left': groupIndex === 0,
-                      'bbn-table-fixed-cell-left-last': (groupIndex === 0) && !groupCol.cols[i+1],
-                      'bbn-table-fixed-cell-right': groupIndex === 2,
-                      'bbn-table-cell-first': (groupIndex === 1)
-                        && groupCols[0].cols.length
-                        && (i === 0)
-                    }]"
-                    :title="col.ftitle || col.title || col.field || ' '">
-                  <i :class="{
-                      nf: true,
-                      'nf nf-mdi-filter_variant': true,
-                      'bbn-p': true,
-                      'bbn-red': hasFilter(col)
-                    }"
-                    bbn-if="showFilterOnColumn(col)"
-                    @click="showFilter(col, $event)"/>
-                  <div bbn-if="col.isSelection" :title="_('Check all')">
-                    <bbn-checkbox bbn-model="allRowsChecked"/>
-                  </div>
-                  <div bbn-elseif="col.isExpander" :title="_('Expand all')">
-                    <!-- @todo an icon for expanding all/none -->
-                  </div>
-                  <component bbn-elseif="col.tcomponent"
-                            :is="col.tcomponent"
-                            :source="col"/>
-                  <span class="bbn-p"
-                        bbn-elseif="sortable && (col.sortable !== false) && !col.buttons"
-                        @click="sort(col)">
-                    <span bbn-if="col.encoded"
-                          bbn-text="col.title || col.field || ' '"
-                          :title="col.ftitle || col.title || col.field"/>
-                    <span bbn-else
-                          bbn-html="col.title || col.field || ' '"
-                          :title="col.ftitle || col.title || col.field || ' '"/>
-                  </span>
-                  <span bbn-else>
-                    <span bbn-if="col.encoded"
-                          bbn-text="col.title || col.field || ' '"
-                          :title="col.ftitle || col.title || col.field || ' '"/>
-                    <span bbn-else
-                          bbn-html="col.title || col.field || ' '"
-                          :title="col.ftitle || col.title || col.field || ' '"/>
-                  </span>
-                  <i bbn-if="isSorted(col)"
-                    :class="{
-                      'bbn-table-sortable-icon': true,
-                      'nf nf-fa-caret_up': isSorted(col).dir.toUpperCase() === 'ASC',
-                      'nf nf-fa-caret_down': isSorted(col).dir.toUpperCase() === 'DESC',
-                  }"/>
-                </th>
+                <bbn-table-head-title bbn-for="(col, i) in groupCol.cols"
+                                      :source="col"
+                                      :group-index="groupIndex"
+                                      :index="i"
+                                      :ref="'title-' + groupIndex + '-' + i"/>
               </template>
             </tr>
           </thead>
+          <!-- Tbody -->
           <tbody ref="tbody"
                  :class="{
                    'bbn-overlay': ((!filteredData.length && !tmpRow) || isLoading) && !!scrollable
                  }">
-            <tr bbn-if="(!filteredData.length && !tmpRow) || isLoading"
+            <!-- Loading -->
+            <tr bbn-if="isLoading"
                 :class="{
                   'bbn-overlay': !!scrollable,
                   'bbn-middle': !!scrollable
                 }"
                 :style="{
                   paddingTop: $refs.thead && !!scrollable ? $refs.thead.getBoundingClientRect().height + 'px' : 0,
-                  maxWidth: !!scrollable ? lastKnownWidth + 'px' : '',
+                  maxWidth: !!scrollable ? $el.clientWidth + 'px' : '',
+                  left: !!scrollable && getRef('scroll') ? getRef('scroll').currentX + 'px' : ''
+                }">
+              <td :colspan="currentColumns ? currentColumns.length : 1">
+                <div class="bbn-spadding bbn-background bbn-c">
+                  <div bbn-if="loader"
+                       class="bbn-vmiddle">
+                    <bbn-loadicon class="bbn-vmiddle"
+                                  :size="24"/>
+                    <span class="bbn-xl bbn-b bbn-left-sspace"
+                          bbn-text="currentLoaderText"/>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <!-- Inline insertion -->
+            <tr bbn-if="tmpRow">
+            </tr>
+            <!-- No data -->
+            <tr bbn-elseif="!filteredData.length"
+                :class="{
+                  'bbn-overlay': !!scrollable,
+                  'bbn-middle': !!scrollable
+                }"
+                :style="{
+                  paddingTop: $refs.thead && !!scrollable ? $refs.thead.getBoundingClientRect().height + 'px' : 0,
+                  maxWidth: !!scrollable ? $el.clientWidth + 'px' : '',
                   left: !!scrollable && getRef('scroll') ? getRef('scroll').currentX + 'px' : ''
                 }">
               <td :colspan="currentColumns ? currentColumns.length : 1">
@@ -180,277 +158,48 @@
                 </div>
               </td>
             </tr>
-            <tr bbn-for="(d, i) in items"
-                :key="d.rowKey"
-                @focusout="focusout(i)"
-                :class="[{
-                  'bbn-alt': !groupable && (d.expanderIndex !== undefined) ?
-                    !!(d.expanderIndex % 2) :
-                    !!(d.rowIndex % 2),
-                  'bbn-header': !!(d.aggregated || d.groupAggregated),
-                }, getTrClass(d.data)]"
-                :style="getTrStyle(d.data)"
-                ref="rows">
-              <!-- Group lines just have the cell with the expander and a single big cell -->
-              <template bbn-if="groupable && d.group && currentColumns && currentColumns.length">
-                <td :class="[getTrClass(d.data), (currentColumns[0].fixed ? ' ' + cssRuleName + ' bbn-table-fixed-cell bbn-table-fixed-cell-left' : '')]"
-                    :style="[{
-                      left: currentColumns[0].left !== undefined ? currentColumns[0].left + 'px' : '',
-                      width: currentColumns[0].realWidth
-                    }, getTrStyle(d.data)]">
-                  <div @click="toggleExpanded(d.index)"
-                      class="bbn-table-expander bbn-p bbn-unselectable bbn-spadding bbn-c"
-                      bbn-if="d.expander"
-                      @keydown.space="toggleExpanded(d.index)"
-                      tabindex="0">
-                    <i :class="'nf nf-fa-caret_' + (isExpanded(d) ? 'down' : 'right') + ' bbn-lg'"
-                    ></i>
-                  </div>
-                </td>
-                <td :class="currentClass(cols[group], d.data, i) + (currentColumns[0].fixed ? ' ' + cssRuleName + ' bbn-table-fixed-cell bbn-table-cell-left' : '')"
-                    :style="{
-                      left: currentColumns[1].left !== undefined ? currentColumns[1].left + 'px' : 'auto',
-                      width: 'auto',
-                      borderRight: '0px',
-                      overflow: 'unset'
-                  }">
-                  <div :class="[currentClass(cols[group], d.data, i), {'bbn-spadding': !cols[group].component}]"
-                        :style="{
-                          width: lastKnownWidth - groupCols[currentColumns[0].isLeft ? 0 : 1].cols[0].realWidth - borderLeft - borderRight + 'px',
-                          backgroundColor: 'transparent !important'
-                        }">
-                    <component bbn-if="cols[group].component"
-                              :is="cols[group].component"
-                              class="bbn-spadding"
-                              :source="d.data"/>
-                    <div bbn-else
-                          bbn-html="render(d.data, cols[group], d.index) + (d.expanded ? '' : ' (' + d.num + ')')"/>
-                  </div>
-                </td>
-                <td :colspan="currentColumns.length - 2"
-                    style="border-left: 0px"
-                    :class="getTrClass(d.data)"/>
-              </template>
-              <template bbn-elseif="d.expansion">
-                <td :class="[getTrClass(d.data), (currentColumns[0].fixed ? ' ' + cssRuleName + ' bbn-table-fixed-cell bbn-table-fixed-cell-left' : '')]"
-                    :style="{
-                      left: currentColumns[0].left !== undefined ? currentColumns[0].left + 'px' : '',
-                      width: currentColumns[0].realWidth
-                    }"/>
-                <td :class="[getTrClass(d.data), (currentColumns[1].fixed ? ' ' + cssRuleName + ' bbn-table-fixed-cell bbn-table-fixed-cell-left' : '')]"
-                    :style="{
-                      left: currentColumns[1].left !== undefined ? currentColumns[1].left + 'px' : '',
-                      width: currentColumns[1].realWidth
-                    }"
-                    bbn-if="d.selection">
-                  <div class="bbn-block bbn-spadding">
-                    <div class="bbn-c bbn-w-100">
-                      <bbn-checkbox :checked="d.selected"
-                                    :value="true"
-                                    :novalue="false"
-                                    :strict="true"
-                                    @click.stop.prevent
-                                    @beforechange="beforeSelect(i, ...arguments)"
-                                    @change.stop="checkSelection(i)"
-                                    class="bbn-middle bbn-flex"/>
-                    </div>
-                  </div>
-                </td>
-                <td :class="[
-                      getTrClass(d.data),
-                      (currentColumns[0].fixed ? ' ' + cssRuleName + ' bbn-table-fixed-cell bbn-table-cell-left' : '')
-                    ]"
-                    :style="{
-                      left: currentColumns[1].left !== undefined ? currentColumns[1].left + 'px' : 'auto',
-                      width: 'auto',
-                      borderRight: '0px',
-                      overflow: 'unset'
-                    }">
-                  <div class="bbn-block"
-                        :style="{
-                          width: lastKnownWidth - groupCols[currentColumns[0].isLeft ? 0 : 1].cols[0].realWidth - borderLeft - borderRight + 'px',
-                          backgroundColor: 'transparent !important'
-                        }">
-                    <component bbn-if="typeof(expander) !== 'function'"
-                              :is="expander"
-                              class="bbn-spadding"
-                              :source="d.data" />
-                    <component bbn-elseif="(typeof(expander(d)) === 'object')"
-                              :is="expander(d)"
-                              :source="d.data"/>
-                    <div bbn-else
-                          bbn-html="expander(d.data, i)"/>
-                  </div>
-                </td>
-                <td :colspan="currentColumns.length - 2"
-                    :style="[getTrStyle(d.data), {borderLeft: 0}]"
-                    :class="getTrClass(d.data)"/>
-              </template>
-              <td bbn-elseif="d.full"
-                  :colspan="currentColumns.length">
-                <component bbn-if="d.component"
-                           :is="d.component"
-                           bbn-bind="d.options || {}"
-                           :source="mapper ? mapper(d.data) : d.data"/>
-                <div bbn-else
-                      bbn-html="render(d.data, d.options || {}, i)"/>
-              </td>
-              <td bbn-elseif="d.footer && groupFooter && groupable"
-                  :colspan="currentColumns.length">
-                <div bbn-if="typeof groupFooter === 'function'"
-                      bbn-html="groupFooter(d.data)"/>
-                <component bbn-else
-                            :is="groupFooter"
-                            :source="d.data"/>
-              </td>
-              <template bbn-else>
-                <td bbn-for="(col, index) in currentColumns"
-                    :class="[currentClass(col, d.data, i), cssRuleName, {
-                      'bbn-table-fixed-cell': !!col.fixed,
-                      'bbn-table-fixed-cell-left': col.isLeft,
-                      'bbn-table-fixed-cell-left-last': col.isLeft
-                        && (!currentColumns[index+1] || !currentColumns[index+1].isLeft),
-                      'bbn-table-fixed-cell-right': col.isRight,
-                      'bbn-table-cell-first': !col.isLeft && !col.isRight && ((index === 0) || (!!currentColumns[index-1].isLeft)),
-                      'bbn-table-edit-buttons': !!col.buttons && isEdited(d.data, col, i),
-                      'bbn-table-buttons': !!col.buttons
-                    }]"
-                    :tabindex="editable && (col.editable !== false) ? 0 : -1"
-                    @focusin="focusin(i, $event)"
-                    @click="clickCell(col, index, d.index)"
-                    @dblclick="dbclickCell(col, index, d.index, d.data, i)"
-                    :style="{
-                      left: col.left !== undefined ? (col.left + 'px') : 'auto',
-                      right: col.right !== undefined ? (col.right + 'px') : 'auto',
-                      width: col.realWidth
-                    }"
-                    :ref="'td' + i">
-                  <div class="bbn-block bbn-spadding"
-                        :style="{maxHeight: currentMaxRowHeight}">
-                    <!-- Checkboxes -->
-                    <div bbn-if="col.isSelection" class="bbn-c bbn-w-100">
-                      <bbn-checkbox bbn-if="d.selection"
-                                    :checked="d.selected"
-                                    :value="true"
-                                    :novalue="false"
-                                    :strict="true"
-                                    @click.stop
-                                    @beforechange="beforeSelect(i, ...arguments)"
-                                    @change="checkSelection(i)"
-                                    class="bbn-middle bbn-flex"/>
-                    </div>
-                    <!-- Aggregate -->
-                    <template bbn-elseif="d.aggregated || d.groupAggregated">
-                      <span bbn-if="col.isAggregatedTitle"
-                            :class="d.aggregated ? 'bbn-b' : ''"
-                            bbn-text="aggregateExp[d.name]"/>
-                      <div bbn-elseif="col.aggregate"
-                          bbn-html="render(d.data, col, i)"/>
-                      <span bbn-else> </span>
-                      <!-- The row is an aggregate and there are no other cells -->
-                    </template>
-                        <!-- Expander -->
-                    <div bbn-elseif="col.isExpander"
-                        @click="toggleExpanded(d.index)"
-                        class="bbn-table-expander bbn-lg bbn-p bbn-unselectable bbn-c">
-                      <i :class="'nf nf-fa-caret_' + (isExpanded(d) ? 'down' : 'right') + ' bbn-unselectable'"
-                        bbn-if="d.expander"
-                        tabindex="0"/>
-                      <span bbn-else>&nbsp;</span>
-                    </div>
-                    <template bbn-else>
-                      <span class="bbn-table-dirty bbn-top-left"
-                            bbn-if="isDirty(d, col, i)"/>
-                      <div bbn-if="isEdited(d.data, col, i)">
-                        <div bbn-if="(editMode === 'inline') && (editable !== 'nobuttons') && (col.index === colButtons)">
-                          <bbn-button :text="_('Save')"
-                                      :disabled="!isEditedValid"
-                                      icon="nf nf-fa-save"
-                                      :notext="true"
-                                      @focusin.stop
-                                      @click.prevent.stop="saveInline"
-                                      style="margin: 0 .1rem"/>
-                          <bbn-button :text="_('Cancel')"
-                                      icon="nf nf-fa-times"
-                                      :notext="true"
-                                      @focusin.stop
-                                      @click.prevent.stop="cancel"
-                                      style="margin: 0 0.1rem"/>
-                        </div>
-                        <component bbn-elseif="(editMode === 'inline') && isValidField(col.field) && (col.editable !== false)"
-                                    bbn-bind="getEditableOptions(col, d.data)"
-                                    :is="getEditableComponent(col, d.data)"
-                                    @click.stop
-                                    bbn-model="getProp(editedRow, col.field)"
-                                    style="width: 100%"/>
-                        <!--<bbn-field bbn-elseif="(editMode === 'inline') && isValidField(col.field) && (col.editable !== false)"
-                                    bbn-bind="col"
-                                    mode="write"
-                                    @click.stop
-                                    bbn-model="editedRow[col.field]"
-                                    style="width: 100%"/>-->
-                        <bbn-field bbn-elseif="isValidField(col.field) && !col.render && !col.buttons"
-                                  bbn-bind="col"
-                                  @click.stop
-                                  :key="d.rowKey"
-                                  :value="getProp(d.data, col.field)"
-                                  :data="d.data"/>
-                        <div bbn-elseif="!col.buttons && col.render"
-                              bbn-html="col.render(d.data, col, i)"/>
-                        <div bbn-elseif="!col.buttons"
-                              bbn-html="render(d.data, col, i)"/>
-                        <div bbn-else> </div>
-                      </div>
-                      <component bbn-elseif="col.component"
-                                :is="col.component"
-                                bbn-bind="getColOptions(d.data, col, i)"
-                                :source="col.mapper ? col.mapper(d.data) : d.data"/>
-                      <template bbn-elseif="col.buttons && (buttonMode === 'dropdown')">
-                        <bbn-dropdown :source="buttonSource(d.data, col, i)"
-                                      :placeholder="col.title.trim() === '' ? _('Action') : col.title"
-                                      @select="_execCommand(button, d.data, col, i, $event)"/>
-                      </template>
-                      <template bbn-elseif="col.buttons && (buttonMode === 'menu')">
-                        <bbn-context :source="buttonSource(d.data, col, i)"
-                                      @select="(item, idx, dataIndex, ev, floater) => onButtonsMenuSelect(item, d.data, col, i, ev, floater)">
-                          <span class="bbn-iblock bbn-lg">
-                            <i :class="buttonIcon"/>
-                          </span>
-                        </bbn-context>
-                      </template>
-                      <div bbn-elseif="col.buttons && (colButtons === col.index)">
-                        <bbn-button bbn-for="(button, bi) in buttonSource(d.data, col, i)"
-                                    :key="bi"
-                                    bbn-bind="button"
-                                    @focusin.prevent.stop
-                                    @focusout.prevent.stop
-                                    @click.prevent.stop="_execCommand(button, d.data, col, i, $event)"
-                                    style="margin: 0 .1rem"/>
-                      </div>
-                      <template bbn-elseif="col.buttons">
-                        <bbn-button bbn-for="(button, bi) in (Array.isArray(col.buttons) ? col.buttons : col.buttons(d.data, col, i))"
-                                    :key="bi"
-                                    bbn-bind="button"
-                                    @focusin.prevent.stop
-                                    @focusout.prevent.stop
-                                    @click.prevent.stop="_execCommand(button, d.data, col, i, $event)"
-                                    style="margin: 0 .1rem"/>
-                      </template>
-                      <div bbn-else
-                            bbn-html="render(d.data, col, i)"></div>
-                      <table-dots bbn-if="col.dots"
-                                  :source="{
-                                        column: col,
-                                        index: index,
-                                        dataIndex: d.index,
-                                        data: d.data,
-                                        itemIndex: i
-                                      }"/>
-                    </template>
-                  </div>
-                </td>
-              </template>
-            </tr>
+            <!-- Rows -->
+            <template bbn-else
+                      bbn-for="(d, i) in items"
+                      :key="i"
+                      bbn-break="loseViewport">
+              <!-- Group rows = start of a new group -->
+              <bbn-table-row-group bbn-if="isGroupActive && (!i || (items[i-1].data[cols[group].field] !== d.data[cols[group].field]))"
+                                   :source="d"
+                                   :index="i"
+                                   :group="group"
+                                   :class="{'bbn-alt': i % 2}"
+                                   ref="groupRows"/>
+              <bbn-table-row-full bbn-if="d.full"
+                                  :source="d"
+                                  :class="{'bbn-alt': i % 2}"
+                                  :key="d.index"
+                                  :index="i"
+                                  ref="rows"/>
+              <bbn-table-row bbn-else
+                             :source="d"
+                             bbn-show="!isGroupActive || isExpanded(d.data, d.index)"
+                             :key="d.index"
+                             :class="{'bbn-alt': i % 2}"
+                             :editing="editedRow === d.data"
+                             :index="i"
+                             ref="rows"/>
+              <bbn-table-row-expansion bbn-if="expander && !isGroupActive && isExpanded(d.data, d.index)"
+                                       :source="d"
+                                       :index="i"
+                                       :class="{'bbn-alt': i % 2}"
+                                       ref="expansionRows"/>
+              <bbn-table-row-aggregate bbn-elseif="d.aggregated || d.groupAggregated"
+                                      :source="d"
+                                      :class="{'bbn-alt': i % 2}"
+                                      :index="i"
+                                      ref="aggregateRows"/>
+              <bbn-table-row-footer bbn-elseif="d.footer && groupFooter && groupable"
+                                    :source="d"
+                                    :class="{'bbn-alt': i % 2}"
+                                    :index="i"
+                                    ref="footerRows"/>
+            </template>
           </tbody>
         </table>
       </bbn-scroll>
@@ -460,6 +209,7 @@
                bbn-if="hasPager"
                :item-name="itemName"
                ref="pager"
+               :limit="currentLimit"
                :page-name="pageName"
                :buttons="footerButtons"/>
     <component bbn-elseif="(typeof footer === 'string') || (typeof footer === 'object')"
@@ -496,15 +246,15 @@
                tabindex="-1"
                :left="focusedElementX"
                :top="focusedElementY">
-        <bbn-button :text="_('Save')"
+        <bbn-button :label="_('Save')"
                     :disabled="!isEditedValid"
                     icon="nf nf-fa-save"
                     :notext="true"
                     @click.prevent.stop="saveInline"
                     style="margin: 0 .1rem"
                     tabindex="-1"/>
-        <bbn-button :text="_('Cancel')"
-                    icon="nf nf-fa-times"
+        <bbn-button :label="_('Cancel')"
+                    icon="nf nf-md-close_thick"
                     :notext="true"
                     @click.prevent.stop="cancel"
                     style="margin: 0 .1rem"

@@ -120,7 +120,7 @@ const cpDef = {
     /**
      * The master bbn-router of this breadcrumb.
      * @computed itsMaster
-     * @return {bbnCp}
+     * @return {HTMLElement}
      */
     router(){
       if ( this.$parent && (this.$parent.$options.name === 'bbn-router') ){
@@ -131,7 +131,7 @@ const cpDef = {
     /**
      * Returns the master bbn-breadcrumb of this one
      * @computed itsMaster
-     * @return {bbnCp}
+     * @return {HTMLElement}
      */
     itsMaster(){
       if ( this.master ){
@@ -193,7 +193,7 @@ const cpDef = {
     isNumber: bbn.fn.isNumber,
     /**
      * @method register
-     * @param {bbnCp} bc
+     * @param {HTMLElement} bc
      * @param {String} url
      */
     register(bc, url){
@@ -205,7 +205,7 @@ const cpDef = {
     },
     /**
      * @method unregister
-     * @param {bbnCp} bc
+     * @param {HTMLElement} bc
      * @param {String} url
      */
     unregister(bc, url){
@@ -302,7 +302,7 @@ const cpDef = {
     /**
      * Returns the breadcrumb's source list.
      * @method getList
-     * @param {bbnCp} bc
+     * @param {HTMLElement} bc
      * @fires close
      * @return {Array}
      */
@@ -313,9 +313,9 @@ const cpDef = {
       let list = [],
           parents = bc.itsMaster && (bc !== bc.itsMaster) ? bc.getParents() : [];
       bbn.fn.each(bc.source, (t, i) => {
-        if ( !t.hidden && (i !== bc.selected) ){
+        if ( !t.invisible && (i !== bc.selected) ){
           list.push({
-            text: t.title,
+            text: t.label,
             icon: t.icon,
             key: t.url,
             bcolor: t.bcolor,
@@ -433,7 +433,7 @@ const cpDef = {
             class="bbn-hxspadding">
         <i bbn-if="p.source[p.selected].icon"
             :class="p.source[p.selected].icon"/>
-        <span bbn-html="p.source[p.selected].title || '` + bbn._('Untitled') + `'"/>
+        <span bbn-html="p.source[p.selected].label || '` + bbn._('Untitled') + `'"/>
       </span>
       <i class="nf nf-fa-angle_right bbn-hsmargin bbn-large bbn-breadcrumb-arrow"/>
     </template>
@@ -455,7 +455,7 @@ const cpDef = {
             :class="['bbn-hxspadding', {'bbn-b': !!source.children[i+1]}]">
         <i bbn-if="c.source[c.selected].icon"
             class="c.source[c.selected].icon"/>
-        <span bbn-html="c.source[c.selected].title || '` + bbn._('Untitled') + `'"></span>
+        <span bbn-html="c.source[c.selected].label || '` + bbn._('Untitled') + `'"></span>
       </span>
     </template>
   </span>

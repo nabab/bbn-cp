@@ -1,6 +1,4 @@
-import bbn from "@bbn/bbn";
-import bbnAttr from "../Attr.js";
-import deleteNodes from "../Cp/private/deleteNodes.js";
+import bbnAttr from "./Attr.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -10,6 +8,7 @@ export default class bbnConditionAttr extends bbnAttr
   attrSet() {
     const node = this.node;
     const cp = node.component;
+
     if (node.loop) {
       return;
     }
@@ -61,15 +60,13 @@ export default class bbnConditionAttr extends bbnAttr
                 otherCondNode.forget.attrUpdate();
               }
               else {
-                otherCondNode.setComment(false);
+                otherCondNode.nodeSwitch(false);
               }
             }
           }
           else if (!otherCondNode.isCommented) {
-            if (otherCondNode.numBuild) {
-              deleteNodes(otherCondNode.component, otherCondNode.id, otherCondNode.hash);
-            }
-            otherCondNode.setComment(true);
+            otherCondNode.nodeSwitch(true);
+            otherCondNode.nodeClean();
           }
         }
       }
@@ -80,21 +77,17 @@ export default class bbnConditionAttr extends bbnAttr
         node.forget.attrUpdate();
       }
       else {
-        node.setComment(false);
+        node.nodeSwitch(false);
       }
     }
     else if (!conditionValue && !node.isCommented) {
-      if (node.numBuild) {
-        deleteNodes(cp, node.id, node.hash);
-      }
-
-      node.setComment(true);
+      node.nodeSwitch(true);
+      node.nodeClean();
     }
   }
 
   attrUpdate(init) {
     const node = this.node;
-    const cp = node.component;
     if (!init) {
       if (node.isOut) {
         bbn.fn.log("CONDITION IS OUT");
@@ -125,12 +118,12 @@ export default class bbnConditionAttr extends bbnAttr
 
     // If the condition is true, treat the element.
 
-    // Special handling for specific node tags like 'template', 'transition', 'slot'.
-    if (node.forget?.value || ['template', 'transition', 'slot'].includes(this.node.tag)) {
+    // Special handling for specific node tags like 'template', 'slot'.
+    if (node.forget?.value || ['template', 'slot'].includes(this.node.tag)) {
       if (node.items) {
         if (!this.attrGetValue()) {
-          //bbn.fn.log(["DELETE NODES7", node.id, node.hash]);
-          deleteNodes(cp, node.id, node.hash);
+          bbn.fn.log(["DELETE NODES7", node.id, node.component, node, node.element]);
+          node.nodeClean();
         }
         else if ((node.tag === 'template') && !node.element) {
           node.nodeInit();

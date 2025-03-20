@@ -1,5 +1,3 @@
-import bbnCp from '../lib/Cp.js';
-
 const editableList = {
   props: {
     /**
@@ -27,7 +25,7 @@ const editableList = {
      * The popup that will be used for the editor
      */
     popup: {
-      type: Object
+      type: HTMLElement
     },
     /**
      * Set to true allows to edit inline the fields if no buttons are defined for the table.
@@ -115,7 +113,7 @@ const editableList = {
      *
      * @method _addTmp
      * @param data
-     * @returns {bbnCp}
+     * @returns {HTMLElement}
      */
     _addTmp(data) {
       this._removeTmp().tmpRow = this._defaultRow(data);
@@ -125,7 +123,7 @@ const editableList = {
     /**
      * Changes the values of tmpRow to false.
      * @method _removeTmp
-     * @returns {bbnCp}
+     * @returns {HTMLElement}
      */
     _removeTmp() {
       if (this.tmpRow) {
@@ -201,7 +199,7 @@ const editableList = {
      */
     edit(row, winOptions, index) {
       if (!this.editable) {
-        throw new Error(_("The component is not editable, you cannot use the edit function"));
+        throw new Error(bbn._("The component is not editable, you cannot use the edit function"));
       }
       if ( !winOptions ){
         winOptions = {};
@@ -217,7 +215,7 @@ const editableList = {
       if (this.editMode === 'popup') {
         if (typeof (winOptions) === 'string') {
           winOptions = {
-            title: winOptions
+            label: winOptions
           };
         }
         if (!winOptions.height) {
@@ -232,7 +230,7 @@ const editableList = {
             data: bbn.fn.isFunction(this.data) ? this.data() : this.data
           }
         }, {
-          title: this.tmpRow ? bbn._('Row insertion') : bbn._('Row edition'),
+          label: this.tmpRow ? bbn._('Row insertion') : bbn._('Row edition'),
         }, winOptions ? winOptions : {});
         // A component is given as global editor (form)
         if (this.editor || !!popup.component) {
@@ -256,8 +254,8 @@ const editableList = {
               let fields = [];
               table.cols.map(a => {
                 let o = bbn.fn.extend(true, {}, a);
-                if (o.ftitle) {
-                  o.title = o.ftitle;
+                if (o.flabel) {
+                  o.label = o.flabel;
                 }
                 fields.push(o);
               });

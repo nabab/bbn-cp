@@ -1,0 +1,33 @@
+<div :class="cellClass">
+  <template bbn-if="mode === 'dropdown'">
+    <bbn-dropdown :source="table.buttonSource(source, column, rowIndex)"
+                  :placeholder="column.label.trim() === '' ? _('Action') : column.label"
+                  @select="table._execCommand"/>
+  </template>
+  <template bbn-elseif="mode === 'menu'">
+    <bbn-context :source="table.buttonSource(source, column, rowIndex)"
+                  @select="(item, idx, dataIndex, ev, floater) => onButtonsMenuSelect(item, source, column, rowIndex, ev, floater)">
+      <span class="bbn-iblock bbn-lg">
+        <i :class="table.buttonIcon"/>
+      </span>
+    </bbn-context>
+  </template>
+  <div bbn-elseif="table.colButtons === column.index">
+    <bbn-button bbn-for="(button, bi) in table.buttonSource(source, column, rowIndex)"
+                :key="bi"
+                bbn-bind="button"
+                @focusin.prevent.stop
+                @focusout.prevent.stop
+                @click.prevent.stop="table._execCommand(button, source, column, rowIndex, $event)"
+                style="margin: 0 .1rem"/>
+  </div>
+  <template bbn-else>
+    <bbn-button bbn-for="(button, bi) in (Array.isArray(column.buttons) ? column.buttons : column.buttons(source, column, i))"
+                :key="bi"
+                bbn-bind="button"
+                @focusin.prevent.stop
+                @focusout.prevent.stop
+                @click.prevent.stop="table._execCommand(button, source, column, rowIndex, $event)"
+                style="margin: 0 .1rem"/>
+  </template>
+</div>

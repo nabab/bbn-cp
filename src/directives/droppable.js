@@ -32,6 +32,7 @@ export default function() {
       };
       el.addEventListener('mouseleave', el.bbnDirectives.droppable.onmouseleave);
       el.bbnDirectives.droppable.ondragoverdroppable = e => {
+        //bbn.fn.log('mirko2', e, bbn.fn.clone(el));
         if (!!el.bbnDirectives.droppable.active
           && !e.defaultPrevented
           && !dragOver
@@ -54,6 +55,7 @@ export default function() {
 
             el.bbnDirectives.droppable.over = true;
             el.dataset.bbn_droppable_over = true;
+            //bbn.fn.log('mirko3', bbn.fn.clone(el))
           }
         }
       };
@@ -151,7 +153,10 @@ export default function() {
   };
 
   const setOff = el => {
-    el.dataset.bbn_droppable = false;
+    if (el.dataset) {
+      el.dataset.bbn_droppable = false;
+    }
+
     if (el.bbnDirectives === undefined) {
       el.bbnDirectives = bbn.fn.createObject();
     }
@@ -160,7 +165,7 @@ export default function() {
       el.bbnDirectives.droppable = bbn.fn.createObject();
     }
 
-    if (!!el.bbnDirectives.droppable.active) {
+    if (el.bbnDirectives.droppable.active) {
       if (bbn.fn.isFunction(el.bbnDirectives.droppable.onmouseenter)) {
         el.removeEventListener('mouseenter', el.bbnDirectives.droppable.onmouseenter);
       }
@@ -178,7 +183,7 @@ export default function() {
     el.bbnDirectives.droppable = bbn.fn.createObject({
       active: false
     });
-    if (el.classList.contains('bbn-droppable')) {
+    if (el.classList?.contains('bbn-droppable')) {
       el.classList.remove('bbn-droppable');
     }
   };
@@ -187,12 +192,13 @@ export default function() {
     inserted: inserted,
     update: (el, binding) => {
       if ((binding.value !== false)
+        && (el.nodeName !== '#comment')
         && !el.classList.contains('bbn-undroppable')
       ) {
         if (binding.oldValue === false) {
           inserted(el, binding);
         }
-        else if (!el.bbnDirectives.droppable.over) {
+        else if (!el.bbnDirectives?.droppable?.over) {
           analyzeValue(el, binding);
         }
       }

@@ -126,10 +126,10 @@ const cpDef = {
     /**
      * Puts the focus on the element.
      *
-     * @method click
+     * @method onClick
      * @fires getRef
      */
-    click(){
+    onClick(){
       if (!this.isDisabled) {
         this.getRef('input').focus();
         if (this.filteredData.length) {
@@ -197,7 +197,7 @@ const cpDef = {
      * @fires commonKeydown
      * @fires keynav
      */
-    keydown(e){
+    onKeydown(e){
       if ( this.commonKeydown(e) ){
         return;
       }

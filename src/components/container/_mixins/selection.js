@@ -1,5 +1,3 @@
-import bbn from "@bbn/bbn";
-
 export default {
   props: {
     /**
@@ -32,6 +30,24 @@ export default {
       default: false
     },
   },
+  data() {
+    return {
+      isLoading: false,
+    }
+  },
+  computed: {
+    isTabSelected() {
+      if (!this.router) {
+        return false;
+      }
+
+      if (this.currentPane) {
+        return this.currentPane.tabs[this.currentPane.selected] === this.currentView;
+      }
+
+      return this.router.selected === this.currentIndex;
+    }
+  },
   methods: {
     /**
      * Shows the container.
@@ -39,15 +55,16 @@ export default {
      * @method show
      */
     show(url) {
-      if (!this.isPane) {
+      //bbn.fn.log([url, "CHANGING SELECTED BY SHOWING " + this.currentIndex, this.currentIndex, this.currentView.idx]);
+      if (!this.isPane && (this.currentIndex !== undefined)) {
         this.router.selected = this.currentIndex;
         if (this.visual && this.router.visualShowAll) {
           this.router.visualShowAll = false;
         }
       }
 
-      if (url && !url.indexOf(this.currentURL)) {
-        this.currentCurrent = url;
+      if (bbn.fn.isString(url) && !url.indexOf(this.currentURL)) {
+        this.setCurrent(url);
       }
     },
 
@@ -91,7 +108,7 @@ export default {
         throw new Error(bbn._("Impossible to get the view without an URL"));
       }
 
-      //bbn.fn.log("LOADING VIEW " + url);
+      bbn.fn.log("LOADING VIEW " + url);
       if (this.isLoading) {
         return;
       }
@@ -110,6 +127,7 @@ export default {
       let response;
       try {
         response = await this.post(finalURL, dataObj);
+        this.isLoading = false;
       }
       // Abort
       catch (e) {
@@ -134,18 +152,23 @@ export default {
         const d = response.data;
         //bbn.fn.log(["RESPONSE", d.url, d, dataObj, this.$el]);
         let callRealInit = true;
-        if (!d.title || (d.title === bbn._('Loading'))) {
-          let title = bbn._('Untitled');
-          let num = 0;
-          while (bbn.fn.search(this.router.views, a => a.title.indexOf(title) === 0) > -1) {
-            num++;
-            title = bbn._('Untitled') + ' ' + num;
-          }
-
-          d.title = title;
+        if (!d.label && d.title) {
+          d.label = d.title;
+          delete d.title;
         }
 
-        this.currentTitle = d.title;
+        if (!d.label || (d.label === bbn._('Loading'))) {
+          let label = bbn._('Untitled');
+          let num = 0;
+          while (bbn.fn.search(this.router.views, a => a.label.indexOf(label) === 0) > -1) {
+            num++;
+            label = bbn._('Untitled') + ' ' + num;
+          }
+
+          d.label = label;
+        }
+
+        this.currentTitle = d.label;
 
         const oldUrl = d.url;
         const oldCurrent = d.url;
@@ -159,7 +182,7 @@ export default {
           }
           //bbn.fn.log("CHANGING URL TO " + d.url + ' / ' + this.router.baseURL);
           if (this.currentCurrent.indexOf(d.url)) {
-            this.currentCurrent = d.url;
+            this.setCurrent(d.url);
           }
         }
 
@@ -225,138 +248,33 @@ export default {
 
         this.isLoaded = true;
         this.init();
-
-        /*
-        if (!d.url) {
-          d.url = url;
-        }
-        //bbn.fn.warning("URLS", url, d.url);
-        if (url.indexOf(d.url) === 0) {
-          d.current = url;
-          //bbn.fn.warning("CURRENT DEFINED AS " + d.current);
-        }
-        else {
-          bbn.fn.warning(url + ' != ' + d.url);
-          let searchIdx = this.search(url);
-          if (searchIdx !== false) {
-            idx = searchIdx;
-            bbn.fn.log("REMOVED");
-            this.remove(searchIdx, true);
-          }
-        }
-
-        if (d.data && bbn.fn.numProperties(d.data)) {
-          d.source = d.data;
-          delete d.data;
-        }
-
-        if ((d.url !== d.current) && this.urls[d.current]) {
-          let currentIndex = this.urls[d.current].currentIndex;
-          //bbn.fn.warning("DELETING VIEW CASE.... " + d.url + ' / ' + d.current + ' ' + currentIndex);
-          //bbn.fn.log([d.url, this.urls[d.current], this.urls[d.url], Object.keys(this.urls), bbn.fn.search(this.views, {idx: this.urls[d.current].idx})]);
-          this.remove(currentIndex, true).then(() => {
-            const onRegister = url => {
-              //bbn.fn.log(["REGISTERED", url]);
-              if (url === d.url) {
-                this.$off('registered', onRegister);
-                let view = bbn.fn.getRow(this.views, { url: url });
-                if ((this.selected === view.idx) || view.pane) {
-                  this.realInit(url);
-                }
-              }
-            };
-            this.$on('registered', onRegister);
-            let o = bbn.fn.extend(view || bbn.fn.createObject(), d, { loading: false, load: true, real: view?.real || false, loaded: true });
-            //bbn.fn.log(["BEFORE", this.views.length, Object.keys(this.urls)]);
-            this.add(o, currentIndex).then(() => {
-              //bbn.fn.log(this.search(o.url), o);
-              let searchIndex = this.search(o.url);
-              //bbn.fn.log("Looking for " + o.url);
-              if (searchIndex !== false) {
-                //this.activateIndex(searchIndex);
-                this.selected = searchIndex;
-              }
-            });
-          })
-          //callRealInit = false;
-
-        }
-        else {
-          this.$forceUpdate().then(() => {
-            let o = bbn.fn.extend(view || bbn.fn.createObject(), d, { loading: false, load: true, real: view?.real || false, loaded: true });
-            let searchIndex = this.search(o.url);
-            //bbn.fn.log("Looking for " + o.url);
-            if ((searchIndex !== false) && this.urls[this.views[searchIndex].url]) {
-              //this.remove(searchIndex);
-              bbn.fn.warning("FOUND AND NOT REMOVED " + searchIndex);
-              idx = searchIndex;
-              this.urls[this.currentView.url].isLoaded = true;
-              this.urls[this.currentView.url].dirty = false;
-              this.urls[this.currentView.url].ready = false;
-              this.urls[this.currentView.url].init();
-
-            }
-            else {
-              //bbn.fn.warning("ADDEDD " + idx);
-              //bbn.fn.log("ADDING AFTER LOAD");
-              this.add(o, idx);
-            }
-
-            if (o.title && !o.pane) {
-              this.currentTitle = o.title;
-            }
-            //this.$forceUpdate();
-            this.$nextTick(() => {
-              if (callRealInit) {
-                this.realInit(d.url);
-              }
-            })
-          })
-
-        }
-        */
-      }
-      else {
-        this.isLoading = false;
-        /*
-        let idx = this.search(url);
-        if (idx !== false) {
-          let url = this.currentView.url;
-          if (this.urls[url]) {
-            this.urls[url].errorStatus = response?.status || 500;
-            this.urls[url].setTitle(bbn._("Error"));
-            this.urls[url].setIcon("nf nf-fa-warning");
-            if (this.selected === idx) {
-              await this.callRouter(finalURL, url);
-            }
-          }
-        }
-        */
       }
     },
-    async selectionMounted() {
-      bbn.fn.warning("SELECTION MOUNTED");
-
+    selectionMounted() {
+      //bbn.fn.warning("SELECTION MOUNTED");
       if (!this.router.ready) {
-        bbn.fn.warning("ROUTER NOT READY");
+        //bbn.fn.warning("ROUTER NOT READY");
         this.router.$on('ready', () => {
+          //bbn.fn.warning("ROUTER ON READY");
           this.selectionMounted();
         });
       }
       else{
         if (this.router.urls[this.uid]) {
+          //bbn.fn.warning("SELECTION EXISTING");
           return;
         }
 
         //bbn.fn.warning("ROUTER REGISTERING FOR " + this.url);
         this.router.register(this);
-        await this.$nextTick();
-        if (this.currentSelected) {
-          this.show();
-          this.onShow();
-        }
-
-        this.init();
+        this.$nextTick(() => {
+          if (this.currentSelected) {
+            this.show();
+            this.onShow();
+          }
+  
+          this.init();
+        });
       }
     },
     /**
@@ -452,9 +370,9 @@ export default {
           if (!definition.mixins.includes(bbn.cp.mixins.basic)) {
             definition.mixins.push(bbn.cp.mixins.basic);
           }
-          this.$el.bbnCfg = bbn.cp.normalizeComponent(definition, 'bbn-container-' + this.getFullURL());
+          this.componentDefinition = bbn.cp.normalizeComponent(definition, 'bbn-container-' + this.getFullURL());
           // The local anon component gets defined
-          this.$options.components[this.componentName] = this.$el.bbnCfg;
+          this.$options.components[this.componentName] = this.componentDefinition;
         }
         else {
           this.isComponent = false;
@@ -497,5 +415,12 @@ export default {
         this.router.reload(this.currentIndex);
       });
     },
+  },
+  watch: {
+    isTabSelected(v) {
+      if (v) {
+        this.show();
+      }
+    }
   }
 }

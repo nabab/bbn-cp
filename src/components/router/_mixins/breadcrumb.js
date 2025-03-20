@@ -57,7 +57,7 @@ export default {
     /**
      * The master bbn-router of this one.
      * @computed itsMaster
-     * @return {bbnCp}
+     * @return {HTMLElement}
      */
     itsMaster() {
       let r = this;
@@ -86,10 +86,39 @@ export default {
     },
   },
   methods: {
+    routerBreadcrumbDestroy() {
+      if (!this.single && this.nav && !this.master && this.parent) {
+        this.parent.unregisterBreadcrumb(this);
+      }
+    },
+    breadcrumbInit() {
+      if (!this.single && this.nav && this.hasStorage) {
+        let storage = this.getStorage(this.routerStorageName);
+        if (storage) {
+          if (storage.breadcrumb !== undefined) {
+            this.isBreadcrumb = storage.breadcrumb;
+          }
+        }
+  
+        if (!this.master && this.parent && this.parentContainer) {
+          this.parent.registerBreadcrumb(this);
+          bbn.fn.log("VIEW ON BREADCUMB")
+          this.parentContainer.$on('view', () => {
+            this.parent.registerBreadcrumb(this);
+          }, true);
+          this.parentContainer.$on('unview', () => {
+            this.parent.unregisterBreadcrumb(this);
+          }, true);
+          if (this.parentContainer.isVisible) {
+            this.parent.registerBreadcrumb(this);
+          }
+        }
+      }
+    },
     //Breadcrumb
     /**
      * @method registerBreadcrumb
-     * @param {bbnCp} bc
+     * @param {HTMLElement} bc
      * @param {String} url
      */
     registerBreadcrumb(bc) {
@@ -103,7 +132,7 @@ export default {
 
     /**
      * @method unregisterBreadcrumb
-     * @param {bbnCp} bc
+     * @param {HTMLElement} bc
      * @param {String} url
      */
     unregisterBreadcrumb(bc) {
@@ -173,37 +202,4 @@ export default {
       })
     },
   },
-  beforeMount() {
-    //Breadcrumb
-    //bbn.fn.warning("BEFORE MOUNT ROUTER")
-
-    //Get config from the storage
-    if (!this.single & this.nav) {
-      let storage = this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
-      if (storage) {
-        if (storage.breadcrumb !== undefined) {
-          this.isBreadcrumb = storage.breadcrumb;
-        }
-      }
-
-      if (!this.master && this.parent && this.parentContainer) {
-        this.parent.registerBreadcrumb(this);
-        bbn.fn.log("VIEW ON BREADCUMB")
-        this.parentContainer.$on('view', () => {
-          this.parent.registerBreadcrumb(this);
-        }, true);
-        this.parentContainer.$on('unview', () => {
-          this.parent.unregisterBreadcrumb(this);
-        }, true);
-        if (this.parentContainer.isVisible) {
-          this.parent.registerBreadcrumb(this);
-        }
-      }
-    }
-  },
-  beforeDestroy() {
-    if (!this.single & this.nav && !this.master && this.parent) {
-      this.parent.unregisterBreadcrumb(this);
-    }
-  }
 }

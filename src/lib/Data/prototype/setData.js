@@ -1,8 +1,8 @@
-import bbnData from "../../Data.js";
+import bbnData from "../Data.js";
 
 /**
  * Removes a component from the data object
- * @param {bbnCp} component 
+ * @param {HTMLElement} component 
  */
 bbnData.prototype.setData = function(data) {
   if (data.__bbnData && (data.__bbnData !== this)) {
@@ -21,16 +21,16 @@ bbnData.prototype.setData = function(data) {
    * @var {Object|Array} targetData The original data object
    */
   Object.defineProperty(this, 'targetData', {
-    value: data,
-    writable: false,
-    configurable: true
+    get() {
+      return data;
+    }
   });
 
   /**
    * @var {Proxy} value The proxy takes care of subreactivity
    */
   Object.defineProperty(this, 'value', {
-    value: new Proxy(this.targetData, this.constructor.proxy(this.component, this.path, this)),
+    value: new Proxy(data, this.constructor.proxy(this.component, this.path, this)),
     writable: false,
     configurable: true
   });

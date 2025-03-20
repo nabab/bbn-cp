@@ -1,14 +1,53 @@
 <div :class="[componentClass, {
              'bbn-invisible': !ready,
-             'bbn-overlay': (nav || scrollContent),
+             'bbn-overlay': scrollContent,
+             'bbn-flex-width': isVisual && !visualShowAll && ['left', 'right'].includes(visualOrientation),
+             'bbn-flex-height': isVisual && !visualShowAll && !['left', 'right'].includes(visualOrientation),
              }]"
+      :style="isVisual && !visualShowAll ? {
+        flexDirection: visualOrientation === 'right' ? 'row-reverse' : visualOrientation === 'left' ? 'row' : visualOrientation === 'bottom' ? 'column-reverse' : 'column'
+      } : {}"
       @keydown.esc="onEscape">
-  <bbn-loader bbn-if="changingConfig || !ready"/>
-  <bbn-splitter bbn-if="!changingConfig"
-                :resizable="resizable"
+  <bbn-loader class="bbn-overlay"
+              bbn-if="changingConfig || !ready"/>
+
+
+  <bbn-scroll class="bbn-router-scroller"
+              :scrollable="visualShowAll"
+              axis="y"
+              :style="{
+                overflow: 'auto',
+                height: visualShowAll || ['left', 'right'].includes(visualOrientation) ? '100%' : (visualSize+20) + 'px',
+                width: visualShowAll || !['left', 'right'].includes(visualOrientation) ? '100%' : (visualSize+20) + 'px',
+              }"
+              bbn-if="isVisual">
+    <div class="bbn-w-100 bbn-router-visual"
+        :style="visualStyle"
+        ref="visualRouter"
+        :tabindex="visualShowAll ? 0 : -1">
+      <div bbn-if="(selected !== null) && (views.length > numVisuals)"
+          class="bbn-bg-black bbn-white bbn-p bbn-container-ratio"
+          @click="visualShowAll = !visualShowAll">
+        <div class="bbn-overlay bbn-middle">
+          <div class="bbn-block bbn-xxxl">
+            <i :class="'nf nf-fa-' + (visualShowAll ? 'minus' : 'plus')"/>
+          </div>
+        </div>
+      </div>
+      <div bbn-for="a in visualList"
+           :key="a.view.uid"
+           :ref="'bbn-router-visual-' + a.view.uid"
+           bbn-if="!a.view.real"
+           bbn-show="(a.view.idx !== selected) && !a.view.pane"
+           @hook:create="addVisualContainer($event, a.view.uid)"
+           @hook:destroy="removeVisualContainer($event, a.view.uid)"/>
+    </div>
+  </bbn-scroll>
+  <bbn-splitter :resizable="resizable"
                 :collapsible="collapsible"
                 :full-size="scrollContent"
                 bbn-forget="!splittable"
+                :class="isVisual && !visualShowAll ? 'bbn-flex-fill' : ''"
                 ref="topSplitter">
     <bbn-pane :scrollable="false"
               bbn-forget="!splittable">
@@ -75,20 +114,20 @@
                                     'bbn-h-100',
                                     'bbn-vmiddle',
                                     {
-                                    'bbn-router-breadcrumb-dirty': isNumber(bc.selected)
-                                    && bc.views[bc.selected]
-                                    && !!bc.views[bc.selected].dirty
+                                      'bbn-router-breadcrumb-dirty': isNumber(bc.selected)
+                                      && bc.views[bc.selected]
+                                      && !!bc.views[bc.selected].dirty
                                     }
                                     ]">
                           <span bbn-if="isNumber(bc.selected) && bc.views[bc.selected] && bc.views[bc.selected].icon"
-                                :title="bc.views[bc.selected].title"
+                                :title="bc.views[bc.selected].label"
                                 :class="'bbn-router-breadcrumb-element-icon bbn-h-100 bbn-vmiddle bbn-right-xsspace' + (bc.views[bc.selected].notext ? ' bbn-lg' : ' bbn-m')">
                             <bbn-icon :content="bc.views[bc.selected].icon"/>
                           </span>
                           <span bbn-if="isNumber(bc.selected) && bc.views[bc.selected] && !bc.views[bc.selected].notext"
                                 :class="['bbn-router-breadcrumb-element-text', {'bbn-b': !breadcrumbs[i+1]}]"
-                                :title="bc.views[bc.selected].title && (bc.views[bc.selected].title.length > bc.maxTitleLength) ? bc.views[bc.selected].title : ''"
-                                bbn-html="bc.views[bc.selected].title ? bc.cutTitle(bc.views[bc.selected].title) : _('Untitled')"/>
+                                :title="bc.views[bc.selected].label && (bc.views[bc.selected].label.length > bc.maxTitleLength) ? bc.views[bc.selected].label : ''"
+                                bbn-html="bc.views[bc.selected].label ? bc.cutTitle(bc.views[bc.selected].label) : _('Untitled')"/>
                         </div>
                         <span bbn-if="isNumber(bc.selected)
                                 && bc.views[bc.selected]
@@ -123,51 +162,19 @@
                   :scrollable="scrollable"
                   :max-title-length="maxTitleLength"
                   :source="tabsList"
-                  :position="orientation === 'auto' ? undefined : orientation"/>
+                  :position="orientation === 'auto' ? undefined : orientation"><slot name="tabs"/></bbn-tabs>
         <!-- END OF LEFT|TOP TABS -->
         <!-- START OF CONTENT -->
         <div class="bbn-flex-fill"
-             bbn-if="ready"
              bbn-forget="!scrollContent">
-          <bbn-scroll class="bbn-router-scroller"
-              :scrollable="visualShowAll"
-              :style="{
-                overflow: 'auto',
-                height: visualShowAll || scrollContent ? '100%' : 'auto'
-              }"
-              bbn-forget="!isVisual">
-            <div class="bbn-w-100 bbn-router-visual"
-                :style="visualStyle"
-                ref="visualRouter"
-                bbn-forget="!isVisual"
-                :tabindex="isVisual && visualShowAll ? 0 : -1">
-              <div bbn-if="isVisual && (selected !== null) && (views.length > numVisuals)"
-                  :class="'bbn-bg-black bbn-white bbn-p' + (visualShowAll ? '  bbn-container-ratio' : '')"
-                  @click="visualShowAll = !visualShowAll">
-                <div class="bbn-100 bbn-middle">
-                  <div class="bbn-block bbn-xxxl">
-                    <i :class="'nf nf-fa-' + (visualShowAll ? 'minus' : 'plus')"/>
-                  </div>
-                </div>
-              </div>
-              <slot :filter="filterIsContainer"/>
-              <template bbn-for="a in (isVisual ? visualList : views)"
-                        :key="isVisual ? a.view.uid : a.uid">
-                <bbn-container bbn-if="!a.real && !component"
-                              :visual="isVisual"
-                              :portal="routed && getPane(a) ? '#' + (a.view?.pane || a.pane) + slashToHyphen(a.view?.url || a.url) : false"
-                              :style="visualStyleContainer[a.view?.url || a.url]"
-                              bbn-bind="isVisual ? a.view : a"/>
-                <bbn-container bbn-elseif="!a.real && component"
-                              :source="componentSource"
-                              :portal="routed && getPane(a) ? '#' + (a.view?.pane || a.pane) + slashToHyphen(a.view?.url || a.url) : false"
-                              :visual="isVisual"
-                              :style="visualStyleContainer[a.view?.url || a.url]"
-                              :component="component"
-                              :url="a.view?.url || a.url || componentSource[componentUrl]"/>
-              </template>
-            </div>
-          </bbn-scroll>
+          <slot :filter="filterIsContainer"/>
+          <bbn-container bbn-for="a in views"
+                          bbn-if="ready && !a.real"
+                          :key="a.uid"
+                          :visual="isVisual"
+                          bbn-portal="a.idx === selected ? false : getPortal(a)"
+                          bbn-bind="component ? {component} : a"
+                          :url="a.url !== undefined ? a.url : componentSource[componentUrl]"/>
         </div>
         <!-- END OF CONTENT -->
         <!-- START OF RIGHT|BOTTOM TABS -->
@@ -193,7 +200,7 @@
         <bbn-pane bbn-for="(pane, i) in currentPanes"
                   :key="i"
                   :ref="'pane' + pane.id"
-                  :title="pane.tabs[pane.selected] ? pane.tabs[pane.selected].title : null"
+                  :label="pane.tabs[pane.selected] ? pane.tabs[pane.selected].label : null"
                   :size="i ? Math.floor(100/currentPanes.length) + '%' : null"
                   :scrollable="false">
           <div class="bbn-overlay bbn-flex-height bbn-router-nav">
@@ -204,14 +211,14 @@
                       :closable="false"
                       bbn-model="pane.selected"
                       bbn-if="routed"
-                      @input="selectPaneTab(pane)"
+                      @change="selectPaneTab(pane)"
                       :limit="5"/>
             <!-- PANE CONTENT -->
             <div class="bbn-flex-fill">
               <div bbn-for="(tab, tabIndex) in pane.tabs"
                    class="bbn-overlay"
                    bbn-show="pane.selected === tabIndex"
-                   :id="pane.id + slashToHyphen(tab.url)"/>
+                   @hook:create="onCreatePaneContainer($event, pane.id + '-' + tab.uid)"/>
             </div>
           </div>
         </bbn-pane>
@@ -219,21 +226,4 @@
 
     </bbn-pane>
   </bbn-splitter>
-  <bbn-floater bbn-if="!single && showRouterCfg"
-               :modal="true"
-               :top="0"
-               :title="false"
-               width="100%"
-               :closable="false"
-               ref="cfgwindow"
-               height="100%">
-    <div class="bbn-overlay bbn-middle"
-         @click="showRouterCfg = false">
-      <div class="bbn-block bbn-background"
-           @click.stop>
-        <bbn-router-config :router="_self"
-                           :visual="!parent"/>
-      </div>
-    </div>
-  </bbn-floater>
 </div>

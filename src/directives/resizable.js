@@ -316,6 +316,9 @@ export default function() {
           let rect = el.getBoundingClientRect(),
               modes = el.bbnDirectives.resizable.enabledModes,
               m = bbn.fn.createObject();
+          if (!el.classList.contains('bbn-resizable')) {
+            el.classList.add('bbn-resizable');
+          }
           if (modes.left
             && (ev.x >= (rect.left - 2))
             && (ev.x <= (rect.left + 2))

@@ -1,11 +1,13 @@
-<div :class="[componentClass, 'bbn-iblock', 'bbn-ratio']"
-     :style="currentStyle">
-  <img bbn-if="isImage"
-       :src="content"
-       style="vertical-align: middle">
-  <span bbn-elseif="isSVG"
-        bbn-html="content"/>
-  <i bbn-elseif="content"
-      :class="content"/>
-  <i bbn-else class="nf nf-fa-question_circle"/>
+<div :class="[componentClass, 'bbn-iblock']">
+  <div class="bbn-flex bbn-container-ratio"
+       :style="currentStyle">
+     <img bbn-if="isImage"
+          :src="content"
+          :style="{verticalAlign: 'middle', width: currentSize || 'auto', height: 'auto', minHeight: currentSize || (min + 'px')}"/>
+     <span bbn-elseif="isSVG"
+          bbn-html="content"/>
+     <i bbn-elseif="content"
+          :class="content"/>
+     <i bbn-else class="nf nf-fa-question_circle"/>
+  </div>
 </div>

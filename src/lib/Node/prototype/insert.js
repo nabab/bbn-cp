@@ -1,5 +1,5 @@
-import bbnNode from "../../Node.js";
-import removeDOM from "../../Cp/private/removeDOM.js";
+import bbnNode from "../Node.js";
+import bbnSlotNode from "../Slot.js";
 
 const isBefore = (id1, id2) => {
   if (id1 === id2) {
@@ -21,14 +21,14 @@ const insertInSlot = function (parent, node, ele) {
   const cp = node.component;
   if ((parent.bbnCid !== cp.$cid) && cp.$isComponent(parent)) {
     const slot = ele.bbnSchema.slot?.name || ele.bbnSchema?.attr?.slot?.value || 'default';
-    //bbn.fn.log(["IN CP 2 " + cp.$options.name, slot, ele.bbnSchema?.attr?.slot?.value, ele]);
     if (!parent.bbnTmpSlots[slot]) {
       parent.bbnTmpSlots[slot] = [];
     }
 
     const parentSlots = parent.bbn?.$isInit ? parent.bbnSlots : parent.bbnTmpSlots;
+
     if (parentSlots?.[slot]) {
-        let search = {bbnId: ele.bbnId};
+      let search = {bbnId: ele.bbnId};
       if (ele.bbnHash) {
         search.bbnHash = ele.bbnHash;
       }
@@ -42,13 +42,39 @@ const insertInSlot = function (parent, node, ele) {
         const mounted = !!parentSlots[slot][idx].parentNode;
         //bbn.fn.log(["REPLACE", parent.bbnSlots[slot][idx], ele, search]);
         if (mounted) {
+          let hasClass = false;
+          if (ele.isConnected && ele.classList) {
+            hasClass = true;
+            ele.classList.add('bbn-is-moving');
+          }
+
           parentSlots[slot][idx].parentNode.replaceChild(ele, parentSlots[slot][idx]);
+          if (hasClass) {
+            ele.classList.remove('bbn-is-moving');
+          }
         }
 
-        parentSlots[slot].splice(idx, 1, ele);
+        if (ele !== parentSlots[slot][idx]) {
+          parentSlots[slot].splice(idx, 1, ele);
+        }
       }
       else {
+        idx = parentSlots[slot].length;
         parentSlots[slot].push(ele);
+        if (parent.$isCreated) {
+          if (idx) {
+            let prev = parentSlots[slot][idx - 1];
+            if (prev.bbnId && prev.isConnected) {
+              prev.after(ele);
+            }
+            else if (parent.$slotElements[slot]) {
+              parent.$slotElements[slot].before(ele);
+            }
+          }
+          else if (parent.$slotElements[slot]) {
+            parent.$slotElements[slot].before(ele);
+          }
+        }
       }
     }
 
@@ -61,8 +87,8 @@ const insertInSlot = function (parent, node, ele) {
 bbnNode.prototype.nodeInsert = function(ele, after) {
   //bbn.fn.log(["INSERT", this.component.$options.name, after, ele]);
   bbn.fn.checkType(ele, [Text, Comment, HTMLElement, SVGElement]);
-  let replace = !!this.element;
-  const parent = this.parentElement;
+  let replace = !!this.oldElement;
+  const parent = this.parentElement?.shadowRoot || this.parentElement;
 
   const cp = this.component;
   if (!parent) {
@@ -76,13 +102,14 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
 
   if (insertInSlot(parent, this, ele)) {
     if (this.oldElement) {
-      delete this.oldElement;
+      this.nodeRemove(this.oldElement);
+      this.oldElement = null;
     }
 
     return;
   }
   else if (replace && this.oldElement) {
-    //bbn.fn.log("REPLACE", this.element, ele)
+    //bbn.fn.log("REPLACE", this.oldElement, this.element)
     if (this.oldElement.childNodes.length && !this.comment) {
       Array.from(this.element.childNodes).forEach(c => {
         this.element.appendChild(c);
@@ -91,10 +118,11 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
     }
 
     //bbn.fn.log("REMOVE " + (bbn.fn.isComment(this.oldElement) ? 'COMMENT' : (this.tag || 'TEXT')) + ' AND REPLACE WITH '+ (bbn.fn.isComment(this.element) ? 'COMMENT' : (this.tag || 'TEXT')));
-    removeDOM(this.component, this.oldElement, this.element);
+    this.oldElement.after(this.element);
   }
   // First time is done in a linear direction
-  else if (!this.component.$numBuild) {
+  // @mirko test it!
+  else if (!this.parent.num && !this.loopItem) {
     //bbn.fn.log("NUMBUILD");
     if (this.parent?.comment && this.parent.element.parentNode) {
       this.parentElement.insertBefore(ele, this.parent.element);
@@ -181,11 +209,4 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
       parent.appendChild(ele);
     }
   }
-
-  if (this.oldElement) {
-    delete this.oldElement;
-  }
-
-  const create = new Event('hook:create');
-  ele.dispatchEvent(create);
 };

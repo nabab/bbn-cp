@@ -70,20 +70,36 @@ const cpDef = {
         currentSize: '',
         /**
          * The style of the toolbar.
-         * @data {String} [''] style
+         * @data {String} [''] currentStyle
          */
-        style: ''
+        currentStyle: ''
       }
     },
-    methods: {
-      clickButton(button) {
-        if (button.items) {
+    computed: {
+      hasElementInEnd() {
+        if (this.source?.length) {
+          for (let i = 0; i < this.source.length; i++) {
+            if (this.source[i].end) {
+              return true;
+            }
+          }
+        }
 
-        }
-        else if (button.action) {
-          button.action();
-        }
+        return false;
       },
+      hasElementInStart() {
+        if (this.source?.length) {
+          for (let i = 0; i < this.source.length; i++) {
+            if (!this.source[i].end) {
+              return true;
+            }
+          }
+        }
+
+        return false;
+      },
+    },
+    methods: {
       updateSlot(){
         if (this.$slots.default) {
           for (let node of this.$slots.default) {
@@ -109,10 +125,10 @@ const cpDef = {
             else if ( bbn.fn.isNumber(this.size) ){
               this.currentSize = this.size + 'px'
             }
-            this.style += 'height:' + this. currentSize + ';';
+            this.currentStyle += 'height:' + this. currentSize + ';';
           }
           else{
-            this.style += ''
+            this.currentStyle += ''
           }
         }
         else if ( this.orientation === 'vertical' ){
@@ -123,10 +139,10 @@ const cpDef = {
             else if ( bbn.fn.isNumber(this.size) ){
               this.currentSize = this.size + 'px'
             }
-            this.style += 'width:' + this. currentSize + ';';
+            this.currentStyle += 'width:' + this. currentSize + ';';
           }
           else{
-            this.style += 'width:inherit;'
+            this.currentStyle += 'width:inherit;'
           }
         }
       }

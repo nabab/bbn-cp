@@ -1,0 +1,8 @@
+<div :class="cellClass">
+  <span bbn-if="col.isAggregatedTitle"
+        :class="d.aggregated ? 'bbn-b' : ''"
+        bbn-text="aggregateExp[d.name]"/>
+  <div bbn-elseif="col.aggregate"
+      bbn-html="render(d.data, col, i)"/>
+  <span bbn-else> </span>
+</div>

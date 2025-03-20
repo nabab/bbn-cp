@@ -6,10 +6,12 @@
 		'bbn-invisible' : (type === 'hidden'),
     'bbn-input-nullable': isNullable
 	}]"
+  tabindex="-1"
+  @focus="getRef('element').focus()"
 	:style="(currentSize !== '') ? 'width:' + currentSize : '' ">
   <div :class="{
-    'bbn-w-100': (!buttonLeft && !buttonRight && !nullable),
-    'bbn-flex-width' : (buttonLeft || buttonRight || nullable),
+    'bbn-w-100': (!buttonLeft && !buttonRight && !nullable && !pref),
+    'bbn-flex-width' : (buttonLeft || buttonRight || nullable || pref),
     'bbn-nowrap': true
   }">
     <bbn-button bbn-if="buttonLeft"
@@ -25,9 +27,9 @@
             }
           ]"
           :disabled="buttonLeftDisabled"/>
-    <div bbn-if="prefix"
-         class="bbn-block bbn-h-100 bbn-vmiddle bbn-nowrap"
-         bbn-text="prefix"/>
+    <div bbn-if="pref"
+         class="bbn-input-pref bbn-nowrap bbn-vmiddle bbn-left-xspadding"
+         bbn-text="pref"/>
     <input :value="currentValue"
           :type="currentType"
           bbn-focused.selected="focused"
@@ -42,16 +44,16 @@
           :autocomplete="currentAutocomplete"
           :pattern="currentPattern"
           @input="onInput"
-          @click="click"
+          @click="onClick"
           @paste="$emit('paste', $event)"
-          @focus="focus"
-          @blur="blur"
-          @change="change"
+          @focus="onFocus"
+          @blur="onBlur"
+          @change="onChange"
           @mouseenter="over"
           @mouseleave="out"
-          :tabindex="tabindex"
+          :tabindex="currentTabIndex"
           :class="{
-            'bbn-flex-fill' : (buttonLeft || buttonRight || isNullable),
+            'bbn-flex-fill' : (buttonLeft || buttonRight || isNullable || pref),
             'bbn-ellipsis': ellipsis,
             'bbn-radius': !buttonLeft && !buttonRight,
             'bbn-radius-left': !buttonLeft,
@@ -59,22 +61,18 @@
             'bbn-right-lpadding': isNullable && (!readonly || forceNullable) && !isDisabled
           }"
           :size="currentInputSize"
-          :inputmode="inputmode"
+          :inputmode="$el.inputmode"
           :min="min"
           :max="max"
           :style="{
-            paddingLeft: prefix ? 0 : null
+            paddingLeft: pref ? 0 : null
           }">
     <bbn-loadicon bbn-if="loading"
                   class="bbn-top-right bbn-vmiddle bbn-h-100 bbn-right-xspadding"/>
     <div bbn-elseif="isNullable && (!readonly || forceNullable) && !isDisabled"
-         class="bbn-input-nullable-container bbn-vmiddle bbn-top-right bbn-h-100"
+         class="bbn-input-nullable-container bbn-vmiddle bbn-h-100"
          :style="{
-           positions: 'absolute',
-           top: 0,
-           bottom: 0,
-           visibility: hasValue ? 'visible' : 'hidden',
-           right: buttonRight ? '3rem' : '2px'
+           visibility: hasValue ? 'visible' : 'hidden'
          }">
       <i class="nf nf-fa-times_circle bbn-p"
          @mousedown.prevent.stop="clear"></i>

@@ -21,9 +21,9 @@ const cpDef = {
     },
     /**
      * The audio's title
-     * @prop {String} [''] title
+     * @prop {String} [''] label
      */
-    title: {
+    label: {
       type: String,
       default: ''
     },

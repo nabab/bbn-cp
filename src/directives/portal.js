@@ -1,7 +1,17 @@
 export default function() {
   const moveToTarget = (el, target) => {
     if (el.parentNode !== target) {
+      let hasClass = false;
+      if (el.isConnected) {
+        hasClass = true;
+        el.classList.add('bbn-is-moving');
+      }
       target.appendChild(el);
+      if (hasClass) {
+        el.classList.remove('bbn-is-moving');
+      }
+      const ev = new CustomEvent('portalmoved');
+      el.dispatchEvent(ev);
     }
   };
 
@@ -20,12 +30,14 @@ export default function() {
       return moveToTarget(el, binding.value);
     }
     else {
-      return moveToTarget(el, document.body);
+      bbn.fn.warning("Invalid binding value for bbn-portal");
+      return moveToTarget(el, el.bbnDirectives.portal.originalParent);
     }
   };
 
   bbn.cp.directives['bbn-portal'] = bbn.fn.createObject({
     inserted: (el, binding) => {
+      //bbn.fn.log(["INSERTED PORTAL", el, binding]);
       el.bbnDirectives.portal = bbn.fn.createObject({
         originalParent: el.parentNode
       });
@@ -35,6 +47,7 @@ export default function() {
       }
     },
     update: (el, binding) => {
+      //bbn.fn.log(["UPDATED PORTAL", el, binding]);
       if (binding.value) {
         treatBinding(el, binding);
       }

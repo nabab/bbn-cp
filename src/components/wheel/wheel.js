@@ -89,7 +89,7 @@ const cpDef = {
       if (!this.isNull(val) && (val !== this.value)) {
         let pos = this.getScrollPosByVal(val);
         if (pos !== false) {
-          this.scrollTo(pos).then(() => {
+          this.scrollSet(pos).then(() => {
             this.emitInput(val);
           });
         }
@@ -102,10 +102,10 @@ const cpDef = {
      * @fires getRef
      * @return {Promise}
      */
-    scrollTo(pos){
+    scrollSet(pos){
       return new Promise(resolve => {
         let scroll = this.getRef('scroll');
-        scroll.scrollTo(0, pos).then(() => {
+        scroll.scrollSet(0, pos).then(() => {
           setTimeout(() => {
             this.isScrolling = false;
             resolve();
@@ -166,7 +166,7 @@ const cpDef = {
         if (!this.isNull(this.value)) {
           let pos = this.getScrollPosByVal(this.value);
           if (pos !== false) {
-            this.scrollTo(pos).then(() => {
+            this.scrollSet(pos).then(() => {
               this.ready = true;
             });
           }

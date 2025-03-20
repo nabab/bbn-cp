@@ -1,4 +1,5 @@
-<div :class="['bbn-iblock', componentClass]">
+<div :class="['bbn-iblock', componentClass]"
+     tabindex="-1">
   <input class="bbn-hidden"
          ref="element"
          :value="value"
@@ -18,14 +19,14 @@
              type="radio"
              :disabled="isDisabled || d.disabled"
              :required="required"
-             :id="id + '_' + idx"
+             :id="($el.id || uid) + '_' + idx"
              @change.stop="changed(d[sourceValue], d, $event)"
              :checked="d[sourceValue] === value ? 'checked' : false"
              style="display: none">
       <label class="bbn-radio-label bbn-iflex bbn-vmiddle"
-             :tabindex="tabindex || '0'"
+             :tabindex="currentTabIndex"
              @keydown.space.enter.stop.prevent="$event.target.click()"
-             :for="id + '_' + idx">
+             :for="($el.id || uid) + '_' + idx">
         <component bbn-if="d.component"
                    :is="d.component"
                    bbn-bind="d.componentOptions"

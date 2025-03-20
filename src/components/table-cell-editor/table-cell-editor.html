@@ -1,0 +1,43 @@
+<div :class="cellClass">
+  <span class="bbn-table-dirty bbn-top-left"
+        bbn-if="isDirty"/>
+  <div bbn-if="table.isEdited(source, column, rowIndex)">
+    <div bbn-if="(editMode === 'inline') && (editable !== 'nobuttons') && (column.index === table.colButtons)">
+      <bbn-button :label="_('Save')"
+                  :disabled="!isEditedValid"
+                  icon="nf nf-fa-save"
+                  :notext="true"
+                  @focusin.stop
+                  @click.prevent.stop="$emit('save')"
+                  style="margin: 0 .1rem"/>
+      <bbn-button :label="_('Cancel')"
+                  icon="nf nf-md-close_thick"
+                  :notext="true"
+                  @focusin.stop
+                  @click.prevent.stop="$emit('cancel')"
+                  style="margin: 0 0.1rem"/>
+    </div>
+    <component bbn-elseif="(editMode === 'inline') && table.isValidField(column.field) && (column.editable !== false)"
+                bbn-bind="getEditableOptions()"
+                :is="getEditableComponent()"
+                @click.stop
+                bbn-model="editedRow[column.field]"
+                style="width: 100%"/>
+    <!--<bbn-field bbn-elseif="(editMode === 'inline') && table.isValidField(column.field) && (column.editable !== false)"
+                bbn-bind="column"
+                mode="write"
+                @click.stop
+                bbn-model="editedRow[column.field]"
+                style="width: 100%"/>-->
+    <bbn-field bbn-elseif="table.isValidField(column.field) && !column.render && !column.buttons"
+              bbn-bind="column"
+              @click.stop
+              :value="source[column.field]"
+              :data="source"/>
+    <div bbn-elseif="!column.buttons && column.render"
+          bbn-html="column.render(source, column, i)"/>
+    <div bbn-elseif="!column.buttons"
+          bbn-html="render(source, column, i)"/>
+    <div bbn-else> </div>
+  </div>
+</div>

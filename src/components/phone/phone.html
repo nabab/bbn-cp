@@ -2,8 +2,9 @@
        'bbn-disabled': !!isDisabled,
        'bbn-phone-prefix-readonly': prefixReadonly,
        'bbn-phone-prefix-autosize': prefixAutosize
-     }]">
-  <bbn-dropdown :source="countryCodes"
+     }]"
+     tabindex="-1">
+  <bbn-dropdown :source="countriesList"
                 bbn-model="currentPrefix"
                 :disabled="isDisabled"
                 :readonly="readonly || prefixReadonly"
@@ -14,12 +15,13 @@
                 selected-text="prefix"
                 :clear-html="true"
                 class="bbn-phone-dropdown bbn-no-border"
-                :tabindex="prefixReadonly ? -1 : (tabindex || 0)"
+                :tabindex="prefixReadonly ? -1 : currentTabIndex"
                 :autosize="prefixReadonly || prefixAutosize"
-                @focus="onDropDownFocus"/>
-  <bbn-masked  bbn-if="currentCountry === 'FR'"
-               mask="0 00 00 00 00"
-               :tabindex="tabindex || 0"
+                @focus="onDropDownFocus"
+                @change.stop="onChange"/>
+  <bbn-masked  bbn-if="currentMask?.length"
+               :mask="currentMask"
+               :tabindex="currentTabIndex"
                autocomplete="off"
                bbn-model="currentNumber"
                :name="name"
@@ -27,16 +29,17 @@
                :disabled="isDisabled"
                :readonly="readonly"
                :required="required"
-               :inputmode="inputmode"
+               :inputmode="$el.inputmode"
                :placeholder="placeholder"
                class="bbn-phone-masked bbn-no-border"
                :pattern="currentPattern"
                :maxlength="currentMaxlength"
                :nullable="nullable"
                @focus="onInputFocus"
-               :validation-message="currentNumber?.startsWith('0') ? _('Enter the number without the leading 0') : ''"/>
+               :validation-message="currentNumber?.startsWith('0') ? _('Enter the number without the leading 0') : ''"
+               @change.stop="onChange"/>
   <bbn-input bbn-else
-             :tabindex="tabindex || 0"
+             :tabindex="currentTabIndex"
              autocomplete="off"
              bbn-model="currentNumber"
              :name="name"
@@ -44,14 +47,21 @@
              :disabled="isDisabled"
              :readonly="readonly"
              :required="required"
-             :inputmode="inputmode"
+             :inputmode="$el.inputmode"
              :placeholder="placeholder"
              class="bbn-phone-input bbn-no-border"
              :pattern="currentPattern"
              :maxlength="currentMaxlength"
              type="tel"
              :nullable="nullable"
-             @focus="onInputFocus"/>
+             @focus="onInputFocus"
+             @change.stop="onChange"/>
   <input type="hidden"
          :value="value">
+  <div bbn-if="isChecking"
+       class="bbn-modal bbn-overlay bbn-middle bbn-white bbn-radius">
+     <bbn-loadicon class="bbn-middle"/>
+     <span class="bbn-m bbn-left-sspace"
+           bbn-text="_('Checking the number...')"/>
+  </div>
 </div>

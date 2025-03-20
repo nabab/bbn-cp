@@ -1,4 +1,4 @@
-import bbnNode from "../../Node.js";
+import bbnNode from "../Node.js";
 import bbnAttr from "../../Attr.js";
 
 const allowed = [
@@ -12,6 +12,7 @@ const allowed = [
   'forget',
   'args',
   'bind',
+  'transition',
   'attr',
   'dependencies',
   'directives',
@@ -35,6 +36,10 @@ bbnNode.prototype.nodeDefine = function(node, data) {
 
   Object.defineProperty(this, 'parentElement', {
     get() {
+      if (this.element?.parentNode) {
+        return this.element.parentNode;
+      }
+
       if (!this.parent) {
         return null;
       }
@@ -57,6 +62,7 @@ bbnNode.prototype.nodeDefine = function(node, data) {
         Object.defineProperty(this, a, {
           writable: false,
           configurable: false,
+          enumerable: true,
           value: bbn.fn.createObject()
         });
 
@@ -82,9 +88,6 @@ bbnNode.prototype.nodeDefine = function(node, data) {
             else if (n === 'bbn-show') {
               v = new bbnShowAttr(node[a][n], this, n);
             }
-            else if (n === 'bbn-transition') {
-              v = new bbnTransitionAttr(node[a][n], this, n);
-            }
             else if (n === 'is') {
               v = new bbnIsAttr(node[a][n], this, n);
             }
@@ -104,12 +107,13 @@ bbnNode.prototype.nodeDefine = function(node, data) {
 
           Object.defineProperty(this[a], n, {
             writable: writable,
+            enumerable: true,
             configurable: writable,
             value: v
           });
         }
       }
-      else if (['condition', 'forget', 'loop', 'pre', 'text', 'bind', 'slot'].includes(a)) {
+      else if (['condition', 'forget', 'loop', 'pre', 'transition', 'text', 'bind', 'slot'].includes(a)) {
         let v;
         switch (a) {
           case 'condition':
@@ -126,6 +130,9 @@ bbnNode.prototype.nodeDefine = function(node, data) {
             break;
           case 'pre':
             v = new bbnPreAttr(node[a], this)
+            break;
+          case 'transition':
+            v = new bbnTransitionAttr(node[a], this);
             break;
           case 'text':
             v = new bbnTextAttr(node[a], this)

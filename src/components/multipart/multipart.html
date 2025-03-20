@@ -1,24 +1,37 @@
-<div :class="[componentClass, 'bbn-overlay', 'bbn-flex-width']">
-  <div :class="['bbn-h-100', 'bbn-alt-background-internal', 'bbn-reactive', 'bbn-middle', 'bbn-unselectable', 'bbn-p', {'bbn-disabled': !hasPrev}]"
+<div :class="[componentClass, {
+  'bbn-overlay': scrollable,
+  'bbn-w-100': !scrollable
+}, 'bbn-flex-width']">
+  <div :class="['bbn-alt-background-internal', 'bbn-reactive', 'bbn-middle', 'bbn-unselectable', 'bbn-p', {
+    'bbn-disabled': !hasPrev,
+    'bbn-hidden': bbn.fn.isMobile()
+  }]"
        style="width: 10%; min-width: 10%"
        @click="prev">
     <div class="bbn-block bbn-xxxxl">
       <i class="nf nf-fa-chevron_left"></i>
     </div>
   </div>
-  <div class="bbn-h-100 bbn-flex-fill">
-    <bbn-form :full-size="true"
+  <div class="bbn-flex-fill">
+    <bbn-form :full-size="scrollable"
               bbn-bind="$options.propsData"
               :confirm-leave="confirmLeave"
+              @reset="onReset"
               mode="big"
               ref="form">
       <div class="bbn-abs bbn-no"
            style="width: 1px; height: 1px; background-color: transparent"
            tabindex="0"
            @focus="leaveBefore"></div>
-      <bbn-router class="bbn-overlay"
+      <bbn-router :class="{
+        'bbn-overlay': scrollable,
+        'bbn-w-100': !scrollable
+      }"
                   ref="router"
                   @hook:mounted="init"
+                  :scrollable="scrollable"
+                  :scroll-content="scrollContent"
+                  :url-navigation="true"
                   :autoload="false"
                   :def="def"
                   :auto="false"
@@ -32,7 +45,10 @@
            @focus="leaveAfter"></div>
     </bbn-form>
   </div>
-  <div :class="['bbn-h-100', 'bbn-alt-background-internal', 'bbn-reactive', 'bbn-middle', 'bbn-unselectable', 'bbn-p', {'bbn-disabled': !hasNext}]"
+  <div :class="['bbn-alt-background-internal', 'bbn-reactive', 'bbn-middle', 'bbn-unselectable', 'bbn-p', {
+    'bbn-disabled': !hasNext,
+    'bbn-hidden': bbn.fn.isMobile()
+  }]"
        style="width: 10%; min-width: 10%"
        @click="next">
     <div class="bbn-block  bbn-xxxxl">

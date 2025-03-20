@@ -178,16 +178,16 @@ const cpDef = {
         }
       },
       leaveList: function(e){
-        if ( !bbnVlistCp.isClicked ){
+        if ( !bbnVlist.isClicked ){
           this.close();
         }
       },
       beforeClick(){
-        bbnVlistCp.isClicked = true;
+        bbnVlist.isClicked = true;
       },
       afterClick(){
         setTimeout(function(){
-          bbnVlistCp.isClicked = false;
+          bbnVlist.isClicked = false;
         })
       },
 

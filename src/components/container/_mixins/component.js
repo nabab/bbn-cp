@@ -33,7 +33,7 @@ export default {
   methods: {
     componentCreated() {
       if ( this.isComponent ){
-        bbnContainerCp.componentsList.push(this.componentName);
+        bbnContainer.componentsList.push(this.componentName);
       }
       else if ( this.isComponent === null ){
         // The default onMount function is to do nothing.

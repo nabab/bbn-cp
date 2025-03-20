@@ -30,9 +30,9 @@ const cpDef = {
       default: 'hidden'
     },
     /**
-     * @prop {String} title
+     * @prop {String} label
      */
-    title: {
+    label: {
       type: String
     },
     /**
@@ -62,9 +62,9 @@ const cpDef = {
       default: false
     },
     /**
-     * @prop {Boolean} [false] hidden
+     * @prop {Boolean} [false] invisible
      */
-    hidden: {
+    invisible: {
       type: Boolean,
       default: false
     },
@@ -99,7 +99,7 @@ const cpDef = {
       isCollapsed: this.collapsed,
       /**
        * The splitter to which the pane belongs.
-       * @data {bbnCp} splitter
+       * @data {HTMLElement} splitter
        */
       splitter: null
     };
@@ -111,13 +111,6 @@ const cpDef = {
     isCollapsible() {
       return this.collapsible || (this.splitter && this.splitter.collapsible && (this.collapsible !== false));
     },
-    resizer() {
-      if (this.splitter && this.currentConfig.index) {
-        return this.splitter.resizers[this.currentConfig.index];
-      }
-
-      return null;
-    },
     currentConfig() {
       if (!this.splitter) {
         return {};
@@ -126,42 +119,256 @@ const cpDef = {
       return bbn.fn.getRow(this.splitter.panes, {pane: this});
     },
     componentStyle() {
-      if (this.currentConfig?.size) {
+      if (this.currentConfig?.value) {
         return {
-          [this.isHorizontal ? 'minWidth' : 'minHeight']: this.currentConfig.size
+          [this.isHorizontal ? 'minWidth' : 'minHeight']: this.currentConfig.value
         }
       }
 
       return {};
-
-      
+    },
+    resizerStyle() {
+      if (this.splitter) {
+        return {
+          [this.isHorizontal ? 'width' : 'height']: this.splitter.resizerSize + (bbn.fn.isInt(this.splitter.resizerSize) ? 'px' : '')
+        };
+      }
     },
     isHorizontal() {
-      return this.splitter && this.splitter.isHorizontal;
+      return this.splitter?.isHorizontal;
     },
     prevResizable() {
-      if (this.splitter && this.isResizable) {
-        let i = this.currentConfig.index - 1;
-        while (i >= 0) {
-          if (this.splitter.panes[i].pane.isResizable && !this.splitter.panes[i].hidden) {
-            return this.splitter.panes[i];
-          }
-
-          i--;
-        }
+      if (this.splitter
+        && (this.currentConfig.prevResizable !== false)
+      ) {
+        return this.splitter.panes[this.currentConfig.prevResizable];
       }
 
-      return null;
+      return false;
+    },
+    prevCollapsible() {
+      if (this.splitter
+        && (this.currentConfig.prevCollapsible !== false)
+      ) {
+        return this.splitter.panes[this.currentConfig.prevCollapsible];
+      }
+
+      return false;
+    },
+    nextCollapsible() {
+      if (this.splitter
+        && (this.currentConfig.nextCollapsible !== false)
+      ) {
+        return this.splitter.panes[this.currentConfig.nextCollapsible];
+      }
+
+      return false;
+    },
+    prevVisible(){
+      if (this.splitter && this.currentConfig) {
+        let idx = this.currentConfig.index - 1;
+        while (idx >= 0) {
+          if (!this.splitter.panes[idx].invisible) {
+            return this.splitter.panes[idx];
+          }
+
+          idx--;
+        }
+
+        return false;
+      }
+    },
+    nextVisible(){
+      if (this.splitter && this.currentConfig) {
+        let idx = this.currentConfig.index + 1;
+        while (idx < this.splitter.panes.length) {
+          if (!this.splitter.panes[idx].invisible) {
+            return this.splitter.panes[idx];
+          }
+
+          idx++;
+        }
+
+        return false;
+      }
+    },
+    isPrevVisibleCollapsible(){
+      return this.prevVisible
+        && this.prevCollapsible
+        && (this.prevVisible.index === this.prevCollapsible.index);
+    },
+    isNextVisibleCollapsible(){
+      return this.nextVisible
+        && this.nextCollapsible
+        && (this.nextVisible.index === this.nextCollapsible.index);
+    },
+    isTopLeftCollapseVisible(){
+      return (this.isPrevVisibleCollapsible && !this.prevVisible.collapsed)
+        || (this.isCollapsible && this.isCollapsed && !this.nextVisible);
+    },
+    isBottomRightCollapseVisible(){
+      return (this.isCollapsible && !this.isCollapsed)
+        || (this.isPrevVisibleCollapsible
+          && this.prevVisible?.collapsed
+          && this.nextVisible);
+    },
+    isTopLeftFullCollapseVisible(){
+      let idx = this.currentConfig.index - 1;
+      let panesNotCollapsed = 0;
+      let panesCollapsible = 0;
+      while (idx >= 0) {
+        if (!this.splitter.panes[idx].invisible) {
+          if (!this.splitter.panes[idx].collapsible) {
+            break;
+          }
+
+          panesCollapsible++;
+          if (!this.splitter.panes[idx].collapsed) {
+            panesNotCollapsed++;
+          }
+        }
+
+        idx--;
+      }
+
+      return this.isPrevVisibleCollapsible
+        && (panesCollapsible >= 2)
+        && ((!this.isCollapsed && (panesNotCollapsed > 1))
+          || (this.isCollapsed && panesNotCollapsed));
+    },
+    isBottomRightFullCollapseVisible(){
+      let idx = this.currentConfig.index;
+      let panesNotCollapsed = 0;
+      let panesCollapsible = 0;
+      while (idx < this.splitter.panes.length) {
+        if (!this.splitter.panes[idx].invisible) {
+          if (!this.splitter.panes[idx].collapsible) {
+            break;
+          }
+
+          panesCollapsible++;
+          if (!this.splitter.panes[idx].collapsed) {
+            panesNotCollapsed++;
+          }
+        }
+
+        idx++;
+      }
+
+      return this.isCollapsible
+        && (panesCollapsible >= 2)
+        && ((!this.isCollapsed && (panesNotCollapsed > 1))
+          || (this.isCollapsed && panesNotCollapsed));
+    },
+  },
+  methods: {
+    topLeftCollapse(){
+      if (this.isTopLeftCollapseVisible) {
+        if (this.isCollapsed) {
+          this.currentConfig.collapsed = false;
+          this.isCollapsed = false;
+          if (this.prevVisible
+            && (!this.splitter.hasVisiblePaneAuto(this.prevVisible.index) || this.currentConfig.isAuto)
+            && this.prevVisible.forceAuto
+          ) {
+            this.prevVisible.forceAuto = false;
+          }
+        }
+        else if (this.isPrevVisibleCollapsible) {
+          this.prevVisible.collapsed = true;
+          this.prevVisible.pane.isCollapsed = true;
+          if (!this.splitter.hasVisiblePaneAuto(this.prevVisible.index)) {
+            this.currentConfig.forceAuto = true;
+          }
+        }
+      }
+    },
+    bottomRightCollapse(){
+      if (this.isBottomRightCollapseVisible) {
+        if (this.isPrevVisibleCollapsible
+          && this.prevVisible.collapsed
+        ) {
+          this.prevVisible.collapsed = false;
+          this.prevVisible.pane.isCollapsed = false;
+          if (!this.splitter.hasVisiblePaneAuto()
+            && this.currentConfig.forceAuto
+          ) {
+            this.currentConfig.forceAuto = false;
+          }
+        }
+        else {
+          this.currentConfig.collapsed = true;
+          this.isCollapsed = true;
+          if (!this.splitter.hasVisiblePaneAuto(this.currentConfig.index)
+            && this.prevVisible
+          ) {
+            this.prevVisible.forceAuto = true;
+          }
+        }
+      }
+    },
+    topLeftFullCollapse(){
+      if (this.isCollapsible) {
+        this.currentConfig.collapsed = false;
+        this.isCollapsed = false;
+      }
+
+      if (this.isPrevVisibleCollapsible) {
+        this.topLeftFullCollapseRec();
+      }
+
+      if (!this.splitter.hasVisiblePaneAuto(this.currentConfig.index)) {
+        this.currentConfig.forceAuto = true;
+      }
+    },
+    bottomRightFullCollapse(){
+      if (this.isCollapsible) {
+        this.bottomRightFullCollapseRec();
+        if (this.isPrevVisibleCollapsible) {
+          this.prevVisible.forceAuto = !this.splitter.hasVisiblePaneAuto();
+        }
+
+        if (!this.splitter.hasVisiblePaneAuto(this.currentConfig.index)
+          && this.currentConfig.forceAuto
+        ) {
+          this.currentConfig.forceAuto = false;
+        }
+      }
+    },
+    topLeftFullCollapseRec(){
+      if (this.isPrevVisibleCollapsible) {
+        this.prevVisible.collapsed = true;
+        this.prevVisible.pane.isCollapsed = true;
+        this.prevVisible.pane.topLeftFullCollapseRec();
+      }
+    },
+    bottomRightFullCollapseRec(){
+      if (this.isCollapsible) {
+        this.currentConfig.collapsed = true;
+        this.isCollapsed = true;
+        if (this.isNextVisibleCollapsible) {
+          this.nextVisible.pane.bottomRightFullCollapseRec();
+        }
+      }
     }
   },
   watch:{
     collapsed(val){
       this.isCollapsed = val;
-      this.splitter.init();
     },
-    hidden(val) {
+    invisible(val) {
       this.currentHidden = val;
       this.splitter.init();
+    },
+    isCollapsed(val){
+      if (this.currentConfig) {
+        this.currentConfig.collapsed = val;
+      }
+    },
+    isCollapsible(val){
+      if (this.currentConfig) {
+        this.currentConfig.collapsible = val;
+      }
     }
   },
   created(){
@@ -180,7 +387,6 @@ const cpDef = {
 };
 
 
-import bbn from '@bbn/bbn';
 import cpHtml from './pane.html';
 import cpStyle from './pane.less';
 let cpLang = {};

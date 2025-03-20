@@ -106,7 +106,7 @@ const cpDef = {
           ev.preventDefault();
         }
         else {
-          this.keydown(ev);
+          this.onKeydown(ev);
         }
       },
       /**

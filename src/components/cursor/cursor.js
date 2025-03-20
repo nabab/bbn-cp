@@ -26,17 +26,6 @@ const cpDef = {
         default: 1
       },
       /**
-       * The aduio's URL
-       */
-      /*source: {
-        type: Number,
-        required: true
-      },*/
-      /**
-       * The audio's title
-       * {String} [''] title
-       */
-      /**
        * @prop {Number} [0] min
        */
       min: {
@@ -49,13 +38,6 @@ const cpDef = {
       max: {
         type: Number,
         default: 500
-      },
-      /**
-       * @prop {String} [''] title
-       */
-      title: {
-        type: String,
-        default: ''
       },
       /**
        * @prop {(Number|String)} [] value

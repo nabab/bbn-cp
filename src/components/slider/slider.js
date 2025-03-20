@@ -133,11 +133,11 @@ const cpDef = {
        * @returns {String}
        */
       currentStyle(){
-        if (!bbnSliderCp.orientations[this.orientation]) {
+        if (!bbnSlider.orientations[this.orientation]) {
           throw new Error(bbn._("Impossible to get an orientation for the slider"));
         }
         let o = {visibility: 'hidden'};
-        let or = bbn.fn.createObject(bbnSliderCp.orientations[this.orientation]);
+        let or = bbn.fn.createObject(bbnSlider.orientations[this.orientation]);
         if (this.showShadow) {
           o['-webkit-box-shadow'] = o['-moz-box-shadow'] = o['box-shadow'] = or.shadow + ' !important';
         }
@@ -218,7 +218,7 @@ const cpDef = {
           }
   
           if (this.setResizeMeasures() || this.setContainerMeasures()) {
-            let s = this.$el.getBoundingClientRect()[this.isVertical ? 'width' : 'height'];
+            let s = this.$position()[this.isVertical ? 'width' : 'height'];
             if ((s !== this.currentSize) && (s > 20)){
               this.currentSize = s + 7;
             }
@@ -291,6 +291,7 @@ const cpDef = {
         this.currentVisible = v;
       },
       currentVisible(v) {
+        bbn.cp.mixins.toggle.watch.currentVisible.handler.bind(this)(v);
         if (!v) {
           this._shadowTimeout = setTimeout(() => {
             this.showShadow = false;

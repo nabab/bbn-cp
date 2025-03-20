@@ -13,16 +13,16 @@
              bbn-elseif="total">
     <div class="bbn-masonry-columns-container"
          :style="containerStyle">
-      <masonry-col bbn-for="(col, index) in cols"
-                   :key="'masonry-col-' + index"
-                   :index="index"
-                   :source="items.filter((it, i) => {
-                     return i % cols === index;
-                   })"
-                   inline-template>
+      <mascol bbn-for="(col, index) in cols"
+              :key="'masonry-col-' + index"
+              :index="index"
+              :source="items.filter((it, i) => {
+                return i % cols === index;
+              })"
+              inline-template>
         <div :style="colStyle"
              class="bbn-masonry-column">
-          <masonry-item bbn-for="(item, idx) in source"
+          <masitem bbn-for="(item, idx) in source"
                         :source="item"
                         :key="'masonry-item-' + index + '-' + idx"
                         inline-template>
@@ -34,9 +34,9 @@
               <div bbn-else
                    bbn-html="source.content"/>
             </div>
-          </masonry-item>
+          </masitem>
         </div>
-      </masonry-col>
+      </mascol>
     </div>
   </component>
 </div>

@@ -1,4 +1,4 @@
-import bbnData from "../../Data.js";
+import bbnData from "../Data.js";
 
 /**
  * Deletes all references to the data object and its children
@@ -8,8 +8,11 @@ bbnData.prototype.unset = function(noParent) {
   //bbn.fn.log("UNSET: " + JSON.stringify(this.targetData), this, this.deps.map(d => d.constructor.name));
   const id = this.id;
 
-  if (this.root.path === 'realButtons') {
-    debugger;
+  if (this.root?.bbnData) {
+    const idx = this.root?.bbnData.indexOf(this);
+    if (idx > -1) {
+      this.root?.bbnData.splice(idx, 1);
+    }
   }
 
   // Unsetting the children
@@ -49,10 +52,9 @@ bbnData.prototype.unset = function(noParent) {
   }
   */
 
-  if (this.targetData) {
+  if (this.value) {
     delete this.targetData.__bbnData;
     delete this.targetData.__bbnKeys;
-    delete this.targetData;
     delete this.value;
     for (let n in this.deps) {
       delete this.deps[n];

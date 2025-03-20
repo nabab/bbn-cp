@@ -1,5 +1,14 @@
 
 export default {
+  props: {
+    /**
+     * Shows the configuration in the menu
+     */
+    configuration: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       /**
@@ -8,6 +17,11 @@ export default {
        */
       showRouterCfg: false,
       changingConfig: false,
+    }
+  },
+  computed: {
+    routerStorageName() {
+      return this.parentContainer ? this.parentContainer.getFullURL() : this.storageName;
     }
   },
   methods: {
@@ -23,8 +37,8 @@ export default {
      * @fires getConfig
      */
     setConfig() {
-      if (this.autoload && this.isInit) {
-        this.setStorage(this.getConfig(), this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
+      if (this.isInit && this.hasStorage) {
+        this.setStorage(this.getConfig(), this.routerStorageName);
         //this.$forceUpdate();
       }
     },
@@ -50,7 +64,7 @@ export default {
             notext: obj.notext || false,
             load: true,
             loaded: false,
-            title: obj.title ? obj.title : bbn._('Untitled'),
+            label: obj.label || bbn._('Untitled'),
             fixed: !!obj.fixed,
             pinned: !!obj.pinned,
             pane: obj.pane || false,
@@ -76,7 +90,7 @@ export default {
      */
     unsetConfig() {
       if (this.autoload) {
-        this.unsetStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
+        this.unsetStorage(this.routerStorageName);
       }
     }
   },

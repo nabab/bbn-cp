@@ -2,4 +2,30 @@
   box-sizing: border-box !important;
   position: relative;
   display: block;
+  .bbn-pane-bar {
+    margin: 0;
+    padding: 0;
+    gap: var(--sspace);
+    .bbn-pane-collapser {
+      gap: var(--sspace);
+    }
+    &.vertical{
+      &.bbn-pane-resizer {
+        cursor: ns-resize;
+      }
+      flex-direction: row;
+      .bbn-pane-collapser {
+        flex-direction: row;
+      }
+    }
+    &.horizontal{
+      &.bbn-pane-resizer{
+        cursor: ew-resize;
+      }
+      flex-direction: column;
+      .bbn-pane-collapser {
+        flex-direction: column;
+      }
+    }
+  }
 }

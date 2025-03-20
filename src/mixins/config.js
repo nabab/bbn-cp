@@ -11,10 +11,10 @@ const config = {
   },
   beforeCreate() {
     if (this.$slots.default) {
-      bbn.fn.each(this.$slots.default, a => {
+      bbn.fn.each(this.$slots.default.reverse(), a => {
         //bbn.fn.log(['config mixin', a.tagName])
         if ((a.tagName === this.constructor.config.name.toUpperCase()) && a.bbnSchema) {
-          this[this.constructor.config.data].push(a.bbnSchema.props);
+          this[this.constructor.config.data].unshift(a.bbnSchema.props);
         }
       });
     }

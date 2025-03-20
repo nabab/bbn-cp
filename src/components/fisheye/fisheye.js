@@ -284,8 +284,9 @@ const cpDef = {
        */
       toggleFloater(){
         if ( !this.visibleFloater ){
-          this.floaterTop = this.$el.getBoundingClientRect().height;
+          this.floaterTop = this.$position().height;
         }
+
         this.visibleFloater = !this.visibleFloater;
       },
       /**

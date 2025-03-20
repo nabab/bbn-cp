@@ -1,0 +1,54 @@
+<div :class="cellClass"
+     :style="cellStyle">
+  <template bbn-for="(col, i) in table.currentColumns"
+            bbn-break="checkBreak">
+    <component bbn-if="!index && !col.ready && i && table.currentColumns[i-1].ready"
+               :colspan="table.currentColumns.length - i"
+               :rowspan="table.items.length"
+               is="td"/>
+
+    <bbn-table-cell-expander bbn-elseif="col.isExpander && !table.isGroupActive"
+                             :source="source.data"
+                             :index="0"
+                             :row-index="index"
+                             :column="table.currentColumns[0]"
+                             :class="[cellClass, (table.currentColumns[0].fixed ? ' ' + cssRuleName + ' bbn-table-fixed-cell bbn-table-fixed-cell-left' : '')]"
+                             :style="cellStyle"/>
+    <bbn-table-cell-selector bbn-elseif="col.isSelection"
+                            :column="col"
+                            :selected="source.selected"
+                            :selection="source.selection"
+                            :source="source.data"
+                            :index="i"
+                            :row-index="index"
+                            :ref="'td' + index"/>
+
+    <bbn-table-cell-editor bbn-elseif="table.isEdited(source, col, i)"
+                          :tabindex="table.editable && (col.editable !== false) ? 0 : -1"
+                          @save="table.saveInline"
+                          @cancel="table.cancel"
+                          :column="col"
+                          :source="source.data"
+                          :row-index="index"
+                          :index="i"
+                          :ref="'td' + index"/>
+
+    <component is="td"
+               bbn-elseif="!col.ready"
+               :ref="'td' + index"/>
+    <bbn-table-cell-buttons bbn-elseif="col.buttons"
+                          :source="source.data"
+                          :mode="table.buttonMode"
+                          :row-index="index"
+                          :column="col"
+                          :index="i"
+                          :ref="'td' + index"/>
+    <!-- Group lines just have the cell with the expander and a single big cell -->
+    <bbn-table-cell bbn-elseif="!col.isExpander || !table.isGroupActive"
+                    :column="col"
+                    :source="source.data"
+                    :row-index="index"
+                    :index="i"
+                    :ref="'td' + index"/>
+  </template>
+</div>

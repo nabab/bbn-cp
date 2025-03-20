@@ -1,0 +1,32 @@
+<div :class="[componentClass, 'bbn-overlay', 'bbn-flex-height']">
+  <div class="bbn-w-100 bbn-middle bbn-c bbn-padding">
+    <bbn-input :placeholder="_('Search in %d icons', total)"
+               bbn-model="searchIcon"
+               class="search bbn-xl bbn-w-50"
+               :nullable="true"
+               ref="search"/>
+    <div class="bbn-iblock bbn-hpadding bbn-l"
+         bbn-text="numIcons + ' icons'"
+         style="width: 10em"/>
+  </div>
+  <div class="bbn-flex-fill">
+    <bbn-scroll ref="scroll"
+                @reachbottom="addIcons"
+                @resize="resize">
+      <ul ref="ul">
+        <li bbn-for="(icon, idx) in icons"
+            class="bbn-block"
+            :key="icon"
+            :ref="'item-'+ idx">
+          <bbn-button :title= "icon"
+                      :icon="icon"
+                      class="btn"
+                      @click="selectIcon(icon)"/>
+          <span bbn-if="showName"
+                class="bbn-iblock bbn-hpadding bbn-light"
+                bbn-text="icon.substr(6)"/>
+        </li>
+      </ul>
+    </bbn-scroll>
+  </div>
+</div>

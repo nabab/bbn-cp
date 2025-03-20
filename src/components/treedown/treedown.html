@@ -5,7 +5,7 @@
 >
   <div class="bbn-flex-width bbn-h-100">
     <div class="bbn-flex-fill"
-         @click.stop="click">
+         @click.stop="onClick">
       <input :disabled="isDisabled"
               class="bbn-unselectable bbn-textbox bbn-no-border bbn-abs bbn-top-left"
               @keydown.stop="keydownInput"
@@ -31,7 +31,7 @@
     <div>
       <bbn-button :icon="'nf nf-fa-caret_' + (isOpened && !isDisabled && !readonly && filteredData.length ? 'up' : 'down')"
                   class="bbn-p bbn-button-right bbn-no-vborder"
-                  @click.prevent.stop="click"
+                  @click.prevent.stop="onClick"
                   tabindex="-1"
                   :disabled="isDisabled">
       </bbn-button>

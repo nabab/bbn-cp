@@ -10,7 +10,7 @@
 				<!-- 1ST BUTTON (FIRST) -->
 				<bbn-button icon="nf nf-fa-angle_double_left"
 										:notext="true"
-										:title="_('Go to the first %s', pageName)"
+										:label="_('Go to the first %s', pageName)"
 										:disabled="currentPage <= 2"
 										@click="firstPage"
 										bbn-if="buttons"/>
@@ -109,7 +109,7 @@
 								element.currentData.length"
 					class="bbn-right-space bbn-flex-fill bbn-vmiddle">
 				<bbn-dropdown :source="element.limits"
-											bbn-model.number="element.currentLimit"
+											bbn-model.number="limit"
 											@change="currentPage = 1"
 											:disabled="!!element.isLoading"
 											:autosize="true"/>
@@ -133,7 +133,7 @@
 				<bbn-button bbn-if="element.currentQuery && element.showQuery"
 										:title="_('View SQL query')"
 										@click="element ? element.showQuery() : () => {}"
-										icon="nf nf-mdi-database"
+										icon="nf nf-md-database"
 										:notext="true"
 										class="bbn-left-xsspace"/>
 				<bbn-button bbn-if="element.saveable"
@@ -165,7 +165,7 @@
 															{'bbn-red': element.currentFilters && element.currentFilters.conditions.length ? true : false}
 														]"
 										@click="element ? element.openMultiFilter() : () => {}"
-										icon="nf nf-mdi-filter_variant"
+										icon="nf nf-md-filter_variant"
 										:notext="true"/>
 				<bbn-button bbn-if="element.isAjax && element.updateData"
 										:title="_('Refresh')"

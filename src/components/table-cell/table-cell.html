@@ -1,0 +1,18 @@
+<div :class="cellClass">
+  <div bbn-if="!column.ready"> </div>
+  <slot bbn-if="$hasSlots()"/>
+  <component bbn-elseif="column.component"
+             :is="column.component"
+             bbn-bind="table.getColOptions(source, column, rowIndex)"
+             :source="column.mapper ? column.mapper(source) : source"/>
+  <div bbn-else
+       bbn-html="table.render(source, column, rowIndex)"/>
+  <table-dots bbn-if="column.dots"
+              :source="{
+                    column: column,
+                    index: index,
+                    dataIndex: rowIndex,
+                    data: source,
+                    itemIndex: rowIndex
+                  }"/>
+</div>

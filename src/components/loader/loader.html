@@ -121,10 +121,11 @@
         <div class="sk-cube sk-cube9"/>
       </div>
     </div>
-    <h1 bbn-if="text"
-        :class="'dots ' + fontClass">
-      <span bbn-text="text"/><span>.</span><span>.</span><span>.</span>
-    </h1>
+    <div bbn-if="label"
+        :class="'bbn-xl bbn-c dots ' + fontClass">
+      <br>
+      <span bbn-html="label"/><span>.</span><span>.</span><span>.</span>
+    </div>
 
   </div>
 </div>

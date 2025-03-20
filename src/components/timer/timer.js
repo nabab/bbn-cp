@@ -217,21 +217,21 @@
      * @return {Number} [5] precisionIdx
      */
     precisionIdx(){
-      return bbn.fn.search(bbnTimerCp.VALUES, this.precision.length === 1 ? 'code' : 'name', this.precision);
+      return bbn.fn.search(bbnTimer.VALUES, this.precision.length === 1 ? 'code' : 'name', this.precision);
     },
     /**
      * The index of the 'scale' property in the array of the constant VALUES.
      * @return {Number} [5] scaleIdx
      */
     scaleIdx(){
-      return bbn.fn.search(bbnTimerCp.VALUES, this.scale.length === 1 ? 'code' : 'name', this.scale);
+      return bbn.fn.search(bbnTimer.VALUES, this.scale.length === 1 ? 'code' : 'name', this.scale);
     },
     /**
      * List type of periods.
      * @return {Array} periods
      */
     periods() {
-      return bbnTimerCp.VALUES;
+      return bbnTimer.VALUES;
     },
     // @todo incomplete
     rendered(){
@@ -278,7 +278,7 @@
       if (this.currentTasks.length && (this.mode === 'countdown')) {
         this.time = this.currentTasks[0].timestamp.getTime();
       }
-      let timeout = bbnTimerCp.VALUES[this.precisionIdx].timeout;
+      let timeout = bbnTimer.VALUES[this.precisionIdx].timeout;
       this.update();
       this.interval = setInterval(this.update, timeout);
     },
@@ -354,7 +354,7 @@
           let secs = this.time - d.getTime();
           if ( secs <= 0 ){
             if (this.isValid) {
-              bbn.fn.each(bbnTimerCp.VALUES, (a, i) => {
+              bbn.fn.each(bbnTimer.VALUES, (a, i) => {
                 this[a.name] = 0;
               });
               this.isValid = false;
@@ -363,7 +363,7 @@
           else if (secs) {
             let diff = dayjs.duration(secs, 'seconds');
             let diffs = {};
-            bbn.fn.each(bbnTimerCp.VALUES, (a, i) => {
+            bbn.fn.each(bbnTimer.VALUES, (a, i) => {
               diffs[a.name] = diff['as' + a.name[0].toUpperCase() + bbn.fn.substr(a.name, 1) + 's']();
               if ((i >= this.scaleIdx) && (i <= this.precisionIdx)) {
                 let round = Math.floor(diffs[a.name]);
@@ -397,7 +397,7 @@
      */
     getShown(){
       let res = {};
-      bbn.fn.each(bbnTimerCp.VALUES, (a, i) => {
+      bbn.fn.each(bbnTimer.VALUES, (a, i) => {
         res[a.name] = (this.showZero || this[a.name] || this.zeroFill)
                       && ((this.precisionIdx >= i) && (this.scaleIdx <= i));
       })
@@ -411,7 +411,7 @@
      */
     getText(){
       let res = {};
-      bbn.fn.each(bbnTimerCp.VALUES, (a, i) =>  {
+      bbn.fn.each(bbnTimer.VALUES, (a, i) =>  {
         res[a.name] = this[a.name] || 0;
         if (
           this.zeroFill

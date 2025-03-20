@@ -1,4 +1,4 @@
-import bbnNode from "../../Node.js";
+import bbnNode from "../Node.js";
 import bbnInternalNode from "../Internal.js";
 
 const treatClassArguments = function (...args) {
@@ -19,12 +19,12 @@ const treatClassArguments = function (...args) {
     }
   });
 
-  return bbn.fn.unique(bbn.fn.removeEmpty(final));
+  return bbn.fn.unique(final.filter(v => !!v.trim()));
 };
 
 
 bbnNode.prototype.nodeSetClass = function() {
-  if (this.element && !this.comment) {
+  if (this.element?.classList && !this.comment) {
     const ele = this.element;
     const args = [];
     bbn.fn.iterate(this.classes, obj => {
@@ -36,16 +36,18 @@ bbnNode.prototype.nodeSetClass = function() {
       final.unshift('bbn-component');
     }
 
-    ele.classList.forEach(cls => {
+    Array.from(ele.classList).forEach(cls => {
       if (!final.includes(cls)) {
-        ele.classList.remove(cls);
+        if (cls !== 'bbn-component-mounted') {
+          ele.classList.remove(cls);
+        }
       }
       else {
         final.splice(final.indexOf(cls), 1);
       }
     });
     final.forEach(cls => {
-      ele.classList.add(cls);
+      ele.classList.add(cls.trim());
     });
   }
 }

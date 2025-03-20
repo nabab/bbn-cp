@@ -73,11 +73,15 @@ export default {
      * @return {Array} 
      */
     tabsList() {
-      return bbn.fn.multiorder(
-        this.splittable ? bbn.fn.filter(this.views, a => !a.pane) : this.views,
-        { fixed: 'desc', pinned: 'desc', idx: 'asc' }
-      );
+      const base = this.splittable ? bbn.fn.filter(this.views.slice(), a => !a.pane) : this.views.slice();
+      return bbn.fn.multiorder(base, { fixed: 'desc', pinned: 'desc', idx: 'asc' });
     },
+    timeList() {
+      return bbn.fn.order(this.views.slice(), 'last', 'desc');
+    },
+    latest() {
+      return this.timeList[1] || false;
+    }
   },
   methods: {
     /**
@@ -104,7 +108,7 @@ export default {
     getDefaultView(...obj) {
       return bbn.fn.extendOut(bbn.fn.createObject(), ...obj, {
         source: null,
-        title: bbn._("Untitled"),
+        label: bbn._("Untitled"),
         options: null,
         cached: !this.single && this.nav,
         scrollable: true,
@@ -142,7 +146,7 @@ export default {
       // ---- ADDED 16/12/20 (Mirko) ----
       // Adding bbns-container from the slot
       if (this.$slots.default) {
-        for (let item of this.$slots.default) {
+        for (let item of this.$retrieveSlotItems('default')) {
           let node = item.bbnSchema;
           //bbn.fn.log("ROUTER SLOT", node, '-------------');
   
@@ -173,9 +177,9 @@ export default {
         tmp.push(this.getDefaultView(a, { real: false }));
       });
 
-      if (!this.single) {
+      if (!this.single && this.hasStorage) {
         //bbn.fn.log("LOOKING FOR STORAGE FOR " + this.parentContainer.getFullURL());
-        let storage = this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
+        let storage = this.getStorage(this.routerStorageName);
         //Get config from the storage
         if (storage && storage.views && tmp) {
           bbn.fn.each(storage.views, a => {
@@ -202,6 +206,8 @@ export default {
     },
 
 
+
+
     /**
      * Removes an element from the views
      * 
@@ -213,7 +219,7 @@ export default {
      * @emit close
      * @return {Boolean}
      */
-    async remove(misc, force) {
+    async removeItem(misc, force, replace) {
       let idx = this.getIndex(misc);
       //bbn.fn.log(["REMOVE " + idx, this.views[idx].url, misc])
       if (idx > -1) {
@@ -245,19 +251,18 @@ export default {
           else if (this.views[idx] && !this.views[idx].real) {
             this.$emit('close', idx, onClose);
             //const replacers = replacer ? [this.getViewObject(replacer)] : [];
-            //this.views.splice(idx, 1, ...replacers);
-            this.views.splice(idx, 1);
-            //bbn.fn.log(["ERMOVE FROM ROUTER " + idx, bbn.fn.numProperties(this.urls), this.views.length])
-            
+            const replacers = replace ? [bbn.fn.extend(this.getViewObject(replace), {idx})] : [];
+            this.views.splice(idx, 1, ...replacers);
             this.fixIndexes();
-            if (idx < this.selected) {
-              this.selected--;
+            if (!replacers.length && !this.views[idx]?.pane) {
+              if (idx < this.selected) {
+                this.selected--;
+              }
+              else if ((idx === this.selected) && this.views.length) {
+                this.activateIndex(this.latest?.idx || this.views.length - 1);
+              }
             }
-            else if (idx === this.selected) {
-              this.selectClosest(idx);
-            }
-            await this.$forceUpdate();
-            await this.$nextTick();
+
             return true;
           }
         }
@@ -306,7 +311,7 @@ export default {
       bbn.fn.iterate(this.getDefaultView(), (a, n) => {
         if (obj[n] === undefined) {
           // Each new property must be set with $set
-          this.$set(obj, n, a);
+          obj[n] = a;
         }
       });
 
@@ -348,14 +353,16 @@ export default {
       if (this.single && (this.views.length > 1)) {
         let toDel = bbn.fn.search(this.views, a => !a.cached && (a.uid !== obj.uid));
         if (toDel !== -1) {
-          await this.remove(toDel, true);
+          await this.removeItem(toDel, true);
         }
       }
 
       this.fixIndexes();
       await this.$forceUpdate();
-      if (obj.selected) {
+      if (obj.selected && !obj.pane) {
+        //bbn.fn.log(["BEFORE SELECTED IN ADD", obj.idx, obj, this.views.length]);
         this.selected = obj.idx;
+        //bbn.fn.log(["AFTER SELECTED IN ADD", this.selected, obj, this.views.length]);
       }
 
       return obj.uid;
@@ -397,14 +404,14 @@ export default {
     * @param {Number}  idx   The index of the container to close
     * @param {Boolean} force Will close the container without prevention
     * @param {Boolean} noCfg If set to true will not trigger the storage saving
-    * @fires remove
+    * @fires removeItem
     * @fires getIndex
     * @fires activateIndex
     * @fires setConfig
     * @return {Boolean}
     */
     close(idx, force, noCfg) {
-      let res = this.remove(idx, force);
+      let res = this.removeItem(idx, force);
       if (res) {
         if (!noCfg) {
           this.setConfig();
@@ -442,7 +449,7 @@ export default {
 
 
     closeTab(idx) {
-      this.close(this.tabsList[idx].idx);
+      this.close(idx);
     },
 
 

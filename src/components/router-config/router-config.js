@@ -65,7 +65,7 @@ const cpDef = {
     },
     props: {
       router: {
-        type: Object,
+        type: HTMLElement,
         required: true
       },
       visual: {
@@ -95,7 +95,7 @@ const cpDef = {
 
       return {
         numModes: num,
-        svg: bbnRouterConfigCp.img,
+        svg: bbnRouterConfig.img,
         visualSelected: 2,
         breadcrumbSelected: 2,
         tabsSelected: 2,
@@ -138,6 +138,9 @@ const cpDef = {
         };
         tmp.auto.area = tmp[this.guessedOrientation].area;
         return tmp;
+      },
+      db() {
+        return this.router?.db
       },
       mode: {
         get() {
@@ -201,26 +204,82 @@ const cpDef = {
         }
       }
     },
+    components: {
+      container: {
+        template: `
+<div class="bbn-section bbn-w-100 bbn-bottom-margin bbn-flex-vcentered">
+  <div style="width: 10rem" class="bbn-right-lspace">
+    <img bbn-if="thumbnail"
+         :src="thumbnail"
+         style="width: 100%; max-height: 10rem; height: auto">
+    <bbn-icon bbn-else
+              content="nf nf-fa-image"
+              size="7rem"/>
+  </div>
+  <div class="bbn-flex-fill">
+    <div class="bbn-flex-vcentered bbn-bottom-margin">
+      <div class="bbn-flex-fill">
+        <bbn-icon :content="source.icon || 'nf nf-fa-question'"
+                  class="bbn-right-space bbn-radius bbn-border bbn-padding bbn-xl"/>
+        <bbn-button icon="nf nf-md-magnify_scan"
+                    @click="browse(source)"/>
+        <span bbn-text="source.label"
+              class="bbn-light bbn-lg"/>
+      </div>
+      <div>
+        <bbn-button icon="nf nf-fa-trash"
+                    @click="del(source)"/>
+        <bbn-button icon="nf nf-fa-trash"
+                    @click="del(source)"/>
+        <bbn-button icon="nf nf-fa-trash"
+                    @click="del(source)"/>
+      </div>
+    </div>
+    <div class="bbn-flex-vcentered">
+      <div class="bbn-flex-fill">
+        <strong>URL: </strong>
+        <span class="bbn-light"
+              bbn-text="source.url"/>
+      </div>
+      <div>Buttons</div>
+    </div>
+  </div>
+</div>
+        `,
+        data() {
+          return {
+            thumbnail: false,
+            db: this.bbnComponent.db
+          }
+        },
+        methods: {
+          del(o) {
 
-    /**
-     * @event created
-     */
-    created(){
-    },
-    /**
-     * @event mounted
-     * @fires getStorage
-     * @fires getDefaultURL
-     * @fires add
-     */
-    mounted(){
-    },
-    /**
-     * @event beforeDestroy
-     */
-    beforeDestroy(){
-    },
-    watch: {
+          },
+          browse(o) {
+            this.bbnComponent.router.getPopup({
+              height: '90%',
+              width: '90%',
+              maxWidth: '1200px',
+              component: 'bbn-iconpicker',
+              componentOptions: {
+                source: {
+                  obj: o,
+                  field: 'icon'
+                }
+              }
+            })
+          }
+        },
+        mounted() {
+          this.db.selectOne('containers', 'image', {url: this.source.url}).then(res => {
+            if (res) {
+              this.thumbnail = res;
+            }
+          });
+  
+        }
+      }
     }
   };
 

@@ -32,7 +32,7 @@ const cpDef = {
           active: false,
           component: {
             template: `
-              <bbn-dropdown class="bbn-rte-style"
+              <bbn-dropdown class="bbn-rte-style bbn-narrow"
                             :source="styles"
                             bbn-model="currentStyle"
                             :writable="false"
@@ -83,7 +83,7 @@ const cpDef = {
             },
             methods: {
               setStyle(style){
-                bbnRteCp.exec(bbnRteCp.formatBlock, style);
+                bbnRte.exec(bbnRte.formatBlock, style);
               }
             },
             mounted(){
@@ -140,7 +140,7 @@ const cpDef = {
             },
             methods: {
               setSize(style){
-                bbnRteCp.exec('fontSize', style);
+                bbnRte.exec('fontSize', style);
               }
             },
             mounted(){
@@ -170,9 +170,9 @@ const cpDef = {
             },
             methods: {
               onClick(){
-                let current = parseInt(bbnRteCp.queryCommandValue('fontSize'));
+                let current = parseInt(bbnRte.queryCommandValue('fontSize'));
                 if (current < 7) {
-                  bbnRteCp.exec('fontSize', current + 1);
+                  bbnRte.exec('fontSize', current + 1);
                   this.rte.setFontsize();
                 }
               }
@@ -201,9 +201,9 @@ const cpDef = {
             },
             methods: {
               onClick(){
-                let current = parseInt(bbnRteCp.queryCommandValue('fontSize'));
+                let current = parseInt(bbnRte.queryCommandValue('fontSize'));
                 if (current > 1) {
-                  bbnRteCp.exec('fontSize', current - 1);
+                  bbnRte.exec('fontSize', current - 1);
                   this.rte.setFontsize();
                 }
               }
@@ -217,28 +217,28 @@ const cpDef = {
           text: bbn._('Bold'),
           notext: true,
           active: false,
-          action: () => bbnRteCp.exec('bold')
+          action: () => bbnRte.exec('bold')
         },
         italic: {
           icon: 'nf nf-fa-italic',
           text: bbn._('Italic'),
           notext: true,
           active: false,
-          action: () => bbnRteCp.exec('italic')
+          action: () => bbnRte.exec('italic')
         },
         underline: {
           icon: 'nf nf-fa-underline',
           text: bbn._('Underline'),
           notext: true,
           active: false,
-          action: () => bbnRteCp.exec('underline')
+          action: () => bbnRte.exec('underline')
         },
         strikethrough: {
           icon: 'nf nf-fa-strikethrough',
           text: bbn._('Strike-through'),
           notext: true,
           active: false,
-          action: () => bbnRteCp.exec('strikeThrough')
+          action: () => bbnRte.exec('strikeThrough')
         },
         align: {
           text: bbn._('Align'),
@@ -285,7 +285,7 @@ const cpDef = {
             },
             methods: {
               setAlign(align){
-                bbnRteCp.exec(align);
+                bbnRte.exec(align);
               }
             },
             mounted(){
@@ -313,7 +313,7 @@ const cpDef = {
                       'disabled': !!isDisabled || !!isReadOnly,
                       'bbn-background': !isDisabled && !isReadOnly
                     }]">
-                <i class="nf nf-mdi-format_color_text bbn-hxsspace"/>
+                <i class="nf nf-md-format_color_text bbn-hxsspace"/>
                 <bbn-colorpicker @change="setColor"
                                  bbn-model="currentColor"
                                  :disabled="isDisabled"
@@ -335,7 +335,7 @@ const cpDef = {
             },
             methods: {
               setColor(color){
-                bbnRteCp.exec('foreColor', color);
+                bbnRte.exec('foreColor', color);
               }
             },
             mounted(){
@@ -363,7 +363,7 @@ const cpDef = {
                     'disabled': !!isDisabled || !!isReadOnly,
                     'bbn-background': !isDisabled && !isReadOnly
                   }]">
-                <i class="nf nf-mdi-format_color_fill bbn-hxsspace bbn-lg"/>
+                <i class="nf nf-md-format_color_fill bbn-hxsspace bbn-lg"/>
                 <bbn-colorpicker @change="setColor"
                                  bbn-model="currentColor"
                                  :disabled="isDisabled"
@@ -385,7 +385,7 @@ const cpDef = {
             },
             methods: {
               setColor(color){
-                bbnRteCp.exec('hiliteColor', color);
+                bbnRte.exec('hiliteColor', color);
               }
             },
             mounted(){
@@ -407,13 +407,13 @@ const cpDef = {
           icon: 'nf nf-md-arrow_expand_left',
           text: bbn._('Decrease indent'),
           notext: true,
-          action: () => bbnRteCp.exec('outdent')
+          action: () => bbnRte.exec('outdent')
         },
         indent: {
           icon: 'nf nf-md-arrow_expand_right',
           text: bbn._('Increase indent'),
           notext: true,
-          action: () => bbnRteCp.exec('indent')
+          action: () => bbnRte.exec('indent')
         },
         /*
         heading: {
@@ -422,40 +422,40 @@ const cpDef = {
           notext: true,
           items: [
             {
-              icon: 'nf nf-mdi-format_header_1',
+              icon: 'nf nf-md-format_header_1',
               text: bbn._('Heading 1'),
               notext: true,
-              action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<h1>')
+              action: () => bbnRte.exec(bbnRte.formatBlock, '<h1>')
             },
             {
-              icon: 'nf nf-mdi-format_header_2',
+              icon: 'nf nf-md-format_header_2',
               text: bbn._('Heading 2'),
               notext: true,
-              action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<h2>')
+              action: () => bbnRte.exec(bbnRte.formatBlock, '<h2>')
             },
             {
-              icon: 'nf nf-mdi-format_header_3',
+              icon: 'nf nf-md-format_header_3',
               text: bbn._('Heading 3'),
               notext: true,
-              action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<h3>')
+              action: () => bbnRte.exec(bbnRte.formatBlock, '<h3>')
             },
             {
-              icon: 'nf nf-mdi-format_header_4',
+              icon: 'nf nf-md-format_header_4',
               text: bbn._('Heading 4'),
               notext: true,
-              action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<h4>')
+              action: () => bbnRte.exec(bbnRte.formatBlock, '<h4>')
             },
             {
-              icon: 'nf nf-mdi-format_header_5',
+              icon: 'nf nf-md-format_header_5',
               text: bbn._('Heading 5'),
               notext: true,
-              action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<h5>')
+              action: () => bbnRte.exec(bbnRte.formatBlock, '<h5>')
             },
             {
-              icon: 'nf nf-mdi-format_header_6',
+              icon: 'nf nf-md-format_header_6',
               text: bbn._('Heading 6'),
               notext: true,
-              action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<h6>')
+              action: () => bbnRte.exec(bbnRte.formatBlock, '<h6>')
             },
           ]
         },
@@ -463,38 +463,38 @@ const cpDef = {
           icon: 'nf nf-fa-paragraph',
           text: bbn._('Paragraph'),
           notext: true,
-          action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<p>')
+          action: () => bbnRte.exec(bbnRte.formatBlock, '<p>')
         },
         */
         quote: {
-          icon: 'nf nf-mdi-format_quote_open',
+          icon: 'nf nf-md-format_quote_open',
           text: bbn._('Quote'),
           notext: true,
-          action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<blockquote>')
+          action: () => bbnRte.exec(bbnRte.formatBlock, '<blockquote>')
         },
         olist: {
-          icon: 'nf nf-mdi-format_list_numbers',
+          icon: 'nf nf-md-format_list_numbered',
           text: bbn._('Ordered List'),
           notext: true,
-          action: () => bbnRteCp.exec('insertOrderedList')
+          action: () => bbnRte.exec('insertOrderedList')
         },
         ulist: {
-          icon: 'nf nf-mdi-format_list_bulleted_type',
+          icon: 'nf nf-md-format_list_bulleted_type',
           text: bbn._('Unordered List'),
           notext: true,
-          action: () => bbnRteCp.exec('insertUnorderedList')
+          action: () => bbnRte.exec('insertUnorderedList')
         },
         code: {
-          icon: 'nf nf-mdi-code_tags',
+          icon: 'nf nf-md-code_tags',
           text: bbn._('Code'),
           notext: true,
-          action: () => bbnRteCp.exec(bbnRteCp.formatBlock, '<pre>')
+          action: () => bbnRte.exec(bbnRte.formatBlock, '<pre>')
         },
         line: {
           icon: 'nf nf-oct-horizontal_rule',
           text: bbn._('Horizontal Line'),
           notext: true,
-          action: () => bbnRteCp.exec('insertHorizontalRule')
+          action: () => bbnRte.exec('insertHorizontalRule')
         },
         link: {
           icon: 'nf nf-oct-link',
@@ -502,7 +502,7 @@ const cpDef = {
           notext: true,
           action: () => {
             const url = window.prompt(bbn._('Enter the link URL'))
-            if (url) bbnRteCp.exec('createLink', url)
+            if (url) bbnRte.exec('createLink', url)
           }
         },
         image64: {
@@ -541,19 +541,19 @@ const cpDef = {
           notext: true,
           action: () => {
             const url = window.prompt(bbn._('Enter the image URL'))
-            if (url) bbnRteCp.exec('insertImage', url)
+            if (url) bbnRte.exec('insertImage', url)
           }
         }
       });
       const setButtons = buttons => {
         let res = bbnData.immunizeValue([]);
         if (!buttons.length) {
-          buttons = Object.keys(bbnRteCp.defaultButtons);
+          buttons = Object.keys(bbnRte.defaultButtons);
         }
 
         bbn.fn.each(buttons, a => {
-          if (bbn.fn.isString(a) && bbnRteCp.defaultButtons[a]) {
-            res.push(bbn.fn.extend({code: a}, bbnRteCp.defaultButtons[a]));
+          if (bbn.fn.isString(a) && bbnRte.defaultButtons[a]) {
+            res.push(bbn.fn.extend({code: a}, bbnRte.defaultButtons[a]));
           }
           else {
             res.push(a);
@@ -564,16 +564,16 @@ const cpDef = {
       };
       const defaultStates = {
         bold: {
-          active: () => bbnRteCp.queryCommandState('bold'),
+          active: () => bbnRte.queryCommandState('bold'),
         },
         italic: {
-          active: () => bbnRteCp.queryCommandState('italic'),
+          active: () => bbnRte.queryCommandState('italic'),
         },
         underline: {
-          active: () => bbnRteCp.queryCommandState('underline'),
+          active: () => bbnRte.queryCommandState('underline'),
         },
         strikethrough: {
-          active: () => bbnRteCp.queryCommandState('strikeThrough'),
+          active: () => bbnRte.queryCommandState('strikeThrough'),
         },
       };
 
@@ -705,19 +705,19 @@ const cpDef = {
          */
         currentValue: this.value,
         /**
-         * @data {bbnCp} fontColorComponent
+         * @data {HTMLElement} fontColorComponent
          */
         fontColorComponent : null,
         /**
-         * @data {bbnCp} fontBgColorComponent
+         * @data {HTMLElement} fontBgColorComponent
          */
         fontBgColorComponent : null,
         /**
-         * @data {bbnCp} fontsizeComponent
+         * @data {HTMLElement} fontsizeComponent
          */
         fontsizeComponent : null,
         /**
-         * @data {bbnCp} alignComponent
+         * @data {HTMLElement} alignComponent
          */
         alignComponent : null,
         /**
@@ -771,7 +771,7 @@ const cpDef = {
        * @method setButtons
        */
       setButtons() {
-        let tmp = bbnRteCp.setButtons(this.buttons);
+        let tmp = bbnRte.setButtons(this.buttons);
         if (this.floating) {
           tmp.push({
             icon: 'nf nf-fa-times',
@@ -813,8 +813,8 @@ const cpDef = {
           event.stopPropagation();
           event.stopImmediatePropagation();
         }
-        if (event.key === 'Enter' && bbnRteCp.queryCommandValue(bbnRteCp.formatBlock) === 'blockquote') {
-          setTimeout(() => bbnRteCp.exec(bbnRteCp.formatBlock, `<${this.defaultParagraphSeparator}>`), 0);
+        if (event.key === 'Enter' && bbnRte.queryCommandValue(bbnRte.formatBlock) === 'blockquote') {
+          setTimeout(() => bbnRte.exec(bbnRte.formatBlock, `<${this.defaultParagraphSeparator}>`), 0);
         }
         this.setColors();
         this.setStyle();
@@ -842,7 +842,7 @@ const cpDef = {
       rteOnInput(target) {
         let firstChild = target.firstChild;
         if (firstChild && firstChild.nodeType === 3) {
-          bbnRteCp.exec(bbnRteCp.formatBlock, `<${this.defaultParagraphSeparator}>`);
+          bbnRte.exec(bbnRte.formatBlock, `<${this.defaultParagraphSeparator}>`);
         }
         else if (this.content.innerHTML === '<br>') {
           this.content.innerHTML = ''
@@ -856,7 +856,7 @@ const cpDef = {
        */
       setStyle(){
         if (this.styleComponent) {
-          let style = bbnRteCp.queryCommandValue(bbnRteCp.formatBlock);
+          let style = bbnRte.queryCommandValue(bbnRte.formatBlock);
           this.styleComponent.currentStyle = !!style ? `<${style}>` : '<div>';
         }
       },
@@ -865,12 +865,12 @@ const cpDef = {
        */
       setColors(){
         if (this.fontColorComponent) {
-          this.fontColorComponent.currentColor = bbn.fn.rgb2hex(bbnRteCp.queryCommandValue('foreColor'));
+          this.fontColorComponent.currentColor = bbn.fn.rgb2hex(bbnRte.queryCommandValue('foreColor'));
         }
         if (this.fontBgColorComponent) {
-          this.fontBgColorComponent.currentColor = bbn.fn.rgb2hex(bbnRteCp.queryCommandValue('hiliteColor'));
+          this.fontBgColorComponent.currentColor = bbn.fn.rgb2hex(bbnRte.queryCommandValue('hiliteColor'));
           if (!this.fontBgColorComponent.currentColor) {
-            this.fontBgColorComponent.currentColor = bbn.fn.rgb2hex(bbnRteCp.queryCommandValue('backColor'));
+            this.fontBgColorComponent.currentColor = bbn.fn.rgb2hex(bbnRte.queryCommandValue('backColor'));
           }
         }
       },
@@ -879,7 +879,7 @@ const cpDef = {
        */
       setFontsize(){
         if (this.fontsizeComponent) {
-          this.fontsizeComponent.currentSize = parseInt(bbnRteCp.queryCommandValue('fontSize')) || 2;
+          this.fontsizeComponent.currentSize = parseInt(bbnRte.queryCommandValue('fontSize')) || 2;
         }
       },
       /**
@@ -888,16 +888,16 @@ const cpDef = {
       setAlign(){
         if (this.alignComponent) {
           let current;
-          if (bbnRteCp.queryCommandState('justifyLeft')) {
+          if (bbnRte.queryCommandState('justifyLeft')) {
             current = 'justifyLeft';
           }
-          else if (bbnRteCp.queryCommandState('justifyCenter')) {
+          else if (bbnRte.queryCommandState('justifyCenter')) {
             current = 'justifyCenter';
           }
-          else if (bbnRteCp.queryCommandState('justifyRight')) {
+          else if (bbnRte.queryCommandState('justifyRight')) {
             current = 'justifyRight';
           }
-          else if (bbnRteCp.queryCommandState('justifyFull')) {
+          else if (bbnRte.queryCommandState('justifyFull')) {
             current = 'justifyFull';
           }
           if (!!current && (this.alignComponent.currentAlign != current)) {
@@ -939,7 +939,7 @@ const cpDef = {
           const fileReader = new FileReader();
           fileReader.onload = () => {
             const img = fileReader.result;
-            bbnRteCp.exec('insertHTML', `<img src="${img}" style="max-width: 100%; height: auto; object-fit: scale-down">`);
+            bbnRte.exec('insertHTML', `<img src="${img}" style="max-width: 100%; height: auto; object-fit: scale-down">`);
             this.getRef('fileInput').value = '';
           }
           fileReader.readAsDataURL(file);
@@ -964,8 +964,8 @@ const cpDef = {
         this.currentValue = this.$slots.default[0].text;
       }
       this.setButtons();
-      bbn.fn.log("RTE!!", this);
-      this.defaultParagraphSeparator = bbnRteCp.defaultParagraphSeparatorString || 'div'
+      bbn.fn.log("RTE!!", this, this.currentValue);
+      this.defaultParagraphSeparator = bbnRte.defaultParagraphSeparatorString || 'div'
     },
     /**
      * Initializes the component
@@ -1015,8 +1015,8 @@ const cpDef = {
         appendChild(actionbar, button)
       })
   
-      if (settings.styleWithCSS) bbnRteCp.exec('styleWithCSS')
-        bbnRteCp.exec(defaultParagraphSeparatorString, defaultParagraphSeparator)
+      if (settings.styleWithCSS) bbnRte.exec('styleWithCSS')
+        bbnRte.exec(defaultParagraphSeparatorString, defaultParagraphSeparator)
         */
 
       this.ready = true;

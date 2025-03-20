@@ -1,5 +1,3 @@
-import bbnCp from '../lib/Cp.js';
-
 const dropdown = {
   props: {
 
@@ -88,7 +86,7 @@ const dropdown = {
       type: Array
     },
     /**
-     * The floater title
+     * The floater label
      * @memberof dropdownComponent
      * @prop {String} floaterTitle
      */
@@ -98,10 +96,10 @@ const dropdown = {
     /**
      * Using an external popup component to open the floater
      * @memberof dropdownComponent
-     * @prop {Boolean|bbnCp} popup
+     * @prop {Boolean|HTMLElement} popup
      */
     popup: {
-      type: [Boolean, bbnCp],
+      type: [Boolean, HTMLElement],
       default: false
     },
     /**
@@ -157,11 +155,11 @@ const dropdown = {
       default: 'group'
     },
     /**
-     * @prop {(String|Object|bbnCp)} groupComponent
+     * @prop {(String|Object|HTMLElement)} groupComponent
      * @memberof dropdownComponent
      */
     groupComponent: {
-      type: [String, Object, bbnCp]
+      type: [String, Object, HTMLElement]
     },
     /**
      * @prop {String} groupStyle
@@ -189,6 +187,10 @@ const dropdown = {
     },
     selectedText: {
       type: [String, Function]
+    },
+    sourceUrl: {
+      type: [String, Boolean],
+      default: false
     }
   },
   data() {
@@ -249,7 +251,7 @@ const dropdown = {
       currentSelectValue: this.value,
       /**
        * The floater component
-       * @data {bbnCp} list
+       * @data {HTMLElement} list
        * @memberof dropdownComponent
        */
       list: null,
@@ -350,10 +352,10 @@ const dropdown = {
     },
     /**
      * Manages the click
-     * @method click
+     * @method onClick
      * @memberof dropdownComponent
      */
-    click() {
+    onClick() {
       if (!this.disabled && !this.readonly && !this.native && this.filteredData.length && bbn.fn.isDom(this.$el)) {
         this.isOpened = !this.isOpened;
         if (this.writable) {
@@ -522,7 +524,7 @@ const dropdown = {
     }
   },
   beforeMount() {
-    let ct = this.closest('bbn-container');
+    let ct = this.closest('bbn-container') || this.closest('bbn-slider');
     this.portalSelector = ct ? ct.$el : document.body;
     this.isInsideFloater = !!this.closest('bbn-floater');
     this.updateButtons();

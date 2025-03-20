@@ -2,16 +2,18 @@
   "name": "@bbn/bbn-cp",
   "version": "1.0.95",
   "description": "A web component library with a VueJS API",
-  "main": "dist/index.js",
+  "main": "dist/bbn-cp.js",
   "files": [
     "dist"
   ],
   "type": "module",
   "scripts": {
-    "build": "./node_modules/.bin/babel src -o dist/bbn-cp.js --source-type module",
+    "build": "./node_modules/.bin/babel src/index.js -o dist/bbn-cp.js --source-type module",
+    "build2": "./node_modules/.bin/babel src/all.js -o dist/bbn-cp-components.js --source-type unambiguous",
     "pub": "npm version patch && npm publish",
     "pack": "./node_modules/.bin/webpack --config webpack.config.js",
     "minify": "#./node_modules/.bin/minify ./dist/bbn-cp.js --out-file dist/bbn-cp.min.js --mangle.keepClassName",
+    "minify2": "#./node_modules/.bin/minify ./dist/bbn-cp-components.js --out-file dist/bbn-cp-components.min.js --mangle.keepClassName",
     "test": "mocha"
   },
   "author": "Thomas Nabet <thomas.nabet@gmail.com>",

@@ -1,4 +1,4 @@
-import bbnData from "../../Data.js";
+import bbnData from "../Data.js";
 
 /**
  * Unshifts one or more elements to the beginning of an array and updates the data object

@@ -1,4 +1,3 @@
-import bbnCp from "../lib/Cp.js";
 /**
  * Returns true if the given argument is component, under the form of a bbnSchema object, an HTML element or directly a component
  * @param {Object} node 
@@ -9,12 +8,7 @@ export default function isComponent(node) {
     return false;
   }
 
-  if (node instanceof bbnCp) {
-    return true;
-  }
-
-  // HTMLElement
-  if (node.bbnCid) {
+  if ((node instanceof HTMLElement) && node.bbnCid) {
     return true;
   }
 

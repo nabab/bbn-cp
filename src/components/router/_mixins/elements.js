@@ -1,4 +1,9 @@
 export default {
+  data() {
+    return {
+      paneContainers: {}
+    }
+  },
   methods: {
     /**
      * @method getVue
@@ -12,7 +17,7 @@ export default {
      * Returns the corresponding container's component's DOM element.
      * @method getContainer
      * @param {Number} idx
-     * @return {bbnCp}
+     * @return {HTMLElement}
      */
     getContainer(idx) {
       if (idx === undefined) {
@@ -41,7 +46,7 @@ export default {
      * @fires getIndex
      * @fires getSubRouter
      * @fires getContainer
-     * @return {bbnCp}
+     * @return {HTMLElement}
      */
     getFinalContainer(misc) {
       let idx = this.getIndex(misc);
@@ -60,10 +65,29 @@ export default {
      * @method getRealVue
      * @param misc
      * @fires getFinalContainer
-     * @return {bbnCp}
+     * @return {HTMLElement}
      */
     getRealVue(misc) {
       return this.getFinalContainer(misc);
-    }
+    },
+
+    getPortal(item) {
+      if (!item.real && this.routed) {
+        if (item.pane) {
+          return this.paneContainers[item.pane + '-' + item.uid] || false;
+        }
+        if (bbn.fn.getRow(this.visualList, 'view.uid', item.uid)) {
+          return this.visualContainers[item.uid] || false;
+        }
+      }
+
+      return false;
+    },
+
+    onCreatePaneContainer(e, paneId) {
+      bbn.fn.log(["CREATE PANE CONTAINER", paneId, e?.target]);
+      this.paneContainers[paneId] = e.target;
+    },
+
   }
 };

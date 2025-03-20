@@ -206,7 +206,7 @@ const cpDef = {
       if (this.readonly) {
         return false;
       }
-      return this.toolBar || bbnMarkdownCp.toolbar;
+      return this.toolBar || bbnMarkdown.toolbar;
     }
   },
   methods: {

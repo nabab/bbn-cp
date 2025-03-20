@@ -1,6 +1,4 @@
-<div :class="elementClass"
-     :style="elementStyle"
-     @scroll="onScroll">
+<div :class="elementClass">
   <div :class="contentClass"
        ref="scrollContent"
        bbn-forget="!scrollable"
@@ -9,7 +7,30 @@
        @touchmove.passive="onTouchmove"
        @focus="isFocused = true"
        @blur="isFocused = false"
+       @scroll="onScroll"
        tabindex="-1">
     <slot/>
   </div>
+  <bbn-scroll-scrollbar bbn-if="hasScrollX"
+                        :invisible="isResizing || hiddenX"
+                        orientation="horizontal"
+                        ref="xScroller"
+                        :style="{backgroundColor: 'rgba(' + rgbaColor + ')'}"
+                        :color="barColor ? barColor : ''"
+                        :scrollAlso="scrollAlso"
+                        :initial="currentX"
+                        @scroll="getRef('scrollContent').scrollBy($event.deltaX, 0)"
+                        :keep-visible="keepVisible"
+                        :offset="currentOffsetX"/>
+  <bbn-scroll-scrollbar bbn-if="hasScrollY"
+                        :invisible="isResizing || hiddenY"
+                        orientation="vertical"
+                        ref="yScroller"
+                        :style="{backgroundColor: 'rgba(' + rgbaColor + ')'}"
+                        :color="barColor ? barColor : ''"
+                        :scrollAlso="scrollAlso"
+                        :initial="currentY"
+                        @scroll="getRef('scrollContent').scrollBy(0, $event.deltaY)"
+                        :keep-visible="keepVisible"
+                        :offset="currentOffsetY"/>
 </div>

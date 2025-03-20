@@ -1,5 +1,4 @@
 import bbn from '@bbn/bbn';
-import bbnCp from '../lib/Cp.js';
 
 const list = {
   props: {
@@ -200,10 +199,7 @@ const list = {
      * @memberof listComponent
      */
     source: {
-      type: [Array, Object, String, Function],
-      default() {
-        return [];
-      }
+      type: [Array, Object, String, Function]
     },
     /**
      * The name of the property to be used as text.
@@ -265,18 +261,28 @@ const list = {
     },
     /**
      * The name of the property to be used as URL to go to when selected.
+     * @prop {String} sourceVisible
+     * @memberof listComponent
+     */
+    sourceVisible: {
+      type: [String, Boolean],
+      default: false
+    },
+    /**
+     * The name of the property to be used as URL to go to when selected.
      * @prop {String} sourceUrl
      * @memberof listComponent
      */
     sourceUrl: {
-      type: [String, Function]
+      type: [String, Boolean],
+      default: 'url'
     },
     /**
      * The name of the property to use for children of hierarchical source
      * @prop {String} [items] children
      * @memberof listComponent
      */
-    children: {
+    sourceItems: {
       type: String,
       default: 'items'
     },
@@ -293,10 +299,17 @@ const list = {
     /**
      * A component for each element of the list.
      * @memberof listComponent
-     * @prop {String|Object|bbnCp} component
+     * @prop {String|Object|HTMLElement} component
      */
     component: {
-      type: [String, Object, bbnCp]
+      type: [String, Object, HTMLElement]
+    },
+    /**
+     * A component to show if items is empty
+     * @prop {String|Object} noDataComponent
+     */
+    noDataComponent: {
+      type: [String, Object]
     },
     /**
      * The template to costumize the dropdown menu.
@@ -403,7 +416,7 @@ const list = {
       currentTemplate: this.template,
       /**
        * The current component of the component.
-       * @data {String|bbnCp|Object} [false] currentComponent
+       * @data {String|HTMLElement|Object} [false] currentComponent
        * @memberof listComponent
        */
       currentComponent: this.component || null,
@@ -590,9 +603,6 @@ const list = {
       if (!cp && this.currentTemplate) {
         cp = bbn.cp.normalizeComponent({
           props: ['source'],
-          data() {
-            return this.source;
-          },
           template: this.currentTemplate
         });
       }
@@ -960,7 +970,7 @@ const list = {
           _bbn: true
         };
 
-        if (this.children && a[this.children] && a[this.children].length) {
+        if (this.sourceItems && a[this.sourceItems] && a[this.sourceItems].length) {
           o.opened = true;
         }
         if (this.hasSelection) {
@@ -1067,11 +1077,11 @@ const list = {
 
             if (d && bbn.fn.isArray(d.data)) {
               if (d.data.length && d.data[0]._bbn) {
-                this.currentData.push(...d.data);
+                this.currentData = d.data;
                 this.updateIndexes();
               }
               else {
-                this.currentData.push(...this.treatData(d.data));
+                this.currentData = this.treatData(d.data);
               }
               if (d.query) {
                 this.currentQuery = d.query;
@@ -1261,7 +1271,7 @@ const list = {
       * @method remove
       * @param {Object} where
       */
-    remove(where) {
+    removeItem(where) {
       let idx;
       while ((idx = bbn.fn.search(this.filteredData, a => {
         return bbn.fn.compareConditions(a.data, where);

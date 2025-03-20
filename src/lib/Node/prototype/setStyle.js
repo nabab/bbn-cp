@@ -1,4 +1,4 @@
-import bbnNode from "../../Node.js";
+import bbnNode from "../Node.js";
 
 const treatStyleArguments = function (...args) {
   const final = bbn.fn.createObject();
@@ -33,7 +33,7 @@ bbnNode.prototype.nodeSetStyle = function() {
     });
 
     const final = treatStyleArguments(args);
-    bbn.fn.log("FINAL", final);
+    ele.style.cssText = '';
     bbn.fn.iterate(final, (v, k) => {
       const value = [undefined, null, false, NaN].includes(v) ? '' : v;
       if (ele.style[k] !== value) {

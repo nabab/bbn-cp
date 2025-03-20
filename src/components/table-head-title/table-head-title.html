@@ -1,0 +1,57 @@
+<div  bbn-show="!source.invisible"
+    :class="[
+      'bbn-table-fixed-cell', 'bbn-header', 'bbn-no-border-top', 'bbn-c', 'bbn-ellipsis',
+      table.titleClass ? (bbn.fn.isFunction(table.titleClass) ? table.titleClass(source) : table.titleClass) : '',
+      source.titleCls || '',
+      {
+        'bbn-table-fixed-cell-left': groupIndex === 0,
+        'bbn-table-fixed-cell-left-last': (groupIndex === 0) && !groupCol.cols[index+1],
+        'bbn-table-fixed-cell-right': groupIndex === 2,
+        'bbn-table-cell-first': (groupIndex === 1)
+          && table.groupCols[0].cols.length
+          && (index === 0)
+      }
+    ]"
+    :title="bbn.fn.html2text(source.flabel || source.label || source.field || ' ')">
+  <span bbn-if="!source.ready"/>
+  <template bbn-else>
+    <div bbn-if="source.isSelection" :title="_('Check all')">
+      <bbn-checkbox bbn-model="table.allRowsChecked"/>
+    </div>
+    <div bbn-elseif="source.isExpander" :title="_('Expand all')">
+      <!-- @todo an icon for expanding all/none -->
+    </div>
+    <component bbn-elseif="source.tcomponent"
+              :is="source.tcomponent"
+              :source="source"/>
+    <span class="bbn-p"
+          bbn-elseif="table.sortable && (source.sortable !== false) && !source.buttons"
+          @click="table.sort(source)">
+      <span bbn-if="source.encoded"
+            bbn-text="source.label || source.field || ' '"/>
+      <span bbn-else
+            bbn-html="source.label || source.field || ' '"/>
+    </span>
+    <span bbn-else>
+      <span bbn-if="source.encoded"
+            bbn-text="source.label || source.field || ' '"/>
+      <span bbn-else
+            bbn-html="source.label || source.field || ' '"/>
+    </span>
+    <i bbn-if="table.sortable"
+      :class="['bbn-xs bbn-p bbn-bottom-left bbn-left-xsmargin', {
+        'bbn-table-sortable-icon bbn-p bbn-bottom-left': true,
+        'nf nf-md-sort_ascending': table.isSorted(source)?.dir === 'ASC',
+        'nf nf-md-sort_descending': table.isSorted(source)?.dir === 'DESC',
+        'nf nf-md-sort_reverse_variant': (source.sortable !== false) && !table.isSorted(source),
+    }]"
+      :title="_('Sort this column')"
+      @click="table.sort(source)"/>
+    <i :class="['nf nf-md-filter_variant bbn-p bbn-xs bbn-right-xsmargin bbn-bottom-right', {
+        'bbn-red': table.hasFilter(source),
+      }]"
+      bbn-if="table.filterable && table.showFilterOnColumn(source)"
+      :title="_('Filter this column')"
+      @click="table.showFilter(source, $event)"/>
+  </template>
+</div>

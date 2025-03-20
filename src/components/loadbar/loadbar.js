@@ -61,8 +61,6 @@ const cpDef = {
          */
         text: '',
         //@todo not used
-        id: false,
-        //@todo not used
         selected: 0,
         //@todo not used
         numLoaded: 0,
@@ -119,7 +117,7 @@ const cpDef = {
       contextMenu(item) {
         let res =  [{
           text: bbn._("Copy URL"),
-          icon: 'nf nf-mdi-content_copy',
+          icon: 'nf nf-md-content_copy',
           action() {
             bbn.fn.copy(item.url);
             appui.success(bbn._("Copied"));
@@ -129,7 +127,7 @@ const cpDef = {
         if (item.loading) {
           res.push({
             text: bbn._("abort"),
-            icon: 'nf nf-mdi-cancel',
+            icon: 'nf nf-md-cancel',
             action: () => {
               this.cancel(item);
             }

@@ -13,10 +13,10 @@
                  bbn-bind="componentOptions"
                  :source="li.data"
                  :index="li.index"
-                 @remove="remove(idx)"
+                 @remove="removeItem(idx)"
                  :key="li.key"/>
       <component bbn-else
-                 :is="li.data && li.data.url && !li.data[children] ? 'a' : 'span'"
+                 :is="li.data && li.data.url && !li.data[sourceItems] ? 'a' : 'span'"
                  @click.prevent="() => {}"
                  class="bbn-block bbn-padding"
                  :title="li.data[sourceText]"

@@ -76,7 +76,7 @@ const cpDef = {
      * The title of the chart.
      * @prop {String} title
      */
-    title: {
+    label: {
       type: String
     },
     /**
@@ -682,7 +682,7 @@ const cpDef = {
        * The random string
        * @data {String} ['random string'] id
        */
-      id: bbn.fn.randomString(),
+      uid: bbn.fn.randomString(),
       resizeTimeout: false
     }
   },
@@ -1119,7 +1119,7 @@ const cpDef = {
 
       let cfg = {
         chart: {
-          id: this.id,
+          id: this.uid,
           type: this.type,
           height: this.height,
           width: this.width,

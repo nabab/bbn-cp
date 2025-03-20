@@ -1,6 +1,4 @@
-import bbn from "@bbn/bbn";
-import bbnAttr from "../Attr.js";
-import removeDOM from "../Cp/private/removeDOM.js";
+import bbnAttr from "./Attr.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -32,7 +30,7 @@ export default class bbnIsAttr extends bbnAttr
     }
 
     if (this.isChanged && !this.node.isCreating && this.node.element) {
-      removeDOM(this.node.component, this.node.element);
+      //this.node.nodeRemove(this.node.element);
       this.node.nodeInit();
     }
   }

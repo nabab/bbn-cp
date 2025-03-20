@@ -203,7 +203,7 @@ const cpDef = {
           element.style.height = height;
         });
       },
-      click(){
+      onClick(){
         if (!this.isDisabled && this.filteredData.length) {
           this.isOpened = !this.isOpened;
           if ( this.autocomplete ){

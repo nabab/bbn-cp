@@ -1,6 +1,6 @@
 /**
  * Converts an expression into a function for dynamic value resolution.
- * @param {bbnCp} cp - The component instance.
+ * @param {HTMLElement} cp - The component instance.
  * @param {Object} loopVars - The loop variables in the current context.
  * @param {Object} a - The attribute or property object.
  * @param {Object} node - The current node in the template.
@@ -70,7 +70,7 @@ const expToFn = (cp, loopVars, a, node, type) => {
  * Processes the template of a component and maps dependencies.
  * It adds functions and necessary argument names to resolve dynamic values.
  * 
- * @param {bbnCp} cp - The component instance to process.
+ * @param {HTMLElement} cp - The component instance to process.
  */
 export default function mapDependencies(cp) {
   const elemSrc = cp.$el.constructor === bbnAnonHtml ? cp.$el : cp.$el.constructor;

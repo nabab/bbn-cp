@@ -1,7 +1,9 @@
-<div :class="[componentClass, 'bbn-box', 'bbn-spadding', {'bbn-disabled': disabled}]">
+<div :class="[componentClass, 'bbn-box', 'bbn-spadding', {'bbn-disabled': disabled}]"
+     tabindex="-1">
   <div bbn-if="ready && showList"
-       style="z-index: 2">
+       style="z-index: 1">
     <div bbn-for="(f, idx) in currentData"
+         bbn-if="!f.hidden"
          :class="['bbn-flex-width', 'bbn-border', 'bbn-spadding', 'bbn-vmiddle', 'bbn-radius', {
            'bbn-alt-background': (f.status !== 'progress') && (f.status !== 'error'),
            'bbn-background-tertiary': f.status === 'progress',
@@ -48,7 +50,7 @@
                'bbn-h-100': f.status === 'progress',
                'bbn-vmiddle': f.status === 'progress'
              }"
-             :style="{'z-index': f.status === 'progress' ? 2 : 0}">
+             :style="{'z-index': f.status === 'progress' ? 1 : -1}">
           <span bbn-text="f.data.name"/>
           <span bbn-if="showFilesize"
                 class="bbn-left-sspace bbn-i bbn-s">
@@ -74,7 +76,7 @@
             class="bbn-large nf nf-fa-download bbn-p bbn-right-sspace"
             @click="download(f)"
             :title="currentText.download"/>
-          <i bbn-if="(f.status === 'success') && editable && !uploading"
+          <i bbn-if="(f.status === 'success') && editable && !uploading && (!keepDisallowedExt || !!isExtAllowed(getExtension(f.data.name)))"
             class="bbn-large nf nf-fa-edit bbn-p bbn-right-sspace"
             @click="edit(f)"
             :title="currentText.editFilename"/>
@@ -82,9 +84,9 @@
             class="bbn-large nf nf-fa-repeat bbn-p bbn-right-sspace"
             @click="retry(f)"
             :title="currentText.retry"/>
-          <i bbn-if="(eliminable || (f.status === 'error')) && (f.status !== 'progress') && !uploading"
+          <i bbn-if="(eliminable || (f.status === 'error')) && (f.status !== 'progress') && !uploading && (!keepDisallowedExt || !!isExtAllowed(getExtension(f.data.name)))"
             class="bbn-large nf nf-fa-trash bbn-p"
-            @click="remove(f)"
+            @click="removeItem(f)"
             :title="currentText.remove"/>
           <bbn-loadicon bbn-if="f.status === 'progress'"/>
         </template>
@@ -111,7 +113,7 @@
        class="bbn-rel"
        :style="{
          'padding-top': !!currentData.length && canAddFile ? '0.5rem' : '0',
-         'z-index': 2
+         'z-index': 1
        }">
     <div class="bbn-flex-width bbn-vmiddle">
       <i :class="[icon, 'bbn-primary-text-alt', 'bbn-xlarge']"/>
@@ -122,7 +124,7 @@
       <div class="bbn-box bbn-spadding"
            ref="pasteContainer"
            bbn-if="paste && canAddFile"
-           style="z-index: 2"
+           style="z-index: 1"
            :title="currentText.pasteContainer"
            @paste="pasteEvent">
         <i class="nf nf-fa-paste bbn-large"/>
@@ -130,7 +132,7 @@
       <div class="bbn-box bbn-spadding bbn-p"
            ref="uploadButton"
            bbn-if="!autoUpload && !!filesReady.length"
-           style="z-index: 2"
+           style="z-index: 1"
            :title="currentText.upload"
            @click="upload()">
         <i class="nf nf-fa-upload bbn-large"/>
@@ -143,7 +145,7 @@
              :accept="accept"
              @change="filesChanged"
              class="bbn-invisible bbn-abs bbn-top-left bbn-bottom-right bbn-100"
-             style="z-index: 1"
+             style="z-index: 0"
              @drop="dropEvent">
       <input type="hidden"
              :value="value"

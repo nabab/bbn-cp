@@ -109,11 +109,11 @@ const cpDef = {
        */
       getTabTitle(obj){
         let t = '';
-        if ( obj.notext || (obj.title.length > this.maxTitleLength) ){
-          t += obj.title;
+        if ( obj.notext || (obj.label.length > this.maxTitleLength) ){
+          t += obj.label;
         }
-        if ( obj.ftitle ){
-          t += (t.length ? ' - ' : '') + obj.ftitle;
+        if ( obj.flabel ){
+          t += (t.length ? ' - ' : '') + obj.flabel;
         }
         return t || null;
       },
@@ -197,8 +197,9 @@ const cpDef = {
           const tab = this.getRef('tab-' + this.value);
           if (scroll && tab) {
             const x = tab.offsetLeft;
-            if ((x < scroll.currentX) || (x > (scroll.currentX + scroll.containerWidth))) {
-              scroll.scrollTo(tab.offsetLeft, 0, true);
+            const scrollX = scroll.currentX || 0;
+            if ((x < scrollX) || (x > (scrollX + scroll.offsetWidth))) {
+              scroll.scrollSet(tab.offsetLeft, 0, true);
             }
           }
         }
@@ -209,6 +210,7 @@ const cpDef = {
         this.selectedBarColor = this.source[v] ? this.getFontColor(v) : null;
         this.$nextTick(() => {
           this.updateScroll();
+          this.$emit('change', v);
         })
       },
     },

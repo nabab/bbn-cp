@@ -8,17 +8,6 @@
  */
 (self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["components/initial-initial-js"],{
 
-/***/ "./src/components/initial/initial.html":
-/*!*********************************************!*\
-  !*** ./src/components/initial/initial.html ***!
-  \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = `<span :class=\"['bbn-iblock', 'bbn-unselectable', componentClass]\"\n      :title=\"currentName\"\n      :style=\"currentStyle\">\n  <div class=\"bbn-100 bbn-middle\">\n    <div class=\"bbn-block\"\n         :style=\"fontStyle\"\n         bbn-text=\"currentLetters\"/>\n  </div>\n</span>`;\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/initial/initial.html?");
-
-/***/ }),
-
 /***/ "./src/components/initial/_i18n lazy recursive ^\\.\\/initial\\..*\\.lang$":
 /*!********************************************************************************************!*\
   !*** ./src/components/initial/_i18n/ lazy ^\.\/initial\..*\.lang$ strict namespace object ***!
@@ -26,6 +15,17 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((module) => {
 
 eval("function webpackEmptyAsyncContext(req) {\n\t// Here Promise.resolve().then() is used instead of new Promise() to prevent\n\t// uncaught exception popping up in devtools\n\treturn Promise.resolve().then(() => {\n\t\tvar e = new Error(\"Cannot find module '\" + req + \"'\");\n\t\te.code = 'MODULE_NOT_FOUND';\n\t\tthrow e;\n\t});\n}\nwebpackEmptyAsyncContext.keys = () => ([]);\nwebpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;\nwebpackEmptyAsyncContext.id = \"./src/components/initial/_i18n lazy recursive ^\\\\.\\\\/initial\\\\..*\\\\.lang$\";\nmodule.exports = webpackEmptyAsyncContext;\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/initial/_i18n/_lazy_^\\.\\/initial\\..*\\.lang$_strict_namespace_object?");
+
+/***/ }),
+
+/***/ "./src/components/initial/initial.html":
+/*!*********************************************!*\
+  !*** ./src/components/initial/initial.html ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = `<span :class=\"['bbn-iblock', 'bbn-unselectable', componentClass]\"\n      :title=\"currentName\"\n      :style=\"currentStyle\">\n  <div class=\"bbn-100 bbn-flex bbn-middle\">\n    <div class=\"bbn-block\"\n         :style=\"fontStyle\"\n         bbn-text=\"currentLetters\"/>\n  </div>\n</span>`;\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/initial/initial.html?");
 
 /***/ }),
 

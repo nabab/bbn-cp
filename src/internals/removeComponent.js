@@ -18,7 +18,7 @@ export default function removeComponent(cid) {
   // Check if the component exists in the index.
   if (!cp) {
     // Throw an error if the component is not found in the index.
-    throw new Error("The component is already removed");
+    bbn.fn.log(["The component is already removed", cid]);
   }
 
   // If the component exists, remove it from the global components index.

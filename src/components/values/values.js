@@ -104,7 +104,7 @@ const cpDef = {
     }
   },
   methods: {
-    keydown(e){
+    onKeydown(e){
       if (e.key === 'Enter') {
         e.preventDefault();
         e.stopPropagation();
@@ -155,10 +155,10 @@ const cpDef = {
         this.currentValue.push(this.currentInput);
         this.emitInput(this.isJSON ? JSON.stringify(this.currentValue) : this.currentValue);
         this.currentInput = '';
-        this.$refs.input.focus();
+        this.getRef('input').focus();
       }
     },
-    remove(idx){
+    removeItem(idx){
       if (!this.isDisabled
         && !this.readonly
       ) {

@@ -28,7 +28,7 @@ export default {
         return 'auto'
       },
       validator(v) {
-        return !!bbn.fn.getRow(bbnRouterCp.possibleOrientations, { name: v })
+        return !!bbn.fn.getRow(bbnRouter.possibleOrientations, { name: v })
       }
     },
   },
@@ -57,6 +57,7 @@ export default {
        */
       currentVisual: this.visual,
       visualStyleContainer: bbn.fn.createObject(),
+      visualContainers: {}
     }
   },
   computed: {
@@ -105,18 +106,28 @@ export default {
      * @return {Object} 
      */
     visualStyle() {
-      if (!this.isVisual) {
-        return {};
+      const res = {};
+      if (this.isVisual) {
+        Object.assign(res, {
+          minHeight: '100%',
+          display: 'grid',
+          gridColumnGap: '0.5rem',
+          gridRowGap: '0.5rem',
+          gridTemplateRows: 'repeat(' + this.numVisualRows + ', 1fr)',
+          gridTemplateColumns: 'repeat(' + this.numVisualCols + ', 1fr)'
+        });
+  
+        if (!this.visualShowAll) {
+          if (['left', 'right'].includes(this.visualOrientation)) {
+            res.gridTemplateColumns = 'repeat(1, 1fr)';
+          }
+          else {
+            res.gridTemplateRows = 'repeat(1, 1fr)';
+          }
+        }
       }
-
-      return {
-        minHeight: '100%',
-        display: 'grid',
-        gridColumnGap: '0.5rem',
-        gridRowGap: '0.5rem',
-        gridTemplateRows: 'repeat(' + this.numVisualRows + ', 1fr)',
-        gridTemplateColumns: 'repeat(' + this.numVisualCols + ', 1fr)'
-      }
+      
+      return res;
     },
 
     /**
@@ -209,12 +220,12 @@ export default {
      * @return {Number} 
      */
     numVisuals() {
-      if (this.isVisual) {
+      if (this.isVisual && this.numVisualRows && this.numVisualCols) {
         if (['left', 'right'].includes(this.visualOrientation)) {
-          return this.numVisualRows;
+          return this.numVisualRows - 1;
         }
         else {
-          return this.numVisualCols;
+          return this.numVisualCols - 1;
         }
       }
 
@@ -252,7 +263,7 @@ export default {
         { selected: 'asc', fixed: 'desc', pinned: 'desc', last: 'desc', idx: 'asc' }
         : { selected: 'desc', last: 'desc', fixed: 'desc', pinned: 'desc', idx: 'asc' };
       let idx = 0;
-      return bbn.fn.map(
+      const items = bbn.fn.map(
         bbn.fn.multiorder(
           this.views,
           order
@@ -274,8 +285,111 @@ export default {
           }
         }
       );
+      items.forEach(a => bbn.fn.log(a.view.url + ': ' + a.view.selected))
+      return items;
     },
 
+  },
+  methods: {
+    addVisualContainer(e, uid) {
+      this.visualContainers[uid] = e.target;
+    },
+    removeVisualContainer(uid) {
+      bbn.fn.log('removeVisualContainer', arguments);
+      delete this.visualContainers[uid];
+    },
+    visualInit() {
+      if (!this.single && this.hasStorage) {
+        let storage = this.getStorage(this.routerStorageName);
+        if (storage) {
+          if (storage.visual !== undefined) {
+            this.currentVisual = storage.visual;
+          }
+    
+          if (storage.orientation) {
+            this.visualOrientation = storage.orientation;
+            this.lockedOrientation = true;
+          }
+        }
+    
+        this.updateVisualStyleContainer();
+      }
+    },
+    /**
+     * @method updateVisualStyleContainer
+     * @return {Object}
+     */
+    updateVisualStyleContainer() {
+      if (!this.visualStyleContainer) {
+        this.visualStyleContainer = bbn.fn.createObject();
+      }
+      else if (!this.isVisual) {
+        this.visualStyleContainer = bbn.fn.createObject();
+      }
+
+      if (!this.isVisual) {
+        return;
+      }
+
+      //bbn.fn.warning("updateVisualStyleContainer");
+      bbn.fn.iterate(this.views, view => {
+        if (view.view) {
+          view = view.view;
+        }
+
+        if (!this.visualStyleContainer[view.url]) {
+          this.visualStyleContainer[view.url] = {};
+        }
+
+        if (!this.urls[view.uid]) {
+          return;
+        }
+
+        const ct = this.urls[view.uid];
+        if (!ct?.isVisible || this.visualShowAll) {
+          if (this.visualStyleContainer[view.uid].zoom != 0.5) {
+            this.visualStyleContainer[view.uid] = { zoom: 0.1 };
+          }
+
+          return;
+        }
+
+        let num = this.numVisuals + 1;
+        let coord = [1, num, 1, num];
+        switch (this.visualOrientation) {
+          case 'up':
+            coord[2] = 2;
+            break;
+          case 'down':
+            coord[3] = num - 1;
+            break;
+          case 'left':
+            coord[0] = 2;
+            break;
+          case 'right':
+            coord[1] = num - 1;
+            break;
+        }
+
+
+        if ((this.visualStyleContainer[view.uid].zoom != 1)
+          || (this.visualStyleContainer[view.uid].gridColumnStart != coord[0])
+          || (this.visualStyleContainer[view.uid].gridColumnEnd != coord[1])
+          || (this.visualStyleContainer[view.uid].gridRowStart != coord[2])
+          || (this.visualStyleContainer[view.uid].gridRowEnd != coord[3])
+        ) {
+          this.visualStyleContainer[view.uid] = {
+            gridColumnStart: coord[0],
+            gridColumnEnd: coord[1],
+            gridRowStart: coord[2],
+            gridRowEnd: coord[3],
+            zoom: 1
+          };
+        }
+      });
+
+      return this.visualStyleContainer;
+    },
   },
   watch: {
     numVisuals() {
@@ -294,25 +408,9 @@ export default {
       if (this.ready) {
         this.changeConfig();
         this.setConfig();
+        this.visualList.forEach(a => bbn.fn.log(a.view.url + ': ' + a.view.selected))
       }
     },
-  },
-  beforeMount() {
-    if (!this.single) {
-      let storage = this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
-      if (storage) {
-        if (storage.visual !== undefined) {
-          this.currentVisual = storage.visual;
-        }
-  
-        if (storage.orientation) {
-          this.visualOrientation = storage.orientation;
-          this.lockedOrientation = true;
-        }
-      }
-  
-      this.updateVisualStyleContainer();
-    }
   }
 
 }

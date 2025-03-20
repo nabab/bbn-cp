@@ -21,13 +21,23 @@ export default {
     }
   },
   methods: {
+    registrationInit() {
+      if (this.parentContainer) {
+        this.parentContainer.registerRouter(this);
+      }
+    },
+    routerRegistrationDestroy() {
+      if (this.parentContainer) {
+        this.parentContainer.unregisterRouter(this);
+      }
+    },
     filterIsContainer(ele) {
       return ele?.tagName === 'BBN-CONTAINER';
     },
     /**
      * used by container to make themselves known when they are mounted.
      * @method register
-     * @param {bbnCp} cp
+     * @param {HTMLElement} cp
      * @param {Boolean} fake
      * @fires add
      * @fires search
@@ -35,11 +45,10 @@ export default {
      * @fires getDefaultURL
      */
     register(cp, fake) {
-      bbn.fn.checkType(cp, bbnContainerCp);
+      bbn.fn.checkType(cp, bbnContainer);
       if (cp.isRegistered) {
         bbn.fn.log(["It exists", this.urls[cp.routerUid].$numBuild, this.numRegistered, this.views[0].real]);
         if (this.urls[cp.routerUid]) {
-          //this.urls[cp.url].$el.parentNode.removeChild(this.urls[cp.url].$el);
           throw new Error(bbn._('Two containers cannot have the same URL defined') + '(' + cp.url + ')');
         }
         else {
@@ -78,11 +87,10 @@ export default {
      * used by container to make themselves known when they are destroyed
      * @method unregister
      * @fires search
-     * @fires remove
-     * @param {bbnCp} cp
+     * @fires removeItem
+     * @param {HTMLElement} cp
      */
     unregister(cp) {
-      //bbn.fn.log("UNREGISTERING " + cp.url);
       if (!bbn.fn.isString(cp.url)) {
         throw new Error(bbn._('The component bbn-container must have a URL defined'));
       }
@@ -93,26 +101,13 @@ export default {
       if (bbn.fn.getLoader(requestID)) {
         bbn.fn.abort(requestID);
       }
-      if (this.urls[cp.routerUid] !== undefined) {
+      if (this.urls[cp.routerUid] === this) {
         delete this.urls[cp.routerUid];
       }
 
       if (idx !== false) {
-        //this.remove(idx);
+        //this.removeItem(idx);
       }
     },
-  },
-  beforeMount() {
-    if (this.parentContainer) {
-      this.parentContainer.registerRouter(this);
-    }
-  },
-  /**
-   * @event beforeDestroy
-   */
-  beforeDestroy() {
-    if (this.parentContainer) {
-      this.parentContainer.unregisterRouter(this);
-    }
   },
 }

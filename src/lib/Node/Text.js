@@ -1,12 +1,11 @@
-import bbn from "@bbn/bbn";
-import bbnNode from "../Node.js";
+import bbnNode from "./Node.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
  */
 export default class bbnTextNode extends bbnNode
 {
-  nodeBuild() {
+  nodeBuild(after) {
     if (!this.text) {
       throw new Error("A text node must be text! (Magritte)")
     }
@@ -46,34 +45,12 @@ export default class bbnTextNode extends bbnNode
         writable: false,
         configurable: false
       });
-      /*
-      Object.defineProperty(ele, 'bbnIndex', {
-        value: node.loopIndex,
-        writable: false,
-        configurable: false
-      });
-      */
     }
   
-    if (bbn.cp.isComponent(parent)) {
-      if (!parent.bbnTmpSlots.default) {
-        parent.bbnTmpSlots.default = [];
-      }
-      const slots = parent.bbnSlots || parent.bbnTmpSlots;
-      if (bbn.fn.removeExtraSpaces(this.element.textContent) && slots.default) {
-        //bbn.fn.log("IN SLOT DEFAULT ", this.element);
-        slots.default.push(this.element);
-      }
-    }
-    else if (parent !== cp.$el) {
-      parent.appendChild(this.element);
-    }
-  
+    this.nodeInsert(this.element, after);
   }
 
   nodeUpdate() {
     this.text.attrUpdate();
-    //bbn.fn.log("UPDATE FROM TEXT NIODE")
-    //this.element.nodeValue = this.text.attrGetValue();
   }
 }

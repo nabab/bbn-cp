@@ -12,29 +12,21 @@ const cpDef = {
      * @mixin bbn.cp.mixins.basic
      * @mixin bbn.cp.mixins.list
      * @mixin bbn.cp.mixins.keynav
-     * @mixin bbn.cp.mixins.resizer
      */
     mixins: [
       bbn.cp.mixins.basic,
-      bbn.cp.mixins.list,
-      bbn.cp.mixins.keynav,
-      bbn.cp.mixins.resizer
+      bbn.cp.mixins.keynav
     ],
     props: {
+      uid: {
+        type: String
+      },
       /**
        * The source of the floater.
        * @prop {Function|Array|String|Object} source
        */
       source: {
         type: [Function, Array, String, Object]
-      },
-      /**
-       * The array containings the tree's children.
-       * @prop {String} ['items'] children
-       */
-      children: {
-        type: String,
-        default: 'items'
       },
       /**
        * @prop {Array} [[]] selected
@@ -54,6 +46,7 @@ const cpDef = {
     },
     data(){
       return {
+        items: this.flatten(this.source),
         /**
          * @data {Array} [[]] currentSelected
          */
@@ -78,14 +71,44 @@ const cpDef = {
         /**
          * @data {Number} [0] maxDepth
          */
-        maxDepth: 0
+        maxDepth: 0,
+        waiter: 0
       };
     },
     computed: {
+      lastSelectedIndex() {
+        return this.currentSelected[this.currentSelected.length - 1];
+      },
+      lastSelecteList() {
+        const lastItemSelected = this.lastSelectedIndex;
+        let row = bbn.fn.getRow(this.items, {id: lastItemSelected});
+        if (!row) {
+          const bits = lastItemSelected.split('-');
+          bits.pop();
+          row = bbn.fn.getRow(this.items, {id: bits.join('-')});
+        }
+        return row;
+      },
+      lastSelectedItem() {
+        const lastItemSelected = this.lastSelectedIndex;
+        let row = bbn.fn.getRow(this.items, {id: lastItemSelected});
+        if (!row) {
+          const bits = lastItemSelected.split('-');
+          const idx = bits.pop();
+          row = bbn.fn.getRow(this.items, {id: bits.join('-')});
+          return row ? row.data[idx] : false;
+        }
+
+        return row;
+      },
+      allSelected() {
+        return this.currentSelected.map((a, i) => {
+          return bbn.fn.getRow(this.items, {id: a});
+        });
+      }
       /**
        * @computed items
        * @returns {Array}
-       */
       items(){
         let depth = 0;
         let res = [{
@@ -101,7 +124,7 @@ const cpDef = {
           if (sel) {
             sel += '.';
           }
-          sel += a + '.' + this.children;
+          sel += a + '.' + this.sourceItems;
           let tmp = bbn.fn.getProperty(this.source, sel);
           list = tmp
           if (tmp && tmp.length ) {
@@ -123,13 +146,13 @@ const cpDef = {
         if (list && list.length) {
           let hasChildren = false;
           bbn.fn.each(list, a => {
-            if (a[this.children] && a[this.children].length) {
+            if (a[this.sourceItems] && a[this.sourceItems].length) {
               if (!hasChildren) {
                 hasChildren = true;
                 depth++;
               }
               res.push({
-                data: a[this.children],
+                data: a[this.sourceItems],
                 selected: false,
                 visible: false,
                 last: true,
@@ -144,24 +167,50 @@ const cpDef = {
         this.maxDepth = depth;
         return res;
       }
+       */
     },
     methods: {
-      /**
-       * @method getStyle
-       * @param {Object} item
-       * @returns {Object}
-       */
-      getStyle(item){
-        let left = '100%';
-        if (item.visible) {
-          left = '0px';
-        }
-        else if (item.selected) {
-          left = '-100%';
-        }
-        return {
-          left: left
-        }
+      flatten(items, parent = null, depth = 1, index = '0') {
+        const cp = this;
+        const res = [{
+          data: items,
+          parent,
+          selected: false,
+          visible: false,
+          depth,
+          id: parent ? parent + '-' + index : index,
+          get style() {
+            let left = '100%';
+            let display = 'none';
+            if (cp.currentSelected[cp.currentSelected.length - 1] === this.id) {
+              left = '0px';
+              display = 'block';
+            }
+            else if (cp.currentSelected.includes(this.id)) {
+              let idx = cp.currentSelected.indexOf(this.id);
+              left = bbn.fn.getRow(cp.items, {id: cp.currentSelected[idx + 1]}) ? '-100%' : '0px';
+              display = 'block';
+            }
+            else if ((cp.currentSelected.length === 1) && (this.depth <= 2)) {
+              display = 'block';
+            }
+            else if (this.parent === cp.currentSelected[cp.currentSelected.length - 1]) {
+              display = 'block';
+            }
+
+            return {
+              left,
+              display
+            }
+          }
+        }];
+        bbn.fn.each(items, (a, i) => {
+          if (a.items?.length) {
+            res.push(...this.flatten(a.items, res[0].id, depth + 1, i.toString()));
+          }
+        });
+
+        return res;
       },
       /**
        * @method mouseleave
@@ -175,7 +224,7 @@ const cpDef = {
        * @param {Number} idx
        * @fires realDelete
        */
-      remove(idx){
+      removeItem(idx){
         //bbn.fn.log(this.currentData, idx);
         this.realDelete(idx);
       },
@@ -186,31 +235,48 @@ const cpDef = {
        * @param {Number} dataIdx
        * @emits select
        */
-      select(itemIdx, dataIdx){
-        if ((this.items[itemIdx].depth < this.maxDepth) && this.items[itemIdx].data && this.items[itemIdx].data.length) {
-          this.currentSelected.push(dataIdx)
-          this.selectedIndex = false;
+      select(itemIdx, dataIdx) {
+        const lastBits = this.currentSelected[this.currentSelected.length - 1].split('-');
+        const thisBits = this.items[itemIdx].id.split('-');
+
+        if (thisBits.length + 1 === lastBits.length) {
+          bbn.fn.log("POPPING");
+          this.currentSelected.pop();
         }
-        else {
-          this.selectedIndex = dataIdx;
-        }
+
+        this.currentSelected.push(this.items[itemIdx].id + '-' + dataIdx);
+        this.selectedIndex = dataIdx;
+        bbn.fn.log(["SELECT", this.items[itemIdx].data[dataIdx], itemIdx, dataIdx, this.items[itemIdx].depth]);
         this.$emit('select', this.items[itemIdx].data[dataIdx]);
       },
       /**
        * @method unselect
        * @emits unselect
        */
-      unselect(){
+      unselect(depth){
         this.selectedIndex = false;
-        this.currentSelected.pop();
+        let last = this.currentSelected.pop();
+        if (!bbn.fn.getRow(this.items, {id: last})) {
+          last = this.currentSelected.pop();
+        }
+
         this.$emit('unselect', this.currentSelected)
       },
       /**
        * @method reset
        */
       reset(){
+        bbn.fn.log("RESET START")
         this.selectedIndex = false;
-        this.currentSelected.splice(0, this.currentSelected.length);
+        this.currentSelected.splice(0, this.currentSelected.length, '0');
+        this.items = this.flatten(this.source);
+        bbn.fn.log("END RESET START")
+      },
+      waitReady() {
+       clearTimeout(this.waiter);
+       this.waiter = setTimeout(() => {
+          this.ready = true;
+       }, 100);
       }
     },
     mounted() {
@@ -218,7 +284,6 @@ const cpDef = {
         if (this.$parent.$options && (this.$parent.$options._componentTag === 'bbn-scroll')) {
           this.hasScroll = true;
         }
-        this.ready = true;
       });
     },
     watch: {

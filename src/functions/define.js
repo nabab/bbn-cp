@@ -24,22 +24,25 @@ export default function define(name, obj, tplSt, css) {
     throw new Error("The name of the component is mandatory");
   }
 
+  //bbn.fn.log("DEFINING " + name);
   // Convert the template string to a DOM array.
-  let tmp = stringToTemplate(tplSt, true, obj.tag || name);
+  const {res: cpTpl, map: cpMap, inlineTemplates} = stringToTemplate(tplSt, true, obj.tag || name);
   // Generate a public class name based on the component tag.
   const publicName = bbn.fn.camelize(name);
   // The component config (= Vue-like object) that we freeze
-  bbn.fn.iterate(tmp.inlineTemplates, (tpl, tag) => {
+  bbn.fn.iterate(inlineTemplates, (tpl, tag) => {
     if (!obj.components[tag]) {
-      bbn.fn.log(Object.keys(cpCfg.components).join(", "));
-      throw new Error("Impossible to find the sub component %s", tag);
+      bbn.fn.log(cpTpl);
+      throw new Error(bbn._("Impossible to find the sub component %s", tag));
     }
+
     obj.components[tag].template = tpl;
   });
   const cpCfg = bbn.cp.normalizeComponent(obj, publicName);
   Object.freeze(cpCfg);
 
   if (!window[publicName]) {
+    //bbn.fn.log(["DEFINING " + name, publicName, cpCfg.tag]);
     // Generate and globally expose HTML and Cp classes.
     window[publicName] = generateHtmlClass(publicName, cpCfg.tag || null);
     // Define arguments for custom element registration.
@@ -55,13 +58,13 @@ export default function define(name, obj, tplSt, css) {
 
   // Store component configuration in bbn.cp.statics.
   bbn.cp.statics[name] = bbnData.immunizeValue(bbn.fn.createObject({
-    tpl: tmp.res,
-    map: tmp.map,
+    tpl: cpTpl,
+    map: cpMap,
     cls: publicName + 'HTML',
     fn: publicName + 'Cp',
     cfg: cpCfg,
-    models: retrieveModels(tmp.res),
-    slots: retrieveSlots(tmp.res),
+    models: retrieveModels(cpTpl),
+    slots: retrieveSlots(cpTpl),
     tag: cpCfg.tag,
   }));
 
@@ -94,12 +97,12 @@ export default function define(name, obj, tplSt, css) {
   // Generating the code for the private class based on the component config
   //const privateClassCode = makePrivateClass(privateName, cpCfg);
   //bbn.fn.log('generateCpClass', publicName);
-  window[publicName + 'Cp'] = generateCpClass(publicName, cpCfg);
+  generateCpClass(publicName, cpCfg);
   // Register the component and add it to the known components list.
   bbn.cp.known.push(name);
   const idx = bbn.cp.unknown.indexOf(name);
   if (idx > -1) {
-    bbn.cp.unknown.splice(idx, 1);
+    //bbn.cp.unknown.splice(idx, 1);
   }
 
   const ev = new CustomEvent('bbn-loaded-' + name);

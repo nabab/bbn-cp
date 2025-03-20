@@ -1,16 +1,15 @@
-import bbn from "@bbn/bbn";
-import bbnAttr from "../Attr.js";
+import bbnAttr from "./Attr.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
  */
 export default class bbnDirectiveAttr extends bbnAttr
 {
+
   inserted = false;
 
   attrUpdate(init) {
-    //bbn.fn.log("UPDATE ATTR DIRECTIVE " + this.name)
-    if (!this.inserted) {
+    if (!this.inserted && !this.node.comment) {
       // Check if the "inserted" function exists on this directive
       if (bbn.fn.isFunction(bbn.cp.directives[this.name].inserted)) {
         // Set the 'oldValue' property of the directive.
@@ -26,7 +25,7 @@ export default class bbnDirectiveAttr extends bbnAttr
         throw new Error(bbn._("Unrecognized directive %s", this.name));
       }
     }
-    else if (this.isChanged) {
+    else if (this.inserted && this.isChanged) {
       // Update the 'lastUpdate' property of the directive.
       this.lastUpdate = bbn.fn.dateSQL();
       // Update the 'oldValue' property of the directive.

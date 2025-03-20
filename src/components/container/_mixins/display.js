@@ -3,9 +3,9 @@ export default {
     pane: {},
     /**
      * Defines if the component is hidden.
-     * @prop {Boolean} [false] hidden
+     * @prop {Boolean} [false] invisible
      */
-    hidden: {
+    invisible: {
       type: [Boolean, Function],
       default: false
     },

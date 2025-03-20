@@ -1,10 +1,11 @@
-<div :class="[componentClass, 'bbn-overlay', 'bbn-flex-height']">
+<div :class="[componentClass, 'bbn-overlay', 'bbn-flex-height']"
+     tabindex="-1">
   <div class="bbn-w-100 bbn-xl bbn-c bbn-vlpadding">
     <bbn-input :placeholder="placeholder"
                 :style="{width: '75%', textAlign: 'left'}"
                 type="search"
                 ref="input"
-                @keydown="keydown"
+                @keydown="onKeydown"
                 :nullable="isNullable"
                 autocomplete="off"
                 bbn-model="filterString"
@@ -20,7 +21,7 @@
                 :auto-hide="false"
                 :suggest="suggest"
                 :component="searchComponent"
-                :children="null"
+                :source-items="null"
                 @select="select"
                 :source-url="sourceUrl"
                 :source-action="sourceAction"

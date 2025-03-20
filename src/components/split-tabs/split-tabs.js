@@ -136,7 +136,7 @@ const cpDef = {
     /**
      * Function used by container to make themselves known when they are mounted
      *
-     * @param {bbnCp} cp
+     * @param {HTMLElement} cp
      */
     register(cp, fake){
       if ( fake ){
@@ -158,7 +158,7 @@ const cpDef = {
     /**
      * Function used by container to make themselves known when they are destroyed
      *
-     * @param {bbnCp} cp
+     * @param {HTMLElement} cp
      */
     unregister(cp){
       this.numRegistered--;
@@ -255,7 +255,7 @@ const cpDef = {
     getDefaultView(){
       return {
         source: null,
-        title: bbn._("Untitled"),
+        label: bbn._("Untitled"),
         options: null,
         cached: false,
         scrollable: true,
@@ -314,6 +314,7 @@ const cpDef = {
      * @returns {void}
      */
     route(url, force){
+      bbn.fn.log("ROUTING " + url);
       if ( this.ready && (force || !this.activeContainer || (url !== this.currentURL)) ){
         let event = new CustomEvent(
           "beforeroute",
@@ -465,7 +466,7 @@ const cpDef = {
       //bbn.fn.log("THE CONTAINER WILL BE SHOWN: ", container);
     },
 
-    changeURL(url, title, replace){
+    changeURL(url, label, replace){
       //bbn.fn.log("CHANGE URL TO " + url);
       if ( !bbn.env.isInit ){
         return;
@@ -478,7 +479,7 @@ const cpDef = {
         this.$set(this.views[this.selected], 'current', url);
       }
       if ( this.parent ){
-        this.parent.changeURL(this.baseURL + url, title, replace);
+        this.parent.changeURL(this.baseURL + url, label, replace);
       }
       else if ( replace || (url !== bbn.env.path) ){
         if ( !replace ){
@@ -488,7 +489,7 @@ const cpDef = {
           //bbn.fn.log("REPLACING");
           replace = true;
         }
-        bbn.fn.setNavigationVars(this.getFullBaseURL() + url, title, {}, replace);
+        bbn.fn.setNavigationVars(this.getFullBaseURL() + url, label, {}, replace);
       }
     },
 
@@ -688,7 +689,7 @@ const cpDef = {
       return this.isValidIndex(misc) ? misc : false;
     },
 
-    remove(misc, force){
+    removeItem(misc, force){
       let idx = this.getIndex(misc);
       if ( (idx > -1) && !this.views[idx].slot ){
         let ev = new Event('close', {cancelable: true});
@@ -707,7 +708,7 @@ const cpDef = {
             }
             this.$nextTick(() => {
               this.$emit('close', idx, ev);
-              this.remove(idx, true);
+              this.removeItem(idx, true);
             });
           });
         }
@@ -852,7 +853,7 @@ const cpDef = {
           this.$nextTick(() => {
             this.add({
               url: url,
-              title: bbn._('Loading'),
+              label: bbn._('Loading'),
               load: true,
               loading: true,
               visible: true,
@@ -866,7 +867,7 @@ const cpDef = {
         this.$emit('update', this.views);
         return this.post(finalURL, {_bbn_baseURL: this.fullBaseURL}, d => {
           this.isLoading = false;
-          //this.remove(url);
+          //this.removeItem(url);
           if ( d.url ){
             d.url = this.parseURL(d.url);
           }
@@ -887,14 +888,14 @@ const cpDef = {
             this.views.splice(this.urls[d.current].idx, 1);
             delete this.urls[d.current];
           }
-          if ( !d.title || (d.title === bbn._('Loading')) ){
-            let title = bbn._('Untitled');
+          if ( !d.label || (d.label === bbn._('Loading')) ){
+            let label = bbn._('Untitled');
             let num = 1;
-            while ( bbn.fn.search(this.views, {title: title}) > -1 ){
+            while ( bbn.fn.search(this.views, {label: label}) > -1 ){
               num++;
-              title = bbn._('Untitled') + ' ' + num;
+              label = bbn._('Untitled') + ' ' + num;
             }
-            d.title = title;
+            d.label = label;
           }
           this.$nextTick(() => {
             this.add(bbn.fn.extend(d, {slot: false, loading: false, load: true, real: false, loaded: true}));
@@ -940,7 +941,7 @@ const cpDef = {
             this.views[idx].loading = false;
             this.views[idx].loaded = true;
             this.views[idx].menu = false;
-            this.views[idx].title = bbn._('Error') + ' ' + xhr.status;
+            this.views[idx].label = bbn._('Error') + ' ' + xhr.status;
             if ( this.views[idx].load !== false ){
               this.views[idx].load = null;
             }
@@ -994,12 +995,12 @@ const cpDef = {
         idx = this.selected;
       }
       if ( cp.views[idx] ){
-        res += (cp.views[idx].title || bbn._('Untitled'));
+        res += (cp.views[idx].label || bbn._('Untitled'));
         if ( cp.parentTab ){
           idx = cp.parentTab.idx;
           cp = cp.parentTab.tabNav;
           while ( cp ){
-            res += ' < ' + (cp.views[idx].title || bbn._('Untitled'));
+            res += ' < ' + (cp.views[idx].label || bbn._('Untitled'));
             if ( cp.parentTab ){
               idx = cp.parentTab.idx;
               cp = cp.parentTab.tabNav;
@@ -1052,7 +1053,7 @@ const cpDef = {
     currentURL(newVal, oldVal){
       if ( this.ready ){
         if ( this.activeContainer ){
-          this.changeURL(newVal, this.activeContainer.title);
+          this.changeURL(newVal, this.activeContainer.label);
         }
         else if ( this.isLoading ){
           this.changeURL(newVal, bbn._("Loading"));

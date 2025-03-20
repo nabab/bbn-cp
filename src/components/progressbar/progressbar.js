@@ -217,7 +217,7 @@ const cpDef = {
        * @computed {String} style
        * @return {String}
        */
-      style(){
+      currentStyle(){
         let st = '';
         if ( this.orientation === 'horizontal' ){
           st += 'width:' + this.percent  + '%;'

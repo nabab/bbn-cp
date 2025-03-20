@@ -2,46 +2,46 @@
   <div class="bbn-hidden" bbn-if="$slots.default" ref="slot">
     <slot></slot>
   </div>
-  <div bbn-for="(item, index) of items"
-       class="bbn-overlay slide"
-       :style="getStyle(item)">
-    <bbn-scroll :scrollable="item.visible">
-      <ul bbn-if="item.data && item.data.length && ready"
-          class="bbn-menulist">
-        <li bbn-if="index > 0" class="bbn-state-default" @click="unselect">
-          <span class="bbn-w-100 bbn-vxspadding bbn-hspadding">
-            <!--span class="space" bbn-if="hasIcons"></span-->
-            <span class="text">..</span>
-          </span>
-
-        </li>
-        <li bbn-for="(li, idx) of item.data"
-            :ref="'li-' + index + '-' + idx"
-            :key="uid ? li[uid] : index + '-' + idx"
-            @click="select(index, idx)"
-            :class="{
-              'bbn-no-padding': !!component,
-              'bbn-state-default': true,
-              'bbn-disabled': !!li.disabled,
-              'bbn-state-selected': item.visible && (idx === selectedIndex)
-            }">
-          <component bbn-if="currentComponent"
-                    :is="currentComponent"
-                    :source="li"
-                    @remove="remove(idx)">
-          </component>
-          <component bbn-else
-                    :is="li.url && !li[children] ? 'a' : 'span'"
-                    @click.prevent="() => {}"
-                    class="bbn-w-100 bbn-vxspadding bbn-hspadding"
-                    :href="li.url || null">
-            <!--span class="space" bbn-if="hasIcons">
-              <i bbn-if="li.icon" :class="li.icon"></i>
-            </span-->
-            <span class="text" bbn-html="li[sourceText]"></span>
-          </component>
-        </li>
-      </ul>
-    </bbn-scroll>
+  <div bbn-if="items.length"
+       bbn-show="ready">
+    <div bbn-for="(item, index) of items"
+         :style="item.style"
+         class="bbn-overlay slide">
+      <bbn-scroll @hook:mounted="waitReady">
+        <div class="bbn-padding">
+          <ul class="bbn-menulist">
+            <li bbn-if="index > 0" class="bbn-state-default" @click="unselect(item.depth)">
+              <!--span class="space" bbn-if="hasIcons"></span-->
+              <i class="nf nf-md-arrow_left_top"/>
+            </li>
+            <li bbn-for="(li, idx) of item.data"
+                :ref="'li-' + index + '-' + idx"
+                :key="uid ? li[uid] : index + '-' + idx"
+                @click="select(index, idx)"
+                :class="{
+                  'bbn-no-padding': !!component,
+                  'bbn-state-default': true,
+                  'bbn-disabled': !!li.disabled
+                }">
+              <component bbn-if="currentComponent"
+                        :is="currentComponent"
+                        :source="li"
+                        @remove="removeItem(idx)">
+              </component>
+              <component bbn-else
+                        :is="li.url && !li[children] ? 'a' : 'span'"
+                        @click.prevent="() => {}"
+                        class="bbn-w-100 bbn-vxspadding bbn-hspadding"
+                        :href="li.url || null">
+                <!--span class="space" bbn-if="hasIcons">
+                  <i bbn-if="li.icon" :class="li.icon"></i>
+                </span-->
+                <span class="text" bbn-html="li[sourceText]"></span>
+              </component>
+            </li>
+          </ul>
+        </div>
+      </bbn-scroll>
+    </div>
   </div>
 </div>

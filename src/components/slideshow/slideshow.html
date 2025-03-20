@@ -123,9 +123,13 @@
                            @click="itemClickable ? $emit('clickitem', it) : false">
                     </div>
                   </div>
-                  <bbn-checkbox bbn-if="checkbox && it.checkable" bbn-model="valuesCB[i]" :value="true" :novalue="false"
-                    :strict="true" :label="(typeof checkbox === 'string') ? checkbox : defaultTextCB"
-                    class="bbn-slideshow-showagain"/>
+                  <bbn-checkbox bbn-if="checkbox && it.checkable"
+                                bbn-model="valuesCB[i]"
+                                :value="true"
+                                :novalue="false"
+                                :strict="true"
+                                :label="(typeof checkbox === 'string') ? checkbox : defaultTextCB"
+                                class="bbn-slideshow-showagain"/>
                 </div>
               </div>
               <div bbn-if="ctrl" class="bbn-w-100 bbn-middle">

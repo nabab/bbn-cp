@@ -19,25 +19,12 @@ const cpDef = {
     bbn.cp.mixins.events
   ],
   props: {
-    type: {
-      type: String,
-      default: 'button'
-    },
-    /**
-     * The title of the button.
-     *
-     * @prop {String} [''] title
-     */
-    title: {
-      type: String,
-      default: ''
-    },
     /**
     * The button's text.
     *
-    * @prop {String} text
+    * @prop {String} label
     */
-    text: {
+    label: {
       type: String,
     },
     /**
@@ -91,24 +78,6 @@ const cpDef = {
     secondaryColor: {
       type: String,
       default: null
-    },
-    /**
-     * Specifies the type of button.
-     *
-     * @prop {String} ['button'] type
-     */
-    type: {
-      type: String,
-      default: 'button'
-    },
-    /**
-     * Set to true to disable the button.
-     *
-     * @prop {(Boolean|Function)} [false] disabled
-     */
-    disabled: {
-      type: [Boolean, Function, String, Number],
-      default: false
     },
     /**
      * Set to true for the button to glow.
@@ -174,16 +143,15 @@ const cpDef = {
      * @return {String}
      */
     titleString(){
-      if (this.title) {
-        return this.title;
+      if (this.bbnSchema.props.title) {
+        return this.bbnSchema.props.title;
       }
 
-      let st = '';
-      if (this.notext && this.text) {
-        st += this.text;
+      if (this.notext) {
+        return this.flabel || this.label;
       }
 
-      return st;
+      return '';
     },
     /**
      * Return if the button is disabled.
@@ -193,10 +161,21 @@ const cpDef = {
      * @return {Boolean}
      */
     isDisabled(){
-      const res = typeof(this.disabled) === 'function' ?
-        this.disabled() : this.disabled;
+      const val = this.$node.props.disabled;
+      const res = typeof(val) === 'function' ? val() : val;
       return !!res;
-      return res ? 'disabled' : '';
+    },
+    currentTabIndex() {
+      if (this.isDisabled) {
+        return '-1';
+      }
+
+      if ('tabindex' in this.$node.props) {
+        const ti = this.$node.props.tabindex;
+        return typeof ti === 'string' ? ti : ti.toString()
+      }
+
+      return '0';
     },
     /**
      * Returns the style of the button
@@ -211,8 +190,8 @@ const cpDef = {
       return obj;
     },
     currentType() {
-      if (this.type && ['button', 'submit', 'reset'].includes(this.type)) {
-        return this.type;
+      if (this.bbnSchema.props.type && ['button', 'submit', 'reset'].includes(this.bbnSchema.props.type)) {
+        return this.bbnSchema.props.type;
       }
 
       return 'button';
@@ -222,12 +201,12 @@ const cpDef = {
     /**
      * The role of the button when clicked.
      *
-     * @method click
+     * @method onClick
      * @param {Event} e
      * @fires action
      * @emit click
      */
-    click(e) {
+    onClick(e) {
       //bbn.fn.log("ONCLICK", e, this);
       if (this.url) {
         bbn.fn.link(this.url);

@@ -65,7 +65,7 @@ const cpDef = {
         return this.isSpecial && (bbn.fn.substr(this.k, 0, 1) === 'f');
       },
       isArrow(){
-        return (this.k.indexOf('arrow') === 0) || bbnKeyCp.DIRECTIONS.includes(this.k)
+        return (this.k.indexOf('arrow') === 0) || bbnKey.DIRECTIONS.includes(this.k)
       },
       rendered(){
         let st = bbn.fn.correctCase(this.k);
@@ -86,7 +86,7 @@ const cpDef = {
       arrowClass(){
         let cls = '';
         if (this.isArrow) {
-          bbn.fn.each(bbnKeyCp.DIRECTIONS, a => {
+          bbn.fn.each(bbnKey.DIRECTIONS, a => {
             if (this.k.indexOf(a) > -1) {
               cls = 'nf nf-fa-long_arrow_' + a;
               return false;

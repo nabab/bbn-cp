@@ -1,6 +1,4 @@
-import bbn from "@bbn/bbn";
-import bbnNode from "../Node.js";
-import deleteNodes from "../Cp/private/deleteNodes.js";
+import bbnNode from "./Node.js";
 /**
  * Takes care of the data reactivity for non primitive values.
  */
@@ -20,14 +18,14 @@ export default class bbnTemplateNode extends bbnNode
       this.nodeSetAll();
       //bbn.fn.log(["INIT TEMPLATE " + this.id, this.comment, this.isCommented, ele, bbn.fn.isComment(ele)]);
       if (!ele || (this.comment !== bbn.fn.isComment(ele))) {
-        ele = this.nodeBuild(after);
+        ele = this.nodeBuild(after, true);
       }
       
       if (!this.pre && (!this.condition || this.condition.value) && (!this.parent?.condition || this.parent.condition.value)) {
         this.nodeConceive();
       }
       else if (this.condition && !this.condition.value && !this.isCommented) {
-        deleteNodes(this.component, this.id, this.hash);
+        this.nodeClean();
       }
 
       this.isCreating = false;

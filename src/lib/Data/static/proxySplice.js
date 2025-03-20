@@ -1,5 +1,4 @@
-import bbn from "@bbn/bbn";
-import bbnData from "../../Data.js";
+import bbnData from "../Data.js";
 
 /**
  * Splices the elements of an array and updates the data object
@@ -14,27 +13,19 @@ bbnData.proxySplice = function(targetObj, target, component) {
       throw new Error(["Impossible to find the data object", target]);
     }
 
-    const res = numDelete === undefined ? target.splice(index) : target.splice(index, numDelete);
-    let i = index;
-    res.forEach(t => {
-      let subObj = this.getObject(t);
-      if (subObj) {
-        subObj.removeComponent(component, i);
-      }
-      i++;
-    });
-
-    let newArgs = [];
-    args.forEach((a, i) => {
-      const idx = target.length + i;
-      //const newVal = this.treatValue(a, component, idx, targetObj);
-      newArgs.push(a);
-    });
-    if (newArgs.length) {
-      target.splice(index, 0, ...newArgs);
+    if (numDelete === undefined) {
+      numDelete = target.length - index;
     }
 
+    const res = target.splice(index, numDelete, ...args);
     if (targetObj) {
+      res.forEach((t, i) => {
+        let subObj = this.getObject(t);
+        if (subObj) {
+          subObj.removeComponent(component, i + index);
+        }
+      });
+
       targetObj.fixIndexes(component);
       //bbn.fn.log("SPLICE");
       targetObj.prepareUpdate();

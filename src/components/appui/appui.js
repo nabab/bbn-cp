@@ -37,7 +37,7 @@ const cpDef = {
       default: bbn.env.path
     },
     popup: {
-      type: bbnCp
+      type: HTMLElement
     },
     scrollable: {
       type: Boolean,
@@ -104,7 +104,7 @@ const cpDef = {
       default() {
         return [/*{
           url: (this.plugins && this.plugins['appui-core'] ? this.plugins['appui-core'] : 'core') + '/home',
-          title: bbn._("Dashboard"),
+          label: bbn._("Dashboard"),
           load: true,
           fixed: true,
           icon: 'nf nf-fa-tachometer_alt'
@@ -128,7 +128,7 @@ const cpDef = {
       default: false
     },
     /**
-     * @prop {Boolean} [false] single
+     * @prop {Boolean} [true] single
      */
     urlNavigation: {
       type: Boolean,
@@ -137,7 +137,7 @@ const cpDef = {
     /**
      * @prop {String} ['bbn.env.siteTitle || bbn._("App-UI")'] title
      */
-    title: {
+    label: {
       type: String,
       default: bbn.env.siteTitle || bbn._('App-UI')
     },
@@ -194,9 +194,6 @@ const cpDef = {
       type: Boolean,
       default: true
     },
-    prefix: {
-      type: String
-    },
     componentsMixin: {
       type: Object
     },
@@ -226,6 +223,10 @@ const cpDef = {
     },
     user: {
       type: Object
+    },
+    pollable: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -266,7 +267,7 @@ const cpDef = {
       searchString: '',
       observerTimeout: false,
       colorEnvVisible: true,
-      currentTitle: this.title,
+      currentTitle: this.label,
       searchIsActive: false,
       bigMessage: false,
       hasBigMessage: false,
@@ -390,7 +391,7 @@ const cpDef = {
               }
             }, {
               text: bbn._('Log the container'),
-              icon: 'nf nf-mdi-sign_text',
+              icon: 'nf nf-md-sign_text',
               action() {
                 let idx = router.search(tab.url);
                 //bbn.fn.log("Container with URL " + tab.url, router.urls[router.views[idx].url]);
@@ -407,6 +408,17 @@ const cpDef = {
     },
     onRoute(path) {
       this.$emit('route', path)
+      const router = this.getRef('router');
+      let st = 'ROUTER SELECTED: ' + router.selected + '\n';
+      st += 'ROUTER CURRENT: ' + router.currentURL + '\n';
+      bbn.fn.each(router.views, a => {
+        st += a.idx + ': ' + (a.pane || ' NO PANE ') + ' ' + a.url;
+        if (router.urls[a.uid]) {
+          st += ' - CT: ' + router.urls[a.uid].currentIndex + ' - ' + router.urls[a.uid].currentSelected;
+        }
+        st += '\n';
+      })
+      bbn.fn.log(st);
     },
     route(url, force) {
       this.getRef('router').route(url, force);
@@ -520,7 +532,7 @@ const cpDef = {
      * @param {Object} message
      */
     receive(message) {
-      //bbn.fn.log("RECEIVING", message, message.type);
+      bbn.fn.log(["RECEIVING " + message.type, message]);
       if (message.type !== undefined) {
         switch (message.type) {
           case 'message':
@@ -529,7 +541,7 @@ const cpDef = {
             }
             if (message.data && message.data.disconnected) {
               //document.location.reload();
-              bbn.fn.log("DISCONNECTED", message.data);
+              bbn.fn.log(["DISCONNECTED", message.data]);
             }
             else if (message.data && message.data.data) {
 
@@ -558,7 +570,7 @@ const cpDef = {
       }
     },
     poll(data) {
-      if (this.pollable && this.pollerPath) {
+      if (this.pollable) {
         if (!data) {
           data = {
             'appui-core': {
@@ -587,7 +599,7 @@ const cpDef = {
         this.searchIsActive = false
       }, 500)
     },
-    keydown(e) {
+    onKeydown(e) {
       if (this.longPressed) {
         e.preventDefault();
       }
@@ -691,7 +703,8 @@ const cpDef = {
           }
         });
       }
-      appui.error({ title: textStatus, content: errorThrown }, 4);
+      bbn.fn.log(["AJAX ERROR", jqXHR, textStatus, errorThrown]);
+      appui.error({ label: textStatus, content: errorThrown }, 4);
       return false;
     };
     bbn.fn.defaultPreLinkFunction = url => {
@@ -735,176 +748,173 @@ const cpDef = {
     if (window.appui) {
       throw new Error("Impossible to have 2 bbn-appui components on a same page. bbn-appui is meant to hold a whole web app");
     }
-    else {
-      window.appui = this;
-      this.componentClass.push('bbn-resize-emitter', 'bbn-observer');
-      this.cool = true;
+    window.appui = this;
+    this.componentClass.push('bbn-resize-emitter', 'bbn-observer');
 
-      let preloaded = [
-        'container',
-        'router',
-        'scroll',
-        'floater',
-        'popup'
-      ];
+    let preloaded = [
+      'container',
+      'router',
+      'scroll',
+      'floater',
+      'popup'
+    ];
 
-      if (!this.single) {
+    if (!this.single) {
+      preloaded.push(
+        'pane',
+        'splitter',
+        'tabs',
+        'context',
+        'loadicon'
+      );
+    }
+
+    if (this.header) {
+      preloaded.push(
+        'pane',
+        'splitter',
+        'search',
+        'fisheye'
+      );
+    }
+
+    if (this.plugins && this.plugins['appui-menu']) {
+      preloaded.push(
+        'slider',
+        'tree',
+        'treemenu',
+        'menu',
+        'input',
+        'list',
+        'dropdown',
+        'checkbox',
+        'button'
+      );
+    }
+
+    if (this.plugins && this.plugins['appui-notification']) {
+      preloaded.push(
+        'notification'
+      );
+    }
+
+    if (this.status) {
+      preloaded.push(
+        'splitter',
+        'input',
+        'loadbar',
+        'checkbox',
+        'button'
+      );
+      if (this.chat) {
         preloaded.push(
-          'pane',
-          'splitter',
-          'tabs',
-          'context',
-          'loadicon'
+          'chat'
         );
       }
+    }
 
-      if (this.header) {
-        preloaded.push(
-          'pane',
-          'splitter',
-          'search',
-          'fisheye'
-        );
+    if (this.clipboard) {
+      preloaded.push(
+        'slider',
+        'clipboard'
+      );
+    }
+
+    //bbn.cp.fetchComponent(preloaded.map(c => 'bbn-' + c));
+
+    this.$on('focusin', () => this.isFocused = true);
+    this.$on('focusout', () => this.isFocused = false);
+
+    document.addEventListener('keydown', this.onKeydown);
+    document.addEventListener('keyup', () => {
+      this.pressedKey = false;
+    });
+
+    this.$on('messageToChannel', data => {
+      this.messageChannel(this.primaryChannel, data);
+    });
+
+    // Emissions from poller
+    //appui
+    this.$on('appui', (type, data) => {
+      switch (type) {
+        case 'messageFromChannel':
+          this.messageFromChannel(data);
       }
-
-      if (this.plugins && this.plugins['appui-menu']) {
-        preloaded.push(
-          'slider',
-          'tree',
-          'treemenu',
-          'menu',
-          'input',
-          'list',
-          'dropdown',
-          'checkbox',
-          'button'
-        );
-      }
-
-      if (this.plugins && this.plugins['appui-notification']) {
-        preloaded.push(
-          'notification'
-        );
-      }
-
-      if (this.status) {
-        preloaded.push(
-          'splitter',
-          'input',
-          'loadbar',
-          'checkbox',
-          'button'
-        );
-        if (this.chat) {
-          preloaded.push(
-            'chat'
-          );
-        }
-      }
-
-      if (this.clipboard) {
-        preloaded.push(
-          'slider',
-          'clipboard'
-        );
-      }
-
-      //bbn.cp.fetchComponents(preloaded.map(c => 'bbn-' + c));
-
-      this.$on('focusin', () => this.isFocused = true);
-      this.$on('focusout', () => this.isFocused = false);
-
-      document.addEventListener('keydown', this.keydown);
-      document.addEventListener('keyup', () => {
-        this.pressedKey = false;
-      });
-
-      this.$on('messageToChannel', data => {
-        this.messageChannel(this.primaryChannel, data);
-      });
-
-      // Emissions from poller
-      //appui
-      this.$on('appui', (type, data) => {
-        switch (type) {
-          case 'messageFromChannel':
-            this.messageFromChannel(data);
-        }
-      })
-      // appui-chat
-      this.$on('appui-chat', (type, data) => {
-        let chat = this.getRegistered('chat');
-        switch (type) {
-          case 'message':
-            if (bbn.cp.isComponent(chat) && bbn.fn.numProperties(data)) {
-              chat.receive(data);
-            }
-            break;
-          case 'messageFromChannel':
-            if (bbn.cp.isComponent(chat)) {
-              chat.messageFromChannel(data);
-            }
-            break;
-        }
-      })
-      // appui-core
-      this.$on('appui-core', (type, data) => {
-        if ((type === 'message') && data.observers) {
-          bbn.fn.each(
-            data.observers,
-            obs => bbn.fn.each(
-              bbn.fn.filter(
-                this.observers,
-                { id: obs.id }
-              ),
-              o => this.observerEmit(obs.result, o)
-            )
-          );
-        }
-      })
-      // appui-notification
-      this.$on('appui-notification', (type, data) => {
-        if (this.plugins['appui-notification']) {
-          if (type === 'message') {
-            let tray = this.getRegistered('appui-notification-tray')
-            if (bbn.cp.isComponent(tray) && bbn.fn.isFunction(tray.receive)) {
-              tray.receive(data);
-            }
-            if ('browser' in data) {
-              bbn.fn.each(data.browser, n => this.browserNotify(n.title, {
-                body: bbn.fn.html2text(n.content),
-                tag: n.id,
-                timestamp: n.browser,
-                requireInteraction: true
-              }));
-            }
+    })
+    // appui-chat
+    this.$on('appui-chat', (type, data) => {
+      let chat = this.getRegistered('chat');
+      switch (type) {
+        case 'message':
+          if (bbn.cp.isComponent(chat) && bbn.fn.numProperties(data)) {
+            chat.receive(data);
           }
-        }
-      });
-      // appui-cron
-      this.$on('appui-cron', (type, data) => {
-        if (type === 'message') {
-          let cron = appui.getRegistered('appui-cron');
-          if (bbn.cp.isComponent(cron) && bbn.fn.isFunction(cron.receive)) {
-            cron.receive(data);
+          break;
+        case 'messageFromChannel':
+          if (bbn.cp.isComponent(chat)) {
+            chat.messageFromChannel(data);
           }
-        }
-      });
-
-      // Set plugins pollerObject
-      if (!this.pollerObject.token) {
-        this.pollerObject.token = bbn.env.token;
+          break;
       }
-      if (this.plugins['appui-chat']) {
-        this.$set(this.pollerObject, 'appui-chat', {
-          online: null,
-          usersHash: false,
-          chatsHash: false
-        })
+    })
+    // appui-core
+    this.$on('appui-core', (type, data) => {
+      if ((type === 'message') && data.observers) {
+        bbn.fn.each(
+          data.observers,
+          obs => bbn.fn.each(
+            bbn.fn.filter(
+              this.observers,
+              { id: obs.id }
+            ),
+            o => this.observerEmit(obs.result, o)
+          )
+        );
       }
+    })
+    // appui-notification
+    this.$on('appui-notification', (type, data) => {
       if (this.plugins['appui-notification']) {
-        this.$set(this.pollerObject, 'appui-notification', { unreadHash: false });
+        if (type === 'message') {
+          let tray = this.getRegistered('appui-notification-tray')
+          if (bbn.cp.isComponent(tray) && bbn.fn.isFunction(tray.receive)) {
+            tray.receive(data);
+          }
+          if ('browser' in data) {
+            bbn.fn.each(data.browser, n => this.browserNotify(n.title, {
+              body: bbn.fn.html2text(n.content),
+              tag: n.id,
+              timestamp: n.browser,
+              requireInteraction: true
+            }));
+          }
+        }
       }
+    });
+    // appui-cron
+    this.$on('appui-cron', (type, data) => {
+      if (type === 'message') {
+        let cron = appui.getRegistered('appui-cron');
+        if (bbn.cp.isComponent(cron) && bbn.fn.isFunction(cron.receive)) {
+          cron.receive(data);
+        }
+      }
+    });
+
+    // Set plugins pollerObject
+    if (!this.pollerObject.token) {
+      this.pollerObject.token = bbn.env.token;
+    }
+    if (this.plugins['appui-chat']) {
+      this.$set(this.pollerObject, 'appui-chat', {
+        online: null,
+        usersHash: false,
+        chatsHash: false
+      })
+    }
+    if (this.plugins['appui-notification']) {
+      this.$set(this.pollerObject, 'appui-notification', { unreadHash: false });
     }
   },
   beforeMount() {
@@ -915,34 +925,39 @@ const cpDef = {
     if (this.isMobile) {
       this.componentClass.push('bbn-desktop');
     }
-
   },
   mounted() {
-    if (this.cool) {
-      if (this.$refs.app) {
-        this.app = this.$refs.app;
-      }
-      this.ready = true;
-      setTimeout(() => {
-        setTimeout(() => {
-          this._postMessage({
-            type: 'initCompleted'
-          });
-          this.registerChannel('appui', true);
-          if (this.plugins['appui-chat']) {
-            this.registerChannel('appui-chat');
-          }
-          if (this.plugins['appui-notification']) {
-            this.registerChannel('appui-notification');
-            this.browserNotificationURL = this.plugins['appui-notification'];
-            this.browserNotificationSW = true;
-          }
-          this.poll();
-          this.opacity = 1;
-          this.onResize();
-        }, 1000);
-      }, this.app?.header ? 1000 : 10);
+    if (this.$refs.app) {
+      this.app = this.$refs.app;
     }
+    this.ready = true;
+    setTimeout(() => {
+      setTimeout(() => {
+        if (navigator?.serviceWorker?.controller) {
+          navigator.serviceWorker.addEventListener('message', event => {
+            if (event.data && event.data.data) {
+              this.receive(event.data);
+            }
+          });
+          this.poll();
+        }
+
+        this._postMessage({
+          type: 'initCompleted'
+        });
+        this.registerChannel('appui', true);
+        if (this.plugins['appui-chat']) {
+          this.registerChannel('appui-chat');
+        }
+        if (this.plugins['appui-notification']) {
+          this.registerChannel('appui-notification');
+          this.browserNotificationURL = this.plugins['appui-notification'];
+          this.browserNotificationSW = true;
+        }
+      }, 5000);
+      this.onResize();
+      this.opacity = 1;
+    }, this.app?.header ? 1000 : 10);
   },
   beforeDestroy() {
     this.$off('appui-chat');

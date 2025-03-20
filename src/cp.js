@@ -6,24 +6,21 @@ import convertClasses from "./functions/convertClasses.js";
 import convertStyles from "./functions/convertStyles.js";
 import createApp from "./functions/createApp.js";
 import define from "./functions/define.js";
-import executeQueueItem from "./functions/executeQueueItem.js";
-import executeQueueItems from "./functions/executeQueueItems.js";
-import fetchComponents from "./functions/fetchComponents.js";
+import fetchComponent from "./functions/fetchComponent.js";
 import getComponent from "./functions/getComponent.js";
 import initDefaults from "./functions/initDefaults.js";
-import insertDirectives from "./functions/insertDirectives.js";
 import isComponent from "./functions/isComponent.js";
 import isTag from "./functions/isTag.js";
 import mapTemplate from "./functions/mapTemplate.js";
 import normalizeComponent from "./functions/normalizeComponent.js";
 import queueUpdate from "./functions/queueUpdate.js";
-import realDefineComponent from "./functions/realDefineComponent.js";
 import setDefaults from "./functions/setDefaults.js";
 import startTick from "./functions/startTick.js";
 import stopTick from "./functions/stopTick.js";
 import updateDirectives from "./functions/updateDirectives.js";
 import basic from "./mixins/basic.js";
 import browserNotification from "./mixins/browserNotification.js";
+import cell from "./mixins/cell.js";
 import close from "./mixins/close.js";
 import componentInside from "./mixins/componentInside.js";
 import config from "./mixins/config.js";
@@ -46,6 +43,7 @@ import pageable from "./mixins/pageable.js";
 import popup from "./mixins/popup.js";
 import position from "./mixins/position.js";
 import resizer from "./mixins/resizer.js";
+import row from "./mixins/row.js";
 import serviceWorker from "./mixins/serviceWorker.js";
 import toggle from "./mixins/toggle.js";
 import url from "./mixins/url.js";
@@ -82,6 +80,7 @@ const cpObj = bbn.fn.createObject({
   mixins: bbn.fn.createObject({
     basic,
     browserNotification,
+    cell,
     close,
     componentInside,
     config,
@@ -104,6 +103,7 @@ const cpObj = bbn.fn.createObject({
     popup,
     position,
     resizer,
+    row,
     serviceWorker,
     toggle,
     url,
@@ -119,6 +119,44 @@ const cpObj = bbn.fn.createObject({
   /** @var {Array} directives List of existing directives */
   directives: bbn.fn.createObject(),
   conditionalExp: ['bbn-if', 'bbn-elseif', 'bbn-else'],
+  noValueAttributes: ['required', 'disabled', 'readonly', 'hidden', 'checked', 'multiple'],
+  globalAttributes: [
+    "accesskey",
+    "anchor",
+    "autocapitalize",
+    "autocorrect",
+    "autofocus",
+    "class",
+    "contenteditable",
+    "data-",
+    "dir",
+    "draggable",
+    "enterkeyhint",
+    "exportparts",
+    "hidden",
+    "id",
+    "inert",
+    "inputmode",
+    "is",
+    "itemid",
+    "itemprop",
+    "itemref",
+    "itemscope",
+    "itemtype",
+    "lang",
+    "nonce",
+    "part",
+    "popover",
+    "role",
+    "slot",
+    "spellcheck",
+    "style",
+    "tabindex",
+    "title",
+    "translate",
+    "virtualkeyboardpolicy",
+    "writingsuggestions"
+  ],
   badCaseAttributes: {
     accesskey: 'accessKey',
     autocapitalize: 'autoCapitalize',
@@ -150,13 +188,31 @@ const cpObj = bbn.fn.createObject({
     'ul': 'bbnListHtml',
     'li': 'bbnElementHtml',
     'span': 'bbnSpanHtml',
+    'col': 'bbnColHtml',
     'tr': 'bbnRowHtml',
     'td': 'bbnCellHtml',
-    'th': 'bbnCellHtml'
+    'th': 'bbnCellHtml',
+    'iframe': 'bbnFrameHtml',
   },
   tagAliases: {
     'bbn-button': 'button',
     'bbn-form': 'form',
+    'bbn-frame': 'iframe',
+    'bbn-table-row': 'tr',
+    'bbn-table-row-aggregate': 'tr',
+    'bbn-table-row-expansion': 'tr',
+    'bbn-table-row-footer': 'tr',
+    'bbn-table-row-full': 'tr',
+    'bbn-table-row-group': 'tr',
+    'bbn-table-head-title': 'th',
+    'bbn-table-head-group': 'th',
+    'bbn-table-cell': 'td',
+    'bbn-table-cell-aggregate': 'td',
+    'bbn-table-cell-buttons': 'td',
+    'bbn-table-cell-editor': 'td',
+    'bbn-table-cell-expander': 'td',
+    'bbn-table-cell-menu': 'td',
+    'bbn-table-cell-selector': 'td',
   },
   knownPrefixes: [],
   queue: [],
@@ -174,18 +230,14 @@ const cpObj = bbn.fn.createObject({
   convertStyles,
   createApp,
   define,
-  executeQueueItem,
-  executeQueueItems,
-  fetchComponents,
+  fetchComponent,
   getComponent,
   initDefaults,
-  insertDirectives,
   isComponent,
   isTag,
   mapTemplate,
   normalizeComponent,
   queueUpdate,
-  realDefineComponent,
   setDefaults,
   startTick,
   stopTick,

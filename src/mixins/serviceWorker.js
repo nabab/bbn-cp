@@ -1,6 +1,11 @@
 const serviceWorker = {
-  props: {},
-  data(){
+  props: {
+    serviceWorkerActive: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
     return {
       /**
        * The registered channels list
@@ -25,7 +30,7 @@ const serviceWorker = {
      * @return {Boolean}
      */
     registerChannel(channel, primary){
-      if (!this.registeredChannels.includes(channel)
+      if (this.serviceWorkerActive && !this.registeredChannels.includes(channel)
         && this._postMessage({
           type: 'registerChannel',
           channel: channel
@@ -48,7 +53,7 @@ const serviceWorker = {
      * @return {Boolean}
      */
     unregisterChannel(channel){
-      if (this.registeredChannels.includes(channel)
+      if (this.serviceWorkerActive && this.registeredChannels.includes(channel)
         && this._postMessage({
           type: 'unregisterChannel',
           channel: channel
@@ -86,14 +91,16 @@ const serviceWorker = {
      * @memberof serviceWorkerComponent
      * @param {Object} data
      */
-    messageFromChannel(data){
-      data = this._decodeMessageData(data);
-      if (data.function){
-        if (bbn.fn.isFunction(data.function)) {
-          data.function(...(data.params || []));
-        }
-        else if (bbn.fn.isFunction(this[data.function])) {
-          this[data.function](...(data.params || []));
+    messageFromChannel(data) {
+      if (this.serviceWorkerActive) {
+        data = this._decodeMessageData(data);
+        if (data.function){
+          if (bbn.fn.isFunction(data.function)) {
+            data.function(...(data.params || []));
+          }
+          else if (bbn.fn.isFunction(this[data.function])) {
+            this[data.function](...(data.params || []));
+          }
         }
       }
     },
@@ -114,7 +121,7 @@ const serviceWorker = {
      * @return {Boolean}
      */
     _checkSW(){
-      if ('serviceWorker' in navigator) {
+      if (this.serviceWorkerActive && 'serviceWorker' in navigator) {
         if (navigator.serviceWorker.controller) {
           return navigator.serviceWorker.controller.state !== 'redundant';
         }
@@ -137,7 +144,8 @@ const serviceWorker = {
      */
     _postMessage(obj){
       if (this._checkSW()) {
-        navigator.serviceWorker.controller.postMessage(obj);
+        bbn.fn.log(["FROM SERVICE WORKER", obj, JSON.stringify(obj)])
+        navigator.serviceWorker.controller.postMessage(JSON.parse(JSON.stringify(obj)));
         return true;
       }
       return false;
@@ -177,8 +185,10 @@ const serviceWorker = {
    * @event created
    * @memberof serviceWorkerComponent
    */
-    created(){
-    this.componentClass.push('bbn-service-worker-component');
+  created() {
+    if (this.serviceWorkerActive) {
+      this.componentClass.push('bbn-service-worker-component');
+    }
   },
 };
 

@@ -1,5 +1,4 @@
-import bbn from "@bbn/bbn";
-import bbnAttr from "../../Attr.js";
+import bbnAttr from "../Attr.js";
 import bbnConditionAttr from "../Condition.js";
 import bbnModelAttr from "../Model.js";
 import bbnShowAttr from "../Show.js";
@@ -22,13 +21,13 @@ const checkDeps = function (data, name) {
  * @param {Object} attr - The attribute being processed.
  */
 const updateSequence = function (result, attr) {
-  if (result.seq.length && (result.state !== 'OK')) {
+  if (result.seq.length) {
     // Iterate through the sequence of actions in the result.
     for (let i = 0; i < result.seq.length; i++) {
       let a = result.seq[i];
       // If the action's data is an instance of bbnData.
       if (a.data instanceof bbnData) {
-        if (!a.data.targetData) {
+        if (!a.data.value) {
           continue;
         }
 

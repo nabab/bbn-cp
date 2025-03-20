@@ -1,5 +1,3 @@
-const noValueAttributes = ['required', 'disabled', 'readonly', 'hidden', 'checked', 'selected', 'multiple'];
-
 /**
  * Sets or removes a no-value attribute (boolean attributes like 'required', 'disabled', etc.) on a DOM element.
  *
@@ -10,9 +8,20 @@ const noValueAttributes = ['required', 'disabled', 'readonly', 'hidden', 'checke
  */
 export default function setNoValueAttribute(node, name, v, jsName) {
   const ele = node.element;
-  if (noValueAttributes.includes(name) && (ele?.[jsName] !== undefined)) {
+  if (bbn.cp.noValueAttributes.includes(name) && (ele?.[jsName] !== undefined)) {
     if (!node.comment && ele) {
-      ele[jsName] = !!v;
+      try {
+        ele[jsName] = !!v;
+      }
+      catch (e) {
+        console.error(e);
+      }
+      if (v) {
+        ele.setAttribute(name, '');
+      }
+      else {
+        ele.removeAttribute(name);
+      }
     }
 
     return true;

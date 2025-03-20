@@ -5,6 +5,7 @@
  * @author BBN Solutions
  */
 
+import html2canvas from 'html2canvas';
 import elements from './_mixins/elements.js';
 import navigation from './_mixins/navigation.js';
 import registration from './_mixins/registration.js';
@@ -27,6 +28,7 @@ import searchResult from './_components/searchResult.js';
 const cpDef = {
   name: 'bbn-router',
   statics() {
+    window.html2canvas = html2canvas;
     // IndexedDb access for storing thumbnails in visual mode
     let db = false;
     if (bbn.db && bbn.db.ok && window.html2canvas) {
@@ -120,7 +122,7 @@ const cpDef = {
   /**
    * @event created
    */
-  async created() {
+  created() {
     this.componentClass.push('bbn-resize-emitter');
   },
   /**
@@ -129,13 +131,27 @@ const cpDef = {
    * @fires getDefaultURL
    * @fires add
    */
-  async beforeMount() {
+  beforeMount() {
     this.navigationInit();
-    await this.viewsInit();
-    this.panesCreated();
+    this.viewsInit();
+    this.panesInit();
+    this.registrationInit();
+    this.breadcrumbInit();
+    this.visualInit();
     this.navigationCreated();
-    this.ready = true;
-    await this.$forceUpdate();
+    //bbn.fn.log("END OF BEFORE MOUNT")
+  },
+  mounted() {
+    this.$nextTick(() =>{
+      this.ready = true;
+      this.$forceUpdate();
+      this.$nextTick(() => this.init());
+    });
+    //bbn.fn.log("END OF MOUNT")
+  },
+  beforeDestroy() {
+    this.routerBreadcrumbDestroy();
+    this.routerRegistrationDestroy();
   },
   components: {
     listItem,
@@ -143,7 +159,6 @@ const cpDef = {
   }
 };
 
-import bbn from '@bbn/bbn';
 import cpHtml from './router.html';
 import cpStyle from './router.less';
 let cpLang = {};

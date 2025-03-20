@@ -3,19 +3,22 @@ export default class bbnFacade {
   __bbn_node; // The node associated with this data facade.
   __bbn_data; // The data object stored in this facade.
   __bbn_keys; // The keys of the data object.
+  __bbn_deps;
 
   // Constructor initializing the node and data. Optionally accepts data and initializes keys.
   constructor(node, data) {
     this.__bbn_node = node; // Assign the node to the class instance.
-    this.__bbn_data = bbn.fn.createObject(); // Initialize data object.
+     // Initialize data object.
+    this.__bbn_deps = bbn.fn.createObject(); // Initialize dependencies object.
 
     // If data is provided, assign it and set the keys from the data object.
-    if (data) {
+    if (data && !(data instanceof bbnFacade)) {
       this.__bbn_data = data;
       this.__bbn_keys = Object.keys(data);
     }
     else {
       // If no data, initialize an empty keys array.
+      this.__bbn_data = bbn.fn.createObject();
       this.__bbn_keys = [];
     }
 
@@ -50,12 +53,24 @@ export default class bbnFacade {
       // If node has data and the key exists in its data, return the value.
       if (node.hasData && (node.data.__bbn_keys.indexOf(key) > -1)) {
         const dataObj = bbnData.getObject(node.data.__bbn_data[key]);
-        
+
         // If the value is a data object, add it to the sequence for the component.
         if (dataObj) {
           bbnData.addSequence(node.component, '', dataObj);
         }
 
+        if (node.loopIndex?.exp === key) {
+          if (bbnData.currentWatchers.length) {
+            if (!node.data.__bbn_deps[key]) {
+              node.data.__bbn_deps[key] = [];
+            }
+    
+            if (!node.data.__bbn_deps[key].includes(bbnData.currentWatchers[0])) {
+              node.data.__bbn_deps[key].push(bbnData.currentWatchers[0]);
+            }
+          }
+        }
+    
         return node.data.__bbn_data[key];
       }
 
@@ -69,11 +84,8 @@ export default class bbnFacade {
 
   // Sets the value for the given key, updating the value in the current node and its parents.
   set(key, value) {
-    bbn.fn.log("SET DATA IN NODE");
-
     let node = this.__bbn_node;
     let firstData; // To store the first data object encountered while traversing parent nodes.
-
     while (node) {
       // If this is the first node with data, store its data object.
       if (!firstData && node.hasData) {
@@ -83,6 +95,11 @@ export default class bbnFacade {
       // If the node has data and the key exists, update the value.
       if (node.hasData && (node.data.__bbn_keys.indexOf(key) > -1)) {
         node.data.__bbn_data[key] = value;
+        if (node.data.__bbn_deps[key]) {
+          node.data.__bbn_deps[key].forEach(a => a.attrUpdate());
+        }
+
+        break;
       }
 
       // Move to the parent node.

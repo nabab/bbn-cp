@@ -166,7 +166,7 @@ const cpDef = {
           text: bbn._('New group chat'),
           action: () => {
             this.getPopup({
-              title: bbn._('New group chat'),
+              label: bbn._('New group chat'),
               component: this.$options.components.newGroup,
               width: 300,
               height: 400
@@ -175,7 +175,7 @@ const cpDef = {
         });
       }
       res.push({
-        icon: this.currentOnline ? 'nf nf-mdi-message_bulleted_off bbn-red' : 'nf nf-mdi-message bbn-green',
+        icon: this.currentOnline ? 'nf nf-md-message_bulleted_off bbn-red' : 'nf nf-md-message bbn-green',
         text: this.currentOnline ? bbn._('Switch offline') : bbn._('Switch online'),
         action: this.currentOnline ? this.switchOffline : this.switchOnline
       });
@@ -263,7 +263,7 @@ const cpDef = {
      * @method chatWindowByIdx
      * @param {Number} idx
      * @fires findByKey
-     * @return {bbnCp|Boolean}
+     * @return {HTMLElement|Boolean}
      */
     chatWindowByIdx(idx){
       return this.findByKey(idx, 'chat');
@@ -790,7 +790,7 @@ const cpDef = {
      * @method _setCoord
      */
     _setCoord(){
-      let coord = this.$el.offsetParent.getBoundingClientRect();
+      let coord = this.$position(this.offsetParent);
       this.bottomCoord = `${coord.bottom - coord.top}px`;
     }
   },
@@ -961,7 +961,7 @@ const cpDef = {
           currentMessage: '',
           /**
            * The main bbn-chat component
-           * @data {bbnCp} chat
+           * @data {HTMLElement} chat
            * @memberof chat
            */
           cp,
@@ -1061,7 +1061,7 @@ const cpDef = {
             });
             res.push({
               text: bbn._('Leave the chat'),
-              icon: 'nf nf-mdi-comment_remove',
+              icon: 'nf nf-md-comment_remove',
               action: () => {
                 this.confirm(bbn._('Are you sure you want to leave this chat?'), () => {
                   this.leave();
@@ -1359,7 +1359,7 @@ const cpDef = {
         return {
           /**
            * The main chat component
-           * @data {bbnCp} cp
+           * @data {HTMLElement} cp
            * @memberof user
            */
           cp
@@ -1374,36 +1374,30 @@ const cpDef = {
       template: `
 <div class="bbn-grid bbn-p bbn-vmiddle bbn-vxsmargin"
     style="grid-template-columns: max-content auto max-content max-content"
-    :title="participantsFormatted"
->
-<div class="bbn-middle" style="min-width: 1.5rem">
-  <bbn-initial :user-name="participantsFormatted"
-                :width="16"
-                :height="16"
-                bbn-if="!isGroup && !source.info.title"
-  ></bbn-initial>
-  <i bbn-else
-      class="nf nf-oct-organization"></i>
-</div>
-<div class="bbn-ellipsis bbn-w-100"
-      bbn-text="source.info.title || participantsFormatted"
-></div>
-<div class="bbn-middle">
-  <span bbn-if="source.unread"
-        class="bbn-xs bbn-badge bbn-primary"
-        bbn-text="source.unread">
-  </span>
-</div>
-<div class="bbn-middle" style="min-width: 1.5rem">
-  <i bbn-if="cp.currentOnline && (online.length === participants.length)"
-      class="nf nf-fa-circle bbn-green"
-      :title="onlineFormatted"
-  ></i>
-  <i bbn-elseif="cp.currentOnline && isGroup && online.length"
-      class="nf nf-fa-circle bbn-orange"
-      :title="onlineFormatted"
-  ></i>
-</div>
+    :title="participantsFormatted">
+  <div class="bbn-middle" style="min-width: 1.5rem">
+    <bbn-initial :user-name="participantsFormatted"
+                  :width="16"
+                  :height="16"
+                  bbn-if="!isGroup && !source.info.title"/>
+    <i bbn-else
+        class="nf nf-oct-organization"/>
+  </div>
+  <div class="bbn-ellipsis bbn-w-100"
+        bbn-text="source.info.title || participantsFormatted"/>
+  <div class="bbn-middle">
+    <span bbn-if="source.unread"
+          class="bbn-xs bbn-badge bbn-primary"
+          bbn-text="source.unread"/>
+  </div>
+  <div class="bbn-middle" style="min-width: 1.5rem">
+    <i bbn-if="cp.currentOnline && (online.length === participants.length)"
+        class="nf nf-fa-circle bbn-green"
+        :title="onlineFormatted"/>
+    <i bbn-elseif="cp.currentOnline && isGroup && online.length"
+        class="nf nf-fa-circle bbn-orange"
+        :title="onlineFormatted"/>
+  </div>
 </div>
       `,
       name: 'active',
@@ -1421,7 +1415,7 @@ const cpDef = {
         return {
           /**
            * The main chat component
-           * @data {bbnCp} cp
+           * @data {HTMLElement} cp
            * @memberof active
            */
           cp
@@ -1708,7 +1702,7 @@ const cpDef = {
          */
         onAddUserClick(){
           this.getPopup({
-            title: bbn._('Select user'),
+            label: bbn._('Select user'),
             component: this.$options.components.users,
             source: {
               participants: this.participants,
@@ -1996,7 +1990,7 @@ const cpDef = {
         return {
           /**
            * The main chat component
-           * @data {bbnCp} cp
+           * @data {HTMLElement} cp
            * @memberof newGroup
            */
           cp,

@@ -96,10 +96,10 @@ const cpDef = {
         type: [Function, String, Object]
       },
       /**
-       * Set to true to have the nodes draggable.
-       * @prop {Boolean} [false] draggable
+       * Set to true to have the nodes drag.
+       * @prop {Boolean} [false] drag
        */
-      draggable: {
+      drag: {
         type: Boolean,
         default: false
       },
@@ -257,12 +257,12 @@ const cpDef = {
         isRoot: false,
         /**
          * The parent node if not root.
-         * @data {Boolean|bbnCp} [false] node
+         * @data {Boolean|HTMLElement} [false] node
          */
         node: false,
         /**
          * The parent tree if not root.
-         * @data {Boolean|bbnCp} [false] tree
+         * @data {Boolean|HTMLElement} [false] tree
          */
         tree: false,
         /**
@@ -287,17 +287,17 @@ const cpDef = {
         isMounted: false,
         /**
          * The currently active node component object.
-         * @data {Boolean|bbnCp} [false] activeNode
+         * @data {Boolean|HTMLElement} [false] activeNode
          */
         activeNode: false,
         /**
          * The component node object over which the mouse is now.
-         * @data {Boolean|bbnCp} [false] overNode
+         * @data {Boolean|HTMLElement} [false] overNode
          */
         overNode: false,
         /**
          * Dragging state, true if an element is being dragged.
-         * @data {Boolean|bbnCp} [false] dragging
+         * @data {Boolean|HTMLElement} [false] dragging
          */
         dragging: false,
         /**
@@ -322,7 +322,7 @@ const cpDef = {
         currentExpanded: [],
         /**
          * The component node object over which the mouse is now.
-         * @data {Boolean|bbnCp} [false] overOrder
+         * @data {Boolean|HTMLElement} [false] overOrder
          */
         overOrder: false,
         /**
@@ -437,7 +437,7 @@ const cpDef = {
             }
             if ( numChildren ){
               o.numChildren = numChildren;
-              o[this.children] = this._objectMapper(a);
+              o[this.sourceItems] = this._objectMapper(a);
             }
             res.push(o);
           })
@@ -462,7 +462,7 @@ const cpDef = {
             }
             if ( numChildren ){
               o.numChildren = numChildren;
-              o[this.children] = this._objectMapper(a);
+              o[this.sourceItems] = this._objectMapper(a);
             }
             res.push(o);
           });
@@ -471,7 +471,7 @@ const cpDef = {
       },
       _getTreeState(uid) {
         if ((uid !== undefined) && this.currentState[uid]) {
-          //bbn.fn.log('CURRENT STATE FOUND', this.currentState[uid][this.children]);
+          //bbn.fn.log('CURRENT STATE FOUND', this.currentState[uid][this.sourceItems]);
           //return bbn.fn.clone(this.currentState[uid].items);
           return this.currentState[uid].items;
         }
@@ -498,16 +498,16 @@ const cpDef = {
             item = this.tree.map(item, this.level + 1);
           }
 
-          bbn.fn.each(bbnTreeCp.NODE_PROPERTIES, p => {
+          bbn.fn.each(bbnTree.NODE_PROPERTIES, p => {
             if (!Object.hasOwn(o, p)) {
               o[p] = p === 'text' ? item[this.tree.sourceText] : item[p];
             }
           });
-          if (!!item.data && !!item.data[this.tree.children]) {
-            o.numChildren = item.data[this.tree.children].length;
+          if (!!item.data && !!item.data[this.tree.sourceItems]) {
+            o.numChildren = item.data[this.tree.sourceItems].length;
           }
-          if (!!item[this.tree.children]) {
-            o.numChildren = item[this.tree.children].length;
+          if (!!item[this.tree.sourceItems]) {
+            o.numChildren = item[this.tree.sourceItems].length;
           }
           if ( o.data === undefined ){
             o.data = item;
@@ -611,7 +611,7 @@ const cpDef = {
        * Returns the node corresponding to the given idx.
        * @method getNodeByIdx
        * @param {Number} idx
-       * @return {bbnCp|Boolean}
+       * @return {HTMLElement|Boolean}
        */
       getNodeByIdx(idx){
         if ( bbn.fn.isNumber(idx) && this.nodes.length ){
@@ -665,7 +665,7 @@ const cpDef = {
         }
         if ( this.menu ){
           let m2 = bbn.fn.isFunction(this.menu) ? this.menu(node, node.idx) : this.menu;
-          if ( m2.length ){
+          if (m2?.length) {
             bbn.fn.each(m2, function(a,i){
               menu.push({
                 text: a.text,
@@ -808,7 +808,7 @@ const cpDef = {
       /**
        * Reloads a node already loaded.
        * @method reload
-       * @param {bbnCp} node
+       * @param {HTMLElement} node
        * @fires updateData
        */
       reload(node){
@@ -965,10 +965,10 @@ const cpDef = {
                 if (bbn.fn.isFunction(this.transferData)) {
                   nodeSource = this.transferData(nodeSource);
                 }
-                let children = target.source.data[this.tree.children];
+                let children = target.source.data[this.tree.sourceItems];
                 if (!children) {
-                  target.source.data[this.tree.children] = [];
-                  children = target.source.data[this.tree.children]
+                  target.source.data[this.tree.sourceItems] = [];
+                  children = target.source.data[this.tree.sourceItems]
                 }
                 if (!target.isExpanded) {
                   targetTree.$once('dataloaded', () => {
@@ -995,11 +995,11 @@ const cpDef = {
                   nodeSource = this.transferData(nodeSource);
                 }
                 // if the array is empty we set one
-                if ( !bbn.fn.isArray(target.source.data[this.tree.children]) ){
-                  target.$set(target.source.data, this.tree.children, []);
+                if ( !bbn.fn.isArray(target.source.data[this.tree.sourceItems]) ){
+                  target.$set(target.source.data, this.tree.sourceItems, []);
                 }
                 // otherwise we just push the data inside the array
-                target.source.data[this.tree.children].push(nodeSource);
+                target.source.data[this.tree.sourceItems].push(nodeSource);
               }
               // we remove the expanded node
               bbn.fn.each(expanded, n => {
@@ -1036,7 +1036,7 @@ const cpDef = {
       toData(data){
         let r = {};
         for ( let n in data ){
-          if ( bbnTreeCp.NODE_PROPERTIES.indexOf(n) === -1 ){
+          if ( bbnTree.NODE_PROPERTIES.indexOf(n) === -1 ){
             r[n] = data[n];
           }
         }
@@ -1102,7 +1102,7 @@ const cpDef = {
         if ( this.tree && this.tree.selectedNode ){
           let scroll = this.tree.getRef('scroll');
           if ( scroll ){
-            scroll.scrollTo(0, this.tree.selectedNode.$el);
+            scroll.scrollSet(0, this.tree.selectedNode.$el);
           }
         }
       },
@@ -1114,7 +1114,7 @@ const cpDef = {
         if ( this.tree && this.tree.activeNode ){
           let scroll = this.tree.getRef('scroll');
           if ( scroll ){
-            scroll.scrollTo(0, this.tree.activeNode.$el);
+            scroll.scrollSet(0, this.tree.activeNode.$el);
           }
         }
       },
@@ -1236,7 +1236,7 @@ const cpDef = {
        * @fires initState
        */
       init() {
-        if (this.node.isExpanded
+        if (this.node?.isExpanded
           || this.isRoot
           || bbn.fn.count(Object.values(this.currentState), {expanded: true})
           || bbn.fn.count(Object.values(this.currentState), {selected: true})
@@ -1351,7 +1351,7 @@ const cpDef = {
         if ( newVal && this.isRoot ){
           let scroll = this.getRef('scroll');
           if ( scroll ){
-            //scroll.scrollTo(0, newVal.$el);
+            //scroll.scrollSet(0, newVal.$el);
           }
         }
       },
@@ -1359,7 +1359,7 @@ const cpDef = {
         if ( newVal && this.isRoot ){
           let scroll = this.getRef('scroll');
           if ( scroll ){
-            //scroll.scrollTo(0, newVal.$el);
+            //scroll.scrollSet(0, newVal.$el);
           }
         }
       },
@@ -1438,11 +1438,11 @@ const cpDef = {
           },
           /**
            * A component for the node
-           * @prop {String|Function|bbnCp} component
+           * @prop {String|Function|HTMLElement} component
            * @memberof bbn-tree-node
            */
           component: {
-            type: [String, Function, bbnCp, Object]
+            type: [String, Function, HTMLElement, Object]
           },
           /**
            * The list of children from the node
@@ -1483,10 +1483,7 @@ const cpDef = {
             type: String
           },
           treeState: {
-            type: Object,
-            default(){
-              return {};
-            }
+            type: Object
           },
           flat: {
             type: Boolean,
@@ -1704,7 +1701,7 @@ const cpDef = {
            * @memberof bbn-tree-node
            */
           startDrag(e){
-            if ((this.tree.draggable || this.sortable) && !this.tree.realDragging) {
+            if ((this.tree.drag || this.sortable) && !this.tree.realDragging) {
                 if ( this.tree.selectedNode ){
                   //this.tree.selectedNode.isSelected = false;
                 }
@@ -1733,7 +1730,7 @@ const cpDef = {
            * @emits  dragover
            * @memberof bbn-tree-node
            */
-          drag(e){
+          onDrag(e){
             this.mouseOver();
             // we prevent default from the event
             if ( this.sortable ){
@@ -1806,7 +1803,7 @@ const cpDef = {
                         this.reorder(this.tree.dragging.source.num, numAfter);
                       }
                 }
-                else if (this.tree.draggable
+                else if (this.tree.drag
                   && (this.tree.dragging.parent !== this.tree.overNode)
                 ) {
                   originalTree.move(this.tree.dragging, this);
@@ -1892,7 +1889,7 @@ const cpDef = {
           mouseOver(){
             this.tree.overNode = this.tree.dragging
               && (this !== this.tree.dragging)
-              && (this.tree.draggable || this.sortable) ? this : false;
+              && (this.tree.drag || this.sortable) ? this : false;
           },
           /**
            * @method checkPath
@@ -1922,7 +1919,7 @@ const cpDef = {
                     this.isExpanded = true;
                   }
                   this.isSelected = true;
-                  this.tree.$refs.scroll.scrollTo(0, this.$el);
+                  this.tree.$refs.scroll.scrollSet(0, this.$el);
                 }
               }
             }
@@ -2219,7 +2216,7 @@ const cpDef = {
           getIcon(){
             return this.source.icon || (!!this.numChildren ? (this.isExpanded ? 'nf nf-fa-folder_open' : 'nf nf-fa-folder') : 'nf nf-fa-file');
           },
-          remove(){
+          removeItem(){
             if ( !this.parent.isAjax ){
               this.parent.currentData.splice(this.idx, 1);
             }
@@ -2390,7 +2387,6 @@ const cpDef = {
     }
   };
   
-import bbn from '@bbn/bbn';
 import cpHtml from './tree.html';
 import cpStyle from './tree.less';
 let cpLang = {};

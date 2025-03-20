@@ -44,7 +44,7 @@ const observer = {
       observerID: null,
       /**
        * The closest ancestor 'bbn-obsever';
-       * @data {bbnCp} observationTower
+       * @data {HTMLElement} observationTower
        * @memberof observerComponent
        */
       observationTower: null,

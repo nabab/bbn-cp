@@ -2,16 +2,14 @@
            :is="renderedComponent"
            bbn-bind="renderedOptions"
            bbn-model="currentValue"
+           :tabindex="currentTabIndex"
            :class="componentClass"
-           @input="$emit('input', currentValue)"
-
->
+           @input="$emit('input', currentValue)">
   <div bbn-if="renderedContent" bbn-html="renderedContent"></div>
 </component>
 <component bbn-else
            :is="renderedComponent"
            bbn-bind="renderedOptions"
-           :class="componentClass"
->
+           :class="componentClass">
   <div bbn-if="renderedContent" bbn-html="renderedContent"></div>
 </component>

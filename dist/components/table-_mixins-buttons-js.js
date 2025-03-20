@@ -1,0 +1,22 @@
+"use strict";
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["components/table-_mixins-buttons-js"],{
+
+/***/ "./src/components/table/_mixins/buttons.js":
+/*!*************************************************!*\
+  !*** ./src/components/table/_mixins/buttons.js ***!
+  \*************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({\n  props: {\n    /**\n     * Shows the footer's arrows as buttons\n     * @prop {Boolean} [true] footerButtons\n     */\n    footerButtons: {\n      type: Boolean,\n      default() {\n        return !bbn.fn.isMobile() || bbn.fn.isTabletDevice();\n      }\n    },\n    /**\n     * The way `buttons` should be displayed, either as buttons, dropdown or as a menu.\n     * @prop {String} ['buttons'] buttonMode\n     */\n    buttonMode: {\n      type: String,\n      default: 'buttons',\n      validator(v) {\n        return ['buttons', 'dropdown', 'menu'].includes(v);\n      }\n    },\n    /**\n     * The name of the `record` word as used in the pager interface.\n     * @prop {String} ['nf nf-md-dots_vertical'] buttonIcon\n     */\n    buttonIcon: {\n      type: String,\n      default: 'nf nf-md-dots_vertical'\n    }\n  },\n  data() {\n    return {\n      /**\n       * @data {Boolean} [false] colButtons\n       */\n      colButtons: false\n    };\n  },\n  computed: {\n    realButtons() {\n      if (this.cols.length && this.cols[this.colButtons] && this.cols[this.colButtons].buttons) {\n        if (bbn.fn.isFunction(this.cols[this.colButtons].buttons)) {\n          return this.cols[this.colButtons].buttons.bind(this.$origin);\n        } else if (bbn.fn.isArray(this.cols[this.colButtons].buttons)) {\n          let res = [];\n          bbn.fn.each(this.cols[this.colButtons].buttons, a => {\n            if (bbn.fn.isString(a)) {\n              switch (a) {\n                case 'edit':\n                  res.push({\n                    text: bbn._('Edit'),\n                    action: 'edit',\n                    icon: 'nf nf-fa-edit'\n                  });\n                  break;\n                case 'copy':\n                  res.push({\n                    text: bbn._(\"Copy\"),\n                    action: 'copy',\n                    icon: 'nf nf-fa-copy'\n                  });\n                  break;\n                case 'delete':\n                  res.push({\n                    text: bbn._(\"Delete\"),\n                    action: 'remove',\n                    icon: 'nf nf-md-close_thick'\n                  });\n                  break;\n              }\n            } else {\n              if (bbn.fn.isFunction(a.action)) {\n                a.action = a.action.bind(this.$origin);\n              }\n              res.push(a);\n            }\n          });\n          if (this.cols[this.colButtons].notext) {\n            bbn.fn.each(res, a => {\n              a.notext = true;\n              return a;\n            });\n          }\n          return res;\n        }\n      }\n      return [];\n    }\n  },\n  methods: {\n    buttonSource() {\n      if (bbn.fn.isFunction(this.realButtons)) {\n        return this.realButtons(...arguments);\n      }\n      if (bbn.fn.isArray(this.realButtons)) {\n        return this.realButtons;\n      }\n      return [];\n    }\n  }\n});\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/table/_mixins/buttons.js?");
+
+/***/ })
+
+}]);

@@ -196,9 +196,9 @@ const cpDef = {
          */
         hasExpired: false,
         /**
-         * @data {Number} clientHeight
+         * @data {Number} screenHeight
          */
-        clientHeight: document.documentElement.clientHeight,
+        screenHeight: document.documentElement.clientHeight,
         /**
          * @data {Boolean} [false] isLoading
          */
@@ -232,7 +232,7 @@ const cpDef = {
       /**
        * @method onSubmit
        * @param {Event} ev
-       * @param {bbnCp} form
+       * @param {HTMLElement} form
        * @emit submit
        */
        onSubmit(ev, form){
@@ -292,7 +292,7 @@ const cpDef = {
        * @method setHeight
        */
       setHeight(){
-        this.clientHeight = document.documentElement.clientHeight;
+        this.screenHeight = document.documentElement.clientHeight;
       },
       /**
        * @method resetForm

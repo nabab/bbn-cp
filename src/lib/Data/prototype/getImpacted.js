@@ -1,5 +1,4 @@
-import data from "../../../mixins/data.js";
-import bbnData from "../../Data.js";
+import bbnData from "../Data.js";
 
 /**
  * Identifies all components impacted by changes to a given data key.

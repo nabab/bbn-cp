@@ -60,7 +60,7 @@ const noSpaceTags = [
  * @var {String} idx - The unique index of the element
  * @return {Object} res - An object representing the node
  */
-export default function analyzeElement(ele, inlineTemplates, idx, componentName) {
+export default function analyzeElement(ele, inlineTemplates, idx, componentName, isSVG = false) {
   if (!ele.getAttributeNames) {
     throw new Error(bbn._("Only tags can be analyzed (check %s)", componentName));
   }
@@ -76,11 +76,15 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
 
   let res = bbn.fn.createObject({
     id: idx,
-    tag: ele.tagName.toLowerCase(),
+    tag: isSVG ? ele.tagName : ele.tagName.toLowerCase(),
     attr: bbn.fn.createObject(),
     events: bbn.fn.createObject(),
     items: []
   });
+
+  if (res.tag === 'svg') {
+    isSVG = true;
+  }
 
   if ((res.tag === 'component') && (attr.indexOf(':is') > -1)) {
     let is = ele.getAttribute(':is').trim();
@@ -95,31 +99,32 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
   }
 
   attr.forEach(attrName => {
+    let value = ele.getAttribute(attrName).trim();
+    if (attrName.indexOf('v-') === 0) {
+      attrName = 'bbn-' + attrName.substr(2);
+    }
+    // replaces else-if by elseif
+    if ('bbn-else-if' === attrName) {
+      attrName = 'bbn-elseif';
+    }
+    if (!attrName.indexOf('bbn-on:')) {
+      attrName = '@' + attrName.substr(7);
+    }
     const main = attrName.indexOf(':') > 0 ? attrName.split(':') : [attrName];
     const modifiers = main[0].split('.');
     let modelValue = main.length > 1 ? main[1] : '_default_';
     if (main[1] === '_default_') {
-      throw new Error(_("The name '_default_' is reserved for the default value of the model (check %s)", componentName));
+      throw new Error(bbn._("The name '_default_' is reserved for the default value of the model (check %s)", componentName));
     }
 
     if ((modelValue === '_default_') && ['input', 'select', 'textarea'].includes(res.tag)) {
       modelValue = 'value';
     }
 
-    let a = bbn.fn.camelToCss(modifiers.splice(0, 1)[0]);
-    // replaces v- by bbn-
-    if (a.indexOf('v-') === 0) {
-      a = 'bbn-' + a.substr(2);
+    let a = modifiers.splice(0, 1)[0];
+    if (!isSVG) {
+      a = bbn.fn.camelToCss(a);
     }
-    // replaces else-if by elseif
-    if ('bbn-else-if' === a) {
-      a = 'bbn-elseif';
-    }
-    if (a === 'bbn-on') {
-      a = '@' + main[1];
-    }
-
-    let value = ele.getAttribute(attrName).trim();
 
     // Events
     if (a.indexOf('@') === 0) {
@@ -155,7 +160,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
 
     /** @var {String} name The attribute's real name */
     let tmp = a.indexOf(':') === 0 ? a.substr(1) : a;
-    const name = tmp.indexOf('bbn-') === 0 ? tmp : bbn.fn.camelize(tmp);
+    const name = tmp.indexOf('bbn-') === 0 ? tmp : (!isSVG && (tmp.indexOf('-') > -1) ? bbn.fn.camelize(tmp) : tmp);
     if (res.attr[name] !== undefined) {
       bbn.fn.warning(bbn._("The attribute %s can't be defined more than once (check %s)", name, componentName));
       return;
@@ -283,11 +288,11 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
           });
           break;
         case 'bbn-pre':
-          const tpl = stringToTemplate(ele.innerHTML, true);
+          const {res: tpl} = stringToTemplate(ele.innerHTML, true);
           res.pre = bbn.fn.createObject({
             id: res.id + '-pre',
             content: ele.innerHTML,
-            template: tpl.res,
+            template: tpl,
           });
           break;
         case 'bbn-forget':
@@ -300,6 +305,15 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
           res.bind = bbn.fn.createObject({
             id: res.id + '-bind',
             exp: value,
+          });
+          break;
+        case 'bbn-transition':
+          res.transition = bbn.fn.createObject({
+            id: res.id + '-transition',
+            exp: value,
+            running: false,
+            num: 0,
+            type:  null
           });
           break;
         default:
@@ -333,22 +347,16 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
   });
 
 
-  let childNodes;
+  const childNodes = [];
   if (Object.hasOwn(res.attr, 'inlineTemplate')) {
     if (!inlineTemplates[res.tag]) {
       inlineTemplates[res.tag] = ele.innerHTML;
       delete res.attr.inlineTemplate;
     }
-    childNodes = [];
-  }
-  else if (res.tag === 'svg') {
-    childNodes = [];
-    res.content = ele.innerHTML;
   }
   else if (res.pre) {
-    childNodes = [];
   }
-  else if (ele.tagName === 'TEMPLATE') {
+  else if (res.tag === 'template') {
     let before = '<body>';
     let after = '</body>';
     let target = 'body';
@@ -387,10 +395,10 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
       before + tpl + after,
       "text/html"
     );
-    childNodes = Array.prototype.slice.apply(doc.documentElement.querySelector(target).childNodes);
+    childNodes.push(...Array.prototype.slice.apply(doc.documentElement.querySelector(target).childNodes));
   }
   else {
-    childNodes = Array.prototype.slice.apply(ele.childNodes);
+    childNodes.push(...Array.prototype.slice.apply(ele.childNodes));
   }
   
   let num = 0;
@@ -404,7 +412,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
       i--;
     }
 
-    if (childNodes[i].getAttributeNames) {
+    if (childNodes[i]?.getAttributeNames) {
       if (childNodes[i].getAttributeNames().filter(a => ['bbn-else', 'v-else', 'bbn-elseif', 'bbn-else-if', 'v-else-if'].includes(a)).length) {
         let j = i-1;
         while (childNodes[j] && !childNodes[j].getAttributeNames) {
@@ -417,12 +425,45 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
   }
 
   bbn.fn.each(childNodes, (node, i) => {
-    if (node instanceof Comment) {
-      return;
-    }
+    if (node?.tagName === 'TRANSITION') {
+      const transNodes = Array.prototype.slice.apply(node.childNodes);
+      const attrs = node.getAttributeNames();
+      bbn.fn.each(transNodes, tn => {
+        if (tn?.tagName) {
+          tn.setAttribute('bbn-transition', true);
+          if (node.childElementCount > 1) {
+            tn.setAttribute('bbn-transition-multiple', true);
+          }
 
-    if (node && node.getAttributeNames) {
-      let tmp = analyzeElement(node, inlineTemplates, idx + '-' + num, componentName);
+          bbn.fn.each(attrs, attr => {
+            if (attr.indexOf('bbn-transition-') === 0) {
+              tn.setAttribute(attr, node.getAttribute(attr));
+            }
+            else {
+              let v = node.getAttribute(attr);
+              if (!attr.indexOf(':')) {
+                attr = attr.substr(1);
+              }
+              else if (attr.indexOf('@')) {
+                v = "'" + bbn.fn.escapeSquotes(v) + "'";
+              }
+              //bbn.fn.log("SETTING ATTRIBUTE", attr, v);
+              tn.setAttribute(attr.indexOf('@') ? 'bbn-transition-' + attr : 'bbn-on:' + attr.substr(1), v);
+            }
+          })
+          let tmp = analyzeElement(tn, inlineTemplates, idx + '-' + num, componentName, isSVG);
+          if (tmp.res.tag) {
+            prevTag = tmp.res.tag;
+            res.items.push(tmp.res);
+            num++;
+            lastEmpty = false;
+          }
+        }
+      });
+      //bbn.fn.log("TRANSITION", res);
+    }
+    else if (node && node.getAttributeNames) {
+      let tmp = analyzeElement(node, inlineTemplates, idx + '-' + num, componentName, isSVG);
       if (!childNodes[i+1]?.getAttributeNames && childNodes[i+1]?.textContent && !bbn.fn.removeExtraSpaces(childNodes[i+1].textContent)) {
         tmp.spaced = true;
       }
@@ -436,7 +477,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName)
     else if (node.textContent) {
       const n2 = node.cloneNode(true);
       div.appendChild(n2);
-      const txt = div.innerHTML
+      const txt = node.textContent
                   // escaping dollars
                   //.replace(/\$/g, (_, g) => '\\$')
                   // replacing double curly braces by dollar and single

@@ -25,73 +25,78 @@ export default function() {
   };
 
   const startDrag = (e, ele) => {
-    if (!!ele.bbnDirectives.draggable.active
+    if (ele.bbnDirectives?.draggable?.active
       && !isDragging
     ) {
       isDragging = true;
       currentEle = ele;
-      var options = ele.bbnDirectives.draggable.options;
+      const o = ele.bbnDirectives.draggable.options;
       let ev = new CustomEvent('dragstart', {
         cancelable: true,
         bubbles: true,
-        detail: options
+        detail: o
       });
       ele.dispatchEvent(ev);
       if (!ev.defaultPrevented) {
         ev.stopImmediatePropagation();
-        let isMove = !!options.mode && (options.mode === 'move'),
-            isSelf = !!options.mode && (options.mode === 'self'),
-            helper = isMove ? false : (isSelf ? ele : ele.cloneNode(true)),
-            rect = ele.getBoundingClientRect();
-        options.originalElement = ele;
-        options.originalParent = ele.parentElement;
-        options.originalNextElement = ele.nextElementSibling;
-        options.helper = options.helperElement || ele;
-        if (!options.container) {
-          options.container = bbn.fn.isDom(options.originalParent) ? options.originalParent : document.body;
+        let isMove = o.mode === 'move';
+        let isSelf = o.mode === 'self';
+        let helper = isMove ? false : (isSelf ? ele : ele.cloneNode(true));
+        let rect = ele.getBoundingClientRect();
+        o.originalElement = ele;
+        o.originalParent = ele.parentElement;
+        o.originalNextElement = ele.nextElementSibling;
+        o.helper = o.helperElement || ele;
+        if (!o?.container) {
+          o.container = bbn.fn.isDom(o.originalParent) ? o.originalParent : document.body;
         }
         if (!isMove) {
-          if (options.component) {
+          if (o?.component) {
             helper = document.createElement('component');
-            helper.setAttribute(bbn.fn.isString(options.component) ? 'is' : ':is', options.component);
-            if (bbn.fn.isObject(options)
-              && bbn.fn.isObject(options.componentOptions)
+            helper.setAttribute(bbn.fn.isString(o.component) ? 'is' : ':is', o.component);
+            if (bbn.fn.isObject(o?.componentOptions)
             ) {
-              helper.setAttribute('v-bind', JSON.stringify(options.componentOptions));
+              helper.setAttribute('v-bind', JSON.stringify(o.componentOptions));
             }
           }
-          if (!!options.helperElement) {
-            rect = options.helperElement.getBoundingClientRect();
-            helper = isSelf ? options.helperElement : options.helperElement.cloneNode(true)
+          if (!!o.helperElement) {
+            rect = o.helperElement.getBoundingClientRect();
+            helper = isSelf ? o.helperElement : o.helperElement.cloneNode(true)
           }
-          options.helper = document.createElement('div');
-          options.helper.setAttribute('id', 'bbn-draggable-current');
-          options.helper[isSelf ? 'appendChild' : 'append'](helper);
-          options.helper.style.left = e.pageX + 'px';
-          options.helper.style.top = e.pageY + 'px';
-          options.helper.style.position = 'fixed';
-          options.helper.style.zIndex = '1000';
-          options.helper.style.opacity = 0.7;
-          options.helper.style.width = rect.width + 'px';
-          options.helper.style.height = rect.height + 'px';
-          options.container[isSelf ? 'appendChild' : 'append'](options.helper);
+
+          const d = document.createElement('div');
+          d.setAttribute('id', 'bbn-draggable-current');
+          d[isSelf ? 'appendChild' : 'append'](helper);
+          d.style.left = e.pageX + 'px';
+          d.style.top = e.pageY + 'px';
+          d.style.position = 'fixed';
+          d.style.zIndex = '1000';
+          d.style.opacity = 0.7;
+          d.style.width = rect.width + 'px';
+          d.style.height = rect.height + 'px';
+          o.helper = d;
+          o.container[isSelf ? 'appendChild' : 'append'](o.helper);
           //bbn.cp.createApp(document.querySelector('#bbn-draggable-current > *'));
         }
-        ele.bbnDirectives.draggable.pointerEvents = window.getComputedStyle(options.helper).pointerEvents;
-        options.helper.style.pointerEvents = 'none';
+        ele.bbnDirectives.draggable.pointerEvents = window.getComputedStyle(o.helper).pointerEvents;
+        o.helper.style.pointerEvents = 'none';
         document.addEventListener('click', fnClick, {once: true, capture: true});
         document.addEventListener('mouseup', fnEnd, {once: true});
         document.addEventListener('mousemove', fnDrag);
+      }
+      else {
+        isDragging = false;
       }
     }
   };
 
   const drag = (e, ele) => {
-    if (!!ele.bbnDirectives.draggable.active) {
+    const dir = ele.bbnDirectives;
+    if (dir?.draggable?.active) {
       // we prevent default from the event
       e.stopImmediatePropagation();
       e.preventDefault();
-      var options = ele.bbnDirectives.draggable.options;
+      var options = dir.draggable.options;
       if (options.mode === 'move') {
         let rectContainer = options.container.getBoundingClientRect(),
             rectHelper = options.helper.getBoundingClientRect(),
@@ -106,8 +111,8 @@ export default function() {
             minTopPos = bbn.fn.roundDecimal(rectContainer.top + minTop - (rectEle.top - rectHelper.top), 0),
             maxTop = bbn.fn.roundDecimal(rectContainer.height - (rectEle.top - rectHelper.top) - 20, 0),
             maxTopPos = bbn.fn.roundDecimal((rectEle.top + rectEle.height - rectHelper.top) + rectContainer.top + maxTop, 0),
-            left = options.helper.offsetLeft - (ele.bbnDirectives.draggable.mouseX - x),
-            top = options.helper.offsetTop - (ele.bbnDirectives.draggable.mouseY - y);
+            left = options.helper.offsetLeft - (dir.draggable.mouseX - x),
+            top = options.helper.offsetTop - (dir.draggable.mouseY - y);
 
         if ((x < minLeftPos) || (options.helper.offsetLeft < minLeft)) {
           left = minLeft;
@@ -130,12 +135,12 @@ export default function() {
           top = maxTop;
         }
         if ((options.helper.offsetLeft === minLeft)) {
-          if (ele.bbnDirectives.draggable.mouseMinX === undefined) {
-            ele.bbnDirectives.draggable.mouseMinX = x;
+          if (dir.draggable.mouseMinX === undefined) {
+            dir.draggable.mouseMinX = x;
           }
           else if (x >= minLeftPos) {
-            if (x >= ele.bbnDirectives.draggable.mouseMinX) {
-              delete ele.bbnDirectives.draggable.mouseMinX;
+            if (x >= dir.draggable.mouseMinX) {
+              delete dir.draggable.mouseMinX;
             }
             else {
               left = minLeft;
@@ -143,12 +148,12 @@ export default function() {
           }
         }
         if ((options.helper.offsetLeft === maxLeft)) {
-          if (ele.bbnDirectives.draggable.mouseMaxX === undefined) {
-            ele.bbnDirectives.draggable.mouseMaxX = x;
+          if (dir.draggable.mouseMaxX === undefined) {
+            dir.draggable.mouseMaxX = x;
           }
           else if (x <= maxLeftPos) {
-            if (x <= ele.bbnDirectives.draggable.mouseMaxX) {
-              delete ele.bbnDirectives.draggable.mouseMaxX;
+            if (x <= dir.draggable.mouseMaxX) {
+              delete dir.draggable.mouseMaxX;
             }
             else {
               left = maxLeft;
@@ -156,12 +161,12 @@ export default function() {
           }
         }
         if ((options.helper.offsetTop === minTop)) {
-          if (ele.bbnDirectives.draggable.mouseMinY === undefined) {
-            ele.bbnDirectives.draggable.mouseMinY = y;
+          if (dir.draggable.mouseMinY === undefined) {
+            dir.draggable.mouseMinY = y;
           }
           else if (y >= minTopPos) {
-            if (y >= ele.bbnDirectives.draggable.mouseMinY) {
-              delete ele.bbnDirectives.draggable.mouseMinY;
+            if (y >= dir.draggable.mouseMinY) {
+              delete dir.draggable.mouseMinY;
             }
             else {
               top = minTop;
@@ -169,12 +174,12 @@ export default function() {
           }
         }
         if ((options.helper.offsetTop === maxTop)) {
-          if (ele.bbnDirectives.draggable.mouseMaxY === undefined) {
-            ele.bbnDirectives.draggable.mouseMaxY = y;
+          if (dir.draggable.mouseMaxY === undefined) {
+            dir.draggable.mouseMaxY = y;
           }
           else if (y <= maxTopPos) {
-            if (y <= ele.bbnDirectives.draggable.mouseMaxY) {
-              delete ele.bbnDirectives.draggable.mouseMaxY;
+            if (y <= dir.draggable.mouseMaxY) {
+              delete dir.draggable.mouseMaxY;
             }
             else {
               top = maxTop;
@@ -201,8 +206,8 @@ export default function() {
         ) {
           options.helper.style.position = 'absolute';
         }
-        ele.bbnDirectives.draggable.mouseX = x;
-        ele.bbnDirectives.draggable.mouseY = y;
+        dir.draggable.mouseX = x;
+        dir.draggable.mouseY = y;
       }
       else {
         options.helper.style.left = e.pageX + 'px';
@@ -267,13 +272,14 @@ export default function() {
   };
 
   const endDrag = (e, ele) => {
-    if (!!ele.bbnDirectives.draggable.active
+    if (!!ele.bbnDirectives?.draggable?.active
       && isDragging
     ) {
+      const draggable = ele.bbnDirectives.draggable;
       e.preventDefault();
       e.stopImmediatePropagation();
-      var options = ele.bbnDirectives.draggable.options;
-      options.helper.style.pointerEvents = ele.bbnDirectives.draggable.pointerEvents;
+      var options = draggable.options;
+      options.helper.style.pointerEvents = draggable.pointerEvents;
       let target = options.mode !== 'move' ? e.target : false;
       if (bbn.fn.isDom(target)
         && (target.dataset.bbn_droppable_over !== 'true')
@@ -312,26 +318,26 @@ export default function() {
         options.helper.remove();
       }
       else {
-        delete ele.bbnDirectives.draggable.mouseX;
-        delete ele.bbnDirectives.draggable.mouseY;
-        delete ele.bbnDirectives.draggable.mouseMinX;
-        delete ele.bbnDirectives.draggable.mouseMaxX;
-        delete ele.bbnDirectives.draggable.mouseMinY;
-        delete ele.bbnDirectives.draggable.mouseMaxY;
+        delete draggable.mouseX;
+        delete draggable.mouseY;
+        delete draggable.mouseMinX;
+        delete draggable.mouseMaxX;
+        delete draggable.mouseMinY;
+        delete draggable.mouseMaxY;
       }
     }
   };
 
   const inserted = (el, binding) => {
-    //bbn.fn.warning("DRAGGABLE INSERTED");
     if (analyzeValue(el, binding)) {
       // Add the events listener to capture the long press click and start the drag
-      let clickTimeout = 0,
-          holdClick = false;
-      el.bbnDirectives.draggable.onmousedown = ev => {
-        if (!!el.bbnDirectives.draggable.active) {
-          el.bbnDirectives.draggable.mouseX = ev.x;
-          el.bbnDirectives.draggable.mouseY = ev.y;
+      const draggable = el.bbnDirectives.draggable;
+      let clickTimeout = 0;
+      let holdClick = false;
+      draggable.onmousedown = ev => {
+        if (!!draggable.active) {
+          draggable.mouseX = ev.x;
+          draggable.mouseY = ev.y;
           if (clickTimeout) {
             clearTimeout(clickTimeout);
           }
@@ -345,13 +351,13 @@ export default function() {
           }
         }
       };
-      el.addEventListener('mousedown', el.bbnDirectives.draggable.onmousedown);
-      el.bbnDirectives.draggable.onmouseup = ev => {
-        if (!!el.bbnDirectives.draggable.active) {
+      el.addEventListener('mousedown', draggable.onmousedown);
+      draggable.onmouseup = ev => {
+        if (!!draggable.active) {
           holdClick = false;
         }
       };
-      el.addEventListener('mouseup', el.bbnDirectives.draggable.onmouseup);
+      el.addEventListener('mouseup', draggable.onmouseup);
     }
   };
 
@@ -495,23 +501,32 @@ export default function() {
   };
 
   const setOff = el => {
-    //bbn.fn.warning("DRAGGABLE setOff");
-    el.dataset.bbn_draggable = false;
+    if (el.dataset) {
+      el.dataset.bbn_draggable = false;
+    }
+
+    if (el.bbnDirectives === undefined) {
+      el.bbnDirectives = bbn.fn.createObject();
+    }
+
     if (el.bbnDirectives.draggable === undefined) {
-      el.bbnDirectives.draggable = bbn.fn.createObject();
+      el.bbnDirectives.draggable = bbn.fn.createObject({active: false});
     }
-    if (!!el.bbnDirectives.draggable.active) {
-      if (bbn.fn.isFunction(el.bbnDirectives.draggable.onmousedown)) {
-        el.removeEventListener('mousedown', el.bbnDirectives.draggable.onmousedown);
+
+    const draggable = el.bbnDirectives.draggable;
+
+    if (draggable.active) {
+      if (bbn.fn.isFunction(draggable.onmousedown)) {
+        el.removeEventListener('mousedown', draggable.onmousedown);
       }
-      if (bbn.fn.isFunction(el.bbnDirectives.draggable.onmouseup)) {
-        el.removeEventListener('mouseup', el.bbnDirectives.draggable.onmouseup);
+      if (bbn.fn.isFunction(draggable.onmouseup)) {
+        el.removeEventListener('mouseup', draggable.onmouseup);
       }
+
+      draggable.active = false;
     }
-    el.bbnDirectives.draggable = bbn.fn.createObject({
-      active: false
-    });
-    if (el.classList.contains('bbn-draggable')) {
+
+    if (el.classList?.contains('bbn-draggable')) {
       el.classList.remove('bbn-draggable');
     }
   };
@@ -519,8 +534,8 @@ export default function() {
   bbn.cp.directives['bbn-draggable'] = bbn.fn.createObject({
     inserted: inserted,
     update: (el, binding) => {
-      //bbn.fn.warning("DRAGGABLE UPDATED");
       if ((binding.value !== false)
+        && (el.nodeName !== '#comment')
         && !el.classList.contains('bbn-undraggable')
       ) {
         if (binding.oldValue === false) {

@@ -67,7 +67,7 @@ const cpDef = {
               type: Number
             },
             /**
-             * @prop {Boolean} [false] hidden
+             * @prop {Boolean} [false] invisible
              */
             invisible: {
               type: Boolean,
@@ -121,9 +121,9 @@ const cpDef = {
               default: ''
             },
             /**
-             * @prop {String} title
+             * @prop {String} label
              */
-            title: {
+            label: {
               type: String
             },
             /**
@@ -602,7 +602,7 @@ const cpDef = {
        */
       move(oldIdx, newIdx){
         if ( this.widgets[oldIdx] && this.widgets[newIdx] ){
-          bbn.fn.move(this.widgets, oldIdx, newIdx);
+          this.widgets = bbn.fn.move(this.widgets, oldIdx, newIdx);
           let order = [];
           bbn.fn.each(this.widgets, (a, i) => {
             if ( i !== a.index ){
@@ -658,10 +658,8 @@ const cpDef = {
               if ( w && w.showable ){
                 items.push({
                   disabled: !this.closable || (w.closable === false),
-                  selected: !w.hidden,
-                  text: w.text ?
-                    w.text :
-                    (w.title ? w.title : bbn._('Untitled')),
+                  selected: !w.invisible,
+                  text: w.text || w.label || bbn._('Untitled'),
                   action: () => {
                     this.toggleWidget(w.uid);
                   }
@@ -672,15 +670,15 @@ const cpDef = {
             this.menu.push(tab.addMenu({
               text: bbn._("Widgets"),
               mode: 'options',
-              icon: 'nf nf-mdi-widgets',
+              icon: 'nf nf-md-widgets',
               items: items
             }));
             this.menu.push(tab.addMenu({
               text: bbn._("Show every widget"),
-              icon: 'nf nf-mdi-check_circle',
+              icon: 'nf nf-md-check_circle',
               action: () => {
                 bbn.fn.each(this.widgets, w => {
-                  if ( w.hidden ){
+                  if ( w.invisible ){
                     this.showWidget(w.uid);
                   }
                 });
@@ -688,10 +686,10 @@ const cpDef = {
             }));
             this.menu.push(tab.addMenu({
               text: bbn._("Hide every widget"),
-              icon: 'nf nf-mdi-checkbox_blank_circle',
+              icon: 'nf nf-md-checkbox_blank_circle',
               action: () => {
                 bbn.fn.each(this.widgets, w => {
-                  if ( !w.hidden ){
+                  if ( !w.invisible ){
                     this.hideWidget(w.uid);
                   }
                 });
@@ -767,7 +765,7 @@ const cpDef = {
             });
             this.$nextTick(()=>{
               this.setWidgetStorage(idx);
-              if ( params.cfg.hidden !== undefined ){
+              if ( params.cfg.invisible !== undefined ){
                 this.updateMenu();
               }
               if ( this.hasStorage ){
@@ -782,7 +780,7 @@ const cpDef = {
                         cp.widgets[idx][k] = a;
                       }
                     });
-                    if ( params.cfg.hidden !== undefined ){
+                    if ( params.cfg.invisible !== undefined ){
                       cp.updateMenu();
                     }
                   }
@@ -837,10 +835,10 @@ const cpDef = {
        * @fires _getStorageRealName
        * @returns {Object}
        */
-      normalize(obj_orig){
+      makeWidgetConfig(obj_orig){
         //bbn.fn.log("NORMALIZE");
         let obj = obj_orig || {};
-        obj.hidden = !!obj.hidden;
+        obj.invisible = !!obj.invisible;
         if ( !obj.key ){
           obj.key = obj.uid ? obj.uid : bbn.fn.randomString(10, 20).toLowerCase();
         }
@@ -871,8 +869,8 @@ const cpDef = {
           return this.widgets[checkIdx];
         }
         if ( (idx === undefined) || (idx < 0) || (idx >= this.widgets.length) ){
-          if ( obj.hidden === undefined ){
-            obj.hidden = false;
+          if ( obj.invisible === undefined ){
+            obj.invisible = false;
           }
           obj.index = this.widgets.length;
           this.widgets.push(obj);
@@ -921,12 +919,12 @@ const cpDef = {
               node &&
               (node.tag === 'bbns-widget')
             ){
-              this.originalSource.push(this.normalize(node.data.attrs));
+              this.originalSource.push(this.makeWidgetConfig(node.data.attrs));
             }
           }
         }
         bbn.fn.each(this.source, (w, i) => {
-          this.originalSource.push(this.normalize(w));
+          this.originalSource.push(this.makeWidgetConfig(w));
         });
         this.initWidgets();
         this.updateMenu();
@@ -1061,7 +1059,6 @@ const cpDef = {
     }
   };
 
-import bbn from '@bbn/bbn';
 import cpHtml from './dashboard.html';
 import cpStyle from './dashboard.less';
 let cpLang = {};

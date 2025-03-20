@@ -1,8 +1,9 @@
 <div :class="[componentClass, 'bbn-iblock', 'bbn-textbox', {'bbn-disabled': !!isDisabled}]"
-     @click.stop>
+     @click.stop
+     tabindex="-1">
   <div class="bbn-flex-width">
     <div class="bbn-flex-fill">
-      <input :tabindex="tabindex"
+      <input :tabindex="currentTabIndex"
              autocomplete="off"
              bbn-model="currentValue"
              :name="name"
@@ -12,18 +13,18 @@
              :required="required"
              @blur="_blur"
              @keydown="_keydown"
-             @keyup="keyup"
+             @keyup="onKeyup"
              @mouseenter="over"
              @mouseleave="out"
              @change="_change"
              bbn-show="editMode"
              :size="currentInputSize"
              :style="{'paddingRight': spinners ? '0.5rem !important' : ''}"
-             :inputmode="inputmode">
+             :inputmode="$el.inputmode">
       <input autocomplete="off"
              :value="inputValue"
              :name="name"
-             :tabindex="tabindex"
+             :tabindex="currentTabIndex"
              :disabled="isDisabled"
              :readonly="readonly || onlySpinners"
              :required="required"
@@ -57,7 +58,7 @@
           unselectable="on"
           :tabindex="spinnersTabindex"
           :disabled="disableIncrease">
-        <div class="bbn-100 bbn-middle">
+        <div class="bbn-100 bbn-flex bbn-middle">
           <i class="nf nf-fa-caret_up bbn-middle"/>
         </div>
       </div>
@@ -78,7 +79,7 @@
           unselectable="on"
           :tabindex="spinnersTabindex"
           :disabled="disableDecrease">
-        <div class="bbn-100 bbn-middle">
+        <div class="bbn-100 bbn-flex bbn-middle">
           <i class="nf nf-fa-caret_down bbn-middle"/>
         </div>
       </div>

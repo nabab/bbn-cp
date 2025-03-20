@@ -55,7 +55,7 @@ const cpDef = {
      *
      * @prop {String} id
      */
-    id: {
+    uid: {
       type: String,
       default(){
         return bbn.fn.randomString(10, 25);
@@ -124,6 +124,34 @@ const cpDef = {
     }
   },
   methods: {
+    check() {
+      if (!this.isDisabled && !this.readonly && !this.state) {
+        const ev = new Event('beforechange', {cancelable: true});
+        this.$emit('beforechange', ev, this.state);
+        if (!ev.defaultPrevented) {
+          let emitVal = this.value;
+          this.$emit('input', emitVal);
+          this.$emit('change', emitVal, this);
+        }
+        else {
+          this.getRef('element').checked = this.state;
+        }
+      }
+    },
+    uncheck() {
+      if (!this.isDisabled && !this.readonly && this.state) {
+        const ev = new Event('beforechange', {cancelable: true});
+        this.$emit('beforechange', ev, this.state);
+        if (!ev.defaultPrevented) {
+          let emitVal = this.novalue;
+          this.$emit('input', emitVal);
+          this.$emit('change', emitVal, this);
+        }
+        else {
+          this.getRef('element').checked = this.state;
+        }
+      }
+    },
     /**
      * Emits a change when the state of the checkbox changes.
      *
@@ -131,13 +159,17 @@ const cpDef = {
      * @emits input
      * @emits change
      */
-    toggle(ev) {
+    toggle() {
       if (!this.isDisabled && !this.readonly) {
+        const ev = new Event('beforechange', {cancelable: true});
         this.$emit('beforechange', ev, this.state);
         if (!ev?.defaultPrevented) {
-          let emitVal = !this.state ? this.value : this.novalue;
+          let emitVal = this.state ? this.novalue : this.value;
           this.$emit('input', emitVal);
           this.$emit('change', emitVal, this);
+        }
+        else {
+          this.getRef('element').checked = this.state;
         }
       }
     },
@@ -165,7 +197,7 @@ const cpDef = {
       }
       else {
         //bbn.fn.log("KEYDOWN");
-        this.keydown(ev);
+        this.onKeydown(ev);
       }
     }
   },
@@ -191,15 +223,16 @@ const cpDef = {
      * @param {Boolean} newValue
      * @fires toggle
      */
-    checked(newValue){
+    checked(newValue) {
+      this.$computed.state.computedUpdate(true);
       if (newValue !== this.state) {
+        bbn.fn.log("CHECKED WATCHER", newValue, this.state);
         this.toggle();
       }
     }
   }
 };
 
-import bbn from '@bbn/bbn';
 import cpHtml from './checkbox.html';
 
 export default {

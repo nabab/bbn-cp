@@ -6,22 +6,25 @@
   <div bbn-if="loading" class="loader">
     <bbn-loadicon/> <span bbn-text="_('Loading')"/>...
   </div>
-  <h2 bbn-elseif="isRoot && !filteredData.length"
-      bbn-html="_('No items') + '...'"/>
+  <component bbn-elseif="isRoot && !filteredData.length && noDataComponent"
+              :is="noDataComponent"/>
+  <div bbn-elseif="isRoot && !filteredData.length"
+        class="bbn-lg bbn-c"
+        bbn-text="noData"/>
   <!-- The container: a scroll if root and scrollable, a div otherwise -->
   <bbn-scroll bbn-if="isInit"
               bbn-show="isLoaded"
              bbn-forget="!isRoot || !scrollable"
              ref="scroll">
     <div class="bbn-tree-helper-container"
-         bbn-if="(draggable || sortable) && isRoot"
+         bbn-if="(drag || sortable) && isRoot"
          ref="helperContainer">
       <ul class="bbn-tree-helper"
           ref="helper"
           bbn-show="!!tree.realDragging"/>
     </div>
     <!-- start of the list -->
-    <ul bbn-if="isRoot || $parent.isExpanded"
+    <ul bbn-if="isRoot || $origin.isExpanded"
         :class="{
           'bbn-tree-child': !!level,
           'bbn-tree-root': isRoot,
@@ -46,9 +49,9 @@
             :uid="uid"
             @selectmenu="clickMenuItem"
             @nodeclick="onNodeClick"
-            :tree-state="uid !== undefined ? _getTreeState(it.data[uid]) : {}">
+            :tree-state="uid !== undefined ? _getTreeState(it.data[uid]) : undefined">
         <li :class="['bbn-tree-node', 'bbn-vxxspadding', 'bbn-unselectable', {
-                      'bbn-state-active': (isActive && !isSelected) || (tree.draggable && tree.dragging && (tree.dragging === _self)),
+                      'bbn-state-active': (isActive && !isSelected) || (tree.drag && tree.dragging && (tree.dragging === _self)),
                       'bbn-state-selected': isSelected
                     }]"
             bbn-show="isVisible"
@@ -66,7 +69,7 @@
                     && (tree.dragging.source.num > 1) ? 'visible' : 'hidden'
                 }"
                 ref="orderTop"
-                @dragover="drag"
+                @dragover="onDrag"
                 @dragleave="leaveDrag"
                 @drop="drop"
                 @dragend="endDrag"
@@ -78,7 +81,7 @@
                   @click="if ( !flat && numChildren && (level >= tree.minExpandLevel) ){
                     isExpanded = !isExpanded;
                   }"
-                  @mouseover="if ( !flat && tree.draggable && tree.dragging && numChildren && (level >= tree.minExpandLevel) ){
+                  @mouseover="if ( !flat && tree.drag && tree.dragging && numChildren && (level >= tree.minExpandLevel) ){
                     isExpanded = true;
                   }">
               <!-- If there are no children we leave the white space -->
@@ -115,13 +118,13 @@
               <span @dblclick.stop="dblClickOnNode"
                     @click.stop="clickOnNode"
                     @dragstart="startDrag"
-                    @dragover="drag"
+                    @dragover="onDrag"
                     @dragleave="leaveDrag"
                     @drop="drop"
                     @dragend="endDrag"
                     @mouseup.left="onMouseUp"
                     tabindex="0"
-                    bbn-draggable.container.data.mode="tree.draggable ? {
+                    bbn-draggable.container.data.mode="tree.drag ? {
                       mode: 'clone',
                       container: tree.getRef('helperContainer'),
                       data: {node: _self}
@@ -166,7 +169,7 @@
                     :key="'tree-' + level + '-' + idx"
                     class="bbn-text"
                     :component="component"
-                    :source="tree.isAjax && !tree.hybrid ? tree.source : (data[tree.children] ? data[tree.children] : [])"
+                    :source="tree.isAjax && !tree.hybrid ? tree.source : (data[tree.sourceItems] ? data[tree.sourceItems] : [])"
                     :level="level + 1"
                     :object="tree.object ? !tree.hybrid : false"
                     :autobind="false"
@@ -198,7 +201,7 @@
                     && (tree.overNode !== tree.dragging) ? 'visible' : 'hidden'
                 }"
                 ref="orderBottom"
-                @dragover="drag"
+                @dragover="onDrag"
                 @dragleave="leaveDrag"
                 @drop="drop"
                 @dragend="endDrag"

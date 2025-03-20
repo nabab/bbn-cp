@@ -11,7 +11,8 @@
   <ul bbn-if="filteredData.length && ready"
       :class="['bbn-menulist', mode]">
     <template bbn-for="(li, idx) in filteredData"
-              :key="uid || sourceValue ? li.data[uid || sourceValue] || idx : idx">
+              :key="uid || sourceValue ? li.data[uid || sourceValue] || idx : idx"
+              bbn-if="!sourceVisible || li.data[sourceVisible]">
       <li bbn-if="groupable
             && (!pageable
               || ((idx >= start)
@@ -52,11 +53,11 @@
                    bbn-bind="componentOptions"
                    :source="li.data"
                    :index="li.index"
-                   @remove="remove(idx)"
+                   @remove="removeItem(idx)"
                    @hook:mounted="selfEmit(true)"
                    :key="li.key"/>
         <component bbn-else
-                  :is="li.data && li.data[sourceUrl] && !li.data[children] ? 'a' : 'span'"
+                  :is="li.data && li.data[sourceUrl] && !li.data[sourceItems] ? 'a' : 'span'"
                   class="bbn-w-100"
                   :href="li.data && li.data[sourceUrl] ? li.data[sourceUrl] : undefined"
                   :key="li.key">
@@ -71,38 +72,45 @@
                :class="'bbn-m ' + li.data[sourceIcon]"/>
           </span>
           <span class="text"
-                bbn-html="li.data[sourceText]"></span>
+                bbn-html="li.data[sourceText]"/>
+          <template bbn-if="buttons">
+            <bbn-button bbn-for="(btn, i) in buttons(li.data)"
+                        :key="i"
+                        :notext="true"
+                        class="bbn-xs"
+                        bbn-bind="btn"/>
+          </template>
         </component>
-        <div bbn-if="!currentComponent && li.data[children] && li.data[children].length"
+        <div bbn-if="!currentComponent && li.data[sourceItems] && li.data[sourceItems].length"
              :class="['bbn-top-right', 'bbn-hspadding', 'bbn-h-100', {
               'bbn-vmiddle': (origin === 'floater')
              }]">
           <i class="nf nf-fa-chevron_right"/>
         </div>
         <bbn-floater bbn-if="isOpened
-                      && children
+                      && sourceItems
                       && (origin === 'floater')
-                      && li.data[children]
+                      && li.data[sourceItems]
                       && (overIdx === idx)"
                     :uid="uid"
                     @select="select"
                     :level="level + 1"
                     :scroll-hidden="scrollHidden"
                     :mode="li.data.mode || 'free'"
-                    :source="li.data[children]"
+                    :source="li.data[sourceItems]"
                     :element="getRef('li' + idx)"
                     :element-width="false"
                     orientation="horizontal"
                     :item-component="component"/>
         <bbn-list bbn-elseif="(origin !== 'floater')
-                    && children
-                    && li.data[children]
+                    && sourceItems
+                    && li.data[sourceItems]
                     && li.opened"
                   :level="level + 1"
                   :mode="li.data.mode || 'free'"
                   :uid="uid"
-                  :children="children"
-                  :source="li.data[children]"
+                  :source-items="sourceItems"
+                  :source="li.data[sourceItems]"
                   :key="'sublist-' + li.key"
                   :component="component"/>
       </li>

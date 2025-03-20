@@ -7,22 +7,24 @@
      @mouseenter="isOverDropdown = true"
      @mouseleave="isOverDropdown = false"
      @focusin="isActive = true"
-     @focusout="onFocusOut">
+     @focusout="onFocusOut"
+     tabindex="-1">
   <div :class="['bbn-rel', 'bbn-autocomplete-container', 'bbn-flex-width', 'bbn-vmiddle', currentItemCls, {
     'bbn-autocomplete-container-native': native
   }]">
     <div bbn-if="sourceIcon && hasValue && !!currentItemIcon"
          class="bbn-left-xspadding">
       <i :class="currentItemIcon"
-         @click.stop="click" />
+         @click.stop="onClick" />
     </div>
     <div bbn-if="sourceImg && hasValue && !!currentItemImg"
          class="bbn-left-xspadding">
       <img :src="currentItemImg"
-           @click.stop="click"
+           @click.stop="onClick"
            :alt="currentItemImg">
     </div>
-    <bbn-input :disabled="isDisabled"
+    <bbn-input bbn-show="!inputIsVisible"
+               :disabled="isDisabled"
                class="bbn-no-border bbn-flex-fill bbn-unselectable"
                :required="required"
                :readonly="readonly"
@@ -37,21 +39,20 @@
                :autosize="autosize"
                :nullable="isNullable"
                :force-nullable="isNullable"
-               @focus="_setInputVisible"
-               bbn-show="!inputIsVisible"/>
+               @focus="_setInputVisible"/>
     <bbn-input bbn-if="!isDisabled && !readonly"
                bbn-show="inputIsVisible"
-                :tabindex="0"
-                class="bbn-no-border bbn-i"
+               :tabindex="currentTabIndex"
+               class="bbn-no-border bbn-i"
                 bbn-model="filterString"
                 ref="input"
                 @focus="selectText"
-                @blur="inputIsVisible = false"
+                @blur="onInputBlur"
                 autocomplete="off"
                 :required="required"
                 :readonly="readonly"
-                @keydown.stop="keydown"
-                @change="onChange"
+                @keydown.stop="onKeydown"
+                @change.stop="onChange"
                 :autosize="autosize"
                 autocorrect="off"
                 autocapitalize="off"
@@ -81,12 +82,12 @@
               :width="asMobile ? '100%' : undefined"
               :height="asMobile ? '100%' : undefined"
               ref="list"
-              :children="null"
+              :source-items="null"
               :source-value="sourceValue"
               :source-text="sourceText"
               :source-url="sourceUrl"
               :source-icon="sourceIcon"
-              :title="floaterTitle"
+              :label="floaterTitle"
               :buttons="asMobile ? realButtons : []"
               :item-component="realComponent"
               @mouseenter="isOverDropdown = true"

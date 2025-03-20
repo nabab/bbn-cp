@@ -1,0 +1,48 @@
+<div :class="cellClass"
+     :style="cellStyle">
+  <bbn-table-cell bbn-if="table.lastFixedIndex > -1"
+                  :source="source.data"
+                  :index="0"
+                  :row-index="index"
+                  :class="[cellClass, table.currentColumns[1].fixed ? 'bbn-table-fixed-cell bbn-table-cell-left' : '']"
+                  :colspan="table.lastFixedIndex > 0 ? table.lastFixedIndex + 1 : undefined"
+                  :style="{
+                    left: table.currentColumns[1].left !== undefined ? table.currentColumns[1].left + 'px' : 'auto',
+                    width: 'auto',
+                    borderRight: '0px',
+                    overflow: 'unset'
+                  }">
+    <slot/>
+  </bbn-table-cell>
+  <bbn-table-cell :row-index="index"
+                  :index="0"
+                  :column="table.groupCols[1].cols[0]"
+                  class="bbn-border-left bbn-border-bottom"
+                  :colspan="bbn.fn.count(table.groupCols[1].cols, d => !d.isExpander && (d.realWidth > 0))"
+                  :style="{
+                    width: 'auto',
+                    borderRight: '0px',
+                    overflow: 'unset'
+                  }">
+    <div class="bbn-block">
+      <component bbn-if="typeof(table.expander) !== 'function'"
+                :is="table.expander"
+                class="bbn-spadding"
+                :source="source.data" />
+      <component bbn-elseif="(typeof(table.expander(source)) === 'object')"
+                :is="table.expander(source)"
+                :source="source.data"/>
+      <div bbn-else
+            bbn-html="table.expander(source.data, index)"/>
+    </div>
+  </bbn-table-cell>
+  <bbn-table-cell bbn-if="table.groupCols[2].cols.length"
+                  :source="source.data"
+                  :row-index="index"
+                  :colspan="table.groupCols[2].cols.length"
+                  :component="table.expander"
+                  style="border-left: 0px"
+                  :class="cellClass">
+    <slot/>
+  </bbn-table-cell>
+</div>

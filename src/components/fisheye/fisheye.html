@@ -2,6 +2,7 @@
      :style="{zIndex: zIndex}">
   <bbn-scroll :scrollable="scrollable"
               @hook:mounted="onScrollMounted"
+              class="bbn-100"
               ref="scroll">
     <div bbn-if="!showIcons"
          :class="['bbn-fisheye-dots', 'bbn-overlay', 'bbn-middle', {'bbn-invisible': !ready}]"
@@ -9,7 +10,7 @@
       <span class="bbn-block bbn-p"
             @click="toggleFloater"
             ref="dots">
-          <i class="nf nf-mdi-dots_horizontal bbn-middle"/>
+          <i class="nf nf-md-dots_horizontal bbn-middle"/>
         </span>
     </div>
     <ul ref="container"
@@ -48,7 +49,7 @@
             bbn-draggable="!it.fixed"
             @dragstart="dragstart(it.index, $event)"
             @dragend="dragend(it.index, $event)"
-            class="bbn-w-100 bbn-c bbn-smargin bbn-p"
+            class="bbn-c bbn-smargin bbn-p"
             @click="onClick(it.data, it.index)">
         <div class="bbn-w-100 bbn-middle">
           <i :class="[it.data.icon, 'bbn-fisheye-floater-icon', 'bbn-box', ' bbn-xxspadding', 'bbn-middle']"></i>

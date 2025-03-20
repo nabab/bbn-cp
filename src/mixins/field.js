@@ -33,19 +33,19 @@ const field = {
       type: [String, Function]
     },
     /**
-     * The title of the component.
-     * @prop {String|Number} title
+     * The label of the component.
+     * @prop {String|Number} label
      * @memberof fieldComponent
      */
-    title: {
+    label: {
       type: [String, Number]
     },
     /**
-     * The full title of the component.
-     * @prop {String} ftitle
+     * The full label of the component.
+     * @prop {String} flabel
      * @memberof fieldComponent
      */
-    ftitle: {
+    flabel: {
       type: String
     },
     /**
@@ -98,10 +98,10 @@ const field = {
     },
     /**
      * Defines if the component has to be hidden.
-     * @prop {Boolean} hidden
+     * @prop {Boolean} invisible
      * @memberof fieldComponent
      */
-    hidden: {
+    invisible: {
       type: Boolean
     },
     /**

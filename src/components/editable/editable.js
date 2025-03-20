@@ -53,7 +53,7 @@ const cpDef = {
           view: `<div  @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"
                       :class="['component-container', 'bbn-block-html', alignClass]"
                       bbn-html="currentValue"
-                      :style="style">
+                      :style="currentStyle">
     
                 </div>`,
           edit: `<div :class="['component-container', 'bbn-block-html', alignClass ]">
@@ -64,18 +64,18 @@ const cpDef = {
           view: `<div  @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"
                       :class="['component-container', 'bbn-block-html', alignClass]"
                       bbn-html="currentValue"
-                      :style="style"/>`,
+                      :style="currentStyle"/>`,
           edit: `<div :class="['component-container', 'bbn-block-html', alignClass ]">
                   <bbn-markdown bbn-model="currentValue"/>
                 </div>`
         },
         title: {
-          view: `<div @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"  :class="['component-container', 'bbn-block-title', {'has-hr': source.hr}, alignClass]":style="style">
+          view: `<div @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"  :class="['component-container', 'bbn-block-title', {'has-hr': source.hr}, alignClass]":style="currentStyle">
                   <hr bbn-if="source.hr">
                   <component :is="cpHTML(source.tag, 'title')" :source="source"/>
                   <hr bbn-if="source.hr">
                  </div>`,
-          edit: `<div :class="['component-container','bbn-cms-block-edit' ,'bbn-block-title', 'bbn-flex-height', {'has-hr': source.hr}, alignClass]" :style="style">
+          edit: `<div :class="['component-container','bbn-cms-block-edit' ,'bbn-block-title', 'bbn-flex-height', {'has-hr': source.hr}, alignClass]" :style="currentStyle">
                   <div class="edit-title bbn-w-100">
                     <hr bbn-show="source.hr"><component :is="cpHTML(source.tag,'title')" :source="source"/><hr bbn-if="source.hr">
                   </div>
@@ -104,12 +104,12 @@ const cpDef = {
             <a bbn-if="source.href" target="_self" :href="$parent.linkURL + source.href" class="bbn-c">
               <img :src="$parent.path + source.src"
                     style="heigth:500px;width:100%"
-                   :style="style"
+                   :style="currentStyle"
                    :alt="source.alt ? source.alt : ''">
             </a>
             <img bbn-else
                  :src="$parent.path + source.src"
-                 :style="style"
+                 :style="currentStyle"
                  :alt="source.alt ? source.alt : ''">
             <p class="image-caption bbn-l bbn-s bbn-vsmargin"
                bbn-if="source.caption"
@@ -148,14 +148,14 @@ const cpDef = {
                 <bbn-block-align-buttons/>
               </div>
             </div>
-            <img :src="$parent.path + source.src" :style="style">
+            <img :src="$parent.path + source.src" :style="currentStyle">
             <p class="image-caption bbn-l bbn-s bbn-vsmargin" bbn-if="source.caption" bbn-html="source.caption"/>
           </div>
                     `
         },
         carousel: {
           view: `
-          <div :class="['component-container', 'bbn-block-carousel', 'bbn-w-100',  alignClass]" :style="style" bbn-if="show">
+          <div :class="['component-container', 'bbn-block-carousel', 'bbn-w-100',  alignClass]" :style="currentStyle" bbn-if="show">
             <div bbn-for="(group, idx) in carouselSource"
                  bbn-if="idx === currentCarouselIdx">
               <bbn-cms-carousel-control :source="idx"
@@ -171,13 +171,13 @@ const cpDef = {
         },
         gallery: {
           view: `
-          <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="style" bbn-if="show">
+          <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="currentStyle" bbn-if="show">
             <bbn-cms-block-gallery-item bbn-for="(image, idx) in source.source" :source="image" :key="idx" :index="idx"/>
           </div>
           `,
           edit: `
           <div>
-            <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="style" bbn-if="show">
+            <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="currentStyle" bbn-if="show">
               <!-- GIVE HREF TO VIEW FULL IMAGE -->
               <bbn-cms-block-gallery-item bbn-for="(image, idx) in currentValue" :source="image" :key="idx" :index="idx"/>
             </div>
@@ -204,14 +204,14 @@ const cpDef = {
             <div :class="['component-container', 'bbn-cms-block-video', alignClass]">
               <!--ERROR ON HOME-->
               <!--bbn-video :width="source.width"
-                         :style="style"
+                         :style="currentStyle"
                          :height="source.height"
                          :autoplay="autoplay"
                          :muted="muted"
                          :youtube="youtube"
                          :source="source.src"
               ></bbn-video-->
-              <iframe :style="style"
+              <iframe :style="currentStyle"
                       :autoplay="false"
                       :src="source.src"/>
             </div>`,
@@ -255,7 +255,7 @@ const cpDef = {
             </div>
             <div :class="alignClass">
               <bbn-video :width="source.style.width"
-                        :style="style"
+                        :style="currentStyle"
                         :height="source.style.height"
                         :autoplay="autoplay"
                         :muted="muted"
@@ -266,9 +266,9 @@ const cpDef = {
           `
         },
         line: {
-          view: `<div class="component-container"><hr :style="style"></div>`,
+          view: `<div class="component-container"><hr :style="currentStyle"></div>`,
           edit: `<div class="block-line-edit component-container">
-                  <hr :style="style">
+                  <hr :style="currentStyle">
                   <div class="block-line-edit-command bbn-padding">
                     <div class="bbn-grid-fields bbn-vspadding">
                       <label bbn-text="_('Line width')"/>
@@ -302,12 +302,12 @@ const cpDef = {
                  </div>`
         },
         space: {
-          view: `<div class="component-container" :style="style">
+          view: `<div class="component-container" :style="currentStyle">
                   <div class="block-space-view"/>
                 </div>`,
           edit: `
-              <div class="component-container" :style="style">
-                <div :style="style" class="block-space-edit">
+              <div class="component-container" :style="currentStyle">
+                <div :style="currentStyle" class="block-space-edit">
                   <bbn-cursor bbn-model="source.style.height"
                               unit="px"
                               :min="0"
@@ -366,10 +366,10 @@ const cpDef = {
         }
       },
       /**
-       * The audio's title
-       * @prop {String} [''] title
+       * The component's label
+       * @prop {String} [''] label
        */
-      title: {
+      label: {
         type: String,
         default: ''
       },
@@ -408,6 +408,7 @@ const cpDef = {
          * @data {Boolean} [false] over
          */
         over: false,
+        mouseIn: false,
         /**
          * @data {Boolean} [false] isEditing
          */
@@ -424,12 +425,6 @@ const cpDef = {
          * @data {String} ['100%']
          */
         height: '100%',
-        /**
-         * Ready is important for the component template to be defined.
-         *
-         * @prop {Boolean} [true] ready
-         */
-        ready: true,
         /**
          * @prop {Object} [{}] initialSource
          */
@@ -656,7 +651,7 @@ const cpDef = {
        * @return {Object}
        */
       getComponentObject(type) {
-        if (!bbnEditableCp.templates[type]) {
+        if (!bbnEditable.templates[type]) {
           throw new Error('The component type ' + type + ' is not defined');
         }
 
@@ -665,9 +660,9 @@ const cpDef = {
             value: {},
             source: {},
           },
-          template: this.isEditing ? bbnEditableCp.templates[type].edit : bbnEditableCp.templates[type].view,
+          template: this.isEditing ? bbnEditable.templates[type].edit : bbnEditable.templates[type].view,
           data(){
-            let tmp = Object.keys(bbnEditableCp.titleTemplates).map((a)=>{return a = {text:a, value:a}});
+            let tmp = Object.keys(bbnEditable.titleTemplates).map((a)=>{return a = {text:a, value:a}});
             return {
               //cp video
               muted: true,
@@ -676,7 +671,7 @@ const cpDef = {
               tags: tmp,
               image: [],
               tinyNumbers: [{text: '1', value: 1}, {text: '2', value: 2},{text: '3', value: 3},{text: '4', value: 4}],
-              borderStyle: bbnEditableCp.borderStyle,
+              borderStyle: bbnEditable.borderStyle,
               ref: (new Date()).getTime(),
               show: true,
               currentCarouselIdx: 0
@@ -785,7 +780,7 @@ const cpDef = {
               }
               return st;
             },
-            style(){
+            currentStyle() {
               let st = '';
               if ( this.source.style ){
                 if ( this.source.style['color'] ){
@@ -892,7 +887,7 @@ const cpDef = {
             cpHTML(tag, type){
               return {
                 props: ['source'],
-                template: (type === 'title') ? bbnEditableCp.titleTemplates[tag] : bbnEditableCp.htmlTemplates[tag],
+                template: (type === 'title') ? bbnEditable.titleTemplates[tag] : bbnEditable.htmlTemplates[tag],
               }
             },
             /** @todo Seriously these arguments names??  */
@@ -1013,19 +1008,17 @@ const cpDef = {
                             :title="_('Align left')"
                             :notext="true"
                             @click="align = 'left'"
-                            :class="{'bbn-state-active': ($parent.source.align === 'left')}"
-                ></bbn-button>
-                <bbn-button icon="nf nf-fa-align_center" :title="_('Align left')"
+                            :class="{'bbn-state-active': ($parent.source.align === 'left')}"/>
+                <bbn-button icon="nf nf-fa-align_center"
+                            :title="_('Align left')"
                             :notext="true"
                             @click="align = 'center'"
-                            :class="{'bbn-state-active': ($parent.source.align === 'center')}"
-                ></bbn-button>
+                            :class="{'bbn-state-active': ($parent.source.align === 'center')}"/>
                 <bbn-button icon="nf nf-fa-align_right"
                             :title="_('Align left')"
                             :notext="true"
                             @click="align = 'right'"
-                            :class="{'bbn-state-active': ($parent.source.align === 'right')}"
-                ></bbn-button>
+                            :class="{'bbn-state-active': ($parent.source.align === 'right')}"/>
               </div>`,
               data(){
                 return {

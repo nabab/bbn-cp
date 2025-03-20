@@ -4,7 +4,7 @@
        height: height,
        aspectRatio: aspectRatio
      }">
-  <div bbn-if="title && (titlePosition === 'top')"
+  <div bbn-if="label && (titlePosition === 'top')"
        :class="['bbn-c', {
          'bbn-header': skin,
          'bbn-radius-top': skin,
@@ -12,7 +12,7 @@
          'bbn-no-border-left': skin,
          'bbn-no-border-right': skin,
        }, titleCls]"
-       bbn-html="title"
+       bbn-html="label"
        :style="{
          background: titleBackground,
          color: titleColor
@@ -23,7 +23,7 @@
          class="bbn-overlay bbn-video-poster">
       <img :src="poster">
       <div class="bbn-overlay bbn-middle">
-        <i class="nf nf-mdi-play_circle_outline bbn-xxl"
+        <i class="nf nf-md-play_circle_outline bbn-xxl"
            @click="showPoster = false"/>
       </div>
     </div>
@@ -58,7 +58,7 @@
       {{browserMessage}}
     </video>
   </div>
-  <div bbn-if="title && (titlePosition === 'bottom')"
+  <div bbn-if="label && (titlePosition === 'bottom')"
        :class="['bbn-c', {
          'bbn-header': skin,
          'bbn-radius-bottom': skin,
@@ -66,7 +66,7 @@
          'bbn-no-border-left': skin,
          'bbn-no-border-right': skin,
        }, titleCls]"
-       bbn-html="title"
+       bbn-html="label"
        :style="{
          background: titleBackground,
          color: titleColor

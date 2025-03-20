@@ -2,7 +2,11 @@ export default [
   {
     "name": "France",
     "prefix": "+33",
-    "code": "FR"
+    "code": "FR",
+    "maxlength": 9,
+    "mobilePrefix": [6, 7],
+    "mask": "0 00 00 00 00",
+    "pattern": "[1-9]{1}\\s{1}[0-9]{2}\\s{1}[0-9]{2}\\s{1}[0-9]{2}\\s{1}[0-9]{2}"
   },
   {
     "name": "Italy",

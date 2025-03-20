@@ -30,6 +30,16 @@ export default async function createApp(ele, obj) {
     ele = document.body.querySelector(ele);
   }
 
+  /* FOR SHADOW DOM
+  const rules = [];
+  Array.from(document.styleSheets).reduce((prev, cur) => {
+    rules.concat(Array.from(cur.cssRules) || []);
+    return rules;
+  });
+  bbn.cp.stylesheet = new CSSStyleSheet();
+  rules.forEach(a => bbn.cp.stylesheet.insertRule(a.cssText));
+  */
+
   // Check if 'ele' is a valid HTMLElement.
   bbn.fn.checkType(ele, HTMLElement, "The createApp function should be given a HTMLElement");
 
@@ -51,29 +61,25 @@ export default async function createApp(ele, obj) {
 
   // Add prefix handling for component names.
   // Define how to handle 'bbn-' prefixed components.
-  bbn.cp.addPrefix('bbn-', async components => {
+  bbn.cp.addPrefix('bbn-', async cp => {
     const res = bbn.fn.createObject({
       components: []
     });
-    //bbn.fn.log("COMPONENTS", components);
-    for (let cp of components) {
-      if (cp === 'bbn-anon') {
-        continue;
+
+    //bbn.fn.log(["IN ASYNC FN", cp, JSON.stringify(bbn.cp.unknown)]);
+    // Request needs to be done as a string explicitly
+    // @see https://stackoverflow.com/questions/42908116/webpack-critical-dependency-the-request-of-a-dependency-is-an-expression
+    const definition = await import(
+      /* webpackChunkName: "components/[request]" */
+      `../components/${cp.substr(4)}/${cp.substr(4)}.js`
+    );
+    for (let n in definition) {
+      //bbn.fn.log(["DEFINITION", cp, definition, n, definition.default?.name]);
+      if (n === 'default') {
+        res.components.push(definition.default);
       }
-      // Request needs to be done as a string explicitly
-      // @see https://stackoverflow.com/questions/42908116/webpack-critical-dependency-the-request-of-a-dependency-is-an-expression
-      const definition = await import(
-        /* webpackChunkName: "components/[request]" */
-        `../components/${cp.substr(4)}/${cp.substr(4)}.js`
-      );
-      //bbn.fn.log(["DEFINITION", definition]);
-      for (let n in definition) {
-        if (n === 'default') {
-          res.components.push(definition.default);
-        }
-        else if (!window[n]) {
-          window[n] = definition[n];
-        }
+      else if (!window[n]) {
+        window[n] = definition[n];
       }
     }
 
@@ -81,9 +87,7 @@ export default async function createApp(ele, obj) {
   });
 
   // Its content is its template
-  let tmp = stringToTemplate(obj.template || ele.outerHTML, true, 'bbn-anon');
-  const cpTpl = tmp.res;
-  const cpMap = tmp.map;
+  const {res: cpTpl, map: cpMap, inlineTemplates} = stringToTemplate(obj.template || ele.outerHTML, true, 'bbn-anon');
   const schema = bbn.fn.clone(cpTpl[0]);
   delete schema.slots;
   const placeholder = document.createComment("bbn-component placeholder");
@@ -94,7 +98,7 @@ export default async function createApp(ele, obj) {
   }
 
   parent.replaceChild(placeholder, ele);
-  bbn.fn.iterate(tmp.inlineTemplates, (tpl, tag) => {
+  bbn.fn.iterate(inlineTemplates, (tpl, tag) => {
     if (!obj.components[tag]) {
       throw new Error("Impossible to find the sub component %s", tag);
     }
@@ -123,6 +127,7 @@ export default async function createApp(ele, obj) {
     {
       bbnId: '0',
       bbnConnected: true,
+      bbnIsRoot: true,
       bbnCfg: cpCfg,
       bbnTpl: cpTpl,
       bbnSlots: slots,
@@ -135,11 +140,16 @@ export default async function createApp(ele, obj) {
     cp.style.cssText = cls;
   }
 
+  if (bbn.cp.preCompiled) {
+    bbn.fn.iterate(bbn.cp.preCompiled, a => {
+      bbn.cp.define(a.name, a.definition, a.template, a.css);
+    });
+  }
   // Replace the placeholder with the new component.
   parent.replaceChild(cp, placeholder);
 
-  bbn.cp.app = cp.bbn;
+  bbn.cp.app = cp;
   // Return the bbn property of the component.
-  return cp.bbn;
+  return cp;
   
 }

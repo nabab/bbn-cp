@@ -1,14 +1,12 @@
-import bbnCp from '../lib/Cp.js';
-
 const componentInside = {
   props: {
     /**
      * The component that will be rendered inside the main component.
-     * @prop {String|Object|bbnCp} component
+     * @prop {String|Object|HTMLElement} component
      * @memberof componentInside
      */
     component: {
-      type: [String, Object, bbnCp]
+      type: [String, Object, HTMLElement]
     },
     /**
      * The component's props.

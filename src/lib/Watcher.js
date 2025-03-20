@@ -1,6 +1,3 @@
-import bbn from "@bbn/bbn";
-import bbnCp from "./Cp.js";
-
 /**
  * Class representing a computed property watcher.
  * This class is responsible for monitoring changes in a computed property 
@@ -40,7 +37,7 @@ export default class bbnWatcher {
    */
   static setUp(cp, name, handler, options) {
     // Validates the types of input arguments
-    bbn.fn.checkType(cp, bbnCp);
+    bbn.fn.checkType(cp, HTMLElement);
     bbn.fn.checkType(name, String);
     bbn.fn.checkType(handler, Function);
 
@@ -63,7 +60,7 @@ export default class bbnWatcher {
    */
   constructor(cp, name) {
     // Validates the types of input arguments
-    bbn.fn.checkType(cp, bbnCp);
+    bbn.fn.checkType(cp, HTMLElement);
     bbn.fn.checkType(name, String);
 
     // Assigns component and property name

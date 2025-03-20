@@ -1,5 +1,4 @@
-import bbn from "@bbn/bbn";
-import bbnData from "../../Data.js";
+import bbnData from "../Data.js";
 
 /**
  * Returns a set of functions to be used by the proxy of bbnData objects
@@ -25,7 +24,6 @@ bbnData.proxy = function(component, path, targetObj) {
         return realValue;
       }
 
-      targetObj.setLastRequestedProp(key);
       if (bbn.fn.isFunction(realValue)) {
         if (targetObj?.isArray && bbn.fn.isString(key)) {
           const fnName = bbn.fn.camelize('proxy-' + key);
@@ -40,6 +38,7 @@ bbnData.proxy = function(component, path, targetObj) {
         realValue = t.treatValue(realValue, component, key, targetObj);
       }
       
+      targetObj.setLastRequestedProp(key);
       bbnData.addSequence(component, key, targetObj);
       if ((realValue === undefined) && !Object.hasOwn(target, key)) {
         return realValue;
@@ -60,7 +59,7 @@ bbnData.proxy = function(component, path, targetObj) {
       //bbn.fn.log(["SET", key, oldValue, value, oldObj, targetObj.getImpacted([key], bbn.fn.microtimestamp())]);
 
       if (oldObj && !oldObj.isSame(value)) {
-        oldObj.unset();
+        oldObj.removeComponent(component, key);
         mod = true;
       }
       else if (!oldObj && !bbn.fn.isSame(oldValue, value)) {

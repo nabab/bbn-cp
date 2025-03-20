@@ -83,11 +83,11 @@ const cpDef = {
         default: 'nf nf-fa-exclamation_circle'
       },
       /**
-       * @prop {String|Boolean}, ['nf nf-mdi-information'] infoIcon
+       * @prop {String|Boolean}, ['nf nf-md-information'] infoIcon
        */
       infoIcon: {
         type: [String, Boolean],
-        default: 'nf nf-mdi-information'
+        default: 'nf nf-md-information'
       },
       /**
        * The source of the component.

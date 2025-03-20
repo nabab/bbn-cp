@@ -37,7 +37,7 @@ const cpDef = {
        * @prop {Object} component
        */
       component: {
-        type: [String, Object, bbnCp]
+        type: [String, Object, HTMLElement]
       },
       /**
        * Insert a checkbox in each slide.

@@ -1,20 +1,18 @@
-import bbnCp from '../lib/Cp.js';
-
 const popup = {
   props: {
     /**
      * The object popup of the table.
-     * @prop {bbnCp}
+     * @prop {HTMLElement}
      */
     popup: {
-      type: bbnCp
+      type: HTMLElement
     }
   },
   methods: {
     /**
      * Retuns the popup object.
      * @method getPopup
-     * @returns {bbnCp}
+     * @returns {HTMLElement}
      */
     /*
     getPopup(cfg){

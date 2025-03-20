@@ -2,7 +2,7 @@
  * @file bbn-form component
  *
  * @description bbn-form is a component that allows you to quickly generate and process web forms.
- * 
+ *
  * Validation and custom control can be defined before data is sent to the back-end system.
  *
  * @copyright BBN Solutions
@@ -10,33 +10,21 @@
  * @author BBN Solutions
  */
 const cpDef = {
-  tag: 'form',
+  tag: "form",
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.localStorage
    */
-  mixins:
-    [
-      bbn.cp.mixins.basic,
-      bbn.cp.mixins.localStorage
-    ],
+  mixins: [bbn.cp.mixins.basic, bbn.cp.mixins.localStorage],
   props: {
     /**
-     * @prop {Boolean} autofocus
+     * @prop {Boolean} focused
      */
-    autofocus: {
+    focused: {
       type: Boolean,
       default() {
-        return !bbn.fn.isMobile()
-      }
-    },
-    /**
-     *@tood not used
-     * @ {Boolean} [false] autocomplete
-     */
-    autocomplete: {
-      type: Boolean,
-      default: false
+        return !bbn.fn.isMobile();
+      },
     },
     /**
      * Set to true to enable the form's buttons without changing the form's content.
@@ -45,7 +33,7 @@ const cpDef = {
      */
     prefilled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * Set to true to disable the form.
@@ -53,7 +41,7 @@ const cpDef = {
      */
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * The list of fields the form must contain.
@@ -72,7 +60,7 @@ const cpDef = {
      */
     blank: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * Set to true to give the attribute target the value '_self'.
@@ -80,13 +68,7 @@ const cpDef = {
      */
     self: {
       type: Boolean,
-      default: false
-    },
-    /**
-     * @prop {String} target
-     */
-    target: {
-      type: String
+      default: false,
     },
     /**
      * A confirmation popup with a costumized message shown before the form is submitted.
@@ -94,7 +76,7 @@ const cpDef = {
      * @prop {String|Function} confirmMessage
      */
     confirmMessage: {
-      type: [String, Function]
+      type: [String, Function],
     },
     /**
      * A confirmation popup with a costumized message shown before leaving the form.
@@ -104,16 +86,10 @@ const cpDef = {
     confirmLeave: {
       type: [Boolean, String, Function],
       default() {
-        return bbn._("Are you sure you want to discard the changes you made in this form?");
-      }
-    },
-    /**
-     * The url contacted when submitting the form.
-     *
-     * @prop {String} action
-     */
-    action: {
-      type: String
+        return bbn._(
+          "Are you sure you want to discard the changes you made in this form?"
+        );
+      },
     },
     /**
      * A method called after a form is correctly submitted.
@@ -121,7 +97,7 @@ const cpDef = {
      * @prop {Function} success
      */
     success: {
-      type: Function
+      type: Function,
     },
     /**
      * A method called after a form submission fails.
@@ -129,7 +105,7 @@ const cpDef = {
      * @prop {Function} failure
      */
     failure: {
-      type: Function
+      type: Function,
     },
     /**
      * A popup with a costumized message shown after a form is correctly submitted.
@@ -137,7 +113,7 @@ const cpDef = {
      * @prop {String|Function} successMessage
      */
     successMessage: {
-      type: [String, Function]
+      type: [String, Function],
     },
     /**
      * A popup with a costumized message shown after a form submission fails.
@@ -145,16 +121,7 @@ const cpDef = {
      * @prop {String|Function} failureMessage
      */
     failureMessage: {
-      type: [String, Function]
-    },
-    /**
-     * The form's method of submission.
-     *
-     * @prop {String} [post] method
-     */
-    method: {
-      type: String,
-      default: 'post'
+      type: [String, Function],
     },
     /**
      * Set to true to enable form scrolling.
@@ -163,7 +130,7 @@ const cpDef = {
      */
     scrollable: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * Set to true to keep the scrollbars visible
@@ -172,7 +139,7 @@ const cpDef = {
      */
     keepScrollVisible: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * The buttons shown on the form.
@@ -182,8 +149,8 @@ const cpDef = {
     buttons: {
       type: [Boolean, Array],
       default() {
-        return ['cancel', 'submit'];
-      }
+        return ["cancel", "submit"];
+      },
     },
     /**
      * The form's text on submit button.
@@ -193,8 +160,8 @@ const cpDef = {
     submitText: {
       type: String,
       default() {
-        return bbn._('Submit');
-      }
+        return bbn._("Submit");
+      },
     },
     /**
      * The form's text on cancel button.
@@ -204,8 +171,8 @@ const cpDef = {
     cancelText: {
       type: String,
       default() {
-        return bbn._('Cancel');
-      }
+        return bbn._("Cancel");
+      },
     },
     /**
      * The form's text on reset button.
@@ -215,8 +182,8 @@ const cpDef = {
     resetText: {
       type: String,
       default() {
-        return bbn._('Reset');
-      }
+        return bbn._("Reset");
+      },
     },
     /**
      * The submit button's icon.
@@ -225,7 +192,7 @@ const cpDef = {
      */
     submitIcon: {
       type: String,
-      default: 'nf nf-fa-check_circle'
+      default: "nf nf-fa-check_circle",
     },
     /**
      * The cancel button's icon.
@@ -234,7 +201,7 @@ const cpDef = {
      */
     cancelIcon: {
       type: String,
-      default: 'nf nf-fa-times_circle'
+      default: "nf nf-fa-times_circle",
     },
     /**
      * The reset button's icon.
@@ -243,7 +210,7 @@ const cpDef = {
      */
     resetIcon: {
       type: String,
-      default: 'nf nf-fa-refresh'
+      default: "nf nf-fa-refresh",
     },
     /**
      * The submit button's icon position.
@@ -252,7 +219,7 @@ const cpDef = {
      */
     submitIconPosition: {
       type: String,
-      default: 'left'
+      default: "left",
     },
     /**
      * The cancel button's icon position.
@@ -261,7 +228,7 @@ const cpDef = {
      */
     cancelIconPosition: {
       type: String,
-      default: 'left'
+      default: "left",
     },
     /**
      * The reset button's icon position.
@@ -270,7 +237,7 @@ const cpDef = {
      */
     resetTextPosition: {
       type: String,
-      default: 'left'
+      default: "left",
     },
     /**
      * The proper data used in the form.
@@ -281,8 +248,8 @@ const cpDef = {
     source: {
       type: Object,
       default() {
-        return {}
-      }
+        return {};
+      },
     },
     /**
      * The additional data to be sent by the form.
@@ -291,7 +258,7 @@ const cpDef = {
      */
     // This is additional data to be sent by the form
     data: {
-      type: Object
+      type: Object,
     },
     /**
      * Set to true to fix the form's footer.
@@ -300,7 +267,7 @@ const cpDef = {
      */
     fixedFooter: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * The form's schema generating the inputs.
@@ -312,7 +279,7 @@ const cpDef = {
       type: Array,
       default: function () {
         return [];
-      }
+      },
     },
     // Sets if it is the data property which must be sent, or the content of the named fields
     // (in this case names are not necessary on form inputs)
@@ -323,7 +290,7 @@ const cpDef = {
      */
     sendModel: {
       type: Boolean,
-      default: true
+      default: true,
     },
     /**
      * Checks the fields' data before submitting the form.
@@ -331,17 +298,17 @@ const cpDef = {
      * @prop {Function} validation
      */
     validation: {
-      type: Function
+      type: Function,
     },
     /**
-     * If true, will consider itself as a unique element of a floater and will have its buttons incorporated in it 
+     * If true, will consider itself as a unique element of a floater and will have its buttons incorporated in it
      * whereas if undefined will.
      *
      * @prop {Boolean|String} windowed
      */
     windowed: {
       type: [Boolean, String],
-      default: 'auto'
+      default: "auto",
     },
     /**
      * If true, will use the class bbn-overlay for its container.
@@ -350,7 +317,7 @@ const cpDef = {
      */
     fullSize: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * If true and inside a popup the popup will close after submit
@@ -359,20 +326,21 @@ const cpDef = {
      */
     closeAfter: {
       type: Boolean,
-      default: true
+      default: true,
     },
     /**
      * @prop String mode Mode for buttons: normal or big
      */
     mode: {
-      type: String
+      type: String,
     },
-
   },
   data() {
     let currentSchema = [];
-    this.schema.map(a => {
-      currentSchema.push(bbn.fn.extend({}, a, { id: a.id ? a.id : bbn.fn.randomString(20, 30) }))
+    this.schema.map((a) => {
+      currentSchema.push(
+        bbn.fn.extend({}, a, { id: a.id ? a.id : bbn.fn.randomString(20, 30) })
+      );
     });
     const od = bbnData.getObject(this.source);
     return {
@@ -391,7 +359,11 @@ const cpDef = {
       isPosted: false,
       isLoading: false,
       currentSchema: currentSchema,
-      currentMode: this.mode ? this.mode : (this.closest('bbn-floater') ? 'big' : 'normal'),
+      currentMode: this.mode
+        ? this.mode
+        : this.closest("bbn-floater")
+        ? "big"
+        : "normal",
       _isSetting: false,
       window: null,
       windowFooter: false,
@@ -400,7 +372,9 @@ const cpDef = {
       canCancel: false,
       sourceTimeout: 0,
       isClosing: false,
-      sourceDataId: this.source.__bbnData.uid
+      sourceDataId: this.source.__bbnData.uid,
+      counter: 1,
+      windowButtonsVisible: false
     };
   },
   computed: {
@@ -421,13 +395,17 @@ const cpDef = {
      * @return {String}
      */
     currentClass() {
-      let st = '';
+      let st = "";
       if (this.isInit) {
-        if (!this.window && (this.hasFooter || this.realButtons.length || this.footer) && (this.scrollable || this.fullSize)) {
-          st += ' bbn-flex-height';
+        if (
+          !this.window &&
+          (this.hasFooter || this.realButtons.length || this.footer) &&
+          (this.scrollable || this.fullSize)
+        ) {
+          st += " bbn-flex-height";
         }
         if (this.scrollable || this.fullSize) {
-          st += ' bbn-overlay';
+          st += " bbn-overlay";
         }
       }
 
@@ -438,14 +416,17 @@ const cpDef = {
       if (!this.isInit) {
         return {};
       }
-      let floater = this.closest('bbn-floater');
-      let ct = this.getRef('container');
-      let ctn = ct ? ct.getRef('scrollContent') : false;
+      let floater = this.closest("bbn-floater");
+      let ct = this.getRef("container");
+      let ctn = ct ? ct.getRef("scrollContent") : false;
       if (floater && ct) {
         let width = this.scrollable && ctn ? ctn.clientWidth : ct.clientWidth;
-        let height = this.scrollable && ctn ? ctn.clientHeight : ct.clientHeight;
+        let height =
+          this.scrollable && ctn ? ctn.clientHeight : ct.clientHeight;
         let ctWidth = floater.getContainerWidth();
-        let ctHeight = floater.getContainerHeight() - (floater.getRef('header').clientHeight || 0);
+        let ctHeight =
+          floater.getContainerHeight() -
+          (floater.getRef("header").clientHeight || 0);
         if (width > ctWidth) {
           width = ctWidth;
         }
@@ -453,65 +434,71 @@ const cpDef = {
           height = ctHeight;
         }
         return {
-          width: width + 'px',
-          height: height + 'px'
+          width: width + "px",
+          height: height + "px",
         };
       }
     },
     realButtons() {
       const r = [];
-      bbn.fn.each(this.buttons, a => {
-        let t = typeof (a);
+      bbn.fn.each(this.buttons, (a, i) => {
+        let t = typeof a;
         let obj;
-        if (t === 'string') {
+        if (t === "string") {
           switch (a) {
-            case 'cancel':
+            case "cancel":
               obj = {
-                preset: 'cancel',
-                text: this.cancelText,
+                key: "cancel-" + this.counter,
+                preset: "cancel",
+                label: this.cancelText,
                 icon: this.cancelIcon,
                 iconPosition: this.cancelIconPosition,
                 action: () => {
                   this.cancel();
                 },
-                disabled: !this._canCancel()
+                disabled: !this._canCancel(),
               };
               break;
-            case 'reset':
+            case "reset":
               obj = {
-                preset: 'reset',
-                text: this.resetText,
+                key: "reset-" + this.counter,
+                preset: "reset",
+                label: this.resetText,
                 icon: this.resetIcon,
                 iconPosition: this.resetIconPosition,
                 action: () => {
                   this.reset();
                 },
-                disabled: !this.dirty && !this.prefilled
+                disabled: !this.dirty && !this.prefilled,
               };
               break;
-            case 'submit':
+            case "submit":
               obj = {
-                preset: 'submit',
-                text: this.submitText,
+                key: "submit-" + this.counter,
+                preset: "submit",
+                label: this.submitText,
                 icon: this.submitIcon,
                 iconPosition: this.submitIconPosition,
                 action: () => {
                   this.submit();
                 },
-                disabled: !this.canSubmit
+                disabled: !this._canSubmit(),
               };
               break;
           }
-        }
-        else if (t === 'object') {
+        } else if (t === "object") {
           obj = bbn.fn.clone(a);
-          if ((typeof a.action === 'string') && bbn.fn.isFunction(this[a.action])) {
+          if (
+            typeof a.action === "string" &&
+            bbn.fn.isFunction(this[a.action])
+          ) {
             obj.action = this[a.action];
           }
 
           if (a.preset) {
             switch (a.preset) {
-              case 'cancel':
+              case "cancel":
+                obj.key = "cancel-" + this.counter;
                 obj.disabled = !!a.disabled || !this._canCancel();
                 if (obj.action === undefined) {
                   obj.action = () => {
@@ -519,8 +506,8 @@ const cpDef = {
                   };
                 }
 
-                if (obj.text === undefined) {
-                  obj.text = this.cancelText;
+                if (obj.label === undefined) {
+                  obj.label = this.cancelText;
                 }
 
                 if (obj.icon === undefined) {
@@ -532,7 +519,8 @@ const cpDef = {
                 }
 
                 break;
-              case 'reset':
+              case "reset":
+                obj.key = "reset-" + this.counter;
                 obj.disabled = !!a.disabled || (!this.dirty && !this.prefilled);
                 if (obj.action === undefined) {
                   obj.action = () => {
@@ -540,8 +528,8 @@ const cpDef = {
                   };
                 }
 
-                if (obj.text === undefined) {
-                  obj.text = this.resetText;
+                if (obj.label === undefined) {
+                  obj.label = this.resetText;
                 }
 
                 if (obj.icon === undefined) {
@@ -553,7 +541,8 @@ const cpDef = {
                 }
 
                 break;
-              case 'submit':
+              case "submit":
+                obj.key = "submit-" + this.counter;
                 obj.disabled = !!a.disabled || !this.canSubmit;
                 if (obj.action === undefined) {
                   obj.action = () => {
@@ -561,8 +550,8 @@ const cpDef = {
                   };
                 }
 
-                if (obj.text === undefined) {
-                  obj.text = this.submitText;
+                if (obj.label === undefined) {
+                  obj.label = this.submitText;
                 }
 
                 if (obj.icon === undefined) {
@@ -576,6 +565,9 @@ const cpDef = {
                 break;
             }
           }
+          else {
+            obj.key = a.key || "button-" + i.toString() + '-' + this.counter;
+          }
         }
 
         if (obj) {
@@ -587,7 +579,7 @@ const cpDef = {
       });
 
       return r;
-    }
+    },
   },
   methods: {
     /**
@@ -597,6 +589,7 @@ const cpDef = {
      * @return {Array}
      */
     updateRealButtons() {
+      this.counter++;
       this.$forceUpdate();
       /*
       if (this.window && bbn.fn.isArray(this.window.currentButtons) && (this.currentMode === 'big')) {
@@ -632,49 +625,69 @@ const cpDef = {
     _post() {
       this.isPosted = true;
       this.isLoading = true;
-      if (this.action && !this.target) {
+      if (this.bbnSchema.props.action && !this.target) {
         let data = bbn.fn.extend(true, {}, this.data || {}, this.source || {});
-        let method = this.blank || this.self || this.target ? 'postOut' : 'post';
-        this[method](this.action, data, d => {
-          if (d && (d.success === false)) {
-            if (this.failureMessage) {
-              this.alert(bbn.fn.isFunction(this.failureMessage) ? this.failureMessage(d) : this.failureMessage);
-            }
-            else {
-              this.alert(bbn._("An error occurred"));
-            }
-
-            this.isLoading = false;
-          }
-          else if (d) {
-            let e = new Event('success', { cancelable: true });
-            this.$emit('success', d, e);
-            if (!e.defaultPrevented) {
-              this.commitData();
-              if (this.successMessage) {
-                this.alert(bbn.fn.isFunction(this.successMessage) ? this.successMessage(d) : this.successMessage);
+        let method =
+          this.blank || this.self || this.target ? "postOut" : "post";
+        this[method](
+          this.bbnSchema.props.action,
+          data,
+          (d) => {
+            if (d && [false, null, 0].includes(d.success)) {
+              if (this.failureMessage) {
+                this.alert(
+                  bbn.fn.isFunction(this.failureMessage)
+                    ? this.failureMessage(d)
+                    : this.failureMessage
+                );
+              }
+              else if ('appui' in window) {
+                appui.error(d.errorMessage || (bbn.fn.isString(d.error) ? d.error : bbn._("An error occurred")));
+              }
+              else {
+                this.alert(d.errorMessage || (bbn.fn.isString(d.error) ? d.error : bbn._("An error occurred")));
               }
 
               this.isLoading = false;
-              this.update();
+            } else if (d) {
+              let e = new Event("success", { cancelable: true });
+              this.$emit("success", d, e);
+              if (!e.defaultPrevented) {
+                this.commitData();
+                if (this.successMessage) {
+                  this.alert(
+                    bbn.fn.isFunction(this.successMessage)
+                      ? this.successMessage(d)
+                      : this.successMessage
+                  );
+                }
 
-              if (this.window) {
-                this.$nextTick(() => {
-                  this.window.close(true, true);
-                });
+                this.isLoading = false;
+                this.update();
+
+                if (this.window) {
+                  this.$nextTick(() => {
+                    this.window.close(true, true);
+                  });
+                }
               }
             }
-
-          }
-        }, !this.blank && !this.self && !this.target ? (xhr, textStatus, errorThrown) => {
-          this.$emit('failure', xhr, textStatus, errorThrown);
-          this.isLoading = false;
-        } : (this.self ? '_self' : (this.blank ? '_blank' : this.target)));
-      }
-      else {
+          },
+          !this.blank && !this.self && !this.target
+            ? (xhr, textStatus, errorThrown) => {
+                this.$emit("failure", xhr, textStatus, errorThrown);
+                this.isLoading = false;
+              }
+            : this.self
+            ? "_self"
+            : this.blank
+            ? "_blank"
+            : this.target
+        );
+      } else {
         this.commitData();
-        let e = new Event('success', { cancelable: true });
-        this.$emit('success', this.source, e);
+        let e = new Event("success", { cancelable: true });
+        this.$emit("success", this.source, e);
         // ?????
         if (this.sendModel) {
           this.commitData();
@@ -690,7 +703,9 @@ const cpDef = {
     },
     commitData() {
       const od = bbnData.getObject(this.source);
-      this.originalData = bbn.fn.clone(od ? bbnData.getValue(od, true) : this.source);
+      this.originalData = bbn.fn.clone(
+        od ? bbnData.getValue(od, true) : this.source
+      );
       this.dirty = false;
     },
     /**
@@ -699,7 +714,7 @@ const cpDef = {
      */
     _execCommand(button, ev) {
       if (button.action) {
-        button.action(this.source, this, ev)
+        button.action(this.source, this, ev);
       }
     },
     /**
@@ -726,7 +741,7 @@ const cpDef = {
      * @return {Object}
      */
     getData() {
-      return this.source;//this.sendModel ? this.source : bbn.fn.formdata(this.$el);
+      return this.source; //this.sendModel ? this.source : bbn.fn.formdata(this.$el);
     },
     /**
      * Returns true if the form has been modified or if the value of the property 'prefilled' is true.
@@ -741,9 +756,9 @@ const cpDef = {
     },
     /**
      * Closes the popup containing the form.
-     * @method 
-     * @param {bbnCp} window 
-     * @param {Event} ev 
+     * @method
+     * @param {HTMLElement} window
+     * @param {Event} ev
      * @fires isModified
      */
     closePopup(force, ev) {
@@ -753,25 +768,34 @@ const cpDef = {
         if (force !== true) {
           force = false;
         }
-        if (!force && !this.isPosted && this.confirmLeave && this.isModified()) {
+        if (
+          !force &&
+          !this.isPosted &&
+          this.confirmLeave &&
+          this.isModified()
+        ) {
           if (ev) {
             ev.preventDefault();
           }
-          this.confirm(this.confirmLeave, () => {
-            this.reset();
-            this.$nextTick(() => {
-              if (this.window) {
-                this.window.close(true, true);
-                this.isClosing = false;
-              }
-            });
-          }, () => {
-            this.isClosing = false;
-          }, {
-            maxWidth: '90%'
-          });
-        }
-        else {
+          this.confirm(
+            this.confirmLeave,
+            () => {
+              this.reset();
+              this.$nextTick(() => {
+                if (this.window) {
+                  this.window.close(true, true);
+                  this.isClosing = false;
+                }
+              });
+            },
+            () => {
+              this.isClosing = false;
+            },
+            {
+              maxWidth: "90%",
+            }
+          );
+        } else {
           this.reinit();
           this.$nextTick(() => {
             if (this.window) {
@@ -789,10 +813,10 @@ const cpDef = {
      * @fires window.close
      */
     cancel() {
-      let ev = new Event('cancel', { cancelable: true });
-      this.$emit('beforecancel');
+      let ev = new Event("cancel", { cancelable: true });
+      this.$emit("beforecancel");
       if (!ev.defaultPrevented) {
-        this.$emit('cancel', ev, this);
+        this.$emit("cancel", ev, this);
         this.reset();
         if (this.window) {
           this.window.close(true);
@@ -804,13 +828,17 @@ const cpDef = {
      * @method isValid
      */
     isValid(force, callValidation = true, onlyFirst = true) {
-      const elems = this.findAll('.bbn-input-component');
+      const elems = this.findAll(".bbn-input-component");
       let ok = true;
       let firstFound = null;
       if (bbn.fn.isArray(elems)) {
-        bbn.fn.each(elems, ele => {
-          const invalid = bbn.fn.isFunction(ele.isValid) && !ele.isValid(ele, false);
-          if (invalid || (bbn.fn.isFunction(ele.validation) && !ele.validation())) {
+        bbn.fn.each(elems, (ele) => {
+          const invalid =
+            bbn.fn.isFunction(ele.isValid) && !ele.isValid(ele, false);
+          if (
+            invalid ||
+            (bbn.fn.isFunction(ele.validation) && !ele.validation())
+          ) {
             ok = false;
             if (bbn.fn.isNull(firstFound)) {
               firstFound = ele;
@@ -819,17 +847,18 @@ const cpDef = {
               }
 
               if (this.scrollable) {
-                this.getRef('container').scrollTo(firstFound, firstFound);
+                this.getRef("container").scrollSet(firstFound, firstFound);
               }
             }
 
-            if (callValidation
-              && invalid
-              && (!onlyFirst || (ele === firstFound))
+            if (
+              callValidation &&
+              invalid &&
+              (!onlyFirst || ele === firstFound)
             ) {
               this.$nextTick(() => {
                 ele.isValid(ele, callValidation, true);
-              })
+              });
             }
           }
           if (!ok && !!onlyFirst) {
@@ -839,7 +868,7 @@ const cpDef = {
       }
 
       if (ok && this.validation && callValidation) {
-        ok = this.validation(this.source, this.originalData, force)
+        ok = this.validation(this.source, this.originalData, force);
       }
 
       return !!ok;
@@ -847,7 +876,7 @@ const cpDef = {
     /**
      * Submits the form.
      * @method submit
-     * @param {Boolean} force 
+     * @param {Boolean} force
      * @fires validation
      * @fires _post
      * @emits submit
@@ -862,8 +891,8 @@ const cpDef = {
           return;
         }
 
-        const ev = new CustomEvent('submit', { cancelable: true });
-        const ev2 = this.$emit('submit', ev, this);
+        const ev = new CustomEvent("submit", { cancelable: true });
+        const ev2 = this.$emit("submit", ev, this);
         ev2.preventDefault();
         if (ev.defaultPrevented) {
           return;
@@ -874,8 +903,7 @@ const cpDef = {
       if (this.confirmMessage) {
         if (bbn.fn.isFunction(this.confirmMessage)) {
           cf = this.confirmMessage(this);
-        }
-        else {
+        } else {
           cf = this.confirmMessage;
         }
         if (cf && this.window) {
@@ -890,7 +918,7 @@ const cpDef = {
     },
     /**
      * Resets the original data of the form.
-     * @method reset 
+     * @method reset
      * return {Boolean}
      */
     reset() {
@@ -900,84 +928,96 @@ const cpDef = {
         if (!bbn.fn.isSame(this.source[name], val)) {
           if (typeof val !== typeof this.source[name]) {
             this.$set(this.source, name, bbn.fn.clone(val));
-          }
-          else if (bbn.fn.isArray(this.source[name], val)) {
+          } else if (bbn.fn.isArray(this.source[name], val)) {
             bbn.fn.each(val, (a, i) => {
               if (this.source[name].length <= i) {
                 this.source[name].push(a);
-              }
-              else if (a !== this.source[name][i]) {
+              } else if (a !== this.source[name][i]) {
                 let idx = this.source[name].indexOf(a);
                 if (idx > i) {
                   bbn.fn.move(this.source[name], idx, i);
-                }
-                else {
+                } else {
                   this.source[name].splice(i, 0, a);
                 }
               }
             });
             if (this.source[name].length > val.length) {
-              this.source[name].splice(val.length, this.source[name].length - val.length);
+              this.source[name].splice(
+                val.length,
+                this.source[name].length - val.length
+              );
             }
-          }
-          else if (bbn.fn.isObject(this.source[name], val)) {
+          } else if (bbn.fn.isObject(this.source[name], val)) {
             let k1 = Object.keys(val);
             let k2 = Object.keys(this.source[name]);
-            bbn.fn.each(k2, a => {
+            bbn.fn.each(k2, (a) => {
               if (k1.indexOf(a) === -1) {
                 delete this.source[name][a];
               }
             });
-            bbn.fn.each(k1, a => {
+            bbn.fn.each(k1, (a) => {
               if (val[a] !== this.source[name][a]) {
                 this.source[name][a] = val[a];
               }
             });
-          }
-          else {
+          } else {
             this.$set(this.source, name, bbn.fn.clone(val));
           }
         }
       });
       this.reinit();
       this.$forceUpdate();
+      this.$emit('reset');
       this.$nextTick(() => {
-        let elems = this.findAll('.bbn-input-component');
+        let elems = this.findAll(".bbn-input-component");
         if (bbn.fn.isArray(elems)) {
-          bbn.fn.each(elems, a => a.$emit('removevalidation'));
+          bbn.fn.each(elems, (a) => a.$emit("removevalidation"));
         }
-      })
+      });
       return true;
     },
     /**
      * Reinitializes the form.
      * @method reinit
-     * 
+     *
      */
     reinit() {
       const od = bbnData.getObject(this.source);
-      this.originalData = bbn.fn.clone(od ? bbnData.getValue(od, true) : this.source);
+      this.originalData = bbn.fn.clone(
+        od ? bbnData.getValue(od, true) : this.source
+      );
       this.dirty = this.isModified();
     },
     focusFirst(fromLast) {
-      let ele = this.getRef('container');
+      let ele = this.getRef("container");
       if (this.scrollable) {
         ele = ele.$el;
       }
       if (ele) {
         let focusable = false;
-        let all = ele.querySelectorAll('input, select, .bbn-checkbox-label, textarea, [tabindex]:not([tabindex="-1"])');
+        let all = ele.querySelectorAll(
+          'input, select, .bbn-checkbox-label, textarea, [tabindex]:not([tabindex="-1"])'
+        );
         if (fromLast) {
-          bbn.fn.forir(all, a => {
-            if (a.offsetHeight && a.offsetWidth && !a.disabled && !a.classList.contains('bbn-no')) {
+          bbn.fn.forir(all, (a) => {
+            if (
+              a.offsetHeight &&
+              a.offsetWidth &&
+              !a.disabled &&
+              !a.classList.contains("bbn-no")
+            ) {
               focusable = a;
               return false;
             }
-          })
-        }
-        else {
-          bbn.fn.each(all, a => {
-            if (a.offsetHeight && a.offsetWidth && !a.disabled && !a.classList.contains('bbn-no')) {
+          });
+        } else {
+          bbn.fn.each(all, (a) => {
+            if (
+              a.offsetHeight &&
+              a.offsetWidth &&
+              !a.disabled &&
+              !a.classList.contains("bbn-no")
+            ) {
               //bbn.fn.log(a);
               focusable = a;
               return false;
@@ -993,10 +1033,10 @@ const cpDef = {
       this.focusFirst(true);
     },
     /**
-   * Initializes the form.
-   * @method init 
-   * 
-   */
+     * Initializes the form.
+     * @method init
+     *
+     */
     init() {
       if (this.$options.propsData.script) {
         this.$el.dataset.script = this.$options.propsData.script;
@@ -1005,24 +1045,23 @@ const cpDef = {
         this.window = this.closest("bbn-floater");
         if (this.window) {
           if (!this.window.$isMounted) {
-            this.window.$once('hook:mounted', () => {
+            this.window.$once("hook:mounted", () => {
               this.$nextTick(() => {
-                this.windowFooter = this.window.getRef('buttons');
+                this.windowFooter = this.window.getRef("buttons");
                 this.$nextTick(() => {
                   this.window.updateButtonsInContainer();
                 });
               });
             });
-          }
-          else {
-            this.windowFooter = this.window.getRef('buttons');
+          } else {
+            this.windowFooter = this.window.getRef("buttons");
             this.$nextTick(() => {
               this.window.updateButtonsInContainer();
             });
           }
 
           this.window.addClose(this.closePopup);
-          this.window.componentClass.push('bbn-radius-bottom')
+          this.window.componentClass.push("bbn-radius-bottom");
         }
       }
       if (!this.tab) {
@@ -1031,7 +1070,7 @@ const cpDef = {
       this.canSubmit = this._canSubmit();
       this.updateRealButtons(true);
       this.isInit = true;
-      if (this.autofocus) {
+      if (this.focused) {
         this.focusFirst();
       }
     },
@@ -1054,26 +1093,33 @@ const cpDef = {
     update() {
       this.canCancel = this._canCancel();
       this.canSubmit = this._canSubmit();
+    },
+    onButtonsMoved(ev){
+      this.$nextTick(() => {
+        this.windowButtonsVisible = true;
+        if (ev.target.classList.contains("bbn-invisible")) {
+          ev.target.classList.remove("bbn-invisible");
+        }
+      });
     }
   },
   /**
    * Registers in each container until root.
-   * 
+   *
    * @event mounted
    * @fires init
    */
   mounted() {
     let container = this;
-    while (container = container.closest('bbn-container')) {
+    while ((container = container.closest("bbn-container"))) {
       container.forms.push(this);
     }
     container = this;
-    while (container = container.closest('bbn-floater')) {
+    while ((container = container.closest("bbn-floater"))) {
       container.forms.push(this);
     }
 
     this.updateRealButtons();
-
 
     if (this.storage) {
       let data = this.getStorage();
@@ -1084,41 +1130,39 @@ const cpDef = {
           if (!bbn.fn.isSame(this.source[name], val)) {
             if (typeof val !== typeof this.source[name]) {
               this.$set(this.source, name, bbn.fn.clone(val));
-            }
-            else if (bbn.fn.isArray(this.source[name], val)) {
+            } else if (bbn.fn.isArray(this.source[name], val)) {
               bbn.fn.each(val, (a, i) => {
                 if (this.source[name].length <= i) {
                   this.source[name].push(a);
-                }
-                else if (a !== this.source[name][i]) {
+                } else if (a !== this.source[name][i]) {
                   let idx = this.source[name].indexOf(a);
                   if (idx > i) {
                     bbn.fn.move(this.source[name], idx, i);
-                  }
-                  else {
+                  } else {
                     this.source[name].splice(i, 0, a);
                   }
                 }
               });
               if (this.source[name].length > val.length) {
-                this.source[name].splice(val.length, this.source[name].length - val.length);
+                this.source[name].splice(
+                  val.length,
+                  this.source[name].length - val.length
+                );
               }
-            }
-            else if (bbn.fn.isObject(this.source[name], val)) {
+            } else if (bbn.fn.isObject(this.source[name], val)) {
               let k1 = Object.keys(val);
               let k2 = Object.keys(this.source[name]);
-              bbn.fn.each(k2, a => {
+              bbn.fn.each(k2, (a) => {
                 if (k1.indexOf(a) === -1) {
                   delete this.source[name][a];
                 }
               });
-              bbn.fn.each(k1, a => {
+              bbn.fn.each(k1, (a) => {
                 if (val[a] !== this.source[name][a]) {
                   this.source[name][a] = val[a];
                 }
               });
-            }
-            else {
+            } else {
               this.$set(this.source, name, bbn.fn.clone(val));
             }
           }
@@ -1127,17 +1171,16 @@ const cpDef = {
       }
     }
     this.init();
-
   },
   /**
    * Registers in each container until root.
-   * 
+   *
    * @event mounted
    * @fires init
    */
   beforeDestroy() {
     let container = this;
-    while (container = container.closest('bbn-container')) {
+    while ((container = container.closest("bbn-container"))) {
       bbn.fn.each(container.forms, (f, i) => {
         if (f === this) {
           container.forms.splice(i, 1);
@@ -1146,7 +1189,7 @@ const cpDef = {
       });
     }
     container = this;
-    while (container = container.closest('bbn-floater')) {
+    while ((container = container.closest("bbn-floater"))) {
       bbn.fn.each(container.forms, (f, i) => {
         if (f === this) {
           container.forms.splice(i, 1);
@@ -1161,8 +1204,12 @@ const cpDef = {
      */
     schema() {
       let currentSchema = [];
-      this.schema.map(a => {
-        currentSchema.push(bbn.fn.extend({}, a, { id: a.id ? a.id : bbn.fn.randomString(20, 30) }))
+      this.schema.map((a) => {
+        currentSchema.push(
+          bbn.fn.extend({}, a, {
+            id: a.id ? a.id : bbn.fn.randomString(20, 30),
+          })
+        );
       });
       this.currentSchema = currentSchema;
     },
@@ -1172,31 +1219,33 @@ const cpDef = {
     source: {
       deep: true,
       handler() {
+        bbn.fn.log("SOURCE CHANGED", this.source);
         const sourceDataId = this.source.__bbnData.uid;
-        if (sourceDataId && (sourceDataId !== this.sourceDataId)) {
+        if (sourceDataId && sourceDataId !== this.sourceDataId) {
           this.sourceDataId = sourceDataId;
           this.commitData();
+          bbn.fn.log("ESAPING")
           return;
         }
 
-        //bbn.fn.log(["SOURCE CHANGED", JSON.stringify(this.getModifications()), this.originalData, JSON.stringify(this.source)]);
+        bbn.fn.log(["SOURCE CHANGED", JSON.stringify(this.getModifications()), this.originalData, JSON.stringify(this.source)]);
         this.dirty = this.isModified();
         this.canSubmit = this._canSubmit();
         if (this.storage) {
           if (!this._isSetting) {
-            this.setStorage(this.source)
+            this.setStorage(this.source);
           }
         }
-        this.$emit('change', this.getModifications())
+        this.$emit("change", this.getModifications());
         this.$nextTick(() => {
           if (this.sourceTimeout) {
             clearTimeout(this.sourceTimeout);
           }
           this.sourceTimeout = setTimeout(() => {
             this.update();
-          }, 200)
-        })
-      }
+          }, 200);
+        });
+      },
     },
     /**
      * @watch buttons
@@ -1207,7 +1256,7 @@ const cpDef = {
         if (this.isInit) {
           this.updateRealButtons(true);
         }
-      }
+      },
     },
     /**
      * @watch canSubmit
@@ -1237,29 +1286,28 @@ const cpDef = {
     },
     isLoading() {
       this.updateRealButtons();
-    }
-  }
+    },
+  },
 };
 
-import bbn from '@bbn/bbn';
-import cpHtml from './form.html';
-import cpStyle from './form.less';
+import bbn from "@bbn/bbn";
+import cpHtml from "./form.html";
+import cpStyle from "./form.less";
 let cpLang = {};
 if (bbn.env.lang) {
   try {
-    const lang = bbn.env.lang || 'en';
+    const lang = bbn.env.lang || "en";
     cpLang = await import(`./_i18n/form.${lang}.lang`);
     if (cpLang.default) {
       cpLang = cpLang.default;
     }
-  }
-  catch (err) { }
+  } catch (err) {}
 }
 
 export default {
-  name: 'bbn-form',
+  name: "bbn-form",
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  lang: cpLang
+  lang: cpLang,
 };

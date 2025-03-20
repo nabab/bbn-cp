@@ -77,12 +77,6 @@ const localStorage = {
      */
     _storage() {
       return this.constructor._storage;
-
-      if (window.localStorage) {
-        return {
-        }
-      }
-      return false;
     },
     /**
      * Returns if the component has storage.
@@ -93,7 +87,7 @@ const localStorage = {
       if (this.storage === false) {
         return false;
       }
-      return (this.storage || (this.storageFullName || (this.storageName !== 'default'))) && !!this._storage;
+      return (this.storage || (this.storageFullName || (this.storageName !== this.$cfg.props.storageName.default))) && !!this._storage;
     },
     /**
      * Returns the storage's default name.

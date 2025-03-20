@@ -136,7 +136,7 @@ const cpDef = {
     data(){
       return {
         isFocused: false,
-        style: this.source && this.source.style ? this.source.style : {},
+        currentStyle: this.source && this.source.style ? this.source.style : {},
         isOpened: true,
         currentWidth: this.minWidth,
         currentPlaceholder: '?',
@@ -197,13 +197,13 @@ const cpDef = {
               let pane = this.closest('bbn-pane'),
                   w = pane.$children[0].$el.clientWidth + pane.$children[1].$el.clientWidth - 40;
               this.$refs.search.$refs.element.placeholder = this.cfg.placeholderFocused;
-              this.$set(this.style, 'width', w + 'px');
+              this.$set(this.currentStyle, 'width', w + 'px');
               this.isExpanded = true;
             }
           },
           blur: e => {
             if ( this.isExpanded ){
-              this.$set(this.style, 'width', this.source.style && this.source.style.width ? this.source.style.width : '30px');
+              this.$set(this.currentStyle, 'width', this.source.style && this.source.style.width ? this.source.style.width : '30px');
               this.isExpanded = false;
               this.$refs.search.$refs.element.placeholder = this.cfg.placeholder;
               this.search = '';
@@ -228,7 +228,7 @@ const cpDef = {
           'z-index': 10,
           transition: 'width 400ms',
           width: '30px'
-        }, (this.source.style || {}), this.style);
+        }, (this.source.style || {}), this.currentStyle);
       }
       */
     },
@@ -241,7 +241,7 @@ const cpDef = {
        * @fires widget.open
        *
        */
-      keydown(e){
+      onKeydown(e){
         let list = this.getRef('list');
         if (!list || !this.filteredData.length || e.altKey || e.ctrlKey || e.metaKey) {
           return;

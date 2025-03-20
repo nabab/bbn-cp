@@ -67,83 +67,6 @@ export default {
   },
   methods: {
     /**
-     * @method updateVisualStyleContainer
-     * @return {Object}
-     */
-    updateVisualStyleContainer() {
-      if (!this.visualStyleContainer) {
-        this.visualStyleContainer = bbn.fn.createObject();
-      }
-      else if (!this.isVisual) {
-        this.visualStyleContainer = bbn.fn.createObject();
-      }
-
-      if (!this.isVisual) {
-        return;
-      }
-
-      //bbn.fn.warning("updateVisualStyleContainer");
-      bbn.fn.iterate(this.views, view => {
-        if (view.view) {
-          view = view.view;
-        }
-
-        if (!this.visualStyleContainer[view.url]) {
-          this.visualStyleContainer[view.url] = {};
-        }
-
-        if (!this.urls[view.uid]) {
-          return;
-        }
-
-        const ct = this.urls[view.uid];
-        if (!ct?.isVisible || this.visualShowAll) {
-          if (this.visualStyleContainer[view.uid].zoom != 0.5) {
-            this.visualStyleContainer[view.uid] = { zoom: 0.1 };
-          }
-
-          return;
-        }
-
-        let num = this.numVisuals + 1;
-        let coord = [1, num, 1, num];
-        switch (this.visualOrientation) {
-          case 'up':
-            coord[2] = 2;
-            break;
-          case 'down':
-            coord[3] = num - 1;
-            break;
-          case 'left':
-            coord[0] = 2;
-            break;
-          case 'right':
-            coord[1] = num - 1;
-            break;
-        }
-
-
-        if ((this.visualStyleContainer[view.uid].zoom != 1)
-          || (this.visualStyleContainer[view.uid].gridColumnStart != coord[0])
-          || (this.visualStyleContainer[view.uid].gridColumnEnd != coord[1])
-          || (this.visualStyleContainer[view.uid].gridRowStart != coord[2])
-          || (this.visualStyleContainer[view.uid].gridRowEnd != coord[3])
-        ) {
-          this.visualStyleContainer[view.uid] = {
-            gridColumnStart: coord[0],
-            gridColumnEnd: coord[1],
-            gridRowStart: coord[2],
-            gridRowEnd: coord[3],
-            zoom: 1
-          };
-        }
-      });
-
-      return this.visualStyleContainer;
-    },
-
-
-    /**
      * @method onEscape
      * @param {Event} e
      */
@@ -190,7 +113,7 @@ export default {
           this.$emit('resize');
         }
         if (this.isVisual && (this.orientation === 'auto') && !this.lockedOrientation) {
-          this.visualOrientation = this.lastKnownWidth > this.lastKnownHeight ? 'left' : 'top';
+          this.visualOrientation = this.clientWidth > this.clientHeight ? 'left' : 'top';
         }
       }, 'resize', 50);
     },

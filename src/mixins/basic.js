@@ -69,11 +69,22 @@ const basic = {
       if (vm.$options && (vm.$options.name === 'bbn-popup')) {
         return vm;
       }
+      else if (this.popup && (this.popup?.tagName === 'BBN-POPUP')) {
+        return this.popup;
+      }
       else if ( vm.getRef('popup') ){
         return vm.getRef('popup');
       }
 
-      return vm.$parent ? (vm.$parent._retrievePopup ? vm.$parent : this)._retrievePopup(vm.$parent) : false;
+      const parent = vm.closest('.bbn-component');
+      if (parent?._retrievePopup) {
+        return parent._retrievePopup(parent);
+      }
+      if (parent) {
+        return this._retrievePopup(parent);
+      }
+      
+      return false;
     },
     /**
      * Creates a HTML string for recreating the component.
@@ -248,8 +259,6 @@ const basic = {
      */
     ready(newVal) {
       if (newVal) {
-        let ev = new CustomEvent('subready', {bubbles: true, detail: {component: this}});
-        this.$el.dispatchEvent(ev);
         this.$emit('ready', this);
       }
     }

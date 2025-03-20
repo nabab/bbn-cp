@@ -3,7 +3,7 @@
          bbn-model="value"
          :name="name"/>
   <bbn-button bbn-for="(d, idx) in currentData"
-              :text="d[sourceText]"
+              :label="d[sourceText]"
               :key="d[sourceValue] !== undefined ? d[sourceValue] : idx"
               @click="emitInput(d[sourceValue])"
               :icon="d[sourceIcon] || undefined"

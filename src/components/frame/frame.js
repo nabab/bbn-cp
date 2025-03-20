@@ -12,11 +12,13 @@ const cpDef = {
      * @mixin bbn.cp.mixins.basic
      */
     mixins: [bbn.cp.mixins.basic],
+    tag: 'iframe',
     props: {
       /**
-       * @prop {} [''] sandbox
+       * @prop {} [''] security
        */
-      sandbox: {
+      security: {
+        type: [String, Boolean],
         default: ''
       },
       /**
@@ -38,28 +40,43 @@ const cpDef = {
       communication: {
         type: Boolean,
         default: false
+      },
+      /**
+       * @prop {Boolean} [false] resetStyle
+       */
+      resetStyle: {
+        type: Boolean,
+        default: false
       }
     },
     data(){
-      return {
-        window: null
+      let sandbox = this.security;
+      if (sandbox === false) {
+        const list = [
+          'allow-forms',
+          'allow-modals',
+          'allow-pointer-lock',
+          'allow-orientation-lock',
+          'allow-same-origin',
+          'allow-popups',
+          'allow-presentation',
+          'allow-scripts',
+          'allow-top-navigation',
+          'allow-top-navigation-by-user-activation',
+          'allow-popups-to-escape-sandbox'
+        ]
+        sandbox = list.join(' ');
       }
-    },
-    computed: {
-      currentSandbox(){
-        if (this.sandbox === false) {
-          return 'allow-forms	allow-modals' +
-          ' allow-pointer-lock' +
-          ' allow-orientation-lock' +
-          ' allow-same-origin' +
-          ' allow-popups' +
-          ' allow-presentation' +
-          ' allow-scripts' +
-          ' allow-top-navigation' +
-          ' allow-top-navigation-by-user-activation' +
-          ' allow-popups-to-escape-sandbox';
-        }
-        return this.sandbox;
+
+      if (this.resetStyle
+        && !sandbox.includes('allow-same-origin')
+      ) {
+        sandbox += (sandbox.length ? ' ' : '') + 'allow-same-origin';
+      }
+
+      return {
+        window: null,
+        currentSandbox: sandbox
       }
     },
     methods: {
@@ -77,7 +94,7 @@ const cpDef = {
         }
         if (this.root) {
           let ev = new Event('load', {cancelable: true});
-          let url = this.$bbn.fn.substr(el.contentWindow.location.href, this.root.length);
+          let url = bbn.fn.substr(this.contentDocument.location.href, this.root.length);
           this.$emit('load', ev, url);
           if (!ev.defaultPrevented) {
             let ct = this.closest('bbn-container');
@@ -86,6 +103,25 @@ const cpDef = {
               ct.router.route(ct.url + '/' + url);
             }
           }
+        }
+
+        if (this.resetStyle && this.contentDocument?.body) {
+          const iframeStyle = window.getComputedStyle(this.$el);
+          const css = `
+            body {
+              font-family: ${iframeStyle.fontFamily};
+              font-size: ${iframeStyle.fontSize};
+              font-style: ${iframeStyle.fontSyle};
+              font-weight: ${iframeStyle.fontWeight};
+              color: ${iframeStyle.color};
+              margin: ${iframeStyle.margin};
+              padding: ${iframeStyle.padding};
+              border: ${iframeStyle.border};
+            }
+          `;
+          const style = document.createElement('style');
+          style.appendChild(document.createTextNode(css));
+          this.contentDocument.head.prepend(style);
         }
       },
       listen(msg){

@@ -1,5 +1,3 @@
-import bbnCp from '../lib/Cp.js';
-
 const view = {
   props: {
     /**
@@ -11,11 +9,11 @@ const view = {
       type: [Array, Object, String, Function],
     },
     /**
-     * The title of the component.
-     * @prop {String|Number} ['Untitled'] title
+     * The label of the component.
+     * @prop {String|Number} ['Untitled'] label
      * @memberof viewComponent
      */
-    title: {
+    label: {
       type: [String, Number],
       default(){
         return bbn._("Untitled");
@@ -153,11 +151,11 @@ const view = {
       default: ""
     },
     /**
-     * @prop {String|bbnCp} advert
+     * @prop {String|HTMLElement} advert
      * @memberof viewComponent
      */
     advert: {
-      type: [String, bbnCp]
+      type: [String, HTMLElement]
     },
     /**
      * @prop {String} help
@@ -243,9 +241,9 @@ const view = {
     },
     /**
      * Defines if the component is hidden.
-     * @prop {Boolean} [false] hidden
+     * @prop {Boolean} [false] invisible
      */
-    hidden: {
+    invisible: {
       type: [Boolean, Function],
       default: false
     }

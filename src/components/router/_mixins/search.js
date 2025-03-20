@@ -155,20 +155,20 @@ export default {
           let idx = -1;
           let obj = {
             url: a.current || a.url,
-            title: this.getFullTitle(a)
+            label: this.getFullTitle(a)
           };
           if ((idx = obj.url.toLowerCase().indexOf(st)) > -1) {
             match = "url";
           }
-          else if ((idx = obj.title.toLowerCase().indexOf(st)) > -1) {
-            match = "title";
+          else if ((idx = obj.label.toLowerCase().indexOf(st)) > -1) {
+            match = "label";
           }
 
           if (match) {
             let url = this.getBaseURL() + obj.url;
             res.push({
               url: url,
-              title: obj.title,
+              label: obj.label,
               score: match === 'url' ? 10 : 20,
               icon: a.icon || null,
               hash: url,

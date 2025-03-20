@@ -17,25 +17,23 @@
                class="appui-header"
                :is="headerComponent"/>
     <div bbn-elseif="header"
-         class="bbn-w-100 bbn-hspadding bbn-vpadding"
+         :class="['bbn-w-100', {'bbn-vpadding': !isMobile, 'bbn-hspadding': !isMobile, 'bbn-hxspadding': isMobile}]"
          style="overflow: visible">
       <div :class="[
+             'bbn-appui-header',
              'bbn-w-100',
              'bbn-flex-width',
              'bbn-unselectable',
-             'bbn-no-border',
-             {
-              'bbn-h-100': !isMobile,
-              'bbn-spadding': isMobile
-             }
-           ]">
-        <div class="bbn-h-100 bbn-appui-headleft">
+             'bbn-no-border'
+           ]"
+           style="align-items: center">
+        <div class="bbn-appui-headleft bbn-flex" style="align-items: center">
           <slot name="headleft"/>
         </div>
-        <div class="bbn-flex-fill bbn-hspadding bbn-middle bbn-h-100  bbn-appui-head">
+        <div class="bbn-flex-fill bbn-hspadding bbn-appui-head bbn-flex" style="align-items: center">
           <slot name="head"/>
         </div>
-        <div class="bbn-h-100 bbn-appui-headright">
+        <div class="bbn-appui-headright bbn-flex" style="align-items: center">
           <slot name="headright"/>
         </div>
       </div>
@@ -90,19 +88,20 @@
     <!-- STATUS -->
     <div bbn-if="status"
          ref="foot"
-         class="bbn-header bbn-border-top appui-statusbar"
+         class="bbn-header bbn-border-top bbn-flex-width appui-statusbar"
          style="overflow: visible">
-      <div class="bbn-flex-width bbn-h-100">
-        <!-- LOADBAR -->
-        <div class="bbn-flex-fill bbn-xspadding">
-          <bbn-loadbar class="bbn-right-space"
-                       ref="loading"
-                       bbn-if="loadbar"
-                       :source="loaders"/>
-        </div>
-        <div class="bbn-vmiddle bbn-xspadding bbn-appui-status">
-          <slot name="status"/>
-        </div>
+      <!-- LOADBAR -->
+      <div class="bbn-flex-fill bbn-xspadding"
+           style="overflow: visible">
+        <bbn-loadbar class="bbn-right-space"
+                      ref="loading"
+                      bbn-if="loadbar"
+                      :source="loaders"/>
+      </div>
+      <div class="bbn-vmiddle bbn-xspadding bbn-appui-status"
+           style="overflow: visible">
+
+        <slot name="status"/>
       </div>
     </div>
   </div>
@@ -116,7 +115,7 @@
   <div bbn-if="isLoading"
        class="bbn-fixed bbn-pos-top bbn-pos-right bbn-pos-bottom bbn-pos-left"
        style="z-index: 10000">
-    <bbn-loader :text="loadingText"
+    <bbn-loader :label="loadingText"
                 class="bbn-modal bbn-overlay bbn-middle"/>
   </div>
   <component bbn-if="cfg"

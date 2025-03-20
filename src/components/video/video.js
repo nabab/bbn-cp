@@ -20,10 +20,10 @@ const cpDef = {
         required: true
       },
       /**
-       * The video's title
-       * @prop {String} [''] title
+       * The video's label
+       * @prop {String} [''] label
        */
-      title: {
+      label: {
         type: String,
         default: ''
       },

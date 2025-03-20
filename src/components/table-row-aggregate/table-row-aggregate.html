@@ -1,0 +1,12 @@
+<div :class="[cellClass, {
+      'bbn-header': isAggregated(source),
+    }]"
+    :style="cellStyle">
+  <bbn-table-cell-aggregate bbn-for="(col, index) in table.currentColumns"
+                            :tabindex="table.editable && (col.editable !== false) ? 0 : -1"
+                            :column="col"
+                            :source="source.data"
+                            :row-index="index"
+                            :index="i"
+                            :ref="'td' + index"/>
+  </div>

@@ -12,12 +12,12 @@ export default {
         idx = this.selected;
       }
       if (cp.views[idx]) {
-        res += (cp.views[idx].title || bbn._('Untitled'));
+        res += (cp.views[idx].label || bbn._('Untitled'));
         if (cp.parentTab) {
           idx = cp.parentTab.currentIndex;
           cp = cp.parentTab.router;
           while (cp) {
-            res += ' < ' + (cp.views[idx].title || bbn._('Untitled'));
+            res += ' < ' + (cp.views[idx].label || bbn._('Untitled'));
             if (cp.parentTab) {
               idx = cp.parentTab.currentIndex;
               cp = cp.parentTab.router;
@@ -33,7 +33,7 @@ export default {
       return res;
     },
     /**
-    * Returns the full title (combination of title and ftitle if any)
+    * Returns the full label (combination of label and flabel if any)
     * 
     * @method getFullTitle
     * @param {Object} obj
@@ -41,11 +41,11 @@ export default {
     */
     getFullTitle(obj) {
       let t = '';
-      if (obj.title) {
-        t += obj.title;
+      if (obj.label) {
+        t += obj.label;
       }
-      if (obj.ftitle) {
-        t += (t.length ? ' - ' : '') + obj.ftitle;
+      if (obj.flabel) {
+        t += (t.length ? ' - ' : '') + obj.flabel;
       }
       return t;
     },
@@ -104,7 +104,7 @@ export default {
     /**
     * Returns the breadcrumb's source list.
     * @method getList
-    * @param {bbnCp} bc
+    * @param {HTMLElement} bc
     * @fires close
     * @return {Array}
     */
@@ -122,7 +122,7 @@ export default {
         parents.splice(0, parents.length - idx);
       }
       bbn.fn.each(this.views, (t, i) => {
-        if (!t.hidden && (t.idx !== this.selected) && !t.pane) {
+        if (!t.invisible && (t.idx !== this.selected) && !t.pane) {
           list.push({
             view: t,
             key: t.url,

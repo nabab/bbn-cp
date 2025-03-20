@@ -2,7 +2,8 @@
         'bbn-textbox',
         componentClass,
         {'bbn-state-disabled': !!isDisabled}
-      ]">
+      ]"
+      tabindex="-1">
   <textarea :class="{
               'bbn-no-border': true,
               'bbn-radius': true,
@@ -13,18 +14,19 @@
             :name="name"
             ref="element"
             @input="onInput"
-            @click="click($event)"
-            @focus="focus($event)"
-            @blur="blur($event)"
-            @change="change($event)"
+            @click="onClick($event)"
+            @focus="onFocus($event)"
+            @blur="onBlur($event)"
+            @change="onChange($event)"
             @keydown="textareaKeydown($event)"
             @keydown.enter.stop
-            @keyup="keyup($event)"
+            @keyup="onKeyup($event)"
             @paste="$emit('paste', $event)"
             :disabled="isDisabled"
             :readonly="readonly"
             :required="required"
             :placeholder="placeholder"
+            :tabindex="currentTabIndex"
             :maxlength="maxlength"
             :rows="currentRows"
             :cols="cols"

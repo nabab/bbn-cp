@@ -1,3 +1,5 @@
+import { rectangularSelection } from "@codemirror/view";
+
 const resizer = {
   data() {
     return {
@@ -18,7 +20,7 @@ const resizer = {
        * @data {ResizeObserver} [null] resizerObserver
        * @memberof resizerObserver
        */
-      ResizerObserver: null,
+      resizerObserver: null,
       /**
        * The height.
        * @data {Boolean} [false] lastKnownHeight
@@ -87,10 +89,20 @@ const resizer = {
         if (ms1 || ms2) {
           //bbn.fn.log(["DEFAULT ONRESIZE FN FROM " + this.$options.name, ms1, ms2]);
           res = true;
+          this.selfEmit();
         }
       }
 
       return res;
+    },
+    /**
+     * Emits the event resize on the closest parent resizer.
+     * @method selfEmit
+     * @memberof resizerComponent
+     * @param {Boolean} force 
+     */  
+    selfEmit() {
+      this.$emit('resize');
     },
     /**
      * Sets the value of lastKnownHeight and lastKnownWidth basing on the current dimensions of width and height.
@@ -103,19 +115,19 @@ const resizer = {
       let h = 0;
       const ele = this.resizerObserved;
       if (ele) {
-        h = Math.round(ele.clientHeight);
-        w = Math.round(ele.clientWidth);
+        h = Math.round(ele.offsetHeight);
+        w = Math.round(ele.offsetWidth);
         if (h && w) {
           this.setComputedStyle();
         }
       }
       
       //bbn.fn.log(ele, h, Math.round(ele.clientHeight), ele.clientHeight, '----');
-      if (this.lastKnownHeight !== h) {
+      if (Math.abs(this.lastKnownHeight - h) > 1) {
         this.lastKnownHeight = h;
         resize = true;
       }
-      if (this.lastKnownWidth !== w) {
+      if (Math.abs(this.lastKnownWidth - w) > 1) {
         this.lastKnownWidth = w;
         resize = true;
       }
@@ -130,23 +142,24 @@ const resizer = {
       let offsetParent = this.$el.offsetParent;
       let ctH;
       let ctW;
-      if (this.parentResizer && this.parentResizer.lastKnownHeight) {
-        ctH = this.parentResizer.lastKnownHeight;
-        ctW = this.parentResizer.lastKnownWidth;
-      }
-      else if (offsetParent) {
+      if (offsetParent) {
         ctH = isAbsolute ? bbn.fn.outerHeight(offsetParent) : Math.round(offsetParent.clientHeight);
         ctW = isAbsolute ? bbn.fn.outerWidth(offsetParent) : Math.round(offsetParent.clientWidth);
+      }
+      else if (this.parentResizer && this.parentResizer.lastKnownHeight) {
+        ctH = this.parentResizer.lastKnownHeight;
+        ctW = this.parentResizer.lastKnownWidth;
       }
       else {
         ctH = bbn.env.height;
         ctW = bbn.env.width;
       }
-      if (this.lastKnownCtHeight !== ctH) {
+
+      if (Math.abs(this.lastKnownCtHeight - ctH) > 1) {
         this.lastKnownCtHeight = ctH;
         resize = true;
       }
-      if (this.lastKnownCtWidth !== ctW) {
+      if (Math.abs(this.lastKnownCtWidth - ctW) > 1) {
         this.lastKnownCtWidth = ctW;
         resize = true;
       }
@@ -203,23 +216,11 @@ const resizer = {
         this.resizerObserver = null;
       }
     },
-    /**
-     * Emits the event resize on the closest parent resizer.
-     * @method selfEmit
-     * @memberof resizerComponent
-     * @param {Boolean} force 
-     */  
-    selfEmit(force){
-      /*
-      if ( this.parentResizer ){
-        this.parentResizer.$emit("resize", force);
-      }
-      */
-    },
     formatSize(...args) {
       return bbn.fn.formatSize(...args);
     },
     setComputedStyle(){
+      return;
       if (!this.computedStyle && this.$el && this.$el.clienttWidth) {
         this.computedStyle = window.getComputedStyle(this.$el);
       }
@@ -241,12 +242,8 @@ const resizer = {
    * @memberof resizerComponent
    */
   mounted() {
-    if (!this.ready) {
-      this.$on('ready', this.setResizeEvent);
-    }
-    else {
-      this.setResizeEvent();
-    }
+    this.onResize();
+    this.setResizeEvent();
   },
   /**
    * Unsets the resize emitter.

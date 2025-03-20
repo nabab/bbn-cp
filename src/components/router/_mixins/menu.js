@@ -6,7 +6,7 @@ export default {
      * @prop {Array|Function} [[]] menu
      */
     menu: {
-      type: [Array, Function],
+      type: [Array, Function, Boolean],
       default: function () {
         return [];
       }
@@ -21,11 +21,13 @@ export default {
      * @return {Array|Boolean}
      */
     getMenuFn(idx) {
-      if (!this.nav || !this.views[idx] || (this.views[idx].menu === false)) {
+      const view = bbn.fn.getRow(this.views, {idx});
+      if (!this.menu || !this.nav || !view || (view.menu === false)) {
+        bbn.fn.log("NO MENU", idx, this.menu, this.nav, view, view?.menu)
         return [];
       }
       let items = [];
-      let tmp = ((bbn.fn.isFunction(this.views[idx].menu) ? this.views[idx].menu() : this.views[idx].menu) || []).slice();
+      let tmp = ((bbn.fn.isFunction(view.menu) ? view.menu() : view.menu) || []).slice();
       let others = false;
       let container = this.getContainer(idx);
       bbn.fn.each(this.views, (a, i) => {
@@ -35,8 +37,8 @@ export default {
         }
       });
 
-      if (!this.views[idx].help) {
-        let sub = this.urls[this.views[idx].uid].subrouter;
+      if (!view.help) {
+        let sub = this.urls[view.uid].subrouter;
         if (sub && sub.views && sub.views.length) {
           let helps = [];
           sub.views.forEach(a => {
@@ -44,35 +46,35 @@ export default {
               helps.push({
                 url: sub.fullBaseURL + a.url,
                 content: a.help,
-                title: a.title || a.url,
+                label: a.label || a.url,
                 anchor: bbn.fn.randomString(15, 20).toLowerCase()
               });
             }
           });
           if (helps.length === 1) {
-            this.views[idx].help = helps[0].content;
+            view.help = helps[0].content;
           }
           else if (helps.length) {
-            this.views[idx].help = '';
+            view.help = '';
             let slide1 = '';
             helps.forEach(a => {
-              slide1 += '<h1><a href="#' + a.anchor + '">' + a.title + '</a></h1>\n';
-              this.views[idx].help += '---slide---' + '\n<a name="' + a.anchor + '">\n' + a.content;
+              slide1 += '<h1><a href="#' + a.anchor + '">' + a.label + '</a></h1>\n';
+              view.help += '---slide---' + '\n<a name="' + a.anchor + '">\n' + a.content;
             });
-            this.views[idx].help = slide1 + this.views[idx].help;
+            view.help = slide1 + view.help;
           }
         }
       }
 
-      if (this.views[idx].help) {
+      if (view.help) {
         items.push({
           text: bbn._("Help"),
           key: "help",
-          icon: "nf nf-mdi-help_circle_outline",
+          icon: "nf nf-md-help_circle_outline",
           action: () => {
             let view = this.getContainer(idx),
               span = document.createElement('span');
-            span.innerHTML = this.views[idx].title;
+            span.innerHTML = view.label;
             let title = span.innerText;
             if (!title && span.querySelector("[title]").length) {
               title = span.querySelector("[title]").getAttribute("title");
@@ -88,9 +90,9 @@ export default {
                                 separator="---slide---"></bbn-slideshow>`
               },
               source: {
-                content: this.views[idx].help
+                content: view.help
               },
-              title: '<i class="bbn-large nf nf-mdi-help_circle_outline"> </i> <span class="bbn-iblock">' + title + '</span>',
+              label: '<i class="bbn-large nf nf-md-help_circle_outline"> </i> <span class="bbn-iblock">' + title + '</span>',
               width: '90%',
               height: '90%'
             });
@@ -98,11 +100,11 @@ export default {
         })
       }
 
-      if (this.views[idx].load && !this.views[idx].component) {
+      if (view.load && !view.component) {
         items.push({
           text: bbn._("Reload"),
           key: "reload",
-          icon: "nf nf-mdi-sync",
+          icon: "nf nf-md-sync",
           action: () => {
             this.reload(idx);
           }
@@ -113,7 +115,7 @@ export default {
         items.push({
           text: bbn._("Exit full screen"),
           key: "reduce",
-          icon: "nf nf-mdi-arrow_collapse",
+          icon: "nf nf-md-arrow_collapse",
           action: () => {
             container.fullScreen = false;
           }
@@ -123,7 +125,7 @@ export default {
         items.push({
           text: bbn._("Enlarge"),
           key: "enlarge",
-          icon: "nf nf-mdi-arrow_expand_all",
+          icon: "nf nf-md-arrow_expand_all",
           action: () => {
             container.fullScreen = true;
           }
@@ -138,13 +140,13 @@ export default {
         });
       }
 
-      if (this.views[idx].icon && this.views[idx].title && !this.isBreadcrumb && !this.isVisual) {
+      if (view.icon && view.label && !this.isBreadcrumb && !this.isVisual) {
         items.push({
-          text: this.views[idx].notext ? bbn._("Show text") : bbn._("Show only icon"),
+          text: view.notext ? bbn._("Show text") : bbn._("Show only icon"),
           key: "notext",
-          icon: this.views[idx].notext ? "nf nf-fa-font" : "nf nf-fa-font_awesome",
+          icon: view.notext ? "nf nf-fa-font" : "nf nf-fa-font_awesome",
           action: () => {
-            this.$set(this.views[idx], 'notext', !this.views[idx].notext);
+            this.$set(view, 'notext', !view.notext);
           }
         });
       }
@@ -157,9 +159,9 @@ export default {
           icon: "nf nf-fa-link",
           action: () => {
             this.$emit('shortcut', {
-              text: this.views[idx].title,
-              icon: this.views[idx].icon || 'nf nf-fa-link',
-              url: this.getFullBaseURL() + this.views[idx].url
+              text: view.label,
+              icon: view.icon || 'nf nf-fa-link',
+              url: this.getFullBaseURL() + view.url
             });
           }
         });
@@ -212,13 +214,13 @@ export default {
         });
         items.push({
           text: bbn._("Screenshot"),
-          icon: "nf nf-mdi-image_album",
+          icon: "nf nf-md-image_album",
           key: "screenshot",
           items: [
             {
               text: bbn._("Download"),
               key: "screenshot_dl",
-              icon: "nf nf-mdi-arrow_expand_all",
+              icon: "nf nf-md-arrow_expand_all",
               action: () => {
                 container.takeScreenshot().then(canvas => {
                   if (canvas) {
@@ -232,7 +234,7 @@ export default {
             }, {
               text: bbn._("Copy"),
               key: "screenshot_copy",
-              icon: "nf nf-mdi-image_multiple",
+              icon: "nf nf-md-image_multiple",
               action: () => {
                 container.takeScreenshot(0.5).then(canvas => {
                   if (canvas) {
@@ -247,7 +249,7 @@ export default {
             }, {
               text: bbn._("Copy full size"),
               key: "screenshot_copy",
-              icon: "nf nf-mdi-image_multiple",
+              icon: "nf nf-md-image_multiple",
               action: () => {
                 container.takeScreenshot(1).then(canvas => {
                   if (canvas) {
@@ -264,23 +266,23 @@ export default {
         });
       }
 
-      if (!this.views[idx].fixed && !this.views[idx].pane) {
+      if (!view.fixed && !view.pane) {
         if (this.isBreadcrumb) {
           items.push({
             text: bbn._("Close"),
             key: "close",
-            icon: "nf nf-mdi-close",
+            icon: "nf nf-md-close",
             action: () => {
               this.close(idx);
             }
           });
         }
         else {
-          if (!this.views[idx].pinned) {
+          if (!view.pinned) {
             items.push({
               text: bbn._("Pin"),
               key: "pin",
-              icon: "nf nf-mdi-pin",
+              icon: "nf nf-md-pin",
               action: () => {
                 this.pin(idx);
               }
@@ -288,7 +290,7 @@ export default {
             items.push({
               text: bbn._("Close"),
               key: "close",
-              icon: "nf nf-mdi-close",
+              icon: "nf nf-md-close",
               action: () => {
                 this.close(idx);
               }
@@ -298,7 +300,7 @@ export default {
             items.push({
               text: bbn._("Unpin"),
               key: "pin",
-              icon: "nf nf-mdi-pin_off",
+              icon: "nf nf-md-pin_off",
               action: () => {
                 this.unpin(idx);
               }
@@ -307,11 +309,11 @@ export default {
         }
       }
 
-      if (others && !this.views[idx].pane) {
+      if (others && !view.pane) {
         items.push({
           text: bbn._("Close Others"),
           key: "close_others",
-          icon: "nf nf-mdi-close_circle_outline",
+          icon: "nf nf-md-close_circle_outline",
           action: () => {
             this.closeAllBut(idx);
           }
@@ -324,7 +326,7 @@ export default {
               directions.push({
                 text: bbn._("First"),
                 key: "move_first",
-                icon: "nf nf-mdi-close_circle_outline",
+                icon: "nf nf-md-close_circle_outline",
                 action: () => {
                   this.move(idx, 0);
                 }
@@ -333,7 +335,7 @@ export default {
             directions.push({
               text: bbn._("Before"),
               key: "move_before",
-              icon: "nf nf-mdi-close_circle_outline",
+              icon: "nf nf-md-close_circle_outline",
               action: () => {
                 this.move(idx, idx - 1);
               }
@@ -343,7 +345,7 @@ export default {
             directions.push({
               text: bbn._("After"),
               key: "move_after",
-              icon: "nf nf-mdi-close_circle_outline",
+              icon: "nf nf-md-close_circle_outline",
               action: () => {
                 this.move(idx, idx + 1);
               }
@@ -352,7 +354,7 @@ export default {
               directions.push({
                 text: bbn._("Last"),
                 key: "move_last",
-                icon: "nf nf-mdi-close_circle_outline",
+                icon: "nf nf-md-close_circle_outline",
                 action: () => {
                   this.move(idx, this.views.length - 1);
                 }
@@ -369,7 +371,7 @@ export default {
               items.push({
                 text: bbn._("Move"),
                 key: "move",
-                icon: "nf nf-mdi-close_circle_outline",
+                icon: "nf nf-md-close_circle_outline",
                 items: directions
               });
             }
@@ -383,7 +385,7 @@ export default {
           items.push({
             text: bbn._("Remove from pane"),
             key: "unpane",
-            icon: "nf nf-mdi-window_restore",
+            icon: "nf nf-md-window_restore",
             action: () => {
               this.removeFromPane(idx);
             }
@@ -393,7 +395,7 @@ export default {
           items.push({
             text: bbn._("Show in a new pane"),
             key: "split",
-            icon: "nf nf-mdi-format_horizontal_align_right",
+            icon: "nf nf-md-format_horizontal_align_right",
             action: () => {
               this.addToPane(idx);
             }
@@ -402,7 +404,7 @@ export default {
             let tmp = {
               text: bbn._("Show in pane"),
               key: "panes",
-              icon: "nf nf-mdi-checkbox_multiple_blank_outline",
+              icon: "nf nf-md-checkbox_multiple_blank_outline",
               items: []
             };
             bbn.fn.each(this.currentPanes, (a, i) => {
@@ -419,29 +421,40 @@ export default {
         }
       }
 
-      if (others && !this.views[idx].fixed && !this.views[idx].pane) {
+      if (others && !view.fixed && !view.pane) {
         items.push({
           text: bbn._("Close All"),
           key: "close_all",
-          icon: "nf nf-mdi-close_circle",
+          icon: "nf nf-md-close_circle",
           action: () => {
             this.closeAll();
           }
         });
       }
 
-      if (!this.views[idx].pane) {
+      if (this.configuration && !view.pane) {
         items.push({
           text: bbn._("Configuration"),
           key: "config",
           icon: "nf nf-fa-cogs",
           action: () => {
-            this.showRouterCfg = true;
+            this.getPopup({
+              label: false,
+              scrollable: true,
+              closable: true,
+              component: 'bbn-router-config',
+              minWidth: 800,
+              minHeight: 500,
+              componentOptions: {
+                router: this,
+                visual: !this.parent
+              }
+            })
           }
         });
       }
 
-      let menu = bbn.fn.isArray(this.menu) ? this.menu : this.menu(this.views[idx], this);
+      let menu = bbn.fn.isArray(this.menu) ? this.menu : this.menu(view, this);
       if (menu.length) {
         bbn.fn.each(menu, a => {
           items.push(a);

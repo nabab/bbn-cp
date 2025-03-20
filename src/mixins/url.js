@@ -17,10 +17,10 @@ const url = {
        */
       currentURL: null,
       /**
-       * @data title
+       * @data label
        * @memberof urlComponent
        */
-      title: null
+      label: null
     }
   },
   methods: {

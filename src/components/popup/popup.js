@@ -178,11 +178,11 @@ const cpDef = {
               d.height = arguments[i];
             }
           }
-          else if (!d.title && (typeof (arguments[i]) === 'string')) {
-            d.title = arguments[i];
+          else if (!d.label && (typeof (arguments[i]) === 'string')) {
+            d.label = arguments[i];
           }
-          else if (!d.title && (arguments[i] === false)) {
-            d.title = false;
+          else if (!d.label && (arguments[i] === false)) {
+            d.label = false;
           }
           else if (bbn.fn.isFunction(arguments[i])) {
             if (!d.onOpen) {
@@ -290,6 +290,8 @@ const cpDef = {
             }
 
             bbn.fn.extend(d, r);
+            d.label = d.title || d.label;
+            delete d.title;
             delete d.url;
             delete d.data;
             if (!d.uid) {
@@ -326,11 +328,11 @@ const cpDef = {
       if (a.closable === undefined) {
         a.closable = true;
       }
-      if ((a.title === undefined) && this.untitled) {
-        a.title = this.untitled;
+      if ((a.label === undefined) && this.untitled) {
+        a.label = this.untitled;
       }
-      if (a.draggable === undefined) {
-        a.draggable = true;
+      if (a.drag === undefined) {
+        a.drag = true;
       }
       return a;
     },
@@ -341,7 +343,7 @@ const cpDef = {
      */
     loading() {
       return this.open({
-        title: false,
+        label: false,
         content: `
 <div class="bbn-middle" style="width: 500px; height: 250px">
 <div class="bbn-block bbn-c bbn-b bbn-xl">` + bbn._('Loading') + `...</div>
@@ -407,7 +409,7 @@ const cpDef = {
           }
         }
         else if (!has_title && (typeof arguments[i] === 'string')) {
-          o.title = arguments[i];
+          o.label = arguments[i];
           has_title = true;
         }
         else if (typeof arguments[i] === 'string') {
@@ -436,15 +438,15 @@ const cpDef = {
         if (!o.content) {
           o.content = this.alertMessage;
         }
-        if (!o.title) {
-          o.title = false;
+        if (!o.label) {
+          o.label = false;
         }
         if (!okText) {
           okText = this.okText;
         }
         o.content = '<div class="' + (this.isMobile || this.isTablet ? 'bbn-padding' : 'bbn-lpadding') + ' bbn-large bbn-c" style="min-width: ' + (this.isMobile || this.isTablet ? '15' : '30') + 'em">' + o.content + '</div>';
         o.buttons = [{
-          text: okText,
+          label: okText,
           cls: 'bbn-primary',
           icon: 'nf nf-fa-check_circle',
           focused: true,
@@ -536,16 +538,16 @@ const cpDef = {
         if (!o.content) {
           o.content = this.confirmMessage;
         }
-        if (!o.title) {
-          o.title = false;
+        if (!o.label) {
+          o.label = false;
         }
 
         o.content = '<div class="' + (this.isMobile || this.isTablet ? 'bbn-padding' : 'bbn-lpadding') + ' bbn-large bbn-c" style="min-width: ' + (this.isMobile || this.isTablet ? '15' : '30') + 'em">' + o.content + '</div>';
         o.buttons = [{
-          text: noText,
+          label: noText,
           icon: 'nf nf-fa-times_circle',
           focused: true,
-          action($ev, btn) {
+          action: ($ev, btn) => {
             btn.closest('bbn-floater').close(true);
             bbn.fn.log("ON NO", btn);
             if (onNo) {
@@ -553,7 +555,7 @@ const cpDef = {
             }
           }
         }, {
-          text: yesText,
+          label: yesText,
           cls: 'bbn-primary',
           icon: 'nf nf-fa-check_circle',
           action: ($ev, btn) => {
@@ -587,7 +589,7 @@ const cpDef = {
           idx = this.popups.length - 1;
         }
         if (this.popups[idx]) {
-          return this.getChildByKey(this.popups[idx].uid);
+          return bbn.fn.getRow(Array.from(this.children), a => a.uid === this.popups[idx].uid);
         }
       }
       return false;

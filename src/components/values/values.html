@@ -5,7 +5,8 @@
                bbn-model="currentTextInput"
               :readonly="!!readonly || (max && (value.length > max))"
               :disabled="isDisabled"
-              @keydown="keydown"
+              :tabindex="currentTabIndex"
+              @keydown="onKeydown"
               @focus="isOpened = true"
               ref="input"
               class="bbn-w-100"
@@ -15,6 +16,7 @@
       <bbn-dropdown :source="source"
                     :readonly="!!readonly || (max && (value.length > max))"
                     :disabled="isDisabled"
+                    :tabindex="currentTabIndex"
                     :source-value="sourceValue"
                     :source-text="sourceText"
                     ref="input"
@@ -23,6 +25,7 @@
                     class="bbn-values-dropdown bbn-no-border bbn-flex-fill"/>
       <bbn-button class="bbn-values-dropdown-button bbn-no-vborder bbn-no-right-border"
                   :notext="true"
+                  :tabindex="currentTabIndex"
                   icon="nf nf-fa-plus"
                   @click="add"
                   :disabled="isDisabled || (max && (value.length > max)) || !currentInput.length"/>
@@ -31,8 +34,9 @@
                bbn-model="currentInput"
               :readonly="!!readonly || (max && (value.length > max))"
               :disabled="isDisabled"
-              @keydown="keydown"
+              @keydown="onKeydown"
               @focus="isOpened = true"
+              :tabindex="currentTabIndex"
               ref="input"
               @ready="ready = true"
               class="bbn-w-100"
@@ -44,15 +48,17 @@
   </div>
   <div>
     <div bbn-for="(v, idx) in value"
-         class="bbn-vxspadding bbn-hspadding bbn-iblock">
-      <span class="bbn-right-xshmargin"
-            bbn-text="getText(v)"/>
-      <i :class="['nf nf-fa-times_circle', 'bbn-p', {'bbn-state-disabled': isDisabled || readonly}]"
-         @click="remove(idx)"
-         tabindex="0"
-         @keyup.enter.space="remove(idx)"
-         :title="_('Delete')"
-         :style="{'background-color': isDisabled || readonly ? 'transparent !important' : ''}"/>
+         class="bbn-textbox bbn-iblock bbn-xsmargin">
+      <div class="bbn-vxspadding bbn-hspadding">
+         <span class="bbn-right-xshmargin"
+               bbn-text="getText(v)"/>
+         <i :class="['nf nf-fa-times_circle', 'bbn-p', {'bbn-state-disabled': isDisabled || readonly}]"
+            @click="removeItem(idx)"
+            :tabindex="currentTabIndex"
+            @keyup.enter.space="removeItem(idx)"
+            :title="_('Delete')"
+            :style="{'background-color': isDisabled || readonly ? 'transparent !important' : ''}"/>
+      </div>
     </div>
   </div>
   <bbn-floater bbn-if="(mode === 'input') && ready && !isDisabled && !readonly && filteredData.length && currentInput.length"

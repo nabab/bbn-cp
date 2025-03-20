@@ -33,7 +33,7 @@ export default class bbnSlotAttr extends bbnAttr
     }
   
     if (this.isChanged) {
-      this.attrSerResult();
+      this.attrSetResult();
     }
   }
 }

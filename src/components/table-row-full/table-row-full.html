@@ -1,0 +1,19 @@
+<div @focusout="focusout(i)"
+    :class="[{
+      'bbn-invisible': !ready,
+      'bbn-alt': !groupable && (d.expanderIndex !== undefined) ?
+        !!(d.expanderIndex % 2) :
+        !!(d.rowIndex % 2),
+      'bbn-header': !!(d.aggregated || d.groupAggregated),
+    }, getTrClass(d.data)]"
+    :style="getTrStyle(d.data)">
+  <td :colspan="currentColumns.length - (table.isExpanded(source, table.items[index].index) ? 1 : 0)">
+    <slot bbn-if="$hasSlots"/>
+    <component bbn-elseif="d.component"
+               :is="d.component"
+               bbn-bind="d.options || {}"
+               :source="mapper ? mapper(d.data) : d.data"/>
+    <div bbn-else
+         bbn-html="render(d.data, d.options || {}, i)"/>
+  </td>
+</div>

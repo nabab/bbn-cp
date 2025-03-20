@@ -23,22 +23,22 @@
          bbn-html="item.data.text"/>
       <span bbn-else
             bbn-html="item.data.text"/>
-      <span bbn-if="item.data[children]"
+      <span bbn-if="item.data[sourceItems]"
             class="bbn-menu-icon">
         <i class="nf nf-fa-chevron_down"/>
       </span>
     </li>
   </ul>
-  <bbn-floater bbn-if="ready && !isChanging && filteredData?.[overIdx]?.data?.[children]"
+  <bbn-floater bbn-if="ready && !isChanging && filteredData?.[overIdx]?.data?.[sourceItems]"
                class="bbn-menu-floater"
                ref="floater"
                :min-width="getRef('li' + overIdx)?.clientWidth || 0"
-               :children="children"
+               :source-items="sourceItems"
                :element="getRef('li' + overIdx)"
                @mouseenter="activeIdx = overIdx"
                @mouseleave="overIdx = -1"
                :focused="false"
-               :source="filteredData[overIdx]?.data?.[children]"
+               :source="filteredData[overIdx]?.data?.[sourceItems]"
                @close="overIdx = -1"
                @select="select"/>
 </div>

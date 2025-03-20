@@ -1,5 +1,6 @@
 <div :class="[componentClass, {'bbn-textbox': !floating}, 'bbn-no-padding']"
-		 :style="{height: currentHeight}">
+		 :style="{height: currentHeight}"
+		 tabindex="-1">
 	<div bbn-if="floating"
 	     class="bbn-iflex-height"
 			 ref="container"
@@ -8,7 +9,7 @@
 		     @focusin="isEditing = true"
 				 @focusout="isEditing = false"
 				 @input="updateContenteditable"
-				 tabindex="0"
+         :tabindex="currentTabIndex"
 				 class="bbn-rte-element"
 				 style="min-height: 2rem"
 				 ref="element"/>
@@ -24,7 +25,7 @@
 								bbn-portal="true"
 								bbn-focused="true"
 								position="topLeft"
-								:title="false">
+								:label="false">
 			<bbn-toolbar :source="currentButtons"
 									class="bbn-rte-toolbar bbn-header bbn-radius-top bbn-no-border bbn-spadding"
 									:button-space="false"/>
@@ -35,7 +36,7 @@
 	     class="bbn-iflex-height"
 			 style="min-height: 100%; width: 100%;">
 		<bbn-toolbar :source="currentButtons"
-								 class="bbn-rte-toolbar bbn-header bbn-radius-top bbn-no-border bbn-spadding"
+								 class="bbn-rte-toolbar bbn-header bbn-radius-top bbn-no-border bbn-xspadding bbn-s"
 								 :button-space="false"/>
 		<div class="bbn-flex-fill"
 				 :style="textboxStyle"
@@ -56,6 +57,7 @@
 				</div>
 				<bbn-code bbn-model="currentValue"
 				          bbn-if="showSource"
+									:tabindex="currentTabIndex"
 									class="bbn-overlay"
 									style="min-height: max(4rem, 100%)"
 									mode="html"/>

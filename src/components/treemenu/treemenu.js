@@ -117,35 +117,14 @@ const cpDef = {
          * The current menu.
          * @data {String} current
          */
-        currentMenu: this.current || null,
+        currentMenu: this.current || this.menus[0]?.value || null,
         /**
          * The last menu.
          * @data [null] lastMenu
          */
-        lastMenu: null
+        lastMenu: null,
+        isReadyTree: false
       };
-    },
-    computed: {
-      /**
-       * Defines position and width of the component.
-       * @computed elementStyle
-       * @return {Object}
-       */
-      elementStyle(){
-        let o = {
-          top: '0px',
-          bottom: '0px'
-        };
-        let prop = this.position === 'right' ? 'right' : 'left';
-        o[prop] = 0;
-        if (!this.ready) {
-          o.opacity = 0;
-        }
-        else if (!this.isOpened) {
-          o[prop] = -(this.$el.clientWidth + 40) + 'px';
-        }
-        return o;
-      }
     },
     methods: {
       /**
@@ -234,9 +213,10 @@ const cpDef = {
        * @method reset
        * @fires getRef
        */
-      reset(){
+      reset() {
+        //bbn.fn.log("RESET TREE")
         let tree = this.getRef('tree');
-        if (tree instanceof bbnCp) {
+        if (tree?.reset) {
           tree.reset();
         }
       },
@@ -259,18 +239,26 @@ const cpDef = {
        */
       readyTree(){
         this.$nextTick(() => {
-          let dd = this.getRef('dropdown');
-          if (bbn.cp.isComponent(dd)
-            && dd.value
-            && bbn.fn.getRow(this.menus, {value: dd.value})
-            && (dd.value !== this.currentMenu)
-          ){
-            this.currentMenu = dd.value;
+          if (!this.$isMounted) {
+            this.isReadyTree = true;
           }
           else {
-            this.reset();
+            this.onReady();
           }
         })
+      },
+      onReady() {
+        let dd = this.getRef('dropdown');
+        if (bbn.cp.isComponent(dd)
+          && dd.value
+          && bbn.fn.getRow(this.menus, {value: dd.value})
+          && (dd.value !== this.currentMenu)
+        ){
+          this.currentMenu = dd.value;
+        }
+        else {
+          this.reset();
+        }
       },
       /**
        * Focuses the search input.
@@ -295,6 +283,11 @@ const cpDef = {
       this.onResize();
       //this._position();
       this.ready = true;
+      this.$nextTick(() => {
+        if (this.isReadyTree) {
+          this.onReady();
+        }
+      })
     },
     watch: {
       /**

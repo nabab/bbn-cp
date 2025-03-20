@@ -73,7 +73,7 @@ const cpDef = {
       }
 
       if (sc) {
-        sc.scrollTo(0, this.$el.offsetTop, true);
+        sc.scrollSet(0, this.$el.offsetTop, true);
       }
       else {
         let p = this.$el;
@@ -92,7 +92,6 @@ const cpDef = {
   }
 };
 
-import bbn from '@bbn/bbn';
 import cpHtml from './block-list.html';
 import cpStyle from './block-list.less';
 let cpLang = {};

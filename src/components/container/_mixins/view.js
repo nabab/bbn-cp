@@ -1,5 +1,3 @@
-import bbn from "@bbn/bbn"
-
 export default {
   props: {
     /**
@@ -11,9 +9,9 @@ export default {
     },
     /**
      * The title of the component.
-     * @prop {String|Number} ['Untitled'] title
+     * @prop {String|Number} ['Untitled'] label
      */
-    title: {
+    label: {
       type: [String, Number],
       default(){
         return bbn._("Untitled");
@@ -217,31 +215,31 @@ export default {
        * The container UID given by the router.
        * @data {String} currentURL
        */
-      routerUid: this.uid
+      routerUid: this.uid || false
     }
   },
   computed: {
-    currentIndex() {
-      return this.currentView?.idx;
-    },
     currentView() {
-      if (!this.router) {
-        this.router = this.closest('bbn-router');
+      const o = {};
+      if (this.routerUid) {
+        o.uid = this.routerUid;
+      }
+      else {
+        o.url = this.url;
       }
 
-      if (this.router) {
-        const o = {};
-        if (this.routerUid) {
-          o.uid = this.routerUid;
-        }
-        else {
-          o.url = this.url;
-        }
-
-        return bbn.fn.getRow(this.router.views || [], o)
+      if (!this.router?.views) {
+        return false;
       }
 
-      return null;
+      return bbn.fn.getRow(this.router.views || [], o)
+    },
+    currentIndex() {
+      if (!this.currentView) {
+        return null;
+      }
+
+      return this.currentView.idx;
     },
     /**
       * The current url.
@@ -249,7 +247,7 @@ export default {
       */
     currentURL: {
       get(){
-        return this.currentView?.url || '';
+        return this.currentView ? this.currentView.url : this.url;
       },
       set(v){
         if (this.currentView && (this.currentView.url !== v)) {
@@ -291,16 +289,16 @@ export default {
       }
     },
     /**
-     * The title of the component.
-     * @prop {String|Number} ['Untitled'] title
+     * The label of the component.
+     * @prop {String|Number} ['Untitled'] currentLabel
      */
     currentTitle: {
       get() {
-        return this.currentView?.title || bbn._('Untitled');
+        return this.currentView?.label || bbn._('Untitled');
       },
       set(v) {
         if ( this.currentView ){
-          this.currentView.title = v;
+          this.currentView.label = v;
         }
       }
     },
@@ -502,11 +500,13 @@ export default {
      */
     currentCurrent: {
       get() {
-        return this.currentView?.current || null;
+        return this.currentView? this.currentView.current : null;
       },
       set(v) {
         if ( this.currentView ){
-          this.currentView.current = v;
+          if (this.currentView.current !== v) {
+            this.currentView.current = v;
+          }
         }
       }
     },
@@ -521,9 +521,6 @@ export default {
       set(v) {
         if (this.currentView && (this.currentView.selected !== v)) {
           this.currentView.selected = v;
-          if (v) {
-            this.show();
-          }
         }
       }
     },
@@ -574,14 +571,22 @@ export default {
      */
     currentHidden: {
       get() {
-        return this.currentView?.hidden || false;
+        return this.currentView?.invisible || false;
       },
       set(v) {
         if ( this.currentView ){
-          this.currentView.hidden = v;
+          this.currentView.invisible = v;
         }
       }
     },
+
+    currentPane() {
+      if (this.isPane) {
+        return bbn.fn.getRow(this.router.currentPanes, {id: this.currentView.pane})
+      }
+
+      return null;
+    }
 
   },
   methods: {
@@ -600,28 +605,31 @@ export default {
      * @param {String} url 
      */
     setCurrent(url){
-      if (url.indexOf(this.url) === 0) {
+      const getIdx = this.url.indexOf('?');
+      const currentUrl = bbn.fn.substr(this.url, 0, getIdx > -1 ? getIdx : this.url.length);
+      if (url.indexOf(currentUrl) === 0) {
         this.currentCurrent = url;
         return true;
       }
 
+      throw new Error("Impossible to set the current URL to " + url + " because it does not start with " + this.url);
       return false;
     },
 
 
     /**
-     * Sets the title of the container.
+     * Sets the label of the container.
      * 
      * @method setTitle
-     * @param {String} title 
+     * @param {String} label 
      */
-    setTitle(title){
+    setTitle(label){
       if ( this.router ){
         if (!this.real) {
-          this.router.views[this.currentIndex].title = title;
+          this.router.views[this.currentIndex].label = label;
         }
         else {
-          this.currentTitle = title;
+          this.currentTitle = label;
         }
       }
     },
@@ -631,7 +639,7 @@ export default {
      * Sets the icon of the container.
      * 
      * @method setIcon
-     * @param {String} title 
+     * @param {String} icon 
      */
     setIcon(icon){
       if ( this.router ){
@@ -844,16 +852,16 @@ export default {
     },
     /**
      * Defines if the component is hidden.
-     * @prop {Boolean} [false] hidden
+     * @prop {Boolean} [false] invisible
      */
-    hidden(v) {
+    invisible(v) {
       if (this.real) {
-        this.currentView.hidden = v;
+        this.currentView.invisible = v;
       }
     },
-    title(v) {
+    label(v) {
       if (this.real) {
-        this.currentView.title = v;
+        this.currentView.label = v;
       }
     },
     /**
@@ -900,38 +908,32 @@ export default {
     loaded(v) {
       this.isLoaded = v;
     },
+    isLoaded(v) {
+      if (v) {
+        this.currentView.loaded = true;
+      }
+    },
     loading(v) {
       this.isLoading = v;
     },
     current(v){
-      if (v.indexOf(this.url) === 0) {
-        this.currentCurrent = v;
-      }
-      if (this.real) {
-        this.currentView.current = v;
-      }
+      this.setCurrent(v);
     },
     /**
      * @watch currentCurrent
      * @param {String} newVal 
      * @param {String} oldVal 
-     *
+     */
     currentCurrent(v, ov) {
       if (this.subrouter && v) {
         //bbn.fn.log("currentCurrent", this.currentView, v);
         this.subrouter.route(this.subrouter.parseURL(this.getFullURL()));
       }
-  /*
-      // Auto cancelling if it does not correspond to the url
-      if ( !newVal || (newVal.indexOf(this.url) !== 0) ){
-        this.currentURL = this.url;
-      }
       // Routing if the router has different info
-      else if (this.router && this.router.$isInit && this.currentView && (this.currentView.current !== newVal)) {
-        this.router.route(newVal)
+      else if (this.router && this.router.$isInit && this.currentView && this.currentSelected && (this.router.currentURL !== v)) {
+        this.router.route(v)
       }
     },
-    */
     dirty(v){
       if (this.currentView) {
         this.currentView.dirty = v;

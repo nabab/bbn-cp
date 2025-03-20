@@ -1,4 +1,5 @@
-import setProp from "../../Cp/private/setProp.js";
+import setProp from "../../Html/private/setProp.js";
+import setNoValueAttribute from "./setNoValueAttribute.js";
 
 /**
  * Sets a property on a component if it has the property defined in its $props.
@@ -17,12 +18,17 @@ export default function setPropOnComponent(node, name, v, jsName) {
       setProp(cp, name, v);
     }
 
-    if (![v, undefined].includes(ele[jsName])) {
+    if (cp.$isPropNative(jsName)) {
       if (!v && ele.hasAttribute(name) && !cp.$internal.attr[name]) {
         ele.removeAttribute(name);
       }
       else {
-        ele[jsName] = v;
+        try {
+          ele[jsName] = v;
+        }
+        catch (e) {
+          bbn.fn.log(["ERROR SETTING PROPERTY ON COMPONENT", name, jsName, ele[jsName], v, ele]);
+        }
       }
     }
     return true;

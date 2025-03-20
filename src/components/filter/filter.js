@@ -205,16 +205,16 @@ const cpDef = {
        * @return {String}
        */
       border_color(){
-        if ( this.num > bbnFilterCp.borders.length ){
-          return bbnFilterCp.borders[this.num % bbnFilterCp.borders.length]
+        if ( this.num > bbnFilter.borders.length ){
+          return bbnFilter.borders[this.num % bbnFilter.borders.length]
         }
         else{
-          return bbnFilterCp.borders[this.num]
+          return bbnFilter.borders[this.num]
         }
       },
       /**
        * @todo not used
-       * @return {bbnCp}
+       * @return {HTMLElement}
        */
       is_not_root(){
         return this.$parent.$el.classList.contains("bbn-filter-control");
@@ -303,9 +303,9 @@ const cpDef = {
           if ( index > -1 ){
             let f = this.fields[index];
             st += '<strong>' +
-              (f.ftitle ? f.ftitle : (f.title ? f.title : cd.field)) +
+              (f.flabel ? f.flabel : (f.label ? f.label : cd.field)) +
               '</strong> ' +
-              this.editorOperators[bbnFilterCp.get_operator_type(f)][cd.operator] +
+              this.editorOperators[bbnFilter.get_operator_type(f)][cd.operator] +
               ' <em>';
             if ( cd.value ){
               if ( cd.value === true ){
@@ -586,7 +586,7 @@ const cpDef = {
               bbn.fn.each(this.fields, (a, i) => {
                 if ( a.field ){
                   r.push({
-                    text: a.ftitle ? a.ftitle : (a.title ? a.title : a.field),
+                    text: a.flabel || a.label || a.field || '',
                     value: a.field
                   });
                 }
@@ -615,7 +615,7 @@ const cpDef = {
             return {};
           },
           /**
-           * Returns the title of the current field.
+           * Returns the label of the current field.
            * @computed currentTitle
            * @memberof bbn-filter-form
            * @return {String}
@@ -624,7 +624,7 @@ const cpDef = {
             if ( this.currentField ){
               let idx = bbn.fn.search(this.fields, {field: this.currentField});
               if ( idx > -1 ){
-                return this.fields[idx].title || this.fields[idx].ftitle || this.fields[idx].field || '';
+                return this.fields[idx].flabel || this.fields[idx].label || this.fields[idx].field || '';
               }
             }
             return '';

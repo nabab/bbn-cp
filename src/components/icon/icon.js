@@ -30,6 +30,9 @@ const cpDef = {
       },
       height: {
         type: [String, Number]
+      },
+      size: {
+        type: [String, Number]
       }
     },
     data(){
@@ -46,35 +49,42 @@ const cpDef = {
       isSVG() {
         return this.content && !this.content.trim().indexOf('<svg');
       },
-      currentStyle() {
-        let o = {
-          background: 'none'
-        };
-        let props = ['width', 'height'];
-        bbn.fn.each(props, (p, i) => {
-          if (this[p]) {
-            o[p] = this[p];
-            if (bbn.fn.isNumber(this[p])) {
-              o[p] += 'px';
+      currentSize() {
+        let sz = null;
+        if (this.size) {
+          sz = this.size;
+          if (bbn.fn.isNumber(sz)) {
+            if (sz < this.min) {
+              sz = this.min;
             }
-            if (!this[props[i === 1 ? 0 : 1]]) {
-              o[props[i === 1 ? 0 : 1]] = 'auto';
-              o['max' + bbn.fn.correctCase(props[i === 1 ? 0 : 1])] = '100%';
-            }
+            sz += 'px';
           }
-        });
-        if (!this.width && !this.height) {
-          o.height = this.defaultSize || 'auto';
-          o.width = 'auto';
         }
 
-        o.minWidth = this.min + 'px';
+        return sz;
+      },
+      currentStyle() {
+        let o = {
+          background: 'none',
+          width: 'auto',
+          height: 'auto',
+          maxHeight: '100%',
+          maxWidth: '100%',
+        };
+        if (this.currentSize) {
+          o.minWidth = this.currentSize;
+        }
+        else {
+          o.minWidth = this.min + 'px';
+        }
+
         return o;
       }
     },
     mounted() {
       if (!this.width && !this.height) {
-        this.defaultSize = getComputedStyle(this.$el.parentNode)['font-size'];
+        const def = parseFloat(getComputedStyle(this.$el.parentNode)['font-size']);
+        this.defaultSize = (def < this.min ? this.min : def) + 'px';
       }
     }
 

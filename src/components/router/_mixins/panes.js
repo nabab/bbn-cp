@@ -61,7 +61,7 @@ export default {
      * @returns {Number}
      */
     numOutOfPane() {
-      return bbn.fn.filter(this.views, { pane: false }).length;
+      return this.views.filter(a => !a.pane).length;
     },
 
     /**
@@ -100,8 +100,11 @@ export default {
     },
     selectPaneTab(pane) {
       let view = pane.tabs[pane.selected];
-      if (view) {
+      if (view && this.urls[view.uid]) {
         view.last = bbn.fn.timestamp();
+        if (view.load && !this.urls[view.uid].isLoaded) {
+          this.urls[view.uid].reload()
+        }
       }
     },
     removePane(paneId) {
@@ -142,12 +145,17 @@ export default {
         pane = bbn.fn.getRow(this.currentPanes, { id: paneId });
       }
 
-      this.$set(this.views[containerIdx], "pane", paneId);
+      if (this.selected <= containerIdx) {
+        this.selected--;
+      }
+
+      this.views[containerIdx].pane = paneId;
       pane.tabs.push(view);
       //this.$forceUpdate();
       if (containerIdx === this.selected) {
         this.selectClosest(containerIdx);
       }
+
       pane.selected = pane.tabs.length - 1;
     },
     removeFromPane(containerIdx) {
@@ -184,65 +192,53 @@ export default {
     /**
      * @event created
      */
-    panesCreated() {
-      if (!this.single) {
-        let storage = this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
+    panesInit() {
+      if (this.splittable && this.hasStorage) {
+        let storage = this.getStorage(this.routerStorageName);
         if (storage && storage.panes) {
           bbn.fn.each(storage.panes, a => {
             this.addPane(a.id);
           })
-        }
-      }
-    },
-  },
-  /**
-   * @event mounted
-   * @fires getStorage
-   * @fires getDefaultURL
-   * @fires add
-   */
-  beforeMount() {
-    if (this.splittable) {
-      let storage = this.getStorage(this.parentContainer ? this.parentContainer.getFullURL() : this.storageName);
-      if (storage && storage.panes) {
-        bbn.fn.each(storage.panes, pane => {
-          bbn.fn.each(pane.tabs, tab => {
-            let view = bbn.fn.getRow(this.views, { url: tab });
-            let realPane = bbn.fn.getRow(this.currentPanes, { id: pane.id });
-            if (view && realPane) {
-              if (!view.pane) {
-                view.pane = pane.id;
+
+          bbn.fn.each(storage.panes, pane => {
+            bbn.fn.each(pane.tabs, tab => {
+              let view = bbn.fn.getRow(this.views, { url: tab });
+              let realPane = bbn.fn.getRow(this.currentPanes, { id: pane.id });
+              if (view && realPane) {
+                if (!view.pane) {
+                  view.pane = pane.id;
+                }
+                realPane.tabs.push(view);
               }
-              realPane.tabs.push(view);
+            });
+          })
+        }
+  
+        bbn.fn.each(this.views, a => {
+          if (a.pane) {
+            let pane = bbn.fn.getRow(this.currentPanes, { id: a.pane });
+            if (pane && !bbn.fn.getRow(pane.tabs, { url: a.url })) {
+              pane.tabs.push(a);
             }
-          });
+          }
+        });
+  
+        bbn.fn.each(this.currentPanes, pane => {
+          let done = false;
+          if (storage && storage.panes) {
+            let p = bbn.fn.getRow(storage.panes, { id: pane.id });
+            if (p && pane.tabs[p.selected]) {
+              pane.selected = p.selected;
+              done = true;
+            }
+  
+          }
+          if (!done) {
+            pane.selected = pane.tabs.length ? 0 : -1;
+          }
         })
       }
-
-      bbn.fn.each(this.views, a => {
-        if (a.pane) {
-          let pane = bbn.fn.getRow(this.currentPanes, { id: a.pane });
-          if (pane && !bbn.fn.getRow(pane.tabs, { url: a.url })) {
-            pane.tabs.push(a);
-          }
-        }
-      });
-
-      bbn.fn.each(this.currentPanes, pane => {
-        let done = false;
-        if (storage && storage.panes) {
-          let p = bbn.fn.getRow(storage.panes, { id: pane.id });
-          if (p && pane.tabs[p.selected]) {
-            pane.selected = p.selected;
-            done = true;
-          }
-
-        }
-        if (!done) {
-          pane.selected = pane.tabs.length ? 0 : -1;
-        }
-      })
-    }
+    },
   },
   watch: {
     numPanes() {

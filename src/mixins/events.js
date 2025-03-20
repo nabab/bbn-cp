@@ -64,7 +64,7 @@ const events = {
      * @emit click
      * @memberof eventsComponent
      */
-    click(e) {
+    onClick(e) {
       if (bbn.fn.isEvent(e)) {
         e.stopImmediatePropagation();
       }
@@ -78,7 +78,7 @@ const events = {
      * @emit blur
      * @memberof eventsComponent
      */
-    blur(e) {
+    onBlur(e) {
       this.isFocused = false;
       if (bbn.fn.isEvent(e)) {
         e.stopImmediatePropagation();
@@ -93,7 +93,7 @@ const events = {
      * @return {Function}
      * @memberof basicComponent
      */
-    focus(e) {
+    onFocus(e) {
       let ele = this.getRef('element');
       if ( ele && !this.isFocused ){
         ele.focus();
@@ -113,7 +113,7 @@ const events = {
      * @memberof eventsComponent
      * @emit keyup
      */
-    keyup(e) {
+    onKeyup(e) {
       if (bbn.fn.isEvent(e)) {
         e.stopImmediatePropagation();
       }
@@ -127,7 +127,7 @@ const events = {
      * @memberof eventsComponent
      * @emit keydown
      */
-    keydown(e) {
+    onKeydown(e) {
       if (bbn.fn.isEvent(e)) {
         e.stopImmediatePropagation();
       }

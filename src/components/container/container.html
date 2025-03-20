@@ -1,16 +1,13 @@
 <div :class="[componentClass, {
-  'bbn-container-ratio': router?.visualShowAll,
+  'bbn-container-ratio': router?.visualShowAll || (router?.isVisual && !isVisible),
   'bbn-100': !visual && router?.scrollContent,
   'bbn-w-100': !router?.scrollContent && !router?.visualShowAll,
   'bbn-background': true,
 }]"
-     @subready.stop
-     title=""
      :style="visual ? visualStyle : {}"
-     bbn-portal="portal"
-     bbn-show="router?.$isConnected && ((!router?.isVisual && isVisible) || isVisualVisible || isPane)">
-  <div class="bbn-container-full-screen bbn-flex-height"
-       bbn-if="router?.$isConnected"
+     bbn-show="currentView && router?.ready && ((!router?.isVisual && isVisible) || isVisualVisible || isPane)">
+  <div class="bbn-container-full-screen bbn-flex-height bbn-background"
+       bbn-if="currentView && router?.ready"
        bbn-forget="!fullScreen">
     <transition name="fade"
                 @enter="enter"
@@ -38,10 +35,9 @@
                         :source="showMenu">
               <i class="nf nf-fa-bars"/>
             </bbn-context>
-            <span bbn-if="icon"
-                  class="bbn-right-sspace bbn-lg">
-              <bbn-icon :content="currentIcon"/>
-            </span>
+            <bbn-icon bbn-if="currentIcon"
+                      class="bbn-right-sspace bbn-lg"
+                      :content="currentIcon"/>
             <span bbn-text="currentTitle"
                   style="overflow: hidden"/>
           </div>
@@ -49,7 +45,7 @@
           <div bbn-if="isVisible && fullScreen"
               class="bbn-block bbn-p bbn-vmiddle bbn-h-100"
               @click="fullScreen = false">
-            <i class="nf nf-mdi-arrow_collapse bbn-lg"/>
+            <i class="nf nf-md-arrow_collapse bbn-lg"/>
           </div>
           <!-- Icon for closing  -->
           <div bbn-elseif="isVisible && !isPane && !fixed && !pinned && !router?.visualShowAll"
@@ -68,7 +64,7 @@
             ref="canvasSource">
           <!-- This is shown when it's ready -->
           <bbn-scroll bbn-if="ready && isLoaded"
-                      bbn-show="!router?.isVisual || (router?.isVisual && !thumbnail)"
+                      bbn-show="!router?.isVisual || currentSelected || (router?.isVisual && !thumbnail)"
                       ref="scroll"
                       @ready="init"
                       :scrollable="scrollable && router?.scrollContent"
@@ -111,7 +107,7 @@
               <div class="bbn-c">
                 <bbn-button @click="close"
                             icon="nf nf-fa-times"
-                            :text="_('Close')"
+                            :label="_('Close')"
                             class="bbn-state-error"/>
               </div>
             </div>
@@ -120,38 +116,39 @@
           <bbn-loader bbn-elseif="isVisible && (!ready || !isLoaded)"
                       class="bbn-overlay bbn-middle"/>
           <!-- Thumbnail image -->
-          <div bbn-if="!isVisible && visual && thumbnail"
+          <div bbn-if="!isVisible && visual"
               style="overflow: hidden"
               class="bbn-overlay">
             <img :src="thumbnail"
-                 style="width: 100%; max-height: 100%; height: auto">
+                 style="width: 100%; max-height: 100%; height: auto"
+                 bbn-if="thumbnail">
           </div>
           <!-- The container's popup, from which each floater will come -->
           <bbn-popup ref="popup"
                     :source="popups"
                     bbn-if="ready"
-                    bbn-show="!hidden && isLoaded && (isVisible || cached) && popups.length"/>
+                    bbn-show="!invisible && isLoaded && (isVisible || cached) && popups.length"/>
         </div>
       </div>
     </transition>
     <!-- When in visual mode a layer prevents interaction with the content -->
-    <div bbn-if="router?.isVisual && (!isVisible || router?.visualShowAll) && !isPane"
+    <div bbn-if="currentView && router?.isVisual && (!isVisible || router?.visualShowAll) && !isPane"
         class="bbn-overlay"
         style="z-index: 12; background-color: black; opacity: 0.2;">
     </div>
     <!-- When in visual mode this is the interaction layer -->
-    <div bbn-if="router?.isVisual && (!isVisible || router?.visualShowAll)"
-        class="bbn-overlay"
-        @click="router?.activateIndex(currentIndex)"
-        @mouseenter="isOver = true"
-        @mouseleave="isOver = false"
-        style="z-index: 12">
+    <div bbn-if="currentView && router?.isVisual && (!isVisible || router?.visualShowAll)"
+         class="bbn-overlay"
+         @click="onClickVisual"
+         @mouseenter="isOver = true"
+         @mouseleave="isOver = false"
+         style="z-index: 12">
       <transition name="fade">
         <div class="bbn-bottom-left bbn-w-100"
-            bbn-show="isOver"
-            :style="{
+             bbn-show="isOver"
+             :style="{
                 fontSize: isVisible && !router?.visualShowAll ? null : '10rem'
-              }">
+             }">
           <!-- Semi-transparent dark layer these buttons are not used -->
           <div class="bbn-bottom-left bbn-w-100 bbn-bg-black"
                style="opacity: 0.6; color: transparent">
@@ -167,7 +164,7 @@
               </span>
               <span class="bbn-spadding bbn-p"
                     bbn-elseif="pinned">
-                <i class="nf nf-mdi-pin"/>
+                <i class="nf nf-md-pin"/>
               </span>
               <span class="bbn-spadding bbn-p">
                 <i class="nf nf-oct-pin"/>
@@ -199,7 +196,7 @@
               <span class="bbn-spadding bbn-p"
                     @click.stop="unpin"
                     bbn-elseif="pinned && !fixed">
-                <i class="nf nf-mdi-pin_off"/>
+                <i class="nf nf-md-pin_off"/>
               </span>
               &nbsp;
             </div>

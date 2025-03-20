@@ -2,18 +2,16 @@
   <bbn-scroll axis="x" :class="componentClass" ref="scroll">
     <!-- Each tree pane -->
     <div bbn-for="(p, i) in dirs"
-          class="bbn-flex-height bbn-finder-pane bbn-border-right">
+         class="bbn-flex-height bbn-finder-pane bbn-border-right">
 
       <div bbn-if="uploading === p.path"
-          class="bbn-flex-fill" 
-      >
+           class="bbn-flex-fill">
         <div class="bbn-right">
           <bbn-button icon="nf nf-fa-close"
                       @click="uploading = false"
                       :title="_('Cancel upload')"
                       :notext="true"
-                      class="bbn-xs"
-          ></bbn-button>
+                      class="bbn-xs"/>
         </div>
         <bbn-upload bbn-model="uploaded" 
                     ref='upload'
@@ -23,10 +21,9 @@
                     }"
                     :save-url="root + 'actions/finder/upload'"
                     @success="uploadSuccess"
-                    :text="{
+                    :label="{
                       uploadOrDrop: 'Select files or drag & drop it here'
-                    }"
-        ></bbn-upload>
+                    }"/>
       </div>
       <div class="bbn-flex-fill" bbn-else>
         <div class="bbn-overlay">
@@ -36,9 +33,7 @@
                     :menu="itemsContextMenu"
                     :key="'/' + p.path"
                     @load="updateInfo"
-                    @select="select"
-          >
-          </bbn-tree>
+                    @select="select"/>
         </div>
       </div>
       
@@ -51,16 +46,20 @@
                       'bbn-padding': true,
                       'bbn-alt-background': true,
                       'bbn-alt-border-top': true
-                      }"
-        >
+                      }">
           <div class="bbn-grid-fields bbn-finder-info-dirs">
             <div class="bbn-grid-full bbn-l">
-              <bbn-button class="bbn-xs bbn-p" @click="refresh(p.name)" :title="_('Refresh tree')" icon="nf nf-fa-refresh"></bbn-button>
+              <bbn-button class="bbn-xs bbn-p"
+                          @click="refresh(p.name)"
+                          :title="_('Refresh tree')"
+                          icon="nf nf-fa-refresh"/>
               <bbn-context :source="contextMenuTree"
                           :data="{path: p.path}" 
-                          :key="p.path"
-              >
-                <bbn-button class="bbn-xs" @click="context" :title="_('New Folder/Add files to this folder')" icon="nf nf-fa-plus"></bbn-button>
+                          :key="p.path">
+                <bbn-button class="bbn-xs"
+                            @click="context"
+                            :title="_('New Folder/Add files to this folder')"
+                            icon="nf nf-fa-plus"/>
               </bbn-context>
             </div>
             <div bbn-text="_('Number of childs')" bbn-if="p.num_dirs || p.num_files"></div>
@@ -74,20 +73,20 @@
 
             <div bbn-text="_('Size')"></div>
             <div bbn-if="!p.size">
-              <bbn-button icon="nf nf-mdi-scale"
+              <bbn-button icon="nf nf-md-scale"
                           class="bbn-xs"
                           @click="get_size(p)" 
-                          :title="_('Get dir size')"
-              ></bbn-button>         
+                          :title="_('Get dir size')"/>
             </div>
-            <span bbn-text="p.size" bbn-else style="text-align:right!important"></span>
+            <span bbn-text="p.size"
+                  bbn-else
+                  style="text-align:right!important"/>
 
             <div class="bbn-grid-full bbn-c" bbn-if="isLoading && (i === (numCols - 1))">
               <bbn-button icon="nf nf-fa-hand_paper" 
                           @click="abortRequest(i)"
-                          :text="_('Abort request')"
-                          :title="_('Cancel the current request')"
-              ></bbn-button>               
+                          :label="_('Abort request')"
+                          :title="_('Cancel the current request')"/>
             </div>
           </div>
         </div>          
@@ -95,43 +94,43 @@
     </div>
     <!-- File detail / Image preview -->
     <div bbn-if="preview && currentFile"               
-          class="bbn-finder-info-file-container bbn-flex-height"
-    >
+          class="bbn-finder-info-file-container bbn-flex-height">
       <div class="bbn-grid-fields bbn-header bbn-widget bbn-spadding">
-        <span bbn-text="_('Filename')"></span>
-        <span bbn-text="currentFile ? currentFile.node.data.value : ''"></span>
-        <span bbn-if="currentFile.info && currentFile.info.size" bbn-text="_('Size')"></span>
-        <span bbn-text="(currentFile.info && currentFile.info.size) ? currentFile.info.size : ''"></span>
-        <span bbn-if="(currentFile.info && currentFile.info.width)" bbn-text="_('Width')"></span>
-        <span bbn-if="(currentFile.info && currentFile.info.width)" bbn-text="currentFile.info.width + 'px'"></span>
-        <span bbn-if="(currentFile.info && currentFile.info.height)" bbn-text="_('Height')"></span>
-        <span bbn-if="(currentFile.info && currentFile.info.height)" bbn-text="currentFile.info.height + 'px'"></span>
+        <span bbn-text="_('Filename')"/>
+        <span bbn-text="currentFile ? currentFile.node.data.value : ''"/>
+        <span bbn-if="currentFile.info && currentFile.info.size"
+              bbn-text="_('Size')"/>
+        <span bbn-text="(currentFile.info && currentFile.info.size) ? currentFile.info.size : ''"/>
+        <span bbn-if="(currentFile.info && currentFile.info.width)"
+              bbn-text="_('Width')"/>
+        <span bbn-if="(currentFile.info && currentFile.info.width)"
+              bbn-text="currentFile.info.width + 'px'"/>
+        <span bbn-if="(currentFile.info && currentFile.info.height)"
+              bbn-text="_('Height')"/>
+        <span bbn-if="(currentFile.info && currentFile.info.height)"
+              bbn-text="currentFile.info.height + 'px'"/>
         <!--span bbn-if="currentFile.info && currentFile.info.creation" bbn-text="_('Creation')"></span>
         <span-- bbn-text="(currentFile.info && currentFile.info.creation) ? currentFile.info.creation : ''"></span-->
-        <span bbn-if="currentFile.info && currentFile.info.mtime" bbn-text="_('Last modification')"></span>
-        <span bbn-text="(currentFile.info && currentFile.info.mtime) ? currentFile.info.mtime : ''"></span>
+        <span bbn-if="currentFile.info && currentFile.info.mtime"
+              bbn-text="_('Last modification')"/>
+        <span bbn-text="(currentFile.info && currentFile.info.mtime) ? currentFile.info.mtime : ''"/>
         <div class="bbn-grid-full bbn-right">
           <bbn-button icon="nf nf-fa-hand_paper_o"
                       @click="abortRequest('file')"
-                      :text="_('Abort request')"
+                      :label="_('Abort request')"
                       :title="_('Cancel the current request')"
-                      bbn-if="isLoading"
-                        
-          ></bbn-button>
+                      bbn-if="isLoading"/>
           <bbn-button icon="nf nf-fa-close"
                       @click="closePreview"
                       :title="_('Close preview')"
-                      :notext="true"
-          ></bbn-button>
+                      :notext="true"/>
         </div>
       </div>
       <bbn-code class="bbn-flex-fill" 
                 bbn-if="currentFile.info && currentFile.info.content && !isImage && !isLoading"
-                :value="currentFile.info.content"
-      ></bbn-code>
+                :value="currentFile.info.content"/>
       <div bbn-elseif="isImage && !isLoading" 
-            class="bbn-flex-fill bbn-c bbn-padding"
-      >
+            class="bbn-flex-fill bbn-c bbn-padding">
         <!--need of origin for the filesystem to recognize the environment-->
         <img :src="root + 'actions/finder/image/' +  encodedURL + '/' + origin" style="max-width:80%">
       </div>
@@ -141,9 +140,8 @@
       </div>
       <div bbn-elseif="isLoading" 
             class="bbn-padding bbn-medium bbn-b"
-            bbn-text="_('Loading file infos..')">
-      </div>
+            bbn-text="_('Loading file infos..')"/>
     </div>
   </bbn-scroll>
-  <bbn-popup ref="popup"></bbn-popup>
+  <bbn-popup ref="popup"/>
 </div>

@@ -6,8 +6,8 @@
 		'bbn-invisible' : (type === 'hidden'),
     'bbn-input-nullable': isNullable
 	}]"
-	:style="(currentSize !== '') ? 'width:' + currentSize : '' "
->
+  tabindex="-1"
+	:style="(currentSize !== '') ? 'width:' + currentSize : '' ">
   <div :class="{
     'bbn-w-100': (!buttonLeft && !buttonRight && !nullable),
     'bbn-flex-width' : (buttonLeft || buttonRight || nullable)
@@ -21,8 +21,7 @@
             'bbn-no-vborder',
             'bbn-m',
             {'bbn-invisible' : autoHideLeft}
-          ]"
-    ></bbn-button>
+          ]"/>
     <input :value="value"
           :type="currentType"
           :name="name"
@@ -34,22 +33,21 @@
           :autocomplete="currentAutocomplete"
           :pattern="currentPattern"
           @input="emitInput($refs.element.value)"
-          @click="click"
+          @click="onClick"
           @paste="$emit('paste', $event)"
-          @focus="focus"
-          @blur="blur"
-          @change="change"
-          @keydown="keydown"
-          @keyup="keyup"
+          @focus="onFocus"
+          @blur="onBlur"
+          @change="onChange"
+          @keydown="onKeydown"
+          @keyup="onKeyup"
           @mouseenter="over"
           @mouseleave="out"
-          :tabindex="tabindex"
+          :tabindex="currentTabIndex"
           :class="{'bbn-flex-fill' : (buttonLeft || buttonRight || isNullable)}"
           :size="currentInputSize"
-          :inputmode="inputmode"
+          :inputmode="$el.inputmode"
           :min="min"
-          :max="max"
-    >
+          :max="max">
     <bbn-loadicon bbn-if="loading"></bbn-loadicon>
     <div bbn-elseif="isNullable && hasValue && !readonly && !disabled"
          class="bbn-block bbn-h-100 bbn-input-nullable-container">
@@ -65,6 +63,6 @@
                   'bbn-no-vborder',
                   'bbn-m',
                   {'bbn-invisible' : autoHideRight}
-                ]"
-    ></bbn-button></div>
+                ]"/>
+  </div>
 </div>

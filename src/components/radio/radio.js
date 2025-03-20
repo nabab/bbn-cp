@@ -47,7 +47,7 @@ const cpDef = {
      * The id of the radio input.
      * @prop {String} [bbn.fn.randomString(10, 25)]  id
      */
-    id: {
+    uid: {
       type: String,
       default(){
         return bbn.fn.randomString(10, 25);

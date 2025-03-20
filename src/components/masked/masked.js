@@ -388,7 +388,9 @@ const cpDef = {
         this.writeInputValue(!value && !this.isFocused ? '' : this.getInputValue(value));
         if (changePos) {
           setTimeout(() => {
-            this.getRef('element').setSelectionRange(this.currentPos, this.currentPos);
+            if (this.getRef('element')) {
+              this.getRef('element').setSelectionRange(this.currentPos, this.currentPos);
+            }
           }, 0);
         }
         else {
@@ -558,6 +560,7 @@ const cpDef = {
             // Not special key and not valid char
             if (!this.isSpecialKey(event.keyCode)
               && !event.metaKey
+              && !isSelection
               && (!this.isValidChar(event.key, this.currentPos)
                 || (ele.value.charAt(this.currentPos) !== this.promptChar))
             ) {
@@ -608,14 +611,30 @@ const cpDef = {
             else if (!this.isSpecialKey(event.keyCode)
               && !event.metaKey
             ) {
+              if (isSelection) {
+                this.currentPos = ele.selectionStart;
+                let afterPos = ele.selectionStart;
+                value = ele.value;
+                while (this.currentPos < (ele.selectionEnd)) {
+                  let i = this.getPos(this.currentPos);
+                  value = value.slice(0, i) + this.promptChar + value.slice(i + 1);
+                  this.currentPos++;
+                }
+
+                this.writeInputValue(value);
+                ele.setSelectionRange(afterPos, afterPos);
+                this.currentPos = afterPos;
+              }
+
               this.writeInputValue(ele.value.slice(0, this.currentPos) + ele.value.slice(this.currentPos + 1));
               ele.setSelectionRange(this.currentPos, this.currentPos);
             }
           }
 
-          this.keydown(event);
+          this.onKeydown(event);
         }
         else {
+          bbn.fn.log("preventin")
           event.preventDefault();
         }
       },
@@ -650,7 +669,7 @@ const cpDef = {
             ele.setSelectionRange(this.currentPos, this.currentPos);
           }
 
-          this.keyup(event);
+          this.onKeyup(event);
         }
       },
       /**
@@ -683,7 +702,7 @@ const cpDef = {
        */
       blurEvent(event){
         if (!this.isDisabled && !this.readonly) {
-          this.blur(event)
+          this.onBlur(event)
         }
 
         if (!this.value && this.inputValue?.length) {
@@ -705,7 +724,7 @@ const cpDef = {
        */
       focusEvent(event){
         if (!this.isDisabled && !this.readonly) {
-          this.focus(event);
+          this.onFocus(event);
           this.currentPos = this.getPos(this.getRef('element').selectionStart);
           let changePos = true;
           if (!this.value) {

@@ -28,10 +28,10 @@ const cpDef = {
       },
       /**
        * The alternative component for the toolbar.
-       * @prop {bbnCp|(Object|Boolean)} toolbar
+       * @prop {HTMLElement|(Object|Boolean)} toolbar
        */
       toolbar: {
-        type: [bbnCp, Object, Boolean],
+        type: [HTMLElement, Object, Boolean],
         default: true
       },
       /**
@@ -194,10 +194,10 @@ const cpDef = {
       },
       /**
        * The item component
-       * @prop {(String|Object|bbnCp)} itemComponent
+       * @prop {(String|Object|HTMLElement)} itemComponent
        */
       itemComponent: {
-        type: [String, Object, bbnCp]
+        type: [String, Object, HTMLElement]
       },
       /**
        * The context menu source of every image
@@ -208,10 +208,10 @@ const cpDef = {
       },
       /**
        * The component used by the context menu items
-       * @prop {(String|Object|bbnCp)} contextComponent
+       * @prop {(String|Object|HTMLElement)} contextComponent
        */
       buttonMenuComponent: {
-        type: [String, Object, bbnCp]
+        type: [String, Object, HTMLElement]
       },
       /**
        * Enables the resize possibility
@@ -478,7 +478,7 @@ const cpDef = {
         name: 'column',
         template: `
 <div :style="colStyle">
-  <component :is="gallery.itemComponent || 'item'"
+  <component :is="gallery.itemComponent || $options.components.item"
              bbn-for="(item, idx) in source"
              :source="item"
              :key="'item-' + index + '-' + idx"/>
@@ -564,10 +564,10 @@ const cpDef = {
          }"
          :style="imgStyle"
          :alt="(source.caption ? source.caption + ' - ' : '') + (source.text ? source.text + ' - ' : '') + (source.tags || []).join(' | ')"
-         :draggable="!col.gallery.isSorting">
+         :drag="!col.gallery.isSorting">
     <bbn-loadicon class="bbn-gallery-item-loading bbn-c"
                   bbn-if="!loaded && !error"/>
-    <i bbn-elseif="error && !loaded" class="bbn-red nf nf-mdi-image_off"/>
+    <i bbn-elseif="error && !loaded" class="bbn-red nf nf-md-image_off"/>
     <span bbn-if="showOverlay && loaded"
           class="bbn-gallery-overlay bbn-widget bbn-ellipsis bbn-radius-bottom bbn-hxspadding"
           bbn-text="source.data[col.gallery.overlayName]"
@@ -587,7 +587,7 @@ const cpDef = {
                  @hook:mounted="buttonMenuElement = getRef('itemMenu') || ''"
                  ref="menuButton">
         <div class="bbn-block">
-          <i class="bbn-gallery-button-menu nf nf-mdi-menu"
+          <i class="bbn-gallery-button-menu nf nf-md-menu"
              ref="itemMenu"/>
         </div>
     </bbn-context>
@@ -629,7 +629,7 @@ const cpDef = {
                * The parent component 'column'.
                * @computed col
                * @memberof item
-               * @return {bbnCp}
+               * @return {HTMLElement}
                */
               col() {
                 return this.$parent;
@@ -882,7 +882,7 @@ const cpDef = {
            * @computed gallery
            * @memberof selected
            * @fires closest
-           * @return {bbnCp}
+           * @return {HTMLElement}
            */
           gallery() {
             return this.closest('bbn-gallery');

@@ -1,12 +1,12 @@
-import bbnData from "../../Data.js";
+import bbnData from "../Data.js";
 
 /**
  * 
- * @param {bbnCp} component 
+ * @param {HTMLElement} component 
  * @returns 
  */
 bbnData.prototype.hasComponent = function(component, path) {
-  if (!(component instanceof bbnCp)) {
+  if (!(component instanceof HTMLElement)) {
     throw new Error("bbnData hasComponent must be called with a bbn component");
   }
 

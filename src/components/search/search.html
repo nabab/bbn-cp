@@ -14,21 +14,20 @@
     <div bbn-if="sourceIcon && hasValue && !!currentItemIcon"
          class="bbn-left-xspadding">
       <i :class="currentItemIcon"
-         @click.stop="click" />
+         @click.stop="onClick" />
     </div>
     <div bbn-if="sourceImg && hasValue && !!currentItemImg"
          class="bbn-left-xspadding">
       <img :src="currentItemImg"
-           @click.stop="click">
+           @click.stop="onClick">
     </div>
-    <bbn-input :tabindex="0"
-               class="bbn-no-border bbn-i"
+    <bbn-input class="bbn-no-border bbn-i"
                bbn-model="filterString"
                ref="input"
                @focus="selectText"
                @blur="inputIsVisible = false"
                autocomplete="off"
-               @keydown.stop="keydown"
+               @keydown.stop="onKeydown"
                @change="onChange"
                :autosize="autosize"
                autocorrect="off"
@@ -38,6 +37,7 @@
                :button-right-disabled="!filteredData.length"
                :action-right="() => {isOpened = !isOpened}"
                :nullable="true"
+               :tabindex="currentTabIndex"
                :placeholder="placeholder"/>
   </div>
   <bbn-floater bbn-if="!popup
@@ -53,12 +53,12 @@
               :width="asMobile ? '100%' : undefined"
               :height="asMobile ? '100%' : undefined"
               ref="list"
-              :children="null"
+              :source-items="null"
               :source-value="sourceValue"
               :source-text="sourceText"
               :source-url="sourceUrl"
               :source-icon="sourceIcon"
-              :title="floaterTitle"
+              :label="floaterTitle"
               :buttons="asMobile ? realButtons : []"
               :item-component="realComponent"
               @mouseenter="isOverDropdown = true"

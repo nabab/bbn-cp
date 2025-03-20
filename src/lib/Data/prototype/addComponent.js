@@ -1,8 +1,8 @@
-import bbnData from "../../Data.js";
+import bbnData from "../Data.js";
 
 /**
  * Adds a component to the original bbnData object linked to it
- * @param {bbnCp} component 
+ * @param {HTMLElement} component 
  * @param {bbnAttr|String} path 
  * @returns {Boolean}
  */
@@ -70,7 +70,7 @@ const example = {
 
 
 bbnData.prototype.addComponent = function(component, path, parent) {
-  if (!(component instanceof bbnCp)) {
+  if (!(component instanceof HTMLElement)) {
     throw new Error(bbn._("bbnData hasComponent must be called with a bbn component"));
   }
 
@@ -95,10 +95,20 @@ bbnData.prototype.addComponent = function(component, path, parent) {
     b => (b.component === component) && (b.path === path)
   ).length
   ) {
-    this.refs.unshift({
-      component,
-      path,
-      parent: parent || null
-    });
+    let idx = parent?.isArray ? bbn.fn.search(this.refs, b => (b.component === component) && (b.parent === parent)) : -1;
+    if (this.refs[idx]) {
+      this.refs.splice(idx, 1, {
+        component,
+        path,
+        parent: parent || null
+      });
+    }
+    else {
+      this.refs.unshift({
+        component,
+        path,
+        parent: parent || null
+      });
+    }
   }
 };

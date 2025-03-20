@@ -33,7 +33,7 @@ const cpDef = {
         view: `<div @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"
                     :class="['component-container', 'bbn-block-html', alignClass]"
                     bbn-html="source.content"
-                    :style="style">
+                    :style="currentStyle">
   
               </div>`,
         edit: `<div :class="['component-container', 'bbn-block-html', alignClass ]">
@@ -42,12 +42,12 @@ const cpDef = {
               </div>`
       },
       title: {
-        view: `<div @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"  :class="['component-container', 'bbn-block-title', {'has-hr': source.hr}, alignClass]":style="style">
+        view: `<div @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"  :class="['component-container', 'bbn-block-title', {'has-hr': source.hr}, alignClass]":style="currentStyle">
                 <hr bbn-if="source.hr">
                 <component :is="cpHTML(source.tag, 'title')" :source="source"></component>
                 <hr bbn-if="source.hr">
                 </div>`,
-        edit: `<div :class="['component-container','bbn-cms-block-edit' ,'bbn-block-title', 'bbn-flex-height', {'has-hr': source.hr}, alignClass]" :style="style">
+        edit: `<div :class="['component-container','bbn-cms-block-edit' ,'bbn-block-title', 'bbn-flex-height', {'has-hr': source.hr}, alignClass]" :style="currentStyle">
                 <div class="edit-title bbn-w-100">
                   <hr bbn-show="source.hr"><component :is="cpHTML(source.tag,'title')" :source="source"></component><hr bbn-if="source.hr">
                 </div>
@@ -77,13 +77,13 @@ const cpDef = {
           <a bbn-if="source.href" target="_self" :href="$parent.linkURL + source.href" class="bbn-c">
             <img :src="$parent.path + source.src"
                   style="heigth:500px;width:100%"
-                  :style="style"
+                  :style="currentStyle"
                   :alt="source.alt ? source.alt : ''"
             >
           </a>
           <img bbn-else
                 :src="$parent.path + source.src"
-                :style="style"
+                :style="currentStyle"
                 :alt="source.alt ? source.alt : ''"
           >
           <p class="image-caption bbn-l bbn-s bbn-vsmargin"
@@ -128,14 +128,14 @@ const cpDef = {
               <bbn-block-align-buttons></bbn-block-align-buttons>
             </div>
           </div>
-          <img :src="$parent.path + source.src" :style="style">
+          <img :src="$parent.path + source.src" :style="currentStyle">
           <p class="image-caption bbn-l bbn-s bbn-vsmargin" bbn-if="source.caption" bbn-html="source.caption"></p>
         </div>
                   `
       },
       carousel: {
         view: `
-        <div :class="['component-container', 'bbn-block-carousel', 'bbn-w-100',  alignClass]" :style="style" bbn-if="show">
+        <div :class="['component-container', 'bbn-block-carousel', 'bbn-w-100',  alignClass]" :style="currentStyle" bbn-if="show">
           <div bbn-for="(group, idx) in carouselSource"
                 bbn-if="idx === currentCarouselIdx"
           >
@@ -153,13 +153,13 @@ const cpDef = {
       },
       gallery: {
         view: `
-        <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="style" bbn-if="show">
+        <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="currentStyle" bbn-if="show">
           <bbn-cms-block-gallery-item bbn-for="(image, idx) in source.source" :source="image" :key="idx" :index="idx"></bbn-cms-block-gallery-item>
         </div>
         `,
         edit: `
         <div>
-          <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="style" bbn-if="show">
+          <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="currentStyle" bbn-if="show">
             <!-- GIVE HREF TO VIEW FULL IMAGE -->
             <bbn-cms-block-gallery-item bbn-for="(image, idx) in source.content" :source="image" :key="idx" :index="idx"></bbn-cms-block-gallery-item>
           </div>
@@ -189,7 +189,7 @@ const cpDef = {
           <div :class="['component-container', 'bbn-cms-block-video', alignClass]">
             <!--ERROR ON HOME-->
             <!--bbn-video :width="source.width"
-                        :style="style"
+                        :style="currentStyle"
                         :height="source.height"
                         :autoplay="autoplay"
                         :muted="muted"
@@ -197,7 +197,7 @@ const cpDef = {
                         :source="source.src"
             ></bbn-video-->
             <iframe
-                    :style="style"
+                    :style="currentStyle"
   
                     :autoplay="false"
   
@@ -214,18 +214,14 @@ const cpDef = {
               <bbn-button :notext="true"
                           :title="_('Mute the video')"
                           @click="muted = !muted"
-                          :icon="muted ? 'nf nf-oct-mute' : 'nf nf-oct-unmute'"
-              >
-              </bbn-button>
+                          :icon="muted ? 'nf nf-oct-mute' : 'nf nf-oct-unmute'"/>
             </div>
             <label>Autoplay</label>
             <div>
               <bbn-button :notext="true"
                           :title="_('Autoplay')"
                           @click="autoplay = !autoplay"
-                          :icon="autoplay ? 'nf nf-fa-pause' : 'nf nf-fa-play'"
-              >
-              </bbn-button>
+                          :icon="autoplay ? 'nf nf-fa-pause' : 'nf nf-fa-play'"/>
             </div>
             <label>Video alignment</label>
             <bbn-block-align-buttons></bbn-block-align-buttons>
@@ -235,8 +231,7 @@ const cpDef = {
                           :min="100"
                           :max="1000"
                           :step="10"
-                          class="bbn-w-70"
-              ></bbn-cursor>
+                          class="bbn-w-70"/>
             </div>
             <label>Video height</label>
             <div>
@@ -244,19 +239,17 @@ const cpDef = {
                           :min="100"
                           :max="1000"
                           :step="10"
-                          class="bbn-w-70"
-              ></bbn-cursor>
+                          class="bbn-w-70"/>
             </div>
           </div>
           <div :class="alignClass">
             <bbn-video :width="source.style.width"
-                      :style="style"
+                      :style="currentStyle"
                       :height="source.style.height"
                       :autoplay="autoplay"
                       :muted="muted"
                       :youtube="youtube"
-                      :source="source.content"
-            ></bbn-video>
+                      :source="source.content"/>
           </div>
         </div>
         `
@@ -264,7 +257,7 @@ const cpDef = {
       line: {
         view: `<div class="component-container"><hr :style="style"></div>`,
         edit: `<div class="block-line-edit component-container">
-                <hr :style="style">
+                <hr :style="currentStyle">
                 <div class="block-line-edit-command bbn-padding">
                   <div class="bbn-grid-fields bbn-vspadding">
                     <label>Line width</label>
@@ -272,22 +265,19 @@ const cpDef = {
                       <bbn-cursor bbn-model="source.style['width']"
                                   :min="0"
                                   :max="100"
-                                  unit="%"
-                      ></bbn-cursor>
+                                  unit="%"/>
                     </div>
                     <label>Line height</label>
                     <div>
                       <bbn-cursor bbn-model="source.style['border-width']"
                                   :min="1"
                                   :max="10"
-                                  unit="px"
-                      ></bbn-cursor>
+                                  unit="px"/>
                     </div>
                     <label>Line style</label>
                     <div>
                       <bbn-dropdown bbn-model="source.style['border-style']"
-                                    :source="borderStyle"
-                      ></bbn-dropdown>
+                                    :source="borderStyle"/>
                     </div>
   
                     <label>Line color</label>
@@ -302,17 +292,16 @@ const cpDef = {
                 </div>`
       },
       space: {
-        view: `<div class="component-container" :style="style">
+        view: `<div class="component-container" :style="currentStyle">
                 <div class="block-space-view"></div>
               </div>`,
         edit: `
-            <div class="component-container" :style="style">
-              <div :style="style" class="block-space-edit">
+            <div class="component-container" :style="currentStyle">
+              <div :style="currentStyle" class="block-space-edit">
                 <bbn-cursor bbn-model="source.style.height"
                             unit="px"
                             :min="0"
-                            :step="50"
-                ></bbn-cursor>
+                            :step="50"/>
               </div>
             </div>`
       },
@@ -339,7 +328,7 @@ const cpDef = {
      * The audio's title
      * @prop {String} [''] title
      */
-    title: {
+    label: {
       type: String,
       default: ''
     },
@@ -574,9 +563,9 @@ const cpDef = {
         props: {
           source: {},
         },
-        template: this.edit ? bbnCmsBlockCp.templates[type]['edit'] : bbnCmsBlockCp.templates[type]['view'],
+        template: this.edit ? bbnCmsBlock.templates[type]['edit'] : bbnCmsBlock.templates[type]['view'],
         data(){
-          let tmp = Object.keys(bbnCmsBlockCp.titleTemplates).map((a)=>{return a = {text:a, value:a}});
+          let tmp = Object.keys(bbnCmsBlock.titleTemplates).map((a)=>{return a = {text:a, value:a}});
           return {
             //cp video
             muted: true,
@@ -585,7 +574,7 @@ const cpDef = {
             tags: tmp,
             image: [],
             tinyNumbers: [{text: '1', value: 1}, {text: '2', value: 2},{text: '3', value: 3},{text: '4', value: 4}],
-            borderStyle: bbnCmsBlockCp.borderStyle,
+            borderStyle: bbnCmsBlock.borderStyle,
             ref: (new Date()).getTime(),
             show: true,
             currentCarouselIdx: 0
@@ -674,7 +663,7 @@ const cpDef = {
             }
             return st;
           },
-          style(){
+          currentStyle(){
             let st = '';
             if ( this.source.style ){
               if ( this.source.style['color'] ){
@@ -781,7 +770,7 @@ const cpDef = {
           cpHTML(tag, type){
             return {
               props: ['source'],
-              template: (type === 'title') ? bbnCmsBlockCp.titleTemplates[tag] : bbnCmsBlockCp.htmlTemplates[tag],
+              template: (type === 'title') ? bbnCmsBlock.titleTemplates[tag] : bbnCmsBlock.htmlTemplates[tag],
             }
           },
           /** @todo Seriously these arguments names??  */
@@ -904,19 +893,17 @@ const cpDef = {
                           :title="_('Align left')"
                           :notext="true"
                           @click="align = 'left'"
-                          :class="{'bbn-state-active': ($parent.source.align === 'left')}"
-              ></bbn-button>
-              <bbn-button icon="nf nf-fa-align_center" :title="_('Align left')"
+                          :class="{'bbn-state-active': ($parent.source.align === 'left')}"/>
+              <bbn-button icon="nf nf-fa-align_center"
+                          :title="_('Align left')"
                           :notext="true"
                           @click="align = 'center'"
-                          :class="{'bbn-state-active': ($parent.source.align === 'center')}"
-              ></bbn-button>
+                          :class="{'bbn-state-active': ($parent.source.align === 'center')}"/>
               <bbn-button icon="nf nf-fa-align_right"
                           :title="_('Align left')"
                           :notext="true"
                           @click="align = 'right'"
-                          :class="{'bbn-state-active': ($parent.source.align === 'right')}"
-              ></bbn-button>
+                          :class="{'bbn-state-active': ($parent.source.align === 'right')}"/>
             </div>`,
             data(){
               return {

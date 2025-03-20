@@ -1,5 +1,7 @@
-<div :class="[componentClass, 'bbn-reset']">
+<div :class="[componentClass, 'bbn-reset']"
+     tabindex="-1">
   <div ref="element"
        class="bbn-100"
+       :tabindex="currentTabIndex"
        @keydown="onKeyDown"/>
 </div>

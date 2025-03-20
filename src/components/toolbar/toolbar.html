@@ -1,34 +1,42 @@
 <div :class="['bbn-header', 'bbn-unselectable', componentClass, {
-        'bbn-w-100 bbn-vmiddle': (orientation === 'horizontal'),
-        'bbn-h-100': (orientation === 'vertical')
+        'bbn-flex': (orientation === 'horizontal'),
+        'bbn-block bbn-h-100': (orientation === 'vertical')
       }]"
-     :style="style">
+     :style="currentStyle">
   <fieldset :class="['bbn-toolbar-fieldset', 'bbn-no-border', 'bbn-no-radius', 'bbn-no-margin', 'bbn-no-padding', {
-              'bbn-w-100': (orientation === 'horizontal'),
-              'bbn-h-100': (orientation === 'vertical'),
               'bbn-flex-width': (orientation === 'horizontal'),
               'bbn-flex-height': (orientation === 'vertical'),
-              'bbn-vmiddle': (orientation === 'horizontal')
             }]"
             :disabled="disabled">
-    <slot bbn-if="slotBefore"></slot>
-    <div class="bbn-toolbar-flex">
-      <template bbn-for="(s, i) in source">
-        <component bbn-if="!s.end && s.component"
-                  :is="s.component"
-                  bbn-bind="s.options"
-                  :key="'item' + i"/>
+    <div bbn-if="slotBefore && $hasSlots()"
+         :class="['bbn-flex-fill', 'bbn-vmiddle', {
+          'bbn-flex-width': (orientation === 'horizontal'),
+          'bbn-flex-height': (orientation === 'vertical')
+         }]">
+      <slot/>
+    </div>
+    <div bbn-if="hasElementInStart"
+          :class="['bbn-flex-fill', {
+            'bbn-flex-width': (orientation === 'horizontal'),
+            'bbn-flex-height': (orientation === 'vertical'),
+            'bbn-vmiddle': (orientation === 'horizontai'),
+            'bbn-hmiddle': (orientation === 'vertical'),
+          }]">
+      <div bbn-for="(s, i) in source">
+        <div bbn-if="!s.end && s.component">
+          <component :is="s.component"
+                     bbn-bind="s.options"/>
+        </div>
         <div bbn-elseif="!s.end && (s.content !== undefined)"
-            class="bbn-block bbn-spadding"
-            bbn-html="s.content"
-            :key="'item' + i"
-            :ref="'item' + i"/>
-        <bbn-button bbn-elseif="!s.end && ((s.url || s.action || s.items) && (s.text || s.icon))"
+             class="bbn-block bbn-spadding"
+             bbn-html="s.content"
+             :key="'item' + i"
+             :ref="'item' + i"/>
+        <bbn-button bbn-elseif="!s.end && ((s.url || s.action || s.items) && (s.label || s.icon))"
                     bbn-bind="s"
                     :class="{
                       'bbn-hxsmargin': buttonSpace
                     }"
-                    @click.prevent="clickButton(s)"
                     :key="'item' + i"
                     :ref="'item' + i"/>
         <div bbn-elseif="!s.end"
@@ -37,14 +45,21 @@
         <bbn-floater bbn-if="s.items && $refs['item' + i]"
                     :source="items"
                     :element="'item' + i"/>
-      </template>
+      </div>
     </div>
-    <div class="bbn-block bbn-nowrap">
-      <template bbn-for="(s, i) in source">
-        <component bbn-if="s.end && s.component"
-                  :is="s.component"
-                  bbn-bind="s.options"
-                  :key="'item' + i"/>
+    <div bbn-if="hasElementInEnd"
+          :class="['bbn-flex-fill', {
+            'bbn-flex-width': (orientation === 'horizontal'),
+            'bbn-flex-height': (orientation === 'vertical'),
+            'bbn-vmiddle': (orientation === 'horizontai'),
+            'bbn-hmiddle': (orientation === 'vertical'),
+          }]">
+      <div bbn-for="(s, i) in source">
+        <div bbn-if="s.end && s.component">
+          <component :is="s.component"
+                      bbn-bind="s.options"
+                      :key="'item' + i"/>
+        </div>
         <div bbn-elseif="s.end && (s.content !== undefined)"
             class="bbn-block bbn-spadding"
             bbn-html="s.content"
@@ -62,9 +77,17 @@
         <bbn-floater bbn-if="s.items && $refs['item' + i]"
                     :source="items"
                     :element="'item' + i"/>
-      </template>
+      </div>
     </div>
-    <slot bbn-if="!slotBefore"/>
+    <div bbn-if="!slotBefore && $hasSlots()"
+        :class="['bbn-flex-fill', {
+          'bbn-flex-width': (orientation === 'horizontal'),
+          'bbn-flex-height': (orientation === 'vertical'),
+          'bbn-vmiddle': (orientation === 'horizontai'),
+          'bbn-hmiddle': (orientation === 'vertical'),
+        }]">
+      <slot/>
+    </div>
     <div class="bbn-right">
       <slot name="right"/>
     </div>

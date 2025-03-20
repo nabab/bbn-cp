@@ -1,53 +1,66 @@
-<div :class="[componentClass, 'bbn-background']" :style="componentStyle">
-  <div :class="isHorizontal ? 'bbn-flex-width bbn-h-100' : 'bbn-flex-height bbn-w-100'"
-       bbn-if="splitter">
-    <div bbn-if="currentConfig.index && (isCollapsible || (isResizable && prevResizable))"
+<div :class="[componentClass, 'bbn-background']"
+     :style="componentStyle">
+  <div bbn-if="splitter"
+       :class="isHorizontal ? 'bbn-flex-width bbn-h-100' : 'bbn-flex-height bbn-w-100'">
+    <div bbn-if="currentConfig.index && ((isCollapsible && prevCollapsible) || (isResizable && prevResizable))"
          :class="[
             'bbn-unselectable',
             'bbn-middle',
-            'bbn-splitter-bar',
+            'bbn-pane-bar',
             'bbn-light',
             'bbn-header',
             splitter.currentOrientation,
-            {'bbn-splitter-resizer': !!prevResizable},
-            splitter.realResizerClass(currentConfig)
+            {'bbn-pane-resizer': !!prevResizable},
+            splitter.realResizerClass(currentConfig),
+            'bbn-s'
           ]"
           ref="resizer"
-          :style="{
-              [isHorizontal ? 'width' : 'height']: '1rem',
-            }"
-          @mousedown.prevent.stop="splitter.resizeStart($event, this)"
-          @touchstart.passive="splitter.resizeStart($event, this)"/>
+          :style="resizerStyle"
+         bbn-draggable="true"
+         @dragstart.prevent.stop="splitter.resizeStart($event, this)">
+      <div class="bbn-pane-collapser bbn-middle">
+        <i bbn-if="isTopLeftFullCollapseVisible"
+           :class="['bbn-p', {'nf nf-fa-angles_left': isHorizontal, 'nf nf-fa-angles_up': !isHorizontal}]"
+           @click="topLeftFullCollapse"/>
+        <i bbn-if="isTopLeftCollapseVisible"
+           :class="['bbn-p', {'nf nf-fa-angle_left': isHorizontal, 'nf nf-fa-angle_up': !isHorizontal}]"
+           @click="topLeftCollapse"/>
+        <i bbn-if="isBottomRightCollapseVisible"
+           :class="['bbn-p', {'nf nf-fa-angle_right': isHorizontal, 'nf nf-fa-angle_down': !isHorizontal}]"
+           @click="bottomRightCollapse"/>
+        <i bbn-if="isBottomRightFullCollapseVisible"
+           :class="['bbn-p', {'nf nf-fa-angles_right': isHorizontal, 'nf nf-fa-angles_down': !isHorizontal}]"
+           @click="bottomRightFullCollapse"/>
+      </div>
+    </div>
     <div :class="{
-      'bbn-flex-fill': splitter.fullSize && !isCollapsed,
-      'bbn-w-100': ((isCollapsed && title) || !splitter.fullSize) && ((splitter.panes.length === 1) || !isHorizontal),
-      'bbn-h-100': ((isCollapsed && title) || !splitter.fullSize) && (splitter.panes.length > 1) && isHorizontal,
-      'bbn-flex-height': splitter.fullSize && title && !isHorizontal && !isCollapsed,
-      'bbn-flex-width': splitter.fullSize && title && isHorizontal && !isCollapsed
-    }"
-        bbn-forget="!title">
-      <div bbn-if="title" 
-          :class="['bbn-light bbn-c bbn-header bbn-block bbn-pane-title bbn-m bbn-spadding', {
+          'bbn-flex-fill': splitter.fullSize && !isCollapsed,
+          'bbn-w-100': ((isCollapsed && label) || !splitter.fullSize) && ((splitter.panes.length === 1) || !isHorizontal),
+          'bbn-h-100': ((isCollapsed && label) || !splitter.fullSize) && (splitter.panes.length > 1) && isHorizontal,
+          'bbn-flex-height': splitter.fullSize && label && !isHorizontal && !isCollapsed,
+          'bbn-flex-width': splitter.fullSize && label && isHorizontal && !isCollapsed
+        }"
+        bbn-forget="!label">
+      <div bbn-if="label"
+           :class="['bbn-light bbn-c bbn-header bbn-block bbn-pane-title bbn-m bbn-spadding', {
             'bbn-w-100': !isHorizontal,
             'bbn-h-100': isHorizontal
-          }]"
-          :style="{
-            writingMode: isHorizontal ? 'vertical-rl' : null,
-            textOrientation: isHorizontal ? 'upright' : null,
-          }"
-          bbn-html="title"/>
-      <div :class="{
-        'bbn-hidden': isCollapsed,
-        'bbn-flex-fill': splitter.fullSize && !isCollapsed,
-        'bbn-w-100': !splitter.fullSize && ((splitter.panes.length === 1) || !isHorizontal),
-        'bbn-h-100': !splitter.fullSize && (splitter.panes.length > 1) && isHorizontal,
-      }"
-          bbn-show="!isCollapsed"
-          bbn-forget="!title">
-        <div class="bbn-flex-fill">
-          <bbn-scroll class="bbn-overlay"
-                      bbn-forget="!scrollable">
-            <slot></slot>
+           }]"
+           :style="{
+             writingMode: isHorizontal ? 'vertical-rl' : null,
+             textOrientation: isHorizontal ? 'upright' : null,
+           }"
+           bbn-html="label"/>
+      <div bbn-show="!isCollapsed"
+           bbn-forget="!label"
+           :class="{
+             'bbn-flex-fill': true,
+             'bbn-hidden': isCollapsed
+           }">
+        <div :class="!label && currentConfig.index && (isCollapsible || (isResizable && prevResizable)) ? 'bbn-flex-fill' : (scrollable ? 'bbn-overlay' : (isHorizontal ? 'bbn-w-100' : 'bbn-h-100'))">
+          <bbn-scroll bbn-forget="!scrollable"
+                      class="bbn-overlay">
+            <slot/>
           </bbn-scroll>
         </div>
       </div>

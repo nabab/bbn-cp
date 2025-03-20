@@ -1,5 +1,5 @@
 <div :class="['bbn-overlay', 'bbn-middle', componentClass]"
-     :style="'background-color:' + bgColor + '; transition: opacity 3s; opacity: ' + (isInit ? 1 : 0).toString()">
+     :style="'background-color:' + bgColor + '; transition: opacity 1s; opacity: ' + (isInit ? 1 : 0).toString()">
   <bbn-popup ref="popup"
              bbn-if="!popup"
             :top="0"
@@ -20,7 +20,7 @@
   </h2>
   <div bbn-else
        class="bbn-login-container"
-       :style="{maxHeight: clientHeight + 'px'}">
+       :style="{maxHeight: screenHeight + 'px'}">
     <div class="bbn-login-logo bbn-c bbn-block">
       <div bbn-if="isLogoTag"
            bbn-html="logo"/>
@@ -78,7 +78,7 @@
           <div class="bbn-c bbn-w-100 bbn-vsmargin bbn-flex-width">
             <bbn-button type="button"
                         @click="$refs.form.submit()"
-                        :text="_('Log in')"/>
+                        :label="_('Log in')"/>
             <div :class="['bbn-flex-fill', 'bbn-r', currentFontSizeClass]"
                  bbn-if="passwordLink">
               <a class="bbn-p"
@@ -100,10 +100,10 @@
             <bbn-button type="button"
                         class="bbn-right-sspace"
                         @click="currentMode = 'login'"
-                        :text="_('Cancel')"/>
+                        :label="_('Cancel')"/>
             <bbn-button type="button"
                         @click="$refs.form.submit()"
-                        :text="_('Send')"/>
+                        :label="_('Send')"/>
           </div>
         </div>
         <div bbn-elseif="currentMode === 'change'"
@@ -140,7 +140,7 @@
           <div class="bbn-c bbn-vmargin bbn-w-100">
             <bbn-button type="button"
                         @click="$refs.form.submit()"
-                        :text="_('Send')"/>
+                        :label="_('Send')"/>
           </div>
         </div>
         <div bbn-elseif="currentMode === 'email'"
@@ -157,7 +157,7 @@
           <div class="bbn-c bbn-w-100 bbn-vsmargin">
             <bbn-button type="button"
                         @click="$refs.form.submit()"
-                        :text="_('Send')"/>
+                        :label="_('Send')"/>
           </div>
         </div>
         <div class="bbn-w-100 bbn-top-sspace"

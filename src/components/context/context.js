@@ -88,14 +88,6 @@ const cpDef = {
         default: 'free'
       },
       /**
-       *
-       * @prop {String} ['items'] children
-       */
-      children: {
-        type: String,
-        default: 'items'
-      },
-      /**
        * The component used by list's items.
        * @prop {Object|String} itemComponent
        */
@@ -117,15 +109,6 @@ const cpDef = {
       sourceAction: {
         type: [String, Function, Boolean],
         default: 'action'
-      },
-      /**
-       * The name of the property to be used as URL to go to when selected.
-       * @prop {String} sourceUrl
-       * @memberof listComponent
-       */
-      sourceUrl: {
-        type: [String, Function],
-        default: 'url'
       },
       /**
        * The HTML element to be used as portal
@@ -175,6 +158,9 @@ const cpDef = {
           this.getRef('floater').closeAll();
         }
       },
+      doubleClickItem(e) {
+        this.$emit('dblclick', e);
+      },
       /**
        * Based on the type of event and on the property context, shows or hides the floating element of the menu.
        * @method clickItem
@@ -190,7 +176,7 @@ const cpDef = {
             ((e.type === 'click') && !this.context)
           )
         ) {
-          //bbn.fn.log("CLICK ITEM", e.target, this.currentData);
+          bbn.fn.log("CLICK ITEM", e, e.target, this.currentData);
           // Don't execute if in the floater
           if (!e.target.closest('.bbn-floater-context-' + this.bbnUid)) {
             if (e.preventDefault) {
@@ -240,9 +226,14 @@ const cpDef = {
       toggle(){
         //bbn.fn.log("CONTEXT TOGGLE")
         if (!this.showFloater) {
-          this.updateData().then(() => {
+          if (this.source && !this.component) {
+            this.updateData().then(() => {
+              this.showFloater = !this.showFloater;
+            });
+          }
+          else {
             this.showFloater = !this.showFloater;
-          });
+          }
         }
         else {
           this.showFloater = !this.showFloater;
@@ -297,7 +288,6 @@ const cpDef = {
     }
   };
 
-import bbn from '@bbn/bbn';
 import cpHtml from './context.html';
 import cpStyle from './context.less';
 let cpLang = {};

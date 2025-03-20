@@ -9,12 +9,12 @@
                :ref="'it' + it.id"
                :key="it.id"
                :focused="false"
-               :container="container || $root.$el"
+               :container="container || $root"
                :class="['bbn-abs', 'bbn-sradius', {
                   'bbn-notification-adding': it.adding && !it.closing,
                   'bbn-notification-closing': !!it.closing
                }]"
-               :title="false"
+               :label="false"
                :scrollable="false"
                @resized="() => onFloaterResize(it)"
                @hook.destroy="_updatePositions">

@@ -1,14 +1,19 @@
 <div :class="['bbn-iblock', componentClass]"
      @focusout="focusout"
-     @mouseenter="over = true"
-     @mouseleave="over = false">
+     tabindex="-1"
+     @mouseenter="over = true; mouseIn = true"
+     @mouseleave="over = false; mouseIn = false"
+     @focus="over = true"
+     @blur="if (!mouseIn) {over = false}">
   <component bbn-if="isEditing && component"
             :is="component"
             bbn-model="currentValue"
+            :tabindex="currentTabIndex"
             bbn-bind="componentOptions"/>
   <component bbn-elseif="isEditing && componentObject"
             :is="componentObject"
             bbn-model="currentValue"
+            :tabindex="currentTabIndex"
             :source="source"
             :class="{'edit-block' : isEditing}"/>
   <component bbn-elseif="componentObject"

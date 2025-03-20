@@ -129,14 +129,6 @@ const cpDef = {
       default: 'action'
     },
     /**
-     * The name of the property to be used as URL to go to when selected.
-     * @prop {String} sourceUrl
-     */
-    sourceUrl: {
-      type: [String, Function],
-      default: 'url'
-    },
-    /**
      * The URL where to send the selected result.
      * @prop {String} selectUrl
      */
@@ -212,7 +204,7 @@ const cpDef = {
         cp = {
           props: ['source'],
           data(){
-            return this.source;
+            return {data: this.source};
           },
           template: `<component :is="source.component || 'div'" :source="source"></component>`
         };
@@ -311,7 +303,7 @@ const cpDef = {
      * @fires keynav
      *
      */
-    keydown(e){
+    onKeydown(e){
       if (e.key === 'Enter') {
         let list = this.getRef('list');
         if (list && bbn.fn.isNumber(list.overIdx)) {
@@ -385,7 +377,7 @@ const cpDef = {
       }
     },
     appendData(data) {
-      bbn.fn.each(this.treatData(data), a => {
+      bbn.fn.each(data, a => {
         let todo = true;
         if (a.data.hash) {
           let row = bbn.fn.filter(this.currentData, r => r.data.hash === a.data.hash);

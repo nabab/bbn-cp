@@ -61,20 +61,55 @@ const cpDef = {
     prefixAutosize: {
       type: Boolean,
       default: true
+    },
+    /**
+     * Only accepts mobile phone numbers
+     * @prop {Boolean} [false] onlyMobile
+     */
+    onlyMobile: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * Only accepts fixed phone numbers
+     * @prop {Boolean} [false] onlyFixed
+     */
+    onlyFixed: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * @prop {String|Array} mobilePrefix
+     */
+    mobilePrefix: {
+      type: [String, Array]
+    },
+    /**
+     * @prop {String|Array} fixedPrefix
+     */
+    fixedPrefix: {
+      type: [String, Array]
+    },
+    check: {
+      type: String
     }
   },
   data(){
     return {
-      countryCodes: bbn.fn.map(countryCodes, c => {
+      countriesList: bbn.fn.map(countryCodes, c => {
         c.text = `${c.name} (${c.prefix})`;
+        c.mobilePrefix = c.mobilePrefix || '';
+        c.fixedPrefix = c.fixedPrefix || '';
+        c.maxlength = c.maxlength || 0;
         if (this.icons) {
           c.icon = `fi fi-${c.code.toLowerCase()}`;
-          //c.text = `<i class="${icon}"></i><span>${c.text}</span>`;
         }
+
         return c;
       }),
-      currentPrefix: this.getPrefixFromValue(),
+      currentPrefix: this.getPrefixFromValue() || (this.defaultCode ? bbn.fn.getField(countryCodes, 'prefix', 'code', this.defaultCode) : ''),
       currentNumber: this.getNumberFromValue(),
+      isChecking: false
     }
   },
   computed: {
@@ -86,17 +121,67 @@ const cpDef = {
       return this.currentPrefix + this.currentNumber;
     },
     currentCountry(){
-      return this.currentPrefix ? bbn.fn.getField(this.countryCodes, 'code', 'prefix', this.currentPrefix) : '';
+      return this.currentPrefix ? bbn.fn.getRow(this.countriesList, 'prefix', this.currentPrefix) : {};
+    },
+    currentCountryCode(){
+      return this.currentCountry?.code || '';
     },
     currentMaxlength(){
-      return this.currentCountry === 'FR' ? 9 : (this.maxlength > -1 ? this.maxlength : 0);
+      return this.currentCountry?.maxlength || (this.maxlength > -1 ? this.maxlength : 0);
+    },
+    currentMask(){
+      return this.currentCountry?.mask || '';
+    },
+    currentMobilePrefix(){
+      return this.mobilePrefix || this.currentCountry?.mobilePrefix || '';
+    },
+    currentFixedPrefix(){
+      return this.fixedPrefix || this.currentCountry?.fixedPrefix || '';
     },
     currentPattern(){
-      if (this.currentCountry === 'FR') {
-        return '[1-9]{1}\\s{1}[0-9]{2}\\s{1}[0-9]{2}\\s{1}[0-9]{2}\\s{1}[0-9]{2}';
+      if (this.pattern) {
+        return this.pattern;
       }
 
-      return '[0-9]' + (this.currentMaxlength ? `{1,${this.currentMaxlength}}` : '');
+      let pattern = '';
+      if ((this.onlyMobile && this.currentMobilePrefix)
+        || (this.onlyFixed && this.currentFixedPrefix)
+      ) {
+        const prefix = this.onlyMobile ? this.currentMobilePrefix : this.currentFixedPrefix;
+        if (bbn.fn.isArray(prefix)) {
+          if (prefix.length === 1) {
+            pattern = prefix[0] + '{1}';
+          }
+          else {
+            pattern = '(';
+            bbn.fn.each(prefix, (p, i) => {
+              pattern += p + (prefix[i+1] ? '|' : '');
+            });
+            pattern += '){1}';
+          }
+        }
+        else {
+          pattern = prefix + '{1}';
+        }
+
+        if (this.isFrance) {
+          pattern += '\\s{1}[0-9]{2}\\s{1}[0-9]{2}\\s{1}[0-9]{2}\\s{1}[0-9]{2}';
+        }
+        else {
+          pattern += '[0-9]+';
+        }
+      }
+      else if (this.currentCountry?.pattern) {
+        pattern = this.currentCountry.pattern;
+      }
+      else {
+        pattern = '[0-9]{1,' + this.currentMaxlength + '}';
+      }
+
+      return pattern;
+    },
+    isFrance(){
+      return this.currentCountryCode === 'FR';
     }
   },
   methods: {
@@ -114,7 +199,7 @@ const cpDef = {
         }
       }
 
-      return this.defaultCode ? bbn.fn.getField(countryCodes, 'prefix', 'code', this.defaultCode) : '';
+      return '';
     },
     getNumberFromValue(){
       if (this.value) {
@@ -139,6 +224,32 @@ const cpDef = {
       ) {
         e.target.bbn.getRef('input').getRef('element').focus();
       }
+    },
+    onChange(){
+      this.$nextTick(() => {
+        this.$emit('change', this.currentValue);
+        if (this.check && this.currentValue) {
+          this.isChecking = true;
+          const ev = new CustomEvent('checkstart', {cancelable: true});
+          this.$emit('checkstart', ev);
+          if (!ev.defaultPrevented){
+            this.post(this.check, {number: this.currentValue}, d => {
+              this.isChecking = false;
+              if (d.valid) {
+                this.$emit('removevalidation');
+              }
+              else {
+                this.setInvalid(bbn._('Invalid phone number'));
+              }
+
+              this.$emit('checkend', d.valid);
+            }, () => {
+              this.isChecking = false;
+              this.$emit('checkend', false);
+            });
+          }
+        }
+      });
     }
   },
   watch: {
@@ -149,7 +260,7 @@ const cpDef = {
      */
     value(newVal){
       const prefix = this.getPrefixFromValue();
-      if (this.currentPrefix !== prefix) {
+      if (prefix && (this.currentPrefix !== prefix)) {
         this.currentPrefix = prefix;
       }
 

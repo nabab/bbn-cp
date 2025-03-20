@@ -8,6 +8,16 @@
  */
 (self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["components/terminal-terminal-js"],{
 
+/***/ "./src/components/terminal/_i18n lazy recursive ^\\.\\/terminal\\..*\\.lang$":
+/*!**********************************************************************************************!*\
+  !*** ./src/components/terminal/_i18n/ lazy ^\.\/terminal\..*\.lang$ strict namespace object ***!
+  \**********************************************************************************************/
+/***/ ((module) => {
+
+eval("function webpackEmptyAsyncContext(req) {\n\t// Here Promise.resolve().then() is used instead of new Promise() to prevent\n\t// uncaught exception popping up in devtools\n\treturn Promise.resolve().then(() => {\n\t\tvar e = new Error(\"Cannot find module '\" + req + \"'\");\n\t\te.code = 'MODULE_NOT_FOUND';\n\t\tthrow e;\n\t});\n}\nwebpackEmptyAsyncContext.keys = () => ([]);\nwebpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;\nwebpackEmptyAsyncContext.id = \"./src/components/terminal/_i18n lazy recursive ^\\\\.\\\\/terminal\\\\..*\\\\.lang$\";\nmodule.exports = webpackEmptyAsyncContext;\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/terminal/_i18n/_lazy_^\\.\\/terminal\\..*\\.lang$_strict_namespace_object?");
+
+/***/ }),
+
 /***/ "./src/components/terminal/terminal.html":
 /*!***********************************************!*\
   !*** ./src/components/terminal/terminal.html ***!
@@ -16,16 +26,6 @@
 
 "use strict";
 eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = `<div :class=\"[componentClass, 'bbn-overlay']\"></div>`;\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/terminal/terminal.html?");
-
-/***/ }),
-
-/***/ "./src/components/terminal/_i18n lazy recursive ^\\.\\/terminal\\..*\\.lang$":
-/*!**********************************************************************************************!*\
-  !*** ./src/components/terminal/_i18n/ lazy ^\.\/terminal\..*\.lang$ strict namespace object ***!
-  \**********************************************************************************************/
-/***/ ((module) => {
-
-eval("function webpackEmptyAsyncContext(req) {\n\t// Here Promise.resolve().then() is used instead of new Promise() to prevent\n\t// uncaught exception popping up in devtools\n\treturn Promise.resolve().then(() => {\n\t\tvar e = new Error(\"Cannot find module '\" + req + \"'\");\n\t\te.code = 'MODULE_NOT_FOUND';\n\t\tthrow e;\n\t});\n}\nwebpackEmptyAsyncContext.keys = () => ([]);\nwebpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;\nwebpackEmptyAsyncContext.id = \"./src/components/terminal/_i18n lazy recursive ^\\\\.\\\\/terminal\\\\..*\\\\.lang$\";\nmodule.exports = webpackEmptyAsyncContext;\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/terminal/_i18n/_lazy_^\\.\\/terminal\\..*\\.lang$_strict_namespace_object?");
 
 /***/ }),
 

@@ -1,0 +1,17 @@
+<div @focusout="focusout(i)"
+    :class="[{
+      'bbn-invisible': !ready,
+      'bbn-alt': !groupable && (d.expanderIndex !== undefined) ?
+        !!(d.expanderIndex % 2) :
+        !!(d.rowIndex % 2),
+      'bbn-header': !!(d.aggregated || d.groupAggregated),
+    }, getTrClass(d.data)]"
+    :style="getTrStyle(d.data)">
+  <td :colspan="currentColumns.length">
+    <div bbn-if="typeof groupFooter === 'function'"
+          bbn-html="groupFooter(d.data)"/>
+    <component bbn-else
+                :is="groupFooter"
+                :source="d.data"/>
+  </td>
+</div>

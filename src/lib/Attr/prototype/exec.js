@@ -1,6 +1,13 @@
-import bbnAttr from "../../Attr.js";
+import bbnAttr from "../Attr.js";
 import bbnConditionAttr from "../Condition.js";
 
+/**
+ * Retrieves the arguments for evaluating the given attribute with the given data.
+ * 
+ * @param {bbnAttr} attr 
+ * @param {Object} data 
+ * @returns {Array}
+ */
 const getArgs = (attr, data) => {
   return attr.args ? attr.args.map(a => {
     let res;
@@ -18,7 +25,14 @@ const getArgs = (attr, data) => {
   }) : [];
 };
 
+/**
+ * Executes the attribute's function with the given data if applicable.
+ * 
+ * @param {Object} data 
+ * @returns 
+ */
 bbnAttr.prototype.attrExec = function(data) {
+  // If the attribute does not have a function, return.
   if (!this.fn) {
     return;
   }
@@ -28,9 +42,9 @@ bbnAttr.prototype.attrExec = function(data) {
     newData.push(this.node.data);
   }
 
-  bbnData.startWatching();
+  bbnData.startWatching(this);
   const args = getArgs(this, newData);
-  const seq = bbnData.stopWatching();
+  const seq = bbnData.stopWatching(this);
   if (!(this instanceof bbnConditionAttr) && !(this instanceof bbnModelAttr) && bbn.cp.results.has(this)) {
     const tmp = bbn.cp.results.get(this);
     let isSame = true;
@@ -47,11 +61,12 @@ bbnAttr.prototype.attrExec = function(data) {
   }
 
   let val;
-  bbnData.startWatching();
+  bbnData.startWatching(this);
   try {
     val = this.fn.bind(this.node.component)(...args);
   }
   catch (e) {
+    bbnData.stopWatching(this);
     bbn.fn.log(
       "*****************",
       "Error in attrExec",
@@ -69,7 +84,7 @@ bbnAttr.prototype.attrExec = function(data) {
     throw e;
   }
 
-  seq.push(...bbnData.stopWatching());
+  seq.push(...bbnData.stopWatching(this));
   const res = {val, seq};
   if (!(this instanceof bbnConditionAttr) && !(this instanceof bbnModelAttr)) {
     bbn.cp.results.set(this, {args, res});

@@ -27,7 +27,7 @@
             <i bbn-if="isNumber(selected) && source[selected] && !!source[selected].icon"
                :class="[source[selected].icon]"
             ></i>
-            <span bbn-text="isNumber(selected) && source[selected] && !!source[selected].title ? source[selected].title : _('Untitled')"
+            <span bbn-text="isNumber(selected) && source[selected] && !!source[selected].label ? source[selected].label : _('Untitled')"
                   :class="{'bbn-b': !currents.length}"
             ></span>
             <i bbn-if="isNumber(selected) && source[selected] && !source[selected].fixed"
@@ -71,7 +71,7 @@
               <i bbn-if="isNumber(sn.selected) && sn.source[sn.selected] && !!sn.source[sn.selected].icon"
                  :class="sn.source[sn.selected].icon"
               ></i>
-              <span bbn-text="isNumber(sn.selected) && sn.source[sn.selected] && !!sn.source[sn.selected].title ? sn.source[sn.selected].title : _('Untitled')"
+              <span bbn-text="isNumber(sn.selected) && sn.source[sn.selected] && !!sn.source[sn.selected].label ? sn.source[sn.selected].label : _('Untitled')"
                     :class="{'bbn-b': !currents[isn+1]}"
               ></span>
               <i bbn-if="isNumber(sn.selected) && sn.source[sn.selected] && !sn.source[sn.selected].fixed"

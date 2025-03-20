@@ -28,10 +28,10 @@ const cpDef = {
         },
       },
       /**
-       * The text below the loader icon
+       * The label below the loader icon
        * @prop {String} ['Loading'] loadingText
        */
-      text: {
+      label: {
         type: String,
         default(){
           return bbn._('Loading');

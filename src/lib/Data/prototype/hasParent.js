@@ -1,9 +1,9 @@
-import bbnData from "../../Data.js";
+import bbnData from "../Data.js";
 
 /**
  * Determines whether a piece of data is part of a computed data property.
  * 
- * @param {bbnCp} cp - The component whose data references are being assessed.
+ * @param {HTMLElement} cp - The component whose data references are being assessed.
  * @param {Array} name - The data key for the computed we're looking for.
  * @returns {Array} - An array of objects, each containing a component (`cp`) and the path (`path`) to the affected data within that component.
  */

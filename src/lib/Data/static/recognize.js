@@ -1,4 +1,4 @@
-import bbnData from "../../Data.js";
+import bbnData from "../Data.js";
 
 const retrieveData = function (v, res, path) {
   if (!res) {
@@ -29,15 +29,30 @@ const retrieveData = function (v, res, path) {
 };
 
 const mutateArray = function(newArr, oldArr, component, path, parent) {
+  if (newArr?.__bbnData instanceof bbnData) {
+    return false;
+  }
   const rnd = bbn.fn.randomString();
   bbn.fn.startChrono(rnd);
   const newHash = newArr.map(v => retrieveData(v));
   const oldHash = oldArr.map(v => retrieveData(v));
+  //bbn.fn.log("HASSHES", newHash, oldHash);
   let toFix = false;
   let changed = false;
   for (let i = 0; i < newArr.length; i++) {
     if (oldArr[i] !== newArr[i]) {
-      if (bbn.fn.numProperties(newHash[i])) {
+      if (newArr[i]?.__bbnData instanceof bbnData) {
+        const idx = oldArr.lastIndexOf(newArr[i]);
+        if (idx > i) {
+          bbn.fn.move(oldArr, idx, i);
+          changed = true;
+        }
+        else {
+          oldArr[i] = newArr[i];
+          changed = true;
+        }
+      }
+      else if (bbn.fn.numProperties(newHash[i])) {
         let idx = bbn.fn.search(oldHash, newHash[i]);
         if (idx === i) {
           if (mutate(newArr[i], oldArr[i], component, i, oldArr)) {
@@ -48,12 +63,10 @@ const mutateArray = function(newArr, oldArr, component, path, parent) {
         else if (idx > i) {
           bbn.fn.move(oldArr, idx, i);
           mutate(newArr[i], oldArr[i], component, path, oldArr);
-          toFix = true;
           changed = true;
         }
         else {
           oldArr.splice(i, 0, newArr[i]);
-          toFix = true;
           changed = true;
         }
       }
@@ -86,12 +99,7 @@ const mutateArray = function(newArr, oldArr, component, path, parent) {
 
   if (oldArr.length > newArr.length) {
     oldArr.splice(newArr.length);
-    toFix = true;
     changed = true;
-  }
-
-  if (toFix) {
-    oldArr.__bbnData.fixIndexes();
   }
 
   //bbn.fn.log(["MUTATE ARRAY", newArr.length, newArr, oldArr, bbn.fn.stopChrono(rnd)]);
@@ -99,6 +107,10 @@ const mutateArray = function(newArr, oldArr, component, path, parent) {
 };
 
 const mutateObject = function(newObj, oldObj, component, path, parent) {
+  if (newObj?.__bbnData instanceof bbnData) {
+    return false;
+  }
+
   const rnd = bbn.fn.randomString();
   bbn.fn.startChrono(rnd);
   let changed = false;
@@ -199,8 +211,8 @@ bbnData.recognize = function(v, oldData, component, path) {
   let isChanged = false;
   if (v !== oldData) {
     const newDataObject = v?.__bbnData;
-    const oldDataObject = oldData?.__bbnData?.targetData ? oldData?.__bbnData : false;
-    //bbn.fn.log(['RECO', path, oldDataObject?.isArray, v?.length, v, oldData, tmp, newDataObject]);
+    const oldDataObject = oldData?.__bbnData?.value ? oldData?.__bbnData : false;
+    //bbn.fn.log(['RECO', path, oldDataObject?.isArray, v?.length, v, oldData, newDataObject]);
     if (!bbn.fn.isPrimitive(v)) {
       if (![undefined, Object, Array].includes(v.constructor)) {
         //bbn.fn.log("INSIDE " + this.#name)
@@ -214,12 +226,13 @@ bbnData.recognize = function(v, oldData, component, path) {
       else if (!newDataObject && oldDataObject && (oldDataObject.root.component === component) && (oldDataObject.root.path === path)) {
         if (oldDataObject.isArray && bbn.fn.isArray(v)) {
           isChanged = mutateArray(v, oldDataObject.value, component, path);
+          //bbn.fn.log(["MUTATE ARRAY", oldDataObject.value, v, path]);
           v = oldDataObject.value;
         }
         // If both are objects we mutate the old one into the new one
         else if (!oldDataObject.isArray && bbn.fn.isObject(v)) {
           isChanged = mutateObject(v, oldDataObject.value, component, path);
-          //bbn.fn.log(["MUTATE OBJECT", this.#data.value, v]);
+          //bbn.fn.log(["MUTATE OBJECT", oldDataObject.value, v]);
           v = oldDataObject.value;
         }
         else {

@@ -1,57 +1,59 @@
-import bbnNode from "../../Node.js";
-import deleteNodes from "../../Cp/private/deleteNodes.js";
+import bbnNode from "../Node.js";
 
 bbnNode.prototype.nodeInit = function(after) {
   const old = this.element;
   if (this.isCreating) {
-    if (old) {
-      bbn.fn.log("ALREADY CREATING");
-      return old;
-    }
-
+    bbn.fn.log(["ALREADY CREATING", this.element, this]);
+    //this.creation;
     throw new Error("Already creating");
   }
 
   if (old && (old.bbnSchema === this)) {
-    //await this.update();
+    //this.update();
     if (this.comment && (this.comment === bbn.fn.isComment(old))) {
       return old;
     }
 
-    if (this.comment && this.numBuild && !(old instanceof Comment)) {
-      deleteNodes(this.component, this.id, this.hash);
-    }
-
-    const isLaunched = this.setComment(this.comment);
+    const isLaunched = this.nodeSwitch(this.comment);
     if (isLaunched) {
       return isLaunched;
     }
-    /*
-    if (this.comment && this.numBuild && !(old instanceof Comment)) {
-      deleteNodes(this.component, this.id, this.hash);
-    }
-
-      */
   }
   else if (old) {
     bbn.fn.log("ALREADY INITIALIZED");
   }
 
+  /*
+  this.creation = new Promise((resolve, reject) => {
+    const iv = setInterval(() => {
+      if (!this.isCreating) {
+        clearInterval(iv);
+        resolve();
+      }
+    }, 5)
+  });
+  */
   this.isCreating = true;
   this.nodeSetAll();
   if (!this.loop) {
+    //if (this.parent.isComponent && !(this.parent instanceof bbnInternalNode)) {}
     this.nodeBuild(after);
-    this.nodeConceive();
+    if (this.isComponent && this.element) {
+      if (!this.element.bbn) {
+        this.element.bbnConnected = true;
+      }
+      else if (!this.element.$isInit) {
+        if (!this.element.isConnected) {
+          debugger;
+        }
+
+        this.element.$connected();
+      }
+    }
+
+  // The element could be be removed from above in the meantime
   }
 
-  if (this.isComponent) {
-    if (!this.element.bbn) {
-      this.element.bbnConnected = true;
-    }
-    else if (!Object.hasOwn(this.element.bbn, '$isCreated')){
-      this.element.bbn.$connected();
-    }
-  }
   this.isCreating = false;
 
   return this.element;

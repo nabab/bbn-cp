@@ -1,0 +1,107 @@
+<div :class="[componentClass, 'bbn-radius', {'collapsed': collapsed}]"
+      :key="index"
+      :style="{width: !collapsed ? width : '', height: scrollable ? '100%' : 'auto'}"
+      bbn-show="isVisible">
+  <div :class="['bbn-kanban-element-container', 'bbn-radius', 'bbn-background', 'bbn-rel', {
+          'bbn-flex-height': !!scrollable
+        }]"
+        :style="{
+          backgroundColor: !!backgroundColor ? (backgroundColor + ' !important') : '',
+          height: '100%',
+          width: '100%'
+        }">
+    <div :class="['bbn-kanban-element-header', 'bbn-spadding', , 'bbn-vmiddle', 'bbn-unselectable', {
+           'bbn-flex-width': !collapsed,
+           'bbn-flex-height': collapsed
+         }]"
+         bbn-if="headerVisible">
+      <bbn-button bbn-if="collapsable && collapsed"
+                  class="bbn-no-border"
+                  :notext="true"
+                  :label="_('Expand')"
+                  icon="nf nf-md-arrow_expand"
+                  @click="expand"
+                  style="height: auto; width: 100%; aspect-ratio: 1"/>
+      <div :class="['bbn-kanban-element-title', 'bbn-upper', 'bbn-b', 'bbn-tertiary-text-alt', 'bbn-unselectable', 'bbn-m', 'bbn-ellipsis', {
+             'bbn-left-space': !collapsed,
+             'bbn-top-space': collapsed,
+             'bbn-right-lspace': !collapsed,
+             'bbn-bottom-lspace': collapsed,
+             'verticaltext': collapsed,
+             'bbn-flex-fill': !toolbar
+           }]"
+           bbn-text="label"
+           :title="label"
+           :style="{
+             color: !!fontColor ? (fontColor + ' !important') : '',
+             maxHeight: isMobile && collapsed ? '20rem' : '',
+             letterSpacing: collapsed ? (isMobile ? '' : '-0.2rem') : ''
+           }"
+           bbn-if="label !== undefined"/>
+      <div class="bbn-kanban-element-toolbar bbn-alt-background bbn-vmiddle bbn-xspadding bbn-radius bbn-flex-fill"
+          :style="{
+            'min-height': !collapsed ? '2rem' : '4rem',
+            'justify-content': 'flex-end',
+            'align-items': collapsed ? 'flex-end': ''
+          }"
+          bbn-if="toolbar">
+        <component :is="toolbar"
+                   :source="toolbarSource || (!isAjax ? source : undefined)"
+                   :total="total"
+                   class="bbn-vmiddle"
+                   :style="{'flex-direction': collapsed ? 'column': 'row'}"/>
+      </div>
+      <bbn-button bbn-if="collapsable && !collapsed"
+                  class="bbn-no-border bbn-left-space"
+                  :notext="true"
+                  :label="_('Collapse')"
+                  icon="nf nf-md-arrow_collapse"
+                  @click="collapse"
+                  style="height: 100%; width: auto; aspect-ratio: 1"/>
+    </div>
+    <div bbn-if="!collapsed"
+        :class="['bbn-kanban-element-main', 'bbn-vpadding', 'bbn-rel', {'bbn-flex-fill': !!scrollable}]"
+        style="width: 100%">
+      <div class="bbn-rel"
+           style="width: 100%; height: 100%">
+        <bbn-loader bbn-if="isLoading"
+                    class="bbn-kanban-element-loader bbn-margin bbn-background"/>
+        <component bbn-else
+                   :is="scrollable ? 'bbn-scroll' : 'div'"
+                   axis="y"
+                   ref="scroll">
+          <div :class="['bbn-kanban-element-items', 'bbn-hpadding', {
+                 'bbn-overlay': !scrollable || !items.length,
+                 'bbn-middle': !scrollable || !items.length
+                }]">
+            <template bbn-if="items.length">
+              <div bbn-for="(item, itemIdx) in items"
+                  :class="[
+                    'bbn-kanban-element-item',
+                    'bbn-radius',
+                    {
+                      'bbn-bottom-space': !!items[itemIdx+1]
+                    }
+                  ]"
+                  :key="itemIdx">
+                <component :is="component"
+                           :source="item.data"
+                           :index="item.index"
+                           bbn-bind="componentOptions"
+                           :key="!!uid && item.data && (item.data[uid] !== undefined) ? item.data[uid] : itemIdx"/>
+              </div>
+            </template>
+            <div bbn-elseif="isLoaded && !!noData"
+                 class="bbn-c bbn-background bbn-radius bbn-spadding"
+                 bbn-text="noData"/>
+          </div>
+        </component>
+      </div>
+    </div>
+    <div bbn-if="!collapsed && pageable"
+          class="bbn-kanban-element-footer">
+      <bbn-pager :element="_self"
+                 :limit="false"/>
+    </div>
+  </div>
+</div>

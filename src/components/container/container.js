@@ -67,6 +67,37 @@ const cpDef = {
     bbn.cp.mixins.resizer, 
     bbn.cp.mixins.observer
   ],
+  methods: {
+    onClickVisual() {
+      bbn.fn.log("CLICK", this.currentCurrent, this.currentIndex, this.router.selected);
+      this.router.selected = this.currentIndex;
+    },
+    containerMounted(){
+      if (this.currentView.load
+        && !this.currentView.loaded
+        && !this.isLoading
+        && (
+          this.currentView.selected
+          || (
+            this.isPane
+            && (this.currentPane.tabs[this.currentPane.selected].url === this.currentURL)
+          )
+        )
+      ) {
+        this.$nextTick(() => {
+          this.loadView(this.currentView.current).then(() => {
+            this.screenshotMounted();
+            this.selectionMounted();
+          });
+        });
+      }
+      else {
+        this.screenshotMounted();
+        this.selectionMounted();
+      }
+  
+    }  
+  },
 
   /**
    * @event created 
@@ -74,22 +105,27 @@ const cpDef = {
   created() {
     this.componentClass.push('bbn-resize-emitter');
     this.componentCreated();
-  },
-  beforeMount() {
-    // The router is needed
-    this.setRouter();
+    const router = this.real ? this.closest('bbn-router') : this.$origin;
+    if (router.$isCreated) {
+      this.router = router;
+    }
+    else {
+      router.$once('hook:beforemount', () => {
+        this.router = router;
+        this.$nextTick(() => {
+          this.containerMounted();
+        })
+      })
+    }
   },
   /**
    * @event mounted
    * @fires router.register
    */
-  async mounted() {
-    if ( !this.router ){
-      throw new Error(bbn._("bbn-container cannot be rendered without a bbn-router"));
+  mounted() {
+    if (this.router) {
+      this.containerMounted();
     }
-
-    this.screenshotMounted();
-    await this.selectionMounted();
   },
   /**
    * @event beforeDestroy
@@ -101,9 +137,9 @@ const cpDef = {
     }
 
     if ( this.isComponent ){
-      let idx = bbnContainerCp.componentsList.indexOf(this.componentName);
+      let idx = bbnContainer.componentsList.indexOf(this.componentName);
       if ( idx > -1 ){
-        bbnContainerCp.componentsList.splice(idx, 1);
+        bbnContainer.componentsList.splice(idx, 1);
       }
     }
   },
@@ -122,7 +158,6 @@ const cpDef = {
 
 import cpHtml from './container.html';
 import cpStyle from './container.less';
-import bbn from '@bbn/bbn';
 let cpLang = {};
 if (bbn.env.lang) {
   try {

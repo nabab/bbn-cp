@@ -1,54 +1,21 @@
-import bbn from "@bbn/bbn";
-import bbnAttr from "../Attr.js";
-import setProp from "../Cp/private/setProp.js";
-import initResults from "../Cp/private/initResults.js";
+import bbnAttr from "./Attr.js";
+import setProp from "../Html/private/setProp.js";
+import initResults from "../Html/private/initResults.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
  */
 export default class bbnModelAttr extends bbnAttr
 {
-  attrUpdate(init) {
-    if (!this.name || !this.node.parentElement || (!init && this.node.isOut)) {
-      return;
-    }
-
-    if (!init) {
-      this.attrSet();
-    }
-  
-    //bbn.fn.log(["UPDATE ATTR MODEL " + this.name, init, this.node, this.isChanged, this.attrGetValue()]);
-    if (this.isChanged) {
-      const value = this.attrGetValue();
-      if (this.node.props[this.name] !== value) {
-        this.node.props[this.name] = value;
-      }
-
-      if (this.node.element?.bbn?.$props && Object.hasOwn(this.node.element.bbn.$props, this.name)) {
-        setProp(this.node.element.bbn, this.name, value);
-      }
-
-      if (this.node.element && !this.node.comment && !bbn.fn.isFocused(this.node.element) && (this.node.element[this.name] !== undefined)) {
-        if (value) {
-          if (this.node.element[this.name] !== value) {
-            this.node.element[this.name] = value;
-          }
-        }
-        else if (this.node.element[this.name]) {
-          this.node.element[this.name] = '';
-        }
-      }
-    }
-
-    if (init && this.node.element) {
-      const eventName = this.modifiers.includes('lazy') ? 'change' : 'input';
-      const ele = this.node.element;
-      //bbn.fn.log(["FROM MODEL INIT", eventName, this.name, this.attrGetValue()]);
-      ele.addEventListener(eventName, e => {
-        const node = this.node;
-        const cp = node.component;
-        const data = node.data;
+  handler = null;
+  attrSet() {
+    if (!this.handler) {
+      const node = this.node;
+      const cp = node.component;
+      const data = node.data;
+      this.handler = e => {
         initResults(cp);
+        const ele = node.element;
         //bbn.fn.log(["FROM MODEL EVENT", eventName, ele, e.target, e]);
         if (!this.node.parentElement) {
           e.stopImmediatePropagation();
@@ -153,7 +120,41 @@ export default class bbnModelAttr extends bbnAttr
             }
           }
         }
-      });
+      };
+    }
+  }
+  attrUpdate(init) {
+    if (!this.name || !this.node.parentElement || (!init && this.node.isOut)) {
+      return;
+    }
+
+    //bbn.fn.log(["UPDATE ATTR MODEL " + this.name, init, this.node, this.isChanged, this.attrGetValue()]);
+    if (this.isChanged) {
+      const value = this.attrGetValue();
+      if (this.node.props[this.name] !== value) {
+        this.node.props[this.name] = value;
+      }
+
+      if (this.node.element?.bbn?.$props && Object.hasOwn(this.node.element.bbn.$props, this.name)) {
+        setProp(this.node.element.bbn, this.name, value);
+      }
+
+      if (this.node.element && !this.node.comment && !bbn.fn.isFocused(this.node.element) && (this.node.element[this.name] !== undefined)) {
+        if (value) {
+          if (this.node.element[this.name] !== value) {
+            this.node.element[this.name] = value;
+          }
+        }
+        else if (this.node.element[this.name]) {
+          this.node.element[this.name] = '';
+        }
+      }
+    }
+
+    if (init && this.node.element) {
+      const eventName = this.modifiers.includes('lazy') ? 'change' : 'input';
+      //bbn.fn.log(["FROM MODEL INIT", eventName, this.name, this.attrGetValue()]);
+      this.node.element.addEventListener(eventName, this.handler);
     }
   }
 }

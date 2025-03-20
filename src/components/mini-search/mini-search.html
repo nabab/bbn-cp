@@ -1,4 +1,5 @@
-<div :class="[componentClass, 'bbn-iblock', 'bbn-textbox', {'bbn-disabled': !!isDisabled}]">
+<div :class="[componentClass, 'bbn-iblock', 'bbn-textbox', {'bbn-disabled': !!isDisabled}]"
+     tabindex="-1">
   <div :class="['bbn-rel', 'bbn-mini-search-container', currentItemCls, {
         'bbn-mini-search-container-native': native
       }]">
@@ -7,7 +8,8 @@
                 bbn-model="filterString"
                 ref="input"
                 @focus="selectText"
-                @keydown.stop="keydown"
+                @keydown.stop="onKeydown"
+                :tabindex="currentTabIndex"
                 :autosize="autosize"
                 autocomplete="off"
                 autocorrect="off"
@@ -35,7 +37,7 @@
                 :width="asMobile ? '100%' : undefined"
                 :height="asMobile ? '100%' : undefined"
                 ref="list"
-                :children="null"
+                :source-items="null"
                 uid="hash"
                 source-value="hash"
                 :source-text="sourceText"

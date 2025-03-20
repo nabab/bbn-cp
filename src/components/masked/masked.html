@@ -1,13 +1,15 @@
-<span :class="[componentClass, 'bbn-textbox', {'bbn-disabled': !!isDisabled}]">
+<span :class="[componentClass, 'bbn-textbox', {'bbn-disabled': !!isDisabled}]"
+      tabindex="-1">
   <input ref="element"
          :disabled="isDisabled"
          :required="required"
          :readonly="readonly"
          :placeholder="placeholder"
-         @click="click"
+         :tabindex="currentTabIndex"
+         @click="onClick"
          @focus="focusEvent"
          @blur="blurEvent"
-         @change="change"
+         @change="onChange"
          @keydown="keydownEvent"
          @keyup="keyupEvent"
          @mouseenter="over"
@@ -17,7 +19,7 @@
          @cut="cutEvent"
          :size="currentInputSize"
          class="bbn-radius"
-         :inputmode="inputmode"
+         :inputmode="$el.inputmode"
          :pattern="pattern">
   <input :value="value"
          ref="real_masked"

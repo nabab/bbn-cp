@@ -12,10 +12,10 @@ const cpDef = {
     props: {
       /**
        * The element to bond with
-       * @props {bbnCp} element
+       * @props {HTMLElement} element
        */
       element: {
-        type: [Object, bbnCp],
+        type: [Object, HTMLElement],
         default() {
           //bbn.fn.log("ELEMENT ON TABLE", this);
           return this.$parent;
@@ -192,7 +192,7 @@ const cpDef = {
      * @event mounted
      */
     mounted(){
-      if (this.element && (this.element instanceof bbnCp)) {
+      if (this.element && (this.element instanceof HTMLElement)) {
         if (this.element.ready && !this.ready){
           this.ready = true;
         }
@@ -212,7 +212,7 @@ const cpDef = {
     },
     watch: {
       element(v, oldV) {
-        if (v && (v instanceof bbnCp)) {
+        if (v && (v instanceof HTMLElement)) {
           this.ready = true;
         }
       },
@@ -220,6 +220,16 @@ const cpDef = {
         //bbn.fn.log("CURRENT PAGE", v);
         if (this.currentNumericPage !== v) {
           this.currentNumericPage = parseInt(v) || 1;
+        }
+      },
+      limit(v, ov) {
+        bbn.fn.log("LIMIT", v, ov, this.element.currentLimit);
+
+        //bbn.fn.log("CURRENT PAGE", v);
+        if (this.element.currentLimit !== v) {
+          this.currentPage = 1;
+          this.element.currentLimit = parseInt(v);
+          this.element.updateData();
         }
       },
       currentNumericPage(v) {

@@ -1,4 +1,4 @@
-import bbnAttr from "../../Attr.js";
+import bbnAttr from "../Attr.js";
 import bbnInternalNode from "../../Node/Internal.js";
 
 bbnAttr.prototype.attrSet = function(init) {
@@ -10,5 +10,4 @@ bbnAttr.prototype.attrSet = function(init) {
   if (this.name && !node.comment && (node.props[this.name] !== this.value)) {
     node.props[this.name] = this.value;
   }
-
 }

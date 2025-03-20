@@ -2,22 +2,17 @@
      :style="{
        width: width,
        height: height
-     }"
->
-  <h4 bbn-if="title"
-      bbn-html="title"
-      class="bbn-middle"
-  ></h4>
+     }">
+  <h4 bbn-if="label"
+      bbn-html="label"
+      class="bbn-middle"/>
   <div class="bbn-flex-fill bbn-rel"
-       style="width: 100%"
-  >
+       style="width: 100%">
      <div class="bbn-overlay"
-          ref="container"
-     >
+          ref="container">
        <div bbn-if="ready"
             ref="chart"
-            class="bbn-chart-widget"
-       ></div>
+            class="bbn-chart-widget"/>
      </div>
   </div>
 </div>

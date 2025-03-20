@@ -1,7 +1,7 @@
 import bbn from '@bbn/bbn';
 import bbnConditionAttr from '../lib/Attr/Condition.js';
 import bbnComputed from '../lib/Computed.js';
-import initResults from '../lib/Cp/private/initResults.js';
+import initResults from '../lib/Html/private/initResults.js';
 import queueUpdate from './queueUpdate.js';
 
 const sorter = (a, b) => {
@@ -84,6 +84,7 @@ async function treatQueue(num = 0, cps) {
     let forgotten = [];
     const rnd = bbn.fn.randomString();
     bbn.fn.startChrono(rnd);
+    const queueLength = queue.length;
     //bbn.fn.log("TREATING QUEUE: " + queue.length + '"' + rnd + '" (' + num + ' / ' + bbn.cp.numTicks + ')');
     while (queue.length) {
       if (isDebug) {
@@ -94,9 +95,13 @@ async function treatQueue(num = 0, cps) {
       const queueElement = queue.shift();
       const isAttr = queueElement.element instanceof bbnAttr;
       const isComputed = queueElement.element instanceof bbnComputed;
+      const isWatcher = queueElement.element instanceof bbnWatcher;
       //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
-      if (!cp.$el.isConnected) {
+      if (!cp.$el.isConnected || queueElement.component?.$isDestroyed) {
+        continue;
+      }
+      if (isAttr && queueElement.element.node.isDestroyed) {
         continue;
       }
 
@@ -135,7 +140,7 @@ async function treatQueue(num = 0, cps) {
       // Launch the update process for the component.
 
 
-      if (queueElement?.element instanceof bbnComputed) {
+      if (isComputed) {
         if (lastElement?.element === queueElement.element) {
           continue;
         }
@@ -144,7 +149,7 @@ async function treatQueue(num = 0, cps) {
           bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + queueElement.element.name + ' - ' + cp.$cid + ' - ' + bbn.cp.numTicks);
         }
 
-        await queueElement.element.computedUpdate();
+        queueElement.element.computedUpdate();
       }
       else if (isAttr) {
         const attr = queueElement.element;
@@ -190,6 +195,9 @@ async function treatQueue(num = 0, cps) {
           }
         }
       }
+      else if (isWatcher) {
+        queueElement.element.watcherUpdate(false, queueElement.level);
+      }
       else if (bbn.fn.isFunction(queueElement?.fn)) {
         if (isDebug) {
           bbn.fn.log(cp.$options.name + ' - Fn - ' + cp.$cid + ' - ' + bbn.cp.numTicks + ' - ' + queueElement.fn.toString());
@@ -225,17 +233,12 @@ async function treatQueue(num = 0, cps) {
 
     const duration = bbn.fn.stopChrono(rnd);
     if (duration > 1000) {
-      bbn.fn.log("TREATING QUEUE DURATION: " + duration + '"' + rnd + '" (' + num + ' / ' + bbn.cp.numTicks + ')');
+      bbn.fn.log("TREATING QUEUE DURATION: " + duration + " / NUMBER OF ELEMENTS IN QUEUE: " + queueLength + " / NUM TICKS: " + bbn.cp.numTicks);
     }
   }
 
   if (!num && bbn.cp.nextQueue.length) {
-    while (bbn.cp.nextQueue.length) {
-      if (!bbn.cp.nextQueue[0].num) {
-        bbn.cp.nextQueue[0].num = bbn.cp.numTicks;
-      }
-      queueUpdate(bbn.cp.nextQueue.shift());
-    }
+    queueUpdate(...bbn.cp.nextQueue.splice(0));
   }
 
   //bbn.fn.log("FINISHED FN (" + num + ") WITH " +bbn.cp.queue.length);
@@ -253,13 +256,6 @@ export default async function startTick() {
 
   // Skip if an update is currently running.
   if (bbn.cp.isRunning) {
-    if (bbn.cp.to) {
-      clearTimeout(bbn.cp.to);
-    }
-    bbn.cp.to = setTimeout(() => {
-      startTick();
-    }, 1);
-
     return;
   }
 
@@ -267,6 +263,9 @@ export default async function startTick() {
   await requestAnimationFrame(async () => {
     await treatQueue();
     bbn.cp.isRunning = false;
+    if (bbn.cp.queue.length || bbn.cp.nextQueue.length) {
+      bbn.cp.startTick();
+    }
   });
 //  );
 }

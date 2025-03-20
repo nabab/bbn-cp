@@ -1,5 +1,3 @@
-import bbn from "@bbn/bbn";
-
 export default class bbnParser {
   static voidTags = ['img', 'input', 'br', 'hr', 'meta', 'link', 'base', 'col', 'area', 'param', 'source', 'track', 'wbr'];
   static states = ['building', 'tag', 'attribute', 'value', 'text'];

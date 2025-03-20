@@ -9,16 +9,27 @@ bbn-toolbar{
       display: block;
     }
   }
+  .bbn-toolbar-fieldset {
+    > *:not(.bbn-flex-fill){
+      flex-shrink: unset;
+    }
+    > *:not(.bbn-right) {
+      gap: var(--xsspace)
+    }
+    > .bbn-flex-width {
+      flex-wrap: wrap;
+    }
+  }
   .bbn-toolbar-separator {
     display: inline-block;
-    margin: 1rem;
+    margin: 0 var(--sspace);
     &:before{
       content: '|';
     }
   }
   .bbn-toolbar-horizontal-separator{
     display: inline-block;
-    margin: 1rem;
+    margin: var(--sspace) 0;
     &:before{
       content: '—';
     }

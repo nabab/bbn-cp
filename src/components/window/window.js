@@ -44,9 +44,9 @@ const cpDef = {
         default: true
       },
       /**
-       * @prop {Boolean} [false] draggable
+       * @prop {Boolean} [false] drag
        */
-      draggable: {
+      drag: {
         type: Boolean,
         default: false
       },
@@ -119,9 +119,9 @@ const cpDef = {
         type: [String, Function, Object]
       },
       /**
-       * @prop {String|Boolean} ['Untitled'] title
+       * @prop {String|Boolean} ['Untitled'] label
        */
-      title: {
+      label: {
         type: [String, Boolean],
         default: bbn._("Untitled")
       },
@@ -181,7 +181,7 @@ const cpDef = {
          */
         showContent: false,
         /**
-         * @data {Boolean|bbnCp} [false] popup
+         * @data {Boolean|HTMLElement} [false] popup
          */
         popup: false,
         /**

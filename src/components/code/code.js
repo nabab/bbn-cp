@@ -187,19 +187,19 @@ const cpDef = {
     themeSettings() {
       const cp = this;
       this.getPopup({
-        title: false,
+        label: false,
         modal: false,
         closable: false,
         component: {
           template: `
 <div class="bbn-block bbn-xlpadding bbn-c bbn-lg">
   <bbn-dropdown class="bbn-xl bbn-b bbn-wide" :source="themes" bbn-model="currentTheme"/><br><br>
-  <bbn-button @click="prev" :text="_('Previous')"/> &nbsp; 
-  <bbn-button bbn-if="isPlaying" @click="stop" :text="_('Stop')"/>
-  <bbn-button bbn-else @click="play" :text="_('Play')"/>  &nbsp; 
-  <bbn-button @click="next" :text="_('Next')"/><br><br>
-  <bbn-button @click="select" :text="_('Close')"/> &nbsp; 
-  <bbn-button @click="cancel" :text="_('Back to original')"/> 
+  <bbn-button @click="prev" :label="_('Previous')"/> &nbsp; 
+  <bbn-button bbn-if="isPlaying" @click="stop" :label="_('Stop')"/>
+  <bbn-button bbn-else @click="play" :label="_('Play')"/>  &nbsp; 
+  <bbn-button @click="next" :label="_('Next')"/><br><br>
+  <bbn-button @click="select" :label="_('Close')"/> &nbsp; 
+  <bbn-button @click="cancel" :label="_('Back to original')"/> 
 </div>
   `,
           data(){
@@ -445,7 +445,7 @@ const cpDef = {
     },
     foldAll() {
       this.constructor.cm.language.foldAll(this.widget);
-      //bbnCodeCp.cm.language.foldInside(bbnCodeCp.cm.language.syntaxTree(this.widget));
+      //bbnCode.cm.language.foldInside(bbnCode.cm.language.syntaxTree(this.widget));
     },
     unfoldAll() {
       this.constructor.cm.language.unfoldAll(this.widget);

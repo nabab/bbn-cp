@@ -1,5 +1,3 @@
-import bbn from "@bbn/bbn";
-
 export default {
   methods: {
     /**
@@ -8,7 +6,10 @@ export default {
      * @param {String} url
      */
     registerRouter(router) {
-      if (this.subrouter && (this.subrouter !== router)) {
+      if (!router.urlNavigation) {
+        return;
+      }
+      if (this.subrouter && (this.subrouter !== router) && !this.subrouter.$isDestroying) {
         throw new Error(bbn._('The router %s already exists', router.getBaseURL() || '__root__'));
       }
 

@@ -2,11 +2,11 @@
 
 <div :class="['bbn-iblock', componentClass]">
   <bbn-button :notext="true"
-              icon="nf nf-mdi-grid"
-              :text="_('Open selector')"
+              icon="nf nf-md-grid"
+              :label="_('Open selector')"
               @click="showWindow=!showWindow"
               ref="button"/>
-  <bbn-floater :title="false"
+  <bbn-floater :label="false"
                bbn-if="showWindow"
                @close="showWindow=false"
                :auto-hide="true"

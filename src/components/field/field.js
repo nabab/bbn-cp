@@ -40,6 +40,7 @@ const cpDef = {
     },
     data(){
       return {
+        currentTabIndex: this.tabindex || 0,
         /**
          * The component to render in bbn-field.
          * @data {Boolean|String} renderedComponent
@@ -130,6 +131,9 @@ const cpDef = {
                   break;
                 case "url":
                   this.renderedComponent = 'bbn-input';
+                  break;
+                case 'color':
+                  this.renderedComponent = 'bbn-colorpicker';
                   break;
                 case "number":
                   this.renderedComponent = 'bbn-numeric';

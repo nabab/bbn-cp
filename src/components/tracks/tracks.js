@@ -435,7 +435,7 @@ const cpDef = {
         setTimeout(() => {
           if (!!this.filteredData.length) {
             let item = !!this.uid ? this.filteredData[0].data[this.uid] : this.filteredData[0].key;
-            this.scrollTo(item);
+            this.scrollSet(item);
           }
         }, 300);
       });
@@ -445,10 +445,10 @@ const cpDef = {
      * @param {String} item
      * @fires getRef
      */
-    scrollTo(item){
+    scrollSet(item){
       let itemRef = this.getRef('item-' + item);
       if (itemRef) {
-        this.getRef('scroll').scrollTo(itemRef);
+        this.getRef('scroll').scrollSet(itemRef);
       }
     }
   },
@@ -679,7 +679,7 @@ const cpDef = {
 
             this.$nextTick(() => {
               this.main.edit(this.source.data, {
-                title: bbn._('Edit'),
+                label: bbn._('Edit'),
                 component: !this.main.editor ? this.main.$options.components.popupEditor : undefined,
                 minWidth: 500
               }, this.source.index);
@@ -837,7 +837,7 @@ const cpDef = {
             this.form.cancel();
           }
         },
-        remove(){
+        removeItem(){
           this.confirm(bbn._('Are you sure you want to delete this item?'), () => {
             this.post(this.main.url, {
               action: 'delete',

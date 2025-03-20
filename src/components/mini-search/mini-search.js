@@ -129,14 +129,6 @@ const cpDef = {
       default: 'action'
     },
     /**
-     * The name of the property to be used as URL to go to when selected.
-     * @prop {String} sourceUrl
-     */
-    sourceUrl: {
-      type: [String, Function],
-      default: 'url'
-    },
-    /**
      * The URL where to send the selected result.
      * @prop {String} selectUrl
      */
@@ -312,7 +304,7 @@ const cpDef = {
      * @fires keynav
      *
      */
-    keydown(e){
+    onKeydown(e){
       if (e.key === 'Enter') {
         let list = this.getRef('list');
         if (!!list) {

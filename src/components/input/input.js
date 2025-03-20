@@ -145,9 +145,9 @@ const cpDef = {
       type: [String, Number]
     },
     /**
-     * @prop {String} prefix
+     * @prop {String} pref
      */
-    prefix: {
+    pref: {
       type: String
     },
     /**
@@ -169,8 +169,8 @@ const cpDef = {
     }
 
     let currentValue = this.value || '';
-    if (this.prefix && (this.value.indexOf(this.prefix) === 0)) {
-      currentValue = bbn.fn.substr(currentValue, this.prefix.length);
+    if (this.pref && (currentValue.indexOf(this.pref) === 0)) {
+      currentValue = bbn.fn.substr(currentValue, this.pref.length);
     }
 
     return {
@@ -231,12 +231,12 @@ const cpDef = {
   },
   methods: {
     clear(){
-      this.emitInput(this.prefix || (this.nullable ? null : ''));
+      this.emitInput(this.pref || (this.nullable ? null : ''));
       this.currentValue = '';
     },
     emitValue(v) {
-      if (this.prefix && (v.indexOf(this.prefix) !== 0)) {
-        v = this.prefix + v;
+      if (this.pref && (v.indexOf(this.pref) !== 0)) {
+        v = this.pref + v;
       }
 
       this.emitInput(!v && this.nullable ? null : v);
@@ -277,8 +277,8 @@ const cpDef = {
       }
     },
     value(v) {
-      if (this.prefix && (v.indexOf(this.prefix) === 0)) {
-        v = bbn.fn.substr(v, this.prefix.length);
+      if (this.pref && v && (v.indexOf(this.pref) === 0)) {
+        v = bbn.fn.substr(v, this.pref.length);
       }
 
       if (!this.isEmittingValue) {
@@ -290,7 +290,7 @@ const cpDef = {
     currentValue(v) {
       if (!this.isEmittingValue) {
         this.isEmittingValue = true;
-        if (this.value !== (this.prefix || '') + this.currentValue) {
+        if (this.value !== (this.pref || '') + this.currentValue) {
           this.emitValue(v);
         }
 

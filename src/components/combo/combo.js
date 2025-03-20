@@ -54,14 +54,19 @@ const cpDef = {
         default: 10
       },
     },
+    data() {
+      return {
+        filterString: this.value
+      }
+    },
     methods: {
       /**
        * Puts the focus on the element.
        *
-       * @method click
+       * @method onClick
        * @fires getRef
        */
-      click(){
+      onClick(){
         if ( !this.isDisabled && !this.readnly ){
           this.getRef('input').focus();
           if ( this.filteredData.length ){
@@ -130,7 +135,7 @@ const cpDef = {
        * @fires commonKeydown
        * @fires keynav
        */
-      keydown(e) {
+      onKeydown(e) {
         if (e.key === 'Tab') {
           let list = this.getRef('list');
           list = list ? list.getRef('list') : {};

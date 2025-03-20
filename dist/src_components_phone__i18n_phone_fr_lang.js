@@ -15,7 +15,7 @@
   \**************************************************/
 /***/ ((module) => {
 
-eval("module.exports = /*#__PURE__*/JSON.parse('{\"Enter the number without the leading 0\":\"Veuillez mettre le numero sans le 0 initial\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/phone/_i18n/phone.fr.lang?");
+eval("module.exports = /*#__PURE__*/JSON.parse('{\"Enter the number without the leading 0\":\"Veuillez mettre le numero sans le 0 initial\",\"Invalid phone number\":\"Numéro de téléphone non valide\",\"Checking the number...\":\"Vérification du numéro ...\"}');\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/phone/_i18n/phone.fr.lang?");
 
 /***/ })
 

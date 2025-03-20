@@ -2,14 +2,14 @@
      bbn-droppable.data="!!sortable ? {data: {widget: _self}} : false">
   <!-- HEADER -->
   <div class="bbn-header bbn-no-border bbn-border-bottom bbn-unselectable"
-       bbn-if="title">
+       bbn-if="label">
     <div class="bbn-flex-width bbn-vxspadding bbn-vmiddle">
       <!-- BUTTONS LEFT -->
       <div class="bbn-header-buttons bbn-widget-button-left bbn-hxspadding">
         <i bbn-if="isClosable"
             :title="_('Close')"
             @click="close"
-            class="nf nf-fa-times"/>
+            class="nf nf-md-close_thick"/>
         <bbn-context bbn-if="hasMenu"
                       :source="finalMenu">
           <i :title="_('Menu')"
@@ -25,7 +25,7 @@
         <i bbn-if="icon" :class="[icon, 'bbn-right-sspace']"/>
         <h3 :style="dashboard && dashboard.sortable ? 'cursor: move' : ''"
             :class="['bbn-no-margin', {'bbn-iblock': !!icon}]"
-            bbn-html="title"
+            bbn-html="label"
             @dragstart="$emit('sortstart', $event)"
             @dragend="$emit('dragend', $event)"
             bbn-if="ready"
@@ -79,6 +79,15 @@
           <span bbn-elseif="it && it.text" bbn-html="it.text"/>
           <span bbn-else
                 bbn-html="it"/>
+          <template bbn-if="itemButtons">
+            <bbn-button bbn-for="(b, i) in itemButtons(it)"
+                        :key="i"
+                        @click="b.action(it)"
+                        :icon="b.icon"
+                        :title="b.text"
+                        :notext="true"
+                        class="bbn-hsmargin"/>
+          </template>
         </li>
         <div bbn-if="(limit ? idx < limit : true) && separator && currentItems[idx+1]"
              bbn-html="separator"/>
@@ -118,9 +127,12 @@
           :style="{visibility: currentStart < (currentTotal-limit) ? 'visible' : 'hidden'}"/>
     </div>
     <!-- LOADING -->
-    <div bbn-if="isLoading" class="bbn-overlay" style="opacity: 0.5">
-      <bbn-loader text=""
-                  type="swing"/>
+    <div bbn-if="isLoading && (currentItems === undefined)"
+         class="bbn-overlay"
+         style="opacity: 0.5">
+      <bbn-loader :label="null"
+                  type="swing"
+                  class="bbn-overlay bbn-middle"/>
     </div>
     
   </div>

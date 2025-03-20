@@ -258,7 +258,7 @@ const cpDef = {
         languages: {}
       };
       if (bbn.env.lang) {
-        cfg.languages[bbn.env.lang || 'en'] = bbnJsonEditorCp.lang;
+        cfg.languages[bbn.env.lang || 'en'] = bbnJsonEditor.lang;
       }
       if ( !this.readonly ){
         let cp = this;
@@ -295,7 +295,7 @@ const cpDef = {
       }
       if (this.expanded) {
         if (bbn.fn.isNumber(this.expanded)) {
-          expand(this.widget.node.childs, this.expanded);
+          this.widget.expand(this.widget.node.childs, this.expanded);
         }
         else {
           this.widget.expandAll();

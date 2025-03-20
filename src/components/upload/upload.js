@@ -231,6 +231,22 @@ const cpDef = {
      */
     maxFilesize: {
       type: Number
+    },
+    /**
+       * Keeps files with disallowed extension in file list (read-only)
+       * @prop {Boolean} [false] keepDisallowedExt
+       */
+    keepDisallowedExt: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * Keeps, in hidden mode, files with disallowed extension in file list (read-only)
+     * @prop {Boolean} [false] hideDisallowedExt
+     */
+    hideDisallowedExt: {
+      type: Boolean,
+      default: false
     }
   },
   data(){
@@ -259,7 +275,7 @@ const cpDef = {
         uploadButton: bbn._('Choose files'),
         dropHere: bbn._('Drop files here'),
         pasteContainer: bbn._('Click on the container and then press CTRL+V keys to paste the file'),
-        uploadOrDrop: bbn._('Choose files or drop files here') + this.maxFilesize ? ` (maximum file size ${bbn.fn.formatBytes(this.maxFilesize)})` : '',
+        uploadOrDrop: bbn._('Choose files or drop files here') + (this.maxFilesize ? ` (maximum file size ${bbn.fn.formatBytes(this.maxFilesize)})` : ''),
         retry: bbn._('Retry'),
         editFilename: bbn._('Edit filename'),
         remove: bbn._('Delete'),
@@ -373,7 +389,8 @@ const cpDef = {
         fromUser: fromUser,
         fromPaste: !!fromPaste,
         edit: false,
-        progress: 0
+        progress: 0,
+        hidden: this.keepDisallowedExt && this.hideDisallowedExt && !this.isExtAllowed(this.getExtension(file.name))
       }
     },
     /**
@@ -460,7 +477,7 @@ const cpDef = {
           return false
         }
 
-        let current = bbn.fn.getRow(this.currentData, {'data.name': file.data.name});
+        const current = bbn.fn.getRow(this.currentData, {'data.name': file.data.name});
         if (current) {
           if (file.fromUser) {
             const message = bbn._('The file "%s" exists', file.data.name)
@@ -472,14 +489,10 @@ const cpDef = {
             file.id = current.id;
           }
         }
-        if (bbn.fn.isArray(this.extensions) && this.extensions.length) {
-          let ext = file.data.name.substring(file.data.name.lastIndexOf('.')+1).toLowerCase(),
-              extensions = bbn.fn.map(this.extensions, e => {
-                return e.toLowerCase();
-              });
-          if (!extensions.includes(ext)
-            && file.fromUser
-          ) {
+
+        const ext = this.getExtension(file.data.name);
+        if (!this.isExtAllowed(ext)) {
+          if (file.fromUser) {
             const message = bbn._('The extension "%s" is not allowed', ext);
             this.$emit('error', file.data.name, message);
             const ev = new CustomEvent('extensionexists', {cancelable: true});
@@ -490,7 +503,11 @@ const cpDef = {
 
             return false;
           }
+          else if (!this.keepDisallowedExt) {
+            return false
+          }
         }
+
         return true
       })
     },
@@ -830,7 +847,7 @@ const cpDef = {
      * @param {Object} file
      * @fires _remove
      */
-    remove(file, force){
+    removeItem(file, force){
       if (file.status === 'error') {
         this._remove(file);
       }
@@ -1021,6 +1038,30 @@ const cpDef = {
       if (this.canAddFile) {
         this.getRef('fileInput').click();
       }
+    },
+    /**
+     * Gets the file's extension.
+     * @method getExtension
+     * @param {String} filename
+     * @return String
+     */
+    getExtension(filename){
+      return filename?.length ? filename.substring(filename.lastIndexOf('.')+1).toLowerCase() : '';
+    },
+    /**
+     * Checks if the given file extension is allowed
+     * @method isExtAllowed
+     * @param {String} ext
+     * @return Boolean
+     */
+    isExtAllowed(ext){
+      if (bbn.fn.isArray(this.extensions)
+        && this.extensions.length
+      ) {
+        return bbn.fn.map(this.extensions, e => e.toLowerCase()).includes(ext.toLowerCase());
+      }
+
+      return true;
     }
   },
   created(){

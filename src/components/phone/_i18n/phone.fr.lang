@@ -1,3 +1,5 @@
 {
-  "Enter the number without the leading 0": "Veuillez mettre le numero sans le 0 initial"
+  "Enter the number without the leading 0": "Veuillez mettre le numero sans le 0 initial",
+  "Invalid phone number": "Numéro de téléphone non valide",
+  "Checking the number...": "Vérification du numéro ..."
 }

@@ -146,10 +146,10 @@ const cpDef = {
       default: false
     },
     /**
-     * The title of the floater's header.
-     * @prop {(Boolean|String)} title
+     * The label of the floater's header.
+     * @prop {(Boolean|String)} label
      */
-    title: {
+    label: {
       type: [Boolean, String]
     },
     /**
@@ -245,7 +245,7 @@ const cpDef = {
       default: false
     },
     opener: {
-      type: bbnCp
+      type: HTMLElement
     },
     /**
      * Whatever will be given as arguments to the function action.
@@ -258,7 +258,7 @@ const cpDef = {
       default: false
     },
     pagerElement: {
-      type: bbnCp
+      type: HTMLElement
     },
     headerTitle: {
       type: Boolean,
@@ -283,7 +283,7 @@ const cpDef = {
      * Set to true to make the floater draggable
      * @prop {Boolean} [false] draggable
      */
-    draggable: {
+    drag: {
       type: Boolean,
       default: false
     },
@@ -326,10 +326,10 @@ const cpDef = {
       default: 'group'
     },
     /**
-     * @prop {(String|Object|bbnCp)} groupComponent
+     * @prop {(String|Object|HTMLElement)} groupComponent
      */
     groupComponent: {
-      type: [String, Object, bbnCp]
+      type: [String, Object, HTMLElement]
     },
     /**
      * @prop {String} groupStyle
@@ -339,7 +339,7 @@ const cpDef = {
     },
     closeIcon: {
       type: String,
-      default: 'nf nf-fa-times'
+      default: 'nf nf-md-close_thick'
     },
     index: {
       type: Number
@@ -384,11 +384,11 @@ const cpDef = {
       /**
        * @data {Boolean} [false] currentScroll
        */
-      scrollWidth: null,
+      measuredScrollWidth: null,
       /**
        * @data {Boolean} [false] currentScroll
        */
-      scrollHeight: null,
+      measuredScrollHeight: null,
       /**
        * @data {Number} [0] currentWidth
        */
@@ -446,6 +446,7 @@ const cpDef = {
       definedHeight: null,
       resizerFn: null,
       scrollResized: false,
+      currentData: this.component || this.content ? null : [],
         /**
        * A list of form components contained in this container
        * @data {Array} [[]] forms
@@ -531,12 +532,12 @@ const cpDef = {
         }
       }
 
-      s.visibility = this.isResized ? 'visible' : 'hidden';
+      s.opacity = this.isResized && this.$isMounted ? '1' : '0';
       return s;
     },
     HTMLStyle() {
-      this.scrollWidth = Math.min(this.scrollWidth, this.currentMaxWidth);
-      this.scrollHeight = Math.min(this.scrollHeight, this.scrollMaxHeight - this.currentTop);
+      this.measuredScrollWidth = Math.min(this.scrollWidth, this.currentMaxWidth);
+      this.measuredScrollHeight = Math.min(this.scrollHeight, this.scrollMaxHeight - this.currentTop);
       const maxHeight = this.scrollMaxHeight - this.currentTop;
       let s = {
         maxWidth: this.isMaximized ? '100%' : (!!this.currentMaxWidth ? (this.currentMaxWidth + 'px') : null),
@@ -598,7 +599,7 @@ const cpDef = {
           const scroll = this.closest('bbn-scroll');
           if (scroll) {
             const onScroll = () => {
-              bbn.fn.log("ON SCROLL", this.isVisible)
+              //bbn.fn.log("ON SCROLL", this.isVisible)
               if (this.isVisible) {
                 this.onResize();
               }
@@ -642,7 +643,7 @@ const cpDef = {
 
       // Min based on element (like a dropdown!) - can't be smaller than the element
       if (this.element && this.elementWidth) {
-        tmp = this.element.getBoundingClientRect();
+        tmp = this.$position(this.element);
         if (tmp.width) {
           if (!this.maxWidth || (this.maxWidth > tmp.width)) {
             minWidth.push(tmp.width);
@@ -663,13 +664,13 @@ const cpDef = {
       // Max based on container - can't be bigger if container is specified
       let coord = {};
       if (this.container) {
-        coord = (bbn.fn.isDom(this.container) ? this.container : this.$el.offsetParent).getBoundingClientRect();
+        coord = this.$position(bbn.fn.isDom(this.container) ? this.container : this.$el.offsetParent);
         if (coord.width) {
-          maxWidth.push(Math.round(coord.width));
+          maxWidth.push(coord.width);
         }
 
         if (coord.height) {
-          maxHeight.push(Math.round(coord.height));
+          maxHeight.push(coord.height);
         }
 
       }
@@ -680,7 +681,7 @@ const cpDef = {
 
       // Depends on an element (dropdown, context) and will position by it
       if (this.element) {
-        let coord = this.element.getBoundingClientRect();
+        let coord = this.$position(this.element);
         if (this.isHorizontal) {
           maxHeight.push(Math.max(coord.y + coord.height, bbn.env.height - coord.y));
         }
@@ -714,7 +715,7 @@ const cpDef = {
         outHeight += Math.round(parseFloat(currentStyle.borderBottom));
       }
 
-      if (this.title) {
+      if (this.label) {
         const header = this.getRef('header');
         if (header) {
           outHeight += header.offsetHeight;
@@ -814,7 +815,7 @@ const cpDef = {
      */
     _getCoordinates() {
       if (this.element) {
-        let coor = this.element.getBoundingClientRect();
+        let coor = this.$position(this.element);
         return {
           top: this.isHorizontal ? coor.top : coor.bottom - 1,
           bottom: this.currentMaxHeight - (this.isHorizontal ? coor.bottom : coor.top + 1),
@@ -881,7 +882,8 @@ const cpDef = {
         catch (e){
           bbn.fn.log("ERROR", e, this.$el);
         }
-        el.remove();
+
+        el.parentNode.removeChild(el);
       }
       return r;
     },
@@ -915,11 +917,8 @@ const cpDef = {
         }
       };
 
-      if (this.element) {
-        bbn.fn.log(JSON.stringify(this.element.getBoundingClientRect()));
-      }
       const coor = this.element ?
-        JSON.parse(JSON.stringify(this.element.getBoundingClientRect()))
+        this.$position(this.element)
         : {
           top: bbn.fn.isNumber(this.top) ? this.top : null,
           right: bbn.fn.isNumber(this.right) ? this.right : null,
@@ -927,8 +926,6 @@ const cpDef = {
           left: bbn.fn.isNumber(this.left) ? this.left : null
         };
       let ok = true;
-      const parentResizer = this.getParentResizer();
-      const parentCoor = JSON.parse(JSON.stringify((parentResizer?.$el || this.$el.offsetParent || document.body).getBoundingClientRect()));
       bbn.fn.iterate(r, (a, ax) => {
         let scroll = false;
         let size = this['lastKnown' + a.camel];
@@ -1182,7 +1179,7 @@ const cpDef = {
       }
 
       let popup = this.$parent?.$options?.name === 'bbn-popup' ? this.$parent : null;
-      if (this.forms.length && !confirm) {
+      if (this.forms?.length && !confirm) {
         //bbn.fn.log("The form should have closed the floater");
         this.forms[0].closePopup(force);
       }
@@ -1223,7 +1220,7 @@ const cpDef = {
      * @emits select
      */
     select(item, idx, dataIndex, ev) {
-      if (!ev?.defaultPrevented && item && !item.disabled && !item[this.children]) {
+      if (!ev?.defaultPrevented && item && !item.disabled && !item[this.sourceItems]) {
         if (!ev) {
           ev = new CustomEvent('select', {cancelable: true});
         }
@@ -1432,7 +1429,7 @@ const cpDef = {
       //bbn.fn.log("CHANGING VISIBle")
     },
     isVisible(v) {
-      bbn.fn.log("CHANGING VISIBILITY")
+      //bbn.fn.log("CHANGING VISIBILITY")
       if (v) {
         if (!this.ready) {
           this.init();
@@ -1491,7 +1488,6 @@ const cpDef = {
 
 };
 
-import bbn from '@bbn/bbn';
 import cpHtml from './floater.html';
 import cpStyle from './floater.less';
 let cpLang = {};

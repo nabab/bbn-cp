@@ -12,25 +12,24 @@
         </div>
         <div :class="{
           'bbn-flex-fill': scrollable,
-          'bbn-w-100': !scrollable
+          'bbn-flex-width': !scrollable
         }"
               :style="{backgroundColor: parentBackground}">
           <bbn-scroll bbn-forget="!scrollable"
                       ref="horizontal-scroll"
                       bbn-bind="scrollCfg"
-                      style="height: 100%"
                       @ready="onScrollReady">
             <ul ref="tabgroup"
                 :class="['bbn-tabs-tabs', 'bbn-border-bottom', {
-                  'bbn-flex-fill': !isVertical && !scrollable,
+                  'bbn-flex-fill': !isVertical && (!scrollable || !$slots.default.length),
                   'bbn-overflow-v': !scrollable,
                   'bbn-flex-width': fill
                 }]">
-              <li bbn-for="tab in source"
-                  @click="clickLi(tab.idx)"
+              <li bbn-for="(tab, i) in source"
+                  @click="clickLi(i)"
                   :ref="'tab-' + tab.idx"
                   :key="tab.uid || tab.url || tab.idx"
-                  bbn-show="!tab.hidden"
+                  bbn-show="!tab.invisible"
                   :style="{
                           backgroundColor: tab.bcolor || null,
                           color: tab.fcolor || null
@@ -70,27 +69,28 @@
                              min-width="10rem"
                              :class="['bbn-tabs-tab', 'bbn-iblock', {
                                     'bbn-tabs-dirty': tab.dirty,
-                                    'bbn-tabs-icononly': tab.notext
+                                    'bbn-tabs-icononly': tab.notext,
+                                    'bbn-flex-vcentered': true
                                     }]"
                              :ref="'title-' + tab.idx"
                              :style="{
                                     color: tab.fcolor ? tab.fcolor : null
                                      }"
                              tabindex="0"
-                  ><span bbn-if="tab.icon"
-                         :title="tab.title"
-                         :class="['bbn-tabs-main-icon bbn-iblock', tab.notext ? 'bbn-lg' : 'bbn-m', {
-                           'bbn-right-smargin': !tab.notext && tab.title
-                         }]"
-                  ><bbn-icon :content="tab.icon"
-                  /></span><span bbn-if="!tab.notext && tab.title"
+                  ><bbn-icon bbn-if="tab.icon"
+                              :title="tab.label"
+                              :class="['bbn-tabs-main-icon bbn-iblock', tab.notext ? 'bbn-lg' : 'bbn-m', {
+                                'bbn-right-smargin': !tab.notext && tab.label
+                              }]"
+                              :content="tab.icon"
+                              :size="16"/><span bbn-if="!tab.notext && tab.label"
                                  class="bbn-router-tab-text"
                                  :title="getTabTitle(tab)"
-                                 bbn-html="tab.title.length > maxTitleLength ? cutTitle(tab.title) : tab.title"
+                                 bbn-html="tab.label.length > maxTitleLength ? cutTitle(tab.label) : tab.label"
                   /></bbn-context>
                 <div class="bbn-tabs-selected"
                      :ref="'selector-' + tab.idx"
-                     bbn-if="tab.idx === value"
+                     bbn-if="i === value"
                      :style="{backgroundColor: tab.fcolor || altTextColor}"/>
                 <span bbn-if="!tab.fixed && !tab.pinned && closable"
                       class="bbn-p bbn-router-tab-close bbn-iblock bbn-top-right"
@@ -99,9 +99,9 @@
                       @keydown.left.down.prevent.stop="getRef('menu-' + tab.idx) ? getRef('menu-' + tab.idx).$el.focus() : null"
                       @keydown.space.enter.prevent.stop="$emit('close', tab.idx)"
                       @click.stop.prevent="$emit('close', tab.idx)">
-                  <i class="nf nf-fa-times bbn-xxs"/>
+                  <i class="nf nf-md-close_thick bbn-xxs"/>
                 </span>
-                <bbn-context bbn-if="(tab.menu !== false) && (tab.idx === value)"
+                <bbn-context bbn-if="(tab.menu !== false) && (i === value)"
                              class="bbn-iblock bbn-router-tab-menu bbn-p bbn-bottom-right"
                              tabindex="-1"
                              min-width="10rem"
@@ -114,6 +114,7 @@
                 </bbn-context>
               </li>
             </ul>
+            <slot/>
           </bbn-scroll>
         </div>
         <div bbn-if="scrollable"

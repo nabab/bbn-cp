@@ -54,10 +54,10 @@ const cpDef = {
         type: String
       },
       /**
-       * @prop {(String|Object|bbnCp)} headerComponent
+       * @prop {(String|Object|HTMLElement)} headerComponent
        */
       headerComponent: {
-        type: [String, Object, bbnCp]
+        type: [String, Object, HTMLElement]
       },
       /**
        * @prop {String} footer
@@ -66,10 +66,10 @@ const cpDef = {
         type: String
       },
       /**
-       * @prop {(String|Object|bbnCp)} footerComponent
+       * @prop {(String|Object|HTMLElement)} footerComponent
        */
       footerComponent: {
-        type: [String, Object, bbnCp]
+        type: [String, Object, HTMLElement]
       }
     },
     data(){

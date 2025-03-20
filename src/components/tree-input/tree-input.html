@@ -1,21 +1,18 @@
 <div :class="[{'bbn-iblock':true}, componentClass]"
->
+     tabindex="-1">
   <input :value="ivalue"
          ref="element"
          class="bbn-textbox"
          :disabled="isDisabled"
          :required="required"
-         readonly="readonly"
-  >
+         readonly="readonly">
   <input type="hidden"
          :value="value"
          :name="name"
-         ref="hinput"
-  > &nbsp;
+         ref="hinput"> &nbsp;
   <bbn-button ref="button"
               @click="build()"
+              :tabindex="currentTabIndex"
               class="bbn-no-vborder"
-              icon="nf nf-fa-search"
-  >
-  </bbn-button>
+              icon="nf nf-fa-search"/>
 </div>

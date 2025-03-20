@@ -18,10 +18,10 @@ const cpDef = {
     ],
     props: {
       /**
-       * @prop {(String|Object|bbnCp)} component
+       * @prop {(String|Object|HTMLElement)} component
        */
       component: {
-        type: [String, Object, bbnCp]
+        type: [String, Object, HTMLElement]
       },
       /**
        * The source of the component tooltip.
@@ -31,11 +31,11 @@ const cpDef = {
         type: [Function, String]
       },
       /**
-       * @prop {String|Boolean} ['nf nf-mdi-information_outline'] icon
+       * @prop {String|Boolean} ['nf nf-md-information_outline'] icon
        */
       icon: {
         type: [String, Boolean],
-        default: 'nf nf-mdi-information_outline'
+        default: 'nf nf-md-information_outline'
       },
       /**
        * The html tag.

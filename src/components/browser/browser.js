@@ -41,10 +41,10 @@ const cpDef = {
     /**
      * The role of the button when clicked.
      *
-     * @method click
+     * @method onClick
      * @emit click
      */
-    click(e){
+    onClick(e){
       if ( this.url ){
         bbn.fn.link(this.url);
       }
@@ -72,7 +72,7 @@ const cpDef = {
         </span>
       </div>
       <div class="bbn-flex-fill">
-        <bbn-input bbn-model="url" class="bbn-w-100" @keydown="keydown"></bbn-input>
+        <bbn-input bbn-model="url" class="bbn-w-100" @keydown="onKeydown"></bbn-input>
       </div>
     </div>
   </div>
@@ -107,10 +107,10 @@ const cpDef = {
       },
       methods: {
         /**
-         * @method keydown
+         * @method onKeydown
          * @param e
          */
-        keydown(e){
+        onKeydown(e){
           bbn.fn.log("ON KEYDOWN BVROWSER", e)
         }
       }

@@ -103,7 +103,15 @@ const data = {
         }
         return v || '';
       }          
-    }
+    },
+    // For preventing default autobind
+    listOnBeforeMount() {
+
+    },
+    getDataIndex(itemIndex) {
+      return this.items[itemIndex] ? this.items[itemIndex].index : -1;
+    },
+
   }
 };
 

@@ -1,4 +1,4 @@
-import bbnData from "../../Data.js";
+import bbnData from "../Data.js";
 
 /**
  * Creates a new bbnData object if the given value is not primitive or already reactive, returns the value

@@ -1,7 +1,6 @@
-import bbn from '@bbn/bbn';
 import analyzeElement from './analyzeElement.js';
 import removeSelfClosing from "./removeSelfClosing.js";
-
+import "../cp.js";
 /**
  * Create a new DOM parser and parse the given HTML string.
  * @return {HTMLElement}
@@ -146,7 +145,7 @@ export default function stringToTemplate(str, withMap, name) {
           isIf = true;
         }
         else if (!isIf) {
-          throw new Error(bbn._("There can't be an elseif or an else without an if (check %s)", componentName));
+          throw new Error(bbn._("There can't be an elseif or an else without an if (check %s)", name));
         }
         else {
           item.conditionId = conditionId;

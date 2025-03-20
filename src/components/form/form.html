@@ -1,6 +1,4 @@
-<form :action="action"
-      :method="method"
-      :autocomplete="autocomplete"
+<form method="post"
       :class="[componentClass, currentClass]"
       :style="currentStyle"
       @submit.prevent
@@ -28,9 +26,9 @@
                       :is="field.lineComponent"
                       :source="source"/>
             <template bbn-else>
-              <label bbn-html="field.title"
+              <label bbn-html="field.label"
                     :for="field.id"
-                    :title="field.ftitle || field.title || field.field"/>
+                    :title="field.flabel || field.label || field.field"/>
               <component bbn-if="field.editor"
                         :is="field.editor"
                         bbn-bind="field.options"
@@ -45,7 +43,7 @@
         <slot></slot>
       </fieldset>
       <!-- SMALL BUTTONS OUTSIDE WINDOW -->
-      <div bbn-if="!hasFooter && !window && realButtons.length && ['small', 'normal'].includes(currentMode)"
+      <div bbn-if="!hasFooter && !window && !windowed && realButtons.length && ['small', 'normal'].includes(currentMode)"
            class="bbn-form-buttons bbn-middle bbn-vpadding">
         <bbn-button bbn-for="(button, i) in realButtons"
                     :key="button.key || i"
@@ -53,7 +51,7 @@
                     bbn-bind="button"/>
       </div>
       <!-- DEFAULT BUTTONS OUTSIDE WINDOW -->
-      <div bbn-elseif="!hasFooter && !window && realButtons.length && (currentMode !== 'big')"
+      <div bbn-elseif="!hasFooter && !window && !windowed && realButtons.length && (currentMode !== 'big')"
            class="bbn-form-buttons bbn-vlpadding bbn-c bbn-button-group bbn-grid"
            :style="'grid-template-columns: repeat(' + realButtons.length + ', 1fr);'">
         <bbn-button bbn-for="(button, i) in realButtons"
@@ -79,7 +77,7 @@
                     :style="{width: '10em'}"
                     bbn-bind="button"/>
       </div>
-    </component>
+    </bbn-scroll>
   </div>
   <div bbn-if="hasFooter && !popup"
        class="bbn-form-footer bbn-header">
@@ -88,9 +86,14 @@
 
   <!-- BIG BUTTONS IN WINDOW -->
   <div bbn-elseif="realButtons.length && (currentMode === 'big')"
-       :class="['bbn-form-footer', 'bbn-popup-footer', 'bbn-button-group', 'bbn-flex-width', {'bbn-lg': !window}]"
+       bbn-show="!windowed || (window && windowFooter && windowButtonsVisible)"
+       :class="['bbn-form-footer', 'bbn-popup-footer', 'bbn-button-group', 'bbn-flex-width', {
+         'bbn-lg': !window,
+         'bbn-invisible': windowed && window && (!windowFooter || !windowButtonsVisible)
+       }]"
        :style="{minHeight: !window ? '3rem' : ''}"
-       bbn-portal="windowFooter">
+       bbn-portal="windowFooter"
+       @portalmoved="onButtonsMoved">
     <bbn-button bbn-for="(button, i) in realButtons"
                 :class="[{
                   'bbn-noradius-top': !!window,

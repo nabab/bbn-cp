@@ -1,6 +1,6 @@
 <div :class="[componentClass, 'bbn-w-100', 'bbn-textbox']"
      tabindex="0"
-     @keydown.stop="keydown($event)"
+     @keydown.stop="onKeydown($event)"
      :style="{minHeight: mode === 'checkboxes' ? null : '6.5rem'}">
   <div bbn-if="mode === 'checkboxes'"
        class="bbn-w-100">

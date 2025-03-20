@@ -3,10 +3,10 @@
           'bbn-reset': true,
           'bbn-border': !modal,
           'bbn-background-internal': !modal,
-          'bbn-invisible': !isResized,
           'bbn-floater-arrowed': !!arrow,
           'bbn-radius': !!currentButtons.length,
           'bbn-floater-resized': isResized,
+          'bbn-card': !currentData
         },
         componentClass
       ]"
@@ -18,10 +18,11 @@
       bbn-resizable:container.left.right.bottom="ready && resizable ? $el.parentElement : false">
   <div bbn-if="arrow"
        :class="['bbn-floater-arrow', position]"/>
-  <div :class="{'bbn-flex-height': scrollable || footer || title || currentButtons?.length || numButtonsInContainer}">
+  <div :class="{'bbn-flex-height': scrollable || footer || label || currentButtons?.length || numButtonsInContainer}">
     <div bbn-if="modal"
-         class="bbn-overlay bbn-modal"/>
-    <header bbn-if="title"
+         class="bbn-overlay bbn-modal"
+         @click="$emit('click-modal')"/>
+    <header bbn-if="label"
             ref="header"
             :class="{
               'bbn-header': headerTitle,
@@ -29,10 +30,10 @@
               'bbn-unselectable': true,
               'bbn-w-100': !isResizing
             }"
-            bbn-draggable.mode.helper.container="!!draggable && ready ? {mode: 'move', helper: $el, container: $el.parentElement} : false">
-      <div bbn-if="title"
+            bbn-draggable.mode.helper.container="!!drag && ready ? {mode: 'move', helper: $el, container: $el.parentElement} : false">
+      <div bbn-if="label"
           class="bbn-w-100 bbn-vxspadding">
-        <h3 bbn-html="title"
+        <h3 bbn-html="label"
             class="bbn-no-margin bbn-c"
             :style="{
               paddingLeft: maximizable || closable ? '3.6rem' : 'var(--space)',
@@ -46,19 +47,19 @@
             @click.stop.prevent="isMaximized = !isMaximized"
             tabindex="0"
             :title="_('Full screen')">
-          <i :class="'nf nf-mdi-window_' + (isMaximized ? 'restore' : 'maximize')"/>
+          <i :class="'nf nf-md-window_' + (isMaximized ? 'restore' : 'maximize')"/>
         </div>
         <div bbn-if="closable !== false"
             class="bbn-h-100 bbn-middle bbn-reactive"
             @click.stop.prevent="close()"
             tabindex="0"
             :title="_('Close')">
-          <i class="nf nf-fa-times"/>
+          <i :class="closeIcon"/>
         </div>
       </div>
     </header>
     <div :class="{
-          'bbn-flex-fill': scrollable || footer || title || currentButtons?.length || numButtonsInContainer,
+          'bbn-flex-fill': scrollable || footer || label || currentButtons?.length || numButtonsInContainer,
           'bbn-flex-height': pageable
         }"
           bbn-forget="!pageable">
@@ -74,7 +75,10 @@
       </div>
       <bbn-scroll :latency="latency"
                   ref="scroll"
-                  :class="{'bbn-flex-fill': !pageable && (scrollable || footer || title || currentButtons?.length || numButtonsInContainer)}"
+                  :class="{
+                    'bbn-flex-fill': !pageable && (scrollable || footer || label || currentButtons?.length || numButtonsInContainer),
+                    'bbn-grid': !pageable && !isResizing && isResized && (scrollable || footer || label || currentButtons?.length || numButtonsInContainer)
+                  }"
                   :scrollable="scrollable"
                   :invisible="scrollHidden"
                   :axis="axis"
@@ -86,7 +90,7 @@
                   ref="component"
                   :is="component"
                   bbn-bind="realComponentOptions"/>
-        <slot bbn-elseif="$slots.default.length"/>
+        <slot bbn-elseif="$slots.default.length && ($slots.default[0].bbnSchema.tag !== 'slot')"/>
         <div bbn-elseif="!!content"
             bbn-html="content"
             :style="HTMLStyle"/>
@@ -99,7 +103,7 @@
                   :component="itemComponent"
                   :template="template"
                   :uid="uid"
-                  :children="children"
+                  :source-items="sourceItems"
                   :selected="selected"
                   :scroll-hidden="scrollHidden"
                   :class="'bbn-floater-list bbn-menulist ' + mode"
@@ -109,6 +113,8 @@
                   :source-text="sourceText"
                   :source-url="sourceUrl"
                   :source-action="sourceAction"
+                  :source-icon="sourceIcon"
+                  :source-visible="sourceVisible"
                   :groupable="groupable"
                   :source-group="sourceGroup"
                   :group-component="groupComponent"
@@ -131,7 +137,7 @@
                 scoped="scoped"
                 bbn-html="css"/>
     </div>
-    <div bbn-if="!title && closable">
+    <div bbn-if="!label && closable">
       <div :class="{
         'bbn-top-right': true,
         'bbn-spadding': true,

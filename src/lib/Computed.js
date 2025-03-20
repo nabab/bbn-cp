@@ -1,6 +1,5 @@
-import bbn from "@bbn/bbn";
-import propagateDependencyChanges from "./Cp/private/propagateDependencyChanges.js";
-import updateWatcher from "./Cp/private/updateWatcher.js";
+import propagateDependencyChanges from "./Html/private/propagateDependencyChanges.js";
+import updateWatcher from "./Html/private/updateWatcher.js";
 
 /**
  * Class representing a computed property.
@@ -26,11 +25,19 @@ export default class bbnComputed {
    * @param {Function} [setter] - The optional setter function for the computed property.
    */
   constructor(cp, name, getter, setter) {
-    // Check if cp is an instance of bbnCp.
-    bbn.fn.checkType(cp, bbnCp);
+    // Check if cp is an instance of HTMLElement.
+    bbn.fn.checkType(cp, HTMLElement);
     this.#component = cp;
     // Check if name is a string.
     bbn.fn.checkType(name, String);
+    if (cp.$isPropNative(name)) {
+      if (cp.tagName === 'BBN-ANON') {
+        bbn.fn.log(cp);
+      }
+
+      throw new Error(`The computed ${name} is already defined in the HTML prototype of the component ${cp.tagName}`);
+    }
+
     this.#name = name;
     // Check if getter is a function.
     bbn.fn.checkType(getter, Function);
@@ -178,49 +185,6 @@ export default class bbnComputed {
         }
       }
 
-      let prev = false;
-      for (let i = 0; i < deps.length; i++) {
-        const a = deps[i];
-        if (a.data instanceof bbnData) {
-          if (!a.data.targetData) {
-            continue;
-          }
-
-          bbn.fn.each(a.data.refs, r => {
-            if (r.parent === prev) {
-              deps.splice(i - 1, 1);
-              i--;
-              a = deps[i];
-              return false;
-            }
-          });
-  
-          if (a.name) {
-            if (!a.data.deps[a.name]) {
-              a.data.deps[a.name] = [];
-            }
-            if (!a.data.deps[a.name].includes(this)) {
-              a.data.deps[a.name].push(this);
-            }
-          }
-          // Add the attribute to the data dependencies if not already present.
-          if (!a.data.deps.__bbnRoot.includes(this)) {
-            a.data.deps.__bbnRoot.push(this);
-          }
-        }
-        else if (a.component && a.name && a.component.$namespaces[a.name] && ((a.component !== this.#component) || (a.name !== this.#name))) {
-          if (!a.component.$deps[a.name]) {
-            a.component.$deps[a.name] = [];
-          }
-  
-          if (!a.component.$deps[a.name].includes(this)) {
-            a.component.$deps[a.name].push(this); // Add this computed property to the component's dependencies.
-          }
-        }
-  
-        prev = a;
-      }
-      
       if (hasChanged || (this.#val !== v)) {
         // Taking care of dependencies only if the result has changed
         /*
@@ -285,6 +249,49 @@ export default class bbnComputed {
       this.#changed = false;
     }
 
+    let prev = false;
+    for (let i = 0; i < deps.length; i++) {
+      const a = deps[i];
+      if (a.data instanceof bbnData) {
+        if (!a.data.value) {
+          continue;
+        }
+
+        bbn.fn.each(a.data.refs, r => {
+          if (r.parent === prev) {
+            deps.splice(i - 1, 1);
+            i--;
+            a = deps[i];
+            return false;
+          }
+        });
+
+        if (a.name) {
+          if (!a.data.deps[a.name]) {
+            a.data.deps[a.name] = [];
+          }
+          if (!a.data.deps[a.name].includes(this)) {
+            a.data.deps[a.name].push(this);
+          }
+        }
+        // Add the attribute to the data dependencies if not already present.
+        if (!a.data.deps.__bbnRoot.includes(this)) {
+          a.data.deps.__bbnRoot.push(this);
+        }
+      }
+      else if (a.component && a.name && a.component.$namespaces[a.name] && ((a.component !== this.#component) || (a.name !== this.#name))) {
+        if (!a.component.$deps[a.name]) {
+          a.component.$deps[a.name] = [];
+        }
+
+        if (!a.component.$deps[a.name].includes(this)) {
+          a.component.$deps[a.name].push(this); // Add this computed property to the component's dependencies.
+        }
+      }
+
+      prev = a;
+    }
+
     // Update the build number.
     this.#num = this.#component.$numBuild + 1;
     //bbn.fn.log("FINISHED UPDATNG COMPUTED " + this.#name + ' ' + this.#component.$cid);
@@ -307,16 +314,16 @@ export default class bbnComputed {
         }
 
         // If the computed property has not been updated yet, update it.
-        if (!this.$computed[name].num) {
+        if (!_t.num) {
           // Update the computed property's value.
-          this.$computed[name].computedUpdate();
+          _t.computedUpdate();
           // Initialize the watcher for the computed property.
           updateWatcher(this, name, true);
         }
-        else if (bbn.cp.queue.includes(this.$computed[name])) {
-          let idx = bbn.cp.queue.indexOf(this.$computed[name]);
+        else if (bbn.cp.queue.includes(_t)) {
+          let idx = bbn.cp.queue.indexOf(_t);
           bbn.cp.queue.splice(idx, 1);
-          _t.computedUpdate();
+          _t.computedUpdate(true);
         }
 
 
@@ -326,14 +333,14 @@ export default class bbnComputed {
         //}
 
         // Return the value of the computed property.
-        return this.$computed[name].val;
+        return _t.val;
       }
     };
     /* Maybe a setter */
     if (setter) {
       def.set = function (v) {
         const res = setter(v);
-        this.$computed[name].computedUpdate();
+        _t.computedUpdate();
         return res;
       };
     }

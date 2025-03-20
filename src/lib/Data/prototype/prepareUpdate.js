@@ -1,6 +1,5 @@
-import bbnData from "../../Data.js";
-import bbn from "@bbn/bbn";
-import propagateDependencyChanges from "../../Cp/private/propagateDependencyChanges.js";
+import bbnData from "../Data.js";
+import propagateDependencyChanges from "../../Html/private/propagateDependencyChanges.js";
 import queueUpdate from "../../../functions/queueUpdate.js";
 
 const getFn = function(watcher, lev, lastUpdate) {
@@ -16,13 +15,13 @@ const getFn = function(watcher, lev, lastUpdate) {
  * @param {Array} path
  */
 bbnData.prototype.prepareUpdate = function(path) {
-  if (!this.targetData) {
+  if (!this.value || this.root.component?.$isDestroying || this.root.component?.$isDestroyed) {
     //bbn.fn.log(["EEEEE", this]);
     return;
   }
 
   if (!this.refs.length) {
-    bbn.fn.log(["UNSET " + (path || 'NO PATH') + ": " + JSON.stringify(this.targetData), this]);
+    //bbn.fn.log(["UNSET " + (path || 'NO PATH') + ": " + JSON.stringify(this.targetData), this]);
     this.unset();
     return;
   }
@@ -37,13 +36,15 @@ bbnData.prototype.prepareUpdate = function(path) {
     root.parent.lastUpdate = num;
     root = root.parent.refs[root.parent.refs.length-1];
   }
+
   if (path) {
     deps.push(...(this.deps[path] || []));
   }
   deps.push(...(this.deps.__bbnRoot || []));
+  const todo = [];
   deps.forEach(a => {
     if (!(a instanceof bbnComputed) || !this.hasParent(a.component, a.name)) {
-      queueUpdate({component: a.component || a?.node?.component, element: a, num})
+      todo.push({component: a.component || a?.node?.component, element: a, num})
     }
   });
   impacted.forEach(it => {
@@ -62,7 +63,7 @@ bbnData.prototype.prepareUpdate = function(path) {
     while (bits.length) {
       if (it.component.$watcher[bits.join('.')]) {
         const watcher = it.component.$watcher[bits.join('.')];
-        queueUpdate({
+        todo.push({
           component: it.component,
           fn: getFn(watcher, level, this.lastUpdate),
           num
@@ -73,4 +74,6 @@ bbnData.prototype.prepareUpdate = function(path) {
     }
 
   });
+
+  queueUpdate(...todo);
 };

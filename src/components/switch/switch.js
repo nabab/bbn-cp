@@ -48,7 +48,7 @@ const cpDef = {
        * The id of the input.
        * @prop {String} [bbn.fn.randomString(10, 25)] id
        */
-      id: {
+      uid: {
         type: String,
         default(){
           return bbn.fn.randomString(10, 25);
@@ -215,7 +215,7 @@ const cpDef = {
         }
         else {
           //bbn.fn.log("KEYDOWN");
-          this.keydown(ev);
+          this.onKeydown(ev);
         }
       }
     },

@@ -15,29 +15,29 @@ const cpDef = {
       let fields = ['host', 'user', 'pass'],
   
       filesRules = {
-        pdf: 'nf nf-mdi-file_pdf bbn-red',
-        php: 'nf nf-mdi-language_php bbn-blue',
-        doc: 'nf nf-mdi-file_word bbn-blue',
-        docx: 'nf nf-mdi-file_word bbn-blue',
-        xls: 'nf nf-mdi-file_excel bbn-green',
-        xlsx: 'nf nf-mdi-file_excel bbn-green',
-        ppt: 'nf nf-mdi-file_powerpoint bbn-red',
-        pptx: 'nf nf-mdi-file_powerpoint bbn-red',
+        pdf: 'nf nf-md-file_pdf bbn-red',
+        php: 'nf nf-md-language_php bbn-blue',
+        doc: 'nf nf-md-file_word bbn-blue',
+        docx: 'nf nf-md-file_word bbn-blue',
+        xls: 'nf nf-md-file_excel bbn-green',
+        xlsx: 'nf nf-md-file_excel bbn-green',
+        ppt: 'nf nf-md-file_powerpoint bbn-red',
+        pptx: 'nf nf-md-file_powerpoint bbn-red',
         psd: 'nf nf-dev-photoshop bbn-blue',
-        js: 'nf nf-mdi-language_javascript bbn-red',
-        html: 'nf nf-mdi-language_html5 bbn-green',
+        js: 'nf nf-md-language_javascript bbn-red',
+        html: 'nf nf-md-language_html5 bbn-green',
         txt: 'nf nf-oct-file_text',
         css: 'nf nf-dev-css3 bbn-orange',
         less: 'nf nf-dev-css3 bbn-orange',
-        zip: 'nf nf-mdi-archive bbn-orange',
-        gz: 'nf nf-mdi-archive',
-        gzip: 'nf nf-mdi-archive',
-        png: 'nf nf-mdi-file_image bbn-purple',
-        jpeg: 'nf nf-mdi-file_image bbn-blue',
-        jpg: 'nf nf-mdi-file_image bbn-blue',
-        gif: 'nf nf-mdi-file_image bbn-pink',
-        tiff: 'nf nf-mdi-file_image bbn-brown',
-        json: 'nf nf-mdi-json bbn-red'
+        zip: 'nf nf-md-archive bbn-orange',
+        gz: 'nf nf-md-archive',
+        gzip: 'nf nf-md-archive',
+        png: 'nf nf-md-file_image bbn-purple',
+        jpeg: 'nf nf-md-file_image bbn-blue',
+        jpg: 'nf nf-md-file_image bbn-blue',
+        gif: 'nf nf-md-file_image bbn-pink',
+        tiff: 'nf nf-md-file_image bbn-brown',
+        json: 'nf nf-md-json bbn-red'
       },
       imageExt = ['jpeg', 'png', 'jpg', 'tiff', 'gif'];
       return {
@@ -103,9 +103,9 @@ const cpDef = {
          */
         currentContextPath: '',
         /**
-         * @data {Boolean} [false] isConnected
+         * @data {Boolean} [false] hasConnection
          */
-        isConnected: false,
+        hasConnection: false,
         /**
          * @data {Array} [[]] data
          */
@@ -314,9 +314,9 @@ const cpDef = {
       /**
        * Remove the current dirs.
        *
-       * @method remove
+       * @method removeCurrentDir
        */
-      remove(){
+      removeCurrentDir(){
         this.dirs.pop();
       },
       /**
@@ -360,7 +360,7 @@ const cpDef = {
           path += node.data.value;
           if ( this.currentPath !== path ){
             while ( num <= this.numCols ){
-              this.remove();
+              this.removeCurrentDir();
             }
             if ( node.data.dir ){
               this.currentFile = false;
@@ -376,7 +376,7 @@ const cpDef = {
               }
 
               //isImage
-              if ( !bbnFinderCp.imageExt.includes(ext) ){
+              if ( !bbnFinder.imageExt.includes(ext) ){
                 this.post( this.root + 'actions/finder/file', {
                   node: node.data,
                   path: this.currentPath,
@@ -424,8 +424,8 @@ const cpDef = {
         if ( node.dir) {
           node.icon = this.folderIcon;
         }
-        else if (bbnFinderCp.filesRules[ext]) {
-          node.icon = bbnFinderCp.filesRules[ext];
+        else if (bbnFinder.filesRules[ext]) {
+          node.icon = bbnFinder.filesRules[ext];
         }
         return node;
       },
@@ -439,7 +439,7 @@ const cpDef = {
           name: p.name,
           path: p.path,
           origin: this.origin
-        }, this.isConnected ? {
+        }, this.hasConnection ? {
           host: this.host,
           user: this.user,
           pass: this.pass
@@ -587,7 +587,7 @@ const cpDef = {
             path = tmp + '/';
           }
           node.getPopup({
-            title: bbn._('New Directory'),
+            label: bbn._('New Directory'),
             height: '150px',
             width: '350px',
             source: {
@@ -613,7 +613,7 @@ const cpDef = {
               tree = this.findAll('bbn-tree')[idx];
               treeUid = tree._uid;
               tree.getPopup({
-                title: bbn._('New Directory'),
+                label: bbn._('New Directory'),
                 height: '150px',
                 width: '350px',
                 source: {
@@ -726,7 +726,7 @@ const cpDef = {
         let currentPath = path;
         this.editingNode = node;
         node.getPopup({
-          title: bbn._('Rename'),
+          label: bbn._('Rename'),
           height: '150px',
           width: '350px',
           source: {
@@ -881,7 +881,7 @@ const cpDef = {
        * @fires checkDisconnect
        */
       host(newVal, oldVal){
-        if ( this.isConnected ){
+        if ( this.hasConnection ){
           this.checkDisconnect(this.getRef('host'), oldVal)
         }
       },
@@ -892,7 +892,7 @@ const cpDef = {
        * @fires checkDisconnect
        */
       user(newVal, oldVal){
-        if ( this.isConnected ){
+        if ( this.hasConnection ){
           this.checkDisconnect(this.getRef('user'), oldVal)
         }
       },
@@ -903,18 +903,18 @@ const cpDef = {
        * @fires checkDisconnect
        */
       pass(newVal, oldVal){
-        if ( this.isConnected ){
+        if ( this.hasConnection ){
           this.checkDisconnect(this.getRef('pass'), oldVal)
         }
       },
       /**
-       * @watch isConnected
-       * @fires remove
+       * @watch hasConnection
+       * @fires removeCurrentDir
        * @fires add
        */
-      isConnected(){
+      hasConnection(){
         while ( this.numCols ){
-          this.remove()
+          this.removeCurrentDir()
         }
         setTimeout(() => {
           this.add('');

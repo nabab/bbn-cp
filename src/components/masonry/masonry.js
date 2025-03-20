@@ -133,8 +133,7 @@ const cpDef = {
     slotItem: {
       name: 'bbns-masonry'
     },
-    masonryCol: {
-      name: 'masonry-col',
+    mascol: {
       props: {
         /**
          * The source of the component 'masonry-col'.
@@ -186,8 +185,7 @@ const cpDef = {
          * @component masonryItem
          * @memberof masonry-col
          */
-        masonryItem: {
-          name: 'masonry-item',
+        masitem: {
           props: {
             /**
              * The source of the compoment 'masonry-item'.
@@ -203,10 +201,10 @@ const cpDef = {
              * The parent component 'masonry-col'.
              * @computed col
              * @memberof masonry-item
-             * @return {bbnCp}
+             * @return {HTMLElement}
              */
             col() {
-              return this.closest('masonry-col');
+              return this.closest('bbn-masonry-mascol');
             },
             itemStyle(){
               return {

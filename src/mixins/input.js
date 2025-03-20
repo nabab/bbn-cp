@@ -1,5 +1,4 @@
 import bbn from '@bbn/bbn';
-import bbnCp from '../lib/Cp.js';
 
 const input = {
   props: {
@@ -102,15 +101,6 @@ const input = {
       type: String
     },
     /**
-     * The attribute tabindex of the input component.
-     * @prop {Number} tabindex
-     * @memberof inputComponent
-     */
-    tabindex: {
-      type: [String, Number],
-      default: '0'
-    },
-    /**
      * @prop {Boolean} [false] nullable
      * @memberof inputComponent
      */
@@ -142,13 +132,6 @@ const input = {
       type: [String, Number]
     },
     /**
-     * Defines the input mode of this elemenet
-     * @prop {String} inputmode
-     */
-    inputmode: {
-      type: String
-    },
-    /**
      * If true the element will focus on insert
      * @prop {Boolean} [false] focused
      */
@@ -163,15 +146,6 @@ const input = {
       type: Boolean,
       default: false
     },
-    autocapitalize: {
-      type: [Boolean, String]
-    },
-    autocorrect: {
-      type: [Boolean, String]
-    },
-    spellcheck: {
-      type: [Boolean, String]
-    }
   },
   data(){
     let original = this.value;
@@ -213,8 +187,20 @@ const input = {
      */
     isDisabled(){
       let form = this.closest('bbn-form');
-      return this.disabled || (bbn.cp.isComponent(form) && form.disabled);
-    }
+      return this.disabled || (bbn.cp.isComponent(form) && form.disabled) ? true : false;
+    },
+    currentTabIndex() {
+      if (this.isDisabled) {
+        return '-1';
+      }
+
+      if ('tabindex' in this.$node.props) {
+        const ti = this.$node.props.tabindex;
+        return typeof ti === 'string' ? ti : ti.toString()
+      }
+
+      return '0';
+    },
   },
   methods: {
     resetValue(){
@@ -255,20 +241,20 @@ const input = {
      * @param {Event} e 
      * @memberof inputComponent
      */
-    change(e){
+    onChange(e){
       this.$emit('change', e, this.value)
     },
     /**
      * Check the validity of the inserted value.
      * @method isValid
-     * @param {bbnCp} e 
+     * @param {HTMLElement} e 
      * @return {Boolean}
      * @memberof inputComponent
      */
     isValid(e, setError = true, setOnFocus = false){
       const $this = bbn.cp.isComponent(e) ? e : this,
-            ele = $this.$refs.element || false,
-            inp = $this.$refs.input || false,
+            ele = $this.getRef('element') || false,
+            inp = $this.getRef('input') || false,
             customMessage = $this.validationMessage || ($this.$el.hasAttribute('validationMessage') ? $this.$el.getAttribute('validationMessage') : false);
       let check = elem => {
         if ( elem && elem.validity ){
@@ -383,7 +369,7 @@ const input = {
         && elem
         && bbn.fn.isDom(elem.$el)
       ) {
-        const scroll = elem.closest('.bbn-scroll');
+        const scrollCp = elem.closest('.bbn-scroll');
         let onScroll = false;
         const onClose = () => {
           elem.$emit('removevalidation');
@@ -414,14 +400,14 @@ const input = {
                 ele: elem.$el,
                 invisible: true,
                 message,
-                scroll,
+                scrollCp,
                 setOnFocus
             }
           },
           methods: {
             onFloaterClose(){
-              if (this.scroll) {
-                scroll.$off('scroll', onScroll);
+              if (this.scrollCp) {
+                scrollCp.$off('scroll', onScroll);
               }
 
               if (this.setOnFocus) {
@@ -432,17 +418,17 @@ const input = {
             },
             onFloaterMounted(){
               this.$nextTick(() => {
-                if (this.scroll) {
+                if (this.scrollCp) {
                   const floater = this.getRef('floater');
                   onScroll = () => {
-                    const scrollRect = scroll.$el.getBoundingClientRect();
+                    const scrollRect = scrollCp.$el.getBoundingClientRect();
                     const rect = floater.$el.getBoundingClientRect();
-                    this.invisible = (rect.bottom > (scrollRect.bottom - 1))
-                     || (rect.top < (scrollRect.top + 1))
-                     || (rect.right > (scrollRect.right - 1))
-                     || (rect.left < (scrollRect.left + 1));
+                    this.invisible = (scrollCp.hasScrollY && (rect.bottom > (scrollRect.bottom - 1)))
+                     || (scrollCp.hasScrollY && (rect.top < (scrollRect.top + 1)))
+                     || (scrollCp.hasScrollX && (rect.right > (scrollRect.right - 1)))
+                     || (scrollCp.hasScrollX && (rect.left < (scrollRect.left + 1)));
                   }
-                  scroll.$on('scroll', onScroll);
+                  scrollCp.$on('scroll', onScroll);
                   this.$nextTick(onScroll);
                 }
 
@@ -455,8 +441,8 @@ const input = {
             }
           },
           beforeDestroy(){
-            if (this.scroll) {
-              scroll.$off('scroll', onScroll);
+            if (this.scrollCp) {
+              scrollCp.$off('scroll', onScroll);
             }
 
             if (this.setOnFocus) {
@@ -507,8 +493,6 @@ const input = {
     if ( this.autosize ){
       this.componentClass.push('bbn-auto-width');
     }
-
-    bbn.cp.fetchComponents(['bbn-tooltip']);
   },
   mounted() {
     if (this.autofocus) {

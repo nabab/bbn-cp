@@ -65,6 +65,10 @@ const cpDef = {
        */
       scrollable: {},
       /**
+       * @prop {} scrollContent
+       */
+      scrollContent: {},
+      /**
        * The list of fields the form must contain.
        * @prop {} fields
        */
@@ -263,9 +267,15 @@ const cpDef = {
       return {
         router: null,
         form: null,
-        hasNext: false,
-        hasPrev: false,
         isFocusing: false
+      }
+    },
+    computed: {
+      hasPrev() {
+        return this.router && (this.router.views[this.router.selected-1] !== undefined);
+      },
+      hasNext() {
+        return this.router && (this.router.views[this.router.selected+1] !== undefined);
       }
     },
     methods: {
@@ -282,10 +292,13 @@ const cpDef = {
       init(){
         this.router = this.getRef('router');
         this.form = this.getRef('form');
-        this.update();
         setTimeout(() => {
           this.router.route(this.router.getDefaultURL(), true);
         }, 100)
+      },
+      onReset() {
+        this.unsetStorage();
+        this.$emit('reset');
       },
       focusout(e){
         bbn.fn.log("FOCUSING OUT")
@@ -310,16 +323,8 @@ const cpDef = {
           }, 100)
         }
       },
-      update(){
-        this.$nextTick(() => {
-          if (this.router) {
-            this.hasPrev = this.router.views[this.router.selected-1] !== undefined;
-            this.hasNext = this.router.views[this.router.selected+1] !== undefined;
-          }
-        })
-      },
       onRoute(){
-        this.update();
+        this.$forceUpdate();
         if (!this.isFocusing) {
           this.form.focusFirst();
         }

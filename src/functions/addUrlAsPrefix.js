@@ -8,7 +8,7 @@ import { bbn } from "@bbn/bbn";
  * @param {Array} [mixins] - Optional array of mixins to be used with the prefix.
  */
 export default function addUrlAsPrefix(prefix, url, mixins) {
-  return bbn.cp.addPrefix(prefix, async components => {
+  return bbn.cp.addPrefix(prefix, async tag => {
     if (bbn.fn.substr(url, -1) !== '/') {
       url += '/';
     }
@@ -16,7 +16,7 @@ export default function addUrlAsPrefix(prefix, url, mixins) {
       prefix += '/';
     }
 
-    const furl = url + components.join('/')
+    const furl = url + tag
       + '?v=' + bbn.cp.version
       + '&test=' + (bbn.env.isDev ? '1' : '0')
       + '&lang=' + bbn.env.lang;

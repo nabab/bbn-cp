@@ -29,6 +29,7 @@ const keynav = {
         if (e.preventDefault) {
           e.preventDefault();
         }
+
         if ( !this.isOpened ){
           this.isOpened = true;
           return;

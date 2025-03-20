@@ -190,10 +190,10 @@ const cpDef = {
     /**
      * The component used for the items.
      *
-     * @prop {bbnCp} itemComponent
+     * @prop {HTMLElement} itemComponent
     */
     itemComponent: {
-      type: [bbnCp, Object, String]
+      type: [HTMLElement, Object, String]
     },
     /**
      * The title for the item's details.
@@ -207,10 +207,10 @@ const cpDef = {
     /**
      * The component used for the header.
      *
-     * @prop {bbnCp|Object|String} headerComponent
+     * @prop {HTMLElement|Object|String} headerComponent
     */
     headerComponent: {
-      type: [bbnCp, Object, String]
+      type: [HTMLElement, Object, String]
     },
     /**
      * The labels type.
@@ -339,7 +339,7 @@ const cpDef = {
        *
        * @data {String} [''] title
       */
-      title: '',
+      currentTitle: '',
       /**
        * The labels (text).
        *
@@ -851,7 +851,7 @@ const cpDef = {
     */
     setTitle(){
       if ( this.currentCfg && this.currentCfg.titleFormat ){
-        this.$set(this, 'title', bbn.fn.isFunction(this.currentCfg.titleFormat) ?
+        this.$set(this, 'currentTitle', bbn.fn.isFunction(this.currentCfg.titleFormat) ?
           this.currentCfg.titleFormat() :
           this.currentDate.format(this.currentCfg.titleFormat)
         );

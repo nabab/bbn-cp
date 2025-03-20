@@ -22,11 +22,11 @@
       <component bbn-if="currentComponent"
                  :is="currentComponent"
                  :source="li.data"
-                 @remove="remove(idx)"
+                 @remove="removeItem(idx)"
                  @hook:mounted="selfEmit(true)">
       </component>
       <component bbn-else
-                :is="li.data.url && !li.data[children] ? 'a' : 'span'"
+                :is="li.data.url && !li.data[sourceItems] ? 'a' : 'span'"
                 @click.prevent="() => {}"
                 class="bbn-w-100 bbn-vxspadding bbn-hspadding"
                 :href="li.data.url || null">
@@ -39,32 +39,32 @@
         </span>
         <span class="text" bbn-html="li.data[sourceText]"></span>
       </component>
-      <div bbn-if="!currentComponent && li.data[children] && li.data[children].length"
+      <div bbn-if="!currentComponent && li.data[sourceItems] && li.data[sourceItems].length"
           class="bbn-block bbn-abs bbn-vxspadding bbn-hspadding"
           style="right: 0px"
       >
         <i class="nf nf-fa-chevron_right"></i>
       </div>
-      <bbn-floater bbn-if="isOpened && children &&
+      <bbn-floater bbn-if="isOpened && sourceItems &&
                           (origin === 'floater') &&
-                          li.data[children] &&
+                          li.data[sourceItems] &&
                           (overIdx === idx) &&
                           getRef('li' + idx)"
                   :uid="uid"
                   :level="level + 1"
                   :mode="li.data.mode || 'free'"
-                  :source="li.data[children]"
+                  :source="li.data[sourceItems]"
                   :element="getRef('li' + idx)"
                   orientation="horizontal">
       </bbn-floater>
       <bbn-list bbn-elseif="(origin !== 'floater') &&
-                            children &&
-                            li.data[children] &&
+                            sourceItems &&
+                            li.data[sourceItems] &&
                             getRef('li' + idx)"
                 :level="level + 1"
                 :mode="li.data.mode || 'free'"
                 :uid="uid"
-                :source="li.data[children]">
+                :source="li.data[sourceItems]">
       </bbn-list>
     </li>
   </ul>

@@ -275,7 +275,7 @@ const cpDef = {
      * @emits remove
      * @fires unsetStorage
      */
-    remove(src) {
+    removeItem(src) {
       let idx = bbn.fn.search(this.items, {
         uid: src.uid
       });
@@ -319,7 +319,7 @@ const cpDef = {
     clear() {
       this.confirm(bbn._('Are you sure you want to delete the whole content of the clipboard?'), () => {
         while (this.items.length) {
-          this.remove(this.items[this.items.length - 1]);
+          this.removeItem(this.items[this.items.length - 1]);
         }
       });
     },
@@ -504,7 +504,7 @@ const cpDef = {
           let i;
           for (i = this.items.length - 1; i >= 0; i--) {
             if (!this.items[i].pinned) {
-              this.remove({
+              this.removeItem({
                 uid: this.items[i].uid
               });
               if (this.items.length === this.max) {
@@ -514,7 +514,7 @@ const cpDef = {
           }
 
           if (!i && (this.items.length > this.max)) {
-            this.remove({
+            this.removeItem({
               uid: this.items[0].uid
             });
             this.alert(bbn._("Limit reached, unpin elements to add new ones"));

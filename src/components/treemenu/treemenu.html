@@ -5,12 +5,8 @@
          bbn-if="menus && menus.length">
       <bbn-dropdown bbn-model="currentMenu"
                     :source="menus"
-                    :storage="!!storageName"
-                    :storage-full-name="storageName"
                     style="width: 80%"
-                    ref="dropdown"
-                    @click.stop
-                    @mouseup.stop.prevent/>
+                    ref="dropdown"/>
     </div>
     <div class="bbn-block bbn-w-100 bbn-bottom-padding bbn-c" bbn-if="search">
       <bbn-input name="search"
@@ -34,7 +30,7 @@
                   :excluded-section-filter="true"
                   @select="go"
                   :menu="getMenu"
-                  @ready="readyTree"/>
+                  @hook:mounted="readyTree"/>
       </div>
     </div>
   </div>

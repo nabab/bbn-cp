@@ -7,29 +7,30 @@
      @mouseenter="isOverDropdown = true"
      @mouseleave="isOverDropdown = false"
      @focusin="isActive = true"
-     @focusout="onFocusOut">
+     @focusout="onFocusOut"
+     tabindex="-1">
   <div :class="['bbn-rel', 'bbn-combo-container', 'bbn-flex-width', 'bbn-vmiddle', currentItemCls, {
     'bbn-combo-container-native': native
   }]">
     <div bbn-if="sourceIcon && hasValue && !!currentItemIcon"
          class="bbn-left-xspadding">
       <i :class="currentItemIcon"
-         @click.stop="click" />
+         @click.stop="onClick" />
     </div>
     <div bbn-if="sourceImg && hasValue && !!currentItemImg"
          class="bbn-left-xspadding">
       <img :src="currentItemImg"
-           @click.stop="click">
+           @click.stop="onClick">
     </div>
     <bbn-input bbn-if="!native"
                ref="input"
                class="bbn-no-border bbn-flex-fill"
                bbn-model="filterString"
                @focus="selectText"
-               @keydown="keydown"
-               @keyup="keyup"
-               @click.stop="click"
-               @clickRightButton="click"
+               @keydown="onKeydown"
+               @keyup="onKeyup"
+               @click.stop="onClick"
+               @clickRightButton="onClick"
                :button-right-disabled="isDisabled || readonly"
                :disabled="isDisabled"
                autocorrect="off"
@@ -39,7 +40,7 @@
                :nullable="isNullable"
                :force-nullable="isNullable"
                :placeholder="placeholder"
-               :tabindex="isDisabled ? -1 : (tabindex || 0)"
+               :tabindex="currentTabIndex"
                :button-right="currentIcon"
                :autosize="autosize"
                :readonly="readonly"/>
@@ -53,7 +54,7 @@
               @focus="isOpened = true"
               @click="isOpened = true"
               :disabled="!!isDisabled || !!readonly"
-              :tabindex="isDisabled ? -1 : (tabindex || 0)">
+              :tabindex="currentTabIndex">
         <option value=""
                 bbn-html="placeholder"
                 :disabled="!isNullable"
@@ -71,7 +72,7 @@
     </template>
   </div>
   <input type="hidden"
-         bbn-model="value"
+         :value="value"
          ref="element"
          :name="name">
   <bbn-floater bbn-if="!popup
@@ -93,7 +94,7 @@
               :item-component="realComponent"
               @ready="attachList"
               @select="select"
-              :children="null"
+              :source-items="null"
               :suggest="true"
               @mouseenter="isOverDropdown = true"
               @mouseleave="isOverDropdown = false"
@@ -109,6 +110,6 @@
               :source-value="sourceValue"
               :source-url="sourceUrl"
               :source-icon="sourceIcon"
-              :title="floaterTitle"
+              :label="floaterTitle"
               :buttons="asMobile ? realButtons : []"/>
 </div>

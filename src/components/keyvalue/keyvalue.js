@@ -56,7 +56,7 @@ const cpDef = {
         this.setItems();
         this.$forceUpdate();
       },
-      remove(key){
+      removeItem(key){
         delete this.obj[key];
         if (this.isJSON) {
           this.emitInput(JSON.stringify(this.obj) || '{}');

@@ -1,16 +1,16 @@
-<button :class="[
-                  {
-                    'bbn-button-icon-only': notext,
-                    'bbn-active': active
-                  },
-                  'bbn-iblock',
-                  componentClass
-                ]"
-        :aria-label="text"
-        @mousedown.prevent.stop="click($event)"
+<button :class="[{
+            'bbn-button-icon-only': notext,
+            'bbn-active': active
+          },
+          'bbn-iblock',
+          componentClass
+        ]"
+        :aria-label="label"
+        @mousedown.prevent.stop="onClick($event)"
         @mouseenter="over($event)"
         @mouseleave="out($event)"
         @click.stop.prevent
+        :tabindex="currentTabIndex"
         :type="currentType"
         :disabled="isDisabled"
         :title="titleString"
@@ -20,8 +20,8 @@
         :class="['bbn-button-icon', {'bbn-middle': notext}]">
     <i :class="icon"/>
   </span>
-  <span bbn-if="!notext && text"
-        bbn-html="text"
+  <span bbn-if="!notext && label"
+        bbn-html="label"
         :style="{
           paddingLeft: icon && (iconPosition === 'left') ? (secondary ? '1rem' : '0.3rem') : '',
           paddingRight: icon && (iconPosition === 'right') ? (secondary ? '1rem' : '0.3rem') : ''

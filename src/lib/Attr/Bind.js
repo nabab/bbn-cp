@@ -1,4 +1,4 @@
-import bbnAttr from "../Attr.js";
+import bbnAttr from "./Attr.js";
 import bbnSlotNode from "../Node/Slot.js";
 import setNoValueAttribute from "./private/setNoValueAttribute.js";
 import setSVGAttribute from "./private/setSVGAttribute.js";
@@ -49,9 +49,9 @@ export default class bbnBindAttr extends bbnAttr
             const cp = this.node.element?.bbn;
             const jsName = bbn.cp.badCaseAttributes[n] || n;
             if (
+              !setPropOnComponent(node, n, v, jsName) &&
               !setNoValueAttribute(node, n, v, jsName) &&
               !setSVGAttribute(node, n, v) &&
-              !setPropOnComponent(node, n, v, jsName) &&
               !setRegularAttribute(node, n, v, jsName)
             ) {
               setUndefinedAttribute(node, n, v, jsName);

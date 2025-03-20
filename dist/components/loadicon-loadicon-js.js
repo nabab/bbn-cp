@@ -8,6 +8,16 @@
  */
 (self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["components/loadicon-loadicon-js"],{
 
+/***/ "./src/components/loadicon/_i18n lazy recursive ^\\.\\/loadicon\\..*\\.lang$":
+/*!**********************************************************************************************!*\
+  !*** ./src/components/loadicon/_i18n/ lazy ^\.\/loadicon\..*\.lang$ strict namespace object ***!
+  \**********************************************************************************************/
+/***/ ((module) => {
+
+eval("function webpackEmptyAsyncContext(req) {\n\t// Here Promise.resolve().then() is used instead of new Promise() to prevent\n\t// uncaught exception popping up in devtools\n\treturn Promise.resolve().then(() => {\n\t\tvar e = new Error(\"Cannot find module '\" + req + \"'\");\n\t\te.code = 'MODULE_NOT_FOUND';\n\t\tthrow e;\n\t});\n}\nwebpackEmptyAsyncContext.keys = () => ([]);\nwebpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;\nwebpackEmptyAsyncContext.id = \"./src/components/loadicon/_i18n lazy recursive ^\\\\.\\\\/loadicon\\\\..*\\\\.lang$\";\nmodule.exports = webpackEmptyAsyncContext;\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/loadicon/_i18n/_lazy_^\\.\\/loadicon\\..*\\.lang$_strict_namespace_object?");
+
+/***/ }),
+
 /***/ "./src/components/loadicon/loadicon.html":
 /*!***********************************************!*\
   !*** ./src/components/loadicon/loadicon.html ***!
@@ -16,16 +26,6 @@
 
 "use strict";
 eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n// Module\nvar code = `<span :class=\"componentClass\">\n  <svg xmlns=\"http://www.w3.org/2000/svg\"\n       version=\"1.0\"\n       :width=\"currentSize\"\n       :height=\"currentSize\"\n       viewBox=\"0 0 128 128\"\n       xml:space=\"preserve\">\n    <g>\n      <path d=\"M59.6 0h8v40h-8V0z\" fill=\"inherit\" fill-opacity=\"1\"/>\n      <path d=\"M59.6 0h8v40h-8V0z\" fill=\"inherit\" fill-opacity=\"0.2\" transform=\"rotate(30 64 64)\"/>\n      <path d=\"M59.6 0h8v40h-8V0z\" fill=\"inherit\" fill-opacity=\"0.2\" transform=\"rotate(60 64 64)\"/>\n      <path d=\"M59.6 0h8v40h-8V0z\" fill=\"inherit\" fill-opacity=\"0.2\" transform=\"rotate(90 64 64)\"/>\n      <path d=\"M59.6 0h8v40h-8V0z\" fill=\"inherit\" fill-opacity=\"0.2\" transform=\"rotate(120 64 64)\"/>\n      <path d=\"M59.6 0h8v40h-8V0z\" fill=\"inherit\" fill-opacity=\"0.3\" transform=\"rotate(150 64 64)\"/>\n      <path d=\"M59.6 0h8v40h-8V0z\" fill=\"inherit\" fill-opacity=\"0.4\" transform=\"rotate(180 64 64)\"/>\n      <path d=\"M59.6 0h8v40h-8V0z\" fill=\"inherit\" fill-opacity=\"0.5\" transform=\"rotate(210 64 64)\"/>\n      <path d=\"M59.6 0h8v40h-8V0z\" fill=\"inherit\" fill-opacity=\"0.6\" transform=\"rotate(240 64 64)\"/>\n      <path d=\"M59.6 0h8v40h-8V0z\" fill=\"inherit\" fill-opacity=\"0.7\" transform=\"rotate(270 64 64)\"/>\n      <path d=\"M59.6 0h8v40h-8V0z\" fill=\"inherit\" fill-opacity=\"0.8\" transform=\"rotate(300 64 64)\"/>\n      <path d=\"M59.6 0h8v40h-8V0z\" fill=\"inherit\" fill-opacity=\"0.9\" transform=\"rotate(330 64 64)\"/>\n      <animateTransform attributeName=\"transform\" type=\"rotate\" values=\"0 64 64;30 64 64;60 64 64;90 64 64;120 64 64;150 64 64;180 64 64;210 64 64;240 64 64;270 64 64;300 64 64;330 64 64\" calcMode=\"discrete\" dur=\"1080ms\" repeatCount=\"indefinite\"></animateTransform>\n    </g>\n  </svg>\n</span>\n`;\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (code);\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/loadicon/loadicon.html?");
-
-/***/ }),
-
-/***/ "./src/components/loadicon/_i18n lazy recursive ^\\.\\/loadicon\\..*\\.lang$":
-/*!**********************************************************************************************!*\
-  !*** ./src/components/loadicon/_i18n/ lazy ^\.\/loadicon\..*\.lang$ strict namespace object ***!
-  \**********************************************************************************************/
-/***/ ((module) => {
-
-eval("function webpackEmptyAsyncContext(req) {\n\t// Here Promise.resolve().then() is used instead of new Promise() to prevent\n\t// uncaught exception popping up in devtools\n\treturn Promise.resolve().then(() => {\n\t\tvar e = new Error(\"Cannot find module '\" + req + \"'\");\n\t\te.code = 'MODULE_NOT_FOUND';\n\t\tthrow e;\n\t});\n}\nwebpackEmptyAsyncContext.keys = () => ([]);\nwebpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;\nwebpackEmptyAsyncContext.id = \"./src/components/loadicon/_i18n lazy recursive ^\\\\.\\\\/loadicon\\\\..*\\\\.lang$\";\nmodule.exports = webpackEmptyAsyncContext;\n\n//# sourceURL=webpack://@bbn/bbn-cp/./src/components/loadicon/_i18n/_lazy_^\\.\\/loadicon\\..*\\.lang$_strict_namespace_object?");
 
 /***/ }),
 

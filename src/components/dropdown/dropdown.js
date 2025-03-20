@@ -75,7 +75,7 @@ const cpDef = {
      * @fires resetDropdown
      * @fires keynav
      */
-    keydown(e) {
+    onKeydown(e) {
       if (this.commonKeydown(e)) {
         return;
       }
@@ -104,10 +104,9 @@ const cpDef = {
     paste() {
       //alert("PASTE");
     },
-    keyup(e) {
+    onKeyup(e) {
       if (e.key.match(/^[A-z0-9\s]{1}$/)) {
         this.startingTmpValue += e.key;
-        bbn.fn.log("keyup")
         if (!this.isOpened) {
           this.isOpened = true;
         }
@@ -116,8 +115,8 @@ const cpDef = {
     selectOnNative(ev) {
       if (!ev.defaultPrevented) {
         if (ev.target.value === '') {
-          this.emitInput(this.isNullable ? null : '');
-          this.$emit('change', this.isNullable ? null : '', -1, -1, ev);
+          this.emitInput(this.isNullable && (this.nullable !== null) ? this.nullValue : '');
+          this.$emit('change', this.isNullable && (this.nullable !== null) ? this.nullValue : '', -1, -1, ev);
         }
         else {
           let idx = bbn.fn.search(this.filteredData, 'data.' + this.sourceValue, ev.target.value);
@@ -132,7 +131,6 @@ const cpDef = {
             else if (item[this.uid || this.sourceValue] !== undefined) {
               this.emitInput(item[this.uid || this.sourceValue]);
               this.$emit('change', item[this.uid || this.sourceValue], idx, this.filteredData[idx].index, ev);
-              bbn.fn.log('yes', item[this.uid || this.sourceValue], idx, this.filteredData[idx].index, ev)
             }
           }
         }
@@ -157,17 +155,9 @@ const cpDef = {
               row.data[this.selectedText];
           }
           this.currentText = this.clearHtml ? bbn.fn.html2text(txt) : txt;
-          //bbn.fn.log(["CHANGIN CURRENT TEXT", this.currentText]);
         }
       }
     })
-  },
-  beforeDestroy() {
-    let fl = this.getRef('list');
-    if (fl && fl.$el) {
-      fl.$destroy();
-      fl.$el.parentNode.removeChild(fl.$el);
-    }
   },
   watch: {
     startingTmpValue(v) {
@@ -193,7 +183,7 @@ const cpDef = {
     isOpened(val) {
       if (this.popup && val && !this.native) {
         this.popupComponent.open({
-          title: false,
+          label: false,
           element: this.$el,
           maxHeight: this.maxHeight,
           minWidth: this.$el.clientWidth,
@@ -222,7 +212,7 @@ const cpDef = {
     /**
      * @watch  currentText
      */
-    currentText(newVal) {
+    currentText(newVal, oldVal) {
       if (this.ready) {
         if (!newVal && this.value) {
           this.emitInput(this.isNullable && (this.nullable !== null) ? this.nullValue : '');
@@ -237,7 +227,13 @@ const cpDef = {
      * @watch  currentSelectValue
      */
     currentSelectValue(newVal) {
-      bbn.fn.log(newVal, this.value, 'lll');
+      if (bbn.fn.isString(newVal) && !newVal.length) {
+        newVal = this.isNullable && (this.nullable !== null) ? this.nullValue : '';
+      }
+      else if (bbn.fn.isNull(newVal) && this.isNullable && (this.nullable !== null)) {
+        newVal = this.nullValue;
+      }
+
       if (this.ready && (newVal !== this.value)) {
         this.emitInput(newVal);
         this.$emit('change', newVal);
@@ -254,8 +250,7 @@ const cpDef = {
       }
       this.currentFilters.conditions.splice(...args);
     },
-    value(v, ov) {
-      bbn.fn.log(["CHANGE VALUE", v, ov])
+    value(v) {
       if (v !== this.currentSelectValue) {
         this.currentSelectValue = v;
       }
@@ -276,7 +271,6 @@ const cpDef = {
   }
 };
 
-import bbn from '@bbn/bbn';
 import cpHtml from './dropdown.html';
 import cpStyle from './dropdown.less';
 

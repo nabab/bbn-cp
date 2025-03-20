@@ -20,11 +20,11 @@
             }">
       <template bbn-for="w in widgets">
         <bbn-widget :ref="'widget_' + w.key"
-                    bbn-if="!w.hidden"
+                    bbn-if="!w.invisible"
                     :key="w.uid"
                     bbn-bind="w"
                     @loaded="resizeScroll"
-                    :title="w.title ? w.title : (w.text ? w.text : '')"
+                    :label="w.label ? w.label : (w.text ? w.text : '')"
                     @close="hideWidget(w.key)"
                     @dragover="mouseEnterWidget(w.index)"
                     @dragend="isDragging = false; isSorting = false;"

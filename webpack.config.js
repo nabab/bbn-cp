@@ -7,26 +7,15 @@ const __dirname = new URL('.', import.meta.url).pathname;
 import webpack from 'webpack';
 const mode = process.env.NODE_ENV || 'development';
 
-const componentsDir = path.resolve(__dirname, 'src/components');
-
 // Dynamically find all component middle-man .mjs files
 const entryPoints = {
-  'bbn-cp': path.resolve(__dirname, 'src/index.js')    
+  'bbn-cp': path.resolve(__dirname, 'src/index.js'),
+  'bbn-cp-components': path.resolve(__dirname, 'src/all.js'),
 };
-
-/*
-fs.readdirSync(componentsDir).forEach(dir => {
-  const middleManFile = path.join(componentsDir, dir, `${dir}.js`);
-  if (fs.existsSync(middleManFile)) {
-    entryPoints[`components/${dir}/${dir}`] = middleManFile;
-  }
-});
-*/
 export default {
     mode: mode,
     // Entry file(s)
     entry: entryPoints,
-
     // Output configuration
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -34,6 +23,10 @@ export default {
             if (chunkData.chunk.name === 'bbn-cp') {
               return 'bbn-cp.js';
             }
+            if (chunkData.chunk.name === 'bbn-cp-components') {
+              return 'bbn-cp-components.js';
+            }
+
             return `${chunkData.chunk.name}.js`;
         },
         libraryTarget: 'global'
@@ -49,7 +42,8 @@ export default {
                     {
                         loader: 'babel-loader',
                         options: {
-                            sourceMap: true
+                            sourceMap: true,
+                            test: /index\.js$/,
                         }
                     },
                     //path.resolve(__dirname, './filename-loader.js')

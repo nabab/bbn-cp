@@ -65,7 +65,7 @@ const cpDef = {
       /**
        * @prop {Boolean} [false] hidden
        */
-      hidden: {
+      invisible: {
         type: Boolean,
         default: false
       },
@@ -117,9 +117,9 @@ const cpDef = {
         default: ''
       },
       /**
-       * @prop {String} title
+       * @prop {String} label
        */
-      title: {
+      label: {
         type: String
       },
       /**
@@ -145,6 +145,9 @@ const cpDef = {
         default(){
           return [];
         }
+      },
+      itemButtons: {
+        type: Function
       },
       /**
        * @prop {Booleann} [false] zoomable
@@ -388,7 +391,7 @@ const cpDef = {
         }
         if ( this.limit ){
           let items = [];
-          bbn.fn.each(bbnWidgetCp.limits, (a, i) => {
+          bbn.fn.each(bbnWidget.limits, (a, i) => {
             items.push({
               text: a.toString() + " " + bbn._("Items"),
               selected: a === this.limit,
@@ -399,7 +402,7 @@ const cpDef = {
           });
           tmp.push({
             text: bbn._("Limit"),
-            icon: 'nf nf-mdi-numeric',
+            icon: 'nf nf-md-numeric',
             items: items,
             mode: "selection"
           });
@@ -433,7 +436,6 @@ const cpDef = {
        * @fires load
        */
       reload() {
-        bbn.fn.log("RELOAD");
         this.currentItems = [];
         this.$nextTick(() => {
           this.load();
@@ -479,7 +481,7 @@ const cpDef = {
                 this.observerID = d.observer.id;
                 this.observerValue = d.observer.value;
                 if ( !this._1stRun ){
-                  this.observerWatch();
+                  //this.observerWatch();
                   this._1stRun = true;
                 }
               }
@@ -586,7 +588,7 @@ const cpDef = {
           this.dashboard.setConfig(this.uid, {
             uid: this.uid,
             limit: this.limit,
-            hidden: this.hidden,
+            invisible: this.invisible,
             index: this.index
           });
         }

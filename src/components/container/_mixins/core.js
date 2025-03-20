@@ -29,11 +29,6 @@ export default {
   data(){
     return {
       /**
-       * The router which the container belongs to if it exists.
-       * @data [null] router
-       */
-      router: null,
-      /**
        * The array containing popup objects.
        * @data {Array} [[]] popups
        */
@@ -63,6 +58,11 @@ export default {
        * @data {null|Object} errorStatus
        */
       errorStatus: null,
+      /**
+       * The router which the container belongs to if it exists.
+       * @data [null] router
+       */
+      router: null
     };
   },
   computed: {
@@ -71,9 +71,6 @@ export default {
     }
   },
   methods: {
-    setRouter() {
-      this.router = this.closest('bbn-router');
-    },
     /**
      * Returns the full current url.
      * 
@@ -104,7 +101,7 @@ export default {
      */
     randomName(){
       let n = bbn.fn.randomString(20, 15).toLowerCase();
-      while (bbnContainerCp.componentsList.indexOf(n) > -1 ){
+      while (bbnContainer.componentsList.indexOf(n) > -1 ){
         n = bbn.fn.randomString(20, 15).toLowerCase();
       }
       return n;
@@ -154,5 +151,5 @@ export default {
       }
     },
 
-  }
+  },
 }

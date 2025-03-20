@@ -4,7 +4,7 @@
      @animationstart="onResize"
      @keydown.esc.prevent.stop="close">
   <bbn-floater bbn-if="ready"
-              :title="title"
+              :label="label"
               :maximizable="maximizable"
               :closable="closable"
               :animation="true"
@@ -24,7 +24,7 @@
               :latency="500"
               @keydown.esc.prevent.stop="close"
               :scrollable="scrollable"
-              :draggable="draggable"
+              :drag="draggable"
               :resizable="resizable"
               :on-open="onOpen"
               :on-close="onClose"

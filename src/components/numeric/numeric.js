@@ -45,14 +45,16 @@ const cpDef = {
        * @prop {Number|String} max
        */
       max: {
-        type: [Number, String]
+        type: [Number, String],
+        default: Number.MAX_SAFE_INTEGER
       },
       /**
        * The min value of the component.
        * @prop {Number|String} min
        */
       min: {
-        type: [Number, String]
+        type: [Number, String],
+        default: Number.MIN_SAFE_INTEGER
       },
       /**
        * The step at which the value of the component change.
@@ -76,7 +78,7 @@ const cpDef = {
        */
       spinnersTabindex: {
         type: Number,
-        default: 0
+        default: -1
       },
       /**
        * @prop {Boolean} [true] onlySpinners
@@ -211,6 +213,7 @@ const cpDef = {
        * @emit input
        */
       _keydown(e){
+        
         const keys = ([]).concat(bbn.var.keys.numbers, bbn.var.keys.upDown, bbn.var.keys.leftRight, bbn.var.keys.dels, bbn.var.keys.confirm, bbn.var.keys.numsigns);
         if (
           (bbn.fn.isNumber(this.min) && (this.min >= 0) && (e.keyCode === 189)) ||
@@ -242,7 +245,7 @@ const cpDef = {
             this.changeValue(tmp);
           }
         }
-        this.keydown(e);
+        this.onKeydown(e);
       },
       /**
        * @method _focus
@@ -274,7 +277,7 @@ const cpDef = {
         this.checkDecimals();
         this.editMode = false;
         this.$nextTick(() => {
-          this.blur(e);
+          this.onBlur(e);
         })
       },
       /**
@@ -289,7 +292,7 @@ const cpDef = {
         this.checkDecimals();
         this.editMode = false;
         this.$nextTick(() => {
-          this.change(e);
+          this.onChange(e);
         });
       },
       /**
