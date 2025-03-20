@@ -47,7 +47,7 @@
             :quick-filter="quickFilter"
             :sortable="it.sortable !== undefined ? it.sortable : sortable"
             :uid="uid"
-            @selectmenu="clickMenuItem(it, i, it.index, $event)"
+            @selectmenu="clickMenuItem"
             @nodeclick="onNodeClick"
             :tree-state="uid !== undefined ? _getTreeState(it.data[uid]) : undefined">
         <li :class="['bbn-tree-node', 'bbn-vxxspadding', 'bbn-unselectable', {
@@ -55,7 +55,6 @@
                       'bbn-state-selected': isSelected
                     }]"
             bbn-show="isVisible"
-            @click="clickMenuItem"
             :title="source.tooltip || textFromText">
           <!-- Sortable interface is set at the top -->
           <span bbn-if="sortable && (source.num === 1)"
@@ -112,6 +111,7 @@
                           :context="true"
                           :source-action="false"
                           :source="getMenu"
+                          @select="clickMenuItem"
                           @open="isActive = true"
                           @close="isActive = false"
                           style="cursor: unset">
