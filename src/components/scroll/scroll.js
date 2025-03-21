@@ -284,7 +284,12 @@ const cpDef = {
       return rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.2';
     },
     currentOffsetX() {
-      return bbn.fn.isArray(this.offsetX) ? this.offsetX : [this.offsetX, this.offsetX];
+      if (bbn.fn.isArray(this.offsetX)) {
+        return [this.offsetX[0], this.offsetX[1] + (this.hasScrollY ? 10 : 0)];
+      }
+      else {
+        return [this.offsetX, this.offsetX + (this.hasScrollY ? 10 : 0)];
+      }
     },
     currentOffsetY() {
       return bbn.fn.isArray(this.offsetY) ? this.offsetY : [this.offsetY, this.offsetY];
@@ -1175,7 +1180,7 @@ const cpDef = {
           return {
             opacity: (this.show || this.keepVisible) && this.shouldBother ? 1 : 0,
             [this.isVertical ? 'top' : 'left'] : this.offsetStart + 'px',
-            [this.isVertical ? 'right' : 'bottom']: this.offsetEnd + 'px'
+            [this.isVertical ? 'bottom' : 'right']: this.offsetEnd + 'px'
           }
         },
         /**

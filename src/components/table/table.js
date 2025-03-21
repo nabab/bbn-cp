@@ -393,10 +393,18 @@ const cpDef = {
        */
       rowIndexTimeOut: null,
       /**
-       * @data {Number|Array} [0] scrollOffset
+       * @data {Number} [0] theadOffset
        */
-      scrollOffset: 0,
+      theadOffset: 0
     };
+  },
+  computed: {
+    scrollOffsetY(){
+      return [this.theadOffset, 0];
+    },
+    scrollOffsetX(){
+      return [this.groupCols[0].width, this.groupCols[2].width];
+    }
   },
   /**
    * Adds bbns-column from the slot and sets the initial configuration of the table.
@@ -478,7 +486,7 @@ const cpDef = {
 
     if (this.titles) {
       setTimeout(() => {
-        this.scrollOffset = this.getRef('thead') ? [this.$position(this.getRef('thead')).height, 0] : 0;
+        this.theadOffset = this.getRef('thead') ? this.$position(this.getRef('thead')).height : 0;
       }, 1000);
     }
   }

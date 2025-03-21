@@ -63,7 +63,8 @@
                   :class="{'bbn-w-100': !scrollable, 'bbn-overlay': scrollable}"
                   ref="scroll"
                   :disabled="!scrollable"
-                  :offset-y="scrollOffset"
+                  :offset-y="scrollOffsetY"
+                  :offset-x="scrollOffsetX"
                   @resize="resizeWidth">
         <!-- Table -->
         <table :style="{width: totalWidth}"
