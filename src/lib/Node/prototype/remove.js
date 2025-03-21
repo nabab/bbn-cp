@@ -35,15 +35,15 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
   const node = ele.bbnSchema;
   if (node.tag === 'slot') {
     bbn.fn.each(node.component.$slots[node.realName], element => {
-      if (element.classList && element.bbnSchema?.parent?.isComponent && !element.bbnSchema.parent.comment && (element.bbnSchema.parent !== node.component) && element.bbnSchema.parent.element?.isConnected && element.bbnComponent?.isConnected) {
-        if (element.bbnComponent.isConnected) {
+      if (element.bbnComponent?.isConnected && element.bbnSchema?.parentElement?.isConnected) {
+        if (element.classList) {
           element.classList.add('bbn-is-moving');
         }
-    
-        if (element.isConnected) {
-          element.parentNode.removeChild(element);
-          bbn.fn.log("Removed", element);
-        }
+        element.parentNode.removeChild(element);
+        bbn.fn.log("Removed", element);
+      }
+      else {
+        element.bbnSchema.nodeRemove(element);
       }
     });
   }
