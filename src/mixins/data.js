@@ -53,6 +53,8 @@ const data = {
             return v ? '<a href="' + v + '">' + v + '</a>' : '-';
           case "percent":
             return v ? bbn.fn.money(v * 100, false, "%", '-', '.', ' ', 2) : '-';
+          case "phone":
+            return bbn.fn.fphone(v);
           case "number":
             return bbn.fn.money(
               v,

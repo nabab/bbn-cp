@@ -11,6 +11,13 @@ import '/node_modules/flag-icons/css/flag-icons.min.css';
 
 
 const cpDef = {
+  statics(){
+    if (!bbn.var) {
+      bbn.var = {};
+    }
+
+    bbn.var.phoneCodes = bbn.fn.extend(bbn.var.phoneCodes || [], countryCodes);
+  },
   /**
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.events
@@ -96,7 +103,7 @@ const cpDef = {
   },
   data(){
     return {
-      countriesList: bbn.fn.map(countryCodes, c => {
+      countriesList: bbn.fn.map(bbn.var.phoneCodes, c => {
         c.text = `${c.name} (${c.prefix})`;
         c.mobilePrefix = c.mobilePrefix || '';
         c.fixedPrefix = c.fixedPrefix || '';
@@ -107,7 +114,7 @@ const cpDef = {
 
         return c;
       }),
-      currentPrefix: this.getPrefixFromValue() || (this.defaultCode ? bbn.fn.getField(countryCodes, 'prefix', 'code', this.defaultCode) : ''),
+      currentPrefix: this.getPrefixFromValue() || (this.defaultCode ? bbn.fn.getField(bbn.var.phoneCodes, 'prefix', 'code', this.defaultCode) : ''),
       currentNumber: this.getNumberFromValue(),
       isChecking: false
     }
@@ -188,7 +195,7 @@ const cpDef = {
     getPrefixFromValue(){
       if (this.value?.length) {
         let p = '';
-        bbn.fn.each(countryCodes, c => {
+        bbn.fn.each(bbn.var.phoneCodes, c => {
           if (this.value.startsWith(c.prefix) && (c.prefix.length > p.length)) {
             p = c.prefix;
           }
