@@ -3,7 +3,6 @@ import generateNode from "../../Html/private/generateNode.js";
 
 bbnNode.prototype.nodeConceive = function() {
   if (this.items?.length && (!this.comment || (!this.loop && (!this.condition || this.condition.value)))) {
-    const directives = [];
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i];
       let hash = this.hash;
@@ -16,10 +15,6 @@ bbnNode.prototype.nodeConceive = function() {
       if (!ele && !node.isCreating) {
         node.nodeInit();
       }
-    }
-
-    for (let i = 0; i < directives.length; i++) {
-      directives[i]();
     }
   }
 };

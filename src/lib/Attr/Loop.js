@@ -138,34 +138,5 @@ export default class bbnLoopAttr extends bbnAttr
         a.nodeClean(true);
       }
     }
-
-    bbn.fn.each(elements, (e, i) => {
-      let next = e.nextSibling;
-      /*
-      if (!i) {
-        if (e.previousSibling !== root) {
-          root.after(e);
-        }
-      }
-      else if (e.previousSibling !== elements[i - 1]) {
-        if (!e.previousSibling || e.previousSibling.bbnId.indexOf(elements[i - 1].bbnId + '-')) {
-          elements[i - 1].after(e);
-        }
-      }*/
-      if ((e instanceof Comment) && !e.bbnSchema.isCommented) {
-        while (next && !next.bbnId.indexOf(e.bbnId + '-') && !next.bbnHash.indexOf(e.bbnHash)) {
-          let oldNext = next;
-          next = next.nextSibling;
-          if (oldNext.classList) {
-            oldNext.classList.add('bbn-is-moving');
-          }
-
-          e.after(oldNext);
-          if (oldNext.classList) {
-            oldNext.classList.remove('bbn-is-moving');
-          }
-        }
-      }
-    })
   }
 }

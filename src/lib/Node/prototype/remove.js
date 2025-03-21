@@ -39,6 +39,7 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
         if (element.classList) {
           element.classList.add('bbn-is-moving');
         }
+
         element.parentNode.removeChild(element);
         bbn.fn.log("Removed", element);
       }
