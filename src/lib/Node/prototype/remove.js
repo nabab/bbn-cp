@@ -16,37 +16,36 @@ const removeElement = function(res, ele, node) {
       if (node?.oldElement === ele) {
         node.oldElement = null;
       }
+
+      if (ele === node.element) {
+        node.element = null;
+      }
     }
 
     if (ele.parentNode) {
       ele.parentNode.removeChild(ele);
+    }
+    else {
+      ele.remove();
     }
   }
 };
 
 bbnNode.prototype.nodeRemove = function(ele, noTransition) {
   const node = ele.bbnSchema;
-  ele.childNodes.forEach(element => {
-    if (element.classList && element.bbnSchema?.parent?.isComponent && !element.bbnSchema.parent.comment && (element.bbnSchema.parent !== node.component) && element.bbnSchema.parent.element?.isConnected && element.bbnComponent?.isConnected) {
-      if (element.bbnComponent.isConnected) {
-        element.classList.add('bbn-is-moving');
-      }
-  
-      ele.removeChild(element);
-      bbn.fn.log("Removed", element);
-    }
+  if (node.tag === 'slot') {
+    bbn.fn.each(node.component.$slots[node.realName], element => {
+      if (element.classList && element.bbnSchema?.parent?.isComponent && !element.bbnSchema.parent.comment && (element.bbnSchema.parent !== node.component) && element.bbnSchema.parent.element?.isConnected && element.bbnComponent?.isConnected) {
+        if (element.bbnComponent.isConnected) {
+          element.classList.add('bbn-is-moving');
+        }
     
-  });
-
-  if (ele.classList && node.parent?.isComponent && !node.parent.comment && (node.parent !== node.component) && node.parent.element?.isConnected) {
-    if (ele.bbnComponent.isConnected && !node.isCommented) {
-      ele.classList.add('bbn-is-moving');
-      if (ele.parentNode) {
-        ele.parentNode.removeChild(ele);
+        if (element.isConnected) {
+          element.parentNode.removeChild(element);
+          bbn.fn.log("Removed", element);
+        }
       }
-      bbn.fn.log("Removed2", ele);
-      return;
-    }
+    });
   }
 
   if (!node.isComponent && ele.tagName && node.attributes.length) {

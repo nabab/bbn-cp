@@ -53,7 +53,7 @@ export default {
        * @data {Number} [0] borderRight
        */
       borderRight: 0,
-      tableStyle: ''
+      tableStyle: '',
     }
   },
   computed: {
@@ -108,24 +108,6 @@ export default {
         }
 
         css.textContent = style;
-      }
-    },
-  },
-  watch: {
-    /**
-     * Forces the update of the component.
-     * @watch currentHidden
-     * @fires setConfig
-     */
-    currentHidden: {
-      deep: true,
-      handler() {
-        bbn.fn.log("WATCH HIDDDEN");
-        if (this.ready) {
-          this.setConfig(true);
-          this.$forceUpdate();
-          //bbn.fn.log('forceupdate2');
-        }
       }
     },
   },

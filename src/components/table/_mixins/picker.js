@@ -1,6 +1,44 @@
 export default {
   methods: {
     /**
+     * Show or hide the given column index.
+     * @method show
+     * @param {Array} colIndexes
+     * @param {Boolean} hide
+     * @fires $forceUpdate
+     * @fires setConfig
+     * @fires init
+     */
+    show(colIndexes, hide) {
+      this.currentData.splice(0);
+      if (!Array.isArray(colIndexes)) {
+        colIndexes = [colIndexes];
+      }
+
+      bbn.fn.each(colIndexes, colIndex => {
+        let col = bbn.fn.isNumber(colIndex) ? this.cols[colIndex] : bbn.fn.getRow(this.cols, {field: colIndex})
+        if (col) {
+          if ((col.invisible && !hide) || (!col.invisible && hide)) {
+            let idx = this.currentHidden.indexOf(col.field || colIndex);
+            if (hide && (idx === -1)) {
+              this.currentHidden.push(col.field || colIndex);
+            } else if (!hide && (idx > -1)) {
+              this.currentHidden.splice(idx, 1);
+            }
+          }
+        }
+      });
+
+      this.setConfig(true);
+      setTimeout(() => {
+        this.init();
+        setTimeout(() => {
+          this.updateData();
+        }, 250)
+      }, 250);
+
+    },
+    /**
      * Returns the list of the showable columns
      * @method pickableColumnList
      * @returns {Array}

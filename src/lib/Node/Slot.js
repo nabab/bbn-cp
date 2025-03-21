@@ -141,6 +141,7 @@ export default class bbnSlotNode extends bbnNode
               }
             }
 
+            item.bbnTargetSlot = this;
             if (hasClass) {
               item.classList.remove('bbn-is-moving');
             }

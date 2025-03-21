@@ -74,7 +74,6 @@ export default class bbnAttr
       return false;
     }
 
-    const hash = this.node.hash || '_root';
     return this.result.num <= this.node.component.$numBuild;
   }
 

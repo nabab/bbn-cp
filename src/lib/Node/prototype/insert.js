@@ -146,8 +146,7 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
     }
   }
   else if (!this.loop && this.loopItem) {
-    let rootHash = this.hash.split('-').slice(0, -2).join('-');
-    rootHash += rootHash ? rootHash + '-root' : 'root';
+    let rootHash = this.hash.split('-').slice(0, -1).join('-');
     const loopRoot = this.component.$retrieveElement(this.id, rootHash);
     if (!loopRoot) {
       bbn.fn.log(["APPEND IN LOOP", this.tag, ele])

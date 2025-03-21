@@ -38,7 +38,7 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
   if (this.comment) {
     // Create a comment node for placeholders
     this.element = document.createComment(" ***_BBN_*** ");
-    if (bbn.fn.isComment(this.oldElement)) {
+    if (!this.loop && bbn.fn.isComment(this.oldElement)) {
       throw new Error("The old element was already a comment");
     }
   }

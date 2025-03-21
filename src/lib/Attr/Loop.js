@@ -53,7 +53,10 @@ export default class bbnLoopAttr extends bbnAttr
 
     let root = node.element;
     if (root && !root.parentNode) {
-      node.parentElement.appendChild(root);
+      bbn.fn.log("LOOP ROOT PROBLEM");
+      node.nodeClean();
+      node.nodeRemove(root);
+      root = null;
       //debugger;
     }
 
@@ -65,7 +68,7 @@ export default class bbnLoopAttr extends bbnAttr
 
     const isArray = bbn.fn.isArray(loopValue);
     // Construct a unique hash for each iteration based on loop values.
-    const oHash = node.hash.length > 4 ? bbn.fn.substr(node.hash, 0, -5) + '-' : '';
+    const oHash = node.hash ? node.hash + '-' : '';
     const elements = [];
     this.list.splice(0);
     let num = 0;
@@ -93,7 +96,7 @@ export default class bbnLoopAttr extends bbnAttr
         key = bbnData.hash(loopData);
       }
 
-      let hash = oHash + this.id + '-' + key;
+      let hash = oHash + key;
       this.list.push(hash);
       let currentNode = cp.$retrieveNode(node.id, hash);
       let ele = currentNode?.element;
@@ -125,7 +128,7 @@ export default class bbnLoopAttr extends bbnAttr
 
     bbn.cp.loopLevel--;
     const loopHash = oHash || '';
-    const hashRoot = this.hash ? this.hash + '-root' : 'root';
+    const hashRoot = (node.hash ? node.hash + '-' + node.id : node.id) + '-loop';
     for (let n in cp.$nodes[node.id]) {
       const a = cp.$nodes[node.id][n];
       if ((n !== hashRoot)

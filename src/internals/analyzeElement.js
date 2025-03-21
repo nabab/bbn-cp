@@ -49,7 +49,11 @@ const noSpaceTags = [
   'style',
   'noscript',
   'iframe',
-  'code'
+  'code',
+  'bbns-column',
+  'bbns-container',
+  'bbn-container',
+  'bbn-pane'
 ];
 
 
@@ -406,6 +410,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
   let prevTag;
   const div = document.createElement('div');
   // removing elements between if and else
+  let hasNoSpaceTag = false;
   for (let i = 0; i < childNodes.length; i++) {
     if (!childNodes[i] || childNodes[i] instanceof Comment) {
       childNodes.splice(i, 1);
@@ -420,6 +425,9 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
           j--;
           i--;
         }
+      }
+      if (noSpaceTags.includes(childNodes[i].tagName.toLowerCase())) {
+        hasNoSpaceTag = true;
       }
     }
   }
@@ -475,6 +483,10 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
     }
     // No text nodes in the slots
     else if (node.textContent) {
+      if (hasNoSpaceTag) {
+        return;
+      }
+
       const n2 = node.cloneNode(true);
       div.appendChild(n2);
       const txt = node.textContent
