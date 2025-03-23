@@ -1,1 +1,19 @@
-"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[4103],{84103:e=>{e.exports=JSON.parse('{"uploading":"téléchargement en cours","Upload a file":"Envoyer un fichier","Or click here to":"Ou cliquer ici pour","Drop files here":"Déposer des fichiers ici","Processing dropped files":"Traitement des fichiers déposés en cours","Retry":"Ré-essayer","Edit filename":"Modifier le nom du fichier","Delete":"Supprimer","Pause":"Pause","Continue":"Reprendre","Close":"Fermer","No":"Non","Yes":"Oui","Cancel":"Abandonner","OK":"OK","Browse":"Parcourir","This type of file is not allowed, only files of type":"Ce type de fichier n\'est pas autorisé, seulement les fichiers de type","The file si too big, the maximum size is":"Le fichier est trop gros la taille maximale est"}')}}]);
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([[4103],{
+
+/***/ 84103:
+/***/ ((module) => {
+
+module.exports = /*#__PURE__*/JSON.parse('{"uploading":"téléchargement en cours","Upload a file":"Envoyer un fichier","Or click here to":"Ou cliquer ici pour","Drop files here":"Déposer des fichiers ici","Processing dropped files":"Traitement des fichiers déposés en cours","Retry":"Ré-essayer","Edit filename":"Modifier le nom du fichier","Delete":"Supprimer","Pause":"Pause","Continue":"Reprendre","Close":"Fermer","No":"Non","Yes":"Oui","Cancel":"Abandonner","OK":"OK","Browse":"Parcourir","This type of file is not allowed, only files of type":"Ce type de fichier n\'est pas autorisé, seulement les fichiers de type","The file si too big, the maximum size is":"Le fichier est trop gros la taille maximale est"}');
+
+/***/ })
+
+}]);

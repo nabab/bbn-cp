@@ -1,1 +1,19 @@
-"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[5750],{35750:e=>{e.exports=JSON.parse('{"Previous":"Precedente","Next":"Successivo","day":"giorno","month":"mese","week":"settimana","year":"anno","decade":"decade","Loading":"Caricamento"}')}}]);
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([[5750],{
+
+/***/ 35750:
+/***/ ((module) => {
+
+module.exports = /*#__PURE__*/JSON.parse('{"Previous":"Precedente","Next":"Successivo","day":"giorno","month":"mese","week":"settimana","year":"anno","decade":"decade","Loading":"Caricamento"}');
+
+/***/ })
+
+}]);

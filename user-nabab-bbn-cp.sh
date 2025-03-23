@@ -1,6 +1,7 @@
 #!/bin/bash
 
 npm run build
+npm run build2
 npm run pack
 npm run minify
 npm run minify2
