@@ -51,13 +51,13 @@
              textOrientation: isHorizontal ? 'upright' : null,
            }"
            bbn-html="label"/>
-      <div bbn-show="!isCollapsed"
-           bbn-forget="!label"
+      <div bbn-forget="!label || isCollapsed"
            :class="{
-             'bbn-flex-fill': true,
-             'bbn-hidden': isCollapsed
+             'bbn-flex-fill': true
            }">
-        <div :class="!label && currentConfig.index && (isCollapsible || (isResizable && prevResizable)) ? 'bbn-flex-fill' : (scrollable ? 'bbn-overlay' : (isHorizontal ? 'bbn-w-100' : 'bbn-h-100'))">
+        <div :class="[{'bbn-hidden': isCollapsed},
+          !label && currentConfig.index && (isCollapsible || (isResizable && prevResizable)) ? 'bbn-flex-fill' : (scrollable ? 'bbn-overlay' : (isHorizontal ? 'bbn-w-100' : 'bbn-h-100'))
+        ]">
           <bbn-scroll bbn-forget="!scrollable"
                       class="bbn-overlay">
             <slot/>

@@ -217,11 +217,11 @@ const cpDef = {
          * The mode of the component.
          * @data {String} mode
          */
-        mode: this.readonly ? 'view' : this.currentMode,
+        mode: this.currentMode,
         /**
          * @data {Array} modes
          */
-        modes: this.readonly ? ['view'] : ["tree", "view", "form", "code", "text"],
+        modes: this.readonly ? ['view', "text"] : ["tree", "view", "form", "code", "text"],
         /**
          * @data schema
          */

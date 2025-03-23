@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[5049],{55049:e=>{e.exports=JSON.parse('{"Search":"Recherche","Create a shortcut":"Créer un raccourci"}')}}]);

@@ -70,10 +70,6 @@ bbnProtoHtml.$destroy = function() {
   if (node && (node.element === this)) {
     node.element = null;
   }
-  //bbn.fn.log("DISCONNECTED: " + cp.$el.tagName + ' / ' + cp.$el.bbnSchema.id);
-  for (let idx in this.$nodes) {
-    delete this.$nodes[idx];
-  }
 
   //bbn.fn.log("DESTROY: " + this.tagName + ' / ' + this.bbnCid + ' / ' + this.$isDestroyed);
   onHook(this, 'destroyed');

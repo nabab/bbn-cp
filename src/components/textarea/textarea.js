@@ -54,7 +54,9 @@ const cpDef = {
     },
     data() {
       return {
-        currentHeight: null
+        currentValue: this.value,
+        currentHeight: null,
+        resizeTimeout: null
       }
     },
     computed: {
@@ -115,7 +117,13 @@ const cpDef = {
        * @fires emitInput
        */
       clear(){
+        bbn.fn.log("CLEAR")
         this.emitInput('');
+      }
+    },
+    created() {
+      if ((this.$node.model.value || this.$node.model._default_).value !== this.value) {
+        this.currentValue = (this.$node.model.value || this.$node.model._default_).value;
       }
     },
     /**
@@ -125,12 +133,33 @@ const cpDef = {
     mounted() {
       this.ready = true;
       const el = this.getRef('element');
-      el.value = this.value;
+      if (this.currentValue) {
+        el.defaultValue = this.currentValue;
+      }
+
       if (this.autosize) {
         el.style.height = 'auto';
         el.style.height = el.scrollHeight+'px';
       }
 
+    },
+    watch: {
+      value(v) {
+        const el = this.getRef('element');
+        if (this.currentValue !== v) {
+          this.currentValue = v;
+        }
+      },
+      currentValue(v) {
+        const el = this.getRef('element');
+        if (el.value !== v) {
+          el.value = v;
+        }
+
+        if (this.value !== v) {
+          this.emitInput(v);
+        }
+      }
     }
   };
 

@@ -10,7 +10,6 @@ export default {
      * @fires init
      */
     show(colIndexes, hide) {
-      this.currentData.splice(0);
       if (!Array.isArray(colIndexes)) {
         colIndexes = [colIndexes];
       }
@@ -28,14 +27,11 @@ export default {
           }
         }
       });
-
       this.setConfig(true);
+      this.$forceUpdate();
       setTimeout(() => {
-        this.init();
-        setTimeout(() => {
-          this.updateData();
-        }, 250)
-      }, 250);
+        this.init(true);
+      }, 500);
 
     },
     /**

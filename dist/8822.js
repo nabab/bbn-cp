@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[8822],{98822:e=>{e.exports=JSON.parse('{"Node":"Nodo","Close":"Chiudi","Open":"Apri","Refresh":"Aggiorna","Loading":"Caricamento","No items":"Nessun elemento"}')}}]);

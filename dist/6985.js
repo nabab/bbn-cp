@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[6985],{66985:e=>{e.exports=JSON.parse('{"Filter tree":"Arborescence des filtres"}')}}]);

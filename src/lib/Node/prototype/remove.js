@@ -33,23 +33,42 @@ const removeElement = function(res, ele, node) {
 
 bbnNode.prototype.nodeRemove = function(ele, noTransition) {
   const node = ele.bbnSchema;
-  if (node.tag === 'slot') {
-    bbn.fn.each(node.component.$slots[node.realName], element => {
+  if (node?.tag === 'slot') {
+    for (let i = 0; i < node.component.$slots[node.realName].length; i++) {
+      const element = node.component.$slots[node.realName][i];
+      if (!element.bbnSchema) {
+        if (node.parentNode) {
+          node.parentNode.removeChild(element);
+        }
+
+        node.component.$slots[node.realName].splice(i, 1);
+        i--;
+        continue;
+      }
+
+      if (element.bbnSchema.tag === 'slot') {
+        element.bbnSchema.nodeRemove(element);
+        continue;
+      }
+
       if (element.bbnComponent?.isConnected && element.bbnSchema?.parentElement?.isConnected) {
         if (element.classList) {
           element.classList.add('bbn-is-moving');
         }
 
-        element.parentNode.removeChild(element);
-        bbn.fn.log("Removed", element);
+        if (element.isConnected) {
+          debugger;
+          element.parentNode.removeChild(element);
+          bbn.fn.log("Removed", element);
+        }
       }
       else {
         element.bbnSchema.nodeRemove(element);
       }
-    });
+    }
   }
 
-  if (!node.isComponent && ele.tagName && node.attributes.length) {
+  if (!node?.isComponent && ele.tagName && node?.attributes.length) {
     for (let i = 0; i < node.attributes.length; i++) {
       if (node.attributes[i] instanceof bbnEventAttr) {
         ele.removeEventListener(node.attributes[i].name, node.attributes[i].handler, node.attributes[i].cfg);

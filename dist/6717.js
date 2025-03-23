@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[6717],{66717:e=>{e.exports=JSON.parse('{"Your browser does not support the audio tag.":"Votre navigateur ne prend pas en charge la balise audio."}')}}]);

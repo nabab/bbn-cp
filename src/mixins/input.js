@@ -490,7 +490,7 @@ const input = {
    */
   created(){
     this.componentClass.push('bbn-input-component');
-    if ( this.autosize ){
+    if (this.autosize) {
       this.componentClass.push('bbn-auto-width');
     }
   },

@@ -32,7 +32,7 @@ export default class bbnForgetAttr extends bbnAttr
       const parent = node.parentElement;
       // The element will be forgotten, i.e. passed but not its children.
       if (this.value) {
-        //bbn.fn.log(["FORGET TRUE", this.node.component.$options.name, this, parent, this.node.element])
+        //bbn.fn.log(["FORGET TRUE", this.node.component.$options.name, this, parent, this.node.element, node.element?.childNodes.length])
         if (node.element?.childNodes.length) {
           // Iterate over each item in the node.
           while (node.element.childNodes.length) {

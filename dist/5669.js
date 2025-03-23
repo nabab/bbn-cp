@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[5669],{65669:e=>{e.exports=JSON.parse('{"Hour":"Heure","Minute":"Minute","Second":"Seconde"}')}}]);

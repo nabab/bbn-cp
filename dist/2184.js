@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[2184],{82184:b=>{b.exports=JSON.parse('{"Loading":"Caricamento"}')}}]);

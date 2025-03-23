@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[5495],{36025:(e,t,b)=>{b.r(t),b.d(t,{default:()=>n});const n={props:{titles:{type:Boolean,default:!0},titleGroups:{type:[Array,Function]}}}}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[9261],{49261:e=>{e.exports=JSON.parse('{"The shortcut has failed to be inserted":"une erreur est survenue durant la création du raccourci"}')}}]);

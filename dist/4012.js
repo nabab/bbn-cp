@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[4012],{74012:e=>{e.exports=JSON.parse('{"Close":"Chiudi","Empty":"Vuoto","Show palette":"Mostra tavolozza","Close palette":"Chiudi tavolozza","Confirm":"Conferma"}')}}]);

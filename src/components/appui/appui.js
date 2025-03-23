@@ -407,18 +407,20 @@ const cpDef = {
       this.$emit('beforeroute', ev, path);
     },
     onRoute(path) {
-      this.$emit('route', path)
-      const router = this.getRef('router');
-      let st = 'ROUTER SELECTED: ' + router.selected + '\n';
-      st += 'ROUTER CURRENT: ' + router.currentURL + '\n';
-      bbn.fn.each(router.views, a => {
-        st += a.idx + ': ' + (a.pane || ' NO PANE ') + ' ' + a.url;
-        if (router.urls[a.uid]) {
-          st += ' - CT: ' + router.urls[a.uid].currentIndex + ' - ' + router.urls[a.uid].currentSelected;
-        }
-        st += '\n';
-      })
-      bbn.fn.log(st);
+      this.$emit('route', path);
+      if (bbn.env.debugging) {
+        const router = this.getRef('router');
+        let st = 'ROUTER SELECTED: ' + router.selected + '\n';
+        st += 'ROUTER CURRENT: ' + router.currentURL + '\n';
+        bbn.fn.each(router.views, a => {
+          st += a.idx + ': ' + (a.pane || ' NO PANE ') + ' ' + a.url;
+          if (router.urls[a.uid]) {
+            st += ' - CT: ' + router.urls[a.uid].currentIndex + ' - ' + router.urls[a.uid].currentSelected;
+          }
+          st += '\n';
+        })
+        bbn.fn.log(st);
+      }
     },
     route(url, force) {
       this.getRef('router').route(url, force);

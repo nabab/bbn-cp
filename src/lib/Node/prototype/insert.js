@@ -27,6 +27,7 @@ const insertInSlot = function (parent, node, ele) {
 
     const parentSlots = parent.bbn?.$isInit ? parent.bbnSlots : parent.bbnTmpSlots;
 
+    ele.bbnComponentSlot = parent;
     if (parentSlots?.[slot]) {
       let search = {bbnId: ele.bbnId};
       if (ele.bbnHash) {
@@ -55,6 +56,7 @@ const insertInSlot = function (parent, node, ele) {
         }
 
         if (ele !== parentSlots[slot][idx]) {
+          node.nodeRemove(parentSlots[slot][idx]);
           parentSlots[slot].splice(idx, 1, ele);
         }
       }
@@ -100,6 +102,10 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
     throw new Error("Impossible to find the parent element");
   }
 
+  if (this.tag === 'bbn-table-head-title') {
+    bbn.fn.log(["TH", after, ele, !!this.loop, !!this.loopItem]);
+  }
+  
   if (insertInSlot(parent, this, ele)) {
     if (this.oldElement) {
       this.nodeRemove(this.oldElement);
@@ -119,10 +125,12 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
 
     //bbn.fn.log("REMOVE " + (bbn.fn.isComment(this.oldElement) ? 'COMMENT' : (this.tag || 'TEXT')) + ' AND REPLACE WITH '+ (bbn.fn.isComment(this.element) ? 'COMMENT' : (this.tag || 'TEXT')));
     this.oldElement.after(this.element);
+    this.nodeRemove(this.oldElement);
+    this.oldElement = null;
   }
   // First time is done in a linear direction
   // @mirko test it!
-  else if (!this.parent.num && !this.loopItem) {
+  else if (!this.parent.numBuild && !this.loopItem) {
     //bbn.fn.log("NUMBUILD");
     if (this.parent?.comment && this.parent.element.parentNode) {
       this.parentElement.insertBefore(ele, this.parent.element);
@@ -135,7 +143,7 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
   }
   else if (after !== undefined) {
     if (!after && parent.childNodes.length) {
-      parent.insertBefore(ele, parent.childNodes[0]);
+      parent.childNodes[parent.childNodes.length-1].after(ele);
     }
     else if (after) {
       //bbn.fn.log("AFTER", ele, after);

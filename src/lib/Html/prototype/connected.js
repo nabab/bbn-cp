@@ -216,5 +216,7 @@ bbnProtoHtml.$connected = function () {
   });
 
   tryMount(this);
+  // Important
+  this.$numBuild = bbn.cp.numTicks;
 }
 

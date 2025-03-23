@@ -758,10 +758,10 @@ const list = {
       if ( bbn.fn.isArray(data) ){
         if ( data.length && !bbn.fn.isObject(data[0]) && !bbn.fn.isArray(data[0]) && this.sourceValue && this.sourceText ){
           data = data.map(a => {
-            let o = {};
-            o[this.sourceValue] = a;
-                o[this.sourceText] = a;
-            return o;
+            return {
+              [this.sourceValue]: a,
+              [this.sourceText]: a
+            };
           });
         }
 
@@ -1052,10 +1052,10 @@ const list = {
           prom.then(d => {
             if (this.isAjax) {
               if (!this.loadingRequestID || (this.loadingRequestID !== loadingRequestID)) {
-                return;
                 this.isLoading = false;
                 this.loadingRequestID = false;
                 throw new Error("No loading request");
+                return;
               }
 
               this.isLoading = false;

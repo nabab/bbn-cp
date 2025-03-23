@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[5750],{35750:e=>{e.exports=JSON.parse('{"Previous":"Precedente","Next":"Successivo","day":"giorno","month":"mese","week":"settimana","year":"anno","decade":"decade","Loading":"Caricamento"}')}}]);

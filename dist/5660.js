@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[5660],{85660:e=>{e.exports=JSON.parse('{"bbn-container cannot be rendered without a bbn-router":"bbn-container non può essere visualizzato senza un bbn-router","Container menu":"Menù contenitore","Close":"Chiudi","Impossible to take the screenshot of":"Impossibile fare lo screenshot di"}')}}]);

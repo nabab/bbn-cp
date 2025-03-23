@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[8049],{38049:n=>{n.exports=JSON.parse('{"Cancel":"Annuler","Confirm":"Confirmer"}')}}]);

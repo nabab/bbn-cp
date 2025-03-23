@@ -259,7 +259,7 @@ export default {
                 this.selected--;
               }
               else if ((idx === this.selected) && this.views.length) {
-                this.activateIndex(this.latest?.idx || this.views.length - 1);
+                this.activateIndex(this.latest ? this.latest.idx : this.views.length - 1);
               }
             }
 

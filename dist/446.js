@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[446],{20446:e=>{e.exports=JSON.parse('{"Delete":"Elimina","key":"chiave","value":"valore","Add":"Aggiungi"}')}}]);

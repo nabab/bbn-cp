@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[6620],{16620:e=>{e.exports=JSON.parse('{"Untitled":"Senza titolo","Widgets":"Widget","Show every widget":"Mostra tutti i widget","Hide every widget":"Nascondi tutti i widget","Reset widgets order":"Reimposta l\'ordine dei widget"}')}}]);

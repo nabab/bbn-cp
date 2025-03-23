@@ -47,50 +47,6 @@ bbn-scroll {
       overflow: hidden !important;
     }
   }
-  .bbn-scroll-scrollbar{
-    position: absolute;
-    overflow: hidden;
-    -webkit-transition: opacity 150ms ease-in-out;
-    -moz-transition: opacity 150ms ease-in-out;
-    transition: opacity 150ms ease-in-out;
-    background-color: rgba(var(--color_rgb), 0.5);
-    &.vertical{
-      width: 10px;
-      bottom: 0;
-      top: 0;
-      right: 0;
-      .bbn-scroll-slider{
-        width: 6px;
-        height: 100%;
-        margin-right: 2px;
-        margin-left: 2px;
-        &.bbn-scroll-not-dragged {
-          transition: top 100ms;
-        }
-      }
-    }
-    &.horizontal{
-      height: 10px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      .bbn-scroll-slider{
-        height: 6px;
-        width: 100%;
-        margin-bottom: 2px;
-        margin-top: 2px;
-        &.bbn-scroll-not-dragged {
-          transition: left 100ms;
-        }
-      }
-    }
-    .bbn-scroll-slider{
-      opacity: 0.6;
-      border-radius: 0.3rem;
-      position: absolute;
-    }
-  }
-  
 }
 bbn-scroll.bbn-scroll-scrollable:not(.bbn-scroll-y) > .bbn-scroll-content {
   height: 100%;

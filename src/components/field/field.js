@@ -56,6 +56,7 @@ const cpDef = {
          * @data {Object} renderedOptions
          */
         renderedOptions: bbn.fn.extend({}, this.options),
+        renderedClass: [],
         /**
          * The current value.
          * @data currentValue 
@@ -161,7 +162,9 @@ const cpDef = {
                   break;
                 case "multilines":
                 case "textarea":
-                    this.renderedComponent = 'bbn-textarea';
+                  this.renderedClass.push('bbn-w-100');
+                  this.renderedComponent = 'bbn-textarea';
+                  this.renderedOptions.autosize = true;
                   break;
                 default:
                   this.renderedComponent = 'bbn-input';

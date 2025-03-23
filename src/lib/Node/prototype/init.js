@@ -8,9 +8,12 @@ bbnNode.prototype.nodeInit = function(after) {
     throw new Error("Already creating");
   }
 
+  this.isCreating = true;
+  this.nodeSetAll();
   if (old && (old.bbnSchema === this)) {
     //this.update();
     if (this.comment && (this.comment === bbn.fn.isComment(old))) {
+      this.isCreating = false;
       return old;
     }
 
@@ -33,8 +36,6 @@ bbnNode.prototype.nodeInit = function(after) {
     }, 5)
   });
   */
-  this.isCreating = true;
-  this.nodeSetAll();
   if (!this.loop) {
     this.nodeBuild(after);
     if (this.isComponent && this.element) {

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[5601],{25601:e=>{e.exports=JSON.parse('{"Loading":"Chargement","Requests\' history":"Historique des requêtes","Are you sure you want to abort this request?":"Êtes-vous sùr de vouloir annuler cette requête?","Copy URL":"Copier l\'URL","Copied":"Copié","abort":"Annuler"}')}}]);

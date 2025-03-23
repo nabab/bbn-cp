@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[1721],{81721:e=>{e.exports=JSON.parse('{"Success":"Succès","Warning":"Avertissement","Error":"Erreur","Info":"Info"}')}}]);

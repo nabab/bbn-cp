@@ -117,6 +117,7 @@ const components = [
     "router-group",
     "rte",
     "scroll",
+    "scrollbar",
     "search",
     "slider",
     "slider-menu",

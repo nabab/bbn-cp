@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[3111],{53111:e=>{e.exports=JSON.parse('{"Max number of":"Nombre max de","Value":"Valeur","Add":"Ajouter","Delete":"Supprimer"}')}}]);

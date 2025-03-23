@@ -50,7 +50,6 @@ bbnNode.prototype.nodeClean = function(full) {
 
       return 0;
     });
-    bbn.fn.log([full, id, JSON.stringify(indexes)]);
 
     while (indexes.length) {
       const idx = indexes.shift();

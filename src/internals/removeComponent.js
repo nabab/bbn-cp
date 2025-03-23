@@ -20,6 +20,14 @@ export default function removeComponent(cid) {
     // Throw an error if the component is not found in the index.
     bbn.fn.log(["The component is already removed", cid]);
   }
+  else {
+    let idx = bbn.fn.search(bbn.cp.queue, a => a.component === cp);
+    while (idx > -1) {
+      // Remove the component from the queue if it exists.
+      bbn.cp.queue.splice(idx, 1);
+      idx = bbn.fn.search(bbn.cp.queue, a => a.component === cp);
+    }
+  }
 
   // If the component exists, remove it from the global components index.
   bbn.cp.componentsIndex.delete(cid);

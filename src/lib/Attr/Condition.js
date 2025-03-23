@@ -90,7 +90,6 @@ export default class bbnConditionAttr extends bbnAttr
     const node = this.node;
     if (!init) {
       if (node.isOut) {
-        bbn.fn.log("CONDITION IS OUT");
         return;
       }
       
@@ -122,7 +121,6 @@ export default class bbnConditionAttr extends bbnAttr
     if (node.forget?.value || ['template', 'slot'].includes(this.node.tag)) {
       if (node.items) {
         if (!this.attrGetValue()) {
-          bbn.fn.log(["DELETE NODES7", node.id, node.component, node, node.element]);
           node.nodeClean();
         }
         else if ((node.tag === 'template') && !node.element) {

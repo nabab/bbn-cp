@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[7955],{37955:b=>{b.exports=JSON.parse('{"Untitled":"Sans titre"}')}}]);

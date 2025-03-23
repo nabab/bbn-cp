@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[721],{50721:n=>{n.exports=JSON.parse('{"%s takes a function as argument":"%s prend une fonction comme argument"}')}}]);

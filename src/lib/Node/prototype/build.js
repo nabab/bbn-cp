@@ -233,18 +233,16 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
       if (this.comment) {
         if (this.oldElement) {
           this.nodeRemove(this.oldElement);
+          this.oldElement = null;
         }
       }
       else if (node.element?.tagName) {
         this.transition.prom = this.transition.executeTransition("enter");
       }
     }
-    else if (this.comment && this.oldElement) {
-      this.nodeClean();
-      this.nodeRemove(this.oldElement);
-    }
     else if (this.oldElement) {
       this.nodeRemove(this.oldElement);
+      this.oldElement = null;
     }
 
     // Return the created or modified element

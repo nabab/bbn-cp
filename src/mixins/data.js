@@ -83,6 +83,12 @@ const data = {
               + '" title="'
               + (((v && (v !== 'false') && (v !== '0')) && ((cfg.yesvalue === undefined) || (v === cfg.yesvalue))) ? bbn._("Yes") : bbn._("No"))
               + '"></i>';
+          case 'textarea':
+            return bbn.fn.shorten(v, cfg.maxVisible || 100);
+          case 'binary':
+            return bbn.fn.shorten(atob(v), cfg.maxVisible || 32);
+          default:
+            return v;
         }
       }
       else if ( cfg.source ){

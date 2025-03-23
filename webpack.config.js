@@ -5,7 +5,7 @@ import TerserPlugin from "terser-webpack-plugin";
 // Will contain trailing slash
 const __dirname = new URL('.', import.meta.url).pathname;
 import webpack from 'webpack';
-const mode = process.env.NODE_ENV || 'development';
+const mode = 'production';
 
 // Dynamically find all component middle-man .mjs files
 const entryPoints = {
@@ -116,7 +116,7 @@ export default {
     // Plugins (if you have any)
     plugins: [
         new webpack.DefinePlugin({
-            IS_TESTING: JSON.stringify(process.env.IS_TESTING),
+            IS_TESTING: false,
         }),
     ],
     // Optional: Development server configuration
@@ -127,7 +127,7 @@ export default {
     // },
 
     // Optional: Source maps for development
-    //devtool: 'inline-source-map',
+    devtool: false
 };
 
 

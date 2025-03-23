@@ -1,15 +1,17 @@
-<component bbn-if="mode === 'write'"
+<div :class="componentClass">
+  <component bbn-if="mode === 'write'"
            :is="renderedComponent"
+           :class="renderedClass"
            bbn-bind="renderedOptions"
            bbn-model="currentValue"
            :tabindex="currentTabIndex"
-           :class="componentClass"
            @input="$emit('input', currentValue)">
-  <div bbn-if="renderedContent" bbn-html="renderedContent"></div>
-</component>
-<component bbn-else
-           :is="renderedComponent"
-           bbn-bind="renderedOptions"
-           :class="componentClass">
-  <div bbn-if="renderedContent" bbn-html="renderedContent"></div>
-</component>
+    <div bbn-if="renderedContent" bbn-html="renderedContent"></div>
+  </component>
+  <component bbn-else
+            :is="renderedComponent"
+            :class="renderedClass"
+            bbn-bind="renderedOptions">
+    <div bbn-if="renderedContent" bbn-html="renderedContent"></div>
+  </component>
+</div>

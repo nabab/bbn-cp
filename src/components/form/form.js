@@ -927,8 +927,9 @@ const cpDef = {
         //if ( this.source[name] !== val ){
         if (!bbn.fn.isSame(this.source[name], val)) {
           if (typeof val !== typeof this.source[name]) {
-            this.$set(this.source, name, bbn.fn.clone(val));
-          } else if (bbn.fn.isArray(this.source[name], val)) {
+            this.source[name] = bbn.fn.isPrimitive(val) ? val : bbn.fn.clone(val);
+          }
+          else if (bbn.fn.isArray(this.source[name], val)) {
             bbn.fn.each(val, (a, i) => {
               if (this.source[name].length <= i) {
                 this.source[name].push(a);
@@ -947,7 +948,8 @@ const cpDef = {
                 this.source[name].length - val.length
               );
             }
-          } else if (bbn.fn.isObject(this.source[name], val)) {
+          }
+          else if (bbn.fn.isObject(this.source[name], val)) {
             let k1 = Object.keys(val);
             let k2 = Object.keys(this.source[name]);
             bbn.fn.each(k2, (a) => {
@@ -960,8 +962,9 @@ const cpDef = {
                 this.source[name][a] = val[a];
               }
             });
-          } else {
-            this.$set(this.source, name, bbn.fn.clone(val));
+          }
+          else {
+            this.source[name] = bbn.fn.isPrimitive(val) ? val : bbn.fn.clone(val);
           }
         }
       });

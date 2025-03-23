@@ -162,7 +162,7 @@ export default {
             if (a.invisible !== isHidden) {
               //bbn.fn.log("CHANGING HIDDEN");
               //this.cols[i].invisible = hidden;
-              this.cols[i].invisible = isHidden;
+              a.invisible = isHidden;
             }
           });
         }

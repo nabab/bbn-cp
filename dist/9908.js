@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[9908],{49908:e=>{e.exports=JSON.parse('{"Open selector":"Apri selettore","Row":"Riga","Col":"Colonna"}')}}]);

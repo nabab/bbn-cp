@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[8200],{48200:e=>{e.exports=JSON.parse('{"Enter the number without the leading 0":"Inserisci il numero senza lo 0 iniziale","Invalid phone number":"Numero di telefonon non valido","Checking the number...":"Verificando il numero..."}')}}]);

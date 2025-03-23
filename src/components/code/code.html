@@ -1,7 +1,10 @@
-<div :class="[componentClass, 'bbn-reset']"
+<div :class="[componentClass, 'bbn-reset', {'bbn-100': scrollable}]"
      tabindex="-1">
   <div ref="element"
-       class="bbn-100"
-       :tabindex="currentTabIndex"
-       @keydown="onKeyDown"/>
+      :tabindex="currentTabIndex"
+      class="bbn-100"
+      @keydown="onKeyDown"/>
+  <bbn-scrollbar orientation="vertical"
+                 bbn-if="scrollable && scrollContainer"
+                 :container="scrollContainer"/>
 </div>

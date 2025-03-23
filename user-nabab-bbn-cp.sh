@@ -2,6 +2,8 @@
 
 npm run build
 npm run pack
+npm run minify
+npm run minify2
 git stage ./*
 git stage -f ./dist/*
 git commit -m "Latest changes"

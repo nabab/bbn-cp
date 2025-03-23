@@ -36,9 +36,4 @@ export default function realSetProp(cp, name, value) {
     propagateDependencyChanges(cp, name);
     updateWatcher(cp, name);
   }
-
-  // If the component is already mounted, emit a 'propchange' event.
-  if (cp.$isMounted) {
-    cp.$emit('propchange', name, value, original);
-  }
 }

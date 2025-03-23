@@ -131,8 +131,12 @@ export default class bbnAnonHtml extends HTMLElement
     const cfg = this.$cfg;
     if (cfg.components) {
       for (let n in cfg.components) {
+        let tpl = cfg.components[n].template;
+        if (tpl && (tpl.indexOf('<') === -1)) {
+          tpl = this.$el.querySelector(tpl).innerHTML;
+        }
         //bbn.fn.log("DEFINING COMPONENT", n, cfg.components[n], cfg.components[n].template);
-        bbn.cp.define(cfg.componentNames[n], cfg.components[n], cfg.components[n].template);
+        bbn.cp.define(cfg.componentNames[n], cfg.components[n], tpl);
       }
     }
 

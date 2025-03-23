@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[908],{58527:e=>{e.exports=JSON.parse('{"Full screen":"Schermo intero","Close":"Chiudi","Wrong min/max width/height set in the properties":"Larghezza/altezza minima/massima impostata erroneamente nelle proprietà"}')}}]);

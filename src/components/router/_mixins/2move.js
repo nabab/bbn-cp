@@ -31,8 +31,6 @@ export default {
     async reload(idx, force) {
       if (this.isValidIndex(idx) && this.views[idx].load) {
         const item = this.views[idx];
-        let url = this.views[idx].current;
-        let rurl = this.views[idx].url;
         //bbn.fn.log(["RELOAD", idx, url, rurl, this.baseURL]);
         const obj = bbn.fn.createObject({load: true, loaded: false});
         const take = ['url', 'current', 'selected', 'bcolor', 'fcolor', 'scrollable', 'icon', 'pane', 'label', 'fixed', 'pinned'];

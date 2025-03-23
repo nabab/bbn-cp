@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[4017],{24017:e=>{e.exports=JSON.parse('{"Save":"Enregistrer","Close":"Fermer","Empty":"Vider","Show palette":"Afficher la palette","Close palette":"Fermer la palette","Confirm":"Confirmer"}')}}]);

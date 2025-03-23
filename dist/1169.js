@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[1169],{61169:e=>{e.exports=JSON.parse('{"Full screen":"Plein écran","Close":"Fermer"}')}}]);

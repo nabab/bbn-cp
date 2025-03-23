@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[1220],{71220:e=>{e.exports=JSON.parse('{"Summary":"Riepilogo","Untitled":"Senza titolo","Previous":"Precedente","Next":"Seguente","Don\'t show it again":"Non mostrare nuovamente","Loading":"Caricamento"}')}}]);

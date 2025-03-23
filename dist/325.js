@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[325],{80325:e=>{e.exports=JSON.parse('{"Untitled":"Sans titre","Loading":"Chargement","Impossible to find the container for URL":"Impossible de trrouver un conteneur correspondant à cette URL","Untitled site":"Site sans titre"}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[5756],{65756:e=>{e.exports=JSON.parse('{"Impossible to get an orientation for the slider":"Impossibile ottenere un orientamento per lo slider"}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[2198],{82198:e=>{e.exports=JSON.parse('{"Close":"Chiudi","Menu":"Menù","There is no available data":"Non ci sono dati disponibili","Reload":"Ricarica","Items":"Elementi","Limit":"Limite"}')}}]);

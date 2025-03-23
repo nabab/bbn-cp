@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[2435],{52435:b=>{b.exports=JSON.parse('{"Yes":"Oui","No":"Non"}')}}]);

@@ -35,7 +35,7 @@ export default class bbnLoopAttr extends bbnAttr
     }*/
 
     if (node.isOut) {
-      bbn.fn.log("NODE IS OUT");
+      //bbn.fn.log("NODE IS OUT");
       return;
     }
     const cp = node.component;
@@ -138,5 +138,22 @@ export default class bbnLoopAttr extends bbnAttr
         a.nodeClean(true);
       }
     }
+    bbn.fn.each(elements, e => {
+      let next = e.nextSibling;
+      if ((e instanceof Comment) && !e.bbnSchema.isCommented) {
+        while (next && !next.bbnId.indexOf(e.bbnId + '-') && !next.bbnHash.indexOf(e.bbnHash)) {
+          let oldNext = next;
+          next = next.nextSibling;
+          if (oldNext.classList) {
+            oldNext.classList.add('bbn-is-moving');
+          }
+
+          e.after(oldNext);
+          if (oldNext.classList) {
+            oldNext.classList.remove('bbn-is-moving');
+          }
+        }
+      }
+    })
   }
 }

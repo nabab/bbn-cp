@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[9121],{99121:e=>{e.exports=JSON.parse('{"Selector":"Sélecteur"}')}}]);

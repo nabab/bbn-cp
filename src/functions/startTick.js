@@ -153,6 +153,10 @@ async function treatQueue(num = 0, cps) {
       }
       else if (isAttr) {
         const attr = queueElement.element;
+        if (attr.node.isOut) {
+          continue;
+        }
+
         if (isDebug) {
           bbn.fn.log("StartTick: " + cp.$options.name + ' - ' + attr.id + ' - ' + attr.node.hash + ' - ' + bbn.cp.numTicks);
         }

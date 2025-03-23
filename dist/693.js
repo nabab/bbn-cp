@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[693],{60693:e=>{e.exports=JSON.parse('{"Are you sure you want to discard the changes you made in this form?":"Êtes-vous sûr de vouloir fermer ce formulaire sans prendre en compte les changement effectués?","Are you sure you want to leave?":"Êtes-vous sûr de vouloir quitter ?"}')}}]);

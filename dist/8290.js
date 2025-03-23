@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_bbn_bbn_cp=self.webpackChunk_bbn_bbn_cp||[]).push([[8290],{48290:s=>{s.exports=JSON.parse('{"Expand":"Espandi","Collapse":"Collassa"}')}}]);

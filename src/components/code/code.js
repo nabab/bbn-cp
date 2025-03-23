@@ -22,6 +22,7 @@ import * as html from "@codemirror/lang-html";
 import * as less from "@codemirror/lang-less";
 import * as markdown from "@codemirror/lang-markdown";
 import * as php from "@codemirror/lang-php";
+import * as sql from "@codemirror/lang-sql";
 import * as python from "@codemirror/lang-python";
 import * as xml from "@codemirror/lang-xml";
 import * as yaml from "@codemirror/lang-yaml";
@@ -76,6 +77,7 @@ const cpDef = {
           markdown: [new LanguageSupport(markdown.markdownLanguage)],
           php: [myPhp()],
           python: [new LanguageSupport(python.pythonLanguage)],
+          sql: [new LanguageSupport(sql.StandardSQL.language)],
           xml: [new LanguageSupport(xml.xmlLanguage)],
           yaml: [new LanguageSupport(yaml.yamlLanguage)],
         },
@@ -145,6 +147,10 @@ const cpDef = {
     bbn.cp.mixins.events
   ],
   props: {
+    scrollable: {
+      type: Boolean,
+      default: false
+    },
     // Default mode/language of the editor
     mode: {
       type: String,
@@ -180,6 +186,7 @@ const cpDef = {
       // Holds compartments for dynamic editor configurations
       compartments: bbnData.immunizeValue(bbn.fn.createObject()),
       currentTheme: this.theme,
+      scrollContainer: null,
     }
   },
 
@@ -307,7 +314,7 @@ const cpDef = {
 
       // Configuring compartments for dynamic editor options such as wrap, tabSize, etc.
       this.compartments.wrap = new cpt;
-      extensions.push(this.compartments.wrap.of(cm.view.EditorView.lineWrapping));
+      extensions.push(this.compartments.wrap.of(this.wrap ? cm.view.EditorView.lineWrapping : []));
       this.compartments.tabSize = new cpt;
       extensions.push(this.compartments.tabSize.of(state.EditorState.tabSize.of(this.tabSize)));
       // push each basic extension
@@ -331,7 +338,6 @@ const cpDef = {
       return extensions; // Return the configured extensions
     },
     onChange(tr) {
-      bbn.fn.log(tr)
       this.widget.update([tr]); // Update the editor widget with the transaction
       let value = this.widget.state.doc.toString(); // Get the current document's content
       if (value !== this.value) {
@@ -363,6 +369,9 @@ const cpDef = {
         // Line wrapping configuration
         lineWrapping: this.wrap, 
       }));
+      if (this.scrollable) {
+        this.scrollContainer = this.querySelector('div.cm-scroller');
+      }
     },
     beautifyCode(code, mode) {
       let newValue = '';
@@ -471,9 +480,6 @@ const cpDef = {
     this.init();
   },
   watch: {
-    extensions() {
-
-    },
     // Watchers to dynamically reconfigure editor based on props changes
     tabSize(v) {
       this.widget.dispatch({
@@ -498,7 +504,7 @@ const cpDef = {
     },
     wrap(v) {
       this.widget.dispatch({
-        effects: this.compartments.wrap.reconfigure(this.constructor.cm.view.EditorView.lineWrapping.of(v))
+        effects: this.compartments.wrap.reconfigure(v ? this.constructor.cm.view.EditorView.lineWrapping : [])
       });
     },
     readonly(v) {
@@ -510,11 +516,10 @@ const cpDef = {
       clearTimeout(this.setterTimeout);
       // Update the document content if the value prop changes - but not too fast
       if (this.widget) {
-        let value = this.widget.state.doc.toString();
         this.setterTimeout = setTimeout(() => {
           if (this.widget) {
-            let v2 = this.widget.state.doc.toString();
-            if ((v2 === value) && (value !== nv)) {
+            let value = this.widget.state.doc.toString();
+            if (value !== nv) {
               this.widget.dispatch({
                 changes: {
                   from: 0,
