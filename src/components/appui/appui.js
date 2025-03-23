@@ -232,6 +232,9 @@ const cpDef = {
   data() {
     let isMobile = bbn.fn.isMobile();
     let isTablet = bbn.fn.isTabletDevice();
+    if (this.user) {
+      Object.freeze(this.user);
+    }
 
     let d = {
       isFocused: false,

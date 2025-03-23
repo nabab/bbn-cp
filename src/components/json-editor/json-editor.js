@@ -279,6 +279,10 @@ const cpDef = {
           }
         };
       }
+      else {
+        cfg.onEditable = () => false;
+      }
+
       return cfg;
     },
     /**

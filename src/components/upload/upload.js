@@ -631,7 +631,7 @@ const cpDef = {
 
                       if ( this.setStatusSuccess(fr.id) ){
                         this.$nextTick(() => {
-                          this.$emit('success', fr.id, f.name || fr.data.name, bbn.fn.extendOut(f, {original: fr.data.name}), res);
+                          this.$emit('success', fr.id, f?.name || fr.data.name, bbn.fn.extendOut(f || {}, {original: fr.data.name}), res);
                           this._afterUpload();
                         })
                       }

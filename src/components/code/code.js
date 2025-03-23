@@ -8,6 +8,7 @@ import { LanguageSupport } from "@codemirror/language"
 import * as autocomplete from "@codemirror/autocomplete";
 import * as commands from "@codemirror/commands";
 import * as collaboration from "@codemirror/collab";
+import * as merge from "@codemirror/merge";
 import * as lsp from "codemirror-languageserver";
 import * as language from "@codemirror/language";
 import * as lint from "@codemirror/lint";
@@ -84,6 +85,7 @@ const cpDef = {
         autocomplete,
         commands,
         collaboration,
+        merge,
         language,
         lint,
         lsp,
@@ -174,6 +176,10 @@ const cpDef = {
     tabSize: {
       type: Number,
       default: 2 
+    },
+    merge: {
+      type: false|String,
+      default: false
     }
   },
   data() {
@@ -286,7 +292,7 @@ const cpDef = {
       // Emit update event with the current document
       this.$emit('update', this.currentDoc); 
     },
-    getExtensions() {
+    getExtensions(isMerge) {
       const extensions = [];
       if (this.extensions) {
         if (bbn.fn.isFunction(this.extensions)) {
@@ -349,26 +355,55 @@ const cpDef = {
       // Get extensions for the editor
       let extensions = this.getExtensions(); 
       // Configuration for the editor state
-      let editorStateCfg = {
-        // Initial document/content
-        doc: this.value, 
-        // Applied extensions
-        extensions, 
-        // Read-only state
-        readOnly: cm.state.EditorState.readOnly.of(this.readonly) 
-      };
-      // Create editor state
-      this.state = cm.state.EditorState.create(editorStateCfg); 
-      this.widget = new cm.view.EditorView(bbnData.immunizeValue({
-        // Set state
-        state: this.state, 
-        // Set parent element
-        parent: this.getRef('element'), 
-        // Dispatch method for handling changes
-        dispatch: t => this.onChange(t), 
-        // Line wrapping configuration
-        lineWrapping: this.wrap, 
-      }));
+      const parent = this.getRef('element');
+      if (bbn.fn.isString(this.merge)) {
+        this.widget = new cm.merge.MergeView(bbnData.immunizeValue({
+          a: {
+            doc: this.merge, 
+            // Applied extensions
+            extensions: this.getExtensions(true), 
+            // Line wrapping configuration
+            lineWrapping: this.wrap, 
+          },
+          b: {
+            // Set state
+            doc: this.value, 
+            // Applied extensions
+            extensions: this.getExtensions(), 
+            // Dispatch method for handling changes
+            dispatch: t => this.onChange(t), 
+            // Line wrapping configuration
+            lineWrapping: this.wrap, 
+          },
+          parent,
+          revertControls: 'a-to-b',
+          gutter: true,
+          collapseUnchanged: true,
+        }));
+        this.state = this.widget.b.state;
+      }
+      else {
+        let editorStateCfg = {
+          // Initial document/content
+          doc: this.value, 
+          // Applied extensions
+          extensions, 
+          // Read-only state
+          readOnly: cm.state.EditorState.readOnly.of(this.readonly) 
+        };
+        // Create editor state
+        this.state = cm.state.EditorState.create(editorStateCfg);
+        this.widget = new cm.view.EditorView(bbnData.immunizeValue({
+          // Set state
+          state: this.state, 
+          // Set parent element
+          parent, 
+          // Dispatch method for handling changes
+          dispatch: t => this.onChange(t), 
+          // Line wrapping configuration
+          lineWrapping: this.wrap, 
+        }));
+      }
       if (this.scrollable) {
         this.scrollContainer = this.querySelector('div.cm-scroller');
       }
@@ -423,6 +458,11 @@ const cpDef = {
     // Custom key handling for code beautification and autocompletion
     onKeyDown(event) {
       this.lastKeyDown = event;
+      bbn.fn.log("KEYDOWN", event);
+      if (bbn.fn.isString(this.merge)) {
+        return;
+      }
+
       const currentCompletions = this.constructor.cm.autocomplete.currentCompletions(this.widget.state);
       // Beautify code on Ctrl+Shift+F
       if (!currentCompletions.length) {
