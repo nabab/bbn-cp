@@ -236,7 +236,7 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
           this.oldElement = null;
         }
       }
-      else if (node.element?.tagName) {
+      else if (this.element?.tagName) {
         this.transition.prom = this.transition.executeTransition("enter");
       }
     }

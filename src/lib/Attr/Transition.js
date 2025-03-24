@@ -108,6 +108,7 @@ export default class bbnTransitionAttr extends bbnAttr
             //bbn.fn.log("DISPATCHING " + 'after' + type, num)
             if (type === 'leave') {
               if (ele.tagName) {
+                //bbn.fn.log(["REMOVING", ele]);
                 node.nodeClean();
               }
 

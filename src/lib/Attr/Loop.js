@@ -53,8 +53,8 @@ export default class bbnLoopAttr extends bbnAttr
 
     let root = node.element;
     if (root && !root.parentNode) {
-      bbn.fn.log("LOOP ROOT PROBLEM");
-      node.nodeClean();
+      let num = node.nodeClean();
+      bbn.fn.log(["LOOP ROOT PROBLEM", num]);
       node.nodeRemove(root);
       root = null;
       //debugger;

@@ -30,6 +30,7 @@ bbnNode.prototype.nodeClean = function(full) {
   const id = this.id;
   const hash = this.hash;
   const indexes = Object.keys(cp.$nodes).filter(idx => !idx.indexOf(id + '-') || (full && (idx === id)));
+  let res = 0;
   if (indexes.length) {
     indexes.sort((a, b) => {
       a = a.split('-').map(v => parseInt(v));
@@ -60,6 +61,7 @@ bbnNode.prototype.nodeClean = function(full) {
             checkOwnDeps(obj[n]);
             if (obj[n].element) {
               obj[n].nodeRemove(obj[n].element, true);
+              res++;
             }
 
             delete obj[n];
@@ -70,6 +72,7 @@ bbnNode.prototype.nodeClean = function(full) {
         checkOwnDeps(obj);
         if (obj.element) {
           obj.nodeRemove(obj.element, true);
+          res++;
         }
 
         delete cp.$nodes[idx];
@@ -79,6 +82,7 @@ bbnNode.prototype.nodeClean = function(full) {
           checkOwnDeps(obj[n]);
           if (obj[n].element) {
             obj[n].nodeRemove(obj[n].element, true);
+            res++;
           }
 
           delete obj[n];
@@ -86,4 +90,6 @@ bbnNode.prototype.nodeClean = function(full) {
       }
     }
   }
+
+  return res;
 };

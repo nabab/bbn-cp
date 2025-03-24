@@ -47,6 +47,7 @@ bbnProtoHtml.$destroy = function() {
   }
 
   this.$components.removeAll();
+  //bbn.fn.log("DESTROYING: " + this.tagName + ' / ' + this.bbnCid);
   this.$internal.nodeClean(true);
   const hasDestroyEvent = this.bbnSchema.events?.['hook:destroyed'];
   const node = this.bbnSchema;

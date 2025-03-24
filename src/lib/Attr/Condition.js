@@ -66,7 +66,8 @@ export default class bbnConditionAttr extends bbnAttr
           }
           else if (!otherCondNode.isCommented) {
             otherCondNode.nodeSwitch(true);
-            otherCondNode.nodeClean();
+            let num = otherCondNode.nodeClean();
+            //bbn.fn.log(["CLEANING OTHER COND", num]);
           }
         }
       }
@@ -82,7 +83,17 @@ export default class bbnConditionAttr extends bbnAttr
     }
     else if (!conditionValue && !node.isCommented) {
       node.nodeSwitch(true);
-      node.nodeClean();
+      if (node.transition) {
+        requestAnimationFrame(() => {
+          if (!node.transition.running) {
+            node.nodeClean();
+          }
+        });
+      }
+      else {
+        let num = node.nodeClean();
+        //bbn.fn.log(["CLEANING CONDITION", num]);
+      }
     }
   }
 
@@ -121,7 +132,8 @@ export default class bbnConditionAttr extends bbnAttr
     if (node.forget?.value || ['template', 'slot'].includes(this.node.tag)) {
       if (node.items) {
         if (!this.attrGetValue()) {
-          node.nodeClean();
+          let num = node.nodeClean();
+          //bbn.fn.log(["FORGET CONDITION", num]);
         }
         else if ((node.tag === 'template') && !node.element) {
           node.nodeInit();

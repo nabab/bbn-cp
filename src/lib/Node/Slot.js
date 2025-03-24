@@ -158,8 +158,8 @@ export default class bbnSlotNode extends bbnNode
         ele = this.nodeBuild(null, true);
       }
       else if (this.numBuild) {
-        bbn.fn.log(["DELETE NODES2", this.id, this.hash]);
-        this.nodeClean();
+        let num = this.nodeClean();
+        //bbn.fn.log(["DELETE NODES2", num, this.id]);
       }
     }
 
