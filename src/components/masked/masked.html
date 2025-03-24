@@ -1,5 +1,11 @@
-<span :class="[componentClass, 'bbn-textbox', {'bbn-disabled': !!isDisabled}]"
+<span :class="[componentClass, 'bbn-textbox', {
+        'bbn-disabled': !!isDisabled,
+        'bbn-flex-width bbn-vmiddle': !!pref?.length
+      }]"
       tabindex="-1">
+  <span bbn-if="pref?.length"
+        class="bbn-masked-pref bbn-nowrap bbn-vmiddle bbn-left-xspadding"
+        bbn-text="pref"/>
   <input ref="element"
          :disabled="isDisabled"
          :required="required"
@@ -18,7 +24,7 @@
          @paste="pasteEvent"
          @cut="cutEvent"
          :size="currentInputSize"
-         class="bbn-radius"
+         :class="['bbn-radius', {'bbn-flex-fill': !!pref?.length}]"
          :inputmode="$el.inputmode"
          :pattern="pattern">
   <input :value="value"

@@ -37,7 +37,9 @@
                :nullable="nullable"
                @focus="onInputFocus"
                :validation-message="currentNumber?.startsWith('0') ? _('Enter the number without the leading 0') : ''"
-               @change.stop="onChange"/>
+               @change.stop="onChange"
+               :pref="currentStaticPrefix"
+               @beforekeydownwrite="onKeydown"/>
   <bbn-input bbn-else
              :tabindex="currentTabIndex"
              autocomplete="off"
@@ -55,7 +57,9 @@
              type="tel"
              :nullable="nullable"
              @focus="onInputFocus"
-             @change.stop="onChange"/>
+             @change.stop="onChange"
+             :pref="currentStaticPrefix"
+             @keydown="onKeydown"/>
   <input type="hidden"
          :value="value">
   <div bbn-if="isChecking"

@@ -52,6 +52,12 @@ const cpDef = {
       autoPosition: {
         type: Boolean,
         default: true
+      },
+      /**
+       * @prop {String} pref
+       */
+      pref: {
+        type: String
       }
     },
     data(){
@@ -527,9 +533,12 @@ const cpDef = {
        * @fires keydown
       */
       keydownEvent(event){
+        const ev = new CustomEvent('beforekeydown', {detail: event, cancelable: true});
+        this.$emit('beforekeydown', ev, this);
         if (!this.isDisabled
           && !this.readonly
           && !event.repeat
+          && !ev.defaultPrevented
         ) {
           if (!this.isShiftKey(event.keyCode)
             && !this.isControlKey(event.keyCode)
@@ -611,30 +620,35 @@ const cpDef = {
             else if (!this.isSpecialKey(event.keyCode)
               && !event.metaKey
             ) {
-              if (isSelection) {
-                this.currentPos = ele.selectionStart;
-                let afterPos = ele.selectionStart;
-                value = ele.value;
-                while (this.currentPos < (ele.selectionEnd)) {
-                  let i = this.getPos(this.currentPos);
-                  value = value.slice(0, i) + this.promptChar + value.slice(i + 1);
-                  this.currentPos++;
+              this.$emit('beforekeydownwrite', event, this);
+              if (!event.defaultPrevented) {
+                if (isSelection) {
+                  this.currentPos = ele.selectionStart;
+                  let afterPos = ele.selectionStart;
+                  value = ele.value;
+                  while (this.currentPos < (ele.selectionEnd)) {
+                    let i = this.getPos(this.currentPos);
+                    value = value.slice(0, i) + this.promptChar + value.slice(i + 1);
+                    this.currentPos++;
+                  }
+
+                  this.writeInputValue(value);
+                  ele.setSelectionRange(afterPos, afterPos);
+                  this.currentPos = afterPos;
                 }
 
-                this.writeInputValue(value);
-                ele.setSelectionRange(afterPos, afterPos);
-                this.currentPos = afterPos;
+                this.writeInputValue(ele.value.slice(0, this.currentPos) + ele.value.slice(this.currentPos + 1));
+                ele.setSelectionRange(this.currentPos, this.currentPos);
               }
-
-              this.writeInputValue(ele.value.slice(0, this.currentPos) + ele.value.slice(this.currentPos + 1));
-              ele.setSelectionRange(this.currentPos, this.currentPos);
+              else {
+                this.currentPos = ele.selectionStart;
+              }
             }
           }
 
           this.onKeydown(event);
         }
         else {
-          bbn.fn.log("preventin")
           event.preventDefault();
         }
       },
@@ -651,7 +665,13 @@ const cpDef = {
        * @fires keyup
       */
       keyupEvent(event){
-        if (!this.isDisabled && !this.readonly) {
+        const ev = new CustomEvent('beforekeyup', {detail: event, cancelable: true});
+        this.$emit('beforekeyup', ev, this);
+        if (ev.defaultPrevented) {
+          event.preventDefault();
+        }
+
+        if (!this.isDisabled && !this.readonly && !event.defaultPrevented) {
           const ele = this.getRef('element');
           const isSelection = ele.selectionStart !== ele.selectionEnd;
           const val = this.raw();
@@ -661,12 +681,15 @@ const cpDef = {
             && !event.metaKey
             && !isSelection
           ) {
-            this.currentPos = this.getPos(ele.selectionStart, event);
-            if (this.value !== val) {
-              this.emitInput(val);
-            }
+            this.$emit('beforekeyupwrite', event, this);
+            if (!event.defaultPrevented) {
+              this.currentPos = this.getPos(ele.selectionStart, event);
+              if (this.value !== val) {
+                this.emitInput(val);
+              }
 
-            ele.setSelectionRange(this.currentPos, this.currentPos);
+              ele.setSelectionRange(this.currentPos, this.currentPos);
+            }
           }
 
           this.onKeyup(event);

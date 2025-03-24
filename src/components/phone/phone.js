@@ -97,7 +97,16 @@ const cpDef = {
     fixedPrefix: {
       type: [String, Array]
     },
+    /**
+     * @prop {String} check
+     */
     check: {
+      type: String
+    },
+    /**
+     * @prop {String} staticPrefix
+     */
+    staticPrefix: {
       type: String
     }
   },
@@ -150,6 +159,13 @@ const cpDef = {
         return this.pattern;
       }
 
+      if (this.onlyMobile
+        && !this.mobilePrefix
+        && this.currentCountry?.mobilePattern
+      ) {
+        return this.currentCountry.mobilePattern;
+      }
+
       let pattern = '';
       if ((this.onlyMobile && this.currentMobilePrefix)
         || (this.onlyFixed && this.currentFixedPrefix)
@@ -186,6 +202,9 @@ const cpDef = {
       }
 
       return pattern;
+    },
+    currentStaticPrefix(){
+      return this.staticPrefix || this.currentCountry?.staticPrefix || '';
     },
     isFrance(){
       return this.currentCountryCode === 'FR';
@@ -257,6 +276,19 @@ const cpDef = {
           }
         }
       });
+    },
+    onKeydown(e){
+      const ele = e.target;
+      const key = e.key;
+      const position = ele.selectionStart;
+      if (this.currentStaticPrefix?.length
+        && (position <= (this.currentStaticPrefix.length - 1))
+        && (key === this.currentStaticPrefix.charAt(position))
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+      }
     }
   },
   watch: {
