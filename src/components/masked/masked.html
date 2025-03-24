@@ -3,7 +3,7 @@
         'bbn-flex-width bbn-vmiddle': !!pref?.length
       }]"
       tabindex="-1">
-  <span bbn-if="pref?.length"
+  <span bbn-if="pref?.length && inputValue.length"
         class="bbn-masked-pref bbn-nowrap bbn-vmiddle bbn-left-xspadding"
         bbn-text="pref"/>
   <input ref="element"
