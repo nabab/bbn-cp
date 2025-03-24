@@ -156,7 +156,7 @@ export default class bbnAnonHtml extends HTMLElement
         writable: false,
         configurable: false
       });
-      bbn.fn.iterate(cfg.methods, (fn, name) => {
+      bbn.fn.iterate(cfg.methods, (meth, name) => {
         if (name.substr(0, 1) === '$') {
           throw new Error(bbn._("Properties starting with the dollar sign are reserved"));
         }
@@ -165,7 +165,7 @@ export default class bbnAnonHtml extends HTMLElement
           Object.defineProperty(this, name, {
             writable: false,
             configurable: false,
-            value: fn
+            value: meth.fn.bind(this)
           });
         }
         else {

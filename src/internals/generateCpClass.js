@@ -93,7 +93,7 @@ export default function generateCpClass(publicClass, obj) {
             return () => {};
           }
 
-          return this.$methods[n].bind(this);
+          return this.$methods[n].fn.bind(this);
         }
       });
     }

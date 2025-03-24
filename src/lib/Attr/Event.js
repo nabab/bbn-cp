@@ -84,10 +84,10 @@ export default class bbnEventAttr extends bbnAttr
 
           if (cp.$namespaces[this.exp] === 'method') {
             if (e.detail?.args) {
-              cp.$methods[this.exp].bind(cp)(...e.detail.args);
+              cp.$methods[this.exp].fn.bind(cp)(...e.detail.args);
             }
             else {
-              cp.$methods[this.exp].bind(cp)(e);
+              cp.$methods[this.exp].fn.bind(cp)(e);
             }
           }
           else {

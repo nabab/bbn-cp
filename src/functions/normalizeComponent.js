@@ -136,9 +136,19 @@ export default function normalizeComponent(cfg, clsName) {
         // Validate methods.
         bbn.fn.checkType(cfg[name], 'object', bbn._("The methods must be an object in %s", cn));
         for (let methName in cfg[name]) {
-          bbn.fn.checkType(cfg[name][methName], 'function', bbn._("Methods must be functions, check %s in %s", methName, cn));
-          res[name][methName] = cfg[name][methName];
+          if (cfg[name][methName]?.fn) {
+            res[name][methName] = cfg[name][methName];
+          }
+          else {
+            bbn.fn.checkType(cfg[name][methName], 'function', bbn._("Methods must be functions, check %s in %s", methName, cn));
+            res[name][methName] = bbn.fn.analyzeFunction(cfg[name][methName]);
+            res[name][methName].fn = cfg[name][methName];
+            if (!res[name][methName].name) {
+              res[name][methName].name = methName;
+            }
+          }
         }
+
         break;
 
       case 'watch':
