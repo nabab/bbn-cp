@@ -47,6 +47,7 @@ export default {
       if (this.pageable && (!this.isAjax || !this.serverPaging)) {
         i = this.start;
         end = this.start + this.currentLimit > data.length ? data.length : this.start + this.currentLimit;
+        data = this.filteredData.slice(i, end);
       }
       // Grouping (and sorting) locally
       let pos;
