@@ -14,13 +14,6 @@ import bbn from "@bbn/bbn";
 */
 export default function define(name, obj, tplSt, css) {
   // Prevent redefinition if the component is already known.
-  if (name) {
-    bbn .fn.log("DEFINING " + name);
-  }
-  if (name && ['bbn-radio', 'bbn-chart', 'appui-note-widget-news'].includes(name.toLowerCase())) {
-    debugger;
-  }
-
   if (bbn.cp.known.includes(name)) {
     return;
   }

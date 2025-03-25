@@ -22,10 +22,6 @@ export default function normalizeComponent(cfg, clsName) {
     bbn.fn.log(cfg, clsName);
     throw new Error("Components definition must be objects");
   }
-  else if (!bbn.fn.numProperties(cfg)) {
-    bbn.fn.log(cfg, clsName);
-    debugger;
-  }
   // Initialize the result object with standard component properties.
   const res = bbnData.immunizeValue(bbn.fn.createObject({
     props: bbn.fn.createObject(),
@@ -71,7 +67,6 @@ export default function normalizeComponent(cfg, clsName) {
     });
   }
   
-  bbn.fn.log([clsName, res, cfg.mixins, cfg, JSON.stringify(cfg)]);
   // Process and validate each property of the component configuration.
   bbn.fn.each(Object.keys(cfg).sort(), name => {
     switch (name) {
