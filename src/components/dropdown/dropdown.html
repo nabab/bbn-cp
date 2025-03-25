@@ -64,10 +64,10 @@
               @click="isOpened = true"
               :disabled="!!isDisabled || !!readonly"
               :tabindex="currentTabIndex">
-        <option :value="isNullable ? null : ''"
-                bbn-html="isNullable && !((value === '') || (value === null)) ? _('Clear') : placeholder"
+        <option :value="isNullable ? nullValue : ''"
+                bbn-html="isNullable && !((value === '') || (value === nullValue)) ? _('Clear') : (placeholder || '')"
                 :disabled="!isNullable"
-                :selected="(value === '') || (value === null)"/>
+                :selected="(value === '') || (value === nullValue)"/>
         <option bbn-for="d in filteredData"
                 :value="d.data[sourceValue]"
                 bbn-html="d.data[sourceText]"
