@@ -11,7 +11,6 @@ bbnData.immunizeValue = function(value, deep) {
     if (value.__bbnData) {
       const dataObj = value.__bbnData;
       if (dataObj) {
-        value = dataObj.targetData;
         dataObj.unset();
       }
     }

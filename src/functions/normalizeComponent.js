@@ -18,6 +18,14 @@ export default function normalizeComponent(cfg, clsName) {
 
   cfg = bbnData.immunizeValue(cfg, true);
 
+  if (!bbn.fn.isObject(cfg)) {
+    bbn.fn.log(cfg, clsName);
+    throw new Error("Components definition must be objects");
+  }
+  else if (!bbn.fn.numProperties(cfg)) {
+    bbn.fn.log(cfg, clsName);
+    debugger;
+  }
   // Initialize the result object with standard component properties.
   const res = bbnData.immunizeValue(bbn.fn.createObject({
     props: bbn.fn.createObject(),
@@ -53,13 +61,17 @@ export default function normalizeComponent(cfg, clsName) {
         }
         // Merge object properties.
         else if ((bbn.fn.isObject(cp[name]) && bbn.fn.numProperties(cp[name])) || (bbn.fn.isArray(cp[name]) && cp[name].length)) {
-          res[name] = res[name] || bbn.fn.createObject();
+          if (!(name in res)) {
+            res[name] = bbn.fn.createObject();
+          }
+
           Object.assign(res[name], cp[name]);
         }
       });
     });
   }
-
+  
+  bbn.fn.log([clsName, res, cfg.mixins, cfg, JSON.stringify(cfg)]);
   // Process and validate each property of the component configuration.
   bbn.fn.each(Object.keys(cfg).sort(), name => {
     switch (name) {

@@ -3,6 +3,7 @@ import generateCpClass from "../internals/generateCpClass.js";
 import generateHtmlClass from "../internals/generateHtmlClass.js";
 import retrieveModels from "../internals/retrieveModels.js";
 import retrieveSlots from "../internals/retrieveSlots.js";
+import bbn from "@bbn/bbn";
 
 /**
 * Defines a component with the Object config and the HTML template.
@@ -13,6 +14,13 @@ import retrieveSlots from "../internals/retrieveSlots.js";
 */
 export default function define(name, obj, tplSt, css) {
   // Prevent redefinition if the component is already known.
+  if (name) {
+    bbn .fn.log("DEFINING " + name);
+  }
+  if (name && ['bbn-radio', 'bbn-chart', 'appui-note-widget-news'].includes(name.toLowerCase())) {
+    debugger;
+  }
+
   if (bbn.cp.known.includes(name)) {
     return;
   }
@@ -27,6 +35,7 @@ export default function define(name, obj, tplSt, css) {
   //bbn.fn.log("DEFINING " + name);
   // Convert the template string to a DOM array.
   const {res: cpTpl, map: cpMap, inlineTemplates} = stringToTemplate(tplSt, true, obj.tag || name);
+
   // Generate a public class name based on the component tag.
   const publicName = bbn.fn.camelize(name);
   // The component config (= Vue-like object) that we freeze
