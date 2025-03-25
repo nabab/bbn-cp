@@ -239,6 +239,10 @@ const cpDef = {
           this.showFloater = !this.showFloater;
         }
       },
+      onSelect(item, idx, dataIndex, ev, floater) {
+        this.$emit('select', item, idx, dataIndex, ev, floater);
+        this.showFloater = false;
+      },
       onMouseDown(e) {
         /*
         if (!(e instanceof CustomEvent)) {

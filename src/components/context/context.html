@@ -34,7 +34,7 @@
               :component-options="componentOptions"
               :position="position"
               :source-icon="sourceIcon"
-              @select="(item, idx, dataIndex, ev, floater) => $emit('select', item, idx, dataIndex, ev, floater)">
+              @select="onSelect">
     <slot bbn-if="$slots.content?.length"
           name="content"></slot>
   </bbn-floater>
@@ -65,7 +65,7 @@
               :item-component="itemComponent"
               :position="position"
               :source-icon="sourceIcon"
-              @select="(item, idx, dataIndex, ev, floater) => $emit('select', item, idx, dataIndex, ev, floater)">
+              @select="onSelect">
     <slot bbn-if="$slots.content?.length"
           name="content"></slot>
   </bbn-floater>

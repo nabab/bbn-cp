@@ -110,7 +110,10 @@ const cpDef = {
               this.renderedOptions.required = this.required;
             }
             if ( this.editor ){
-              return this.editor;
+              this.renderedComponent = this.editor;
+              if ( this.source ){
+                this.renderedOptions.source = this.source;
+              }
             }
             else if ( (this.render !== undefined) && bbn.fn.isFunction(this.render) ){
               this.renderedComponent = 'div';
