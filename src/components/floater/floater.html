@@ -85,7 +85,8 @@
                   :max-width="isMaximized ? '100%' : currentMaxWidth || null"
                   :max-height="isMaximized ? '100%' : scrollMaxHeight || null"
                   :min-width="currentMinWidth || null"
-                  :min-height="currentMinHeight > outHeight ? currentMinHeight - outHeight : null">
+                  :min-height="currentMinHeight > outHeight ? currentMinHeight - outHeight : null"
+                  :keep-visible="scrollKeepVisible">
         <component bbn-if="component"
                   ref="component"
                   :is="component"

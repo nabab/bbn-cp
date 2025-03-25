@@ -348,6 +348,9 @@ const cpDef = {
       type: Boolean,
       default: false
     },
+    scrollKeepVisible: {
+      type: Boolean
+    }
   },
   data() {
     let fns = [];
