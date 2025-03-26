@@ -47,8 +47,8 @@ export default class bbnLoopAttr extends bbnAttr
     const isNumber = bbn.fn.isNumber(loopValue);
 
     if (isNumber) {
-      // Convert number to an array of that length if loopValue is a number.
-      loopValue = Object.keys((new Array(loopValue)).fill(0)).map(a => parseInt(a));
+      // Convert number to an array of that length (starting at 1) if loopValue is a number.
+      loopValue = Object.keys((new Array(loopValue)).fill(0)).map(a => parseInt(a) + 1);
     }
 
     let root = node.element;

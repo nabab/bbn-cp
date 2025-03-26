@@ -7,12 +7,14 @@
  * @param {string} type - The type of the namespace being added (e.g., 'prop', 'method').
  */
 const reserved = [
+  "__proto__",
   "await",
   "break",
   "case",
   "catch",
   "class",
   "const",
+  "constructor",
   "continue",
   "debugger",
   "default",
@@ -32,6 +34,7 @@ const reserved = [
   "let",
   "new",
   "null",
+  "prototype",
   "return",
   "static",
   "super",
@@ -41,6 +44,7 @@ const reserved = [
   "true",
   "try",
   "typeof",
+  "undefined",
   "var",
   "void",
   "while",

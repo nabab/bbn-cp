@@ -1310,8 +1310,12 @@ const list = {
       * @fires setConfig
       */
     currentLimit() {
-      if (this.ready && bbn.fn.isFunction(this.setConfig)) {
-        this.setConfig(true);
+      if (this.ready) {
+        if (bbn.fn.isFunction(this.setConfig)) {
+          this.setConfig(true);
+        }
+
+        this.updateData();
       }
     },
     /**

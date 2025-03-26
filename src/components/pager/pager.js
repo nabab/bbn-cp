@@ -223,8 +223,6 @@ const cpDef = {
         }
       },
       limit(v, ov) {
-        bbn.fn.log("LIMIT", v, ov, this.element.currentLimit);
-
         //bbn.fn.log("CURRENT PAGE", v);
         if (this.element.currentLimit !== v) {
           this.currentPage = 1;

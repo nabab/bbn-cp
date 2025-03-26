@@ -108,7 +108,7 @@ export default {
         throw new Error(bbn._("Impossible to get the view without an URL"));
       }
 
-      bbn.fn.log("LOADING VIEW " + url);
+      //bbn.fn.log("LOADING VIEW " + url);
       if (this.isLoading) {
         return;
       }

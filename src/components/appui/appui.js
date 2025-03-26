@@ -537,7 +537,7 @@ const cpDef = {
      * @param {Object} message
      */
     receive(message) {
-      bbn.fn.log(["RECEIVING " + message.type, message]);
+      this.$emit('received', message);
       if (message.type !== undefined) {
         switch (message.type) {
           case 'message':
