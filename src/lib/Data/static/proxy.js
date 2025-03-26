@@ -12,7 +12,7 @@ bbnData.proxy = function(component, path, targetObj) {
   return {
     get(target, key) {
       let realValue = target[key];
-      if (key === 'constructor') {
+      if (['constructor', 'prototype'].includes(key)) {
         return realValue;
       }
 
