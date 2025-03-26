@@ -168,7 +168,7 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
             const a = bbn.fn.isComment(nn?.element) ? 1 : 0;
             const b = bbn.fn.isComment(this) ? 1 : 0;
             if (this.isConnected && (a+b !== 1) && (a || (nn?.element?.tagName === this.tagName))) {
-              debugger;
+              //debugger;
             }
           }
 

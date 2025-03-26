@@ -246,9 +246,6 @@ const basic = {
    * @memberof basicComponent
    */
   created() {
-    if (!this.componentClass.includes) {
-      debugger;
-    }
     if (this.$options.name && !this.componentClass.includes(this.$options.name)){
       this.componentClass.push(this.$options.name);
     }
