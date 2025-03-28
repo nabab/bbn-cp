@@ -58,7 +58,19 @@ export default {
 
       let idx = this.search(cp.url);
       if (idx === false) {
-        throw new Error(bbn._('Impossible to find the view for URL %s', cp.url));
+        if (fake) {
+          throw new Error(bbn._('Impossible to find the view for URL %s', cp.url));
+        }
+
+        if (cp.previousElementSibling) {
+          idx = cp.previousElementSibling.currentIndex + 1;
+        }
+        else {
+          idx = this.views.length;
+        }
+
+        const props = bbn.fn.extendOut({idx}, cp.bbnSchema.props);
+        this.add(props, idx);
       }
 
       cp.isRegistered = true;
@@ -95,18 +107,15 @@ export default {
         throw new Error(bbn._('The component bbn-container must have a URL defined'));
       }
       this.numRegistered--;
-      let idx = this.search(cp.url),
-        dataObj = this.postBaseUrl ? { _bbn_baseURL: this.fullBaseURL } : {},
-        requestID = bbn.fn.getRequestId(cp.url, dataObj);
+      let idx = this.search(cp.url);
+      const dataObj = this.postBaseUrl ? { _bbn_baseURL: this.fullBaseURL } : {};
+      const requestID = bbn.fn.getRequestId(cp.url, dataObj);
       if (bbn.fn.getLoader(requestID)) {
         bbn.fn.abort(requestID);
       }
-      if (this.urls[cp.routerUid] === this) {
-        delete this.urls[cp.routerUid];
-      }
 
       if (idx !== false) {
-        //this.removeItem(idx);
+        this.removeItem(idx, true);
       }
     },
   },

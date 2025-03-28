@@ -138,6 +138,7 @@ export default class bbnLoopAttr extends bbnAttr
         a.nodeClean(true);
       }
     }
+
     bbn.fn.each(elements, e => {
       let next = e.nextSibling;
       if ((e instanceof Comment) && !e.bbnSchema.isCommented) {

@@ -221,15 +221,15 @@ export default {
      */
     async removeItem(misc, force, replace) {
       let idx = this.getIndex(misc);
-      //bbn.fn.log(["REMOVE " + idx, this.views[idx].url, misc])
+      //bbn.fn.log(["REMOVE " + idx, this.views[idx].url, misc, force])
       if (idx > -1) {
         /** @var {Event} onBeforeClose beforeClose event, cancelable only if not force */
         let onBeforeClose = new Event('beforeclose', { cancelable: !force });
         /** @var {Event} onClose close event, cancelable only if not force */
         let onClose = new Event('close');
         this.$emit('beforeclose', idx, onBeforeClose);
-        //bbn.fn.log("REMOVING " + this.views[idx].url)
         if (force || !onBeforeClose.defaultPrevented) {
+          //bbn.fn.log("REMOVING " + this.views[idx].url)
           if (
             !force &&
             !this.ignoreDirty &&
@@ -248,11 +248,14 @@ export default {
               return this.close(idx, true);
             });
           }
-          else if (this.views[idx] && !this.views[idx].real) {
+          else if (this.views[idx]) {
+            const uid = this.views[idx].uid;
             this.$emit('close', idx, onClose);
             //const replacers = replacer ? [this.getViewObject(replacer)] : [];
             const replacers = replace ? [bbn.fn.extend(this.getViewObject(replace), {idx})] : [];
             this.views.splice(idx, 1, ...replacers);
+            //bbn.fn.log("DELETING CT")
+            delete this.urls[uid];
             this.fixIndexes();
             if (!replacers.length && !this.views[idx]?.pane) {
               if (idx < this.selected) {

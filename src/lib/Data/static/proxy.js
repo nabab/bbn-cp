@@ -49,9 +49,10 @@ bbnData.proxy = function(component, path, targetObj) {
     },
     set(target, key, value) {
       if (key?.indexOf && (key.indexOf('__bbn') === 0)) {
-        if (key === '__bbnNoData') {
-          debugger;
+        if (['__bbnNoData', '__bbnData'].includes(key)) {
+          throw new Error(bbn._("Impossible to set %s", key));
         }
+
         target[key] = value;
         return true;
       }
