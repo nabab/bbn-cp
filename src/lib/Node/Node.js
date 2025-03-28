@@ -56,6 +56,15 @@ export default class bbnNode
       value: rootHash
     });
     
+    /**
+     * @property {htmlElement} component
+     */
+    Object.defineProperty(this, 'component', {
+      writable: false,
+      configurable: false,
+      value: cp
+    });
+
     if (!(cp instanceof HTMLElement) || !node || (typeof hash !== 'string')) {
       throw new Error("Invalid arguments");
     }
@@ -147,12 +156,6 @@ export default class bbnNode
       value: parent
     });
 
-    Object.defineProperty(this, 'component', {
-      writable: false,
-      configurable: false,
-      value: cp
-    });
-
     Object.defineProperty(this, 'deps', {
       writable: false,
       value: []
@@ -223,6 +226,48 @@ export default class bbnNode
 
   get uid() {
     return this.component.$rootPath + '_' + (this.hash ? this.hash + '-' : '') + this.id;
+  }
+
+  #getNextOrPrev(next) {
+    const bits = this.id.split('-');
+    const idx = bits.pop();
+    bits.push(parseInt(idx) + (next ? 1 : -1));
+    const nextId = bits.join('-');
+    if (this.hash) {
+      return this.component.$nodes[nextId]?.[this.hash];
+    }
+
+    return this.component.$nodes[nextId];
+  }
+
+  get prev() {
+    return this.#getNextOrPrev(false);
+  }
+
+  get next() {
+    return this.#getNextOrPrev(true);
+  }
+
+  get prevElement() {
+    let node = this;
+    while (node = node.prev) {
+      if (node.element && !node.element.comment) {
+        return node.element;
+      }
+    }
+
+    return null;
+  }
+
+  get nextElement() {
+    let node = this;
+    while (node = node.next) {
+      if (node.element && !node.element.comment) {
+        return node.element;
+      }
+    }
+
+    return null;
   }
 
   nodeSwitch(v) {

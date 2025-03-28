@@ -62,8 +62,8 @@ export default {
           throw new Error(bbn._('Impossible to find the view for URL %s', cp.url));
         }
 
-        if (cp.previousElementSibling) {
-          idx = cp.previousElementSibling.currentIndex + 1;
+        if (cp.$node.prevElement && ('currentIndex' in cp.$node.prevElement)) {
+          idx = cp.$node.prevElement.currentIndex + 1;
         }
         else {
           idx = this.views.length;
