@@ -69,16 +69,15 @@
          style="display: flex;">
       <div class="bbn-calendar-container bbn-w-100"
            :style="gridStyle">
-        <template bbn-if="labels && currentLabels.length">
-          <div class="bbn-calendar-labels"
-              bbn-for="(l, i) in currentLabels"
-              bbn-html="l"
-              ref="label"/>
-        </template>
+        <div bbn-if="labels && currentLabels?.length"
+            class="bbn-calendar-labels"
+            bbn-for="(l, i) in currentLabels"
+            bbn-html="l"
+            ref="label"/>
         <template bbn-for="item in items"
                   :key="item.key">
           <div bbn-if="!item.hidden"
-              :class="['bbn-calendar-item-box', 'bbn-box', {
+              :class="['bbn-calendar-item-box', 'bbn-border', {
                 'bbn-p': selection && !item.disabled,
                 'bbn-spadding': !itemDetails && itemPadding,
                 'bbn-tertiary': item.highlight && !(selection && (item.value === currentValue)),
@@ -123,7 +122,7 @@
             </template>
           </div>
           <div bbn-else
-               class="bbn-calendar-item-box bbn-box bbn-o bbn-alt-background"/>
+               class="bbn-calendar-item-box bbn-o bbn-alt-background"/>
         </template>
       </div>
     </div>
