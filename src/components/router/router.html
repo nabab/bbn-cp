@@ -55,8 +55,8 @@
                   'bbn-100': scrollContent,
                   'bbn-flex-height': scrollContent && !hasVerticalTabs,
                   'bbn-flex-width': hasVerticalTabs,
-                  'bbn-router-nav': nav,
-                  'bbn-router-nav-bc': nav && isBreadcrumb,
+                  'bbn-router-nav': nav && !isVisual,
+                  'bbn-router-nav-bc': nav && isBreadcrumb && !isVisual,
                   'bbn-router-nav-verticaltabs': hasVerticalTabs
                   }"
            bbn-forget="!nav && !scrollContent"
