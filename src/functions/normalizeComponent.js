@@ -25,8 +25,8 @@ export default function normalizeComponent(cfg, clsName) {
   // Initialize the result object with standard component properties.
   const res = bbnData.immunizeValue(bbn.fn.createObject({
     props: bbn.fn.createObject(),
-    data: bbnData.immunizeValue([]),
-    computed: bbnData.immunizeValue(bbn.fn.createObject()),
+    data: [],
+    computed: bbn.fn.createObject(),
     methods: bbn.fn.createObject(),
     watch: bbn.fn.createObject(),
     components: bbn.fn.createObject(),
@@ -36,9 +36,9 @@ export default function normalizeComponent(cfg, clsName) {
       event: "input"
     }),
     extension: null,
-    statics: bbnData.immunizeValue([]),
+    statics: [],
     __bbnComponent: true // Internal flag to mark as a bbn component.
-  }));
+  }), true);
 
   const cn = clsName || cfg.tag || 'unknown';
 

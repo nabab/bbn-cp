@@ -18,7 +18,7 @@ bbnData.treatValue = function(value, component, path, parent) {
     this.watchStarted = false;
   }
 
-  if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor) && !value.__bbnNoData) {
+  if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor) && !('__bbnNoData' in value)) {
     // Will remove from the sequence the subsequent calls to the data
     let dataObj;
     if (value.__bbnData) {
