@@ -108,9 +108,29 @@ const cpDef = {
         }
       },
       numPages: {
-        get(){
+        get() {
+          if (this.element) {
+            return this.element.numPages;
+          }
           return this.element?.numPages;
         },
+      },
+      pageDesc() {
+        if (this.element?.pageable && this.element.currentLimit) {
+          const isAjax = this.element.isAjax;
+          const start = (this.element.currentStart || 0) + 1;
+          const limit = this.element.currentLimit;
+          const last = (this.element.currentStart || 0)+ limit;
+          const total = isAjax ? this.element.currentTotal : this.element.filteredData.length;
+          if (this.isMobile) {
+            return `<i class="nf nf-fa-hashtag bbn-m bbn-right-sspace"></i> <span>${total}</span>`;
+          }
+          if (total) {
+            return start + '-' + (last > total ? total : last) + ' ' + bbn._('of') + ' ' + total;
+          }
+
+          return '';
+        }
       }
     },
     methods: {

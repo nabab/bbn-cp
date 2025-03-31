@@ -161,7 +161,7 @@ export default class bbnAnonHtml extends HTMLElement
           throw new Error(bbn._("Properties starting with the dollar sign are reserved"));
         }
 
-        if (this[name] === undefined) {
+        if (!(name in this)) {
           Object.defineProperty(this, name, {
             writable: false,
             configurable: false,

@@ -20,6 +20,23 @@ const list = {
       default: 25
     },
     /**
+     * The start index.
+     * @data {Number} [0] start
+     * @memberof listComponent
+     */
+    start: {
+      type: Number,
+      default: 0
+    },
+    /**
+     * The total of items in the list. 
+     * @data {Number} [0] total
+     * @memberof listComponent
+     */
+    total: {
+      type: Number
+    },
+    /**
      * The array of predefined limits.
      * @data {Array} {[10, 25, 50, 100, 250, 500]} limits
      * @memberof listComponent
@@ -468,18 +485,6 @@ const list = {
        */
       currentTotal: 0,
       /**
-       * The start index.
-       * @data {Number} [0] start
-       * @memberof listComponent
-       */
-      start: 0,
-      /**
-       * The total of items in the list. 
-       * @data {Number} [0] total
-       * @memberof listComponent
-       */
-      total: 0,
-      /**
        * True if the list is loading data.
        * @data {Boolean} [false] isLoading
        * @memberof listComponent 
@@ -617,7 +622,7 @@ const list = {
      */
     numPages() {
       if (this.isAjax) {
-        return Math.ceil(this.total / this.currentLimit);
+        return Math.ceil(this.currentTotal / this.currentLimit);
       }
 
       return Math.ceil(this.filteredTotal / this.currentLimit);
@@ -631,11 +636,11 @@ const list = {
      */
     currentPage: {
       get() {
-        return Math.ceil((this.start + 1) / this.currentLimit);
+        return Math.ceil((this.currentStart + 1) / this.currentLimit);
       },
       set(val) {
         if (this.ready) {
-          this.start = val > 1 ? (val - 1) * this.currentLimit : 0;
+          this.currentStart = val > 1 ? (val - 1) * this.currentLimit : 0;
           this.updateData(!this.serverPaging);
         }
       }
@@ -1094,7 +1099,7 @@ const list = {
                   dir: (d.dir || '').toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
                 });
               }
-              this.total = d.total || this.filteredData.length;
+              this.currentTotal = d.total || this.filteredData.length;
               /** @todo Observer part to dissociate */
               if (d.observer && bbn.fn.isFunction(this.observerCheck) && this.observerCheck()) {
                 this._observerReceived = d.observer.value;
@@ -1318,6 +1323,11 @@ const list = {
         this.updateData();
       }
     },
+    currentStart() {
+      if (this.ready) {
+        this.updateData();
+      }
+    },
     /**
       * @watch currentFilters
       * @fires updateData
@@ -1397,7 +1407,23 @@ const list = {
           });
         }
       }
-    }
+    },
+    total(v) {
+      if (this.currentTotal !== v) {
+        this.currentTotal = v;
+      }
+    },
+    start(v, ov) {
+      if (this.currentStart !== v) {
+        bbn.fn.log("Changing current start",v, ov)
+        this.currentStart = v;
+      }
+    },
+    limit(v) {
+      if (this.currentLimit !== v) {
+        this.currentLimit = v;
+      }
+    },
   }
 };
 

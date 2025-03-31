@@ -62,7 +62,7 @@ export default class bbnBindAttr extends bbnAttr
 
       if (!(this.node instanceof bbnSlotNode)) {
         for (let n in this.node.props) {
-          if (!this.node.attr[n] && (this.result.value?.[n] === undefined)) {
+          if (!this.node.attr[n] && !(n in this.result.value)) {
             delete this.node.props[n];
           }
         }

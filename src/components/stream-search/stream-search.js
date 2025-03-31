@@ -20,17 +20,17 @@ const cpDef = {
    * @mixin bbn.cp.mixins.url
    * @mixin bbn.cp.mixins.dropdown
     */
-  mixins: 
-  [
-    bbn.cp.mixins.basic,
-    bbn.cp.mixins.events,
-    bbn.cp.mixins.input,
-    bbn.cp.mixins.resizer,
-    bbn.cp.mixins.list,
-    bbn.cp.mixins.keynav,
-    bbn.cp.mixins.url,
-    bbn.cp.mixins.dropdown
-  ],
+  mixins:
+    [
+      bbn.cp.mixins.basic,
+      bbn.cp.mixins.events,
+      bbn.cp.mixins.input,
+      bbn.cp.mixins.resizer,
+      bbn.cp.mixins.list,
+      bbn.cp.mixins.keynav,
+      bbn.cp.mixins.url,
+      bbn.cp.mixins.dropdown
+    ],
   props: {
     source: {
       type: Array,
@@ -70,7 +70,7 @@ const cpDef = {
      * Defines the min length of the filter string. 
      * @prop {Number} [1] minLength
      * 
-     */      
+     */
     minLength: {
       type: Number,
       default: 1
@@ -148,7 +148,7 @@ const cpDef = {
      */
     searchFunctions: {
       type: Array,
-      default(){
+      default() {
         return [];
       },
       validator(a) {
@@ -204,7 +204,7 @@ const cpDef = {
       requestedText: '',
       isStarted: false,
       searchUid: bbn.fn.randomString(20) + '-' + bbn.fn.timestamp(),
-      itv: false,
+      itv: false
     };
   },
   computed: {
@@ -212,7 +212,7 @@ const cpDef = {
       return this.value;
     },
 
-    isNullable(){
+    isNullable() {
       return this.nullable && this.isActive;
     },
     /**
@@ -220,13 +220,13 @@ const cpDef = {
      * @computed realComponent
      * @memberof listComponent
      */
-    searchComponent(){
+    searchComponent() {
       let cp = bbn.fn.isString(this.component) || (bbn.fn.isObject(this.component) && Object.keys(this.component).length) ? this.component : null;
       if (!cp) {
         cp = {
           props: ['source'],
-          data(){
-            return {data: this.source};
+          data() {
+            return { data: this.source };
           },
           template: `<component :is="source.component || 'div'" :source="source"></component>`
         };
@@ -235,6 +235,13 @@ const cpDef = {
       //bbn.fn.log(["BIG SEARCH", cp, this.source]);
       return cp;
     },
+    filteredData() {
+      return this.currentData;
+    },
+    items() {
+      return this.filteredData.slice(this.currentStart, this.currentStart + this.currentLimit)
+    },
+
   },
   methods: {
     /**
@@ -248,7 +255,7 @@ const cpDef = {
       }
 
       let signature = bbn.fn.md5(fn.toString());
-      if (!bbn.fn.getRow(this.registeredFunctions, {signature: signature})) {
+      if (!bbn.fn.getRow(this.registeredFunctions, { signature: signature })) {
         this.registeredFunctions.push({
           signature: signature,
           fn: fn
@@ -274,19 +281,19 @@ const cpDef = {
      * @param {Number} dataIndex
      * @emit change
      */
-    select(item, idx, dataIndex){
+    select(item, idx, dataIndex) {
       if (!this.isDisabled) {
-        let ev = new Event('select', {cancelable: true});
+        let ev = new Event('select', { cancelable: true });
         this.$emit('select', ev, item, idx, dataIndex);
         bbn.fn.log(["SELECT", item])
         if (!ev.defaultPrevented) {
           if (this.sourceAction && item[this.sourceAction]) {
-            if ( typeof(item[this.sourceAction]) === 'string' ){
-              if ( bbn.fn.isFunction(this[item[this.sourceAction]]) ){
+            if (typeof (item[this.sourceAction]) === 'string') {
+              if (bbn.fn.isFunction(this[item[this.sourceAction]])) {
                 this[item[this.sourceAction]]();
               }
             }
-            else if (bbn.fn.isFunction(item[this.sourceAction]) ){
+            else if (bbn.fn.isFunction(item[this.sourceAction])) {
               if (this.actionArguments) {
                 item[this.sourceAction](...this.actionArguments);
               }
@@ -326,7 +333,7 @@ const cpDef = {
      * @fires keynav
      *
      */
-    onKeydown(e){
+    onKeydown(e) {
       if (e.key === 'Enter') {
         let list = this.getRef('list');
         if (list && bbn.fn.isNumber(list.overIdx)) {
@@ -340,7 +347,7 @@ const cpDef = {
         this.isOpened = false;
         this.filterString = '';
       }
-      else if (bbn.var.keys.upDown.includes(e.keyCode)) {
+      else if (!e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey && bbn.var.keys.upDown.includes(e.keyCode)) {
         let list = this.getRef('list');
         if (list && bbn.fn.isNumber(list.overIdx)) {
           list.keynav(e);
@@ -429,76 +436,101 @@ const cpDef = {
         this.isStarted = true;
         this.currentFilters.uid = this.searchUid;
         this.currentData = [];
-        bbn.fn.stream(this.startUrl, d => {
-          bbn.fn.log(typeof(d), d);
-          if (d.id) {
-            this.searchId = d.id;
-          }
-
-          if (d.data?.length) {
-            this.queue = [];
-            if (!this.currentData.length) {
-              this.currentData = bbn.fn.order(d.data, {dir: 'DESC', field: 'score'});
+        bbn.fn.stream(
+          this.startUrl,
+          d => {
+            bbn.fn.log([`STREAM SEARCH RESPONSE FOR ${this.filterString} WITH ${d?.data?.length} ROWS ON STEP ${d.step}`, typeof (d), d]);
+            if (d?.id) {
+              this.searchId = d.id;
             }
-            else {
-              if (!this.itv) {
-                this.itv = setInterval(() => {
-                  if (this.queue.length) {
-                    const data = this.queue.splice(0);
-                    bbn.fn.each(data, r => {
-                      const idx = bbn.fn.search(this.currentData, {hash: r.hash});
-                      if (idx > -1) {
-                        this.currentData[idx].score += r.score;
-                        let i = idx;
-                        while (i > 0) {
-                          if (this.currentData[i].score > this.currentData[i - 1].score) {
-                            i--;
+
+            if (d?.data?.length) {
+              this.queue = [];
+              if (!this.currentData.length) {
+                this.currentData = bbn.fn.order(d.data, { dir: 'DESC', field: 'score' });
+                this.currentTotal = this.currentData.length;
+              }
+              else {
+                if (!this.itv) {
+                  this.itv = setInterval(() => {
+                    if (this.queue.length) {
+                      const data = this.queue.splice(0);
+                      bbn.fn.each(data, r => {
+                        const idx = bbn.fn.search(this.currentData, { hash: r.hash });
+                        if (idx > -1) {
+                          this.currentData[idx].score += r.score;
+                          let i = idx;
+                          while (i > 0) {
+                            if (this.currentData[i].score > this.currentData[i - 1].score) {
+                              i--;
+                            }
+                            else {
+                              break;
+                            }
                           }
-                          else {
-                            break;
-                          }
-                        }
-        
-                        if (i !== idx) {
-                          const d = this.currentData.splice(idx, 1);
-                          this.currentData.splice(i, 0, d);
-                        }
-                      }
-                      else if (!this.currentData.length) {
-                        this.currentData.unshift(r);
-                      }
-                      else {
-                        let i = 0;
-                        while (i < this.currentData.length) {
-                          if (this.currentData[i].score > r.score) {
-                            i++;
-                          }
-                          else {
-                            break;
+
+                          if (i !== idx) {
+                            const d = this.currentData.splice(idx, 1);
+                            this.currentData.splice(i, 0, d);
                           }
                         }
-        
-                        this.currentData.splice(i, 0, r);
-                      }
-                    });
-                  }
-                }, 500);
+                        else if (!this.currentData.length) {
+                          this.currentData.unshift(r);
+                          this.currentTotal++;
+                        }
+                        else {
+                          let i = 0;
+                          while (i < this.currentData.length) {
+                            if (this.currentData[i].score >= r.score) {
+                              i++;
+                            }
+                            else {
+                              break;
+                            }
+                          }
+
+                          this.currentData.splice(i, 0, r);
+                          this.currentTotal++;
+                        }
+                      });
+
+                      this.$forceUpdate();
+                    }
+                  }, 50);
+                }
+
+                this.queue.push(...d.data);
               }
 
-              this.queue.push(...d.data);
+              this.isLoading = false;
             }
-
-            this.isLoading = false;
-          }
-        }, this.currentFilters)
+          },
+          this.currentFilters,
+          this.onError,
+          this.onAbort,
+          this.onFinish
+        );
       }
+    },
+    onError(err) {
+      bbn.fn.warning("ERROR IN STREAM SEARCH");
+      bbn.fn.log(err);
+      this.$emit('error', err)
+    },
+    onAbort() {
+      bbn.fn.log('abort stream');
+      this.stopSearch()
+    },
+    onFinish() {
+      bbn.fn.log('finish stream');
+      this.isStarted = false
     },
     stopSearch() {
       if (this.isStarted) {
         if (this.itv) {
           clearInterval(this.itv);
         }
-        bbn.fn.post(this.stopUrl, {uid: this.searchUid}, d => {
+        bbn.fn.post(this.stopUrl, { uid: this.searchUid }, d => {
           this.isStarted = false;
         });
       }
@@ -532,7 +564,7 @@ const cpDef = {
      * @watch filterString
      * @param {String} v 
      */
-    filterString(v){
+    filterString(v) {
       if (!this.ready) {
         this.ready = true;
       }
@@ -553,6 +585,7 @@ const cpDef = {
           return;
         }
 
+        this.currentStart = 0;
         if (v && (v.length >= this.minLength)) {
           this.requestedText = v;
           this.currentFilters.conditions.splice(0, this.currentFilters.conditions.length ? 1 : 0, {
@@ -595,7 +628,7 @@ if (bbn.env.lang) {
       cpLang = cpLang.default;
     }
   }
-  catch (err) {}
+  catch (err) { }
 }
 
 export default {

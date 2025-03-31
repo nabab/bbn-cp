@@ -32,8 +32,6 @@ const mutateArray = function(newArr, oldArr, component, path, parent) {
   if (newArr?.__bbnData instanceof bbnData) {
     return false;
   }
-  const rnd = bbn.fn.randomString();
-  bbn.fn.startChrono(rnd);
   const newHash = newArr.map(v => retrieveData(v));
   const oldHash = oldArr.map(v => retrieveData(v));
   //bbn.fn.log("HASSHES", newHash, oldHash);
@@ -102,7 +100,6 @@ const mutateArray = function(newArr, oldArr, component, path, parent) {
     changed = true;
   }
 
-  //bbn.fn.log(["MUTATE ARRAY", newArr.length, newArr, oldArr, bbn.fn.stopChrono(rnd)]);
   return changed;
 };
 
@@ -111,8 +108,6 @@ const mutateObject = function(newObj, oldObj, component, path, parent) {
     return false;
   }
 
-  const rnd = bbn.fn.randomString();
-  bbn.fn.startChrono(rnd);
   let changed = false;
   const done = [];
   for (let n in newObj) {
@@ -176,7 +171,6 @@ const mutateObject = function(newObj, oldObj, component, path, parent) {
     }
   }
 
-  //bbn.fn.log(["MUTATE OBJECT", newObj, oldObj, bbn.fn.stopChrono(rnd)]);
   return changed;
 };
 

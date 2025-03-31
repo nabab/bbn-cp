@@ -40,11 +40,6 @@ bbnData.proxy = function(component, path, targetObj) {
       
       targetObj.setLastRequestedProp(key);
       bbnData.addSequence(component, key, targetObj);
-      if ((realValue === undefined) && !Object.hasOwn(target, key)) {
-        return realValue;
-      }
-
-
       return realValue;
     },
     set(target, key, value) {

@@ -14,8 +14,9 @@
                 button-right="nf nf-fa-search"/>
   </div>
   <div class="bbn-flex-fill">
-    <bbn-scroll bbn-if="currentData.length && !isDisabled && !readonly"
-                axis="y">
+    <bbn-scroll bbn-if="filteredData.length && !isDisabled && !readonly"
+                axis="y"
+                ref="scroll">
       <bbn-list :element="$el"
                 ref="list"
                 :auto-hide="false"
@@ -28,14 +29,17 @@
                 :source-text="sourceText"
                 source-value="hash"
                 uid="hash"
-                :pageable="currentData.length > limit"
-                :pager-element="_self"
-                :source="currentData"/>
+                :source="items"/>
     </bbn-scroll>
+    <div bbn-elseif="isStarted"
+         class="bbn-overlay">
+      <bbn-loader class="bbn-secondary"/>
+    </div>
   </div>
-  <div bbn-if="numPages > 1"
+  <div bbn-if="currentData.length > currentLimit"
        class="bbn-w-100">
-    <bbn-pager ref="pager"/>
+    <bbn-pager ref="pager"
+               :element="$el"/>
   </div>
   <input type="hidden"
          bbn-model="value"
