@@ -106,16 +106,23 @@ export default {
       if (!bbn.fn.isString(cp.url)) {
         throw new Error(bbn._('The component bbn-container must have a URL defined'));
       }
-      this.numRegistered--;
       let idx = this.search(cp.url);
       const dataObj = this.postBaseUrl ? { _bbn_baseURL: this.fullBaseURL } : {};
       const requestID = bbn.fn.getRequestId(cp.url, dataObj);
       if (bbn.fn.getLoader(requestID)) {
         bbn.fn.abort(requestID);
       }
-
       if (idx !== false) {
-        this.removeItem(idx, true);
+        if (this.views[idx].uid !== cp.routerUid) {
+          delete this.urls[cp.routerUid];
+        }
+        else {
+          bbn.fn.warning("ROUTER INCIDENT")
+        }
+      }
+      else {
+        delete this.urls[cp.routerUid];
+        this.numRegistered--;
       }
     },
   },
