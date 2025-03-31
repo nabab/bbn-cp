@@ -168,10 +168,6 @@ export default {
         return false;
       }
 
-      if (col.filterable === true) {
-        return true;
-      }
-
       return !col.buttons && col.field;
     },
 

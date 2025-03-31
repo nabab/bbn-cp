@@ -25,7 +25,7 @@
               :is="source.tcomponent"
               :source="source"/>
     <span class="bbn-p"
-          bbn-elseif="table.sortable && (source.sortable !== false) && !source.buttons"
+          bbn-elseif="table.sortable && (source.sortable !== false) && !source.buttons && source.field"
           @click="table.sort(source)">
       <span bbn-if="source.encoded"
             bbn-text="source.label || source.field || ' '"/>
@@ -38,7 +38,7 @@
       <span bbn-else
             bbn-html="source.label || source.field || ' '"/>
     </span>
-    <i bbn-if="table.sortable"
+    <i bbn-if="table.sortable && (source.sortable !== false) && !source.buttons && source.field"
       :class="['bbn-xs bbn-p bbn-bottom-left bbn-left-xsmargin', {
         'bbn-table-sortable-icon bbn-p bbn-bottom-left': true,
         'nf nf-md-sort_ascending': table.isSorted(source)?.dir === 'ASC',
@@ -50,7 +50,7 @@
     <i :class="['nf nf-md-filter_variant bbn-p bbn-xs bbn-right-xsmargin bbn-bottom-right', {
         'bbn-red': table.hasFilter(source),
       }]"
-      bbn-if="table.filterable && table.showFilterOnColumn(source)"
+      bbn-if="table.showFilterOnColumn(source)"
       :title="_('Filter this column')"
       @click="table.showFilter(source, $event)"/>
   </template>

@@ -99,11 +99,11 @@ const pageable = {
      */
     currentPage: {
       get() {
-        return Math.ceil((this.start + 1) / this.currentLimit);
+        return Math.ceil((this.currentStart + 1) / this.currentLimit);
       },
       set(val) {
         if ( this.ready ) {
-          this.start = val > 1 ? (val - 1) * this.currentLimit : 0;
+          this.currentStart = val > 1 ? (val - 1) * this.currentLimit : 0;
           this.updateData();
         }
       }

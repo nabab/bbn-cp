@@ -304,7 +304,7 @@ const cpDef = {
       if (!this.isDisabled) {
         let ev = new Event('select', { cancelable: true });
         this.$emit('select', ev, item, idx, dataIndex);
-        bbn.fn.log(["SELECT", item])
+        //bbn.fn.log(["SELECT", item])
         if (!ev.defaultPrevented) {
           if (this.sourceAction && item[this.sourceAction]) {
             if (typeof (item[this.sourceAction]) === 'string') {
@@ -334,8 +334,6 @@ const cpDef = {
             bbn.fn.post(this.selectUrl, {
               data: item,
               id: this.searchId
-            }, d => {
-              bbn.fn.log("RESULT OF SELECT URL", d);
             })
           }
 
@@ -476,7 +474,6 @@ const cpDef = {
                     for (let i = 0; i < data.length; i++) {
                       const idx = bbn.fn.search(this.currentData, { hash: data[i].hash });
                       if (idx > -1) {
-                        this.currentData[idx].score += data[i].score;
                         data.splice(i, 1);
                         i--;
                       }
@@ -518,7 +515,6 @@ const cpDef = {
       this.stopSearch();
     },
     onFinish() {
-      bbn.fn.log('finish stream');
       this.isStarted = false
     },
     stopSearch() {

@@ -110,7 +110,7 @@ export default {
             return f.field
           }),
           limit: currentView ? this.currentLimit : 50000,
-          start: currentView ? this.start : 0,
+          start: currentView ? this.currentStart : 0,
           data: this.getPostData()
         };
       if (this.sortable) {

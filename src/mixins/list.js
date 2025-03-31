@@ -689,7 +689,7 @@ const list = {
       return true;
     },
     hashCfg() {
-      return bbn.fn.hash(JSON.stringify(this.currentFilters) + JSON.stringify(this.currentLimit) + JSON.stringify(this.start) + JSON.stringify(this.currentOrder));
+      return bbn.fn.hash(JSON.stringify(this.currentFilters) + JSON.stringify(this.currentLimit) + JSON.stringify(this.currentStart) + JSON.stringify(this.currentOrder));
     },
     /**
      * Returns the current item icon
@@ -940,7 +940,7 @@ const list = {
     getData() {
       let data = {
         limit: this.currentLimit,
-        start: this.start,
+        start: this.currentStart,
         data: this.getPostData()
       };
       if (this.sortable) {
@@ -1338,8 +1338,8 @@ const list = {
       handler() {
         if (this.ready) {
           this.currentFilter = false;
-          if (this.pageable && this.start) {
-            this.start = 0;
+          if (this.pageable && this.currentStart) {
+            this.currentStart = 0;
           }
 
           if (this.autobind) {
@@ -1415,7 +1415,6 @@ const list = {
     },
     start(v, ov) {
       if (this.currentStart !== v) {
-        bbn.fn.log("Changing current start",v, ov)
         this.currentStart = v;
       }
     },
