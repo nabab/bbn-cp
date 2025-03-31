@@ -38,7 +38,7 @@ const cpDef = {
       return this.table.hasExpander
     },
     isExpanded() {
-      return this.table.isExpanded(this.source, this.table.items[this.index].index)
+      return this.table.items?.length && this.table.isExpanded(this.source, this.table.items[this.index].index)
     },
     isAggregated() {
       return this.table.isAggregated && false
