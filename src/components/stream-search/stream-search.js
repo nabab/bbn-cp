@@ -162,6 +162,10 @@ const cpDef = {
         return ok;
       }
     },
+    selectUrl: {
+      type: String,
+      required: true
+    },
     startUrl: {
       type: String,
       required: true
