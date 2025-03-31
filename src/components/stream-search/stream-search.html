@@ -1,6 +1,6 @@
 <div :class="[componentClass, 'bbn-overlay', 'bbn-flex-height']"
      tabindex="-1">
-  <div class="bbn-w-100 bbn-xl bbn-c bbn-vlpadding">
+  <div class="bbn-w-100 bbn-xl bbn-c bbn-top-lpadding">
     <bbn-input :placeholder="placeholder"
                 :style="{width: '75%', textAlign: 'left'}"
                 type="search"
@@ -12,6 +12,16 @@
                 bbn-focused.selected
                 :loading="isAjax && isLoading"
                 button-right="nf nf-fa-search"/>
+  </div>
+  <div class="bbn-w-100 bbn-c bbn-bottom-padding">
+    <span bbn-for="sc in searchCategories"
+          class="bbn-iblock bbn-border bbn-radius bbn-s bbn-xsmargin bbn-xspadding bbn-p"
+          @click="sc.active = !sc.active">
+      <span bbn-text="sc.search"
+            :class="{'bbn-struck': !sc.active}"/>
+      <span class="bbn-left-smargin bbn-badge"
+            bbn-text="sc.num"/>
+    </span>
   </div>
   <div class="bbn-flex-fill">
     <bbn-scroll bbn-if="filteredData.length && !isDisabled && !readonly"

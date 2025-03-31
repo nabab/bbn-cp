@@ -204,7 +204,9 @@ const cpDef = {
       requestedText: '',
       isStarted: false,
       searchUid: bbn.fn.randomString(20) + '-' + bbn.fn.timestamp(),
-      itv: false
+      itv: false,
+      queue: [],
+      searchCategories: []
     };
   },
   computed: {
@@ -236,6 +238,19 @@ const cpDef = {
       return cp;
     },
     filteredData() {
+      if (bbn.fn.count(this.searchCategories, {active: false})) {
+        return this.currentData.filter(d => {
+          if (d.search) {
+            const cat = bbn.fn.getRow(this.searchCategories, {search: d.search});
+            if (cat && !cat.active) {
+              return false;
+            }
+          }
+
+          return true;
+        });
+      }
+
       return this.currentData;
     },
     items() {
@@ -439,70 +454,46 @@ const cpDef = {
         bbn.fn.stream(
           this.startUrl,
           d => {
-            bbn.fn.log([`STREAM SEARCH RESPONSE FOR ${this.filterString} WITH ${d?.data?.length} ROWS ON STEP ${d.step}`, typeof (d), d]);
             if (d?.id) {
               this.searchId = d.id;
             }
 
-            if (d?.data?.length) {
-              this.queue = [];
-              if (!this.currentData.length) {
-                this.currentData = bbn.fn.order(d.data, { dir: 'DESC', field: 'score' });
-                this.currentTotal = this.currentData.length;
-              }
-              else {
-                if (!this.itv) {
-                  this.itv = setInterval(() => {
-                    if (this.queue.length) {
-                      const data = this.queue.splice(0);
-                      bbn.fn.each(data, r => {
-                        const idx = bbn.fn.search(this.currentData, { hash: r.hash });
-                        if (idx > -1) {
-                          this.currentData[idx].score += r.score;
-                          let i = idx;
-                          while (i > 0) {
-                            if (this.currentData[i].score > this.currentData[i - 1].score) {
-                              i--;
-                            }
-                            else {
-                              break;
-                            }
-                          }
-
-                          if (i !== idx) {
-                            const d = this.currentData.splice(idx, 1);
-                            this.currentData.splice(i, 0, d);
-                          }
-                        }
-                        else if (!this.currentData.length) {
-                          this.currentData.unshift(r);
-                          this.currentTotal++;
-                        }
-                        else {
-                          let i = 0;
-                          while (i < this.currentData.length) {
-                            if (this.currentData[i].score >= r.score) {
-                              i++;
-                            }
-                            else {
-                              break;
-                            }
-                          }
-
-                          this.currentData.splice(i, 0, r);
-                          this.currentTotal++;
-                        }
-                      });
-
-                      this.$forceUpdate();
+            if (!this.itv) {
+              this.itv = setInterval(() => {
+                if (!this.isRunning && this.queue.length) {
+                  this.isRunning = true;
+                  let lastAdded = 0;
+                  const data = bbn.fn.order(this.queue.splice(0), { dir: 'DESC', field: 'score' });
+                  if (!this.currentData.length) {
+                    this.currentData = data;
+                    this.currentTotal = data.length;
+                  }
+                  else {
+                    for (let i = 0; i < data.length; i++) {
+                      const idx = bbn.fn.search(this.currentData, { hash: data[i].hash });
+                      if (idx > -1) {
+                        this.currentData[idx].score += data[i].score;
+                        data.splice(i, 1);
+                        i--;
+                      }
                     }
-                  }, 50);
+
+                    this.currentData = bbn.fn.order(this.currentData.concat(data), { dir: 'DESC', field: 'score' });
+                    this.currentTotal = this.currentData.length;
+                  }
+
+                  this.searchCategories = bbn.fn.getFieldValues(this.currentData, 'search').map(a => {
+                    return {search: a, active: true, num: bbn.fn.count(this.currentData, {search: a})}
+                  });
+
+                  this.$forceUpdate();
+                  this.isRunning = false;
                 }
+              }, 50);
+            }
 
-                this.queue.push(...d.data);
-              }
-
-              this.isLoading = false;
+            if (d?.data) {
+              this.queue.push(...d.data);
             }
           },
           this.currentFilters,
@@ -516,10 +507,11 @@ const cpDef = {
       bbn.fn.warning("ERROR IN STREAM SEARCH");
       bbn.fn.log(err);
       this.$emit('error', err)
+      this.stopSearch();
     },
     onAbort() {
       bbn.fn.log('abort stream');
-      this.stopSearch()
+      this.stopSearch();
     },
     onFinish() {
       bbn.fn.log('finish stream');
@@ -573,7 +565,8 @@ const cpDef = {
       this.emitInput(v);
       this.$emit('change', v);
       if (this.currentData.length) {
-        this.currentData.splice(0, this.currentData.length);
+        this.currentData = [];
+        this.searchCategories = [];
       }
 
       this.launchRegisteredFunctions(v);
@@ -588,7 +581,7 @@ const cpDef = {
         this.currentStart = 0;
         if (v && (v.length >= this.minLength)) {
           this.requestedText = v;
-          this.currentFilters.conditions.splice(0, this.currentFilters.conditions.length ? 1 : 0, {
+          this.currentFilters.conditions.splice(0, this.currentFilters.conditions?.[0]?.field === this.sourceText ? 1 : 0, {
             field: this.sourceText,
             operator: 'startswith',
             value: v
@@ -604,6 +597,9 @@ const cpDef = {
           this.requestedText = '';
           this.unfilter();
           this.stopSearch();
+          if (this.currentFilters.conditions?.[0]?.field === this.sourceText) {
+            this.currentFilters.conditions.splice(0, 1);
+          }
         }
       }, this.delay);
     }
