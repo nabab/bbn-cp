@@ -76,7 +76,7 @@ const browserNotification = {
             }
           })
         }
-        else {
+        else if (window.Notification) {
           options.onclick = this.browserNotificationClick;
           let n = new Notification(title, options);
           this.$set(this.browserNotifications, options.tag, n);
@@ -130,7 +130,9 @@ const browserNotification = {
    * @event mounted
    */
   mounted(){
-    if (this.browserNotification) {
+    if (this.browserNotification
+      && window.Notification
+    ) {
       Notification.requestPermission(perms => {
         this.hasBrowserPermission = perms === 'granted';
       })
