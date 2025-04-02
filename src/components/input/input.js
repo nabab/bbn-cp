@@ -207,7 +207,7 @@ const cpDef = {
      * @returns {Number}
      */
     currentInputSize(){
-      return this.autosize ? (this.value ? this.value.toString().length : 1) : 0
+      return this.autosize ? (this.value ? (this.value.toString().length + 1) : 1) : 0
     },
     currentPattern(){
       if (this.pattern?.length) {
