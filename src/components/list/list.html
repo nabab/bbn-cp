@@ -39,6 +39,10 @@
           :ref="'li' + idx"
           :key="uid ? li.data[uid] : li.key"
           @click.prevent.stop="select(idx)"
+          @touchstart.stop
+          @touchend.stop
+          @touchmove.stop
+          @touchcancel.stop
           @mouseup.stop
           :class="{
             'bbn-no-padding': !!component,
