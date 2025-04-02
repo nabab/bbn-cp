@@ -71,7 +71,8 @@
         <option bbn-for="d in filteredData"
                 :value="d.data[sourceValue]"
                 bbn-html="d.data[sourceText]"
-                :disabled="!!d.data[sourceDisabled]"/>
+                :disabled="!!d.data[sourceDisabled]"
+                :selected="d.data[sourceValue] === value"/>
       </select>
     </template>
   </div>
