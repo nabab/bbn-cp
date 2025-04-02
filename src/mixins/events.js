@@ -163,6 +163,10 @@ const events = {
      * @memberof eventsComponent
      */
     touchstart(ev) {
+      if (bbn.fn.isEvent(ev)) {
+        ev.stopImmediatePropagation();
+      }
+
       this.$emit('touchstart', ev, this);
       if (!ev.defaultPrevented) {
         this.isTouched = true;
@@ -184,6 +188,10 @@ const events = {
      * @memberof eventsComponent
      */
     touchmove(ev){
+      if (bbn.fn.isEvent(ev)) {
+        ev.stopImmediatePropagation();
+      }
+
       this.$emit('touchmove', ev, this);
       if (!ev.defaultPrevented) {
         //this.isTouched = false;
@@ -201,6 +209,10 @@ const events = {
      * @memberof eventsComponent
      */
     touchend(ev){
+      if (bbn.fn.isEvent(ev)) {
+        ev.stopImmediatePropagation();
+      }
+
       this.$emit('touchend', ev, this);
       if (!ev.defaultPrevented) {
         if (this.touchStarted && this.touchMoved) {
@@ -230,6 +242,10 @@ const events = {
      * @memberof eventsComponent
      */
     touchcancel(ev){
+      if (bbn.fn.isEvent(ev)) {
+        ev.stopImmediatePropagation();
+      }
+
       clearTimeout(this.touchHoldTimer);
       this.isTouched = false;
       this.touchStarted = false;
