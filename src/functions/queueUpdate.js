@@ -9,16 +9,12 @@ export default function queueUpdate(...items) {
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
     if (!item.num) {
-      item.num = bbn.cp.numTicks;
+      item.num = bbn.cp.numTicks + 1;
     }
 
     if (item.element) {
       const idx = bbn.fn.search(bbn.cp.queue, a => a.element === item.element);
       if (idx === -1) {
-        if (item.element instanceof bbnComputed) {
-          item.element.computedUpdate();
-        }
-
         bbn.cp.queue.push(item);
       }
     }
