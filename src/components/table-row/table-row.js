@@ -33,7 +33,7 @@ const cpDef = {
   },
   methods: {
     checkBreak(ele, data) {
-      return true;
+      return false;
       if (this.index) {
         return data.col.ready && this.table.currentColumns[data.i+1] && !this.table.currentColumns[data.i+1].ready;
       }

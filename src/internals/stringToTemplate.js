@@ -108,10 +108,18 @@ export default function stringToTemplate(str, withMap, name) {
   }
 
   let num = 0;
-  let res = Array.from(
+  const todo = Array.from(
     doc.documentElement.querySelector('body').childNodes
-  )
-  .filter(n => n.tagName && (n.tagName.toLowerCase() !== 'script'))
+  );
+  todo.filter(a => a.tagName && (a.tagName.toLowerCase() === 'script')).forEach(a => {
+    if (a.id) {
+      const content = a.innerHTML.trim();
+      if (!content.indexOf('<')) {
+        inlineTemplates['#' + a.id] = content;
+      }
+    }
+  });
+  let res = todo.filter(n => n.tagName && (n.tagName.toLowerCase() !== 'script'))
   .map(a => {
     const tmp = analyzeElement(a, inlineTemplates, num.toString(), name);
     num++;

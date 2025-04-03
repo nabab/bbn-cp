@@ -433,44 +433,52 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
   }
 
   bbn.fn.each(childNodes, (node, i) => {
-    if (node?.tagName === 'TRANSITION') {
-      const transNodes = Array.prototype.slice.apply(node.childNodes);
-      const attrs = node.getAttributeNames();
-      bbn.fn.each(transNodes, tn => {
-        if (tn?.tagName) {
-          tn.setAttribute('bbn-transition', true);
-          if (node.childElementCount > 1) {
-            tn.setAttribute('bbn-transition-multiple', true);
-          }
-
-          bbn.fn.each(attrs, attr => {
-            if (attr.indexOf('bbn-transition-') === 0) {
-              tn.setAttribute(attr, node.getAttribute(attr));
-            }
-            else {
-              let v = node.getAttribute(attr);
-              if (!attr.indexOf(':')) {
-                attr = attr.substr(1);
-              }
-              else if (attr.indexOf('@')) {
-                v = "'" + bbn.fn.escapeSquotes(v) + "'";
-              }
-              //bbn.fn.log("SETTING ATTRIBUTE", attr, v);
-              tn.setAttribute(attr.indexOf('@') ? 'bbn-transition-' + attr : 'bbn-on:' + attr.substr(1), v);
-            }
-          })
-          let tmp = analyzeElement(tn, inlineTemplates, idx + '-' + num, componentName, isSVG);
-          if (tmp.res.tag) {
-            prevTag = tmp.res.tag;
-            res.items.push(tmp.res);
-            num++;
-            lastEmpty = false;
-          }
+    if (node.tagName === 'SCRIPT') {
+      if (node.id) {
+        const content = node.innerHTML.trim();
+        if (!content.indexOf('<')) {
+          inlineTemplates['#' + node.id] = content;
         }
-      });
-      //bbn.fn.log("TRANSITION", res);
+      }
     }
-    else if (node && node.getAttributeNames) {
+    else if (node.tagName === 'TRANSITION') {
+    const transNodes = Array.prototype.slice.apply(node.childNodes);
+    const attrs = node.getAttributeNames();
+    bbn.fn.each(transNodes, tn => {
+      if (tn?.tagName) {
+        tn.setAttribute('bbn-transition', true);
+        if (node.childElementCount > 1) {
+          tn.setAttribute('bbn-transition-multiple', true);
+        }
+
+        bbn.fn.each(attrs, attr => {
+          if (attr.indexOf('bbn-transition-') === 0) {
+            tn.setAttribute(attr, node.getAttribute(attr));
+          }
+          else {
+            let v = node.getAttribute(attr);
+            if (!attr.indexOf(':')) {
+              attr = attr.substr(1);
+            }
+            else if (attr.indexOf('@')) {
+              v = "'" + bbn.fn.escapeSquotes(v) + "'";
+            }
+            //bbn.fn.log("SETTING ATTRIBUTE", attr, v);
+            tn.setAttribute(attr.indexOf('@') ? 'bbn-transition-' + attr : 'bbn-on:' + attr.substr(1), v);
+          }
+        })
+        let tmp = analyzeElement(tn, inlineTemplates, idx + '-' + num, componentName, isSVG);
+        if (tmp.res.tag) {
+          prevTag = tmp.res.tag;
+          res.items.push(tmp.res);
+          num++;
+          lastEmpty = false;
+        }
+      }
+    });
+    //bbn.fn.log("TRANSITION", res);
+    }
+    else if (node.getAttributeNames) {
       let tmp = analyzeElement(node, inlineTemplates, idx + '-' + num, componentName, isSVG);
       if (!childNodes[i+1]?.getAttributeNames && childNodes[i+1]?.textContent && !bbn.fn.removeExtraSpaces(childNodes[i+1].textContent)) {
         tmp.spaced = true;
