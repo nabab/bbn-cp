@@ -16,7 +16,7 @@ export default {
   computed: {
     isVisualVisible() {
       if (this.router?.isVisual) {
-        let row = bbn.fn.getRow(this.router.visualList, 'view.idx', this.currentIndex);
+        let row = bbn.fn.getRow(this.router.visualList, d => d.idx === this.currentIndex);
         if (row) {
           return row.visible;
         }
@@ -33,7 +33,7 @@ export default {
             width: '100%',
             height: 'auto',
             overflow: 'hidden',
-            display: bbn.fn.getRow(this.router.visualList, 'view.uid', this.currentView.uid) ? 'block' : 'none'
+            display: bbn.fn.getRow(this.router.visualList, 'uid', this.routerUid) ? 'block' : 'none'
           };
         }
 
@@ -61,7 +61,7 @@ export default {
           gridRowStart: coord[2],
           gridRowEnd: coord[3],
           zoom: 1,
-          display: bbn.fn.getRow(this.router.visualList, 'view.uid', this.currentView.uid) ? 'block' : 'none'
+          display: bbn.fn.getRow(this.router.visualList, 'uid', this.currentView.uid) ? 'block' : 'none'
         };
       }
 

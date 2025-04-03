@@ -266,6 +266,7 @@ export default {
               }
             }
 
+            this.updateVisualList();
             return true;
           }
         }
@@ -361,6 +362,10 @@ export default {
       }
 
       this.fixIndexes();
+      if (this.ready) {
+        this.updateVisualList();
+      }
+
       await this.$forceUpdate();
       if (obj.selected && !obj.pane) {
         //bbn.fn.log(["BEFORE SELECTED IN ADD", obj.idx, obj, this.views.length]);

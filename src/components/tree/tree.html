@@ -38,7 +38,7 @@
             :key="uid ? it.data[uid] : (it.key ? it.key : 'node-' + level + '-' + i)"
             :idx="it.index"
             :component="it.component || component"
-            :selectable="it.selectable !== undefined ? it.selectable : selectable"
+            :selectable="isSelectable(it)"
             :multiple="it.multiple !== undefined ? it.multiple : multiple"
             :level="level"
             :selection="it.selection !== undefined ? it.selection : selection"
@@ -51,8 +51,7 @@
             @nodeclick="onNodeClick"
             :tree-state="uid !== undefined ? _getTreeState(it.data[uid]) : undefined">
         <li :class="['bbn-tree-node', 'bbn-vxxspadding', 'bbn-unselectable', {
-                      'bbn-state-active': (isActive && !isSelected) || (tree.drag && tree.dragging && (tree.dragging === _self)),
-                      'bbn-state-selected': isSelected
+                      'bbn-p': selectable
                     }]"
             bbn-show="isVisible"
             :title="source.tooltip || textFromText">
@@ -75,7 +74,15 @@
                 @dragend="endDrag"
                 bbn-droppable:data="{node: _self}"/>
           <!-- The node starts here -->
-          <span :class="['bbn-tree-node-block', getCls(source, tree) || '', {'bbn-tree-node-block-no-component': !!component}]">
+          <span :class="[
+            'bbn-tree-node-block', 
+            getCls(source, tree) || '', 
+            {
+              'bbn-state-active': (isActive && !isSelected) || (tree.drag && tree.dragging && (tree.dragging === _self)),
+              'bbn-state-selected': isSelected,
+              'bbn-tree-node-block-no-component': !!component
+            }
+          ]">
             <!-- The expander -->
             <span :class="['bbn-tree-node-block-expander', {'bbn-p': numChildren}]"
                   @click="if ( !flat && numChildren && (level >= tree.minExpandLevel) ){
@@ -176,7 +183,6 @@
                     :filterable="isFilterable"
                     :flat="flat"
                     :filters="tree.filters"
-                    :selectable="source.selectable !== undefined ? source.selectable : tree.selectable"
                     :selection="source.selection !== undefined ? source.selection : tree.selection"
                     :cls="source.cls !== undefined ? source.cls : tree.cls"
                     :quick-filter="quickFilter"

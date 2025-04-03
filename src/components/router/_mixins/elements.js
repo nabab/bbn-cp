@@ -76,7 +76,7 @@ export default {
         if (item.pane) {
           return this.paneContainers[item.pane + '-' + item.uid] || false;
         }
-        if (bbn.fn.getRow(this.visualList, 'view.uid', item.uid)) {
+        if (bbn.fn.getRow(this.visualList, 'uid', item.uid)) {
           return this.visualContainers[item.uid] || false;
         }
       }

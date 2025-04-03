@@ -21,8 +21,7 @@ bbnProtoHtml.$tick = function(...fns) {
 
         resolve();
       },
-      hash,
-      num: bbn.cp.numTicks
+      hash
     });
   });
 }

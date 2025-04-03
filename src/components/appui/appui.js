@@ -639,7 +639,7 @@ const cpDef = {
         let idx = parseInt(key);
         if (router.isVisual) {
           if (router.visualList[idx]) {
-            idx = router.visualList[idx].view.idx
+            idx = router.visualList[idx].idx
             this.getRef('router').activateIndex(idx);
           }
         }

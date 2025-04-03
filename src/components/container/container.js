@@ -69,7 +69,7 @@ const cpDef = {
   ],
   methods: {
     onClickVisual() {
-      bbn.fn.log("CLICK", this.currentCurrent, this.currentIndex, this.router.selected);
+      bbn.fn.log("CLICK", this.currentCurrent, this.currentIndex, this.router.selected, this.router.views[this.currentIndex]);
       this.router.selected = this.currentIndex;
     },
     containerMounted(){

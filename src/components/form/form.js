@@ -1222,16 +1222,15 @@ const cpDef = {
     source: {
       deep: true,
       handler() {
-        bbn.fn.log("SOURCE CHANGED", this.source);
+        //bbn.fn.log("SOURCE CHANGED", this.source);
         const sourceDataId = this.source.__bbnData.uid;
         if (sourceDataId && sourceDataId !== this.sourceDataId) {
           this.sourceDataId = sourceDataId;
           this.commitData();
-          bbn.fn.log("ESAPING")
           return;
         }
 
-        bbn.fn.log(["SOURCE CHANGED", JSON.stringify(this.getModifications()), this.originalData, JSON.stringify(this.source)]);
+        //bbn.fn.log(["SOURCE CHANGED", JSON.stringify(this.getModifications()), this.originalData, JSON.stringify(this.source)]);
         this.dirty = this.isModified();
         this.canSubmit = this._canSubmit();
         if (this.storage) {

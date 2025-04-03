@@ -114,6 +114,9 @@ const cpObj = bbn.fn.createObject({
   spaceHash: bbn.fn.hash(' '),
   known: ['bbn-anon'],
   unknown: [],
+  propagationData: [],
+  propagationCp: [],
+  propagation: [],
   interval: null,
   statics: bbn.fn.createObject(),
   /** @var {Array} directives List of existing directives */

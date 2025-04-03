@@ -91,5 +91,11 @@ bbnNode.prototype.nodeClean = function(full) {
     }
   }
 
+  bbn.cp.queue.filter(e => e.component === cp).forEach(e => {
+    if (e.element?.id && (!e.element.id.indexOf(id + '-'))) {
+      e.off = true;
+    }
+  });
+
   return res;
 };

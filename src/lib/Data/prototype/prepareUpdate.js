@@ -1,6 +1,7 @@
 import bbnData from "../Data.js";
 import propagateDependencyChanges from "../../Html/private/propagateDependencyChanges.js";
 import queueUpdate from "../../../functions/queueUpdate.js";
+import initResults from "../../Html/private/initResults.js";
 
 const getFn = function(watcher, lev, lastUpdate) {
   return () => {
@@ -26,6 +27,20 @@ bbnData.prototype.prepareUpdate = function(path) {
     return;
   }
 
+  if (bbn.cp.propagationData.includes(this.uid)) {
+    return;
+  }
+
+  let propagationFromHere = bbn.cp.propagationCp.length === 0;
+  if (propagationFromHere) {
+    bbn.cp.numTicks++;
+  }
+
+  bbn.cp.propagationData.push(this.uid)
+  if (bbn.cp.propagationCp.includes(this.root.component)) {
+    bbn.cp.propagationCp.push(this.root.component);
+  }
+
   const propagation = [];
   const impacted = this.getImpacted(path, this.lastUpdate);
   let num = bbn.cp.numTicks;
@@ -44,7 +59,7 @@ bbnData.prototype.prepareUpdate = function(path) {
   const todo = [];
   deps.forEach(a => {
     if (!(a instanceof bbnComputed) || !this.hasParent(a.component, a.name)) {
-      todo.push({component: a.component || a?.node?.component, element: a, num})
+      todo.push({component: a.component || a?.node?.component, element: a})
     }
   });
   impacted.forEach(it => {
@@ -66,7 +81,6 @@ bbnData.prototype.prepareUpdate = function(path) {
         todo.push({
           component: it.component,
           fn: getFn(watcher, level, this.lastUpdate),
-          num
         });
       }
       bits.pop();
@@ -76,4 +90,9 @@ bbnData.prototype.prepareUpdate = function(path) {
   });
 
   queueUpdate(...todo);
+  if (propagationFromHere) {
+    bbn.cp.propagation.splice(0);
+    bbn.cp.propagationData.splice(0);
+    bbn.cp.propagationCp.splice(0);
+  }
 };

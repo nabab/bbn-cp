@@ -4,7 +4,7 @@ export default {
       if (!this.disabled && this.panes.length) {
         let pane = this.getPane(view);
         if (pane) {
-          return '#' + pane + slashToHyphen(this.isVisual ? view.view.url : view.url);
+          return '#' + pane + slashToHyphen(this.isVisual ? this.views[view.idx].url : view.url);
         }
       }
 

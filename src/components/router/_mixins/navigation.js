@@ -1008,6 +1008,8 @@ export default {
         this.views[idx].last = bbn.fn.timestamp();
       }
 
+      this.updateVisualList();
+
       //this.move(idx, this.views.length - 1);
 
       //bbn.fn.log("In selected watcher " + idx, bbn.fn.filter(this.views, {selected: true}), bbn.fn.filter(this.views, {idx}), this.views);

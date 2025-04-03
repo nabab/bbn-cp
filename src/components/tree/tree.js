@@ -21,26 +21,26 @@ const cpDef = {
   statics() {
     return {
       NODE_PROPERTIES: [
-    'text',
-    'icon',
-    'num',
-    'numChildren',
-    'data',
-    'cls',
-    'selectedClass',
-    'activeClass',
-    'selection',
-    'selectable',
-    'multiple',
-    'filterable',
-    'sortable',
-    'selected',
-    'expanded',
-    'component',
-    'tooltip',
-    'path',
-    'visible'
-  ]
+        'text',
+        'icon',
+        'num',
+        'numChildren',
+        'data',
+        'cls',
+        'selectedClass',
+        'activeClass',
+        'selection',
+        'selectable',
+        'multiple',
+        'filterable',
+        'sortable',
+        'selected',
+        'expanded',
+        'component',
+        'tooltip',
+        'path',
+        'visible'
+      ]
     };
   },
     props: {
@@ -188,7 +188,7 @@ const cpDef = {
        * @prop {Boolean} [true] selectable
        */
       selectable: {
-        type: Boolean,
+        type: [Boolean, Function],
         default: true
       },
       /**
@@ -500,7 +500,7 @@ const cpDef = {
 
           bbn.fn.each(bbnTree.NODE_PROPERTIES, p => {
             if (!Object.hasOwn(o, p)) {
-              o[p] = p === 'text' ? item[this.tree.sourceText] : item[p];
+              o[p] = p === 'text' ? item[this.tree.sourceText] : (p === 'selectable' ? undefined : item[p]);
             }
           });
           if (!!item.data && !!item.data[this.tree.sourceItems]) {
@@ -727,7 +727,7 @@ const cpDef = {
           switch ( e.key ){
             case 'Enter':
             case ' ':
-              if ( this.tree.activeNode.selectable ){
+              if (this.tree.activeNode.selectable) {
                 this.tree.activeNode.isSelected = !this.tree.activeNode.isSelected;
               }
               else {
@@ -1274,8 +1274,19 @@ const cpDef = {
         if (item.action) {
           item.action.bind(this.tree.$origin)(node, ev);
         }
+      },
+      isSelectable(item) {
+        if (item.selectable !== undefined) {
+          return item.selectable;
+        }
+
+        if (typeof(this.tree.selectable) === 'function') {
+          return this.tree.selectable(item);
+        }
+
+        return this.tree.selectable;
       }
-    },
+},
     /**
      * Emits the event beforeLoad and load. And opens the nodes defined in the prop path.
      * Definition of the root tree and parent node.
@@ -1409,8 +1420,7 @@ const cpDef = {
            * @memberof bbn-tree-node
            */
           selectable: {
-            type: Boolean,
-            default: false
+            type: Boolean
           },
           multiple:{
             type: Boolean,
@@ -1949,9 +1959,9 @@ const cpDef = {
           getPath(field){
             return this.tree.getNodePath(this, field);
           },
-          addToSelected(emit = true, storage = true){
+          addToSelected(emit = true, storage = true) {
             // if the current node isn't already selected
-            if ( !this.tree.currentSelected.includes(this) ){
+            if (this.selectable && !this.tree.currentSelected.includes(this)) {
               let sameParent = this.tree.selectedNode && (this.tree.selectedNode.parent === this.parent);
               if ( (this.tree.selectedNode && !this.tree.multiple) || (sameParent && !this.parent.multiple) ){
                 this.tree.selectedNode.isSelected = false;
@@ -2225,7 +2235,7 @@ const cpDef = {
             return source.cls !== undefined ? source.cls : (bbn.fn.isFunction(tree.cls) ? tree.cls(source, this.tree, this.parent) : tree.cls || '');
           },
           onMouseUp(e) {
-            if (!this.tree.realDragging && this.tree.selectable) {
+            if (!this.tree.realDragging && this.selectable) {
               this.isSelected = !this.isSelected;
             }
           },

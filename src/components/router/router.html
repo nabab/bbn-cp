@@ -35,12 +35,12 @@
         </div>
       </div>
       <div bbn-for="a in visualList"
-           :key="a.view.uid"
-           :ref="'bbn-router-visual-' + a.view.uid"
-           bbn-if="!a.view.real"
-           bbn-show="(a.view.idx !== selected) && !a.view.pane"
-           @hook:create="addVisualContainer($event, a.view.uid)"
-           @hook:destroy="removeVisualContainer($event, a.view.uid)"/>
+           :key="a.uid"
+           :ref="'bbn-router-visual-' + a.uid"
+           bbn-if="!views[a.idx].real"
+           bbn-show="a.visible && (a.idx !== selected) && !views[a.idx].pane"
+           @hook:create="addVisualContainer($event, a.uid)"
+           @hook:destroy="removeVisualContainer($event, a.uid)"/>
     </div>
   </bbn-scroll>
   <bbn-splitter :resizable="resizable"

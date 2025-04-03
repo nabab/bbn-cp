@@ -468,27 +468,6 @@ const cpDef = {
       alert('test')
     },
     /**
-     * adds the events listener when edit = true
-     * @method _setEvents
-     * @param {boolean} edit
-     */
-    _setEvents(){
-      bbn.fn.log("setEvenbt")
-      document.addEventListener('mousedown', this.checkMouseDown);
-      document.addEventListener('touchstart', this.checkMouseDown);
-      document.addEventListener('keydown', this.checkKeyCode);
-      /*if ( edit ){
-        document.addEventListener('mousedown', this.checkMouseDown);
-        document.addEventListener('touchstart', this.checkMouseDown);
-        document.addEventListener('keydown', this.checkKeyCode);
-      }
-      else{
-        document.addEventListener('mouseover', this.mouseover);
-        document.removeEventListener('mousedown', this.checkMouseDown);
-        document.removeEventListener('touchstart', this.checkMouseDown);
-      }*/
-    },
-    /**
      * @method checkKeyCode
      * @param e
      */
@@ -1006,7 +985,6 @@ const cpDef = {
         appui.success(bbn._('New block ' + this.source.type + ' added!'))
         this.newBlock = false;
       }
-      //this._setEvents()
       */
     }
   },

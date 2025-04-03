@@ -57,7 +57,8 @@ export default {
        */
       currentVisual: this.visual,
       visualStyleContainer: bbn.fn.createObject(),
-      visualContainers: {}
+      visualContainers: {},
+      visualList: [],
     }
   },
   computed: {
@@ -240,23 +241,23 @@ export default {
      */
     numVisualReals() {
       if (this.isVisual) {
-        return bbn.fn.filter(this.visualList, a => (a.view.idx !== this.selected) && !a.view.pane).length;
+        return bbn.fn.filter(this.visualList, a => a.idx !== this.selected).length;
       }
 
       return 0;
     },
-
-
+  },
+  methods: {
     /**
      * The views to show, in a specific different order, for the visual mode
      * @computed visualList
      * @return {Array} 
      */
-    visualList() {
+    updateVisualList() {
       if (!this.isVisual) {
-        return [];
+        return;
       }
-
+  
       let moreViewsThanSlots = this.numVisuals < bbn.fn.filter(this.views, { pane: false }).length;
       let numAvailableSlots = this.numVisuals - (moreViewsThanSlots ? 1 : 0);
       let order = this.visualShowAll ?
@@ -265,32 +266,26 @@ export default {
       let idx = 0;
       const items = bbn.fn.map(
         bbn.fn.multiorder(
-          this.views,
+          this.views.filter(a => !a.pane),
           order
         ),
         a => {
           let visible = false;
           if (this.visualShowAll || (idx <= numAvailableSlots) || (this.selected === a.idx)) {
             visible = true;
-            if (!a.pane) {
-              idx++;
-            }
+            idx++;
           }
-          else if (a.pane) {
-            visible = true;
-          }
+
           return {
-            view: a,
+            idx: a.idx,
+            uid: a.uid,
             visible: visible
           }
         }
       );
-      items.forEach(a => bbn.fn.log(a.view.url + ': ' + a.view.selected))
-      return items;
+      this.visualList = items;
     },
-
-  },
-  methods: {
+  
     addVisualContainer(e, uid) {
       this.visualContainers[uid] = e.target;
     },
@@ -311,6 +306,8 @@ export default {
             this.lockedOrientation = true;
           }
         }
+
+        this.updateVisualList();
     
         this.updateVisualStyleContainer();
       }
@@ -333,10 +330,6 @@ export default {
 
       //bbn.fn.warning("updateVisualStyleContainer");
       bbn.fn.iterate(this.views, view => {
-        if (view.view) {
-          view = view.view;
-        }
-
         if (!this.visualStyleContainer[view.url]) {
           this.visualStyleContainer[view.url] = {};
         }
@@ -408,7 +401,6 @@ export default {
       if (this.ready) {
         this.changeConfig();
         this.setConfig();
-        this.visualList.forEach(a => bbn.fn.log(a.view.url + ': ' + a.view.selected))
       }
     },
   }

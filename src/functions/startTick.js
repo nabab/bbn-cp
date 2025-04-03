@@ -93,6 +93,9 @@ async function treatQueue(num = 0, cps) {
         }
       }
       const queueElement = queue.shift();
+      if (queueElement.off) {
+        continue;
+      }
       const isAttr = queueElement.element instanceof bbnAttr;
       const isComputed = queueElement.element instanceof bbnComputed;
       const isWatcher = queueElement.element instanceof bbnWatcher;
