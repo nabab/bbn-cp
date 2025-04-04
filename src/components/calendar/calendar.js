@@ -538,9 +538,27 @@ const cpDef = {
           );
         }));
       }
-      this.gridStyle = 'grid-template-columns: repeat(7, 1fr); grid-template-rows: max-content repeat(6, 1fr);';
+
       this.currentLabelsDates = Array.from({length: 7}, (v, i) => dayjs(this.currentDate).weekday(i));
       this.items.splice(0, this.items.length, ...items);
+      let numHiddenTop = 0;
+      let numHiddenBottom = 0;
+      bbn.fn.each(this.items, item => {
+        if (!item.hidden) {
+          return false;
+        }
+
+        numHiddenTop++;
+      });
+      bbn.fn.each(this.items.reverse(), item => {
+        if (!item.hidden) {
+          return false;
+        }
+
+        numHiddenBottom++;
+      });
+      const rows = 6 - (numHiddenTop ? Math.floor(numHiddenTop / 7) : 0) - (numHiddenBottom ? Math.floor(numHiddenBottom / 7) : 0);
+      this.gridStyle = `grid-template-columns: repeat(7, 1fr); grid-template-rows: max-content repeat(${rows}, 1fr);`;
     },
     /**
      * Makes the items' structure of "weeks" mode.
@@ -563,9 +581,9 @@ const cpDef = {
               false
             );
           });
-      this.gridStyle = 'grid-template-columns: repeat(7, 1fr); grid-template-rows: max-content auto';
       this.currentLabelsDates = Array.from({length: 7}, (v, i) => dayjs(this.currentDate).weekday(i));
       this.items.splice(0, this.items.length, ...items);
+      this.gridStyle = 'grid-template-columns: repeat(7, 1fr); grid-template-rows: max-content auto';
     },
     /**
      * Makes the items' structure of "months" mode.
@@ -587,9 +605,26 @@ const cpDef = {
               this.extraItems && (w.get('year') !== this.currentDate.get('year'))
             );
           });
-      this.gridStyle = 'grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr);';
       this.currentLabelsDates = [];
       this.items.splice(0, this.items.length, ...items);
+      let numHiddenTop = 0;
+      let numHiddenBottom = 0;
+      bbn.fn.each(this.items, item => {
+        if (!item.hidden) {
+          return false;
+        }
+
+        numHiddenTop++;
+      });
+      bbn.fn.each(this.items.reverse(), item => {
+        if (!item.hidden) {
+          return false;
+        }
+
+        numHiddenBottom++;
+      });
+      const rows = 4 - (numHiddenTop ? Math.floor(numHiddenTop / 3) : 0) - (numHiddenBottom ? Math.floor(numHiddenBottom / 3) : 0);
+      this.gridStyle = `grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(${rows}, 1fr);`;
     },
     /**
      * Makes the items' structure in "years" mode.
@@ -612,9 +647,26 @@ const cpDef = {
               false
             );
           });
-      this.gridStyle = 'grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr);';
       this.currentLabelsDates = [];
       this.items.splice(0, this.items.length, ...items);
+      let numHiddenTop = 0;
+      let numHiddenBottom = 0;
+      bbn.fn.each(this.items, item => {
+        if (!item.hidden) {
+          return false;
+        }
+
+        numHiddenTop++;
+      });
+      bbn.fn.each(this.items.reverse(), item => {
+        if (!item.hidden) {
+          return false;
+        }
+
+        numHiddenBottom++;
+      });
+      const rows = 4 - (numHiddenTop ? Math.floor(numHiddenTop / 3) : 0) - (numHiddenBottom ? Math.floor(numHiddenBottom / 3) : 0);
+      this.gridStyle = `grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(${rows}, 1fr);`;
     },
     /**
      * Returns the correct configuration based on the calendar type.
