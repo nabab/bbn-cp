@@ -45,8 +45,8 @@ export default {
       // Aggregated
       // Paging locally
       if (this.pageable && (!this.isAjax || !this.serverPaging)) {
-        i = this.start;
-        end = this.start + this.currentLimit > data.length ? data.length : this.start + this.currentLimit;
+        i = this.currentStart;
+        end = (this.currentStart + this.currentLimit) > data.length ? data.length : (this.currentStart + this.currentLimit);
         data = this.filteredData.slice(i, end);
       }
       // Grouping (and sorting) locally
