@@ -540,24 +540,28 @@ const cpDef = {
       }
 
       this.currentLabelsDates = Array.from({length: 7}, (v, i) => dayjs(this.currentDate).weekday(i));
-      this.items.splice(0, this.items.length, ...items);
       let numHiddenTop = 0;
       let numHiddenBottom = 0;
-      bbn.fn.each(this.items, item => {
+      bbn.fn.each(items, item => {
         if (!item.hidden) {
           return false;
         }
 
         numHiddenTop++;
       });
-      bbn.fn.each(this.items.reverse(), item => {
+      bbn.fn.each(bbn.fn.clone(items).reverse(), item => {
         if (!item.hidden) {
           return false;
         }
 
         numHiddenBottom++;
       });
-      const rows = 6 - (numHiddenTop ? Math.floor(numHiddenTop / 7) : 0) - (numHiddenBottom ? Math.floor(numHiddenBottom / 7) : 0);
+      const delTop = numHiddenTop ? Math.floor(numHiddenTop / 7) : 0;
+      const delBottom = numHiddenBottom ? Math.floor(numHiddenBottom / 7) : 0;
+      const rows = 6 - delTop - delBottom;
+      items.splice(0, delTop * 7);
+      items.splice(items.length - (delBottom * 7), delBottom * 7);
+      this.items.splice(0, this.items.length, ...items);
       this.gridStyle = `grid-template-columns: repeat(7, 1fr); grid-template-rows: max-content repeat(${rows}, 1fr);`;
     },
     /**
@@ -606,24 +610,28 @@ const cpDef = {
             );
           });
       this.currentLabelsDates = [];
-      this.items.splice(0, this.items.length, ...items);
       let numHiddenTop = 0;
       let numHiddenBottom = 0;
-      bbn.fn.each(this.items, item => {
+      bbn.fn.each(items, item => {
         if (!item.hidden) {
           return false;
         }
 
         numHiddenTop++;
       });
-      bbn.fn.each(this.items.reverse(), item => {
+      bbn.fn.each(bbn.fn.clone(items).reverse(), item => {
         if (!item.hidden) {
           return false;
         }
 
         numHiddenBottom++;
       });
-      const rows = 4 - (numHiddenTop ? Math.floor(numHiddenTop / 3) : 0) - (numHiddenBottom ? Math.floor(numHiddenBottom / 3) : 0);
+      const delTop = numHiddenTop ? Math.floor(numHiddenTop / 3) : 0;
+      const delBottom = numHiddenBottom ? Math.floor(numHiddenBottom / 3) : 0;
+      const rows = 4 - delTop - delBottom;
+      items.splice(0, delTop * 3);
+      items.splice(items.length - (delBottom * 3), delBottom * 3);
+      this.items.splice(0, this.items.length, ...items);
       this.gridStyle = `grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(${rows}, 1fr);`;
     },
     /**
@@ -648,24 +656,28 @@ const cpDef = {
             );
           });
       this.currentLabelsDates = [];
-      this.items.splice(0, this.items.length, ...items);
       let numHiddenTop = 0;
       let numHiddenBottom = 0;
-      bbn.fn.each(this.items, item => {
+      bbn.fn.each(items, item => {
         if (!item.hidden) {
           return false;
         }
 
         numHiddenTop++;
       });
-      bbn.fn.each(this.items.reverse(), item => {
+      bbn.fn.each(bbn.fn.clone(items).reverse(), item => {
         if (!item.hidden) {
           return false;
         }
 
         numHiddenBottom++;
       });
-      const rows = 4 - (numHiddenTop ? Math.floor(numHiddenTop / 3) : 0) - (numHiddenBottom ? Math.floor(numHiddenBottom / 3) : 0);
+      const delTop = numHiddenTop ? Math.floor(numHiddenTop / 3) : 0;
+      const delBottom = numHiddenBottom ? Math.floor(numHiddenBottom / 3) : 0;
+      const rows = 4 - delTop - delBottom;
+      items.splice(0, delTop * 3);
+      items.splice(items.length - (delBottom * 3), delBottom * 3);
+      this.items.splice(0, this.items.length, ...items);
       this.gridStyle = `grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(${rows}, 1fr);`;
     },
     /**
