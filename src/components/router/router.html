@@ -10,11 +10,8 @@
       @keydown.esc="onEscape">
   <bbn-loader class="bbn-overlay"
               bbn-if="changingConfig || !ready"/>
-
-
   <bbn-scroll class="bbn-router-scroller"
-              :scrollable="visualShowAll"
-              axis="y"
+              :axis="visualShowAll ? 'y' : (['left', 'right'].includes(visualOrientation) ? 'y' : 'x')"
               :style="{
                 overflow: 'auto',
                 height: visualShowAll || ['left', 'right'].includes(visualOrientation) ? '100%' : (visualSize+20) + 'px',
@@ -38,7 +35,7 @@
            :key="a.uid"
            :ref="'bbn-router-visual-' + a.uid"
            bbn-if="!views[a.idx].real"
-           bbn-show="a.visible && (a.idx !== selected) && !views[a.idx].pane"
+           bbn-show="(visualShowAll || a.visible) && (a.idx !== selected) && !views[a.idx].pane"
            @hook:create="addVisualContainer($event, a.uid)"
            @hook:destroy="removeVisualContainer($event, a.uid)"/>
     </div>
@@ -56,13 +53,13 @@
                   'bbn-flex-height': scrollContent && !hasVerticalTabs,
                   'bbn-flex-width': hasVerticalTabs,
                   'bbn-router-nav': nav && !isVisual,
-                  'bbn-router-nav-bc': nav && isBreadcrumb && !isVisual,
+                  'bbn-router-nav-bc': nav && isBreadcrumb && !itsMaster.isVisual,
                   'bbn-router-nav-verticaltabs': hasVerticalTabs
                   }"
            bbn-forget="!nav && !scrollContent"
            :style="{backgroundColor: parentContainer?.currentView?.bcolor || 'inherit'}">
         <!-- START OF BREADCRUMB -->
-        <div bbn-if="nav && isBreadcrumb && !isVisual"
+        <div bbn-if="nav && isBreadcrumb && !itsMaster.isVisual"
             ref="breadcrumb"
             :class="['bbn-router-breadcrumb', {'bbn-router-breadcrumb-master': master}]">
           <div bbn-if="isBreadcrumbMaster"

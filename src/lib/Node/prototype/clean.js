@@ -31,6 +31,21 @@ bbnNode.prototype.nodeClean = function(full) {
   const hash = this.hash;
   const indexes = Object.keys(cp.$nodes).filter(idx => !idx.indexOf(id + '-') || (full && (idx === id)));
   let res = 0;
+  if (this.element?.querySelector) {
+    const portals = this.element.querySelectorAll('.bbn-portal-active');
+    if (portals.length) {
+      portals.forEach(p => {
+        const parent = p.parentNode;
+        p.bbnSchema.directives['bbn-portal'].attrGetValue();
+        p.bbnSchema.directives['bbn-portal'].value = null;
+        p.bbnSchema.directives['bbn-portal'].oldValue = parent;
+        p.bbnSchema.directives['bbn-portal'].lastValue = parent;
+        bbn.fn.log("REMOVING PORTAL 1")
+        bbn.cp.directives['bbn-portal'].update(p, {value: null, oldValue: parent});
+      });
+    }
+  }
+
   if (indexes.length) {
     indexes.sort((a, b) => {
       a = a.split('-').map(v => parseInt(v));

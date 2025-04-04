@@ -18,13 +18,12 @@ const cpDef = {
    * @mixin bbn.cp.mixins.keepCool
    * @mixin bbn.cp.mixins.events
    */
-  mixins:
-    [
-      bbn.cp.mixins.basic,
-      bbn.cp.mixins.resizer,
-      bbn.cp.mixins.keepCool,
-      bbn.cp.mixins.events
-    ],
+  mixins: [
+    bbn.cp.mixins.basic,
+    bbn.cp.mixins.resizer,
+    bbn.cp.mixins.keepCool,
+    bbn.cp.mixins.events
+  ],
   props: {
     /**
      * @prop {Number} [400] duration
@@ -792,7 +791,7 @@ const cpDef = {
      */
     onResize() {
       const content = this.getRef('scrollContent');
-      if (this.scrollable) {
+      if (content && this.scrollable) {
         this.hasScrollX = ((this.axis === 'both') || (this.axis === 'x'))
           && (content.scrollWidth > this.offsetWidth);
         this.hasScrollY = ((this.axis === 'both') || (this.axis === 'y'))

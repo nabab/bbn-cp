@@ -9,6 +9,7 @@ export default class bbnDirectiveAttr extends bbnAttr
   inserted = false;
 
   attrUpdate(init) {
+    this.attrGetValue();
     if (!this.inserted && !this.node.comment) {
       // Check if the "inserted" function exists on this directive
       if (bbn.fn.isFunction(bbn.cp.directives[this.name].inserted)) {

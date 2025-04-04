@@ -103,6 +103,7 @@ const cpDef = {
    * @event created 
    */
   created() {
+    //bbn.fn.log("CREATED " + this.url)
     this.componentClass.push('bbn-resize-emitter');
     this.componentCreated();
     const router = this.real ? this.closest('bbn-router') : this.$origin;

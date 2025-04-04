@@ -19,7 +19,7 @@
       }"
           bbn-forget="isPane || !router?.isVisual"
           bbn-show="isVisible || router?.isVisual">
-        <!-- The header -->
+        <!-- The header for visual and full screen -->
         <div bbn-if="!isPane && (visual || fullScreen)"
             :class="'bbn-transition-bcolor bbn-b bbn-spadding bbn-flex-width ' + (isVisible ? ' bbn-m' : '')"
             :style="{

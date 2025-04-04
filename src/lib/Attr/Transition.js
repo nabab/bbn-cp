@@ -107,13 +107,10 @@ export default class bbnTransitionAttr extends bbnAttr
             dispatch(ele, 'after' + type);
             //bbn.fn.log("DISPATCHING " + 'after' + type, num)
             if (type === 'leave') {
-              if (ele.tagName) {
+              if (ele.tagName && (!node.forget?.value || (node.condition && !node.condition?.value))) {
+                debugger;
                 //bbn.fn.log(["REMOVING", ele]);
                 node.nodeClean();
-              }
-
-              if (!ele) {
-                debugger;
               }
 
               node.nodeRemove(ele, true);

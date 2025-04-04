@@ -23,14 +23,26 @@ export default function() {
     if (bbn.fn.isString(binding.value)) {
       const target = document.querySelector(binding.value);
       if (target) {
+        if (el.classList) {
+          el.classList.add('bbn-portal-active');
+        }
+
         return moveToTarget(el, target);
       }
     }
     else if (bbn.fn.isDom(binding.value)) {
+      if (el.classList) {
+        el.classList.add('bbn-portal-active');
+      }
+
       return moveToTarget(el, binding.value);
     }
     else {
       bbn.fn.warning("Invalid binding value for bbn-portal");
+      if (el.classList) {
+        el.classList.remove('bbn-portal-active');
+      }
+
       return moveToTarget(el, el.bbnDirectives.portal.originalParent);
     }
   };

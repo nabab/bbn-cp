@@ -117,7 +117,10 @@ export default {
           delete this.urls[cp.routerUid];
         }
         else {
-          bbn.fn.warning("ROUTER INCIDENT")
+          if (!cp.classList.contains('bbn-is-moving')) {
+            cp.classList.add('bbn-is-moving');
+            bbn.fn.warning("ROUTER INCIDENT")
+          }
         }
       }
       else {

@@ -121,9 +121,11 @@ export default {
         if (!this.visualShowAll) {
           if (['left', 'right'].includes(this.visualOrientation)) {
             res.gridTemplateColumns = 'repeat(1, 1fr)';
+            res.padding = '0 0.5rem';
           }
           else {
             res.gridTemplateRows = 'repeat(1, 1fr)';
+            res.padding = '0.5rem 0';
           }
         }
       }
@@ -389,6 +391,7 @@ export default {
       this.onResize();
     },
     visualShowAll(v) {
+      this.updateVisualList();
       if (v && this.isVisual) {
         this.getRef('visualRouter').focus();
       }
@@ -401,6 +404,14 @@ export default {
       if (this.ready) {
         this.changeConfig();
         this.setConfig();
+        if (this.visualTimeout) {
+          clearTimeout(this.visualTimeout);
+        }
+        if (v) {
+          this.$nextTick(() => {
+            this.updateVisualList()
+          });
+        }
       }
     },
   }

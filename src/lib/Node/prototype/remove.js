@@ -32,6 +32,49 @@ const removeElement = function(res, ele, node) {
 };
 
 bbnNode.prototype.nodeRemove = function(ele, noTransition) {
+  if (ele.bbnSchema?.directives?.['bbn-portal']?.value === ele.parentNode) {
+    const parent = ele.parentNode;
+    ele.bbnSchema.directives['bbn-portal'].attrGetValue();
+    ele.bbnSchema.directives['bbn-portal'].value = null;
+    ele.bbnSchema.directives['bbn-portal'].oldValue = parent;
+    ele.bbnSchema.directives['bbn-portal'].lastValue = parent;
+    bbn.fn.log("REMOVING PORTAL 2")
+    bbn.cp.directives['bbn-portal'].update(ele, {value: null, oldValue: parent});
+    if (parent !== ele.parentNode) {
+      return;
+    }
+    else {
+      debugger;
+    }
+  }
+  if (ele?.querySelector) {
+    const portals = ele.querySelectorAll('.bbn-portal-active');
+    if (portals.length) {
+      portals.forEach(p => {
+        const parent = p.parentNode;
+        p.bbnSchema.directives['bbn-portal'].attrGetValue();
+        p.bbnSchema.directives['bbn-portal'].value = null;
+        p.bbnSchema.directives['bbn-portal'].oldValue = parent;
+        p.bbnSchema.directives['bbn-portal'].lastValue = parent;
+        bbn.fn.log("REMOVING PORTAL 3")
+        bbn.cp.directives['bbn-portal'].update(p, {value: null, oldValue: parent});
+      });
+    }
+  }
+
+  if (ele.bbnSchema?.attr?.ref) {
+    const refs = ele.bbnComponent.$refsElements[ele.bbnSchema.attr.ref.value];
+    if (bbn.fn.isArray(refs)) {
+      const idx = refs.indexOf(ele);
+      if (idx > -1) {
+        refs.splice(idx, 1);
+      }
+    }
+    else if (refs === ele) {
+      ele.bbnComponent.$refsElements[ele.bbnSchema.attr.ref.value] = null;
+    }
+  }
+
   const node = ele.bbnSchema;
   if (node?.tag === 'slot') {
     for (let i = 0; i < node.component.$slots[node.realName].length; i++) {
@@ -81,14 +124,5 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
     }
   }
 
-  if (!noTransition && node?.transition) {
-    if (ele.tagName) {
-      bbn.fn.log("Transition", ele)
-      node.transition.prepareTransition("leave", ele);
-      node.transition.prom = node.transition.executeTransition("leave", ele);
-    }
-  }
-  else {
-    removeElement(true, ele, node);
-  }
+  removeElement(true, ele, node);
 };
