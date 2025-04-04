@@ -102,6 +102,14 @@ const cpDef = {
         type: HTMLElement
       },
       /**
+       * If set to true the minimum width will be equal to the attached element width
+       * @prop {Boolean} [true] attachWidth
+       */
+      attachWidth: {
+        type: Boolean,
+        default: false
+      },
+      /**
        * The name of the property to be used as action to execute when selected.
        * @prop {String} sourceAction
        * @memberof listComponent

@@ -10,6 +10,7 @@
   <slot></slot>
   <bbn-floater bbn-if="showFloater && !disabled && component"
               :element="attach || null"
+              :element-width="attachWidth"
               bbn-portal="portal"
               :source="source"
               :class="'bbn-floater-context-' + bbnUid"
@@ -40,6 +41,7 @@
   </bbn-floater>
   <bbn-floater bbn-elseif="showFloater && !disabled"
               :element="attach || null"
+              :element-width="attachWidth"
               bbn-portal="portal"
               :source="source"
               :class="'bbn-floater-context-' + bbnUid"

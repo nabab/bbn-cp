@@ -84,6 +84,11 @@ export default {
 
       return false;
     },
+    masterBreadcrumb() {
+      if (this.itsMaster && this.ready) {
+        return this.itsMaster.getRef('breadcrumb');
+      }
+    }
   },
   methods: {
     routerBreadcrumbDestroy() {
