@@ -274,7 +274,9 @@ const cpDef = {
       selected(v, o) {
         if ( v !== null ){
           setTimeout(() => {
-            this.headers[v].style.overflow = null;
+            if (this.headers[v]?.style) {
+              this.headers[v].style.overflow = null;
+            }
           }, 300)
         }
       }

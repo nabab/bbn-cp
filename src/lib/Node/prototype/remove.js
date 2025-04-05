@@ -32,31 +32,32 @@ const removeElement = function(res, ele, node) {
 };
 
 bbnNode.prototype.nodeRemove = function(ele, noTransition) {
-  if (ele.bbnSchema?.directives?.['bbn-portal']?.value === ele.parentNode) {
+  /*
+  if (ele.bbnDirectives && (ele.bbnSchema?.directives?.['bbn-portal']?.value === ele.parentNode)) {
     const parent = ele.parentNode;
-    ele.bbnSchema.directives['bbn-portal'].attrGetValue();
-    ele.bbnSchema.directives['bbn-portal'].value = null;
-    ele.bbnSchema.directives['bbn-portal'].oldValue = parent;
-    ele.bbnSchema.directives['bbn-portal'].lastValue = parent;
-    bbn.fn.log("REMOVING PORTAL 2")
+    bbn.fn.log("rm PORTAL 2", ele.bbnSchema.comment, ele.bbnSchema.isCommented)
+    debugger;
+    const d = ele.bbnSchema.directives['bbn-portal'];
+    d.attrGetValue();
+    d.value = null;
+    d.oldValue = parent;
+    d.lastValue = parent;
     bbn.cp.directives['bbn-portal'].update(ele, {value: null, oldValue: parent});
     if (parent !== ele.parentNode) {
       return;
     }
-    else {
-      debugger;
-    }
-  }
+  }*/
   if (ele?.querySelector) {
     const portals = ele.querySelectorAll('.bbn-portal-active');
     if (portals.length) {
-      portals.forEach(p => {
+      bbn.fn.each(portals, p => {
         const parent = p.parentNode;
-        p.bbnSchema.directives['bbn-portal'].attrGetValue();
-        p.bbnSchema.directives['bbn-portal'].value = null;
-        p.bbnSchema.directives['bbn-portal'].oldValue = parent;
-        p.bbnSchema.directives['bbn-portal'].lastValue = parent;
-        bbn.fn.log("REMOVING PORTAL 3")
+        const d = p.bbnSchema.directives['bbn-portal'];
+        d.attrGetValue();
+        d.value = null;
+        d.oldValue = parent;
+        d.lastValue = parent;
+        bbn.fn.log("RM PORTAL 3")
         bbn.cp.directives['bbn-portal'].update(p, {value: null, oldValue: parent});
       });
     }
