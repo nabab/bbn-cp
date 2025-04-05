@@ -134,6 +134,7 @@ export default class bbnAnonHtml extends HTMLElement
         let tpl = cfg.components[n].template;
         if (tpl && !tpl.indexOf('#')) {
           tpl = this.$el.bbnInlineTemplates[tpl];
+          cfg.components[n].template = tpl;
         }
         //bbn.fn.log("DEFINING COMPONENT", n, cfg.components[n], cfg.components[n].template);
         bbn.cp.define(cfg.componentNames[n], cfg.components[n], tpl);
