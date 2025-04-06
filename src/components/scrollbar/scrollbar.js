@@ -292,7 +292,11 @@ const cpDef = {
      * @returns {Boolean}
      */
     isVisible(){
-      return (this.invisible !== true) && ((this.scroller && this.scroller.isFocused) && this.isActive || this.isActive);
+      if (typeof this.invisible === 'boolean') {
+        return !this.invisible;
+      }
+
+      return this.scroller && this.scroller.isFocused && this.isActive;
     },
   },
   methods: {

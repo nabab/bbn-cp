@@ -34,36 +34,6 @@ const createMap = (map, items) => {
   });
 };
 
-const updateRoot = (ar, lower) => {
-  bbn.fn.each(ar, a => {
-    if (lower) {
-      if (a.id.indexOf('0-')) {
-        throw new Error("The root element cannot have a lower id");
-      }
-      a.id = a.id.substr(2);
-    }
-    else {
-      a.id = '0-' + a.id;
-    }
-    bbn.fn.iterate(a, (value, prop) => {
-      if (['attr', 'model', 'directives', 'events'].includes(prop)) {
-        bbn.fn.iterate(value, v => {
-          v.id = lower ? v.id.substr(2) : '0-' + v.id;
-        });
-      }
-      else if (['loop', 'condition', 'forget', 'text'].includes(prop)) {
-        value.id = lower ? value.id.substr(2) : '0-' + value.id;
-      }
-    });
-
-    if (a.items) {
-      a.items = updateRoot(a.items);
-    }
-  });
-
-  return ar;
-};
-
 
 /**
  * Transforms a HTML string into a template array
@@ -119,7 +89,7 @@ export default function stringToTemplate(str, withMap, name) {
       }
     }
   });
-  let res = todo.filter(n => n.tagName && (n.tagName.toLowerCase() !== 'script'))
+  let res = todo.filter(n => (!n.tagName && n.textContent && n.textContent.trim()) || (n.tagName && (n.tagName.toLowerCase() !== 'script')))
   .map(a => {
     const tmp = analyzeElement(a, inlineTemplates, num.toString(), name);
     num++;
@@ -142,32 +112,7 @@ export default function stringToTemplate(str, withMap, name) {
         )
     )
   ) {
-    let isIf = false;
-    let conditionId = null;
-    for (let i = 0; i < res.length; i++) {
-      let item = res[i];
-      if (item.condition) {
-        if (item.condition.type === 'if') {
-          conditionId = bbn.fn.randomString(32);
-          item.conditionId = conditionId;
-          isIf = true;
-        }
-        else if (!isIf) {
-          throw new Error(bbn._("There can't be an elseif or an else without an if (check %s)", name));
-        }
-        else {
-          item.conditionId = conditionId;
-        }
-        if (item.condition.type === 'else') {
-          isIf = false;
-        }
-      }
-    }
-    res = [{
-      id: '0',
-      tag: 'div',
-      items: updateRoot(res)
-    }];
+    return stringToTemplate('<div>' + str + '</div>', withMap, name);
   }
 
   if (withMap) {

@@ -1,42 +1,37 @@
-const localStorage = {
-  statics() {
-    let _storage = false;
-    if (window.localStorage) {
-      _storage = {
-        get(name){
-          let tmp = window.localStorage.getItem(name);
-          if ( tmp ){
-            tmp = JSON.parse(tmp);
-            return tmp.value;
-          }
-        },
-        set(name, value){
-          return window.localStorage.setItem(name, JSON.stringify({
-            value: value,
-            time: (new Date()).getTime()
-          }));
-        },
-        time(name){
-          let tmp = window.localStorage.getItem(name);
-          if ( tmp ){
-            tmp = JSON.parse(tmp);
-            return tmp.time;
-          }
-          return false;
-        },
-        remove(name){
-          return window.localStorage.removeItem(name);
-        },
-        clear(){
-          return window.localStorage.clear();
-        }
-      };
+let _storage = false;
+if (window.localStorage) {
+  _storage = {
+    get(name){
+      let tmp = window.localStorage.getItem(name);
+      if ( tmp ){
+        tmp = JSON.parse(tmp);
+        return tmp.value;
+      }
+    },
+    set(name, value){
+      return window.localStorage.setItem(name, JSON.stringify({
+        value: value,
+        time: (new Date()).getTime()
+      }));
+    },
+    time(name){
+      let tmp = window.localStorage.getItem(name);
+      if ( tmp ){
+        tmp = JSON.parse(tmp);
+        return tmp.time;
+      }
+      return false;
+    },
+    remove(name){
+      return window.localStorage.removeItem(name);
+    },
+    clear(){
+      return window.localStorage.clear();
     }
+  };
+}
 
-    return {
-      _storage
-    };
-  },
+const localStorage = {
   props: {
     /**
      * True if the component has to have storage.
@@ -66,7 +61,8 @@ const localStorage = {
   },
   data(){
     return {
-      storageChangeDate: '2019-01-01 00:00:00'
+      storageChangeDate: '2019-01-01 00:00:00',
+      _storage
     };
   },
   computed: {
@@ -76,7 +72,7 @@ const localStorage = {
      * 
      */
     _storage() {
-      return this.constructor._storage;
+      return _storage;
     },
     /**
      * Returns if the component has storage.

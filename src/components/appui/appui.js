@@ -708,7 +708,7 @@ const cpDef = {
           }
         });
       }
-      bbn.fn.log(["AJAX ERROR", jqXHR, textStatus, errorThrown]);
+      //bbn.fn.log(["AJAX ERROR", jqXHR, textStatus, errorThrown]);
       appui.error({ label: textStatus, content: errorThrown }, 4);
       return false;
     };

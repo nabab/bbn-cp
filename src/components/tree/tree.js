@@ -524,13 +524,11 @@ const cpDef = {
        * @method reset
        * @fires updateData
        */
-      reset(){
+      async reset(){
         this.isLoaded = false;
         this.$set(this, 'currentData', []);
-        this.$forceUpdate();
-        this.$nextTick(() => {
-          this.updateData();
-        })
+        await this.$forceUpdate();
+        await this.updateData();
       },
       /**
        * Resizes the root scroller.
@@ -811,7 +809,7 @@ const cpDef = {
        * @param {HTMLElement} node
        * @fires updateData
        */
-      reload(node){
+      async reload(node){
         //if ( this.isAjax ){
           if ( this.isRoot && !node ){
             this.isLoaded = false;
@@ -822,7 +820,7 @@ const cpDef = {
             let tree = node.getRef('tree');
             if ( tree ){
               tree.isLoaded = false;
-              return tree.updateData();
+              return await tree.updateData();
             }
           }
         //}
@@ -832,8 +830,8 @@ const cpDef = {
        * @method load
        * @fires updateData
        */
-      load(){
-        this.updateData();
+      async load() {
+        await this.updateData();
       },
       getNodeByUid(uid) {
         let res = false;
@@ -868,6 +866,11 @@ const cpDef = {
           return r;
         }
         return false;
+      },
+      select(node) {
+        if (node && node.selectable) {
+          node.isSelected = true;
+        }
       },
       /**
        * Unselects the currently selected node.
@@ -1235,16 +1238,15 @@ const cpDef = {
        * @fires updateData
        * @fires initState
        */
-      init() {
+      async init() {
         if (this.node?.isExpanded
           || this.isRoot
           || bbn.fn.count(Object.values(this.currentState), {expanded: true})
           || bbn.fn.count(Object.values(this.currentState), {selected: true})
         ) {
-          return this.updateData().then(() => {
-            this.isInit = true;
-            this.initState();
-          });
+          await this.updateData();
+          this.isInit = true;
+          this.initState();
         }
         else {
           this.isInit = true;
@@ -1620,6 +1622,12 @@ const cpDef = {
           }
         },
         methods: {
+          select() {
+            this.isSelected = true;
+          },
+          unselect() {
+            this.isSelected = false;
+          },
           randomString: bbn.fn.randomString,
           /**
            * Return true if the node is checked
@@ -1679,8 +1687,8 @@ const cpDef = {
           resize(){
             this.tree.resize();
           },
-          reload(){
-            this.tree.reload(this);
+          async reload(){
+            await this.tree.reload(this);
           },
           /**
            * Gets the menu of the parent tree

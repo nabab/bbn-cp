@@ -106,6 +106,9 @@ export default class bbnLoopAttr extends bbnAttr
         currentNode.element = false;
       }
 
+      if ((cp.$options.name === 'bbn-tree') && (cp.$id === "0-0-0-0-0-0-0-2-0") && (node.id === '0-3-1-0')) {
+        bbn.fn.log([ele ? "IN LOOP FOUND ELE" : "IN LOOP NOT FOUND ELE", node, loopData, key]);
+      }
       if (ele) {
         if (currentNode.data[defIndex] !== j) {
           currentNode.data[defIndex] = j;
@@ -124,6 +127,10 @@ export default class bbnLoopAttr extends bbnAttr
       }
 
       prevEle = ele;
+    }
+
+    if ((cp.$options.name === 'bbn-tree') && (cp.$id === "0-0-0-0-0-0-0-2-0") && (node.id === '0-3-1-0')) {
+      bbn.fn.log(["IN LOOP", elements]);
     }
 
     bbn.cp.loopLevel--;

@@ -1363,7 +1363,7 @@ const list = {
           if (bbn.fn.isFunction(this.setConfig)) {
             this.setConfig(true);
           }
-          this.$forceUpdate();
+          this.updateData();
         }
       }
     },

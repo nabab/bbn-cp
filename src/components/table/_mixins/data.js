@@ -135,11 +135,11 @@ export default {
       this.$forceUpdate();
       //bbn.fn.log('forceupdate4');
       return bbn.cp.mixins.list.methods.updateData.apply(this, [withoutOriginal]).then(() => {
-        if (this.currentData.length && this.selection && this.currentSelected.length && !this.uid) {
+        if (this.currentData?.length && this.selection && this.currentSelected.length && !this.uid) {
           this.currentSelected = [];
         }
 
-        if (this.editable) {
+        if (this.editable && this.currentData) {
           this.originalData = JSON.parse(JSON.stringify(this.currentData.map(a => {
             return a.data;
           })));

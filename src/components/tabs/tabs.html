@@ -65,7 +65,7 @@
                              :source-index="tab.idx"
                              :autobind="false"
                              tag="div"
-                             :disabled="tab.idx !== value"
+                             :disabled="tab.loading || (tab.idx !== value)"
                              min-width="10rem"
                              :class="['bbn-tabs-tab', 'bbn-iblock', {
                                     'bbn-tabs-dirty': tab.dirty,
@@ -101,7 +101,7 @@
                       @click.stop.prevent="$emit('close', tab.idx)">
                   <i class="nf nf-md-close_thick bbn-xxs"/>
                 </span>
-                <bbn-context bbn-if="(tab.menu !== false) && (i === value)"
+                <bbn-context bbn-if="!tab.loading && (tab.menu !== false) && (i === value)"
                              class="bbn-iblock bbn-router-tab-menu bbn-p bbn-bottom-right"
                              tabindex="-1"
                              min-width="10rem"

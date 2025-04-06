@@ -258,11 +258,11 @@ export default {
             delete this.urls[uid];
             this.fixIndexes();
             if (!replacers.length && !this.views[idx]?.pane) {
-              if (idx < this.selected) {
-                this.selected--;
-              }
-              else if ((idx === this.selected) && this.views.length) {
+              if ((idx === this.selected) && this.views.length) {
                 this.activateIndex(this.latest ? this.latest.idx : this.views.length - 1);
+              }
+              else if (idx < this.selected) {
+                this.selected--;
               }
             }
 

@@ -51,9 +51,6 @@ export default {
             dir: 'ASC'
           });
         }
-        if (this.isAjax) {
-          this.updateData();
-        }
       }
     },
 
