@@ -2,12 +2,12 @@
      :style="cellStyle">
   <template bbn-for="(col, i) in table.currentColumns"
             bbn-break="checkBreak">
-    <component bbn-if="!index && !col.ready && i && table.currentColumns[i-1].ready"
+    <!--component bbn-if="!index && !col.ready && i && table.currentColumns[i-1].ready"
                :colspan="table.currentColumns.length - i"
                :rowspan="table.items.length"
-               is="td"/>
+               is="td"/-->
 
-    <bbn-table-cell-expander bbn-elseif="col.isExpander && !table.isGroupActive"
+    <bbn-table-cell-expander bbn-if="col.isExpander && !table.isGroupActive"
                              :source="source.data"
                              :index="0"
                              :row-index="index"
