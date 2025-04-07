@@ -16,7 +16,7 @@
               class="nf nf-fa-caret_down"/>
         </bbn-context>
         <i bbn-for="(b, idx) in realButtonsLeft"
-            :title="b.text"
+            :title="b.title || b.label"
             @click="actionButton(b.action, uid)"
             :class="b.icon"/>
       </div>
@@ -38,7 +38,7 @@
       <!-- BUTTONS RIGHT -->
       <div class="bbn-header-buttons bbn-widget-button-right bbn-hxspadding">
         <i bbn-for="(b, idx) in realButtonsRight"
-            :title="b.text"
+            :title="b.title || b.label"
             @click="actionButton(b.action, uid)"
             :class="[b.icon]"/>
       </div>
