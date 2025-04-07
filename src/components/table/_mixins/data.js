@@ -26,29 +26,12 @@ export default {
       }
       // The final result
       const cp = this;
-      let res = [],
-        isGroup = this.groupable && (this.group !== false) && this.cols[this.group] && this.cols[this.group].field,
-        groupField = isGroup ? this.cols[this.group].field : false,
-        // The group value will change each time a row has a different value on the group's column
-        currentGroupValue,
-        /* @todo Not sure of what it does ! */
-        currentLink,
-        // the data is put in a new array with its original index
-        o,
-        rowIndex = 0,
-        end = this.pageable ? this.currentLimit : this.currentData.length,
-        aggregates = {},
-        aggregateModes = [],
-        aggIndex = 0,
-        i = 0,
-        data = this.filteredData;
+      let data = this.filteredData.slice();
+      let isGroup = this.groupable && (this.group !== false) && this.cols[this.group] && this.cols[this.group].field;
+      let end = this.pageable ? this.currentLimit : this.currentData.length;
+      let i = 0;
       // Aggregated
       // Paging locally
-      if (this.pageable && (!this.isAjax || !this.serverPaging)) {
-        i = this.currentStart;
-        end = (this.currentStart + this.currentLimit) > data.length ? data.length : (this.currentStart + this.currentLimit);
-        data = this.filteredData.slice(i, end);
-      }
       // Grouping (and sorting) locally
       let pos;
       if (
@@ -106,6 +89,12 @@ export default {
             return item;
           }));
         }
+      }
+
+      if (this.pageable && (!this.isAjax || !this.serverPaging)) {
+        i = this.currentStart;
+        end = (this.currentStart + this.currentLimit) > data.length ? data.length : (this.currentStart + this.currentLimit);
+        data = data.slice(i, end);
       }
 
       return data;

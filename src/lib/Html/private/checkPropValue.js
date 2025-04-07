@@ -1,3 +1,4 @@
+import bbnData from "../../Data.js";
 
 /**
  * Validates the value of a property against the provided configuration.
@@ -56,6 +57,10 @@ export default function checkPropValue(cp, name, cfg, value) {
     if (!bbn.fn.isNumber(v) || cfg.type.includes(Number) || !cfg.type.includes(Boolean)) {
       bbn.fn.checkType(v, cfg.type, bbn._("Wrong type for %s in component %s", name, cp.$options.name));
     }
+  }
+
+  if (cfg.reactive === false) {
+    v = bbnData.immunizeValue(v);
   }
 
   // Custom validation for the property.

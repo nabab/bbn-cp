@@ -26,7 +26,7 @@ export default class bbnDirectiveAttr extends bbnAttr
         throw new Error(bbn._("Unrecognized directive %s", this.name));
       }
     }
-    else if (this.inserted && this.isChanged) {
+    else if (this.inserted && this.isChanged && this.node.element) {
       // Update the 'lastUpdate' property of the directive.
       this.lastUpdate = bbn.fn.dateSQL();
       // Update the 'oldValue' property of the directive.
