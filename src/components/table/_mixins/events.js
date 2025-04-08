@@ -108,6 +108,7 @@ export default {
      * @param {Event} e 
      */
     focusin(idx, e) {
+      bbn.fn.log('focusin', idx, e);
       if (!e.target.closest('td')
         || !e.target.closest('td').classList.contains('bbn-table-buttons')
         || e.target.closest('td').classList.contains('bbn-table-edit-buttons')
@@ -169,12 +170,15 @@ export default {
      * @emit focusout
      */
     focusedRow(newIndex, oldIndex) {
+      bbn.fn.log("FOCUS", newIndex, oldIndex);
       if (bbn.fn.isNumber(oldIndex)) {
         this.$emit('focusout', oldIndex, this.items[oldIndex] ? this.items[oldIndex].index : undefined);
       }
+
       if (this.items[newIndex]) {
         this.$emit('focus', this.items[newIndex].data, newIndex, this.items[newIndex].index);
       }
+
       if (this.editable && (this.editMode === 'inline')) {
         if (bbn.fn.isNumber(oldIndex) && this.items[oldIndex]) {
           let idx = this.items[oldIndex].index;
@@ -200,9 +204,9 @@ export default {
         ) {
           let comeFromAfter = bbn.fn.isNumber(oldIndex) && (newIndex === (oldIndex - 1));
           this.$nextTick(() => {
+            bbn.fn.log('before edit', this.items[newIndex].data, newIndex);
             this.edit(this.items[newIndex].data, null, newIndex);
             this.$nextTick(() => {
-
               let ele = this.clickedTd || this.getTr(newIndex);
               let nextInputs = ele ? ele.querySelectorAll('input') : [];
               let nextInput;

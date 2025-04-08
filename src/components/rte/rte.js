@@ -317,7 +317,8 @@ const cpDef = {
                 <bbn-colorpicker @change="setColor"
                                  bbn-model="currentColor"
                                  :disabled="isDisabled"
-                                 :readonly="isReadOnly"/>
+                                 :readonly="isReadOnly"
+                                 :show-codes="false"/>
               </span>
             `,
             data(){
@@ -367,7 +368,8 @@ const cpDef = {
                 <bbn-colorpicker @change="setColor"
                                  bbn-model="currentColor"
                                  :disabled="isDisabled"
-                                 :readonly="isReadOnly"/>
+                                 :readonly="isReadOnly"
+                                 :show-codes="false"/>
               </span>
             `,
             data(){

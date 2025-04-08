@@ -23,7 +23,7 @@
                             :row-index="index"
                             :ref="'td' + index"/>
 
-    <bbn-table-cell-editor bbn-elseif="table.isEdited(source, col, i)"
+    <bbn-table-cell-editor bbn-elseif="table.isEdited(source, col, index)"
                           :tabindex="table.editable && (col.editable !== false) ? 0 : -1"
                           @save="table.saveInline"
                           @cancel="table.cancel"
@@ -49,6 +49,7 @@
                     :source="source.data"
                     :row-index="index"
                     :index="i"
-                    :ref="'td' + index"/>
+                    :ref="'td' + index"
+                    :tabindex="table.editable && (col.editable !== false) ? 0 : -1"/>
   </template>
 </div>
