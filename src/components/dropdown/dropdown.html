@@ -96,7 +96,7 @@
               :width="asMobile ? '100%' : undefined"
               :height="asMobile ? '100%' : undefined"
               ref="list"
-              :uid="sourceValue"
+              :uid="uid || sourceValue"
               :item-component="realComponent"
               @ready="attachList"
               @select="onSelect"
