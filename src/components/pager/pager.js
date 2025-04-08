@@ -129,8 +129,9 @@ const cpDef = {
             return start + '-' + (last > total ? total : last) + ' ' + bbn._('of') + ' ' + total;
           }
 
-          return '';
         }
+
+        return '';
       }
     },
     methods: {
