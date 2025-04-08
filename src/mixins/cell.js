@@ -43,13 +43,13 @@ const cell = {
   },
   created() {
     this.$on('click', e => {
-      this.table.clickCell(this.column, this.rowIndex, this.index);
+      this.table.clickCell(this.column, this.index, this.rowIndex);
     })
     this.$on('doubleclick', e => {
-      this.table.dbclickCell(this.column, this.rowIndex, this.index, this.source);
+      this.table.dbclickCell(this.column, this.source, this.rowIndex);
     })
     this.$on('focusin', e => {
-      this.table.focusin(this.index, e);
+      this.table.focusin(this.rowIndex, e);
     })
   },
 };

@@ -1,6 +1,4 @@
-<div :class="cellClass"
-     @focusin="table.focusin(rowIndex, $event)"
-     @click="table.clickCell(column, index, rowIndex)">
+<div :class="cellClass">
   <div bbn-if="!column.ready"> </div>
   <slot bbn-if="$hasSlots()"/>
   <component bbn-elseif="column.component"

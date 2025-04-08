@@ -31,7 +31,8 @@
                           :source="source.data"
                           :row-index="index"
                           :index="i"
-                          :ref="'td' + index"/>
+                          :ref="'td' + index"
+                          @focusout="table.focusout(index, $event)"/>
 
     <component is="td"
                bbn-elseif="!col.ready"
