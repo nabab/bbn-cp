@@ -248,7 +248,6 @@ const cpDef = {
         if (this.element.currentLimit !== v) {
           this.currentPage = 1;
           this.element.currentLimit = parseInt(v);
-          this.element.updateData();
         }
       },
       currentNumericPage(v) {

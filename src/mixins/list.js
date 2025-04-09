@@ -641,7 +641,8 @@ const list = {
       set(val) {
         if (this.ready) {
           this.currentStart = val > 1 ? (val - 1) * this.currentLimit : 0;
-          this.updateData(!this.serverPaging);
+          // I commented it because we have another updateData call in the currentStart watch (Mirko 09/04/2025)
+          //this.updateData(!this.serverPaging);
         }
       }
     },
