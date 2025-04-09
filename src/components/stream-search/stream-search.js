@@ -465,27 +465,22 @@ const cpDef = {
                 if (!this.isRunning && this.queue.length) {
                   this.isRunning = true;
                   let lastAdded = 0;
-                  const data = bbn.fn.order(this.queue.splice(0), { dir: 'DESC', field: 'score' });
-                  if (!this.currentData.length) {
-                    this.currentData = data;
-                    this.currentTotal = data.length;
-                  }
-                  else {
-                    for (let i = 0; i < data.length; i++) {
-                      const idx = bbn.fn.search(this.currentData, { hash: data[i].hash });
-                      if (idx > -1) {
-                        data.splice(i, 1);
-                        i--;
-                      }
+                  const currentData = this.currentData.slice();
+                  bbn.fn.each(this.queue.splice(0), d => {
+                    const idx = bbn.fn.search(currentData, { hash: d.hash });
+                    if ((idx > -1) && (d.score > currentData[idx].score)) {
+                      currentData[idx].score = d.score;
                     }
-
-                    this.currentData = bbn.fn.order(this.currentData.concat(data), { dir: 'DESC', field: 'score' });
-                    this.currentTotal = this.currentData.length;
-                  }
-
-                  this.searchCategories = bbn.fn.getFieldValues(this.currentData, 'search').map(a => {
-                    return {search: a, active: true, num: bbn.fn.count(this.currentData, {search: a})}
+                    else {
+                      currentData.push(d);
+                    }
                   });
+                  const data = bbn.fn.order(currentData, { dir: 'DESC', field: 'score' });
+                  this.searchCategories = bbn.fn.getFieldValues(data, 'search').map(a => {
+                    return {search: a, active: true, num: bbn.fn.count(data, {search: a})}
+                  });
+                  this.currentData = data;
+                  this.currentTotal = data.length;
 
                   this.$forceUpdate();
                   this.isRunning = false;
@@ -494,7 +489,10 @@ const cpDef = {
             }
 
             if (d?.data) {
-              this.queue.push(...d.data);
+              bbn.fn.log("REPLY", d)
+              if (d.value === this.filterString) {
+                this.queue.push(...d.data);
+              }
             }
           },
           this.currentFilters,
@@ -522,6 +520,8 @@ const cpDef = {
         if (this.itv) {
           clearInterval(this.itv);
         }
+
+        this.queue.splice(0)
         bbn.fn.post(this.stopUrl, { uid: this.searchUid }, d => {
           this.isStarted = false;
         });
@@ -529,7 +529,8 @@ const cpDef = {
     },
     resetSearch() {
       if (this.isStarted) {
-        bbn.fn.post(this.resetUrl, this.currentFilters, d => {
+        this.currentData.splice(0);
+        bbn.fn.post(this.resetUrl + '/' + bbn.fn.microtimestamp(), this.currentFilters, d => {
           if (!d.success) {
             bbn.fn.warning(bbn._("Impossible to update the search"));
           }

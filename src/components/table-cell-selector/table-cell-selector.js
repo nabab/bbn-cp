@@ -27,7 +27,7 @@ const cpDef = {
   },
   computed: {
     isSelectable() {
-      return this.table.selection && (!bbn.fn.isFunction(this.table.selection) || this.table.selection(this.source));
+      return this.table.selection && (!bbn.fn.isFunction(this.table.selection) || this.table.selection(this.$origin.source));
     }
   }
 };

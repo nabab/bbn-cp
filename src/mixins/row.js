@@ -24,7 +24,7 @@ export default {
     selected: {
       get() {
         if (this.table.selection) {
-          const i = this.table.uid ? this.table.currentData[this.source.index].data[this.table.uid] : this.source.index;
+          const i = this.table.uid ? this.source.data[this.table.uid] : this.source.index;
           return this.table.currentSelected.includes(i);
         }
 
@@ -32,7 +32,7 @@ export default {
       },
       set(v) {
         if (this.table.selection) {
-          const i = this.table.uid ? this.table.currentData[this.source.index].data[this.table.uid] : this.source.index;
+          const i = this.table.uid ? this.source.data[this.table.uid] : this.source.index;
           if (v) {
             if (!this.table.currentSelected.includes(i)) {
               this.table.currentSelected.push(i);
