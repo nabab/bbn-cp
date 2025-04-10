@@ -955,10 +955,10 @@ const cpDef = {
           this.browserNotificationURL = this.plugins['appui-notification'];
           this.browserNotificationSW = true;
         }
-      }, 5000);
+      }, 1000);
       this.onResize();
       this.opacity = 1;
-    }, this.app?.header ? 1000 : 10);
+    }, this.app?.header ? 250 : 10);
   },
   beforeDestroy() {
     this.$off('appui-chat');
