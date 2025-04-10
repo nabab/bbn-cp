@@ -40,7 +40,9 @@ const cpDef = {
       return 1;
     },
     isExpanded(){
-      return this.table.items?.length && this.table.isExpanded(this.source, this.table.items[this.rowIndex].index);
+      return this.table.items?.length
+        && this.table.items[this.rowIndex]
+        && this.table.isExpanded(this.source, this.table.items[this.rowIndex].index);
     }
   },
   methods: {

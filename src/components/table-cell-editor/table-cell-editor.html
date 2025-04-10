@@ -2,7 +2,9 @@
   <span class="bbn-table-dirty bbn-top-left"
         bbn-if="isDirty"/>
   <div bbn-if="table.isEdited(source, column, rowIndex)">
-    <div bbn-if="(table.editMode === 'inline') && (table.editable !== 'nobuttons') && (column.index === table.colButtons)">
+    <div bbn-if="(table.editMode === 'inline')
+           && (table.editable !== 'nobuttons')
+           && (column.index === table.colButtons)">
       <bbn-button :label="_('Save')"
                   :disabled="!isEditedValid"
                   icon="nf nf-fa-save"
@@ -17,27 +19,33 @@
                   @click.prevent.stop="$emit('cancel')"
                   style="margin: 0 0.1rem"/>
     </div>
-    <component bbn-elseif="(table.editMode === 'inline') && table.isValidField(column.field) && (column.editable !== false)"
+    <component bbn-elseif="(table.editMode === 'inline')
+                 && table.isValidField(column.field)
+                 && (column.editable !== false)"
                 bbn-bind="getEditableOptions()"
                 :is="getEditableComponent()"
                 @click.stop
                 bbn-model="table.editedRow[column.field]"
                 style="width: 100%"/>
-    <!--<bbn-field bbn-elseif="(editMode === 'inline') && table.isValidField(column.field) && (column.editable !== false)"
+    <!--<bbn-field bbn-elseif="(editMode === 'inline')
+                     && table.isValidField(column.field)
+                     && (column.editable !== false)"
                 bbn-bind="column"
                 mode="write"
                 @click.stop
                 bbn-model="table.editedRow[column.field]"
                 style="width: 100%"/>-->
-    <bbn-field bbn-elseif="table.isValidField(column.field) && !column.render && !column.buttons"
+    <bbn-field bbn-elseif="table.isValidField(column.field)
+                 && !column.render
+                 && !column.buttons"
               bbn-bind="column"
               @click.stop
               :value="source[column.field]"
               :data="source"/>
     <div bbn-elseif="!column.buttons && column.render"
-          bbn-html="column.render(source, column, i)"/>
+          bbn-html="column.render(source, column, rowIndex)"/>
     <div bbn-elseif="!column.buttons"
-          bbn-html="render(source, column, i)"/>
+          bbn-html="table.render(source, column, rowIndex)"/>
     <div bbn-else> </div>
   </div>
 </div>
