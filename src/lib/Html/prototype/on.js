@@ -19,6 +19,7 @@ bbnProtoHtml.$on = function (event, handler, remove, bound) {
   }
 
   if (!remove && this.$events[event][hash]) {
+    return;
     //throw new Error(bbn._("The event %s is already set in %s", event, this.$options.name));
   }
 
@@ -32,12 +33,16 @@ bbnProtoHtml.$on = function (event, handler, remove, bound) {
     }
 
     handler.bind(bound)(...args);
-  }
+  };
 
-  const opt = {};
+
+  const controller = new AbortController();
+  const signal = controller.signal;
+  const opt = {signal};
   if (remove) {
     opt.once = true;
   }
 
+  this.$events[event]['controller-' + hash] = controller;
   this.addEventListener(event, this.$events[event][hash], opt);
 }

@@ -144,7 +144,7 @@ const serviceWorker = {
      */
     _postMessage(obj){
       if (this._checkSW()) {
-        bbn.fn.log(["FROM SERVICE WORKER", obj, JSON.stringify(obj)])
+        bbn.fn.log(["POSTING TO SERVICE WORKER", JSON.stringify(obj)])
         navigator.serviceWorker.controller.postMessage(JSON.parse(JSON.stringify(obj)));
         return true;
       }

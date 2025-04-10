@@ -21,9 +21,16 @@ bbnProtoHtml.$off = function (event, handler, bound) {
 
   bbn.fn.checkType(handler, Function, bbn._("Events handlers must be functions for \$off / %s in %s", event, this.$options.name));
   const fn = bbn.fn.analyzeFunction(handler);
-  const hash = bbn.fn.md5((bound || this).$cid + '-' + event + '-' + handler.toString());
+  const hash = bbn.fn.md5((bound || this).$cid + '-' + fn.hash);
   if (this.$events[event]?.[hash]) {
-    this.$el.removeEventListener(event, this.$events[event][hash]);
-    delete this.$events[event][hash];
+    if (('controller-' + hash) in this.$events[event]) {
+      this.$events[event]['controller-' + hash]?.abort();
+      delete this.$events[event][hash];
+      delete this.$events[event]['controller-' + hash];
+    }
+    else {
+      this.$el.removeEventListener(event, this.$events[event][hash]);
+      delete this.$events[event][hash];
+    }
   }
 }
