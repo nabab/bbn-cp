@@ -449,16 +449,12 @@ const cpDef = {
         throw new Error(bbn._("The component") + ' ' + name + ' ' + bbn._("is not registered"));
       }
     },
-    getRegistered(name, ignore) {
+    getRegistered(name) {
       if (this.registeredComponents[name]) {
         return this.registeredComponents[name];
       }
       if (name === undefined) {
         return this.registeredComponents;
-      }
-
-      if (!ignore) {
-        throw new Error(bbn._("The component") + ' ' + name + ' ' + bbn._("cannot be found"));
       }
     },
     getField: bbn.fn.getField,
