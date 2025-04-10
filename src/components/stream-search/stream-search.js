@@ -462,6 +462,7 @@ const cpDef = {
 
             if (!this.itv) {
               this.itv = setInterval(() => {
+                bbn.fn.log("ITV");
                 if (!this.isRunning && this.queue.length) {
                   this.isRunning = true;
                   let lastAdded = 0;
@@ -484,6 +485,10 @@ const cpDef = {
 
                   this.$forceUpdate();
                   this.isRunning = false;
+                }
+                if (!this.isStarted) {
+                  clearInterval(this.itv);
+                  this.itv = false;
                 }
               }, 50);
             }
