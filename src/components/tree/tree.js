@@ -1246,6 +1246,9 @@ const cpDef = {
         ) {
           await this.updateData();
           this.isInit = true;
+          this.$nextTick(() => {
+            this.initState();
+          });
           this.initState();
         }
         else {
