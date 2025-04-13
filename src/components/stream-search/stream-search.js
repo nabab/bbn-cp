@@ -241,6 +241,9 @@ const cpDef = {
       //bbn.fn.log(["BIG SEARCH", cp, this.source]);
       return cp;
     },
+    valueIndex() {
+      return null;
+    },
     filteredData() {
       if (bbn.fn.count(this.searchCategories, {active: false})) {
         return this.currentData.filter(d => {
@@ -453,6 +456,12 @@ const cpDef = {
         this.isStarted = true;
         this.currentFilters.uid = this.searchUid;
         this.currentData = [];
+        appui.poll({
+          type: 'search',
+          data: this.currentFilters
+        })
+        let lastAdded = 0;
+/*
         bbn.fn.stream(
           this.startUrl,
           d => {
@@ -505,6 +514,7 @@ const cpDef = {
           this.onAbort,
           this.onFinish
         );
+        */
       }
     },
     onError(err) {
@@ -542,6 +552,31 @@ const cpDef = {
         });
       }
     },
+    onReceive(arr) {
+      const currentData = this.currentData.slice();
+      bbn.fn.each(arr, data => {
+        if (data.value === this.filterString) {
+          bbn.fn.log("PUTTING DATA INTO RES")
+          bbn.fn.each(data.data, d => {
+            const idx = bbn.fn.search(currentData, { hash: d.hash });
+            if ((idx > -1) && (d.score > currentData[idx].score)) {
+              currentData[idx].score = d.score;
+            }
+            else {
+              currentData.push(d);
+            }
+          });
+        }
+      });
+      const finalData = bbn.fn.order(currentData, { dir: 'DESC', field: 'score' });
+      this.searchCategories = bbn.fn.getFieldValues(finalData, 'search').map(a => {
+        return {search: a, active: true, num: bbn.fn.count(finalData, {search: a})}
+      });
+      this.currentData = finalData;
+      this.currentTotal = finalData.length;
+
+      this.$forceUpdate();
+    }
   },
   watch: {
     isOpened(v) {
@@ -612,10 +647,17 @@ const cpDef = {
   },
   mounted() {
     this.ready = true;
+    if (window.appui) {
+      appui.$on('sw-appui-search-stream', this.onReceive)
+    }
   },
   beforeDestroy() {
     if (this.itv) {
       clearInterval(this.itv);
+    }
+
+    if (window.appui) {
+      appui.$off('sw-appui-search-stream', this.onReceive)
     }
   },
 };

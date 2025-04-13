@@ -50,8 +50,16 @@ export default function() {
   bbn.cp.directives['bbn-portal'] = bbn.fn.createObject({
     inserted: (el, binding) => {
       //bbn.fn.log(["INSERTED PORTAL", el, binding]);
+      let original = el.parentNode;
+      if (el.bbnId.indexOf(el.parentNode.bbnId)) {
+        original = el.bbnSchema.parent.element;
+        if (!original || (original instanceof Comment)) {
+          original = el.bbnSchema.parent.parentElement;
+        }
+      }
       el.bbnDirectives.portal = bbn.fn.createObject({
-        originalParent: el.parentNode
+        originalParent: original,
+        todo: false
       });
 
       if (binding.value) {
@@ -59,7 +67,6 @@ export default function() {
       }
     },
     update: (el, binding) => {
-      //bbn.fn.log(["UPDATED PORTAL", el, binding]);
       if (binding.value) {
         treatBinding(el, binding);
       }

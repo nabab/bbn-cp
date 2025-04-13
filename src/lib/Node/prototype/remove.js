@@ -125,5 +125,14 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
     }
   }
 
+  if (ele.bbnComponentSlot) {
+    for (let n in ele.bbnComponentSlot.$slots) {
+      let idx = ele.bbnComponentSlot.$slots[n].indexOf(ele);
+      if (idx > -1) {
+        ele.bbnComponentSlot.$slots[n].splice(idx, 1);
+      }
+    }
+  }
+
   removeElement(true, ele, node);
 };

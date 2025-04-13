@@ -84,7 +84,7 @@ export default {
     addPane(paneId) {
       if (this.splittable) {
         if (!paneId) {
-          paneId = bbn.fn.randomString().toLowerCase();
+          paneId = bbn.fn.randomString(8, 12).toLowerCase();
         }
 
         if (!bbn.fn.getRow(this.currentPanes, { id: paneId })) {
@@ -93,6 +93,7 @@ export default {
             tabs: [],
             selected: -1
           });
+          this.updatePortalTargets();
         }
       }
 
@@ -103,7 +104,7 @@ export default {
       if (view && this.urls[view.uid]) {
         view.last = bbn.fn.timestamp();
         if (view.load && !this.urls[view.uid].isLoaded) {
-          this.urls[view.uid].reload()
+          this.urls[view.uid].loadView(view.current);
         }
       }
     },
@@ -119,6 +120,7 @@ export default {
         }
 
         this.currentPanes.splice(paneIndex, 1);
+        this.updatePortalTargets();
         if (this.routed) {
           this.$nextTick(() => {
             this.currentPanes.length ?
@@ -157,6 +159,7 @@ export default {
       }
 
       pane.selected = pane.tabs.length - 1;
+      this.updatePortalTargets();
     },
     removeFromPane(containerIdx) {
       let view = this.views[containerIdx];
@@ -186,6 +189,7 @@ export default {
               })
             }
           }
+          this.updatePortalTargets();
         }
       }
     },
@@ -237,6 +241,7 @@ export default {
             pane.selected = pane.tabs.length ? 0 : -1;
           }
         })
+        this.updatePortalTargets();
       }
     },
   },

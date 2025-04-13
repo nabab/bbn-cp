@@ -106,7 +106,7 @@ export default {
           key: "reload",
           icon: "nf nf-md-sync",
           action: () => {
-            this.reload(idx);
+            this.urls[view.uid].reload();
           }
         });
       }

@@ -89,7 +89,7 @@ export default function generateCpClass(publicClass, obj) {
 
       Object.defineProperty(window[publicClass].prototype, n, {
         get() {
-          if (!this.isConnected) {
+          if (this.$isDestroyed) {
             return () => {};
           }
 

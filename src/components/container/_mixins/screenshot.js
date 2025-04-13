@@ -97,7 +97,7 @@ export default {
           };
           if ((this.currentIndex === this.router.selected)
               && this.isVisible
-              && window.html2canvas
+              && window.htmlToImage
               && bbn.fn.isActiveInterface(600)
               && !this.router.visualShowAll
           ) {
@@ -117,24 +117,10 @@ export default {
 
             scroll.style.maxWidth = s + 'px !important';
             scroll.style.maxHeight = s + 'px !important';
-            html2canvas(ct, {
-              width: s,
-              height: s,
-              scale: scale
-            }).then(canvas => {
-              ct.style.width = null;
-              ct.style.height = null;
-              this._screenshotTimeout = false;
-              if (!image) {
-                resolve(canvas);
-                return;
-              }
-              let img   = bbn.fn.canvasToImage(canvas);
-              let ctx   = canvas.getContext('2d');
-              let size  = Math.min(canvas.width, canvas.height);
-              let num   = Math.min(this.router.numVisualCols, this.router.numVisualRows);
-              let msize = Math.ceil(size / num);
-              ctx.drawImage(img, 0, 0, size, size, 0, 0, msize, msize);
+            htmlToImage.toPng(ct, {
+              canvasWidth: s,
+              canvasHeight: s
+            }).then(img => {
               resolve(img);
             });
           }

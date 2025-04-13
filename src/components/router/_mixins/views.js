@@ -73,14 +73,14 @@ export default {
      * @return {Array} 
      */
     tabsList() {
-      const base = this.splittable ? bbn.fn.filter(this.views.slice(), a => !a.pane) : this.views.slice();
+      const base = this.splittable ? bbn.fn.filter(this.views, a => !a.pane) : this.views.slice();
       return bbn.fn.multiorder(base, { fixed: 'desc', pinned: 'desc', idx: 'asc' });
     },
     timeList() {
-      return bbn.fn.order(this.views.slice(), 'last', 'desc');
+      return bbn.fn.order(this.views.filter(a => !a.pane), 'last', 'desc').map(a => a.idx);
     },
     latest() {
-      return this.timeList[1] || false;
+      return bbn.fn.getRow(this.views, {idx: this.timeList});
     }
   },
   methods: {
@@ -116,7 +116,7 @@ export default {
         icon: '',
         notext: false,
         content: null,
-        menu: [],
+        menu: null,
         loaded: null,
         fcolor: null,
         bcolor: null,
@@ -252,11 +252,11 @@ export default {
             const uid = this.views[idx].uid;
             this.$emit('close', idx, onClose);
             //const replacers = replacer ? [this.getViewObject(replacer)] : [];
-            const replacers = replace ? [bbn.fn.extend(this.getViewObject(replace), {idx})] : [];
+            const replacers = replace ? [bbn.fn.extend(this.getViewObject(replace), {idx, uid})] : [];
             this.views.splice(idx, 1, ...replacers);
-            //bbn.fn.log("DELETING CT")
-            delete this.urls[uid];
             this.fixIndexes();
+            this.updateVisualList();
+            this.$forceUpdate();
             if (!replacers.length && !this.views[idx]?.pane) {
               if ((idx === this.selected) && this.views.length) {
                 this.activateIndex(this.latest ? this.latest.idx : this.views.length - 1);
@@ -283,9 +283,9 @@ export default {
         throw new Error(bbn._("The object already has a uid"));
       }
 
-      let uid = bbn.fn.randomString(20);
+      let uid = bbn.fn.randomString(8, 12).toLowerCase();
       while (this.urls[uid]) {
-        uid = bbn.fn.randomString(20);
+        uid = bbn.fn.randomString(8, 12).toLowerCase()
       }
 
       obj.uid = uid;
@@ -308,8 +308,8 @@ export default {
       }
 
       obj.events = {};
-      if (obj.menu === undefined) {
-        obj.menu = [];
+      if (obj.menu === null) {
+        obj.menu = this.menu || false;
       }
 
       bbn.fn.iterate(this.getDefaultView(), (a, n) => {
@@ -354,6 +354,7 @@ export default {
         this.views.push(obj);
       }
 
+
       if (this.single && (this.views.length > 1)) {
         let toDel = bbn.fn.search(this.views, a => !a.cached && (a.uid !== obj.uid));
         if (toDel !== -1) {
@@ -366,13 +367,13 @@ export default {
         this.updateVisualList();
       }
 
-      await this.$forceUpdate();
       if (obj.selected && !obj.pane) {
         //bbn.fn.log(["BEFORE SELECTED IN ADD", obj.idx, obj, this.views.length]);
         this.selected = obj.idx;
         //bbn.fn.log(["AFTER SELECTED IN ADD", this.selected, obj, this.views.length]);
       }
 
+      this.updateVisualList();
       return obj.uid;
     },
     /**

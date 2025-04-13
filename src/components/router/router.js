@@ -5,7 +5,6 @@
  * @author BBN Solutions
  */
 
-import html2canvas from 'html2canvas';
 import elements from './_mixins/elements.js';
 import navigation from './_mixins/navigation.js';
 import registration from './_mixins/registration.js';
@@ -28,12 +27,11 @@ import searchResult from './_components/searchResult.js';
 const cpDef = {
   name: 'bbn-router',
   statics() {
-    window.html2canvas = html2canvas;
     // IndexedDb access for storing thumbnails in visual mode
     let db = false;
-    if (bbn.db && bbn.db.ok && window.html2canvas) {
+    if (bbn.db && bbn.db.ok) {
       db = true;
-      if (!bbn.db._structures.bbn || !bbn.db._structures.bbn.containers) {
+      if (!bbn.db._structures?.bbn?.containers) {
         bbn.db.add('bbn', 'containers', {
           keys: {
             PRIMARY: {

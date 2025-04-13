@@ -101,7 +101,7 @@ async function treatQueue(num = 0, cps) {
       const isWatcher = queueElement.element instanceof bbnWatcher;
       //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
-      if (!cp.$el.isConnected || queueElement.component?.$isDestroyed) {
+      if (cp?.$isDestroyed) {
         continue;
       }
       if (isAttr && queueElement.element.node.isDestroyed) {

@@ -43,7 +43,7 @@ export default {
 
           let pane = bbn.fn.getRow(this.router.currentPanes, {id: this.currentView.pane});
           if (pane) {
-            let idx = bbn.fn.search(pane.tabs, {url: this.currentView.url});
+            let idx = bbn.fn.search(pane.tabs, {uid: this.routerUid});
             if (pane.tabs[idx]) {
               return idx === pane.selected;
             }

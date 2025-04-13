@@ -275,7 +275,12 @@ export default class bbnNode
       if (this.directives && v) {
         for (let n in this.directives) {
           if (this.directives[n].inserted) {
-            this.directives[n].inserted = false;
+            if (bbn.fn.isObject(this.directives[n].inserted)) {
+              this.directives[n].inserted.todo = true;
+            }
+            else {
+              this.directives[n].inserted = false;
+            }
           }
         }
       }
@@ -288,17 +293,6 @@ export default class bbnNode
 
     return false;
   }
-
-  hasStillContent() {
-    const cp = this.component;
-    if (cp?.isConnected) {
-      const node = this.hash ? cp.$nodes[this.id][this.hash] : cp.$nodes[this.id];
-      return (node === this) && (!this.condition || !!this.condition.value);
-    }
-
-    return false;
-  }
-
 
   get isComponent() {
     return !this.comment && this.component && this.component.$isComponent(this);

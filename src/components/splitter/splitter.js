@@ -657,21 +657,34 @@ const cpDef = {
           && (!bbn.fn.isNumber(indexToSkip)
             || (p.index !== parseInt(indexToSkip)));
       }) > -1;
-    }
-  },
-  /**
-   * Defines the current orientation and forces the update of the component.
-   * @event mounted 
-   * @fires getOrientation
-   * @fires $forceUpdate
-   */
-  mounted() {
-    if (this.currentOrientation === 'auto') {
-      this.currentOrientation = this.getOrientation();
-      this.$forceUpdate();
+    },
+    updateOrientation() {
+      if (this.orientation === 'auto') {
+        const or = this.getOrientation();
+        if (or !== this.currentOrientation) {
+          this.currentOrientation = this.getOrientation();
+          this.init();
+        }
+      }
+      else if (this.orientation !== this.currentOrientation) {
+        this.currentOrientation = this.orientation;
+        this.init();
+      }
     }
   },
   watch: {
+    ready() {
+      setTimeout(() => {
+        this.onResize();
+        this.updateOrientation();
+      }, 100);
+    },
+    lastKnownHeight() {
+      this.updateOrientation();
+    },
+    lastKnownWidth() {
+      this.updateOrientation();
+    },
     /**
      * Reinitializes the component when the value of the prop orientation changes
      * @watch orientation
@@ -680,7 +693,7 @@ const cpDef = {
      */
     orientation(newVal, oldVal) {
       if ((newVal !== oldVal) && (newVal !== this.currentOrientation)) {
-        this.currentOrientation = newVal === 'auto' ? this.getOrientation() : newVal;
+        this.updateOrientation();
       }
     },
     /**

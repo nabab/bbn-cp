@@ -381,6 +381,7 @@ const cpDef = {
       this.splitter.init();
       setTimeout(() => {
         this.ready = true;
+        this.$nextTick(this.splitter.onResize);
       }, 40)
     }
   },

@@ -175,12 +175,14 @@ export default {
       if (this.isVisual && this.ready) {
         // Width greater or equal to height
         let w = this.lastKnownWidth - (this.visualIsOnHeight ? 0 : this.visualSize);
+        /*
         if (this.splitterMounted) {
           let splitter = this.getRef('splitter');
           if (splitter.$el.clientWidth < w) {
             w -= splitter.$el.clientWidth;
           }
         }
+          */
         if (this.visualRatio >= 1) {
           return Math.floor(w / this.visualSize);
         }
@@ -259,12 +261,13 @@ export default {
       if (!this.isVisual) {
         return;
       }
-  
+
+      let change = false;
       let moreViewsThanSlots = this.numVisuals < bbn.fn.filter(this.views, { pane: false }).length;
       let numAvailableSlots = this.numVisuals - (moreViewsThanSlots ? 1 : 0);
       let order = this.visualShowAll ?
-        { selected: 'asc', fixed: 'desc', pinned: 'desc', last: 'desc', idx: 'asc' }
-        : { selected: 'desc', last: 'desc', fixed: 'desc', pinned: 'desc', idx: 'asc' };
+        { fixed: 'desc', pinned: 'desc', last: 'desc', idx: 'asc' }
+        : { last: 'desc', fixed: 'desc', pinned: 'desc', idx: 'asc' };
       let idx = 0;
       const items = bbn.fn.map(
         bbn.fn.multiorder(
@@ -273,7 +276,7 @@ export default {
         ),
         a => {
           let visible = false;
-          if (this.visualShowAll || (idx <= numAvailableSlots) || (this.selected === a.idx)) {
+          if (this.visualShowAll || ((idx <= numAvailableSlots) && (this.selected !== a.idx))) {
             visible = true;
             idx++;
           }
@@ -281,11 +284,48 @@ export default {
           return {
             idx: a.idx,
             uid: a.uid,
-            visible: visible
-          }
+            url: a.url,
+            visible
+          };
         }
       );
-      this.visualList = items;
+
+      items.map((a, i) => {
+        if (this.visualList[i]?.uid === a.uid) {
+          if (JSON.stringify(this.visualList[i]) !== JSON.stringify(a)) {
+            bbn.fn.extend(this.visualList[i], a);
+            change = true;
+          }
+        }
+        else {
+          change = true;
+          const idx = bbn.fn.search(this.visualList, { uid: a.uid});
+          if (idx > i) {
+            bbn.fn.move(this.visualList, idx, i);
+            bbn.fn.extend(this.visualList[i], a);
+          }
+          else {
+            this.visualList.splice(i, 0, a);
+          }
+        }
+      });
+
+      if (this.visualList.length > items.length) {
+        this.visualList.splice(items.length);
+      }
+
+      this.$nextTick(this.updatePortalTargets);
+      if (change) {
+        setTimeout(() => {
+          const ct = this.getRef('visualRouter');
+          /** @todo Fix this at library level!!! */
+          ct.childNodes.forEach(c => {
+            if (c.bbnSchema.attr?.['bbn-show']) {
+              c.bbnSchema.attr['bbn-show'].attrUpdate()
+            }
+          });          
+        }, 150);
+      }
     },
   
     addVisualContainer(e, uid) {
@@ -404,14 +444,10 @@ export default {
       if (this.ready) {
         this.changeConfig();
         this.setConfig();
-        if (this.visualTimeout) {
-          clearTimeout(this.visualTimeout);
-        }
-        if (v) {
-          this.$nextTick(() => {
-            this.updateVisualList()
-          });
-        }
+        this.$nextTick(() => {
+          this.$forceUpdate();
+          this.$nextTick(this.updateVisualList);
+        });
       }
     },
   }

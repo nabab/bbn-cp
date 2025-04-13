@@ -10,6 +10,8 @@
  * @created 15/02/2017
  */
 
+import * as htmlToImage from 'html-to-image';
+import html2canvas from 'html2canvas';
 import view from './_mixins/view.js';
 import screenshot from './_mixins/screenshot.js';
 import menu from './_mixins/menu.js';
@@ -48,6 +50,8 @@ const cpDef = {
    * @mixin bbn.cp.mixins.observer
    */
   statics() {
+    window.html2canvas = html2canvas;
+    window.htmlToImage = htmlToImage;
     return {
       componentsList: []
     }

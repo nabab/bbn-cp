@@ -2002,24 +2002,29 @@ const cpDef = {
                   // getting all the nodes from root until this
                   let path = this.tree.getNodePath(this);
                   // Set the 'selected' property to true for this node on currentState
-                  path.reduce((o, uid) => {
-                    if (!uid || !o) {
-                      return undefined;
-                    }
-                    if (o[uid] === undefined) {
-                      o[uid] = {
-                        expanded: false,
-                        items: {},
-                        selected: false
-                      };
-                    }
-                    if ((uid === this.data[this.uid])
-                      && !o[uid].selected
-                    ) {
-                      o[uid].selected = true;
-                    }
-                    return o[uid].items;
-                  }, this.tree.currentState)
+                  if (path) {
+                    path.reduce((o, uid) => {
+                      if (!uid || !o) {
+                        return undefined;
+                      }
+                      if (o[uid] === undefined) {
+                        o[uid] = {
+                          expanded: false,
+                          items: {},
+                          selected: false
+                        };
+                      }
+                      if ((uid === this.data[this.uid])
+                        && !o[uid].selected
+                      ) {
+                        o[uid].selected = true;
+                      }
+                      return o[uid].items;
+                    }, this.tree.currentState)
+                  }
+                  else {
+                    bbn.fn.log("ERROR IN FINDING TREE PATH", this.tree, this);
+                  }
                 }
                 if ( storage ){
                   this.$nextTick(() => {
@@ -2063,25 +2068,30 @@ const cpDef = {
                 }
               }
               if (!!this.uid) {
-                // uid of the last node
-                let last = path[path.length - 1];
-                // Set the 'selected' property to false for this node on currentState
-                path.reduce((o, uid) => {
-                  if (!uid || !o) {
-                    return undefined;
-                  }
-                  if (o[uid]) {
-                    if (uid === last) {
-                      o[uid].selected = false;
-                      if (!bbn.fn.numProperties(o[uid].items)
-                        && !o[uid].expanded
-                      ) {
-                        delete o[uid];
+                if (path) {
+                  // uid of the last node
+                  let last = path[path.length - 1];
+                  // Set the 'selected' property to false for this node on currentState
+                  path.reduce((o, uid) => {
+                    if (!uid || !o) {
+                      return undefined;
+                    }
+                    if (o[uid]) {
+                      if (uid === last) {
+                        o[uid].selected = false;
+                        if (!bbn.fn.numProperties(o[uid].items)
+                          && !o[uid].expanded
+                        ) {
+                          delete o[uid];
+                        }
                       }
                     }
-                  }
-                  return !!o[uid] ? o[uid].items : false;
-                }, this.tree.currentState);
+                    return !!o[uid] ? o[uid].items : false;
+                  }, this.tree.currentState);
+                }
+                else {
+                  bbn.fn.log("ERROR IN FINDING TREE PATH", this.tree, this);
+                }
               }
               if ( storage ){
                 // if storage exists we call setLocalStorage

@@ -13,13 +13,20 @@
     </bbn-context>
   </template>
   <div bbn-elseif="table.colButtons === column.index">
-    <bbn-button bbn-for="(button, bi) in table.buttonSource(source, column, rowIndex)"
-                :key="bi"
-                bbn-bind="button"
-                @focusin.prevent.stop
-                @focusout.prevent.stop
-                @click.prevent.stop="table._execCommand(button, source, column, rowIndex, $event)"
-                style="margin: 0 .1rem"/>
+    <template bbn-for="(button, bi) in table.buttonSource(source, column, rowIndex)"
+              :key="bi">
+      <component bbn-if="button.component"
+                 :is="button.component"
+                 bbn-bind="button.options || {source: source}"
+                 style="margin: 0 .1rem"/>
+      <bbn-button bbn-else
+                  :key="bi"
+                  bbn-bind="button"
+                  @focusin.prevent.stop
+                  @focusout.prevent.stop
+                  @click.prevent.stop="table._execCommand(button, source, column, rowIndex, $event)"
+                  style="margin: 0 .1rem"/>
+    </template>
   </div>
   <template bbn-else>
     <bbn-button bbn-for="(button, bi) in (Array.isArray(column.buttons) ? column.buttons : column.buttons(source, column, i))"

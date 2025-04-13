@@ -55,8 +55,11 @@
            :class="{
              'bbn-flex-fill': true
            }">
-        <div :class="[{'bbn-hidden': isCollapsed},
-          !label && currentConfig.index && (isCollapsible || (isResizable && prevResizable)) ? 'bbn-flex-fill' : (scrollable ? 'bbn-overlay' : (isHorizontal ? 'bbn-w-100' : 'bbn-h-100'))
+        <div :class="[
+                        {'bbn-hidden': isCollapsed},
+                        !label && currentConfig.index && (isCollapsible || (isResizable && prevResizable)) ?
+                            'bbn-flex-fill'
+                            : 'bbn-overlay'
         ]">
           <bbn-scroll bbn-forget="!scrollable"
                       class="bbn-overlay">

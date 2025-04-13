@@ -570,7 +570,11 @@ export default {
           if (!this.routed) {
             this.routed = true;
             this.$emit("route1", this);
-            this.$nextTick(this.onResize)
+            this.$nextTick(() => {
+              this.onResize();
+              this.updatePortalTargets();
+              this.activeContainer = this.urls[uid];
+            });
           }
 
           //await this.activate(url, this.urls[uid]);
@@ -881,30 +885,6 @@ export default {
       }
     },
 
-
-    /**
-    * @method callRouter
-    * @param {String} url
-    * @param st
-    * @fires getFullBaseURL
-    * @fires navigate
-    */
-    async callRouter(url, st) {
-      if (!bbn.fn.isString(url)) {
-        throw new Error(bbn._('The component bbn-container must have a valid URL defined (from callRouter)'));
-      }
-      if (this.parent) {
-        let containers = this.ancestors('bbn-container');
-        url = bbn.fn.substr(this.getFullBaseURL(), this.router.baseURL.length) + url;
-        //bbn.fn.log("CALL ROOT ROUTER WITH URL " + url);
-        // The URL of the last bbn-container as index of the root router
-        await this.router.navigate(url, containers[containers.length - 1].routerUid, true);
-      }
-      else {
-        await this.navigate(url, st, true);
-      }
-    },
-
     updateBaseURL() {
       if (this.parentContainer || this.root) {
         let uri = this.parentContainer?.currentURL || '';
@@ -991,7 +971,7 @@ export default {
       }
 
       bbn.fn.map(bbn.fn.filter(this.views, { selected: true }), a => {
-        if (a.selected && (a.idx !== idx)) {
+        if (a.idx !== idx) {
           a.selected = false;
         }
       });
@@ -1008,7 +988,11 @@ export default {
         this.views[idx].last = bbn.fn.timestamp();
       }
 
-      this.updateVisualList();
+      if (this.isVisual) {
+        setTimeout(() => {
+          this.updateVisualList();
+        }, 50)
+      }
 
       //this.move(idx, this.views.length - 1);
 

@@ -42,7 +42,7 @@ class subcomponents
   clean() {
     let i = 0;
     while (this.#components[i]) {
-      if (!this.#components[i].isConnected) {
+      if (!this.#components[i].$isDestroyed) {
         this.#components.splice(i, 1);
       }
       else {
@@ -56,7 +56,7 @@ class subcomponents
   }
 
   get isOk() {
-    return !this.#components.filter(a => !a.isConnected && (!a.bbn || !a.$isMounted)).length;
+    return !this.#components.filter(a => !a.$isDestroyed && (!a.bbn || !a.$isMounted)).length;
   }
 
   get queue() {

@@ -320,11 +320,12 @@ export default class bbnComputed {
           // Initialize the watcher for the computed property.
           updateWatcher(this, name, true);
         }
+        /*
         else if (bbn.cp.queue.includes(_t)) {
           let idx = bbn.cp.queue.indexOf(_t);
           bbn.cp.queue.splice(idx, 1);
           _t.computedUpdate(true);
-        }
+        }*/
 
 
         //if (!this.$computed[name].val?.__bbnData) {

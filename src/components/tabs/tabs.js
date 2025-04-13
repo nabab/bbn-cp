@@ -164,10 +164,6 @@ const cpDef = {
         return '';
       },
       getMenuFn(idx) {
-        if (this.source[idx]?.idx) {
-          idx = this.source[idx].idx;
-        }
-
         if (this.router) {
           return this.router.getMenuFn(idx);
         }

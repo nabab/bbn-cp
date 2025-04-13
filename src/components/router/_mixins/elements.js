@@ -1,10 +1,30 @@
 export default {
   data() {
     return {
-      paneContainers: {}
+      paneContainers: {},
+      portalTargets: []
     }
   },
   methods: {
+    updatePortalTargets() {
+      this.portalTargets = this.views.map(a => {
+        if (this.routed && !a.real && this.ready) {
+          if (a.selected) {
+            return false;
+          }
+          if (a.pane) {
+            return this.paneContainers[a.pane + '-' + a.uid] || false;
+          }
+          if (this.isVisual) {
+            const idx = bbn.fn.search(this.visualList, 'uid', a.uid);
+            if (this.visualList[idx]) {
+              return this.getRef('bbn-router-visual-' + idx.toString());
+            }
+          }
+        }
+        return false;
+      });
+    },
     /**
      * @method getVue
      * @fires isValidIndex

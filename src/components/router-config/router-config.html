@@ -1,4 +1,4 @@
-<div :class="[componentClass, 'bbn-background', 'bbn-block']" style="min-height: 500px; min-width: 800px; text-align: left">
+<div :class="[componentClass, 'bbn-background', 'bbn-block']">
   <bbn-router :nav="true"
               :url-navigation="false"
               :autoload="false"
@@ -168,16 +168,88 @@
                    :fixed="true">
       <div class="bbn-w-100 bbn-padding">
         <container bbn-for="v in router.views"
-                   :source="v">
+                   inline-template
+                   :source="v"
+                   :key="v.uid">
+          <div class="bbn-section bbn-w-100 bbn-bottom-margin bbn-flex-vcentered">
+            <div style="width: 10rem" class="bbn-right-lspace">
+              <img bbn-if="thumbnail"
+                    :src="thumbnail"
+                    style="width: 100%; max-height: 10rem; height: auto">
+              <bbn-icon bbn-else
+                        content="nf nf-fa-image"
+                        size="7rem"/>
+            </div>
+            <div class="bbn-flex-fill">
+              <div class="bbn-flex-vcentered bbn-bottom-margin">
+                <div class="bbn-flex-fill">
+                  <bbn-icon :content="source.icon || 'nf nf-fa-question'"
+                            class="bbn-right-space bbn-radius bbn-border bbn-padding bbn-xl"/>
+                  <bbn-button icon="nf nf-md-magnify_scan"
+                              @click="browse(source)"/>
+                  <span bbn-text="source.label"
+                        class="bbn-light bbn-lg"/>
+                </div>
+                <div>
+                  <bbn-button icon="nf nf-cod-pinned"
+                              @click="pin(source)"
+                              :label="_('Pin')"
+                              :notext="true"
+                              :disabled="source.fixed"/>
+                  <bbn-button icon="nf nf-fa-arrow_up"
+                              @click="moveUp(source)"
+                              :label="_('Move up')"
+                              :notext="true"
+                              :disabled="source.fixed"/>
+                  <bbn-button icon="nf nf-fa-arrow_down"
+                              @click="moveDown(source)"
+                              :label="_('Move down')"
+                              :notext="true"
+                              :disabled="source.fixed"/>
+                  <bbn-button icon="nf nf-fa-trash"
+                              @click="del(source)"
+                              :label="_('Delete')"
+                              :notext="true"
+                              :disabled="source.fixed || source.pinned"/>
+                </div>
+              </div>
+              <div class="bbn-flex-vcentered">
+                <div class="bbn-flex-fill">
+                  <strong>URL: </strong>
+                  <span class="bbn-light"
+                        bbn-text="source.url"/>
+                </div>
+                <div>
+                  <bbn-button icon="nf nf-md-target"
+                              @click="select(source)"
+                              :label="_('Select')"
+                              :notext="true"
+                              :disabled="source.fixed"/>
+                  <bbn-button icon="nf nf-fa-camera"
+                              :notext="true"
+                              :label="_('Make a screenshot')"
+                              @click="screenshot(source)"/>
+                  <bbn-button icon="nf nf-fa-edit"
+                              @click="edit(source)"
+                              :notext="true"
+                              :label="_('Edit')"
+                              :disabled="source.fixed"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </container>
       </div>
     </bbn-container>
-    <bbn-container :label="_('Configuration backups')"
+    <bbn-container :label="_('My backups')"
                    url="backups"
                    :scrollable="false"
                    :fixed="true">
       <div class="bbn-w-100 bbn-padding">
-        <div class="bbn-w-100 bbn-light bbn-m"
-            bbn-text="_('Soon...')"></div>
+        <div class="bbn-w-100 bbn-light bbn-lg bbn-vspadding"
+             bbn-text="_('Here you will soon be able to save your current router configuration. i.e. all your current tabs')"/>
+        <div class="bbn-w-100 bbn-light bbn-lg bbn-vspadding"
+             bbn-text="_('That will not only allow you to backup a complex configuration but also to switch between tabs configurations')"/>
       </div>
     </bbn-container>
   </bbn-router>

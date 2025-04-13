@@ -36,6 +36,16 @@ export default {
     }
   },
   computed: {
+    isLoading: {
+      get() {
+        return this.currentView?.loading;
+      },
+      set(v) {
+        if (this.currentView) {
+          this.currentView.loading = v;
+        }
+      }
+    },
     isTabSelected() {
       if (!this.router) {
         return false;
@@ -133,19 +143,6 @@ export default {
       catch (e) {
         bbn.fn.warning("ABORTED")
         this.isLoading = false;
-        /*
-        let idx = this.search(url);
-        if (idx !== false) {
-          let url = this.currentView.url;
-          if (this.urls[url]) {
-            this.callRouter(finalURL, url);
-            this.$nextTick(() => {
-              this.close(idx);
-            });
-            return;
-          }
-        }
-        */
       }
 
       if (response?.status === 200) {
@@ -410,10 +407,8 @@ export default {
      * @fires router.reload
      */
     reload() {
-      this.popups.splice(0);
-      this.$nextTick(() => {
-        this.router.reload(this.currentIndex);
-      });
+      this.isLoaded = false;
+      this.$nextTick(() => this.loadView(this.currentCurrent, true));
     },
   },
   watch: {

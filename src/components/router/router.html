@@ -12,6 +12,7 @@
               bbn-if="changingConfig || !ready"/>
   <bbn-scroll class="bbn-router-scroller"
               :axis="visualShowAll ? 'y' : (['left', 'right'].includes(visualOrientation) ? 'y' : 'x')"
+              :scrollable="visualShowAll"
               :style="{
                 overflow: 'auto',
                 height: visualShowAll || ['left', 'right'].includes(visualOrientation) ? '100%' : (visualSize+20) + 'px',
@@ -31,11 +32,11 @@
           </div>
         </div>
       </div>
-      <div bbn-for="a in visualList"
-           :key="a.uid"
-           :ref="'bbn-router-visual-' + a.uid"
-           bbn-if="!views[a.idx].real"
-           bbn-show="(visualShowAll || a.visible) && (a.idx !== selected) && !views[a.idx].pane"
+      <div bbn-for="(a, i) in visualList"
+           :key="'key-' + i.toString()"
+           :ref="'bbn-router-visual-' + i.toString()"
+           bbn-if="!views[a.idx]?.real"
+           bbn-show="(visualShowAll || a.visible) && (a.idx !== selected)"
            @hook:create="addVisualContainer($event, a.uid)"
            @hook:destroy="removeVisualContainer($event, a.uid)"/>
     </div>
@@ -169,8 +170,8 @@
           <bbn-container bbn-for="a in views"
                           bbn-if="ready && !a.real"
                           :key="a.uid"
-                          :visual="isVisual"
-                          bbn-portal="a.idx === selected ? false : getPortal(a)"
+                          :visual="isVisual && !a.pane"
+                          bbn-portal="portalTargets[a.idx]"
                           bbn-bind="component ? {component} : a"
                           :url="a.url !== undefined ? a.url : componentSource[componentUrl]"/>
         </div>
@@ -196,7 +197,7 @@
                     @resize="splitterMounted = true"
                     ref="splitter">
         <bbn-pane bbn-for="(pane, i) in currentPanes"
-                  :key="i"
+                  :key="'key-' + i.toString()"
                   :ref="'pane' + pane.id"
                   :label="pane.tabs[pane.selected] ? pane.tabs[pane.selected].label : null"
                   :size="i ? Math.floor(100/currentPanes.length) + '%' : null"

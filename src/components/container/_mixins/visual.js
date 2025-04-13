@@ -15,6 +15,9 @@ export default {
   },
   computed: {
     isVisualVisible() {
+      if (this.currentSelected) {
+        return true;
+      }
       if (this.router?.isVisual) {
         let row = bbn.fn.getRow(this.router.visualList, d => d.idx === this.currentIndex);
         if (row) {

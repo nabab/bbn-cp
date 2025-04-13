@@ -206,55 +206,50 @@ const cpDef = {
     },
     components: {
       container: {
-        template: `
-<div class="bbn-section bbn-w-100 bbn-bottom-margin bbn-flex-vcentered">
-  <div style="width: 10rem" class="bbn-right-lspace">
-    <img bbn-if="thumbnail"
-         :src="thumbnail"
-         style="width: 100%; max-height: 10rem; height: auto">
-    <bbn-icon bbn-else
-              content="nf nf-fa-image"
-              size="7rem"/>
-  </div>
-  <div class="bbn-flex-fill">
-    <div class="bbn-flex-vcentered bbn-bottom-margin">
-      <div class="bbn-flex-fill">
-        <bbn-icon :content="source.icon || 'nf nf-fa-question'"
-                  class="bbn-right-space bbn-radius bbn-border bbn-padding bbn-xl"/>
-        <bbn-button icon="nf nf-md-magnify_scan"
-                    @click="browse(source)"/>
-        <span bbn-text="source.label"
-              class="bbn-light bbn-lg"/>
-      </div>
-      <div>
-        <bbn-button icon="nf nf-fa-trash"
-                    @click="del(source)"/>
-        <bbn-button icon="nf nf-fa-trash"
-                    @click="del(source)"/>
-        <bbn-button icon="nf nf-fa-trash"
-                    @click="del(source)"/>
-      </div>
-    </div>
-    <div class="bbn-flex-vcentered">
-      <div class="bbn-flex-fill">
-        <strong>URL: </strong>
-        <span class="bbn-light"
-              bbn-text="source.url"/>
-      </div>
-      <div>Buttons</div>
-    </div>
-  </div>
-</div>
-        `,
         data() {
           return {
             thumbnail: false,
-            db: this.bbnComponent.db
+            db: this.bbnComponent.db,
+            router: this.bbnComponent.router
           }
         },
         methods: {
-          del(o) {
+          del(data) {
+            const idx = bbn.fn.search(this.router.views, {url: data.url});
+            if (this.router.views[idx]) {
+              this.router.removeItem(idx);
+            }
+          },
+          moveUp(data) {
+            const idx = bbn.fn.search(this.router.views, {url: data.url});
+            if (this.router.views[idx] && idx) {
+              this.router.move(idx, idx - 1);
+            }
+          },
+          moveDown(data) {
+            const idx = bbn.fn.search(this.router.views, {url: data.url});
+            if (this.router.views[idx] && (idx < this.router.views.length - 1)) {
+              this.router.move(idx, idx + 1);
+            }
+          },
+          select(data) {
+            const idx = bbn.fn.search(this.router.views, {url: data.url});
+            this.router.route(data.current).then(() => {
 
+            });
+          },
+          pin(data) {
+            data.pinned = !data.pinned;
+          },
+          screenshot(data) {
+            const idx = bbn.fn.search(this.router.views, {url: data.url});
+            if (this.router.views[idx]) {
+              this.router.views[idx].screenshot = !this.router.views[idx].screenshot;
+              this.router.db.update('containers', {screenshot: this.router.views[idx].screenshot}, {url: data.url});
+            }
+          },
+          edit(data) {
+            bbn.fn.log("SHOULD EDIT", data)
           },
           browse(o) {
             this.bbnComponent.router.getPopup({

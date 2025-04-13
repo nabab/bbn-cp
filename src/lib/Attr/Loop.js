@@ -2,6 +2,7 @@ import bbnAttr from "./Attr.js";
 import cloneNode from "../Html/private/cloneNode.js";
 import generateNode from "../Html/private/generateNode.js";
 import bbnNode from "../Node.js";
+import queueUpdate from "../../functions/queueUpdate.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -110,6 +111,23 @@ export default class bbnLoopAttr extends bbnAttr
         if (currentNode.data[defIndex] !== j) {
           currentNode.data[defIndex] = j;
         }
+        if (currentNode.data[this.item] !== loopData[this.item]) {
+          const data = currentNode.data[this.item]?.__bbnData;
+          currentNode.data[this.item] = loopData[this.item];
+          if (data) {
+            const queue = [];
+            bbn.fn.log("LAUNCHING OPTHER DEPENDENCIES");
+            bbn.fn.each(data.deps, d => {
+              for (let n in d) {
+                if (d[n]?.length) {
+                  queue.concat(...d[n])
+                }
+              }
+            });
+
+            queueUpdate(...queue)
+          }
+        }
       }
       else {
         const newNode = currentNode || generateNode(cloneNode(cp, node.id), cp, node.parent, node, hash, hash, loopData);
@@ -139,10 +157,11 @@ export default class bbnLoopAttr extends bbnAttr
       }
     }
 
-    bbn.fn.each(elements, e => {
+    let prev = root;
+    bbn.fn.each(elements, (e, i) => {
       let next = e.nextSibling;
       if ((e instanceof Comment) && !e.bbnSchema.isCommented) {
-        while (next && !next.bbnId.indexOf(e.bbnId + '-') && !next.bbnHash.indexOf(e.bbnHash)) {
+        while (next && !next.bbnId.indexOf(e.bbnId + '-') && !next.bbnHash.indexOf(e.bbnHash) && (next.parentNode === e.parentNode)) {
           let oldNext = next;
           next = next.nextSibling;
           if (oldNext.classList) {
