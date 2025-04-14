@@ -80,6 +80,8 @@ export default {
   watch: {
   },
   mounted() {
-    this.ready = true;
+    this.$nextTick(() => {
+      this.ready = true;
+    });
   }
 };
