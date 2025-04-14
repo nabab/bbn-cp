@@ -80,6 +80,7 @@
     "eslint4b": "^7.32.0",
     "filedrop": "^2.1.0",
     "flag-icons": "^7.2.3",
+    "html-to-image": "^1.11.13",
     "html2canvas": "^1.4.1",
     "js-beautify": "^1.15.1",
     "jsoneditor": "^10.1.2",

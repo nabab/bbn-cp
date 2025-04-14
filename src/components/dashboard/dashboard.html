@@ -13,11 +13,7 @@
               }">
     <div :class="'bbn-masonry bbn-margin' + (sortable ? ' bbn-dashboard-sortable' : '')"
          ref="container"
-         :style="{
-              '-moz-column-count': numCols,
-              '-webkit-column-count': numCols,
-              'column-count': numCols
-            }">
+         :style="currentStyle">
       <template bbn-for="w in widgets">
         <bbn-widget :ref="'widget_' + w.key"
                     bbn-if="!w.invisible"

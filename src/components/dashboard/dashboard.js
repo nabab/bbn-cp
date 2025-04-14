@@ -469,6 +469,13 @@ const cpDef = {
           return false;
         }
         return JSON.stringify(this.originalOrder) !== JSON.stringify(this.currentOrder);
+      },
+      currentStyle(){
+        return {
+          '-moz-column-count': this.numCols,
+          '-webkit-column-count': this.numCols,
+          'column-count': this.numCols
+        }
       }
     },
     methods: {
@@ -556,6 +563,7 @@ const cpDef = {
        * @fires resizeScroll
        */
       onResize(){
+        bbn.cp.mixins.resizer.methods.onResize.apply(this);
         let ele = this.getRef('container');
         if (ele && ele.clientWidth) {
           let actualWidth = parseInt(window.getComputedStyle(ele).width),
