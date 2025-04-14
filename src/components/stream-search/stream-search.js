@@ -532,9 +532,10 @@ const cpDef = {
     },
     stopSearch() {
       if (this.isStarted) {
-        if (this.itv) {
-          clearInterval(this.itv);
-        }
+        appui.poll({
+          type: 'search',
+          data: {conditions: {field: "value", value: ''}}
+        })
 
         this.queue.splice(0)
         bbn.fn.post(this.stopUrl, { uid: this.searchUid }, d => {
@@ -548,32 +549,54 @@ const cpDef = {
         bbn.fn.post(this.resetUrl + '/' + bbn.fn.microtimestamp(), this.currentFilters, d => {
           if (!d.success) {
             bbn.fn.warning(bbn._("Impossible to update the search"));
+            appui.poll({
+              type: 'search',
+              data: this.currentFilters
+            })
           }
         });
       }
     },
     onReceive(arr) {
-      const currentData = this.currentData.slice();
+      const cd = this.currentData;
       bbn.fn.each(arr, data => {
-        if (data.value === this.filterString) {
-          bbn.fn.log("PUTTING DATA INTO RES")
+        if (data.done) {
+          this.isStarted = false;
+        }
+        else if (data.value === this.filterString) {
+          let idxData = 0;
+          bbn.fn.log("PUTTING DATA INTO RES", data.data?.length)
           bbn.fn.each(data.data, d => {
-            const idx = bbn.fn.search(currentData, { hash: d.hash });
-            if ((idx > -1) && (d.score > currentData[idx].score)) {
-              currentData[idx].score = d.score;
+            const idx = bbn.fn.search(cd, { hash: d.hash });
+            if ((idx > -1) && (parseInt(d.score) > parseInt(cd[idx].score))) {
+              cd[idx].score = d.score;
             }
             else {
-              currentData.push(d);
+              let done = false;
+              for (let i = idxData; i < cd.length; i++) {
+                if (d.score > cd[i].score) {
+                  cd.splice(i, 0, d);
+                  done = true;
+                  break;
+                }
+
+                idxData++;
+              }
+
+              if (!done) {
+                this.currentData.push(d);
+              }
             }
           });
         }
+        else {
+          bbn.fn.log("NOT!!!!! PUTTING DATA INTO RES")
+        }
       });
-      const finalData = bbn.fn.order(currentData, { dir: 'DESC', field: 'score' });
-      this.searchCategories = bbn.fn.getFieldValues(finalData, 'search').map(a => {
-        return {search: a, active: true, num: bbn.fn.count(finalData, {search: a})}
+      this.searchCategories = bbn.fn.getFieldValues(this.currentData, 'search').filter(a => !!a).map(a => {
+        return {search: a, active: true, num: bbn.fn.count(this.currentData, {search: a})}
       });
-      this.currentData = finalData;
-      this.currentTotal = finalData.length;
+      this.currentTotal = this.currentData.length;
 
       this.$forceUpdate();
     }

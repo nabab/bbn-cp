@@ -51,11 +51,25 @@ const keynav = {
           switch ( e.keyCode ){
             // Arrow down
             case 40:
-              list.overIdx = d[idx+1] !== undefined ? idx+1 : 0;
+              let toAdd = 1;
+              for (let i = idx; i < d.length; ++i) {
+                if (this.getRef('item-' + i)) {
+                  toAdd = i - idx;
+                  break;
+                }
+              }
+              list.overIdx = d[idx+toAdd] !== undefined ? idx+toAdd : d.length - 1;
               break;
             // Arrow Up
             case 38:
-              list.overIdx = d[idx-1] !== undefined ? idx-1 : d.length - 1;
+              let toRemove = 1;
+              for (let i = idx; i >= 0; --i) {
+                if (this.getRef('item-' + i)) {
+                  toRemove = idx - i;
+                  break;
+                }
+              }
+              list.overIdx = d[idx-toRemove] !== undefined ? idx-toRemove : 0;
               break;
             // Page down (10)
             case 34:
