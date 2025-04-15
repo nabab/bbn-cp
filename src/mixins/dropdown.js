@@ -435,13 +435,18 @@ const dropdown = {
         this.isOpened = false;
         return true;
       }
-      else if (
-        this.isOpened && (
-          bbn.var.keys.confirm.includes(e.which) || ((e.key === ' ') && !this.isSearching)
-        )
-      ) {
-        e.preventDefault();
-        this.selectOver();
+      else if (this.isOpened) {
+        if (bbn.var.keys.confirm.includes(e.which)) {
+          e.preventDefault();
+        }
+        else if ((e.key === ' ') && !this.isSearching) {
+          let lst = this.list.getRef('list');
+          if (lst && (lst.overIdx > -1)) {
+            e.preventDefault();
+            this.selectOver();
+          }
+        }
+
         return true;
       }
 
