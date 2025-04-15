@@ -1347,16 +1347,18 @@ const cpDef = {
      * @fires updateData
      */
     mounted(){
-      this.ready = true;
-      this.initStorage();
-      if (this.tree.autobind) {
-        this.$forceUpdate().then(() => {
-          this.init();
-        })
-      }
-      else {
-        this.isInit = true;
-      }
+      this.$nextTick(() => {
+        this.ready = true;
+        this.initStorage();
+        if (this.tree.autobind) {
+          this.$forceUpdate().then(() => {
+            this.init();
+          })
+        }
+        else {
+          this.isInit = true;
+        }
+      });
     },
     watch: {
       /**
