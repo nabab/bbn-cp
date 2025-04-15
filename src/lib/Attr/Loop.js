@@ -155,6 +155,15 @@ export default class bbnLoopAttr extends bbnAttr
         && !this.list.includes(n)
         && !n.indexOf(loopHash)
       ) {
+        if (a.element?.bbnComponentSlot) {
+          for (let n in a.element.bbnComponentSlot.$slots) {
+            let idx = a.element.bbnComponentSlot.$slots[n].indexOf(a.element);
+            if (idx > -1) {
+              a.element.bbnComponentSlot.$slots[n].splice(idx, 1);
+            }
+          }
+        }
+
         a.nodeClean(true);
       }
     }
