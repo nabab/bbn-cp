@@ -164,26 +164,24 @@ export default {
     removeFromPane(containerIdx) {
       let view = this.views[containerIdx];
       if (view) {
-        if (view.dirty) {
-          this.alert(bbn._("Save your changes or discard them before moving the container"));
-          return;
-        }
-
         let paneId = view.pane;
         if (paneId) {
           let pane = bbn.fn.getRow(this.currentPanes, { id: paneId });
           if (pane && pane.tabs) {
             let idx = bbn.fn.search(pane.tabs, { idx: containerIdx });
             if (idx > -1) {
-              this.selected = containerIdx;
+              pane.tabs.splice(idx, 1);
+              if ((pane.selected >= idx) && pane[idx-1]) {
+                pane.selected--;
+              }
+
               view.pane = false;
               this.$nextTick(() => {
-                pane.tabs.splice(idx, 1);
+                this.selected = containerIdx;
                 if (!pane.tabs.length) {
                   this.removePane(paneId);
                 }
                 else if (pane.selected >= idx) {
-                  pane.selected--;
                   this.getRef('pane' + pane.id).onResize(true);
                 }
               })

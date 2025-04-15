@@ -9,8 +9,6 @@
  *
  * @created 10/02/2017
  */
-import '../../cp.js';
-
 const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic

@@ -2131,23 +2131,25 @@ const cpDef = {
                 if (!!this.uid) {
                   // getting all the nodes from root until this
                   let path = this.tree.getNodePath(this);
-                  // Adds for each of them the expanded property and sets to true
-                  path.reduce((o, uid) => {
-                    if (!uid || !o) {
-                      return undefined;
-                    }
-                    if (o[uid] === undefined) {
-                      o[uid] = {
-                        expanded: true,
-                        items: {},
-                        selected: false
-                      };
-                    }
-                    else if (!o[uid].expanded) {
-                      o[uid].expanded = true;
-                    }
-                    return o[uid].items;
-                  }, this.tree.currentState)
+                  if (path) {
+                    // Adds for each of them the expanded property and sets to true
+                    path.reduce((o, uid) => {
+                      if (!uid || !o) {
+                        return undefined;
+                      }
+                      if (o[uid] === undefined) {
+                        o[uid] = {
+                          expanded: true,
+                          items: {},
+                          selected: false
+                        };
+                      }
+                      else if (!o[uid].expanded) {
+                        o[uid].expanded = true;
+                      }
+                      return o[uid].items;
+                    }, this.tree.currentState)
+                  }
                 }
                 if (storage) {
                   this.$nextTick(() => {
@@ -2193,7 +2195,7 @@ const cpDef = {
   
                 // And suppress the root currentExpanded
                 this.tree.currentExpanded.splice(idx, 1);
-                if (!!this.uid) {
+                if (!!this.uid && path) {
                   // uid of the last node
                   let last = path[path.length - 1];
                   // for each nodes which has the expanded property setted to true it's setted to false
