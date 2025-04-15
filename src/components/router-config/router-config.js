@@ -267,7 +267,7 @@ const cpDef = {
           }
         },
         mounted() {
-          this.db.selectOne('containers', 'image', {url: this.source.url}).then(res => {
+          this.router.db.selectOne('containers', 'image', {url: this.source.url}).then(res => {
             if (res) {
               this.thumbnail = res;
             }

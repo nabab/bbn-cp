@@ -33,7 +33,7 @@
         </div>
       </div>
       <div bbn-for="(a, i) in visualList"
-           :key="a.uid"
+           :key="'key-' + i.toString()"
            :ref="'bbn-router-visual-' + i.toString()"
            bbn-if="!views[a.idx]?.real"
            bbn-show="(visualShowAll || a.visible) && (a.idx !== selected)"
