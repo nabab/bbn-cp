@@ -19,7 +19,7 @@ const treatStyleArguments = function (...args) {
       let css = bbn.fn.createObject();
       bbn.fn.each(arr, a => {
         if (a.length === 2) {
-          const value = [undefined, null, false, NaN].includes(a[1]) ? '' : a[1];
+          const value = [undefined, null, false, NaN, 'undefined', 'null', 'false', 'NaN'].includes(a[1]) ? '' : a[1];
           const o = {
             prop: a[0],
             value,
