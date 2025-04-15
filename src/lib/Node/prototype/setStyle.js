@@ -8,9 +8,10 @@ const treatStyleArguments = function (...args) {
     }
     else if (bbn.fn.isObject(arg) && bbn.fn.numProperties(arg)) {
       let st = '';
-      bbn.fn.iterate(arg, (o, k) => {
+      bbn.fn.iterate(arg, (v, k) => {
         const key = bbn.fn.camelToCss(k);
-        st += `${key}: ${o}; `;
+        const value = [undefined, null, false, NaN].includes(v) ? '' : v;
+        st += `${key}: ${value}; `;
       });
       bbn.fn.extend(final, treatStyleArguments(st));
     }
@@ -19,10 +20,9 @@ const treatStyleArguments = function (...args) {
       let css = bbn.fn.createObject();
       bbn.fn.each(arr, a => {
         if (a.length === 2) {
-          const value = [undefined, null, false, NaN, 'undefined', 'null', 'false', 'NaN'].includes(a[1]) ? '' : a[1];
           const o = {
             prop: a[0],
-            value,
+            value: a[1],
             important: ''
           };
           if (a[1].endsWith('!important')) {
@@ -49,11 +49,12 @@ bbnNode.prototype.nodeSetStyle = function() {
     });
     const done = [];
     const final = treatStyleArguments(args);
-    Array.prototype.map.call(ele.style, k => {
+    const keys = [];
+    bbn.fn.each(ele.style.length, i => keys.push(ele.style[i]));
+    bbn.fn.each(keys, k => {
       done.push(k);
       if (final[k]?.value) {
         const elementValue = ele.style.getPropertyValue(k);
-        bbn.fn.log("ELE PROP: " + k + " AND ELE VALUE: " + elementValue);
         if ((elementValue !== final[k].value) || (ele.style.getPropertyPriority(k) !== final[k].important)) {
           ele.style.setProperty(k, final[k].value, final[k].important);
         }
@@ -69,7 +70,6 @@ bbnNode.prototype.nodeSetStyle = function() {
       }
 
       const elementValue = ele.style.getPropertyValue(k);
-      bbn.fn.log("2 - ELE PROP: " + k + " AND ELE VALUE: " + elementValue);
       if ((elementValue !== o.value) || (ele.style.getPropertyPriority(k) !== o.important)) {
         if (o.value) {
           ele.style.setProperty(k, o.value, o.important);
