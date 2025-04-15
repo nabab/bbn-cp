@@ -920,7 +920,7 @@ const cpDef = {
   },
   beforeMount() {
     this.componentClass.push(
-      'bbn-background',
+      'bbn-background-internal',
       this.scrollable ? 'bbn-overlay' : 'bbn-w-100'
     );
     if (this.isMobile) {
@@ -994,6 +994,7 @@ const cpDef = {
   }
 };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './appui.html';
 import cpStyle from './appui.less';
 let cpLang = {};

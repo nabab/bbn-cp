@@ -311,7 +311,7 @@ const cpDef = {
             template: `
               <span :class="['bbn-rte-fontcolor', 'bbn-vmiddle', 'bbn-iflex', 'bbn-border', 'bbn-radius', {
                       'disabled': !!isDisabled || !!isReadOnly,
-                      'bbn-background': !isDisabled && !isReadOnly
+                      'bbn-background-internal': !isDisabled && !isReadOnly
                     }]">
                 <i class="nf nf-md-format_color_text bbn-hxsspace"/>
                 <bbn-colorpicker @change="setColor"
@@ -362,7 +362,7 @@ const cpDef = {
             template: `
             <span :class="['bbn-rte-fontbgcolor', 'bbn-vmiddle', 'bbn-iflex', 'bbn-border', 'bbn-radius', {
                     'disabled': !!isDisabled || !!isReadOnly,
-                    'bbn-background': !isDisabled && !isReadOnly
+                    'bbn-background-internal': !isDisabled && !isReadOnly
                   }]">
                 <i class="nf nf-md-format_color_fill bbn-hxsspace bbn-lg"/>
                 <bbn-colorpicker @change="setColor"

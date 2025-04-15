@@ -14,6 +14,6 @@
                bbn-bind="d.options || {}"
                :source="mapper ? mapper(d.data) : d.data"/>
     <div bbn-else
-         bbn-html="table.render(d.data, d.options || {}, i)"/>
+         bbn-html="renderDefault(d.data, d.options || {}, i)"/>
   </td>
 </div>

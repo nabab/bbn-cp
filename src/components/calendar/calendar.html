@@ -91,7 +91,7 @@
                 'bbn-alt-background-effect': !item.hidden && item.inRange && !item.isCurrent,
                 'bbn-active-background': !item.hidden && item.inRange && !item.isCurrent && (item.value !== currentValue) && !item.colored && (!item.over || (item.over && item.disabled)),
                 'bbn-disabled': item.disabled,
-                'bbn-alt-background': extraItems && item.extra
+                'bbn-alt-background-internal': extraItems && item.extra
               }]"
               @mouseover="item.over = true"
               @mouseleave="item.over = false"

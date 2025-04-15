@@ -153,7 +153,7 @@
         <span class="bbn-left-sspace" bbn-text="_('Loading...')"/>
       </div>
       <div bbn-if="showInfo"
-           class="bbn-flex-fill bbn-border bbn-no-top-border bbn-alt-background">
+           class="bbn-flex-fill bbn-border bbn-no-top-border bbn-alt-background-internal">
         <div class="bbn-flex-height">
           <div class="bbn-flex-fill">
             <bbn-scroll>
@@ -191,7 +191,7 @@
                      }]"
                      :style="{justifyContent: msg.user === userId ? 'flex-end' : 'flex-start'}">
                   <span :class="['bbn-chat-conversation-message', 'bbn-box', 'bbn-vxspadding', 'bbn-hspadding', 'bbn-no-border', 'bbn-flex', {
-                          'bbn-alt-background': !msg.unread,
+                          'bbn-alt-background-internal': !msg.unread,
                           'bbn-border-background-alt': !msg.unread && msg.user === userId,
                           'bbn-primary': msg.unread,
                           'bbn-border-background-primary': msg.unread,
@@ -234,7 +234,7 @@
         <div bbn-if="cp.currentOnline"
              style="min-height: 2rem"
              class="bbn-flex-width">
-          <div class="bbn-middle bbn-border-left bbn-border-top bbn-border-bottom bbn-alt-background bbn-hxspadding">
+          <div class="bbn-middle bbn-border-left bbn-border-top bbn-border-bottom bbn-alt-background-internal bbn-hxspadding">
             <bbn-emoji @select="addEmoji"/>
           </div>
           <bbn-input class="bbn-chat-conversation-input bbn-flex-fill bbn-no-radius"

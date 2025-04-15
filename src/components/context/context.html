@@ -34,7 +34,10 @@
               :component="component"
               :component-options="componentOptions"
               :position="position"
+              :render="render"
               :source-icon="sourceIcon"
+              :source-text="sourceText"
+              :source-value="sourceValue"
               @select="onSelect">
     <slot bbn-if="$slots.content?.length"
           name="content"></slot>
@@ -66,7 +69,10 @@
               @open="$emit('open')"
               :item-component="itemComponent"
               :position="position"
+              :render="render"
               :source-icon="sourceIcon"
+              :source-text="sourceText"
+              :source-value="sourceValue"
               @select="onSelect">
     <slot bbn-if="$slots.content?.length"
           name="content"></slot>

@@ -1,7 +1,7 @@
 <div :class="[componentClass, 'bbn-iflex-height', 'bbn-100']">
   <div class="bbn-flex-width bbn-spadding bbn-vmiddle"
        style="gap: var(--sspace); flex-wrap: wrap">
-    <div class="bbn-flex-fill bbn-vmiddle bbn-lg bbn-background-secondary bbn-secondary-text bbn-xspadding bbn-radius"
+    <div class="bbn-flex-fill bbn-vmiddle bbn-lg bbn-background-secondary-internal bbn-secondary-text-internal bbn-xspadding bbn-radius"
          style="gap: var(--sspace)">
       <i class="nf nf-fa-calendar bbn-xl"/>
       <span class="bbn-b"
@@ -10,7 +10,7 @@
       <span class="bbn-b"
             bbn-text="currentEndTitle"/>
     </div>
-    <div class="bbn-vmiddle bbn-xspadding bbn-alt-background bbn-radius"
+    <div class="bbn-vmiddle bbn-xspadding bbn-alt-background-internal bbn-radius"
          style="gap: var(--sspace)">
       <bbn-button @click="zoomIn"
                   icon="nf nf-fa-plus"
@@ -25,7 +25,7 @@
                   class="bbn-tertiary bbn-lg"
                   :title="_('Zoom out')"/>
     </div>
-    <div class="bbn-vmiddle bbn-xspadding bbn-alt-background bbn-radius"
+    <div class="bbn-vmiddle bbn-xspadding bbn-alt-background-internal bbn-radius"
          style="gap: var(--sspace)">
       <bbn-button @click="updateData"
                   icon="nf nf-fa-refresh"

@@ -60,6 +60,13 @@
                    @remove="removeItem(idx)"
                    @hook:mounted="selfEmit(true)"
                    :key="li.key"/>
+        <div bbn-else-if="component"
+             :class="['bbn-w-100', 'bbn-h-100', 'bbn-flex', 'bbn-vmiddle', 'bbn-padded', {
+               'bbn-no-padding': !!component
+             }]"
+             :style="li.data[sourceStyle]"
+             bbn-html="render(li.data, li, idx)">
+        </div>
         <component bbn-else
                   :is="li.data && li.data[sourceUrl] && !li.data[sourceItems] ? 'a' : 'span'"
                   class="bbn-w-100"

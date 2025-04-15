@@ -5,8 +5,9 @@
              :is="column.component"
              bbn-bind="table.getColOptions(source, column, rowIndex)"
              :source="column.mapper ? column.mapper(source) : source"/>
+
   <div bbn-else
-       bbn-html="table.render(source, column, rowIndex)"/>
+       bbn-html="table.renderDefault(source, column, rowIndex)"/>
   <table-dots bbn-if="column.dots"
               :source="{
                     column: column,

@@ -454,14 +454,7 @@ const cpDef = {
       if (!this.isStarted) {
         this.isLoading = true;
         this.isStarted = true;
-        this.currentFilters.uid = this.searchUid;
         this.currentData = [];
-        appui.poll({
-          type: 'search',
-          data: this.currentFilters
-        })
-        let lastAdded = 0;
-/*
         bbn.fn.stream(
           this.startUrl,
           d => {
@@ -475,23 +468,39 @@ const cpDef = {
                 if (!this.isRunning && this.queue.length) {
                   this.isRunning = true;
                   let lastAdded = 0;
-                  const currentData = this.currentData.slice();
+                  const cd = this.currentData;
+                  let idxData = 0;
                   bbn.fn.each(this.queue.splice(0), d => {
-                    const idx = bbn.fn.search(currentData, { hash: d.hash });
-                    if ((idx > -1) && (d.score > currentData[idx].score)) {
-                      currentData[idx].score = d.score;
+                    const idx = bbn.fn.search(cd, { hash: d.hash });
+                    if (idx > -1) {
+                      if (parseInt(d.score) > parseInt(cd[idx].score)) {
+                        cd[idx].score = d.score;
+                      }
                     }
                     else {
-                      currentData.push(d);
+                      let done = false;
+                      for (let i = 0; i < cd.length; i++) {
+                        if (d.score > cd[i].score) {
+                          cd.splice(i, 0, d);
+                          done = true;
+                          break;
+                        }
+        
+                        idxData++;
+                      }
+        
+                      if (!done) {
+                        cd.push(d);
+                      }
                     }
                   });
-                  const data = bbn.fn.order(currentData, { dir: 'DESC', field: 'score' });
-                  this.searchCategories = bbn.fn.getFieldValues(data, 'search').map(a => {
-                    return {search: a, active: true, num: bbn.fn.count(data, {search: a})}
-                  });
-                  this.currentData = data;
-                  this.currentTotal = data.length;
-
+                  //const data = bbn.fn.order(cd, [{dir: 'DESC', field: 'score'}]);
+                  this.searchCategories = bbn.fn.order(bbn.fn.getFieldValues(cd, 'search').filter(a => !!a).map(a => {
+                    return {search: a, active: true, num: bbn.fn.count(cd, {search: a}), score: bbn.fn.getField(cd, 'score', {search: a})}
+                  }), {score: 'desc'});
+                  //this.currentData = cd;
+                  this.currentTotal = this.currentData.length;
+      
                   this.$forceUpdate();
                   this.isRunning = false;
                 }
@@ -508,13 +517,14 @@ const cpDef = {
                 this.queue.push(...d.data);
               }
             }
+          }, {
+            uid: this.searchUid,
+            conditions: this.currentFilters.conditions,
           },
-          this.currentFilters,
           this.onError,
           this.onAbort,
           this.onFinish
         );
-        */
       }
     },
     onError(err) {
@@ -534,7 +544,10 @@ const cpDef = {
       if (this.isStarted) {
         appui.poll({
           type: 'search',
-          data: {conditions: {field: "value", value: ''}}
+          data: {
+            uid: this.searchUid,
+            filters: {conditions: [{field: this.sourceValue, operator: 'startswith', value: ''}]},
+          }
         })
 
         this.queue.splice(0)
@@ -546,21 +559,100 @@ const cpDef = {
     resetSearch() {
       if (this.isStarted) {
         this.currentData.splice(0);
-        bbn.fn.post(this.resetUrl + '/' + bbn.fn.microtimestamp(), this.currentFilters, d => {
+        bbn.fn.post(this.resetUrl + '/' + bbn.fn.microtimestamp(), {
+          uid: this.searchUid,
+          filters: this.currentFilters
+        }, d => {
           if (!d.success) {
             bbn.fn.warning(bbn._("Impossible to update the search"));
             appui.poll({
               type: 'search',
-              data: this.currentFilters
+              data: {
+                uid: this.searchUid,
+                filters: this.currentFilters,
+              }
             })
           }
         });
       }
     },
     onReceive(arr) {
+      if (!arr.length) {
+        return;
+      }
+      bbn.fn.log("onReceive on bbn-stream-search NUMBER: " + arr.length, arr);
+      if (!this.itv) {
+        this.itv = setInterval(() => {
+          if (!this.isRunning && this.queue.length) {
+            bbn.fn.log(this.queue.slice());
+            this.isRunning = true;
+            let lastAdded = 0;
+            const cd = this.currentData;
+            let idxData = 0;
+            bbn.fn.each(this.queue.splice(0), d => {
+              const idx = bbn.fn.search(cd, { hash: d.hash });
+              if (idx > -1) {
+                if (parseInt(d.score) > parseInt(cd[idx].score)) {
+                  cd[idx].score = d.score;
+                }
+              }
+              else {
+                let done = false;
+                for (let i = 0; i < cd.length; i++) {
+                  if (d.score > cd[i].score) {
+                    cd.splice(i, 0, d);
+                    done = true;
+                    break;
+                  }
+  
+                  idxData++;
+                }
+  
+                if (!done) {
+                  cd.push(d);
+                }
+              }
+            });
+            //const data = bbn.fn.order(cd, [{dir: 'DESC', field: 'score'}]);
+            this.searchCategories = bbn.fn.order(bbn.fn.getFieldValues(cd, 'search').filter(a => !!a).map(a => {
+              return {search: a, active: true, num: bbn.fn.count(cd, {search: a}), score: bbn.fn.getField(cd, 'score', {search: a})}
+            }), {score: 'desc'});
+            //this.currentData = cd;
+            this.currentTotal = this.currentData.length;
+
+            //this.$forceUpdate();
+            this.isRunning = false;
+          }
+          if (!this.isStarted) {
+            clearInterval(this.itv);
+            this.itv = false;
+          }
+        }, 15);
+      }
+
+      bbn.fn.each(arr, d => {
+        if (d.done === 1) {
+          bbn.fn.log("DONE SENT FROM SW", d)
+          this.isStarted = false;
+          if (!this.queue.length) {
+            clearInterval(this.itv);
+            this.isRunning = false;
+            this.itv = false;
+          }
+
+          this.$forceUpdate();
+        }
+        else if (d?.data && (d.value === this.filterString)) {
+          this.queue.push(...d.data);
+        }
+      });
+      return;
+
       const cd = this.currentData;
+      bbn.fn.log("onReceive on bbn-stream-search", arr);
       bbn.fn.each(arr, data => {
         if (data.done) {
+          bbn.fn.log("DONE SENT FROM SW")
           this.isStarted = false;
         }
         else if (data.value === this.filterString) {
@@ -584,7 +676,7 @@ const cpDef = {
               }
 
               if (!done) {
-                this.currentData.push(d);
+                cd.push(d);
               }
             }
           });
@@ -670,9 +762,11 @@ const cpDef = {
   },
   mounted() {
     this.ready = true;
-    if (window.appui) {
-      appui.$on('sw-appui-search-stream', this.onReceive)
-    }
+    setTimeout(() => {
+      if (window.appui) {
+        appui.$on('sw-appui-search-stream', this.onReceive)
+      }
+    }, 2500);
   },
   beforeDestroy() {
     if (this.itv) {
@@ -685,6 +779,7 @@ const cpDef = {
   },
 };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './stream-search.html';
 import cpStyle from './stream-search.less';
 let cpLang = {};

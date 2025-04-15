@@ -1301,7 +1301,7 @@ const cpDef = {
       },
       created(){
         let el = document.createElement('div');
-        el.classList.add('bbn-alt-background');
+        el.classList.add('bbn-alt-background-internal');
         document.body.append(el);
         this.receivedBackground = bbn.fn.lightenDarkenHex(bbn.fn.rgb2hex(getComputedStyle(el).backgroundColor), this.cp.isDarkTheme ? 30 : -30);
         el.remove();

@@ -320,10 +320,13 @@ export default {
      * @fires renderData
      * @returns {Function}
      */
-    render(data, column, index) {
+    renderDefault(data, column, index) {
       let value = data && this.isValidField(column.field) ? this.getProp(data, column.field) : undefined;
       if (column.render) {
         return column.render(data, column, index, value) || '';
+      }
+      if (this.render) {
+        return this.render(data, column, index) || '';
       }
 
       return this.renderData(data, column, index) || '';

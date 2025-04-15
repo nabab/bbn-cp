@@ -160,7 +160,7 @@ const cpDef = {
      * @fires disabled
      * @return {Boolean}
      */
-    isDisabled(){
+    isDisabled() {
       const val = this.$node.props.disabled;
       const res = typeof(val) === 'function' ? val() : val;
       return !!res;

@@ -533,7 +533,7 @@ const cpDef = {
               @mouseleave="isMouseOver = false"
               @click="edit">
           <div bbn-if="isResizing"
-                class="bbn-tracks-item-resizing-times bbn-alt-background bbn-alt-text bbn-spadding bbn-radius"
+                class="bbn-tracks-item-resizing-times bbn-alt-background-internal bbn-alt-text bbn-spadding bbn-radius"
                 style="z-index: 1">
             <div class="bbn-vmiddle bbn-no-wrap">
               <i class="nf nf-md-calendar_start bbn-right-sspace bbn-lg"/>
@@ -545,7 +545,7 @@ const cpDef = {
             </div>
           </div>
           <div bbn-else-if="isMouseOver && !main.isResizing"
-                class="bbn-tracks-item-overlay bbn-c bbn-alt-background bbn-alt-text bbn-spadding bbn-radius">
+                class="bbn-tracks-item-overlay bbn-c bbn-alt-background-internal bbn-alt-text bbn-spadding bbn-radius">
             <div bbn-if="source.title"
                   bbn-html="source.title"
                   class="bbn-bottom-sspace bbn-primary-text-alt"/>

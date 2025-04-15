@@ -114,6 +114,7 @@ export default class bbnLoopAttr extends bbnAttr
         if (currentNode.data[this.item] !== loopData[this.item]) {
           const data = currentNode.data[this.item]?.__bbnData;
           currentNode.data[this.item] = loopData[this.item];
+          /*
           if (data) {
             const queue = [];
             bbn.fn.log("LAUNCHING OPTHER DEPENDENCIES");
@@ -127,6 +128,7 @@ export default class bbnLoopAttr extends bbnAttr
 
             queueUpdate(...queue)
           }
+          */
         }
       }
       else {
@@ -158,6 +160,7 @@ export default class bbnLoopAttr extends bbnAttr
     }
 
     let prev = root;
+    /*
     bbn.fn.each(elements, (e, i) => {
       let next = e.nextSibling;
       if ((e instanceof Comment) && !e.bbnSchema.isCommented) {
@@ -175,5 +178,6 @@ export default class bbnLoopAttr extends bbnAttr
         }
       }
     })
+      */
   }
 }

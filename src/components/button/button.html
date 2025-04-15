@@ -1,6 +1,7 @@
 <button :class="[{
             'bbn-button-icon-only': notext,
-            'bbn-active': active
+            'bbn-active': active,
+            'bbn-disabled': $el.disabled,
           },
           'bbn-iblock',
           componentClass

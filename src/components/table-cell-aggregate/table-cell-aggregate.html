@@ -3,6 +3,6 @@
         :class="d.aggregated ? 'bbn-b' : ''"
         bbn-text="aggregateExp[d.name]"/>
   <div bbn-elseif="col.aggregate"
-      bbn-html="table.render(source, column, rowIndex)"/>
+      bbn-html="table.renderDefault(source, column, rowIndex)"/>
   <span bbn-else> </span>
 </div>

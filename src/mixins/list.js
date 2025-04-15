@@ -393,6 +393,9 @@ const list = {
     searchOperator: {
       type: String,
       default: 'startswith'
+    },
+    render: {
+      type: [String, Function],
     }
   },
   data() {

@@ -5,8 +5,8 @@
     <div bbn-for="(f, idx) in currentData"
          bbn-if="!f.hidden"
          :class="['bbn-flex-width', 'bbn-border', 'bbn-spadding', 'bbn-vmiddle', 'bbn-radius', {
-           'bbn-alt-background': (f.status !== 'progress') && (f.status !== 'error'),
-           'bbn-background-tertiary': f.status === 'progress',
+           'bbn-alt-background-internal': (f.status !== 'progress') && (f.status !== 'error'),
+           'bbn-background-tertiary-internal': f.status === 'progress',
            'bbn-bg-red': f.status === 'error',
            'bbn-bottom-sspace': currentData[idx+1],
            'bbn-alt-dark': !!(idx % 2),
@@ -68,7 +68,7 @@
                          type="percent"
                          class="bbn-no-border"
                          style="text-align: right"
-                         bar-class="bbn-background-tertiary"/>
+                         bar-class="bbn-background-tertiary-internal"/>
       </div>
       <div class="bbn-flex bbn-nowrap">
         <template bbn-if="isEnabled && (f.edit === false)">

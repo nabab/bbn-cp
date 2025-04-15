@@ -44,7 +44,7 @@
       <div bbn-if="initStarted || isResizing"
            :class="[
             'bbn-middle',
-            'bbn-background',
+            'bbn-background-internal',
             'bbn-text',
             'bbn-padding',
             {
@@ -120,7 +120,7 @@
                   left: !!scrollable && getRef('scroll') ? getRef('scroll').currentX + 'px' : ''
                 }">
               <td :colspan="currentColumns ? currentColumns.length : 1">
-                <div class="bbn-spadding bbn-background bbn-c">
+                <div class="bbn-spadding bbn-background-internal bbn-c">
                   <div bbn-if="loader"
                        class="bbn-vmiddle">
                     <bbn-loadicon class="bbn-vmiddle"
@@ -146,7 +146,7 @@
                   left: !!scrollable && getRef('scroll') ? getRef('scroll').currentX + 'px' : ''
                 }">
               <td :colspan="currentColumns ? currentColumns.length : 1">
-                <div class="bbn-spadding bbn-background bbn-c">
+                <div class="bbn-spadding bbn-background-internal bbn-c">
                   <div bbn-if="!isLoading"
                        bbn-html="noData || ' '"/>
                   <div bbn-elseif="loader"
