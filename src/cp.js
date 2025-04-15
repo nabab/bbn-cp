@@ -2,8 +2,6 @@ import {bbn} from "@bbn/bbn";
 import addPrefix from "./functions/addPrefix.js";
 import addUrlAsPrefix from "./functions/addUrlAsPrefix.js";
 import attributeChangedCallback from "./functions/attributeChangedCallback.js";
-import convertClasses from "./functions/convertClasses.js";
-import convertStyles from "./functions/convertStyles.js";
 import createApp from "./functions/createApp.js";
 import define from "./functions/define.js";
 import fetchComponent from "./functions/fetchComponent.js";
@@ -229,8 +227,6 @@ const cpObj = bbn.fn.createObject({
   addPrefix,
   addUrlAsPrefix,
   attributeChangedCallback,
-  convertClasses,
-  convertStyles,
   createApp,
   define,
   fetchComponent,

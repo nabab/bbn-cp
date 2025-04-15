@@ -7,14 +7,30 @@ const treatStyleArguments = function (...args) {
       bbn.fn.extend(final, treatStyleArguments(...arg));
     }
     else if (bbn.fn.isObject(arg) && bbn.fn.numProperties(arg)) {
-      bbn.fn.extend(final, arg);
+      let st = '';
+      bbn.fn.iterate(arg, (o, k) => {
+        const key = bbn.fn.camelToCss(k);
+        st += `${key}: ${o}; `;
+      });
+      bbn.fn.extend(final, treatStyleArguments(st));
     }
     else if (bbn.fn.isString(arg)) {
       let arr = arg.split(';').map(a => a.trim().split(':').map(b => b.trim()));
       let css = bbn.fn.createObject();
       bbn.fn.each(arr, a => {
-        if (a[0] && (a[1] !== undefined) && (a[1] !== '')) {
-          css[bbn.fn.camelize(a[0])] = a[1];
+        if (a.length === 2) {
+          const value = [undefined, null, false, NaN].includes(a[1]) ? '' : a[1];
+          const o = {
+            prop: a[0],
+            value,
+            important: ''
+          };
+          if (a[1].endsWith('!important')) {
+            o.value = a[1].slice(0, -10).trim();
+            o.important = 'important';
+          }
+
+          css[o.prop] = o;
         }
       });
       bbn.fn.extend(final, css);
@@ -31,13 +47,36 @@ bbnNode.prototype.nodeSetStyle = function() {
     bbn.fn.iterate(this.styles, obj => {
       args.push(obj);
     });
-
+    const done = [];
     const final = treatStyleArguments(args);
-    ele.style.cssText = '';
-    bbn.fn.iterate(final, (v, k) => {
-      const value = [undefined, null, false, NaN].includes(v) ? '' : v;
-      if (ele.style[k] !== value) {
-        ele.style[k] = value;
+    Array.prototype.map.call(ele.style, k => {
+      done.push(k);
+      if (final[k]?.value) {
+        const elementValue = ele.style.getPropertyValue(k);
+        bbn.fn.log("ELE PROP: " + k + " AND ELE VALUE: " + elementValue);
+        if ((elementValue !== final[k].value) || (ele.style.getPropertyPriority(k) !== final[k].important)) {
+          ele.style.setProperty(k, final[k].value, final[k].important);
+        }
+      }
+      else {
+        ele.style.removeProperty(k);
+      }
+    });
+
+    bbn.fn.iterate(final, (o, k) => {
+      if (done.includes(k)) {
+        return;
+      }
+
+      const elementValue = ele.style.getPropertyValue(k);
+      bbn.fn.log("2 - ELE PROP: " + k + " AND ELE VALUE: " + elementValue);
+      if ((elementValue !== o.value) || (ele.style.getPropertyPriority(k) !== o.important)) {
+        if (o.value) {
+          ele.style.setProperty(k, o.value, o.important);
+        }
+        else {
+          ele.style.removeProperty(k);
+        }
       }
     });
   }

@@ -25,6 +25,7 @@ export default {
   },
   methods: {
     setScreenshot() {
+      return;
       if (!this._screenshotInterval && this.router.isVisual && this.router.db && !this.isPane) {
         let url = this.getFullURL();
         this.router.db.selectOne('containers', 'time', {url: url}).then(time => {
@@ -44,6 +45,7 @@ export default {
 
 
     unsetScreenshot() {
+      return;
       if (this._screenshotInterval) {
         clearInterval(this._screenshotInterval);
         this._screenshotInterval = false;
@@ -56,6 +58,7 @@ export default {
 
 
     async saveScreenshot(scale = 0.1, timeout = 0) {
+      return;
       if (this.router.db && (this.currentIndex === this.router.selected) && !this.isPane) {
         let img       = await this.takeScreenshot(scale, timeout, true);
         let num_tries = 0;
@@ -80,6 +83,7 @@ export default {
 
 
     takeScreenshot(scale = 1, timeout = 0, image = false, force = false) {
+      return;
       return new Promise(resolve => {
         if (this._screenshotTimeout) {
           if (force) {
@@ -133,6 +137,7 @@ export default {
 
 
     updateScreenshot() {
+      return;
       if (this.visual && this.router.db) {
         let url = this.getFullURL();
         this.router.db.selectOne('containers', 'image', {url: url}).then(res => {
@@ -144,6 +149,7 @@ export default {
     },
 
     screenshotMounted() {
+      return;
       this.updateScreenshot()
       this._screenshotInterval = false;
     }
