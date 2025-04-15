@@ -1,0 +1,22 @@
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["src_components_dashboard__i18n_dashboard_it_lang"],{
+
+/***/ "./src/components/dashboard/_i18n/dashboard.it.lang":
+/*!**********************************************************!*\
+  !*** ./src/components/dashboard/_i18n/dashboard.it.lang ***!
+  \**********************************************************/
+/***/ ((module) => {
+
+module.exports = /*#__PURE__*/JSON.parse('{"Untitled":"Senza titolo","Widgets":"Widget","Show every widget":"Mostra tutti i widget","Hide every widget":"Nascondi tutti i widget","Reset widgets order":"Reimposta l\'ordine dei widget"}');
+
+/***/ })
+
+}]);
