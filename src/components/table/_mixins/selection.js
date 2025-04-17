@@ -12,10 +12,9 @@ export default {
      */
     selectedValues() {
       return this.currentSelected.map(a => {
-        return this.uid ? this.currentData[a].data[this.uid] : this.currentData[a].data;
+        return this.uid ? bbn.fn.getField(this.currentData, 'data', `data.${this.uid}`, a) : bbn.fn.getField(this.currentData, 'data', 'index', a);
       })
     },
-
   },
   methods: {
     checkAll() {

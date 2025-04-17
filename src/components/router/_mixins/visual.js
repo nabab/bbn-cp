@@ -110,7 +110,6 @@ export default {
       const res = {};
       if (this.isVisual) {
         Object.assign(res, {
-          minHeight: '100%',
           display: 'grid',
           gridColumnGap: '0.5rem',
           gridRowGap: '0.5rem',
