@@ -75,7 +75,7 @@ export default {
   width: ${this.totalWidth};
 }
 .bbn-table table.bbn-table-${this.cssRuleName} > tbody > tr {
-  maxHeight: ${this.currentMaxRowHeight};
+  max-height: ${this.currentMaxRowHeight};
 }
       `;
       const headRowIndex = this.titleGroups ? 2 : 1;

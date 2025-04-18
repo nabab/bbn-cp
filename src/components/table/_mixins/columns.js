@@ -359,7 +359,7 @@ export default {
         def.filterable = false;
         def.sortable = false;
       }
-      def.ready = false;
+      def.ready = !this.titles;
       this.cols.push(def);
     },
     getColOptions(data, col, idx) {

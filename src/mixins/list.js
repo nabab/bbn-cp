@@ -998,7 +998,7 @@ const list = {
         this._dataPromise = new Promise(resolve => {
           let prom;
           let loadingRequestID;
-          if (this.currentData.length) {
+          if (this.currentData?.length) {
             this.currentData.splice(0);
           }
 
