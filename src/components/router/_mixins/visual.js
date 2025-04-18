@@ -173,7 +173,7 @@ export default {
     numVisualCols() {
       if (this.isVisual && this.ready) {
         // Width greater or equal to height
-        let w = this.lastKnownWidth - (this.visualIsOnHeight ? 0 : this.visualSize);
+        let w = this.lastKnownWidth - (this.visualIsOnHeight ? this.visualSize : 0);
         /*
         if (this.splitterMounted) {
           let splitter = this.getRef('splitter');
@@ -200,7 +200,7 @@ export default {
      */
     numVisualRows() {
       if (this.isVisual && this.ready) {
-        let h = this.lastKnownHeight - (this.visualIsOnHeight ? this.visualSize : 0);
+        let h = this.lastKnownHeight - (this.visualIsOnHeight ? 0 : this.visualSize);
         if (this.splitterMounted) {
           let splitter = this.getRef('splitter');
           if (splitter.$el.clientHeight < h) {
