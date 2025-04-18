@@ -265,7 +265,7 @@ export default {
       let moreViewsThanSlots = this.numVisuals < bbn.fn.filter(this.views, { pane: false }).length;
       let numAvailableSlots = this.numVisuals - (moreViewsThanSlots ? 1 : 0);
       let order = this.visualShowAll ?
-        { fixed: 'desc', pinned: 'desc', last: 'desc', idx: 'asc' }
+        { selected: 'desc', fixed: 'desc', pinned: 'desc', last: 'desc', idx: 'asc' }
         : { last: 'desc', fixed: 'desc', pinned: 'desc', idx: 'asc' };
       let idx = 0;
       const items = bbn.fn.map(
