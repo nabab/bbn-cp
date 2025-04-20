@@ -150,50 +150,56 @@
                 fontSize: isVisible && !router?.visualShowAll ? null : '10rem'
              }">
           <!-- Semi-transparent dark layer these buttons are not used -->
-          <div class="bbn-bottom-left bbn-w-100 bbn-bg-black"
+          <div class="bbn-w-100 bbn-bg-black"
                style="opacity: 0.6; color: transparent">
-            <div class="bbn-w-50 bbn-spadding">
-              <!--span class="bbn-spadding bbn-p">
-                <i class="nf nf-fa-bars"/>
-              </span-->
-            </div>
-            <div class="bbn-w-50 bbn-right bbn-spadding">
-              <span class="bbn-spadding bbn-p"
-                    bbn-if="!pinned && !fixed">
-                <i class="nf nf-fa-times"/>
-              </span>
-              <span class="bbn-spadding bbn-p"
-                    bbn-elseif="pinned">
-                <i class="nf nf-md-pin"/>
-              </span>
-              <span class="bbn-spadding bbn-p">
-                <i class="nf nf-oct-pin"/>
-              </span>
-            </div>
-          </div>
-          <!-- These buttons are the real ones (white) -->
-          <div class="bbn-bottom-left bbn-w-100 bbn-white">
-            <div class="bbn-w-50 bbn-spadding">
+            <!--div class="bbn-w-50 bbn-spadding">
               &nbsp;
-              <!--bbn-context class="bbn-spadding bbn-iblock bbn-p"
+              <bbn-context class="bbn-spadding bbn-iblock bbn-p"
                            tag="span"
                            :source="showMenu">
                 <i class="nf nf-fa-bars"
                    @click.stop="pin"/>
-              </bbn-context-->
-            </div>
-            <div class="bbn-w-50 bbn-right bbn-spadding">
+              </bbn-context>
+            </div-->
+            <div class="bbn-w-100 bbn-r bbn-vlpadding">
               <span bbn-if="!pinned && !fixed"
-                    @click.stop="pin"
-                    class="bbn-spadding bbn-p">
+                    class="bbn-right-xlmargin bbn-p">
                 <i class="nf nf-oct-pin"/>
               </span>
-              <span class="bbn-spadding bbn-p"
+              <span class="bbn-right-xlmargin bbn-p"
+                    bbn-if="!pinned && !fixed">
+                <i class="nf nf-fa-times"/>
+              </span>
+              <span class="bbn-right-xlmargin bbn-p"
+                    bbn-elseif="pinned && !fixed">
+                <i class="nf nf-md-pin_off"/>
+              </span>
+              &nbsp;
+            </div>
+          </div>
+          <!-- These buttons are the real ones (white) -->
+          <div class="bbn-bottom-left bbn-w-100 bbn-white">
+            <!--div class="bbn-w-50 bbn-spadding">
+              &nbsp;
+              <bbn-context class="bbn-spadding bbn-iblock bbn-p"
+                           tag="span"
+                           :source="showMenu">
+                <i class="nf nf-fa-bars"
+                   @click.stop="pin"/>
+              </bbn-context>
+            </div-->
+            <div class="bbn-w-100 bbn-r bbn-vlpadding">
+              <span bbn-if="!pinned && !fixed"
+                    @click.stop="pin"
+                    class="bbn-right-xlmargin bbn-p">
+                <i class="nf nf-oct-pin"/>
+              </span>
+              <span class="bbn-right-xlmargin bbn-p"
                     @click.stop="close"
                     bbn-if="!pinned && !fixed">
                 <i class="nf nf-fa-times"/>
               </span>
-              <span class="bbn-spadding bbn-p"
+              <span class="bbn-right-xlmargin bbn-p"
                     @click.stop="unpin"
                     bbn-elseif="pinned && !fixed">
                 <i class="nf nf-md-pin_off"/>

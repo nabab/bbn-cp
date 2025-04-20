@@ -430,8 +430,6 @@ const cpDef = {
       bbn.fn.each(this.columns, a => this.addColumn(a))
     }
 
-    bbn.fn.log("TABLE CREATED", this.columns.length);
-
     this.initConfig();
     this.$on('addTmp', () => {
       let scroll = this.getRef('scroll');

@@ -70,7 +70,8 @@ const cpDef = {
   methods: {
     onClickVisual() {
       bbn.fn.log("CLICK", this.currentCurrent, this.currentIndex, this.router.selected, this.router.views[this.currentIndex]);
-      this.router.selected = this.currentIndex;
+
+      this.show();
     },
     containerMounted(){
       if (this.currentView.load
@@ -116,7 +117,7 @@ const cpDef = {
         this.$nextTick(() => {
           this.containerMounted();
         })
-      })
+      }, this)
     }
   },
   /**

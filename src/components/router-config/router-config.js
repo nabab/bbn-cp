@@ -101,10 +101,11 @@ const cpDef = {
         tabsSelected: 2,
         breadcrumbActive: false,
         visualShowAll: false,
+        currentModeSelected: null
       };
     },
     computed: {
-      orientations() {
+      visualOrientations() {
         let tmp = {
           auto: {
             pos: bbn._("Auto"),
@@ -137,6 +138,42 @@ const cpDef = {
           }
         };
         tmp.auto.area = tmp[this.guessedOrientation].area;
+        return tmp;
+      },
+      tabsOrientations() {
+        let tmp = {
+          auto: {
+            pos: bbn._("Auto"),
+            text: bbn._("On top by default... but that might change"),
+            area: '2 / 1 / 6 / 6',
+            value: false
+          },
+          left: {
+            pos: bbn._("Left"),
+            text: bbn._("On the left of the main content"),
+            area: '1 / 2 / 6 / 6',
+            value: false
+          },
+          top: {
+            pos: bbn._("Top"),
+            text: bbn._("On the top of the main content"),
+            area: '2 / 1 / 6 / 6',
+            value: false
+          },
+          right: {
+            pos: bbn._("Right"),
+            text: bbn._("On the right of the main content"),
+            area: '1 / 1 / 6 / 5',
+            value: false
+          },
+          bottom: {
+            pos: bbn._("Bottom"),
+            text: bbn._("On the bottom of the main content"),
+            area: '1 / 1 / 5 / 6',
+            value: false
+          }
+        };
+
         return tmp;
       },
       db() {
@@ -175,16 +212,27 @@ const cpDef = {
       guessedOrientation() {
         return this.router.lastKnownWidth > this.router.lastKnownHeight ? 'left' : 'top';
       },
-      currentOrientation: {
+      currentVisualOrientation: {
         get() {
-          return this.router.lockedOrientation ? this.router.visualOrientation : 'auto';
+          return this.router.lockedVisualOrientation ? this.router.visualOrientation : 'auto';
         },
         set(v) {
-          if (this.orientations[v]) {
-            this.router.lockedOrientation = v !== 'auto'
+          if (this.visualOrientations[v]) {
+            this.router.lockedVisualOrientation = v !== 'auto'
             this.router.visualOrientation = v ===  'auto' ? 
                 (this.router.lastKnownWidth > this.router.lastKnownHeight ? 'left' : 'top')
                 : v;
+          }
+        }
+      },
+      currentTabsOrientation: {
+        get() {
+          return this.router.lockedTabsOrientation ? this.router.tabsOrientation : 'auto';
+        },
+        set(v) {
+          if (this.tabsOrientations[v]) {
+            this.router.lockedTabsOrientation = v !== 'auto'
+            this.router.tabsOrientation = v ===  'auto' ? 'top' : v;
           }
         }
       }
@@ -192,6 +240,7 @@ const cpDef = {
 
     methods: {
       onSelect(mode, index) {
+        this.currentModeSelected = mode;
         let v = this[mode + 'Selected'];
         if (v !== undefined) {
           if (v === index) {
@@ -202,6 +251,17 @@ const cpDef = {
             this.visualShowAll = false;
           }
         }
+      }
+    },
+    mounted() {
+      if (this.router.isVisual) {
+        this.currentModeSelected = 'visual';
+      }
+      else if (this.router.isBreadcrumb) {
+        this.currentModeSelected = 'breadcrumbs';
+      }
+      else {
+        this.currentModeSelected = 'tabs';
       }
     },
     components: {

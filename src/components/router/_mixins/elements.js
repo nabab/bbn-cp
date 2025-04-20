@@ -5,6 +5,16 @@ export default {
       portalTargets: []
     }
   },
+  computed: {
+    activeContainer() {
+      const v = this.views[this.selected];
+      if (v) {
+        return this.urls[v.uid];
+      }
+
+      return null;
+    }
+  },
   methods: {
     updatePortalTargets() {
       this.portalTargets = this.views.map(a => {
@@ -105,7 +115,7 @@ export default {
     },
 
     onCreatePaneContainer(e, paneId) {
-      bbn.fn.log(["CREATE PANE CONTAINER", paneId, e?.target]);
+      //bbn.fn.log(["CREATE PANE CONTAINER", paneId, e?.target]);
       this.paneContainers[paneId] = e.target;
     },
 

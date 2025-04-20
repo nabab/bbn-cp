@@ -82,18 +82,6 @@ const cpDef = {
 
         return 'inherit';
       },
-      /**
-       * Returns the scroll configuration
-       * @computed scrollCfg
-       * @return {Object}
-       */
-       scrollCfg(){
-        return this.scrollable ? {
-          axis: 'x',
-          container: true,
-          invisible: true
-        } : {};
-      },
       isVertical(){
         return (this.position === 'left') || (this.position === 'right');
       }
@@ -126,10 +114,10 @@ const cpDef = {
         let scroll = this.getRef('horizontal-scroll');
         if ( scroll ){
           if ( dir === 'right' ){
-            scroll.scrollAfter(true);
+            scroll.scrollLevel(false, true, false);
           }
           else{
-            scroll.scrollBefore(true);
+            scroll.scrollLevel(true, true, false);
           }
         }
       },

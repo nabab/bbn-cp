@@ -116,6 +116,7 @@ const components = [
     "router-config",
     "router-group",
     "rte",
+    "screenshot",
     "scroll",
     "scrollbar",
     "search",

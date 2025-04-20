@@ -20,11 +20,12 @@
               }"
               bbn-if="isVisual">
     <div class="bbn-w-100 bbn-router-visual"
-        :style="visualStyle"
-        ref="visualRouter"
-        :tabindex="visualShowAll ? 0 : -1">
+         :style="visualStyle"
+         ref="visualRouter"
+         :tabindex="visualShowAll ? 0 : -1">
       <div bbn-if="(selected !== null) && (views.length > numVisuals)"
           class="bbn-bg-black bbn-white bbn-p bbn-container-ratio"
+          style="order: 1"
           @click="visualShowAll = !visualShowAll">
         <div class="bbn-overlay bbn-middle">
           <div class="bbn-block bbn-xxxl">
@@ -33,7 +34,8 @@
         </div>
       </div>
       <div bbn-for="(a, i) in visualList"
-           :key="'key-' + i.toString()"
+           :key="a.uid"
+           :style="{order: i + 2}"
            :ref="'bbn-router-visual-' + i.toString()"
            bbn-if="!views[a.idx]?.real"
            bbn-show="(visualShowAll || a.visible) && (a.idx !== selected)"
@@ -154,14 +156,16 @@
         </div>
         <!-- END OF BREADCRUMB -->
         <!-- START OF LEFT|TOP TABS -->
-        <bbn-tabs bbn-elseif="nav && !isBreadcrumb && !isVisual && !['right', 'bottom'].includes(orientation)"
+        <bbn-tabs bbn-elseif="nav && !isBreadcrumb && !isVisual && !['right', 'bottom'].includes(tabsOrientation)"
                   ref="tabs"
                   bbn-model="selectedTab"
                   @close="closeTab"
                   :scrollable="scrollable"
                   :max-title-length="maxTitleLength"
                   :source="tabsList"
-                  :position="orientation === 'auto' ? undefined : orientation"><slot name="tabs"/></bbn-tabs>
+                  :position="tabsOrientation === 'auto' ? undefined : tabsOrientation">
+          <slot name="tabs"/>
+        </bbn-tabs>
         <!-- END OF LEFT|TOP TABS -->
         <!-- START OF CONTENT -->
         <div class="bbn-flex-fill"
@@ -177,14 +181,14 @@
         </div>
         <!-- END OF CONTENT -->
         <!-- START OF RIGHT|BOTTOM TABS -->
-        <bbn-tabs bbn-if="nav && !isBreadcrumb && !isVisual && ['right', 'bottom'].includes(orientation)"
+        <bbn-tabs bbn-if="nav && !isBreadcrumb && !isVisual && ['right', 'bottom'].includes(tabsOrientation)"
                   ref="tabs"
                   bbn-model="selectedTab"
                   @close="closeTab"
                   :scrollable="scrollable"
                   :max-title-length="maxTitleLength"
                   :source="tabsList"
-                  :position="orientation"/>
+                  :position="tabsOrientation"/>
         <!-- END OF RIGHT|BOTTOM TABS -->
       </div>
     </bbn-pane>
@@ -225,4 +229,6 @@
 
     </bbn-pane>
   </bbn-splitter>
+  <bbn-screenshot bbn-if="!parent && configuration"
+                  ref="screenshot"/>
 </div>

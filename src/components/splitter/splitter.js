@@ -411,7 +411,7 @@ const cpDef = {
         this.$slots.default.forEach((paneEle, i) => {
           let pane = paneEle.bbn;
           // Defining the panes base on the content
-          if (pane?.$options?.name === 'bbn-pane') {
+          if ((pane?.$options?.name === 'bbn-pane') && !pane.$isDestroyed) {
             let isPercent = false;
             let isFixed = false;
             let isNumber = false;

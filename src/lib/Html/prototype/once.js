@@ -1,6 +1,6 @@
 import bbnProtoHtml from "../../Html/Proto.js";
 
-bbnProtoHtml.$once = function(event, handler){
-    this.$off(event, handler);
-    this.$on(event, handler, true);
+bbnProtoHtml.$once = function(event, handler, bound){
+    this.$off(event, handler, bound);
+    this.$on(event, handler, true, bound);
   }

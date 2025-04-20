@@ -562,14 +562,9 @@ const cpDef = {
      * @param {Boolean} before
      */
     scrollLevel(before, anim, vertical) {
-      const containerSize = this['offset' + (vertical ? 'Height' : 'Width')];
-      if (containerSize) {
-        let movement = containerSize;
-        if (before) {
-          movement = -movement;
-        }
-
-        this.scrollSet(this['scroll' + (vertical ? 'Top' : 'Left')] + movement, anim, vertical);
+      const scrollbar = this.getRef(vertical ? 'yScroller' : 'xScroller');
+      if (scrollbar) {
+        scrollbar.scrollLevel(before, anim);
       }
     },
     /**

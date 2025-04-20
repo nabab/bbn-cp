@@ -14,14 +14,16 @@
           'bbn-flex-fill': scrollable,
           'bbn-flex-width': !scrollable
         }"
-              :style="{backgroundColor: parentBackground}">
-          <bbn-scroll bbn-forget="!scrollable"
+              :style="{backgroundColor: parentBackground, height: isVertical ? '100%' : undefined}">
+          <bbn-scroll bbn-forget="!scrollable && !isVertical"
                       ref="horizontal-scroll"
-                      bbn-bind="scrollCfg"
+                      :axis="isVertical ? 'y' : 'x'"
+                      :container="true"
+                      :invisible="true"
                       @ready="onScrollReady">
             <ul ref="tabgroup"
                 :class="['bbn-tabs-tabs', 'bbn-border-bottom', {
-                  'bbn-flex-fill': !isVertical && (!scrollable || !$slots.default.length),
+                  'bbn-flex-fill': !isVertical && !scrollable && !$hasSlots(),
                   'bbn-overflow-v': !scrollable,
                   'bbn-flex-width': fill
                 }]">

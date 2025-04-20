@@ -411,6 +411,7 @@ const cpDef = {
     },
     onRoute(path) {
       this.$emit('route', path);
+      /*
       if (bbn.env.debugging) {
         const router = this.getRef('router');
         let st = 'ROUTER SELECTED: ' + router.selected + '\n';
@@ -423,7 +424,7 @@ const cpDef = {
           st += '\n';
         })
         bbn.fn.log(st);
-      }
+      }*/
     },
     route(url, force) {
       this.getRef('router').route(url, force);

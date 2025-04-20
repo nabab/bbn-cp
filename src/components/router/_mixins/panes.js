@@ -147,16 +147,18 @@ export default {
         pane = bbn.fn.getRow(this.currentPanes, { id: paneId });
       }
 
-      if (this.selected <= containerIdx) {
-        this.selected--;
+      if (containerIdx === this.selected) {
+        if ((containerIdx !== this.latest) && this.views[this.latest]) {
+          this.selected = this.latest;
+        }
+        else {
+          this.selectClosest(containerIdx);
+        }
       }
 
       this.views[containerIdx].pane = paneId;
       pane.tabs.push(view);
       //this.$forceUpdate();
-      if (containerIdx === this.selected) {
-        this.selectClosest(containerIdx);
-      }
 
       pane.selected = pane.tabs.length - 1;
       this.updatePortalTargets();

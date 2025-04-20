@@ -2,7 +2,9 @@
 
 ## Introduction
 
-Welcome to our custom Web Components library! Inspired by VueJS, our library brings a reactive and component-based approach to building modern web interfaces with a Vue-like API. Whether you're familiar with VueJS or new to component-based development, our library offers an intuitive and powerful way to create dynamic web applications.
+Welcome to our Web Components library! 
+
+When we wanted to move our VueJS code to the new version, we changed our mind and decided to keep our components as they were and build our own library based on web components, but keeping the same API used by VueJS. Whether you're familiar with VueJS or new to component-based development, our library offers an intuitive and powerful way to create dynamic web applications.
 
 ## Getting Started
 
@@ -74,8 +76,8 @@ Inside your app's container, use custom elements (e.g., `<bbn-input>`, `<bbn-dro
   Color: {{myData.color}}
 </h1>
 <bbn-form>
-  <bbn-input v-model="myData.name"></bbn-input>
-  <bbn-dropdown :source="lst" v-model="myData.choice"></bbn-dropdown>
+  <bbn-input bbn-model="myData.name"></bbn-input>
+  <bbn-dropdown :source="lst" bbn-model="myData.choice"></bbn-dropdown>
   <!-- Add more components as needed -->
 </bbn-form>
 ```

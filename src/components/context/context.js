@@ -184,7 +184,7 @@ const cpDef = {
             ((e.type === 'click') && !this.context)
           )
         ) {
-          bbn.fn.log("CLICK ITEM", e, e.target, this.currentData);
+          //bbn.fn.log("CLICK ITEM", e, e.target, this.currentData);
           // Don't execute if in the floater
           if (!e.target.closest('.bbn-floater-context-' + this.bbnUid)) {
             if (e.preventDefault) {

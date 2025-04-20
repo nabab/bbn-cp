@@ -102,10 +102,6 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
     throw new Error("Impossible to find the parent element");
   }
 
-  if (this.tag === 'bbn-table-head-title') {
-    bbn.fn.log(["TH", after, ele, !!this.loop, !!this.loopItem]);
-  }
-  
   if (insertInSlot(parent, this, ele)) {
     if (this.oldElement) {
       this.nodeRemove(this.oldElement);

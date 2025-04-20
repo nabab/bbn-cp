@@ -46,11 +46,12 @@ export default {
        * @data {String} ['auto'] visualOrientation
        */
       visualOrientation: this.orientation !== 'auto' ? this.orientation : null,
+      tabsOrientation: this.orientation !== 'auto' ? this.orientation : null,
       /**
        * If true the auto orientation won't be taken into account.
-       * @data {Boolean} lockedOrientation
+       * @data {Boolean} lockedVisualOrientation
        */
-      lockedOrientation: false,
+      lockedVisualOrientation: false,
       /**
        * If true visual mode is used for nav (instead of tabs or breadcrumbs)
        * @data {Boolean} visual
@@ -261,7 +262,6 @@ export default {
         return;
       }
 
-      let change = false;
       let moreViewsThanSlots = this.numVisuals < bbn.fn.filter(this.views, { pane: false }).length;
       let numAvailableSlots = this.numVisuals - (moreViewsThanSlots ? 1 : 0);
       let order = this.visualShowAll ?
@@ -293,11 +293,9 @@ export default {
         if (this.visualList[i]?.uid === a.uid) {
           if (JSON.stringify(this.visualList[i]) !== JSON.stringify(a)) {
             bbn.fn.extend(this.visualList[i], a);
-            change = true;
           }
         }
         else {
-          change = true;
           const idx = bbn.fn.search(this.visualList, { uid: a.uid});
           if (idx > i) {
             bbn.fn.move(this.visualList, idx, i);
@@ -314,17 +312,6 @@ export default {
       }
 
       this.$nextTick(this.updatePortalTargets);
-      if (change) {
-        setTimeout(() => {
-          const ct = this.getRef('visualRouter');
-          /** @todo Fix this at library level!!! */
-          ct.childNodes.forEach(c => {
-            if (c.bbnSchema.attr?.['bbn-show']) {
-              c.bbnSchema.attr['bbn-show'].attrUpdate()
-            }
-          });          
-        }, 150);
-      }
     },
   
     addVisualContainer(e, uid) {
@@ -344,7 +331,7 @@ export default {
     
           if (storage.orientation) {
             this.visualOrientation = storage.orientation;
-            this.lockedOrientation = true;
+            this.lockedVisualOrientation = true;
           }
         }
 

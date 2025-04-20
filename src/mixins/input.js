@@ -500,9 +500,7 @@ const input = {
       ele.focus();
     }
     this.$on('removevalidation', () => {
-      if (this.$cid
-        && this.$el.classList.contains('bbn-state-invalid')
-      ) {
+      if (this.$cid && this.$el.classList.contains('bbn-state-invalid')) {
         this.$el.classList.remove('bbn-state-invalid');
         document.getElementById(`${this.$cid}-validation-style`)?.remove();
         document.getElementById(`${this.$cid}-validation`)?.parentElement?.remove();

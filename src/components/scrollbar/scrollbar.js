@@ -524,10 +524,10 @@ const cpDef = {
       if (!this.isInit) {
         this.onResize();
         if ( !this.container && this.scroller ){
-          this.scroller.$on("resize", this.onResize);
+          this.scroller.$on("resize", this.onResize, false, this);
           this.axisScrollTo(this.initialScroll);
-          this.scroller.$on("scroll", () => this.adjustFromContainer());
-          this.scroller.$on("mousemove", this.overContent);
+          this.scroller.$on("scroll", () => this.adjustFromContainer(), false, this);
+          this.scroller.$on("mousemove", this.overContent, false, this);
         }
         else if (this.container) {
           this.container.addEventListener("mousemove", this.overContent);

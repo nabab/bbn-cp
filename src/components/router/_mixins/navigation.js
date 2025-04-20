@@ -127,11 +127,6 @@ export default {
        */
       baseURL: this.formatBaseURL(this.root),
       /**
-       * The currently visible container.
-       * @data {HTMLElement} [null] activeContainer
-       */
-      activeContainer: null,
-      /**
        * The navigation history.
        * @data {Array} [[]] history
        */
@@ -373,13 +368,8 @@ export default {
     * @returns {String}
     */
     formatBaseURL(baseURL) {
-      while (bbn.fn.substr(baseURL, -1) === '/') {
-        baseURL = bbn.fn.substr(baseURL, 0, baseURL.length - 1);
-      }
-      while (bbn.fn.substr(baseURL, 0, 1) === '/') {
-        baseURL = bbn.fn.substr(baseURL, 1);
-      }
-      return baseURL ? baseURL + '/' : '';
+      // Remove leading/trailing slashes
+      return baseURL ? baseURL.replace(/^\/+|\/+$/g, '') + '/' : '';
     },
 
     /**
@@ -404,53 +394,34 @@ export default {
         url = bbn.fn.substr(url, 1);
       }
 
-      /** @var {Boolean} ok Will prevent the route to happen if false */
-      let ok = true;
       // Looking first in the opened panes if splittable
       if (this.splittable) {
-        bbn.fn.each(this.currentPanes, a => {
-          bbn.fn.each(a.tabs, (v, i) => {
-            if (url.indexOf(v.url) === 0) {
-              /** @var {HTMLElement} container The bbn-container component for the given URL if it's in a pane] */
-              let container = this.urls[v.uid];
-              if (!container) {
-                ok = false;
-              }
-
-              if (a.selected !== i) {
-                a.selected = i;
-                ok = false;
-              }
-
-              if (v.current !== url) {
-                v.current = url;
+        for (const pane of this.currentPanes) {
+          for (const [i, tab] of pane.tabs.entries()) {
+            if (url.indexOf(tab.url) === 0) {
+              let container = this.urls[tab.uid];
+              if (!container || pane.selected !== i || tab.current !== url) {
+                pane.selected = i;
+                tab.current = url;
                 if (container) {
                   container.setCurrent(url);
                 }
+                return;
               }
-
-              return false;
             }
-          })
-
-          if (!ok) {
-            return false;
           }
-        });
+        }
       }
 
-      if (ok && !this.isInit && this.ready) {
+      if (!this.isInit && this.ready) {
         return await this.init(url);
       }
 
-      if (ok && this.isInit && (force || !this.activeContainer || (url !== this.currentURL))) {
-        let event = new CustomEvent(
-          "beforeroute",
-          {
-            bubbles: false,
-            cancelable: true
-          }
-        );
+      if (this.isInit && (force || !this.activeContainer || (url !== this.currentURL))) {
+        const event = new CustomEvent("beforeroute", {
+          bubbles: false,
+          cancelable: true
+        });
         this.$emit("beforeroute", event, url);
         if (!event.defaultPrevented) {
           let bits = url.split('#');
@@ -508,6 +479,7 @@ export default {
             if (viewIdx !== false) {
               if (!this.urls[this.views[viewIdx].uid]?.subrouter) {
                 if (this.views[viewIdx].current.indexOf(url) !== 0) {
+                  bbn.fn.log("CANCELLING ROUTE FOR URL " + this.views[viewIdx].current + " ERROUTING TO " + url);
                   this.views[viewIdx].current = url;
                 }
 
@@ -572,12 +544,10 @@ export default {
             this.$emit("route1", this);
             this.$nextTick(() => {
               this.onResize();
-              this.updatePortalTargets();
-              this.activeContainer = this.urls[uid];
             });
           }
 
-          //await this.activate(url, this.urls[uid]);
+          this.urls[uid].show();
         }
 
         if (this.urls[uid] && this.urls[uid].isLoaded) {
@@ -595,34 +565,6 @@ export default {
             }
           }
         }
-      }
-    },
-    /**
-    * Routes to the next view if any.
-    * @method next
-    * @fires activateIndex
-    */
-    next(force) {
-      let next = this.selected + 1;
-      if (!this.views[next] && force) {
-        next = 0;
-      }
-      if (this.views[next]) {
-        this.activateIndex(next);
-      }
-    },
-    /**
-    * Routes to the previous view if any.
-    * @method prev
-    * @fires activateIndex
-    */
-    prev(force) {
-      let prev = this.selected - 1;
-      if (!this.views[prev] && force) {
-        prev = this.views.length - 1;
-      }
-      if (this.views[prev]) {
-        this.activateIndex(prev);
       }
     },
     /**
@@ -656,6 +598,7 @@ export default {
             throw new Error(bbn._("The container for the URL %s is not registered", row.url));
           }
         }
+
         container = this.urls[row.uid];
       }
 
@@ -663,22 +606,19 @@ export default {
       if (this.selected !== container.currentView?.idx) {
         this.$emit('activate', url);
         container.setCurrent(url);
-        if (!container.isPane) {
-          this.activeContainer = container;
-        }
 
         container.show();
         // Scrolling tabs
         if (this.scrollable && this.nav && !this.breadcrumb && !this.isVisual) {
-          let scroll = this.getRef('horizontal-scroll');
-          let tab = this.getRef('tab-' + container.currentView?.idx);
+          const scroll = this.getRef('horizontal-scroll');
+          const tab = this.getRef('tab-' + container.currentView?.idx);
           if (scroll?.ready) {
             scroll.scrollSet(tab);
           }
           else if (scroll) {
             scroll.$on('ready', sc => {
               setTimeout(() => {
-                sc.scrollSet(this.getRef('tab-' + container.currentView?.idx));
+                sc.scrollSet(tab);
               }, 100);
             })
           }
@@ -686,12 +626,11 @@ export default {
       }
       else if (url !== container.currentCurrent) {
         if (container.subrouter) {
-          //bbn.fn.log("SUBROUTER THROUGH ROUTER")
-          container.subrouter.route(
-            url.indexOf(container.subrouter.baseURL) === 0 ? 
-                bbn.fn.substr(url, container.subrouter.baseURL.length) 
-                : ''
-          );
+          //bbn.fn.log("SUBROUTER THROUGH ROUTER ACTIVATE", this.fullBaseURL);
+          const subrouterUrl = url.indexOf(container.subrouter.baseURL) === 0 ? 
+              bbn.fn.substr(url, container.subrouter.baseURL.length) 
+              : '';
+          container.subrouter.route(subrouterUrl);
         }
         else {
           container.setCurrent(url);
@@ -707,7 +646,6 @@ export default {
     * @fires getFullBaseURL
     */
     changeURL(url, label, replace) {
-      //bbn.fn.log(["CHANGE URL", url, label, replace, this.currentURL]);
       if (!bbn.fn.isString(url)) {
         throw new Error(bbn._('The component bbn-container must have a valid URL defined (change URL)'));
       }
@@ -724,27 +662,15 @@ export default {
         return;
       }
 
-      /*
-      bbn.fn.log([
-        "changeURL",
-        url,
-        label,
-        this,
-        this.parentContainer ? 
-          ["FROM PQARENT", this.parentContainer.currentTitle, this.parentContainer.label]
-          : this.currentTitle
-      ]);
-      */
-
       // Changing the current property of the view cascades on the container's currentURL
-      if (
-        this.views[this.selected] &&
-        (
+      if (this.views[this.selected]
+        && (this.views[this.selected].current !== url)
+        && (
           (url.indexOf(this.views[this.selected].url + '/') === 0) ||
           (url === this.views[this.selected].url)
         )
       ) {
-        this.$set(this.views[this.selected], 'current', url);
+        this.views[this.selected].current = url;
       }
       if (this.urlNavigation) {
         if (this.parentContainer) {
@@ -769,6 +695,34 @@ export default {
       }
     },
     /**
+    * Routes to the next view if any.
+    * @method next
+    * @fires activateIndex
+    */
+    next(force) {
+      let next = this.selected + 1;
+      if (!this.views[next] && force) {
+        next = 0;
+      }
+      if (this.views[next]) {
+        this.activateIndex(next);
+      }
+    },
+    /**
+    * Routes to the previous view if any.
+    * @method prev
+    * @fires activateIndex
+    */
+    prev(force) {
+      let prev = this.selected - 1;
+      if (!this.views[prev] && force) {
+        prev = this.views.length - 1;
+      }
+      if (this.views[prev]) {
+        this.activateIndex(prev);
+      }
+    },
+   /**
     * Returns the baseURL property.
     * @method getBaseURL
     * @returns {String}
@@ -966,6 +920,7 @@ export default {
   },
   watch: {
     selected(idx) {
+      //bbn.fn.warning("SELECTED: " + idx + ' - ' + bbn.fn.search(this.visualList, {idx}) + ' - ' + this.views[idx]?.url);
       if ((idx !== false) && !this.views[idx]) {
         throw new Error("The view with index " + idx + " doesn't exist");
       }
@@ -979,10 +934,6 @@ export default {
       if (this.views[idx]) {
         if (!this.views[idx].selected && !this.views[idx].pane) {
           this.views[idx].selected = true;
-        }
-
-        if (this.urls[this.views[idx].uid]) {
-          this.activeContainer = this.urls[this.views[idx].uid];
         }
 
         this.views[idx].last = bbn.fn.timestamp();
@@ -1024,6 +975,7 @@ export default {
 
         this.$emit('change', newVal);
         this.$emit('route', newVal);
+        this.$nextTick(this.updatePortalTargets);
       }
     },
     /**

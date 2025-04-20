@@ -381,7 +381,7 @@ const cpDef = {
       this.splitter.init();
       setTimeout(() => {
         this.ready = true;
-        this.$nextTick(this.splitter.onResize);
+        this.$nextTick(this.splitter.updateOrientation);
       }, 40)
     }
   },

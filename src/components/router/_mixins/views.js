@@ -80,7 +80,19 @@ export default {
       return bbn.fn.order(this.views.filter(a => !a.pane), 'last', 'desc').map(a => a.idx);
     },
     latest() {
-      return bbn.fn.getRow(this.views, {idx: this.timeList});
+      if (this.timeList.length > 1) {
+        let isOk = false;
+        let i = 1;
+        while (i in this.timeList) {
+          if ((this.timeList[i] !== this.selected) && !this.views[this.timeList[i]].pane) {
+            return this.timeList[i];
+          }
+
+          i++;
+        }
+      }
+
+      return false;
     }
   },
   methods: {

@@ -248,17 +248,13 @@ export default {
       }
     },
     selectionMounted() {
-      //bbn.fn.warning("SELECTION MOUNTED");
       if (!this.router.ready) {
-        //bbn.fn.warning("ROUTER NOT READY");
         this.router.$on('ready', () => {
-          //bbn.fn.warning("ROUTER ON READY");
           this.selectionMounted();
-        });
+        }, true, this);
       }
       else{
-        if (this.router.urls[this.uid]) {
-          //bbn.fn.warning("SELECTION EXISTING");
+        if (this.router.urls[this.routerUid]) {
           return;
         }
 

@@ -112,7 +112,7 @@ export default {
         if (m || c) {
           this.$emit('resize');
         }
-        if (this.isVisual && (this.orientation === 'auto') && !this.lockedOrientation) {
+        if (this.isVisual && (this.orientation === 'auto') && !this.lockedVisualOrientation) {
           this.visualOrientation = this.clientWidth > this.clientHeight ? 'left' : 'top';
         }
       }, 'resize', 50);

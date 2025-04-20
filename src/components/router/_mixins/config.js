@@ -6,7 +6,7 @@ export default {
      */
     configuration: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   data() {
@@ -52,7 +52,7 @@ export default {
         views: [],
         breadcrumb: this.isBreadcrumb,
         visual: this.isVisual,
-        orientation: this.lockedOrientation ? this.visualOrientation : null,
+        orientation: this.lockedVisualOrientation ? this.visualOrientation : null,
         panes: this.currentPanes.map(a => { return { id: a.id, tabs: a.tabs.map(b => b.url), selected: a.selected } })
       };
 
