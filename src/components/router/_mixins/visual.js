@@ -202,17 +202,17 @@ export default {
     numVisualRows() {
       if (this.isVisual && this.ready) {
         let h = this.lastKnownHeight - (this.visualIsOnHeight ? 0 : this.visualSize);
-        if (this.splitterMounted) {
+        /*if (this.splitterMounted) {
           let splitter = this.getRef('splitter');
           if (splitter.$el.clientHeight < h) {
             h -= splitter.$el.clientHeight;
           }
-        }
+        }*/
         if (this.visualRatio > 1) {
-          return Math.floor(h / this.visualSize * 1);
+          return Math.round(h / this.visualSize * 1);
         }
         else {
-          return Math.floor(h / this.visualSize);
+          return Math.round(h / this.visualSize);
         }
       }
 

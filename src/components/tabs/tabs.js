@@ -178,6 +178,7 @@ const cpDef = {
       updateScroll() {
         if (this.scrollable) {
           const scroll = this.getRef('horizontal-scroll');
+          scroll.onResize();
           const tab = this.getRef('tab-' + this.value);
           if (scroll && tab) {
             const x = tab.offsetLeft;
@@ -190,6 +191,11 @@ const cpDef = {
       }
     },
     watch: {
+      source() {
+        this.$nextTick(() => {
+          this.updateScroll();
+        })
+      },
       value(v) {
         this.selectedBarColor = this.source[v] ? this.getFontColor(v) : null;
         this.$nextTick(() => {

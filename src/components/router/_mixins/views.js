@@ -269,13 +269,8 @@ export default {
             this.fixIndexes();
             this.updateVisualList();
             this.$forceUpdate();
-            if (!replacers.length && !this.views[idx]?.pane) {
-              if ((idx === this.selected) && this.views.length) {
-                this.activateIndex(this.latest ? this.latest.idx : this.views.length - 1);
-              }
-              else if (idx < this.selected) {
-                this.selected--;
-              }
+            if (!replacers.length && !this.views[idx]?.pane && (idx === this.selected) && this.views.length) {
+              this.activateIndex(this.views[this.latest] ? this.latest : this.views.length - 1);
             }
 
             this.updateVisualList();

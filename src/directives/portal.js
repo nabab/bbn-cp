@@ -43,7 +43,12 @@ export default function() {
         el.classList.remove('bbn-portal-active');
       }
 
-      return moveToTarget(el, el.bbnDirectives.portal.originalParent);
+      let target = el.bbnDirectives?.portal?.originalParent;
+      if (!target) {
+        target = el.bbnSchema.parentElement;
+      }
+ 
+      return moveToTarget(el, target);
     }
   };
 
@@ -70,7 +75,12 @@ export default function() {
         treatBinding(el, binding);
       }
       else {
-        moveToTarget(el, el.bbnDirectives.portal.originalParent);
+        let target = el.bbnDirectives?.portal?.originalParent;
+        if (!target) {
+          target = el.bbnSchema.parentElement;
+        }
+
+        moveToTarget(el, target);
       }
     }
   });

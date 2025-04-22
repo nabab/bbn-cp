@@ -173,19 +173,22 @@ export default {
             let idx = bbn.fn.search(pane.tabs, { idx: containerIdx });
             if (idx > -1) {
               pane.tabs.splice(idx, 1);
-              if ((pane.selected >= idx) && pane[idx-1]) {
+              if (pane.selected >= idx) {
                 pane.selected--;
               }
-
+              else if ((pane.selected === idx) && !pane[idx] && pane.tabs.length) {
+                pane.selected--;
+              }
               view.pane = false;
               this.$nextTick(() => {
                 this.selected = containerIdx;
                 if (!pane.tabs.length) {
                   this.removePane(paneId);
                 }
+                /*
                 else if (pane.selected >= idx) {
                   this.getRef('pane' + pane.id).onResize(true);
-                }
+                }*/
               })
             }
           }
