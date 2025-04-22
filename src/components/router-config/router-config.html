@@ -209,25 +209,26 @@
                    inline-template
                    :source="v"
                    :key="v.uid">
-          <div class="bbn-section bbn-w-100 bbn-bottom-margin bbn-flex-vcentered bbn-no-padding">
+          <div class="bbn-section bbn-w-100 bbn-bottom-margin bbn-flex-width bbn-no-padding">
             <div style="height: 8rem" class="bbn-right-lspace">
               <img bbn-if="thumbnail"
                     :src="thumbnail"
-                    style="width: auto; height: 8rem"
+                    style="width: auto; height: 8rem; min-width: 8rem;"
                     class="bbn-radius-left">
               <bbn-icon bbn-else
                         content="nf nf-fa-image"
                         size="8rem"/>
             </div>
-            <div class="bbn-flex-fill bbn-right-padding">
-              <div class="bbn-flex-vcentered bbn-bottom-margin">
+            <div class="bbn-flex-fill bbn-flex-vcentered bbn-right-padding">
+              <div class="bbn-flex-width bbn-bottom-margin">
                 <div class="bbn-flex-fill">
                   <bbn-icon :content="source.icon || 'nf nf-fa-question'"
                             class="bbn-right-space bbn-radius bbn-border bbn-spadding"
                             size="1.5rem"
                             @click="browse(source)"/>
                   <span bbn-text="source.label"
-                        class="bbn-light bbn-lg"/>
+                        class="bbn-light bbn-lg bbn-ellipsis"
+                        :title="source.label"/>
                 </div>
                 <div>
                   <bbn-button icon="nf nf-cod-pinned"
@@ -252,14 +253,20 @@
                               :disabled="source.fixed || source.pinned"/>
                 </div>
               </div>
-              <div class="bbn-flex-vcentered">
+              <div class="bbn-flex-width">
                 <div class="bbn-flex-fill">
-                  URL: 
-                  <span class="bbn-light"
-                        bbn-text="source.current"/><br>
-                  <span bbn-text="_('Last access') + ': '"/>
-                  <span class="bbn-light"
-                        bbn-text="bbn.fn.fdate(source.last, true)"/>
+                  <div class="bbn-iflex-width">
+                    <span class="bbn-iblock bbn-right-sspace">URL: </span>
+                    <span class="bbn-iblock bbn-light bbn-flex-fill bbn-ellipsis bbn-right-sspace"
+                          bbn-text="source.current"
+                          :title="source.current"/>
+                  </div>
+                  <div class="bbn-iflex-width">
+                    <span class="bbn-iblock"
+                          bbn-text="_('Last access') + ': '"/>
+                    <span class="bbn-light bbn-flex-fill"
+                          bbn-text="bbn.fn.fdate(source.last, true)"/>
+                  </div>
                 </div>
                 <div>
                   <bbn-button icon="nf nf-md-target"
@@ -290,9 +297,9 @@
                    :fixed="true">
       <div class="bbn-w-100 bbn-padding">
         <div class="bbn-w-100 bbn-light bbn-lg bbn-vspadding"
-             bbn-text="_('Here you will soon be able to save your current router configuration. i.e. all your current tabs')"/>
+             bbn-text="_('Here you will soon be able to decide the panes\' positions and sizes')"/>
         <div class="bbn-w-100 bbn-light bbn-lg bbn-vspadding"
-             bbn-text="_('That will not only allow you to backup a complex configuration but also to switch between tabs configurations')"/>
+             bbn-text="_('That will not only allow you to backup a complex configuration but also to switch between panes configurations')"/>
       </div>
     </bbn-container>
     <bbn-container :label="_('My backups')"

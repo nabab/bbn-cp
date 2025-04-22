@@ -6,7 +6,7 @@ export default {
      */
     screenshotDelay: {
       type: Number,
-      default: 43200000
+      default: 3600000
     },
   },
   data() {

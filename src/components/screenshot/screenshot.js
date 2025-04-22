@@ -15,30 +15,6 @@ const cpDef = {
   statics() {
     window.htmlToImage = htmlToImage;
   },
-  props: {
-    /**
-     * Time between 2 automatic screenshot in visual mode, in milliseconds
-     * @prop {Number} [43200000] screenshotDelay (12 hours)
-     */
-    screenshotDelay: {
-      type: Number,
-      default: 43200000
-    },
-  },
-  data() {
-    return {
-      /**
-       * Time between 2 automatic screenshot in visual mode, in milliseconds
-       * @data {Number} currentScreenshotDelay
-       */
-      currentScreenshotDelay: this.screenshotDelay,
-      /**
-       * The base 64 encoded thumbnail image.
-       * @data {String} thumbnail
-       */
-      thumbnail: false,
-    }
-  },
   methods: {
     async capture(ele, width, height) {
       return new Promise((resolve) => {
