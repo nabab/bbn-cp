@@ -126,11 +126,6 @@ export default {
       let finalURL = this.router.fullBaseURL + url;
       //bbn.fn.warning("ROUTING " + url + ' / CURRENT: ' + this.router.currentURL + ' / FULL: ' + this.router.getFullCurrentURL() + ' / FINAL: ' + finalURL);
       this.isLoading = true;
-      if (!this.currentView.pane) {
-        //bbn.fn.log(["GETTING VIEW " + finalURL, url, this.router.parseURL(url), this.router.baseURL, this.getFullCurrentURL()]);
-        //this.currentURL = url;
-      }
-
       this.router.$emit('update', this.router.views);
       this.router.$emit("load", url);
       let dataObj = this.router.postBaseUrl ? { _bbn_baseURL: this.router.fullBaseURL } : {};
@@ -387,11 +382,13 @@ export default {
           }
           
         }
-        if (this.visual) {
-          this.setScreenshot();
-        }
 
         this.ready = true;
+        if (this.visual) {
+          setTimeout(() => {
+            this.setScreenshot();
+          }, 1000);
+        }
       }
     },
 

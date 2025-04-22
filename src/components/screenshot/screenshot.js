@@ -47,6 +47,7 @@ const cpDef = {
           const opt = {
             width: ele.clientWidth,
             height: ele.clientHeight,
+            quality: 0.95,
           };
           if (width) {
             opt.canvasWidth = width;
@@ -56,7 +57,7 @@ const cpDef = {
           }
 
           htmlToImage.toPng(ele, opt).then(img => {
-            ct.classList.remove('bbn-screenshot-element');
+            ele.classList.remove('bbn-screenshot-element');
             resolve(img || false);
           })
         }, 100)

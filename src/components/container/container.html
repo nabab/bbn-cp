@@ -64,7 +64,7 @@
             ref="canvasSource">
           <!-- This is shown when it's ready -->
           <bbn-scroll bbn-if="ready && isLoaded"
-                      bbn-show="!router?.isVisual || currentSelected || (router?.isVisual && !thumbnail)"
+                      bbn-show="!router?.isVisual || currentSelected || (router?.isVisual && !thumbnail) || (isPane && isVisible)"
                       ref="scroll"
                       @ready="init"
                       :scrollable="scrollable && router?.scrollContent"

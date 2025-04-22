@@ -69,7 +69,7 @@ export default {
       //bbn.fn.log("Changing isVisible for " + this.currentURL);
       let emit = true;
 
-      if (!this.isPane && this.router?.isVisual) {
+      if (!this.isPane && this.router?.isVisual && this.isLoaded) {
         if (nv) {
           this.setScreenshot()
         }

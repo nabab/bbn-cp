@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     setScreenshot() {
-      if (!this._screenshotInterval && this.router.isVisual && this.router.db && !this.isPane) {
+      if (!this._screenshotInterval && this.router.isVisual && this.router.db && !this.isPane && this.isLoaded) {
         let url = this.getFullURL();
         this.router.db.selectOne('containers', 'time', {url: url}).then(time => {
           // Checking if we have a screenshot of less than an hour
@@ -84,7 +84,8 @@ export default {
           //throw new Error(bbn._("Impossible to take the screenshot of " + this.getFullCurrentURL()));
         }
 
-        this.thumbnail = img.src;
+        this.thumbnail = img;
+        bbn.fn.log("Screenshot", img);
         // This is in fact an insert/update
         this.router.db.insert('containers', {
           url: this.getFullURL(),
@@ -102,7 +103,7 @@ export default {
             && bbn.fn.isActiveInterface(600)
             && !this.router.visualShowAll
         ) {
-          this.screenshoter.capture(width, height).then(img => {
+          this.screenshoter.capture(this.getRef('canvasSource'), width, height).then(img => {
             resolve(img);
           })
         }
@@ -113,7 +114,7 @@ export default {
     updateScreenshot() {
       if (this.visual && this.router.db) {
         let url = this.getFullURL();
-        this.router.db.selectOne('containers', 'image', {url: url}).then(res => {
+        this.router.db.selectOne('containers', 'image', {url}).then(res => {
           if (res) {
             this.thumbnail = res;
           }
