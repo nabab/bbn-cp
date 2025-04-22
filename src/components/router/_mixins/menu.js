@@ -236,7 +236,7 @@ export default {
               key: "screenshot_copy",
               icon: "nf nf-md-image_multiple",
               action: () => {
-                container.takeScreenshot(0.5).then(canvas => {
+                container.takeScreenshot().then(canvas => {
                   if (canvas) {
                     canvas.toBlob(blob => {
                       bbn.fn.copy(blob).then(() => {
@@ -251,7 +251,7 @@ export default {
               key: "screenshot_copy",
               icon: "nf nf-md-image_multiple",
               action: () => {
-                container.takeScreenshot(1).then(canvas => {
+                container.takeScreenshot().then(canvas => {
                   if (canvas) {
                     canvas.toBlob(blob => {
                       bbn.fn.copy(blob).then(() => {

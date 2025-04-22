@@ -21,31 +21,43 @@ export default {
        * @data {String} thumbnail
        */
       thumbnail: false,
+      /**
+       * The bbn-screenshot element inside router
+       */
+      _screenshoter: false,
+    }
+  },
+  computed: {
+    screenshoter() {
+      if (!this._screenshoter) {
+        this._screenshoter = this.router.getRef('screenshot');
+      }
+
+      return this._screenshoter;
     }
   },
   methods: {
     setScreenshot() {
-      return;
       if (!this._screenshotInterval && this.router.isVisual && this.router.db && !this.isPane) {
         let url = this.getFullURL();
         this.router.db.selectOne('containers', 'time', {url: url}).then(time => {
           // Checking if we have a screenshot of less than an hour
           if ((bbn.fn.timestamp() - (time || 0)) >= this.currentScreenshotDelay) {
-            this.saveScreenshot(0.1, 10000);
+            this.saveScreenshot(400);
           }
-        }).catch(() => {
-          this.saveScreenshot(0.1, 10000);
+        }).catch(e => {
+          appui.error(e.message);
+          throw e;
         });
 
         this._screenshotInterval = setInterval(() => {
-          this.saveScreenshot(0.1);
+          this.saveScreenshot(400);
         }, this.currentScreenshotDelay);
       }
     },
 
 
     unsetScreenshot() {
-      return;
       if (this._screenshotInterval) {
         clearInterval(this._screenshotInterval);
         this._screenshotInterval = false;
@@ -57,87 +69,48 @@ export default {
     },
 
 
-    async saveScreenshot(scale = 0.1, timeout = 0) {
-      return;
+    async saveScreenshot(width, height) {
       if (this.router.db && (this.currentIndex === this.router.selected) && !this.isPane) {
-        let img       = await this.takeScreenshot(scale, timeout, true);
+        let img       = await this.takeScreenshot(width, height);
         let num_tries = 0;
         while (!img && (num_tries < 5)) {
           num_tries++;
-          img = await this.takeScreenshot(scale, 5000);
+          img = await this.takeScreenshot(width, height);
         }
+
         if (!img) {
-          bbn.fn.log(bbn._("Impossible to take the screenshot of") + ' ' + this.getFullCurrentURL());
+          appui.error(bbn._("Impossible to take the screenshot of") + ' ' + this.getFullCurrentURL());
           return;
           //throw new Error(bbn._("Impossible to take the screenshot of " + this.getFullCurrentURL()));
         }
+
         this.thumbnail = img.src;
         // This is in fact an insert/update
         this.router.db.insert('containers', {
           url: this.getFullURL(),
-          image: img.src,
+          image: img,
           time: bbn.fn.timestamp()
         });
       }
     },
 
 
-    takeScreenshot(scale = 1, timeout = 0, image = false, force = false) {
-      return;
+    takeScreenshot(width, height) {
       return new Promise(resolve => {
-        if (this._screenshotTimeout) {
-          if (force) {
-            clearTimeout(this._screenshotTimeout);
-          }
-          else {
-            resolve(false);
-          }
+        if (this.screenshoter
+            && this.isVisible
+            && bbn.fn.isActiveInterface(600)
+            && !this.router.visualShowAll
+        ) {
+          this.screenshoter.capture(width, height).then(img => {
+            resolve(img);
+          })
         }
-
-        this._screenshotTimeout = setTimeout(() => {
-          let exit = () => {
-            this._screenshotTimeout = false;
-            resolve(false);
-          };
-          if ((this.currentIndex === this.router.selected)
-              && this.isVisible
-              && window.htmlToImage
-              && bbn.fn.isActiveInterface(600)
-              && !this.router.visualShowAll
-          ) {
-            //debugger;
-            let scroll = this.getRef('scroll');
-            if (!scroll) {
-              return exit();
-            }
-
-            let w  = scroll.clientWidth;
-            let h  = scroll.clientHeight;
-            let s = Math.min(w, h);
-            let ct = this.getRef('canvasSource');
-            if (!ct || !s) {
-              return exit();
-            }
-
-            scroll.style.maxWidth = s + 'px !important';
-            scroll.style.maxHeight = s + 'px !important';
-            htmlToImage.toPng(ct, {
-              canvasWidth: s,
-              canvasHeight: s
-            }).then(img => {
-              resolve(img);
-            });
-          }
-          else {
-            exit();
-          }
-        }, timeout)
       })
     },
 
 
     updateScreenshot() {
-      return;
       if (this.visual && this.router.db) {
         let url = this.getFullURL();
         this.router.db.selectOne('containers', 'image', {url: url}).then(res => {
@@ -149,7 +122,6 @@ export default {
     },
 
     screenshotMounted() {
-      return;
       this.updateScreenshot()
       this._screenshotInterval = false;
     }

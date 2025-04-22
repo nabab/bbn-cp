@@ -41,8 +41,8 @@ const cpDef = {
   },
   methods: {
     async capture(ele, width, height) {
-      ele.classList.add('bbn-screenshot-element');
       return new Promise((resolve) => {
+        ele.classList.add('bbn-screenshot-element');
         setTimeout(() => {
           const opt = {
             width: ele.clientWidth,
@@ -56,14 +56,8 @@ const cpDef = {
           }
 
           htmlToImage.toPng(ele, opt).then(img => {
-            if (img) {
-              bbn.fn.log("IMAGE", img);
-              ct.classList.remove('bbn-screenshot-element');
-              resolve(img);
-            }
-            else {
-              resolve(false);
-            }
+            ct.classList.remove('bbn-screenshot-element');
+            resolve(img || false);
           })
         }, 100)
       });
