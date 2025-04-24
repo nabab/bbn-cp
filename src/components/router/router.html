@@ -201,7 +201,7 @@
                     @resize="splitterMounted = true"
                     ref="splitter">
         <bbn-pane bbn-for="(pane, i) in currentPanes"
-                  :key="'key-' + i.toString()"
+                  :key="pane.id"
                   :ref="'pane' + pane.id"
                   :label="pane.tabs[pane.selected] ? pane.tabs[pane.selected].label : null"
                   :size="i ? Math.floor(100/currentPanes.length) + '%' : null"

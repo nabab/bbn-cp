@@ -63,7 +63,7 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
     }
   }
 
-  if (ele.bbnSchema?.attr?.ref) {
+  if (ele?.bbnSchema?.attr?.ref) {
     const refs = ele.bbnComponent.$refsElements[ele.bbnSchema.attr.ref.value];
     if (bbn.fn.isArray(refs)) {
       const idx = refs.indexOf(ele);
@@ -111,6 +111,17 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
       }
     }
   }
+
+  /*
+  if (ele.bbnComponentSlot) {
+    for (let n in ele.bbnComponentSlot.$slots) {
+      let idx = ele.bbnComponentSlot.$slots[n].indexOf(ele);
+      if (idx > -1) {
+        ele.bbnComponentSlot.$slots[n].splice(idx, 1);
+        break;
+      }
+    }
+  }*/
 
   if (!node?.isComponent && ele.tagName && node?.attributes.length) {
     for (let i = 0; i < node.attributes.length; i++) {

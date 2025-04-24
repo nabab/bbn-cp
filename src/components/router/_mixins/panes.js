@@ -120,14 +120,16 @@ export default {
         }
 
         this.currentPanes.splice(paneIndex, 1);
-        this.updatePortalTargets();
-        if (this.routed) {
-          this.$nextTick(() => {
-            this.currentPanes.length ?
-              this.getRef('splitter').init()
-              : this.getRef('topSplitter').init()
-          })
-        }
+        this.$nextTick(() => {
+          this.updatePortalTargets();
+          if (this.routed) {
+            this.$nextTick(() => {
+              this.currentPanes.length ?
+                this.getRef('splitter').init()
+                : this.getRef('topSplitter').init()
+            })
+          }
+        })
       }
     },
     addToPane(containerIdx, paneId) {

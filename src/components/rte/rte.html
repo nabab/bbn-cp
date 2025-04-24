@@ -40,9 +40,16 @@
 								 :button-space="false"/>
 		<div class="bbn-flex-fill"
 				 :style="textboxStyle"
-				 @mouseup.stop="getRef('element').focus()">
+				 @mouseup.stop="focusElement">
 			<bbn-scroll bbn-forget="!currentHeight"
                   @ready="setContent">
+				<bbn-code bbn-model="currentValue"	
+				          bbn-if="showSource"
+									ref="code"
+									:tabindex="currentTabIndex"
+									class="bbn-overlay"
+									style="min-height: max(4rem, 100%)"
+									mode="html"/>
 				<div class="bbn-spadding bbn-rte-element"
 						 style="min-height: max(4rem, 100%)"
 						 contenteditable="true"
@@ -55,12 +62,6 @@
 				     ref="content">
 					<slot></slot>
 				</div>
-				<bbn-code bbn-model="currentValue"
-				          bbn-if="showSource"
-									:tabindex="currentTabIndex"
-									class="bbn-overlay"
-									style="min-height: max(4rem, 100%)"
-									mode="html"/>
 				<textarea :required="required"
 									:readonly="readonly"
 									ref="input"
