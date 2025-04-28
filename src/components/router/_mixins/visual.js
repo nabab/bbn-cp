@@ -201,9 +201,10 @@ export default {
      * @return {Number} 
      */
     numVisualCols() {
-      if (this.isVisual && this.ready) {
+      const main = this.getRef('mainPane');
+      if (this.isVisual && this.ready && main) {
         // Width greater or equal to height
-        let w = this.getRef('mainPane').lastKnownWidth - (this.visualIsOnHeight ? this.visualSize : 0);
+        let w = main.lastKnownWidth - (this.visualIsOnHeight ? this.visualSize : 0);
 
         if (this.visualRatio >= 1) {
           return Math.floor(w / this.visualSize);
@@ -222,8 +223,9 @@ export default {
      * @return {Number} 
      */
     numVisualRows() {
-      if (this.isVisual && this.ready) {
-        let h = this.getRef('mainPane').lastKnownHeight - (this.visualIsOnHeight ? 0 : this.visualSize);
+      const main = this.getRef('mainPane');
+      if (this.isVisual && this.ready && main) {
+        let h = main.lastKnownHeight - (this.visualIsOnHeight ? 0 : this.visualSize);
 
         if (this.visualRatio > 1) {
           return Math.round(h / this.visualSize * 1);
