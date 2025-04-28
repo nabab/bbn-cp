@@ -76,6 +76,7 @@ const cpDef = {
   },
   data() {
     return {
+      numRegistered: 0,
       /**
        * The timeout used to launch the initial process (reset each time a new pane is added).
        * @data {Number} [0] initTimeout
@@ -149,7 +150,7 @@ const cpDef = {
      * @return {String}
      */
     columnsCfg() {
-      return this.panes.length && this.isHorizontal ? this.getFormatted() : '100%';
+      return this.panes.length && this.isHorizontal ? this.getGridStyle() : '100%';
     },
     /**
      * What will be actually in the CSS for grid-template-rows.
@@ -157,7 +158,7 @@ const cpDef = {
      * @return {String}
      */
     rowsCfg() {
-      return this.panes.length && !this.isHorizontal ? this.getFormatted() : '100%';
+      return this.panes.length && !this.isHorizontal ? this.getGridStyle() : '100%';
     },
     /**
      * X or y depending on the current orientation.
@@ -195,10 +196,10 @@ const cpDef = {
   methods: {
     /**
      * Returns the calculated grid-template-rows or grid-template-columns as CSS string.
-     * @method getFormatted
+     * @method getGridStyle
      * @return {String}
      */
-    getFormatted() {
+    getGridStyle() {
       /**
        * The position of the panes, starting at 1.
        * @type {Number}
@@ -291,13 +292,6 @@ const cpDef = {
         this.isResizing = true;
         this.setContainerMeasures();
         this.setResizeMeasures();
-        if (this.orientation === 'auto') {
-          let o = this.getOrientation();
-          if (o !== this.currentOrientation) {
-            this.currentOrientation = o;
-          }
-        }
-
         /** @todo so far only fuckin way to make it re-render the right dimensions */
         window.requestAnimationFrame(() => {
           let w = this.$el.style.width;
@@ -308,7 +302,8 @@ const cpDef = {
             this.$el.style.width = w;
             this.$el.style.height = h;
             this.isResizing = false;
-            this.$emit('resize');
+            this.updateOrientation();
+            this.$nextTick(() => this.$emit('resize'))
           })
         })
       }
@@ -317,14 +312,13 @@ const cpDef = {
      * Gets the next resizable pane.
      * @method getNextResizable
      * @param {Number} idx 
-     * @param {Array} arr 
      * @return {Boolean|Number}
      */
-    getNextResizable(idx, arr) {
-      for (let i = idx + 1; i < arr.length; i++) {
+    getNextResizable(idx) {
+      for (let i = idx + 1; i < this.panes.length; i++) {
         if (this.resizable
-          && (arr[i].resizable !== false)
-          && !arr[i].invisible
+          && (this.panes[i].resizable !== false)
+          && !this.panes[i].invisible
         ) {
           return i;
         }
@@ -336,14 +330,13 @@ const cpDef = {
      * Gets the previous resizable pane.
      * @method getPrevResizable
      * @param {Number} idx 
-     * @param {Array} arr 
      * @return {Boolean|Number}
      */
-    getPrevResizable(idx, arr) {
+    getPrevResizable(idx) {
       for (let i = idx - 1; i >= 0; i--) {
         if (this.resizable
-          && (arr[i].resizable !== false)
-          && !arr[i].invisible
+          && (this.panes[i].resizable !== false)
+          && !this.panes[i].invisible
         ) {
           return i;
         }
@@ -355,14 +348,13 @@ const cpDef = {
      * Gets the next collapsible pane.
      * @method getNextCollapsible
      * @param {Number} idx 
-     * @param {Array} arr 
      * @return {Boolean|Number}
      */
-    getNextCollapsible(idx, arr) {
-      for (let i = idx + 1; i < arr.length; i++) {
+    getNextCollapsible(idx) {
+      for (let i = idx + 1; i < this.panes.length; i++) {
         if (this.collapsible
-          && (arr[i].collapsible !== false)
-          && !arr[i].invisible
+          && (this.panes[i].collapsible !== false)
+          && !this.panes[i].invisible
         ) {
           return i;
         }
@@ -374,20 +366,103 @@ const cpDef = {
      * Gets the previous collassible pane.
      * @method getPrevCollapsible
      * @param {Number} idx 
-     * @param {Array} arr 
      * @return {Boolean|Number}
      */
-    getPrevCollapsible(idx, arr) {
+    getPrevCollapsible(idx) {
       for (let i = idx - 1; i >= 0; i--) {
         if (this.collapsible
-          && (arr[i].collapsible !== false)
-          && !arr[i].invisible
+          && (this.panes[i].collapsible !== false)
+          && !this.panes[i].invisible
         ) {
           return i;
         }
       }
 
       return false;
+    },
+    register(pane) {
+      bbn.fn.checkType(pane, bbnPane);
+      if (pane.isRegistered) {
+        throw new Error(bbn._("The container shouldn't register twice"));
+      }
+
+
+      // Defining the panes base on the content
+      if (pane.$isDestroyed) {
+        throw new Error(bbn._("The container shouldn't register twice"));
+      }
+      let isPercent = false;
+      let isFixed = false;
+      let isNumber = false;
+      let isAuto = false;
+      let props = bbn.fn.createObject({}, pane.bbnSchema.props);
+      let resizable = (this.resizable || pane.resizable) && (props.resizable !== false);
+      let collapsible = (this.collapsible || props.collapsible) && (props.collapsible !== false);
+      let value = parseInt(props.size) || 0;
+      if (props.size) {
+        isFixed = true;
+        if (props.size === 'auto') {
+          props.size = false;
+          isAuto = true;
+        }
+        else if ((typeof props.size === 'string') && (bbn.fn.substr(props.size, -1) === '%')) {
+          isPercent = true;
+        }
+        else if ((typeof props.size === 'string') && (bbn.fn.substr(props.size, -2) === 'px')) {
+          isNumber = true;
+          props.size = parseInt(props.size);
+        }
+        else if ((typeof props.size === 'number')) {
+          isNumber = true;
+        }
+      }
+      else {
+        isAuto = true;
+      }
+      let obj = bbn.fn.extend(props, {
+        index: this.panes.length,
+        value,
+        currentDiff: 0,
+        savedDiff: 0,
+        addedSize: '',
+        tmpDiff: 0,
+        isPercent,
+        isFixed,
+        isNumber,
+        isAuto,
+        forceAuto: false,
+        resizable,
+        collapsible,
+        collapsed: pane.isCollapsed,
+        isResizable: collapsible || resizable,
+        pane: pane,
+        uid: bbn.fn.randomString(8, 12).toLowerCase(),
+      });
+      this.panes.push(obj);
+      pane.isRegistered = true;
+      if (!pane.splitterUid) {
+        pane.splitterUid = obj.uid;
+      }
+
+      this.numRegistered++;
+      this.$emit('registered', pane);
+      this.updateOrientation();
+    },
+
+    unregister(cp) {
+      bbn.fn.log("UNREGISTER!!");
+      bbn.fn.checkType(cp, bbnPane);
+      if (cp.isRegistered) {
+        cp.isRegistered = false;
+        let idx = bbn.fn.search(this.panes, { uid: cp.splitterUid });
+        if (idx > -1) {
+          this.panes.splice(idx, 1);
+          this.numRegistered--;
+          this.$emit('unregistered', cp);
+        }
+      }
+
+      this.updateOrientation();
     },
     /**
      * Triggered by the panes being mounted, analyzes the splitter's content in order to define its panes.
@@ -403,75 +478,23 @@ const cpDef = {
       clearTimeout(this.initTimeout);
       this.initTimeout = setTimeout(async () => {
         // Emptying the panes array if it's filled
-        this.panes.splice(0, this.panes.length);
-        const tmp = [];
         let hasAuto = false;
         let hasPercent = false;
         // If 1st pane is collapsible we add a resizer at the start
-        this.$slots.default.forEach((paneEle, i) => {
-          let pane = paneEle.bbn;
-          // Defining the panes base on the content
-          if ((pane?.$options?.name === 'bbn-pane') && !pane.$isDestroyed) {
-            let isPercent = false;
-            let isFixed = false;
-            let isNumber = false;
-            let isAuto = false;
-            let props = bbn.fn.createObject({}, paneEle.bbnSchema.props);
-            let resizable = (this.resizable || pane.resizable) && (props.resizable !== false);
-            let collapsible = (this.collapsible || props.collapsible) && (props.collapsible !== false);
-            let value = parseInt(props.size) || 0;
-            if (props.size) {
-              isFixed = true;
-              if (props.size === 'auto') {
-                props.size = false;
-                isAuto = true;
-                hasAuto = true;
-              }
-              else if ((typeof props.size === 'string') && (bbn.fn.substr(props.size, -1) === '%')) {
-                isPercent = true;
-                hasPercent = true;
-              }
-              else if ((typeof props.size === 'string') && (bbn.fn.substr(props.size, -2) === 'px')) {
-                isNumber = true;
-                props.size = parseInt(props.size);
-              }
-              else if ((typeof props.size === 'number')) {
-                isNumber = true;
-              }
-            }
-            else {
-              isAuto = true;
-              hasAuto = true;
-            }
-            let obj = bbn.fn.extend(props, {
-              index: i,
-              value,
-              currentDiff: 0,
-              savedDiff: 0,
-              addedSize: '',
-              tmpDiff: 0,
-              isPercent,
-              isFixed,
-              isNumber,
-              isAuto,
-              forceAuto: false,
-              resizable,
-              collapsible,
-              collapsed: pane.isCollapsed,
-              isResizable: collapsible || resizable,
-              pane: pane
-            });
-            tmp.push(obj);
+        bbn.fn.each(this.panes, (pane, idx) => {
+          if ([undefined, false].includes(pane.size)) {
+            hasAuto = true;
           }
+          else if ((typeof pane.size === 'string') && (bbn.fn.substr(pane.size, -2) === 'px')) {
+            hasPercent = true;
+          }
+
+          pane.prevResizable = this.getPrevResizable(idx);
+          pane.nextResizable = this.getNextResizable(idx);
+          pane.prevCollapsible = this.getPrevCollapsible(idx);
+          pane.nextCollapsible = this.getNextCollapsible(idx);
         });
-        bbn.fn.each(tmp, (pane, idx) => {
-          pane.prevResizable = this.getPrevResizable(idx, tmp);
-          pane.nextResizable = this.getNextResizable(idx, tmp);
-          pane.prevCollapsible = this.getPrevCollapsible(idx, tmp);
-          pane.nextCollapsible = this.getNextCollapsible(idx, tmp);
-          this.panes.push(pane);
-        });
-        const isResizable = bbn.fn.count(tmp, { isResizable: true }) >= 2;
+        const isResizable = bbn.fn.count(this.panes, {isResizable: true}) >= 2;
         if (this.panes.length && hasPercent && isResizable && !hasAuto) {
           throw bbn._('In a resizable splitter, if a pane has a percentage measure, at least one pane must be meausreless or set at "auto"');
         }
@@ -672,6 +695,9 @@ const cpDef = {
       }
     }
   },
+  created() {
+    this.componentClass.push('bbn-resize-emitter');
+  },
   watch: {
     ready() {
       setTimeout(() => {
@@ -704,9 +730,16 @@ const cpDef = {
     currentOrientation() {
       this.init();
     },
+    columnsCfg() {
+      bbn.fn.each(this.panes, pane => pane.pane.onResize());
+    },
+    rowsCfg() {
+      bbn.fn.each(this.panes, pane => pane.pane.onResize());
+    }
   },
 };
 
+import bbn from '@bbn/bbn';
 import cpHtml from './splitter.html';
 import cpStyle from './splitter.less';
 let cpLang = {};

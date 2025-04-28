@@ -133,6 +133,35 @@ export default {
       return res;
     },
 
+    flexDirectionStyle() {
+      if (this.isVisual && !this.visualShowAll) {
+        switch (this.visualOrientation) {
+          case 'right':
+            return 'row-reverse';
+          case 'left':
+            return 'row';
+          case 'bottom':
+            return 'column-reverse';
+          default:
+            return 'column';
+        }
+      }
+      else if (!this.isVisual && !this.isBreadcrumb && this.nav) {
+        switch (this.tabsOrientation) {
+          case 'right':
+            return 'row-reverse';
+          case 'left':
+            return 'row';
+          case 'bottom':
+            return 'column-reverse';
+          default:
+            return 'column';
+        }
+      }
+
+      return null;
+    },
+
     /**
      * Returns true if the visual blocks are on top or bottom of the selected container
      * @computed visualIsOnHeight
@@ -174,15 +203,8 @@ export default {
     numVisualCols() {
       if (this.isVisual && this.ready) {
         // Width greater or equal to height
-        let w = this.lastKnownWidth - (this.visualIsOnHeight ? this.visualSize : 0);
-        /*
-        if (this.splitterMounted) {
-          let splitter = this.getRef('splitter');
-          if (splitter.$el.clientWidth < w) {
-            w -= splitter.$el.clientWidth;
-          }
-        }
-          */
+        let w = this.getRef('mainPane').lastKnownWidth - (this.visualIsOnHeight ? this.visualSize : 0);
+
         if (this.visualRatio >= 1) {
           return Math.floor(w / this.visualSize);
         }
@@ -201,13 +223,8 @@ export default {
      */
     numVisualRows() {
       if (this.isVisual && this.ready) {
-        let h = this.lastKnownHeight - (this.visualIsOnHeight ? 0 : this.visualSize);
-        /*if (this.splitterMounted) {
-          let splitter = this.getRef('splitter');
-          if (splitter.$el.clientHeight < h) {
-            h -= splitter.$el.clientHeight;
-          }
-        }*/
+        let h = this.getRef('mainPane').lastKnownHeight - (this.visualIsOnHeight ? 0 : this.visualSize);
+
         if (this.visualRatio > 1) {
           return Math.round(h / this.visualSize * 1);
         }
@@ -362,11 +379,11 @@ export default {
           this.visualStyleContainer[view.url] = {};
         }
 
-        if (!this.urls[view.uid]) {
+        if (!this.containers[view.uid]) {
           return;
         }
 
-        const ct = this.urls[view.uid];
+        const ct = this.containers[view.uid];
         if (!ct?.isVisible || this.visualShowAll) {
           if (this.visualStyleContainer[view.uid].zoom != 0.5) {
             this.visualStyleContainer[view.uid] = { zoom: 0.1 };

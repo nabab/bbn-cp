@@ -2,6 +2,10 @@ import bbn from "@bbn/bbn";
 
 export default {
   props: {
+    inheritColor: {
+      type: Boolean,
+      default: false
+    },
     /**
      * The views shown at init.
      * @prop {Array} [[]] source
@@ -74,7 +78,10 @@ export default {
      */
     tabsList() {
       const base = this.splittable ? bbn.fn.filter(this.views, a => !a.pane) : this.views.slice();
-      return bbn.fn.multiorder(base, { fixed: 'desc', pinned: 'desc', idx: 'asc' });
+      return bbn.fn.multiorder(base, { fixed: 'desc', pinned: 'desc', idx: 'asc' }).map(a => a.idx);
+    },
+    tabsItems() {
+      return this.tabsList.map(idx => this.views[idx]);
     },
     timeList() {
       return bbn.fn.order(this.views.filter(a => !a.pane), 'last', 'desc').map(a => a.idx);
@@ -102,7 +109,7 @@ export default {
      */
     retrieveDirtyContainers() {
       this.dirtyContainers.splice(0, this.dirtyContainers.length);
-      bbn.fn.iterate(this.urls, v => {
+      bbn.fn.iterate(this.containers, v => {
         if (v.dirty) {
           this.dirtyContainers.push({
             idx: v.currentIndex,
@@ -130,8 +137,8 @@ export default {
         content: null,
         menu: null,
         loaded: null,
-        fcolor: null,
-        bcolor: null,
+        fcolor: this.inheritColor && this.parentContainer?.currentView?.fcolor ? this.parentContainer?.currentView?.fcolor : null,
+        bcolor: this.inheritColor && this.parentContainer?.currentView?.bcolor ? this.parentContainer?.currentView?.bcolor : null,
         load: false,
         pane: false,
         selected: null,
@@ -250,7 +257,7 @@ export default {
           ) {
             this.confirm(this.confirmLeave, () => {
               // Looking for dirty ones in registered forms of each container
-              let forms = this.urls[this.views[idx].uid].forms;
+              let forms = this.containers[this.views[idx].uid].forms;
               if (Array.isArray(forms) && forms.length) {
                 bbn.fn.each(forms, (f, k) => {
                   f.reset();
@@ -291,7 +298,7 @@ export default {
       }
 
       let uid = bbn.fn.randomString(8, 12).toLowerCase();
-      while (this.urls[uid]) {
+      while (this.containers[uid]) {
         uid = bbn.fn.randomString(8, 12).toLowerCase()
       }
 

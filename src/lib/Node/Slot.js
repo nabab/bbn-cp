@@ -23,20 +23,6 @@ export default class bbnSlotNode extends bbnNode
       throw new Error("Already creating");
     }
 
-    if (old && (old.bbnSchema === this)) {
-      if (this.comment && (this.comment === bbn.fn.isComment(old))) {
-        return old;
-      }
-  
-      const isLaunched = this.nodeSwitch(this.comment);
-      if (isLaunched) {
-        return isLaunched;
-      }
-    }
-    else if (old) {
-      bbn.fn.log("ALREADY INITIALIZED");
-    }
-
     this.isCreating = true;
 
     const name = this.attr.name ? this.attr.name.attrGetValue() : 'default';

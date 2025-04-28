@@ -5,7 +5,7 @@
          bbn-forget="!scrollable">
       <div :class="{'bbn-flex-width': !isVertical, 'bbn-flex-height': isVertical}"
            bbn-forget="!scrollable">
-        <div bbn-if="scrollable"
+        <div bbn-if="scrollable && !isVertical"
             class="bbn-tabs-button bbn-tabs-button-prev bbn-p bbn-middle bbn-header"
             @click="scrollTabs('left')">
           <i class="nf nf-fa-angle_left bbn-xlarge"/>
@@ -14,7 +14,7 @@
           'bbn-flex-fill': scrollable,
           'bbn-flex-width': !scrollable
         }"
-              :style="{backgroundColor: parentBackground, height: isVertical ? '100%' : undefined}">
+              :style="{backgroundColor: parentBackground}">
           <bbn-scroll bbn-forget="!scrollable && !isVertical"
                       ref="horizontal-scroll"
                       :axis="isVertical ? 'y' : 'x'"
@@ -33,8 +33,8 @@
                   :key="tab.uid || tab.url || tab.idx"
                   bbn-show="!tab.invisible"
                   :style="{
-                          backgroundColor: tab.bcolor || null,
-                          color: tab.fcolor || null
+                          backgroundColor: tab.bcolor,
+                          color: tab.fcolor
                           }"
                   :data-index="tab.idx"
                   :class="['bbn-transition-bcolor', 'bbn-border', 'bbn-state-default', 'bbn-unselectable', position, {
@@ -58,7 +58,7 @@
                         bbn-text="numProperties(tab.events)"/>
                 </div>
                 <div class="bbn-tabs-tab-loader bbn-border-text"
-                    :style="{borderColor: tab.fcolor || null}"
+                    :style="{borderColor: tab.fcolor}"
                     bbn-if="tab.loading"/>
                 <bbn-context :context="true"
                              @keydown.space.enter.prevent.stop="tab.idx !== value ? emitInput(tab.idx) : false"

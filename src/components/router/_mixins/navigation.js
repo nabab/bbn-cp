@@ -113,9 +113,9 @@ export default {
       hasEmptyURL: false,
       /**
        * All the URLS of the views.
-       * @data {Object} [{}] urls
+       * @data {Object} [{}] containers
        */
-      urls: {},
+      containers: {},
       /**
        * Current URL of the router.
        * @data {String} currentURL
@@ -169,15 +169,15 @@ export default {
      */
     selectedTab: {
       get() {
-        return bbn.fn.search(this.tabsList, { idx: this.selected })
+        return this.tabsList.indexOf(this.selected)
       },
       set(v) {
         //bbn.fn.log("SETING SELECTED TAB", v);
         let done = false;
         let i = v;
         while (i > -1) {
-          if (this.tabsList[i]) {
-            this.selected = this.tabsList[i].idx;
+          if (i in this.tabsList) {
+            this.selected = this.tabsList[i];
             done = true;
             break;
           }
@@ -187,8 +187,8 @@ export default {
         if (!done) {
           i = v;
           while (i < this.tabsList.length) {
-            if (this.tabsList[i]) {
-              this.selected = this.tabsList[i].idx;
+            if (i in this.tabsList) {
+              this.selected = this.tabsList[i];
               done = true;
               break;
             }
@@ -399,7 +399,7 @@ export default {
         for (const pane of this.currentPanes) {
           for (const [i, tab] of pane.tabs.entries()) {
             if (url.indexOf(tab.url) === 0) {
-              let container = this.urls[tab.uid];
+              let container = this.containers[tab.uid];
               if (!container || pane.selected !== i || tab.current !== url) {
                 pane.selected = i;
                 tab.current = url;
@@ -477,7 +477,7 @@ export default {
             const viewIdx = this.search(st);
             //bbn.fn.log("BAD ENTRY FIOR ENPTY URL", st, viewIdx);
             if (viewIdx !== false) {
-              if (!this.urls[this.views[viewIdx].uid]?.subrouter) {
+              if (!this.containers[this.views[viewIdx].uid]?.subrouter) {
                 if (this.views[viewIdx].current.indexOf(url) !== 0) {
                   bbn.fn.log("CANCELLING ROUTE FOR URL " + this.views[viewIdx].current + " ERROUTING TO " + url);
                   this.views[viewIdx].current = url;
@@ -491,8 +491,8 @@ export default {
                 }
               }
 
-              if (this.urls[this.views[viewIdx].uid]) {
-                this.activate(url, this.urls[this.views[viewIdx].uid]);
+              if (this.containers[this.views[viewIdx].uid]) {
+                this.activate(url, this.containers[this.views[viewIdx].uid]);
               }
             }
             // Otherwise the container is activated ie made visible
@@ -525,15 +525,15 @@ export default {
         throw new Error(bbn._('The selected index in bbn-router is not valid for navigation'));
       }
 
-      if (this.urls[uid] && (url !== this.currentURL)) {
+      if (this.containers[uid] && (url !== this.currentURL)) {
         //bbn.fn.log(bbn._("NAVIGATE FOR %s IN %s", url, this.baseURL || "root"));
         // First routing, triggered only once
-        if (this.urls[uid].currentView.pane) {
-          let pane = bbn.fn.getRow(this.currentPanes, { id: this.urls[uid].currentView.pane });
+        if (this.containers[uid].currentView.pane) {
+          let pane = bbn.fn.getRow(this.currentPanes, { id: this.containers[uid].currentView.pane });
           if (pane && pane.tabs) {
             let idx = bbn.fn.search(pane.tabs, {url: v.url});
             if (pane.tabs[idx]) {
-              this.activate(url, this.urls[uid]);
+              this.activate(url, this.containers[uid]);
             }
           }
         }
@@ -547,19 +547,19 @@ export default {
             });
           }
 
-          this.urls[uid].show();
+          this.containers[uid].show();
         }
 
-        if (this.urls[uid] && this.urls[uid].isLoaded) {
-          this.urls[uid].setCurrent(url);
-          let child = this.urls[uid].find('bbn-router');
+        if (this.containers[uid] && this.containers[uid].isLoaded) {
+          this.containers[uid].setCurrent(url);
+          let child = this.containers[uid].find('bbn-router');
           //bbn.fn.log(["IN ROUTER", url, this.getFullBaseURL(), child]);
           //bbn.fn.log("LOOKING FOR CHILD", child);
           if (child && !child.closest('bbn-floater')) {
             child.route(bbn.fn.substr(url, v.url.length + 1));
           }
           else {
-            let ifr = this.urls[uid].find('bbn-frame');
+            let ifr = this.containers[uid].find('bbn-frame');
             if (ifr) {
               ifr.route(bbn.fn.substr(url, v.url.length + 1));
             }
@@ -584,7 +584,7 @@ export default {
         }
         
         row = row[0];
-        if (!this.urls[row.uid]) {
+        if (!this.containers[row.uid]) {
           const ct = this.$components.find(a => a?.bbnSchema?.props.uid === row.uid);
           if (ct) {
             bbn.fn.warning("CT FOUND")
@@ -599,7 +599,7 @@ export default {
           }
         }
 
-        container = this.urls[row.uid];
+        container = this.containers[row.uid];
       }
 
       //bbn.fn.log("ACTIVATING " + url + " AND SENDING FOLLOWING CONTAINER:", container);
@@ -833,7 +833,7 @@ export default {
       if (this.isValidIndex(idx) && !this.views[idx].selected) {
         //bbn.fn.log("ACTIVATE INDEX");
         this.route(
-          this.urls[this.views[idx].uid] ? this.urls[this.views[idx].uid].currentURL
+          this.containers[this.views[idx].uid] ? this.containers[this.views[idx].uid].currentURL
             : this.views[idx].current
         );
       }
@@ -961,7 +961,7 @@ export default {
         let idx = this.search(newVal);
         if (idx !== false) {
           let v = this.views[idx];
-          let ct = this.urls[v.uid];
+          let ct = this.containers[v.uid];
           if (!v.pane) {
             this.selected = idx;
             if (ct) {

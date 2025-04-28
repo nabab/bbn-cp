@@ -9,7 +9,7 @@ export default {
     activeContainer() {
       const v = this.views[this.selected];
       if (v) {
-        return this.urls[v.uid];
+        return this.containers[v.uid];
       }
 
       return null;
@@ -54,7 +54,7 @@ export default {
         idx = this.selected;
       }
 
-      return this.urls[this.views[idx]?.uid];
+      return this.containers[this.views[idx]?.uid];
     },
     /**
      * Returns the corresponding container's component's DOM element.
@@ -84,7 +84,7 @@ export default {
         idx = this.selected;
       }
 
-      let router = this.urls[this.views[idx].uid].subrouter;
+      let router = this.containers[this.views[idx].uid].subrouter;
       if (router) {
         return router.getFinalContainer();
       }
@@ -115,8 +115,13 @@ export default {
     },
 
     onCreatePaneContainer(e, paneId) {
-      //bbn.fn.log(["CREATE PANE CONTAINER", paneId, e?.target]);
+      bbn.fn.log(["CREATE PANE CONTAINER", paneId, e?.target]);
       this.paneContainers[paneId] = e.target;
+    },
+
+    onRemovePaneContainer(e, paneId) {
+      bbn.fn.log(["DELETE PANE CONTAINER", paneId, e?.target]);
+      delete this.paneContainers[paneId];
     },
 
   }

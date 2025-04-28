@@ -38,7 +38,7 @@ export default {
       });
 
       if (!view.help) {
-        let sub = this.urls[view.uid].subrouter;
+        let sub = this.containers[view.uid].subrouter;
         if (sub && sub.views && sub.views.length) {
           let helps = [];
           sub.views.forEach(a => {
@@ -106,7 +106,7 @@ export default {
           key: "reload",
           icon: "nf nf-md-sync",
           action: () => {
-            this.urls[view.uid].reload();
+            this.containers[view.uid].reload();
           }
         });
       }

@@ -101,10 +101,10 @@ export default {
     },
     selectPaneTab(pane) {
       let view = pane.tabs[pane.selected];
-      if (view && this.urls[view.uid]) {
+      if (view && this.containers[view.uid]) {
         view.last = bbn.fn.timestamp();
-        if (view.load && !this.urls[view.uid].isLoaded) {
-          this.urls[view.uid].loadView(view.current);
+        if (view.load && !this.containers[view.uid].isLoaded) {
+          this.containers[view.uid].loadView(view.current);
         }
       }
     },
@@ -171,19 +171,19 @@ export default {
         let paneId = view.pane;
         if (paneId) {
           let pane = bbn.fn.getRow(this.currentPanes, { id: paneId });
-          if (pane && pane.tabs) {
-            let idx = bbn.fn.search(pane.tabs, { idx: containerIdx });
-            if (idx > -1) {
-              pane.tabs.splice(idx, 1);
-              if (pane.selected >= idx) {
-                pane.selected--;
-              }
-              else if ((pane.selected === idx) && !pane[idx] && pane.tabs.length) {
-                pane.selected--;
-              }
-              view.pane = false;
-              this.$nextTick(() => {
-                this.selected = containerIdx;
+          view.pane = false;
+          this.$nextTick(() => {
+            this.selected = containerIdx;
+            if (pane && pane.tabs) {
+              let idx = bbn.fn.search(pane.tabs, { idx: containerIdx });
+              if (idx > -1) {
+                pane.tabs.splice(idx, 1);
+                if (pane.selected >= idx) {
+                  pane.selected--;
+                }
+                else if ((pane.selected === idx) && !pane[idx] && pane.tabs.length) {
+                  pane.selected--;
+                }
                 if (!pane.tabs.length) {
                   this.removePane(paneId);
                 }
@@ -191,10 +191,10 @@ export default {
                 else if (pane.selected >= idx) {
                   this.getRef('pane' + pane.id).onResize(true);
                 }*/
-              })
+              }
             }
-          }
-          this.updatePortalTargets();
+            this.updatePortalTargets();
+          });
         }
       }
     },

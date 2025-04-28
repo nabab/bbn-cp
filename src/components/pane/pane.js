@@ -16,11 +16,11 @@ const cpDef = {
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.resizer
    */
-  mixins: 
-  [
-    bbn.cp.mixins.basic, 
-    bbn.cp.mixins.resizer
-  ],
+  mixins:
+    [
+      bbn.cp.mixins.basic,
+      bbn.cp.mixins.resizer
+    ],
   props: {
     /**
      * @prop {String} ['hidden'] overflow
@@ -116,7 +116,7 @@ const cpDef = {
         return {};
       }
 
-      return bbn.fn.getRow(this.splitter.panes, {pane: this});
+      return bbn.fn.getRow(this.splitter.panes, { pane: this });
     },
     componentStyle() {
       if (this.currentConfig?.value) {
@@ -164,7 +164,7 @@ const cpDef = {
 
       return false;
     },
-    prevVisible(){
+    prevVisible() {
       if (this.splitter && this.currentConfig) {
         let idx = this.currentConfig.index - 1;
         while (idx >= 0) {
@@ -178,7 +178,7 @@ const cpDef = {
         return false;
       }
     },
-    nextVisible(){
+    nextVisible() {
       if (this.splitter && this.currentConfig) {
         let idx = this.currentConfig.index + 1;
         while (idx < this.splitter.panes.length) {
@@ -192,27 +192,27 @@ const cpDef = {
         return false;
       }
     },
-    isPrevVisibleCollapsible(){
+    isPrevVisibleCollapsible() {
       return this.prevVisible
         && this.prevCollapsible
         && (this.prevVisible.index === this.prevCollapsible.index);
     },
-    isNextVisibleCollapsible(){
+    isNextVisibleCollapsible() {
       return this.nextVisible
         && this.nextCollapsible
         && (this.nextVisible.index === this.nextCollapsible.index);
     },
-    isTopLeftCollapseVisible(){
+    isTopLeftCollapseVisible() {
       return (this.isPrevVisibleCollapsible && !this.prevVisible.collapsed)
         || (this.isCollapsible && this.isCollapsed && !this.nextVisible);
     },
-    isBottomRightCollapseVisible(){
+    isBottomRightCollapseVisible() {
       return (this.isCollapsible && !this.isCollapsed)
         || (this.isPrevVisibleCollapsible
           && this.prevVisible?.collapsed
           && this.nextVisible);
     },
-    isTopLeftFullCollapseVisible(){
+    isTopLeftFullCollapseVisible() {
       let idx = this.currentConfig.index - 1;
       let panesNotCollapsed = 0;
       let panesCollapsible = 0;
@@ -236,7 +236,7 @@ const cpDef = {
         && ((!this.isCollapsed && (panesNotCollapsed > 1))
           || (this.isCollapsed && panesNotCollapsed));
     },
-    isBottomRightFullCollapseVisible(){
+    isBottomRightFullCollapseVisible() {
       let idx = this.currentConfig.index;
       let panesNotCollapsed = 0;
       let panesCollapsible = 0;
@@ -262,7 +262,7 @@ const cpDef = {
     },
   },
   methods: {
-    topLeftCollapse(){
+    topLeftCollapse() {
       if (this.isTopLeftCollapseVisible) {
         if (this.isCollapsed) {
           this.currentConfig.collapsed = false;
@@ -283,7 +283,7 @@ const cpDef = {
         }
       }
     },
-    bottomRightCollapse(){
+    bottomRightCollapse() {
       if (this.isBottomRightCollapseVisible) {
         if (this.isPrevVisibleCollapsible
           && this.prevVisible.collapsed
@@ -307,7 +307,7 @@ const cpDef = {
         }
       }
     },
-    topLeftFullCollapse(){
+    topLeftFullCollapse() {
       if (this.isCollapsible) {
         this.currentConfig.collapsed = false;
         this.isCollapsed = false;
@@ -321,7 +321,7 @@ const cpDef = {
         this.currentConfig.forceAuto = true;
       }
     },
-    bottomRightFullCollapse(){
+    bottomRightFullCollapse() {
       if (this.isCollapsible) {
         this.bottomRightFullCollapseRec();
         if (this.isPrevVisibleCollapsible) {
@@ -335,14 +335,14 @@ const cpDef = {
         }
       }
     },
-    topLeftFullCollapseRec(){
+    topLeftFullCollapseRec() {
       if (this.isPrevVisibleCollapsible) {
         this.prevVisible.collapsed = true;
         this.prevVisible.pane.isCollapsed = true;
         this.prevVisible.pane.topLeftFullCollapseRec();
       }
     },
-    bottomRightFullCollapseRec(){
+    bottomRightFullCollapseRec() {
       if (this.isCollapsible) {
         this.currentConfig.collapsed = true;
         this.isCollapsed = true;
@@ -352,39 +352,41 @@ const cpDef = {
       }
     }
   },
-  watch:{
-    collapsed(val){
+  watch: {
+    collapsed(val) {
       this.isCollapsed = val;
     },
     invisible(val) {
       this.currentHidden = val;
       this.splitter.init();
     },
-    isCollapsed(val){
+    isCollapsed(val) {
       if (this.currentConfig) {
         this.currentConfig.collapsed = val;
       }
     },
-    isCollapsible(val){
+    isCollapsible(val) {
       if (this.currentConfig) {
         this.currentConfig.collapsible = val;
       }
     }
   },
-  created(){
+  created() {
     this.componentClass.push('bbn-resize-emitter');
   },
-  mounted(){
+  mounted() {
     this.splitter = this.closest('bbn-splitter');
-    if (this.splitter){
-      this.selfEmit(true);
-      this.splitter.init();
-      setTimeout(() => {
-        this.ready = true;
-        this.$nextTick(this.splitter.updateOrientation);
-      }, 40)
-    }
+    this.splitter.$on('ready', () => {
+      this.ready = true;
+    });
+    this.splitter.register(this);
   },
+  beforeDestroy() {
+    if (this.splitter) {
+      this.splitter.$off('ready');
+      this.splitter.unregister(this);
+    }
+  }
 };
 
 
@@ -399,7 +401,7 @@ if (bbn.env.lang) {
       cpLang = cpLang.default;
     }
   }
-  catch (err) {}
+  catch (err) { }
 }
 
 export default {

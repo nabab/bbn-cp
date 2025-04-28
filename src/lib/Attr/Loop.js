@@ -102,8 +102,8 @@ export default class bbnLoopAttr extends bbnAttr
       let currentNode = cp.$retrieveNode(node.id, hash);
       let ele = currentNode?.element;
       if (ele && !ele.parentNode) {
-        bbn.fn.log(["ELEMENT NOT IN DOM", node.id, ele, hash]);
-        debugger;
+        //bbn.fn.log(["ELEMENT NOT IN DOM", node.id, ele, hash]);
+        //debugger;
         ele = false;
         currentNode.element = false;
       }

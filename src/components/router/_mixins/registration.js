@@ -47,8 +47,8 @@ export default {
     register(cp, fake) {
       bbn.fn.checkType(cp, bbnContainer);
       if (cp.isRegistered) {
-        bbn.fn.log(["It exists", this.urls[cp.routerUid].$numBuild, this.numRegistered, this.views[0].real]);
-        if (this.urls[cp.routerUid]) {
+        bbn.fn.log(["It exists", this.containers[cp.routerUid].$numBuild, this.numRegistered, this.views[0].real]);
+        if (this.containers[cp.routerUid]) {
           throw new Error(bbn._('Two containers cannot have the same URL defined') + '(' + cp.url + ')');
         }
         else {
@@ -79,7 +79,7 @@ export default {
       }
 
       this.numRegistered++;
-      this.urls[cp.routerUid] = cp;
+      this.containers[cp.routerUid] = cp;
       //bbn.fn.log("VIEW ON VISUAL")
       cp.$on('view', () => {
         if (this.isVisual) {
@@ -114,14 +114,14 @@ export default {
       }
       if (idx !== false) {
         if (this.views[idx].uid !== cp.routerUid) {
-          delete this.urls[cp.routerUid];
+          delete this.containers[cp.routerUid];
         }
         else {
           // Changing the container
         }
       }
       else {
-        delete this.urls[cp.routerUid];
+        delete this.containers[cp.routerUid];
         this.numRegistered--;
       }
     },

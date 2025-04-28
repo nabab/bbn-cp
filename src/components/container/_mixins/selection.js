@@ -249,7 +249,7 @@ export default {
         }, true, this);
       }
       else{
-        if (this.router.urls[this.routerUid]) {
+        if (this.router.containers[this.routerUid]) {
           return;
         }
 

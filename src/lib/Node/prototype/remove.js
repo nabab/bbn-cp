@@ -1,4 +1,3 @@
-import disconnected from "../../Html/private/disconnected.js";
 import bbnNode from "../Node.js";
 
 const removeElement = function(res, ele, node) {
@@ -8,11 +7,30 @@ const removeElement = function(res, ele, node) {
     }
 
     if (node) {
-      if (!node.comment && node.element && node.events?.['hook:destroy']) {
-        const destroy = new Event('hook:destroy');
-        node.element.dispatchEvent(destroy);
+      if (!(ele instanceof Comment) && node.events?.['hook:destroy']) {
+        const destroy = new CustomEvent('hook:destroy', bbn.fn.createObject({
+          cancelable: false,
+          detail: {
+            __bbnEvent: true,
+            __bbnCid: ele.bbnComponent?.$cid
+          }
+        }));
+        ele.dispatchEvent(destroy);
       }
 
+      if (!node.isComponent && ele.tagName && node.attributes?.length) {
+        for (let i = 0; i < node.attributes.length; i++) {
+          if (node.attributes[i] instanceof bbnEventAttr) {
+            ele.removeEventListener(node.attributes[i].name, node.attributes[i].handler, node.attributes[i].cfg);
+          }
+    
+          if (node.attributes[i] instanceof bbnModelAttr) {
+            const eventName = node.attributes[i].modifiers.includes('lazy') ? 'change' : 'input';
+            ele.removeEventListener(eventName, node.attributes[i].handler);
+          }
+        }
+      }
+    
       if (node?.oldElement === ele) {
         node.oldElement = null;
       }
@@ -101,9 +119,14 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
         }
 
         if (element.isConnected) {
-          debugger;
-          element.parentNode.removeChild(element);
-          bbn.fn.log("Removed", element);
+          if (node.component.bbnSchema?.forget?.value) {
+            node.component.bbnSchema.element.parentNode.insertBefore(element, node.component.bbnSchema.element);
+          }
+          else {
+            debugger;
+            element.parentNode.removeChild(element);
+            bbn.fn.log("Removed", element);
+          }
         }
       }
       else {
@@ -122,19 +145,6 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
       }
     }
   }*/
-
-  if (!node?.isComponent && ele.tagName && node?.attributes.length) {
-    for (let i = 0; i < node.attributes.length; i++) {
-      if (node.attributes[i] instanceof bbnEventAttr) {
-        ele.removeEventListener(node.attributes[i].name, node.attributes[i].handler, node.attributes[i].cfg);
-      }
-
-      if (node.attributes[i] instanceof bbnModelAttr) {
-        const eventName = node.attributes[i].modifiers.includes('lazy') ? 'change' : 'input';
-        ele.removeEventListener(eventName, node.attributes[i].handler);
-      }
-    }
-  }
 
   removeElement(true, ele, node);
 };

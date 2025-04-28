@@ -204,6 +204,10 @@ const resizer = {
         });
         this.resizerObserver.observe(this.resizerObserved);
       }
+
+      if (this.parentResizer) {
+        this.parentResizer.$on('resize', this.onResize, false, this);
+      }
     },
     /**
      * Unsets the resize emitter.
@@ -214,6 +218,9 @@ const resizer = {
       if (this.resizerObserver) {
         this.resizerObserver.disconnect();
         this.resizerObserver = null;
+      }
+      if (this.parentResizer) {
+        this.parentResizer.$off('resize', this.onResize, this);
       }
     },
     formatSize(...args) {
@@ -242,6 +249,7 @@ const resizer = {
    * @memberof resizerComponent
    */
   mounted() {
+    this.parentResizer = this.getParentResizer();
     this.onResize();
     this.setResizeEvent();
   },

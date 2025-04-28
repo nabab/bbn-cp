@@ -580,9 +580,18 @@ export default {
       }
     },
 
+    currentPaneId: {
+      get() {
+        return this.currentView?.pane;
+      },
+      set(v) {
+        this.currentView.pane = v;
+      }
+
+    },
     currentPane() {
       if (this.isPane) {
-        return bbn.fn.getRow(this.router.currentPanes, {id: this.currentView.pane})
+        return bbn.fn.getRow(this.router.currentPanes, {id: this.currentPaneId})
       }
 
       return null;
@@ -940,5 +949,8 @@ export default {
         this.router.retrieveDirtyContainers();
       }
     },
+    currentPaneId() {
+      setTimeout(this.onResize, 500);
+    }
   }
 }

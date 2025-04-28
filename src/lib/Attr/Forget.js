@@ -98,11 +98,18 @@ export default class bbnForgetAttr extends bbnAttr
                     node.element.bbnSlots[it.bbnSchema?.attr?.slot?.value || 'default'].push(it);
                   }
                 }
+                if (node.element.$slotElements[it.bbnSchema?.attr?.slot?.value || 'default']) {
+                  node.element.$slotElements[it.bbnSchema?.attr?.slot?.value || 'default'].bbnSchema.nodeInit(true);
+                }
+
+                if (it.parentNode === parent) {
+                  i++;
+                }
               }
               else {
-                parent.insertBefore(it, node.element);
+                node.element.append(it);
               }
-              node.element.append(it);
+
               if (hasClass) {
                 it.classList.remove('bbn-is-moving');
               }

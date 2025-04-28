@@ -61,8 +61,8 @@ export default {
     hasVerticalTabs() {
       return !this.isVisual
         && !this.isBreadcrumb
-        && ((this.orientation === 'left')
-          || (this.orientation === 'right'));
+        && ((this.tabsOrientation === 'left')
+          || (this.tabsOrientation === 'right'));
     },
   },
   methods: {
@@ -111,9 +111,11 @@ export default {
         let c = this.setContainerMeasures();
         if (m || c) {
           this.$emit('resize');
-        }
-        if (this.isVisual && (this.orientation === 'auto') && !this.lockedVisualOrientation) {
-          this.visualOrientation = this.clientWidth > this.clientHeight ? 'left' : 'top';
+          if (this.isVisual && (this.orientation === 'auto') && !this.lockedVisualOrientation) {
+            this.visualOrientation = this.clientWidth > this.clientHeight ? 'left' : 'top';
+          }
+
+          this.updateVisualList();
         }
       }, 'resize', 50);
     },

@@ -29,7 +29,7 @@ export default {
     },
     visualStyle() {
       let r = this.router;
-      if (r && r.isVisual && this.visual) {
+      if (r && r.isVisual && this.visual && !this.isPane) {
         if ((r.numVisualReals > 0) && (!this.isVisible || r.visualShowAll) && (!this.ready || !this.isPane)) {
           return {
             zoom: 0.1,

@@ -18,8 +18,8 @@ export default {
       return this.views[idx] &&
         //!this.views[idx].real &&
         this.views[idx].load &&
-        this.urls[this.views[idx].uid] &&
-        this.urls[this.views[idx].uid].isLoaded;
+        this.containers[this.views[idx].uid] &&
+        this.containers[this.views[idx].uid].isLoaded;
     },
 
 
@@ -48,14 +48,14 @@ export default {
           this.confirm(this.confirmLeave, () => {
             if (this.checkLoaded(idx)) {
               // Looking for dirty ones in registered forms of each container
-              let forms = this.urls[item.uid].forms;
+              let forms = this.containers[item.uid].forms;
               if (Array.isArray(forms) && forms.length) {
                 bbn.fn.each(forms, (f, k) => {
                   f.reset();
                 });
               }
-              if (this.urls[item.uid].popups?.length) {
-                this.urls[item.uid].popups.splice(0);
+              if (this.containers[item.uid].popups?.length) {
+                this.containers[item.uid].popups.splice(0);
               }
 
               this.removeItem(idx, true, obj);

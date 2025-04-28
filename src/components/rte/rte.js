@@ -873,7 +873,7 @@ const cpDef = {
       /**
        * @method setColors
        */
-      setColors(){
+      setColors() {
         if (this.fontColorComponent) {
           this.fontColorComponent.currentColor = bbn.fn.rgb2hex(bbnRte.queryCommandValue('foreColor'));
         }
