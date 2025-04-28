@@ -88,14 +88,30 @@ export default {
     },
     latest() {
       if (this.timeList.length > 1) {
-        let isOk = false;
         let i = 1;
+        let doAgain = false;
         while (i in this.timeList) {
+          if (!this.views[this.timeList[i]]) {
+            this.$computed.timeList.computedUpdate();
+            doAgain = true;
+            break;
+          }
           if ((this.timeList[i] !== this.selected) && !this.views[this.timeList[i]].pane) {
             return this.timeList[i];
           }
 
           i++;
+        }
+
+        if (doAgain) {
+          let i = 1;
+          while (i in this.timeList) {
+            if ((this.timeList[i] !== this.selected) && !this.views[this.timeList[i]].pane) {
+              return this.timeList[i];
+            }
+  
+            i++;
+          }
         }
       }
 
@@ -269,18 +285,32 @@ export default {
           }
           else if (this.views[idx]) {
             const uid = this.views[idx].uid;
-            this.$emit('close', idx, onClose);
-            //const replacers = replacer ? [this.getViewObject(replacer)] : [];
             const replacers = replace ? [bbn.fn.extend(this.getViewObject(replace), {idx, uid})] : [];
-            this.views.splice(idx, 1, ...replacers);
-            this.fixIndexes();
-            this.updateVisualList();
-            this.$forceUpdate();
+            const selected = this.selected;
             if (!replacers.length && !this.views[idx]?.pane && (idx === this.selected) && this.views.length) {
-              this.activateIndex(this.views[this.latest] ? this.latest : this.views.length - 1);
+              this.views[idx].selected = false;
+              //this.activateIndex(this.views[this.latest] ? this.latest : this.views.length - 1);
             }
 
-            this.updateVisualList();
+            this.selected = false;
+
+            debugger;
+            this.$emit('close', idx, onClose);
+            //const replacers = replacer ? [this.getViewObject(replacer)] : [];
+            this.views.splice(idx, 1, ...replacers);
+            this.fixIndexes();
+              if (selected === idx) {
+                this.selected = this.latest - (idx < this.latest ? 1 : 0);
+              }
+              else if (selected > idx) {
+                this.selected = selected - 1;
+              }
+              else {
+                this.selected = selected;
+              }
+
+              this.updateVisualList();
+
             return true;
           }
         }
