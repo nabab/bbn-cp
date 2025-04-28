@@ -212,10 +212,10 @@ const cpDef = {
   },
   methods: {
     getPrefixFromValue(){
-      if (this.value?.length) {
+      if (this.value && this.value.toString().length) {
         let p = '';
         bbn.fn.each(bbn.var.phoneCodes, c => {
-          if (this.value.startsWith(c.prefix) && (c.prefix.length > p.length)) {
+          if (this.value.toString().startsWith(c.prefix) && (c.prefix.length > p.length)) {
             p = c.prefix;
           }
         });
@@ -228,9 +228,9 @@ const cpDef = {
       return '';
     },
     getNumberFromValue(){
-      if (this.value) {
+      if (this.value && this.value.toString().length) {
         const prefix = this.getPrefixFromValue();
-        return this.value.replace(prefix, '');
+        return this.value.toString().replace(prefix, '');
       }
 
       return '';
