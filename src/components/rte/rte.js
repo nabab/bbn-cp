@@ -811,7 +811,7 @@ const cpDef = {
        * @fires setAlign
        */
       rteOnKeydown(event) {
-        bbn.fn.log("rteOnKeydown")
+        //bbn.fn.log("rteOnKeydown")
         if (event.key === 'Enter') {
           event.stopPropagation();
           event.stopImmediatePropagation();
@@ -832,7 +832,7 @@ const cpDef = {
        * @fires setAlign
        */
       rteOnClick(event){
-        bbn.fn.log("rteOnClick")
+        //bbn.fn.log("rteOnClick")
         this.updateButtonsState();
         this.setColors();
         this.setStyle();
@@ -844,7 +844,7 @@ const cpDef = {
        * @method rteOnInput
        */
       rteOnInput(target) {
-        bbn.fn.log("rteOnInput")
+        //bbn.fn.log("rteOnInput")
         let firstChild = target.firstChild;
         if (firstChild && firstChild.nodeType === 3) {
           bbnRte.exec(bbnRte.formatBlock, `<${this.defaultParagraphSeparator}>`);
@@ -1002,9 +1002,9 @@ const cpDef = {
         iframeCSSLinks: this.iFrame ? this.iframeCSSLinks : []
       };
 
-      if (!this.currentHeight) {
+      //if (!this.currentHeight) {
         this.setContent();
-      }
+      //}
 
       /*
       buttons.forEach(action => {
