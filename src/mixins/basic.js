@@ -250,6 +250,11 @@ const basic = {
       this.componentClass.push(this.$options.name);
     }
   },
+  mounted(){
+    this.$nextTick(() => {
+      this._currentPopup = this._retrievePopup();
+    });
+  },
   watch: {
     /**
      * Emits the event 'ready' when the value is true.
