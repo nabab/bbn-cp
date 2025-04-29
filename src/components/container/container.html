@@ -3,6 +3,7 @@
   'bbn-100': !visual && router?.scrollContent,
   'bbn-w-100': !router?.scrollContent && !router?.visualShowAll,
   'bbn-background': true,
+  'bbn-radius': router?.isVisual && visual
 }]"
      :style="visualStyle"
      bbn-show="currentView && router?.ready && ((!router?.isVisual && isVisible) || isVisualVisible || isPane)">
@@ -21,9 +22,8 @@
           bbn-show="isVisible || router?.isVisual">
         <!-- The header for visual and full screen -->
         <div bbn-if="!isPane && (visual || fullScreen)"
-            :class="'bbn-transition-bcolor bbn-b bbn-spadding bbn-flex-width ' + (isVisible ? ' bbn-m' : '')"
+            :class="'bbn-transition-bcolor bbn-b bbn-xspadding bbn-flex-width ' + (isVisible ? ' bbn-m' : '')"
             :style="{
-              fontSize: isVisible && !router?.visualShowAll ? null : '10rem',
               backgroundColor: bcolor || router?.bcolor,
               color: fcolor || router?.fcolor
             }">
@@ -134,7 +134,7 @@
     <!-- When in visual mode a layer prevents interaction with the content -->
     <div bbn-if="currentView && router?.isVisual && (!isVisible || router?.visualShowAll) && !isPane"
         class="bbn-overlay"
-        style="z-index: 12; background-color: black; opacity: 0.2;">
+        style="z-index: 12; background-color: transparent">
     </div>
     <!-- When in visual mode this is the interaction layer -->
     <div bbn-if="currentView && router?.isVisual && (!isVisible || router?.visualShowAll)"
@@ -145,40 +145,12 @@
          style="z-index: 12">
       <transition name="fade">
         <div class="bbn-bottom-left bbn-w-100"
-             bbn-show="isOver"
-             :style="{
-                fontSize: isVisible && !router?.visualShowAll ? null : '10rem'
-             }">
+             bbn-show="isOver">
           <!-- Semi-transparent dark layer these buttons are not used -->
-          <div class="bbn-w-100 bbn-bg-black"
-               style="opacity: 0.6; color: transparent">
-            <!--div class="bbn-w-50 bbn-spadding">
-              &nbsp;
-              <bbn-context class="bbn-spadding bbn-iblock bbn-p"
-                           tag="span"
-                           :source="showMenu">
-                <i class="nf nf-fa-bars"
-                   @click.stop="pin"/>
-              </bbn-context>
-            </div-->
-            <div class="bbn-w-100 bbn-r bbn-vlpadding">
-              <span bbn-if="!pinned && !fixed"
-                    class="bbn-right-xlmargin bbn-p">
-                <i class="nf nf-oct-pin"/>
-              </span>
-              <span class="bbn-right-xlmargin bbn-p"
-                    bbn-if="!pinned && !fixed">
-                <i class="nf nf-fa-times"/>
-              </span>
-              <span class="bbn-right-xlmargin bbn-p"
-                    bbn-elseif="pinned && !fixed">
-                <i class="nf nf-md-pin_off"/>
-              </span>
-              &nbsp;
-            </div>
-          </div>
+          <div class="bbn-overlay bbn-bg-black"
+               style="opacity: 0.6; color: transparent"/>
           <!-- These buttons are the real ones (white) -->
-          <div class="bbn-bottom-left bbn-w-100 bbn-white">
+          <div class="bbn-w-100 bbn-white">
             <!--div class="bbn-w-50 bbn-spadding">
               &nbsp;
               <bbn-context class="bbn-spadding bbn-iblock bbn-p"
@@ -188,18 +160,18 @@
                    @click.stop="pin"/>
               </bbn-context>
             </div-->
-            <div class="bbn-w-100 bbn-r bbn-vlpadding">
+            <div class="bbn-w-100 bbn-r bbn-vspadding">
               <span bbn-if="!pinned && !fixed"
                     @click.stop="pin"
-                    class="bbn-right-xlmargin bbn-p">
+                    class="bbn-right-slmargin bbn-p">
                 <i class="nf nf-oct-pin"/>
               </span>
-              <span class="bbn-right-xlmargin bbn-p"
+              <span class="bbn-right-xsmargin bbn-p"
                     @click.stop="close"
                     bbn-if="!pinned && !fixed">
                 <i class="nf nf-fa-times"/>
               </span>
-              <span class="bbn-right-xlmargin bbn-p"
+              <span class="bbn-right-xsmargin bbn-p"
                     @click.stop="unpin"
                     bbn-elseif="pinned && !fixed">
                 <i class="nf nf-md-pin_off"/>

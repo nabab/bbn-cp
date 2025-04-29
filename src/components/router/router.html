@@ -44,8 +44,8 @@
               ref="visualRouter"
               :tabindex="visualShowAll ? 0 : -1">
             <div bbn-if="(selected !== null) && (views.length > numVisuals)"
-                class="bbn-bg-black bbn-white bbn-p bbn-container-ratio"
-                style="order: 1"
+                class="bbn-bg-black bbn-white bbn-p bbn-container-ratio bbn-radius"
+                style="order: 1; box-shadow: 0px 0px 4px var(--shadow-box);"
                 @click="visualShowAll = !visualShowAll">
               <div class="bbn-overlay bbn-middle">
                 <div class="bbn-block bbn-xxxl">

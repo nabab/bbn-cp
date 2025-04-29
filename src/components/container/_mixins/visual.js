@@ -32,11 +32,12 @@ export default {
       if (r && r.isVisual && this.visual && !this.isPane) {
         if ((r.numVisualReals > 0) && (!this.isVisible || r.visualShowAll) && (!this.ready || !this.isPane)) {
           return {
-            zoom: 0.1,
+            //zoom: 0.1,
             width: '100%',
             height: 'auto',
             overflow: 'hidden',
-            display: bbn.fn.getRow(this.router.visualList, 'uid', this.routerUid) ? 'block' : 'none'
+            display: bbn.fn.getRow(this.router.visualList, 'uid', this.routerUid) ? 'block' : 'none',
+            boxShadow: '0px 0px 4px var(--shadow-box)'
           };
         }
 
