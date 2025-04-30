@@ -31,25 +31,26 @@
               flexDirection: flexDirectionStyle
             }">
         <bbn-scroll class="bbn-router-scroller"
-                    :axis="visualShowAll ? 'y' : (['left', 'right'].includes(visualOrientation) ? 'y' : 'x')"
+                    axis="y"
                     :scrollable="visualShowAll"
                     :style="{
                       overflow: 'auto',
-                      height: visualShowAll || ['left', 'right'].includes(visualOrientation) ? '100%' : (visualSize+20) + 'px',
-                      width: visualShowAll || !['left', 'right'].includes(visualOrientation) ? '100%' : (visualSize+20) + 'px',
+                      height: visualShowAll || ['left', 'right'].includes(visualOrientation) ? '100%' : 'auto',
+                      width: visualShowAll || !['left', 'right'].includes(visualOrientation) ? '100%' : 'auto',
                     }"
                     bbn-if="isVisual">
           <div class="bbn-w-100 bbn-router-visual"
               :style="visualStyle"
+              bbn-if="visualList.length > 1"
               ref="visualRouter"
               :tabindex="visualShowAll ? 0 : -1">
-            <div bbn-if="(selected !== null) && (views.length > numVisuals)"
-                class="bbn-bg-black bbn-white bbn-p bbn-container-ratio"
-                style="order: 1"
+            <div bbn-if="views.length > numVisuals"
+                class="bbn-bg-black bbn-white bbn-p bbn-container-ratio bbn-radius bbn-sshadow"
+                style="order: 1;"
                 @click="visualShowAll = !visualShowAll">
               <div class="bbn-overlay bbn-middle">
-                <div class="bbn-block bbn-xxxl">
-                  <i :class="'nf nf-fa-' + (visualShowAll ? 'minus' : 'plus')"/>
+                <div class="bbn-block bbn-xxxxl">
+                  <i :class="'nf nf-md-' + (visualShowAll ? 'minus' : 'plus') + '_thick'"/>
                 </div>
               </div>
             </div>
@@ -57,6 +58,7 @@
                 :key="a.uid"
                 :style="{order: i + 2}"
                 :ref="'bbn-router-visual-' + i.toString()"
+                class="bbn-sshadow bbn-radius bbn-container-ratio"
                 bbn-if="!views[a.idx]?.real"
                 bbn-show="(visualShowAll || a.visible) && (a.idx !== selected)"
                 @hook:create="addVisualContainer($event, a.uid)"
@@ -136,10 +138,10 @@
                                 && bc.views[bc.selected]
                                 && !bc.views[bc.selected].fixed
                                 && !bc.views[bc.selected].pinned"
-                          class="bbn-p bbn-iblock bbn-top-right bbn-hxspadding bbn-xs"
+                          class="bbn-p bbn-iblock bbn-top-right bbn-xspadding bbn-xs"
                           @mousedown.prevent.stop="bc.close(bc.selected)"
                           @mouseup.prevent.stop>
-                          <i class="nf nf-fa-times"/>
+                          <i class="nf nf-md-close_thick"/>
                         </span>
                         <bbn-context bbn-if="isNumber(bc.selected) && bc.views[bc.selected] && bc.views[bc.selected].menu"
                                     :source="() => bc.getMenuFn(bc.selected)"
@@ -170,7 +172,12 @@
         </bbn-tabs>
         <!-- END OF TABS -->
         <!-- START OF CONTENT -->
-        <div class="bbn-flex-fill"
+        <div :class="['bbn-flex-fill', {
+          'bbn-router-visual-container': isVisual,
+          'bbn-right-spadding': isVisual && !visualShowAll && ['left', 'top', 'bottom'].includes(visualOrientation),
+          'bbn-left-spadding': isVisual && !visualShowAll && ['left', 'right', 'top', 'bottom'].includes(visualOrientation),
+          'bbn-bottom-spadding': isVisual && !visualShowAll && ['right', 'top', 'left', 'bottom'].includes(visualOrientation),
+        }]"
              bbn-forget="!scrollContent">
           <slot :filter="filterIsContainer"/>
           <bbn-container bbn-for="a in views"

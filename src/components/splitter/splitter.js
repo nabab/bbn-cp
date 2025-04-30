@@ -446,7 +446,9 @@ const cpDef = {
 
       this.numRegistered++;
       this.$emit('registered', pane);
-      this.updateOrientation();
+      if (!this.updateOrientation()) {
+        this.init();
+      }
     },
 
     unregister(cp) {
@@ -687,12 +689,16 @@ const cpDef = {
         if (or !== this.currentOrientation) {
           this.currentOrientation = this.getOrientation();
           this.init();
+          return true;
         }
       }
       else if (this.orientation !== this.currentOrientation) {
         this.currentOrientation = this.orientation;
         this.init();
+        return true;
       }
+
+      return false;
     }
   },
   created() {

@@ -287,29 +287,20 @@ export default {
             const uid = this.views[idx].uid;
             const replacers = replace ? [bbn.fn.extend(this.getViewObject(replace), {idx, uid})] : [];
             const selected = this.selected;
-            if (!replacers.length && !this.views[idx]?.pane && (idx === this.selected) && this.views.length) {
-              this.views[idx].selected = false;
-              //this.activateIndex(this.views[this.latest] ? this.latest : this.views.length - 1);
-            }
-
-            this.selected = false;
-
-            debugger;
-            this.$emit('close', idx, onClose);
             //const replacers = replacer ? [this.getViewObject(replacer)] : [];
             this.views.splice(idx, 1, ...replacers);
             this.fixIndexes();
               if (selected === idx) {
-                this.selected = this.latest - (idx < this.latest ? 1 : 0);
+                if (!replacers.length && !this.views[idx]?.pane && (idx === this.selected) && this.views.length) {
+                  this.selected = this.latest - (idx < this.latest ? 1 : 0);
+                }
               }
               else if (selected > idx) {
                 this.selected = selected - 1;
               }
-              else {
-                this.selected = selected;
-              }
 
               this.updateVisualList();
+              this.$emit('close', idx, onClose);
 
             return true;
           }
@@ -353,7 +344,7 @@ export default {
 
       obj.events = {};
       if (obj.menu === null) {
-        obj.menu = this.menu || false;
+        obj.menu = [];
       }
 
       bbn.fn.iterate(this.getDefaultView(), (a, n) => {
@@ -478,13 +469,20 @@ export default {
     * @fires close
     */
     closeAll(force) {
-      for (let i = this.views.length - 1; i >= 0; i--) {
-        if (!this.views[i].fixed && !this.views[i].pinned) {
-          this.close(i, force, true);
-        }
+      const fixed = bbn.fn.getRow(this.views, {fixed: true});
+      if (fixed) {
+        this.selected = fixed.idx;
       }
 
-      this.setConfig();
+      this.$nextTick(() => {
+        for (let i = this.views.length - 1; i >= 0; i--) {
+          if (!this.views[i].fixed && !this.views[i].pinned) {
+            this.close(i, force, true);
+          }
+        }
+
+        this.setConfig();
+      })
     },
     /**
     * @method closeallBut
@@ -492,12 +490,16 @@ export default {
     * @fires close
     */
     closeAllBut(idx, force) {
-      for (let i = this.views.length - 1; i >= 0; i--) {
-        if (!this.views[i].fixed && !this.views[i].pinned && (i !== idx)) {
-          this.close(i, force, true);
+      this.selected = idx;
+      this.$nextTick(() => {
+        for (let i = this.views.length - 1; i >= 0; i--) {
+          if (!this.views[i].fixed && !this.views[i].pinned && (i !== idx)) {
+            this.close(i, force, true);
+          }
         }
-      }
-      this.setConfig();
+
+        this.setConfig();
+      });
     },
 
 
