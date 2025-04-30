@@ -71,5 +71,12 @@ export default {
 
       return {};
     }
+  },
+  watch: {
+    visual(v) {
+      if (v) {
+        this.updateScreenshot();
+      }
+    }
   }
 }

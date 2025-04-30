@@ -49,8 +49,8 @@
                 style="order: 1;"
                 @click="visualShowAll = !visualShowAll">
               <div class="bbn-overlay bbn-middle">
-                <div class="bbn-block bbn-xxxl">
-                  <i :class="'nf nf-fa-' + (visualShowAll ? 'minus' : 'plus')"/>
+                <div class="bbn-block bbn-xxxxl">
+                  <i :class="'nf nf-md-' + (visualShowAll ? 'minus' : 'plus') + '_thick'"/>
                 </div>
               </div>
             </div>
@@ -174,9 +174,9 @@
         <!-- START OF CONTENT -->
         <div :class="['bbn-flex-fill', {
           'bbn-router-visual-container': isVisual,
-          'bbn-right-spadding': isVisual && !visualShowAll && ['left', 'right', 'top', 'bottom'].includes(visualOrientation),
+          'bbn-right-spadding': isVisual && !visualShowAll && ['left', 'top', 'bottom'].includes(visualOrientation),
           'bbn-left-spadding': isVisual && !visualShowAll && ['left', 'right', 'top', 'bottom'].includes(visualOrientation),
-          'bbn-bottom-spadding': isVisual && !visualShowAll && ['right', 'top', 'left'].includes(visualOrientation),
+          'bbn-bottom-spadding': isVisual && !visualShowAll && ['right', 'top', 'left', 'bottom'].includes(visualOrientation),
         }]"
              bbn-forget="!scrollContent">
           <slot :filter="filterIsContainer"/>
