@@ -3,7 +3,8 @@
   'bbn-100': !visual && router?.scrollContent,
   'bbn-w-100': !router?.scrollContent && !router?.visualShowAll,
   'bbn-background': true,
-  'bbn-radius': router?.isVisual && visual
+  'bbn-radius': router?.isVisual && visual,
+  'bbn-lborder': router?.isVisual && visual,
 }]"
      :style="visualStyle"
      bbn-show="currentView && router?.ready && ((!router?.isVisual && isVisible) || isVisualVisible || isPane)">
@@ -29,7 +30,7 @@
             }">
           <div class="bbn-flex-fill bbn-vmiddle">
             <bbn-context bbn-if="isVisible"
-                        class="bbn-right-sspace bbn-lg bbn-p"
+                        class="bbn-left-sspace bbn-right-space bbn-lg bbn-p"
                         :floater-title="_('Container menu')"
                         tag="span"
                         :source="showMenu">
@@ -51,7 +52,7 @@
           <div bbn-elseif="isVisible && !isPane && !fixed && !pinned && !router?.visualShowAll"
               class="bbn-block bbn-p bbn-vmiddle bbn-h-100"
               @click="close">
-            <i class="nf nf-fa-times bbn-lg"/>
+            <i class="nf nf-md-close_thick bbn-lg"/>
           </div>
         </div>
         <!-- The main container (the one we take screenshots of) -->
@@ -106,7 +107,7 @@
                    bbn-text="errorStatus.statusText"/>
               <div class="bbn-c">
                 <bbn-button @click="close"
-                            icon="nf nf-fa-times"
+                            icon="nf nf-md-close_thick"
                             :label="_('Close')"
                             class="bbn-state-error"/>
               </div>
@@ -121,7 +122,12 @@
               class="bbn-overlay">
             <img :src="thumbnail"
                  style="width: 100%; max-height: 100%; height: auto"
+                 class="bbn-container-thumbnail"
                  bbn-if="thumbnail">
+            <div bbn-else
+                 class="bbn-middle">
+              <i class="nf nf-md-camera_off_outline bbn-xxxxl"/>
+            </div>
           </div>
           <!-- The container's popup, from which each floater will come -->
           <bbn-popup ref="popup"
@@ -145,7 +151,8 @@
          style="z-index: 12">
       <transition name="fade">
         <div class="bbn-bottom-left bbn-w-100"
-             bbn-show="isOver">
+             bbn-show="isOver"
+             bbn-if="!fixed && !currentSelected">
           <!-- Semi-transparent dark layer these buttons are not used -->
           <div class="bbn-overlay bbn-bg-black"
                style="opacity: 0.6; color: transparent"/>
@@ -161,22 +168,21 @@
               </bbn-context>
             </div-->
             <div class="bbn-w-100 bbn-r bbn-vspadding">
-              <span bbn-if="!pinned && !fixed"
+              <span bbn-if="!pinned"
                     @click.stop="pin"
-                    class="bbn-right-slmargin bbn-p">
+                    class="bbn-right-xsmargin bbn-p">
                 <i class="nf nf-oct-pin"/>
               </span>
               <span class="bbn-right-xsmargin bbn-p"
                     @click.stop="close"
-                    bbn-if="!pinned && !fixed">
-                <i class="nf nf-fa-times"/>
+                    bbn-if="!pinned">
+                <i class="nf nf-md-close_thick"/>
               </span>
               <span class="bbn-right-xsmargin bbn-p"
                     @click.stop="unpin"
-                    bbn-elseif="pinned && !fixed">
+                    bbn-elseif="pinned">
                 <i class="nf nf-md-pin_off"/>
               </span>
-              &nbsp;
             </div>
           </div>
         </div>

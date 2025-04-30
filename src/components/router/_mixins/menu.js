@@ -1,4 +1,3 @@
-
 export default {
   props: {
     /**
@@ -440,11 +439,12 @@ export default {
           action: () => {
             this.getPopup({
               label: false,
+              resizable: true,
               scrollable: true,
               closable: true,
               component: 'bbn-router-config',
-              minWidth: 800,
-              minHeight: 500,
+              width: 800,
+              height: 500,
               componentOptions: {
                 router: this,
                 visual: !this.parent

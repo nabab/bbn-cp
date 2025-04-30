@@ -9,16 +9,6 @@ export default {
       default: false
     },
     /**
-     * The size of every grid cell on which is based the visual view
-     * @prop {Number} [180] visualSize
-     */
-    visualSize: {
-      type: Number,
-      default() {
-        return Math.max(60, Math.min(120, Math.round(Math.min(bbn.env.width, bbn.env.height) / 7)))
-      }
-    },
-    /**
      * The position of the visual mini containers
      * @prop {Number} [180] visualSize
      */
@@ -29,6 +19,18 @@ export default {
       },
       validator(v) {
         return !!bbn.fn.getRow(bbnRouter.possibleOrientations, { name: v })
+      }
+    },
+    maxVisualSize: {
+      type: Number,
+      default() {
+        return 160
+      }
+    },
+    minVisualSize: {
+      type: Number,
+      default() {
+        return 60
       }
     },
   },
@@ -63,6 +65,19 @@ export default {
     }
   },
   computed: {
+    // Between 60 and 180
+    visualSize() {
+      return Math.min(
+        Math.max(
+          this.minVisualSize,
+          Math.min(
+            Math.round(
+              Math.min(bbn.env.width, bbn.env.height)
+              / (bbn.fn.isMobile() && (bbn.env.height > bbn.env.width) ? 5 : 9)
+            )
+          )
+        ), this.maxVisualSize);
+    },
     isVisual() {
       return this.currentVisual && !this.parentContainer;
     },
@@ -115,17 +130,17 @@ export default {
           gridColumnGap: '0.5rem',
           gridRowGap: '0.5rem',
           gridTemplateRows: 'repeat(' + this.numVisualRows + ', 1fr)',
-          gridTemplateColumns: 'repeat(' + this.numVisualCols + ', 1fr)'
+          gridTemplateColumns: 'repeat(' + this.numVisualCols + ', 1fr)',
+          padding: '0 0.5rem 0.5rem'
         });
   
         if (!this.visualShowAll) {
+          res.height = '100%';
           if (['left', 'right'].includes(this.visualOrientation)) {
             res.gridTemplateColumns = 'repeat(1, 1fr)';
-            res.padding = '0 0.5rem';
           }
           else {
             res.gridTemplateRows = 'repeat(1, 1fr)';
-            res.padding = '0.5rem 0';
           }
         }
       }
@@ -432,6 +447,9 @@ export default {
     },
   },
   watch: {
+    visualOrientation() {
+      this.$nextTick(this.updateVisualList);
+    },
     numVisuals() {
       this.onResize();
     },

@@ -37,7 +37,7 @@ export default {
             height: 'auto',
             overflow: 'hidden',
             display: bbn.fn.getRow(this.router.visualList, 'uid', this.routerUid) ? 'block' : 'none',
-            boxShadow: '0px 0px 4px var(--shadow-box)'
+            borderColor: this.currentBcolor || null
           };
         }
 
@@ -64,7 +64,7 @@ export default {
           gridColumnEnd: coord[1],
           gridRowStart: coord[2],
           gridRowEnd: coord[3],
-          zoom: 1,
+          borderColor: this.currentBcolor || null,
           display: bbn.fn.getRow(this.router.visualList, 'uid', this.currentView.uid) ? 'block' : 'none'
         };
       }
