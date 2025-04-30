@@ -60,6 +60,10 @@ const cpDef = {
       vertical: {
         type: Boolean,
         default: false
+      },
+      rounded: {
+        type: Boolean,
+        default: false
       }
     },
     data(){
