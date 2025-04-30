@@ -119,8 +119,9 @@ export default {
             this.visualOrientation = this.clientWidth > this.clientHeight ? 'left' : 'top';
           }
 
-          this.updateVisualList();
         }
+
+        this.updateVisualList();
       }, 'resize', 50);
     },
 
