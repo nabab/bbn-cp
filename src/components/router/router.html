@@ -16,7 +16,8 @@
     <bbn-pane :scrollable="false"
               bbn-forget="!splittable"
               :resizable="true"
-              ref="mainPane">
+              ref="mainPane"
+              @hook:mounted="onMainPaneMounted">
       <div :class="{
                   'bbn-100': scrollContent,
                   'bbn-flex-height': scrollContent && !hasVerticalTabs && (!isVisual || !['left', 'right'].includes(visualOrientation)),
@@ -49,7 +50,7 @@
                 style="order: 1;"
                 @click="visualShowAll = !visualShowAll">
               <div class="bbn-overlay bbn-middle">
-                <div class="bbn-block bbn-xxxxl">
+                <div class="bbn-block bbn-xxxl">
                   <i :class="'nf nf-md-' + (visualShowAll ? 'minus' : 'plus') + '_thick'"/>
                 </div>
               </div>

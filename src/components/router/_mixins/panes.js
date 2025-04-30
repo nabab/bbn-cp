@@ -47,7 +47,11 @@ export default {
        * @data {Boolean} visual
        */
       splitterMounted: false,
-
+      /**
+       * Becomes true once the main pane is mounted
+       * @data {Boolean} mainPaneIsReady
+       */
+      mainPaneMounted: false
     }
   },
   computed: {
@@ -249,6 +253,11 @@ export default {
         this.updatePortalTargets();
       }
     },
+    onMainPaneMounted() {
+      this.$nextTick(() => {
+        this.mainPaneMounted = true;
+      });
+    }
   },
   watch: {
     numPanes() {

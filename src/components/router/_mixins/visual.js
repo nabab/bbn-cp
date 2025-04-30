@@ -62,7 +62,7 @@ export default {
       currentVisual: this.visual,
       visualStyleContainer: bbn.fn.createObject(),
       visualContainers: {},
-      visualList: [],
+      visualList: []
     }
   },
   computed: { 
@@ -222,7 +222,7 @@ export default {
      */
     numVisualCols() {
       const main = this.getRef('mainPane');
-      if (this.isVisual && this.ready && main) {
+      if (this.isVisual && this.ready && this.mainPaneMounted && main) {
         // Width greater or equal to height
         let w = main.lastKnownWidth - (this.visualIsOnHeight ? this.visualSize : 0);
 
@@ -244,7 +244,7 @@ export default {
      */
     numVisualRows() {
       const main = this.getRef('mainPane');
-      if (this.isVisual && this.ready && main) {
+      if (this.isVisual && this.ready && this.mainPaneMounted && main) {
         let h = main.lastKnownHeight - (this.visualIsOnHeight ? 0 : this.visualSize);
 
         if (this.visualRatio > 1) {
