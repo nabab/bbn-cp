@@ -313,54 +313,35 @@ export default function() {
         if (!!el.bbnDirectives.resizable.active
           && !el.bbnDirectives.resizable.resizing
         ) {
-          let rect = el.getBoundingClientRect(),
-              modes = el.bbnDirectives.resizable.enabledModes,
-              m = bbn.fn.createObject();
+          const rect = el.getBoundingClientRect(),
+                modes = bbn.fn.createObject(),
+                delta = 4;
           if (!el.classList.contains('bbn-resizable')) {
             el.classList.add('bbn-resizable');
           }
-          if (modes.left
-            && (ev.x >= (rect.left - 2))
-            && (ev.x <= (rect.left + 2))
-          ) {
-            m.left = true;
-            el.classList.add('bbn-resizable-over-left');
-          }
-          else {
-            el.classList.remove('bbn-resizable-over-left');
-          }
-          if (modes.right
-            && (ev.x >= (rect.left + rect.width - 2))
-            && (ev.x <= (rect.left + rect.width + 2))
-          ) {
-            m.right = true;
-            el.classList.add('bbn-resizable-over-right');
-          }
-          else {
-            el.classList.remove('bbn-resizable-over-right');
-          }
-          if (modes.top
-            && (ev.y >= (rect.top - 2))
-            && (ev.y <= (rect.top + 2))
-          ) {
-            m.top = true;
-            el.classList.add('bbn-resizable-over-top');
-          }
-          else {
-            el.classList.remove('bbn-resizable-over-top');
-          }
-          if (modes.bottom
-            && (ev.y >= (rect.top + rect.height - 2))
-            && (ev.y <= (rect.top + rect.height + 2))
-          ) {
-            m.bottom = true;
-            el.classList.add('bbn-resizable-over-bottom');
-          }
-          else {
-            el.classList.remove('bbn-resizable-over-bottom');
-          }
+
+          bbn.fn.iterate(el.bbnDirectives.resizable.enabledModes, (active, mode) => {
+            const m = ['left', 'right'].includes(mode) ? ev.x : ev.y;
+            if (active) {
+              const min = rect[mode] - delta;
+              const max = rect[mode] + delta;
+              if ((m >= min) && (m <= max)) {
+                modes[mode] = true;
+                if (!el.classList.contains('bbn-resizable-over-' + mode)) {
+                  el.classList.add('bbn-resizable-over-' + mode);
+                }
+              }
+              else if (el.classList.contains('bbn-resizable-over-' + mode)) {
+                el.classList.remove('bbn-resizable-over-' + mode);
+              }
+            }
+            else if (el.classList.contains('bbn-resizable-over-' + mode)) {
+              el.classList.remove('bbn-resizable-over-' + mode);
+            }
+          });
+
           if (!el.bbnDirectives.resizable.resizing) {
-            el.bbnDirectives.resizable.modes = m;
+            el.bbnDirectives.resizable.modes = modes;
           }
         }
       };
