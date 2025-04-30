@@ -148,6 +148,7 @@ const cpDef = {
     //bbn.fn.log("END OF MOUNT")
   },
   beforeDestroy() {
+    this.navigationDestroy();
     this.routerBreadcrumbDestroy();
     this.routerRegistrationDestroy();
   },
