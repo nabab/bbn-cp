@@ -45,7 +45,7 @@
               ref="visualRouter"
               :tabindex="visualShowAll ? 0 : -1">
             <div bbn-if="views.length > numVisuals"
-                class="bbn-bg-black bbn-white bbn-p bbn-container-ratio bbn-radius bbn-shadow"
+                class="bbn-bg-black bbn-white bbn-p bbn-container-ratio bbn-radius bbn-sshadow"
                 style="order: 1;"
                 @click="visualShowAll = !visualShowAll">
               <div class="bbn-overlay bbn-middle">
@@ -58,7 +58,7 @@
                 :key="a.uid"
                 :style="{order: i + 2}"
                 :ref="'bbn-router-visual-' + i.toString()"
-                class="bbn-shadow bbn-radius bbn-container-ratio"
+                class="bbn-sshadow bbn-radius bbn-container-ratio"
                 bbn-if="!views[a.idx]?.real"
                 bbn-show="(visualShowAll || a.visible) && (a.idx !== selected)"
                 @hook:create="addVisualContainer($event, a.uid)"
