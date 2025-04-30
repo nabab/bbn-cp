@@ -30,6 +30,11 @@ bbn-tabs {
       }
     }
   }
+  &.bbn-tabs-scrollable.bbn-tabs-rounded{
+    .bbn-tabs-container .bbn-tabs-ul-container {
+      height: calc(2.4rem + var(--xxsspace));
+    }
+  }
   ul.bbn-tabs-tabs:first-child{
     height: 100%;
     margin: 0;
@@ -146,6 +151,12 @@ bbn-tabs {
         line-height: 0px;
         margin-top: 2px;
         margin-right: 1px;
+      }
+    }
+    &.bbn-tabs-tabs-rounded {
+      //padding-bottom: var(--xxsspace);
+      li:not(:last-child) {
+        margin-right: var(--xxsspace);
       }
     }
   }

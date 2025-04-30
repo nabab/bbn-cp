@@ -51,7 +51,11 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    }
+    },
+    rounded: {
+      type: Boolean,
+      default: true
+    },
   },
   data() {
     return {
