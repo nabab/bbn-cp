@@ -344,7 +344,7 @@ export default {
 
       obj.events = {};
       if (obj.menu === null) {
-        obj.menu = this.menu || false;
+        obj.menu = [];
       }
 
       bbn.fn.iterate(this.getDefaultView(), (a, n) => {

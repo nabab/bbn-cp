@@ -15,8 +15,8 @@ export default {
         if ( this.router.views[this.currentIndex].menu === undefined ){
           this.router.views[this.currentIndex].menu = [];
         }
-        let menu = this.router.views[this.currentIndex].menu || [],
-            idx = bbn.fn.isFunction(menu) ? -1 : bbn.fn.search(menu || [], {text: obj.text});
+        let menu = this.router.views[this.currentIndex].menu;
+        let idx = bbn.fn.isFunction(menu) ? -1 : bbn.fn.search(menu || [], {text: obj.text});
         if (idx === -1) {
           if (bbn.fn.isFunction(menu) ){
             this.router.views[this.currentIndex].menu = () => {

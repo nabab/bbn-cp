@@ -22,10 +22,11 @@ export default {
     getMenuFn(idx) {
       const view = bbn.fn.getRow(this.views, {idx});
       if (!this.menu || !this.nav || !view || (view.menu === false)) {
-        bbn.fn.log("NO MENU", idx, this.menu, this.nav, view, view?.menu)
+        //bbn.fn.log("NO MENU", idx, this.menu, this.nav, view, view?.menu)
         return [];
       }
-      let items = [];
+
+      const items = [];
       let tmp = ((bbn.fn.isFunction(view.menu) ? view.menu() : view.menu) || []).slice();
       let others = false;
       let container = this.getContainer(idx);
@@ -454,9 +455,14 @@ export default {
         });
       }
 
-      let menu = bbn.fn.isArray(this.menu) ? this.menu : this.menu(view, this);
+      const menu = (this.menu ? (bbn.fn.isArray(this.menu) ? this.menu : this.menu(view, this)) : []).slice();
       if (menu.length) {
         bbn.fn.each(menu, a => {
+          const idx = bbn.fn.search(items, {text: a.text});
+          if (idx > -1) {
+            items.splice(idx, 1);
+          }
+
           items.push(a);
         });
       }
