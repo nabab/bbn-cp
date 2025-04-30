@@ -36,6 +36,7 @@ export default {
   },
   data() {
     return {
+      visualIsReady: false,
       /**
        * If true and visual will show all the containers as icons.
        * Starts at true for better updating when displays changes
@@ -64,9 +65,13 @@ export default {
       visualList: [],
     }
   },
-  computed: {
+  computed: { 
     // Between 60 and 180
     visualSize() {
+      if (!this.visualIsReady) {
+        return this.maxVisualSize;
+      }
+
       return Math.min(
         Math.max(
           this.minVisualSize,

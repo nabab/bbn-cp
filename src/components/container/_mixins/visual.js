@@ -68,8 +68,11 @@ export default {
           display: bbn.fn.getRow(this.router.visualList, 'uid', this.currentView.uid) ? 'block' : 'none'
         };
       }
-
-      return {};
+      else if (this.router?.nav && !this.parent) {
+        return {
+          borderColor: this.currentBcolor || null
+        };
+      }
     }
   },
   watch: {

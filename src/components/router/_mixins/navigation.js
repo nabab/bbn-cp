@@ -862,8 +862,9 @@ export default {
       // The closest
       this.parent = this.parents.length ? this.parents[0] : false;
       if (!this.parent) {
-        window.addEventListener('focus', this.updateVisualList);
-        window.addEventListener('resize', this.updateVisualList);
+        
+        window.addEventListener('focus', this.$nextTick(this.updateVisualList));
+        window.addEventListener('resize', this.$nextTick(this.updateVisualList));
       }
       // The root
       this.router = this.parents.length ? this.parents[this.parents.length - 1] : this;

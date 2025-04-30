@@ -4,7 +4,7 @@
   'bbn-w-100': !router?.scrollContent && !router?.visualShowAll,
   'bbn-background': true,
   'bbn-radius': router?.isVisual && visual,
-  'bbn-lborder': router?.isVisual && visual,
+  'bbn-lborder': (router?.isVisual && visual) || (router?.nav && !router?.parent),
 }]"
      :style="visualStyle"
      bbn-show="currentView && router?.ready && ((!router?.isVisual && isVisible) || isVisualVisible || isPane)">

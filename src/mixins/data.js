@@ -78,8 +78,8 @@ const data = {
             );
           case "bool":
           case "boolean":
-            return '<i class="nf nf-fa-'
-              + (((v && (v !== 'false') && (v !== '0')) && ((cfg.yesvalue === undefined) || (v === cfg.yesvalue))) ? 'check' : 'times')
+            return '<i class="nf '
+              + (((v && (v !== 'false') && (v !== '0')) && ((cfg.yesvalue === undefined) || (v === cfg.yesvalue))) ? 'nf-md-check_bold' : 'nf-md-close_thick')
               + '" title="'
               + (((v && (v !== 'false') && (v !== '0')) && ((cfg.yesvalue === undefined) || (v === cfg.yesvalue))) ? bbn._("Yes") : bbn._("No"))
               + '"></i>';
