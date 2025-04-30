@@ -121,7 +121,9 @@ export default {
 
         }
 
-        this.updateVisualList();
+        if (this.visualIsReady) {
+          this.updateVisualList();
+        }
       }, 'resize', 50);
     },
 
