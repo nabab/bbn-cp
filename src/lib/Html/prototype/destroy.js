@@ -46,6 +46,18 @@ bbnProtoHtml.$destroy = function() {
     delete this.$deps[n];
   }
 
+  for (const dataDep of [...this.$dataDeps]) {
+    for (let n in dataDep.deps) {
+      for (let i = 0; i < dataDep.deps[n].length; i++) {
+        if (dataDep.deps[n][i].component === this) {
+          dataDep.deps[n].splice(i, 1);
+          i--;
+        }
+      }
+    }
+    this.$dataDeps.delete(dataDep);
+  }
+
   this.$components.removeAll();
   //bbn.fn.log("DESTROYING: " + this.tagName + ' / ' + this.bbnCid);
   this.$internal.nodeClean(true);

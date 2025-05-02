@@ -116,6 +116,12 @@ export default function init(cp) {
     configurable: false
   });
 
+  Object.defineProperty(cp, '$dataDeps', {
+    value: new Set(),
+    writable: false,
+    configurable: false
+  });
+
   /**
    * Counts the number of times the component has been repainted through the method updateComponent
    */

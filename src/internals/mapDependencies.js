@@ -33,7 +33,9 @@ const expToFn = (cp, loopVars, a, node, type) => {
       stFn += `${a.exp}\n`;
       bbn.fn.each(args, arg => {
         stFn += `if ($_bbnData['${arg}'] !== bbnData.hash(${arg})) {\n`;
-        if (!(arg in loopVars) && (arg in cp) && !bbn.fn.isFunction(cp[arg])) {
+        if (loopVars[arg]) {
+        }
+        else if (Object.hasOwn(cp, arg)) {
           stFn += `  this['${arg}'] = ${arg};\n`;
         }
         stFn += `}\n`;
@@ -51,6 +53,9 @@ const expToFn = (cp, loopVars, a, node, type) => {
       stFn += `return $_bbnRes;\n`;
       a.attrFn = new Function(...args, stFn);
       a.stFn = stFn;
+      if (type === 'model') {
+        a.setter = new Function('bbnValue', ...args, a.exp + ' = bbnValue; return bbnValue;');
+      }
     }
 
     a.args = args;
@@ -79,12 +84,9 @@ export default function mapDependencies(cp) {
 
   // Iterate over each node in the component's map.
   bbn.fn.iterate(cp.$currentMap, node => {
-    const deps = [];
-
     // Process loop-related attributes.
     if (node.loop) {
-      const args = expToFn(cp, loopVars, node.loop, node);
-      deps.push(...args);
+      expToFn(cp, loopVars, node.loop, node);
       loopVars[node.id] = [
         ...node.loop.item ? [node.loop.item] : [],
         ...node.loop.index ? [node.loop.index] : []
@@ -97,39 +99,33 @@ export default function mapDependencies(cp) {
     }
     // Process condition-related attributes.
     if (node.condition) {
-      const args = expToFn(cp, node.condition.type === 'else' ? {} : loopVars, node.condition, node);
-      deps.push(...args);
+      expToFn(cp, node.condition.type === 'else' ? {} : loopVars, node.condition, node);
     }
 
     if (node.forget) {
-      const args = expToFn(cp, loopVars, node.forget, node);
-      deps.push(...args);
+      expToFn(cp, loopVars, node.forget, node);
     }
 
     if (node.bind) {
-      const args = expToFn(cp, loopVars, node.bind, node);
-      deps.push(...args);
+      expToFn(cp, loopVars, node.bind, node);
     }
 
     if (node.attr) {
       bbn.fn.iterate(node.attr, a => {
         if (a.exp) {
-          const args = expToFn(cp, loopVars, a, node);
-          deps.push(...args);
+          expToFn(cp, loopVars, a, node);
         }
       });
     }
     else if (node.text?.exp) {
       node.text.exp = '`' + node.text.exp + '`';
-      const args = expToFn(cp, loopVars, node.text, node);
-      deps.push(...args);
+      expToFn(cp, loopVars, node.text, node);
     }
 
     if (node.events) {
       bbn.fn.iterate(node.events, a => {
         if (a.exp) {
-          const args = expToFn(cp, loopVars, a, node, 'event');
-          deps.push(...args);
+          expToFn(cp, loopVars, a, node, 'event');
         }
       });
     }
@@ -137,8 +133,7 @@ export default function mapDependencies(cp) {
     if (node.model) {
       bbn.fn.iterate(node.model, a => {
         if (a.exp) {
-          const args = expToFn(cp, loopVars, a, node, 'model');
-          deps.push(...args);
+          expToFn(cp, loopVars, a, node, 'model');
         }
       });
     }
@@ -146,8 +141,7 @@ export default function mapDependencies(cp) {
     if (node.directives) {
       bbn.fn.iterate(node.directives, a => {
         if (a.exp) {
-          const args = expToFn(cp, loopVars, a, node);
-          deps.push(...args);
+          expToFn(cp, loopVars, a, node);
         }
       });
     }

@@ -278,6 +278,8 @@ export default class bbnComputed {
         if (!a.data.deps.__bbnRoot.includes(this)) {
           a.data.deps.__bbnRoot.push(this);
         }
+
+        this.#component.$dataDeps.add(a.data);
       }
       else if (a.component && a.name && a.component.$namespaces[a.name] && ((a.component !== this.#component) || (a.name !== this.#name))) {
         if (!a.component.$deps[a.name]) {
@@ -288,6 +290,7 @@ export default class bbnComputed {
           a.component.$deps[a.name].push(this); // Add this computed property to the component's dependencies.
         }
       }
+
 
       prev = a;
     }

@@ -19,6 +19,10 @@ bbnData.prototype.getImpacted = function(path, numTicks, level = 0) {
   }
 
 
+  if (this.root?.path === 'currentSelected') {
+    debugger;
+  }
+
 
   // Iterate over each reference to this data object within components.
   this.refs.forEach(it => {
