@@ -14,7 +14,7 @@ import bbnInternalNode from "../Node/Internal.js";
 export default class bbnBindAttr extends bbnAttr
 {
   attrSet(init) {
-    if (this.fn) {
+    if (this.attrFn) {
       this.attrGetValue();
     }
   

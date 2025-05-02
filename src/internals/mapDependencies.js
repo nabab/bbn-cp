@@ -33,29 +33,24 @@ const expToFn = (cp, loopVars, a, node, type) => {
       stFn += `${a.exp}\n`;
       bbn.fn.each(args, arg => {
         stFn += `if ($_bbnData['${arg}'] !== bbnData.hash(${arg})) {\n`;
-        if (loopVars[arg]) {
-        }
-        else if (Object.hasOwn(cp, arg)) {
+        if (!(arg in loopVars) && (arg in cp) && !bbn.fn.isFunction(cp[arg])) {
           stFn += `  this['${arg}'] = ${arg};\n`;
         }
         stFn += `}\n`;
       });
       if (a.argNames) {
-        a.fn = new Function(...[...args, ...a.argNames.map(b => b.name)], stFn);
+        a.attrFn = new Function(...[...args, ...a.argNames.map(b => b.name)], stFn);
       }
       else {
-        a.fn = new Function(...args, stFn);
+        a.attrFn = new Function(...args, stFn);
       }
       a.stFn = stFn;
     }
     else {
       let stFn = 'const $_bbnRes = (' + (a.exp || (node.type === 'else' ? 'true' : '')) + ')\n';
       stFn += `return $_bbnRes;\n`;
-      a.fn = new Function(...args, stFn);
+      a.attrFn = new Function(...args, stFn);
       a.stFn = stFn;
-      if (type === 'model') {
-        a.setter = new Function('bbnValue', ...args, a.exp + ' = bbnValue; return bbnValue;');
-      }
     }
 
     a.args = args;

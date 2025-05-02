@@ -70,7 +70,7 @@ export default class bbnAttr
   }
 
   get isLate() {
-    if (!this.fn) {
+    if (!this.attrFn) {
       return false;
     }
 
@@ -78,7 +78,7 @@ export default class bbnAttr
   }
 
   get isChanged() {
-    return this.fn && (this.attrGetState() !== 'OK');
+    return this.attrFn && (this.attrGetState() !== 'OK');
   }
 
   get state() {

@@ -61,7 +61,7 @@ export default class bbnEventAttr extends bbnAttr
         }
 
         // If an expression is defined for the event, execute it.
-        if (this.fn) {
+        if (this.attrFn) {
           const args = [];
           // Process each argument for the event handler.
           if (this.args?.length) {
@@ -92,7 +92,7 @@ export default class bbnEventAttr extends bbnAttr
           }
           else {
             // Bind the event handler to the component and execute it with the processed arguments.
-            this.fn.bind(cp)(...args);
+            this.attrFn.bind(cp)(...args);
           }
         }
       };

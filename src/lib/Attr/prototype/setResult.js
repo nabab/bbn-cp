@@ -71,7 +71,7 @@ const updateSequence = function (result, attr) {
 
 // Extend the bbnAttr prototype with the attrSetResult method.
 bbnAttr.prototype.attrSetResult = function() {
-  if (!this.fn) {
+  if (!this.attrFn) {
     return this.value;
   }
 

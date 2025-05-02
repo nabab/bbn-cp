@@ -33,7 +33,7 @@ const getArgs = (attr, data) => {
  */
 bbnAttr.prototype.attrExec = function(data) {
   // If the attribute does not have a function, return.
-  if (!this.fn) {
+  if (!this.attrFn) {
     return;
   }
 
@@ -63,7 +63,7 @@ bbnAttr.prototype.attrExec = function(data) {
   let val;
   bbnData.startWatching(this);
   try {
-    val = this.fn.bind(this.node.component)(...args);
+    val = this.attrFn.bind(this.node.component)(...args);
   }
   catch (e) {
     bbnData.stopWatching(this);
