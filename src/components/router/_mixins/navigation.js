@@ -853,6 +853,8 @@ export default {
       }
     },
 
+
+
     navigationInit() {
       if (!this.urlNavigation) {
         return;
@@ -861,11 +863,6 @@ export default {
       this.parents = this.ancestors('bbn-router');
       // The closest
       this.parent = this.parents.length ? this.parents[0] : false;
-      if (!this.parent) {
-        
-        window.addEventListener('focus', this.$nextTick(this.updateVisualList));
-        window.addEventListener('resize', this.$nextTick(this.updateVisualList));
-      }
       // The root
       this.router = this.parents.length ? this.parents[this.parents.length - 1] : this;
       // Case where the rooter is not at the root level

@@ -301,6 +301,7 @@ export default {
         return;
       }
 
+      bbn.fn.log("VISSS");
       let moreViewsThanSlots = this.numVisuals < bbn.fn.filter(this.views, { pane: false }).length;
       let numAvailableSlots = this.numVisuals - (moreViewsThanSlots ? 1 : 0);
       let order = this.visualShowAll ?
@@ -377,7 +378,15 @@ export default {
         this.updateVisualList();
     
         this.updateVisualStyleContainer();
+        window.removeEventListener('focus', this.visualOnEvent);
+        window.addEventListener('focus', this.visualOnEvent);
+        window.removeEventListener('resize', this.visualOnEvent);
+        window.addEventListener('resize', this.visualOnEvent);
       }
+    },
+    visualOnEvent(e) {
+      this.onResize();
+      this.$nextTick(this.updateVisualList);
     },
     /**
      * @method updateVisualStyleContainer
