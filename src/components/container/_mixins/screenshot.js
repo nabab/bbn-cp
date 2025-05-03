@@ -68,7 +68,6 @@ export default {
       }
     },
 
-
     async saveScreenshot(width, height) {
       if (this.router.db && (this.currentIndex === this.router.selected) && !this.isPane) {
         let img       = await this.takeScreenshot(width, height);
@@ -95,7 +94,6 @@ export default {
       }
     },
 
-
     takeScreenshot(width, height) {
       return new Promise(resolve => {
         if (this.screenshoter
@@ -109,7 +107,6 @@ export default {
         }
       })
     },
-
 
     updateScreenshot() {
       if (this.visual && this.router.db) {

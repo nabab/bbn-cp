@@ -301,7 +301,6 @@ export default {
         return;
       }
 
-      bbn.fn.log("VISSS");
       let moreViewsThanSlots = this.numVisuals < bbn.fn.filter(this.views, { pane: false }).length;
       let numAvailableSlots = this.numVisuals - (moreViewsThanSlots ? 1 : 0);
       let order = this.visualShowAll ?

@@ -9,36 +9,36 @@
  */
 const expToFn = (cp, loopVars, a, node, type) => {
   if (a.exp) {
-    const deps = [];
+    const args = [];
     bbn.fn.each(Object.keys(cp.$namespaces), arg => {
       const matcher = (arg.indexOf('$') === 0 ? '' : '\\b') + bbn.fn.escapeRegExp(arg) + '\\b';
       const rgxp = new RegExp('^' + matcher + '|[^.]+' + matcher);
       if (a.exp.match(rgxp)) {
-        deps.push(arg);
+        args.push(arg);
       }
     });
-    const args = deps.slice();
     bbn.fn.iterate(loopVars, (v, k) => {
       if (node.id.indexOf(k) === 0) {
         args.push(...v);
       }
     });
 
+    let stFn = '  \'use strict\';\n';
     if (type === 'event') {
-      let stFn = 'const $_bbnData = {';
+      stFn += '  const $_bbnData = {';
       bbn.fn.each(args, arg => {
-        stFn += `  ${arg}: bbnData.hash(${arg}),\n`;
+        stFn += `    ${arg}: bbnData.hash(${arg}),\n`;
       });
-      stFn += `};\n`;
-      stFn += `${a.exp}\n`;
+      stFn += `  };\n`;
+      stFn += `  ${a.exp}\n`;
       bbn.fn.each(args, arg => {
-        stFn += `if ($_bbnData['${arg}'] !== bbnData.hash(${arg})) {\n`;
+        stFn += `  if ($_bbnData['${arg}'] !== bbnData.hash(${arg})) {\n`;
         if (loopVars[arg]) {
         }
         else if (Object.hasOwn(cp, arg)) {
-          stFn += `  this['${arg}'] = ${arg};\n`;
+          stFn += `    this['${arg}'] = ${arg};\n`;
         }
-        stFn += `}\n`;
+        stFn += `  }\n`;
       });
       if (a.argNames) {
         a.attrFn = new Function(...[...args, ...a.argNames.map(b => b.name)], stFn);
@@ -49,12 +49,12 @@ const expToFn = (cp, loopVars, a, node, type) => {
       a.stFn = stFn;
     }
     else {
-      let stFn = 'const $_bbnRes = (' + (a.exp || (node.type === 'else' ? 'true' : '')) + ')\n';
-      stFn += `return $_bbnRes;\n`;
+      stFn += '  const $_bbnRes = (' + (a.exp || (node.type === 'else' ? 'true' : '')) + ')\n';
+      stFn += `  return $_bbnRes;\n`;
       a.attrFn = new Function(...args, stFn);
       a.stFn = stFn;
       if (type === 'model') {
-        a.setter = new Function('bbnValue', ...args, a.exp + ' = bbnValue; return bbnValue;');
+        a.setter = new Function('bbnValue', ...args, '  \'use strict\';\n  ' + a.exp + ' = bbnValue;\n  return bbnValue;');
       }
     }
 
