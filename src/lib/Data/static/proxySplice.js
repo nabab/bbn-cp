@@ -28,7 +28,7 @@ bbnData.proxySplice = function(targetObj, target, component) {
 
       targetObj.fixIndexes(component);
       //bbn.fn.log("SPLICE");
-      targetObj.prepareUpdate();
+      targetObj.dataUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in splice", target]);

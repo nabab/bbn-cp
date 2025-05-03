@@ -15,7 +15,7 @@ bbnData.proxySort = function(targetObj, target, component) {
     if (targetObj) {
       if (before !== after) {
         targetObj.fixIndexes(component);
-        targetObj.prepareUpdate();
+        targetObj.dataUpdate();
       }
     }
     else {

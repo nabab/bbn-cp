@@ -3,7 +3,7 @@ import addNamespace from "../private/addNamespace.js";
 import onHook from "../private/onHook.js";
 import init from "../private/init.js";
 import registerChild from "../private/registerChild.js";
-import updateData from "../private/updateData.js";
+import setUpAllData from "../private/setUpAllData.js";
 import generateNode from "../private/generateNode.js";
 import mapDependencies from "../../../internals/mapDependencies.js";
 import retrieveSlots from "../../../internals/retrieveSlots.js";
@@ -119,7 +119,7 @@ bbnProtoHtml.$connected = function () {
       value: this.$cfg.data
     });
     // Setting up all the data properties
-    updateData(this);
+    setUpAllData(this);
   }
 
 

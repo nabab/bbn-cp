@@ -19,8 +19,8 @@ bbnData.proxyPush = function(targetObj, target, component) {
     const res = target.push(...newArgs);
     if (targetObj) {
       //bbn.fn.log("PUSH");
-      //targetObj.prepareUpdate('length');
-      targetObj.prepareUpdate();
+      //targetObj.dataUpdate('length');
+      targetObj.dataUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in push", target]);

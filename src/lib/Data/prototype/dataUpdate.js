@@ -5,9 +5,7 @@ import initResults from "../../Html/private/initResults.js";
 
 const getFn = function(watcher, lev, lastUpdate) {
   return () => {
-    if ((watcher.lastUpdate || 0) < lastUpdate) {
-      watcher.watcherUpdate(false, lev);
-    }
+    watcher.watcherUpdate(false, lev);
   };
 };
 
@@ -15,7 +13,7 @@ const getFn = function(watcher, lev, lastUpdate) {
  * Update all the components linked to the data object
  * @param {Array} path
  */
-bbnData.prototype.prepareUpdate = function(path) {
+bbnData.prototype.dataUpdate = function(path) {
   if (!this.value || this.root.component?.$isDestroying || this.root.component?.$isDestroyed) {
     //bbn.fn.log(["EEEEE", this]);
     return;
@@ -28,15 +26,10 @@ bbnData.prototype.prepareUpdate = function(path) {
   }
 
   const propagation = [];
-  const impacted = this.getImpacted(path, this.lastUpdate);
+  const impacted = this.dataImpacted(path, this.lastUpdate);
   let num = bbn.cp.numTicks;
   const deps = [];
   this.lastUpdate = num;
-  let root = this.root;
-  while (root?.parent) {
-    root.parent.lastUpdate = num;
-    root = root.parent.refs[root.parent.refs.length-1];
-  }
 
   if (path) {
     deps.push(...(this.deps[path] || []));

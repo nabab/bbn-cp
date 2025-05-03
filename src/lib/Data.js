@@ -1,11 +1,11 @@
 import bbnData from "./Data/Data.js";
 import "./Data/prototype/addComponent.js";
 import "./Data/prototype/fixIndexes.js";
-import "./Data/prototype/getImpacted.js";
+import "./Data/prototype/dataImpacted.js";
 import "./Data/prototype/hasComponent.js";
 import "./Data/prototype/hasParent.js";
 import "./Data/prototype/isSame.js";
-import "./Data/prototype/prepareUpdate.js";
+import "./Data/prototype/dataUpdate.js";
 import "./Data/prototype/removeComponent.js";
 import "./Data/prototype/setData.js";
 import "./Data/prototype/unset.js";

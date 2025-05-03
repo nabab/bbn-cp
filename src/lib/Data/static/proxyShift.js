@@ -21,7 +21,7 @@ bbnData.proxyShift = function(targetObj, target, component) {
     if (targetObj) {
       targetObj.fixIndexes(component);
       //bbn.fn.log("SHIFT");
-      targetObj.prepareUpdate();
+      targetObj.dataUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in shift", target]);

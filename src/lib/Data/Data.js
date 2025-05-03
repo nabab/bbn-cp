@@ -47,11 +47,7 @@ export default class bbnData/* extends EventTarget*/ {
       throw new Error("bbnData must be initialized with a bbn component");
     }
 
-    if (!('bbnData' in component)) {
-      component.bbnData = [];
-    }
-
-    component.bbnData.push(this);
+    component.$dataInstances.add(this);
     if (!data || (typeof data !== 'object') || ![undefined, Object, Array].includes(data.constructor)) {
       bbn.fn.log(data);
       throw new Error("The object given is not compatible with bbnData");

@@ -12,7 +12,7 @@ bbnData.proxyReverse = function(targetObj, target, component) {
     const res = target.reverse(...args);
     if (targetObj) {
       targetObj.fixIndexes(component);
-      targetObj.prepareUpdate();
+      targetObj.dataUpdate();
     }
     else {
       bbn.fn.log(["Impossible to find the data object in reverse", target]);

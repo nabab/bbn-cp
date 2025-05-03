@@ -33,9 +33,8 @@ bbnProtoHtml.$destroy = function() {
     }
   }
 
-  while (this.bbnData?.length) {
-    const d = this.bbnData.pop();
-    d.unset();
+  for (const dataInst of [...this.$dataInstances]) {
+    dataInst.unset();
   }
 
   for (let n in this.$refs) {
@@ -68,6 +67,12 @@ bbnProtoHtml.$destroy = function() {
     writable: false,
     configurable: false
   });
+  for (let i = 0; i < bbn.cp.queue.length; i++) {
+    if (bbn.cp.queue[i].component === this) {
+      bbn.cp.queue.splice(i, 1);
+      i--;
+    }
+  }
 
   for (let i = 0; i < node.attributes.length; i++) {
     if (node.attributes[i] instanceof bbnEventAttr) {

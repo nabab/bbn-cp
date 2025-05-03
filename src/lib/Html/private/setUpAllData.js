@@ -3,7 +3,7 @@ import setUpData from './setUpData.js';
 /**
  * Update the data property with the dataSource Array
  */
-export default function updateData(cp) {
+export default function setUpAllData(cp) {
   if (cp.$isDataSet) {
     return;
   }
