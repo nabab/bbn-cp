@@ -70,7 +70,7 @@ const updateSequence = function (result, attr) {
 }
 
 // Extend the bbnAttr prototype with the attrSetResult method.
-bbnAttr.prototype.attrSetResult = function() {
+bbnAttr.prototype.attrSetResult = function(data) {
   if (!this.attrFn) {
     return this.value;
   }
@@ -86,7 +86,7 @@ bbnAttr.prototype.attrSetResult = function() {
   result.num = component.$numBuild + 1;
   let res;
   try {
-    res = Object.hasOwn(arguments, 0) ? {val: arguments[0], seq: []} : this.attrExec();
+    res = Object.hasOwn(arguments, 0) ? {val: arguments[0], seq: []} : this.attrExec(data);
   }
   catch (e) {
     if (node.isCommented) {

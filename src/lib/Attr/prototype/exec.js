@@ -6,10 +6,11 @@ import bbnConditionAttr from "../Condition.js";
  * 
  * @param {bbnAttr} attr 
  * @param {Object} data 
+ * @param {Array} real 
  * @returns {Array}
  */
-const getArgs = (attr, data) => {
-  return attr.args ? attr.args.map(a => {
+const getArgs = (attr, data, real) => {
+  return (real ? real : attr.args).map(a => {
     let res;
     try {
       // Process each argument using retrieveArgument.
@@ -22,7 +23,7 @@ const getArgs = (attr, data) => {
     }
 
     return res; // Return the processed argument.
-  }) : [];
+  });
 };
 
 /**
@@ -37,59 +38,104 @@ bbnAttr.prototype.attrExec = function(data) {
     return;
   }
 
-  const newData = data ? [data] : [];
-  if (this.node.data) {
-    newData.push(this.node.data);
+  const usedVars = [];//data?.$event?.detail?.args?.length ? this.args.slice() : (data?.$event ? ['$event'] : []);
+  for (let i = 0; i < this.args.length; i++) {
+    if (this.args[i] in window) {
+      bbn.fn.log("ARGUMENT " + this.args[i] + " IN WINDOW");
+      usedVars.push(this.args[i]);
+    }
   }
 
-  bbnData.startWatching(this);
-  const args = getArgs(this, newData);
-  const seq = bbnData.stopWatching(this);
-  if (!(this instanceof bbnConditionAttr) && !(this instanceof bbnModelAttr) && bbn.cp.results.has(this)) {
-    const tmp = bbn.cp.results.get(this);
-    let isSame = true;
-    for (let i = 0; i < args.length; i++) {
-      if (tmp.args[i] !== args[i]) {
-        isSame = false;
-        break;
-      }
-    }
-
-    if (isSame) {
-      //return tmp.res;
-    }
+  const newData = data ? [data] : [];
+  const node = this.node;
+  const cp = node.component;
+  if (node.data) {
+    newData.push(node.data);
   }
 
   let val;
-  bbnData.startWatching(this);
-  try {
-    val = this.attrFn.bind(this.node.component)(...args);
-  }
-  catch (e) {
-    bbnData.stopWatching(this);
-    bbn.fn.log(
-      "*****************",
-      "Error in attrExec",
-      "*****************",
-      e,
-      "COMPONENT: " + this.node.component.$options.name,
-      this.node.component,
-      "ARGUMENTS",
-      args,
-      "FUNCTION: " + this.exp,
-      "ATTRIBUTE " + this.name,
-      this,
-      "*****************",
-    );
-    throw e;
+  let isDone = false;
+  const seq = [];
+  let attempts = 0;
+  while (!isDone) {
+    let stFn = '\'use strict\';\n';
+    let fn;
+    let args = [];
+    try {
+      attempts++;
+      if (this instanceof bbnEventAttr) {
+        args = getArgs(this, newData, false);
+        fn = this.attrFn;
+      }
+      else {
+        bbnData.startWatching(this);
+        args = getArgs(this, newData, usedVars);
+        stFn += 'const $_bbnRes = (' + (this.exp || (node.type === 'else' ? 'true' : '')) + ')\n';
+        stFn += `return $_bbnRes;\n`;
+        if (this instanceof bbnModelAttr) {
+          this.setter = new Function('bbnValue', ...usedVars, this.exp + ' = bbnValue; return bbnValue;');
+        }
+      }
+
+      if (!fn) {
+        if (this.argNames) {
+          fn = new Function(...[...usedVars, ...this.argNames.map(b => b.name)], stFn);
+        }
+        else {
+          fn = new Function(...usedVars, stFn);
+        }
+      }
+
+      val = fn.bind(cp)(...args);
+      /*
+      if (bbn.fn.isFunction(val) && data?.$event) {
+        if (data.$event.detail?.args?.length) {
+          val = val(...data.$event.detail.args);
+        }
+        else {
+          val = val(data.$event);
+        }
+      }
+        */
+      //val = makeFn(this, usedArgs).bind(cp)(...args);
+      if (!(this instanceof bbnEventAttr)) {
+        seq.push(...bbnData.stopWatching(this));
+      }
+      isDone = true;
+      //bbn.fn.log(["ECEC", stFn, usedVars, this]);
+    }
+    catch (e) {
+      if (!(this instanceof bbnEventAttr)) {
+        bbnData.stopWatching(this);
+      }
+      if (e instanceof ReferenceError) {
+        const varName = e.message.split(' ')[0];
+        //bbn.fn.log("ADDING " + varName + " TO " + stFn);
+        usedVars.push(varName);
+      }
+      else {
+        isDone = true;
+        bbn.fn.log(
+          "*****************",
+          "Error in attrExec",
+          "*****************",
+          e,
+          stFn,
+          "COMPONENT: " + this.node.component.$options.name,
+          this.node.component,
+          "ARGUMENTS",
+          usedVars,
+          args,
+          "FUNCTION: " + this.exp,
+          "ATTRIBUTE " + this.name,
+          this,
+          "*****************",
+        );
+        throw e;
+      }
+    }
   }
 
-  seq.push(...bbnData.stopWatching(this));
-  const res = {val, seq};
-  if (!(this instanceof bbnConditionAttr) && !(this instanceof bbnModelAttr)) {
-    bbn.cp.results.set(this, {args, res});
-  }
-
-  return res;
+  return {val, seq};
 };
 
