@@ -154,7 +154,7 @@ const cpDef = {
               this.isChanging = false;
               this.$forceUpdate().then(() => {
                 const floater = this.getRef('floater');
-                if (floater) {
+                if (floater?.$isMounted) {
                   floater.updateData();
                   floater.onResize(true);
                   floater.updatePosition();
