@@ -503,9 +503,11 @@ const cpDef = {
         else {
           await this.$forceUpdate();
           this.ready = true;
-          this.selfEmit(true);
+          this.$nextTick(() => {
+            this.selfEmit(true);
+          });
         }
-      }, 200);
+      }, 25);
     },
     /**
      * @ignore

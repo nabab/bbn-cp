@@ -1,5 +1,6 @@
 import bbnAttr from "../Attr.js";
 import bbnConditionAttr from "../Condition.js";
+import bbnEventAttr from "../Event.js";
 
 /**
  * Retrieves the arguments for evaluating the given attribute with the given data.
@@ -42,9 +43,14 @@ bbnAttr.prototype.attrExec = function(data) {
     newData.push(this.node.data);
   }
 
-  bbnData.startWatching(this);
+  if (!(this instanceof bbnEventAttr)) {
+    bbnData.startWatching(this);
+  }
   const args = getArgs(this, newData);
-  const seq = bbnData.stopWatching(this);
+  let seq = [];
+  if (!(this instanceof bbnEventAttr)) {
+    seq = bbnData.stopWatching(this);
+  }
   if (!(this instanceof bbnConditionAttr) && !(this instanceof bbnModelAttr) && bbn.cp.results.has(this)) {
     const tmp = bbn.cp.results.get(this);
     let isSame = true;
@@ -61,12 +67,16 @@ bbnAttr.prototype.attrExec = function(data) {
   }
 
   let val;
-  bbnData.startWatching(this);
+  if (!(this instanceof bbnEventAttr)) {
+    bbnData.startWatching(this);
+  }
   try {
     val = this.attrFn.bind(this.node.component)(...args);
   }
   catch (e) {
-    bbnData.stopWatching(this);
+    if (!(this instanceof bbnEventAttr)) {
+      bbnData.stopWatching(this);
+    }
     bbn.fn.log(
       "*****************",
       "Error in attrExec",
@@ -84,7 +94,6 @@ bbnAttr.prototype.attrExec = function(data) {
     throw e;
   }
 
-  seq.push(...bbnData.stopWatching(this));
   const res = {val, seq};
   if (!(this instanceof bbnConditionAttr) && !(this instanceof bbnModelAttr)) {
     bbn.cp.results.set(this, {args, res});

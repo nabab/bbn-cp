@@ -23,15 +23,11 @@ export default {
     },
     maxVisualSize: {
       type: Number,
-      default() {
-        return 160
-      }
+      default: 160
     },
     minVisualSize: {
       type: Number,
-      default() {
-        return 60
-      }
+      default: 60
     },
   },
   data() {
@@ -374,6 +370,7 @@ export default {
           }
         }
 
+        this.visualIsReady = true;
         this.updateVisualList();
     
         this.updateVisualStyleContainer();

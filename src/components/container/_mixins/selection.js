@@ -92,11 +92,13 @@ export default {
             this.loadView(this.currentCurrent)
           }
           else if (!this.ready) {
-            this.onResize();
             this.init();
           }
 
           this.router.navigate();
+          this.$nextTick(() => {
+            this.onResize();
+          });
         }
       });
     },
@@ -384,6 +386,9 @@ export default {
         }
 
         this.ready = true;
+        this.$nextTick(() => {
+          this.selfEmit();
+        });
         if (this.visual) {
           setTimeout(() => {
             this.setScreenshot();

@@ -957,7 +957,6 @@ const cpDef = {
           this.browserNotificationSW = true;
         }
       }, 1000);
-      this.visualIsReady = true;
       this.onResize();
       this.opacity = 1;
     }, this.app?.header ? 250 : 50);

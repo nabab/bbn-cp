@@ -97,17 +97,19 @@ const cpDef = {
        * 
        * @method getTabTitle
        * @param {Object} obj
-       * @return {String|null}
+       * @return {String|undefined}
        */
       getTabTitle(obj){
         let t = '';
         if ( obj.notext || (obj.label.length > this.maxTitleLength) ){
           t += obj.label;
         }
+
         if ( obj.flabel ){
           t += (t.length ? ' - ' : '') + obj.flabel;
         }
-        return t || null;
+
+        return t || undefined;
       },
       /**
        * @method scrollTabs
