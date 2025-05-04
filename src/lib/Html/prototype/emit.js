@@ -10,7 +10,7 @@ bbnProtoHtml.$emit = function (eventName, ...args) {
     bbn.fn.log(bbn._("Event %s emitted by %s", eventName, this.$options.name));
   }
 
-  if (!args.length) {
+  if (args.length) {
     bbn.fn.each(args, a => {
       if (!bbn.fn.isPrimitive(a)
           && (a instanceof CustomEvent)
