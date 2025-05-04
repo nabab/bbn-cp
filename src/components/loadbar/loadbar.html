@@ -63,13 +63,13 @@
             <div class="bbn-loadbar-time bbn-c bbn-s">
               <span bbn-text="renderDuration(it.duration || duration(it))"/>
             </div>
-            <span class="bbn-hxspadding bbn-s"
+            <span class="bbn-hxspadding bbn-s bbn-ellipsis"
                   bbn-text="it.url"/>
+            <div bbn-if="it.error && it.errorMessage"
+                  class="bbn-loadbar-error bbn-red"
+                  bbn-text="it.errorMessage"/>
           </bbn-context>
 
-          <div bbn-if="it.error && it.errorMessage"
-                class="bbn-loadbar-error bbn-red"
-                bbn-text="it.errorMessage"/>
         </li>
       </ul>
     </div>

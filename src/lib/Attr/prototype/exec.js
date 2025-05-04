@@ -38,13 +38,8 @@ bbnAttr.prototype.attrExec = function(data) {
   }
 
   const usedVars = [];//data?.$event?.detail?.args?.length ? this.args.slice() : (data?.$event ? ['$event'] : []);
-  for (let i = 0; i < this.args.length; i++) {
-    if (this.args[i] in window) {
-      bbn.fn.log("ARGUMENT " + this.args[i] + " IN WINDOW");
-      usedVars.push(this.args[i]);
-    }
-  }
-
+  this.args.filter(a => a in window).forEach(a => usedVars.push(a));
+  //this.argNames?.forEach(a => usedVars.push(a.name));
   const newData = data ? [data] : [];
   const node = this.node;
   const cp = node.component;
@@ -64,7 +59,7 @@ bbnAttr.prototype.attrExec = function(data) {
       attempts++;
       if (this instanceof bbnEventAttr) {
         args = getArgs(this, newData, usedVars);
-        stFn += '  const $_bbnData = {';
+        let def = '';
         bbn.fn.each(usedVars, arg => {
           let isInData = false;
           for (let i = 0; i < newData.length; i++) {
@@ -75,10 +70,15 @@ bbnAttr.prototype.attrExec = function(data) {
           }
 
           if (!isInData && (arg in cp.$namespaces) && (cp.$namespaces[arg] !== 'method')) {
-            stFn += `    ${arg}: bbnData.hash(${arg}),\n`;
+            def += `    ${arg}: bbnData.hash(${arg}),\n`;
           }
         });
-        stFn += `  };\n`;
+        if (def) {
+          stFn += '  const $_bbnData = {';
+          stFn += def;
+          stFn += `  };\n`;
+        }
+
         stFn += `  ${this.exp}` + (this.exp in cp.$methods ? '(...($event?.detail?.args || [$event]))' : '') + `\n`;
         bbn.fn.each(usedVars, arg => {
           let isInData = false;
@@ -107,6 +107,8 @@ bbnAttr.prototype.attrExec = function(data) {
       if (!fn) {
         if (this.argNames) {
           fn = new Function(...[...usedVars, ...this.argNames.map(b => b.name)], stFn);
+          args.push(...(data?.$event?.detail?.args || []));
+          bbn.fn.log(["WITH ARGNAMES", fn, stFn, [...usedVars, ...this.argNames.map(b => b.name)], args]);
         }
         else {
           fn = new Function(...usedVars, stFn);
@@ -153,6 +155,7 @@ bbnAttr.prototype.attrExec = function(data) {
           "ARGUMENTS",
           usedVars,
           args,
+          data,
           "FUNCTION: " + this.exp,
           "ATTRIBUTE " + this.name,
           this,

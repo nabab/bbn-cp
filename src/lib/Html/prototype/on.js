@@ -65,18 +65,19 @@ bbnProtoHtml.$on = function (...args) {
   const hash = bbn.fn.md5((bound || this).$cid + '-' + fn.hash);
   const controller = new AbortController();
   bbn.fn.each(events, event => {
-    if (!dom.bbnSchema.events[event]) {
-      dom.bbnSchema.events[event] = bbn.fn.createObject();
+    const obj = dom.$events || dom.bbnSchema.events;
+    if (!obj[event]) {
+      obj[event] = bbn.fn.createObject();
     }
 
-    if (!remove && dom.bbnSchema.events[event][hash]) {
+    if (!remove && obj[event][hash]) {
       return;
       //throw new Error(bbn._("The event %s is already set in %s", event, this.$options.name));
     }
 
-    dom.bbnSchema.events[event][hash] = ev => {
+    obj[event][hash] = ev => {
       const args = [];
-      if (ev.detail?.args) {
+      if (ev.detail?.args?.length) {
         args.push(...ev.detail.args);
       }
       else {
@@ -92,8 +93,8 @@ bbnProtoHtml.$on = function (...args) {
       opt.once = true;
     }
 
-    dom.bbnSchema.events[event]['controller-' + hash] = controller;
-    dom.addEventListener(event, dom.bbnSchema.events[event][hash], opt);
+    obj[event]['controller-' + hash] = controller;
+    dom.addEventListener(event, obj[event][hash], opt);
   });
 
   return controller;

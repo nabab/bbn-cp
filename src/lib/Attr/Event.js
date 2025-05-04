@@ -29,6 +29,7 @@ export default class bbnEventAttr extends bbnAttr
       const cp = node.component;
       this.cfg = cfg;
       this.handler = e => {
+        //bbn.cp.numTicks++;
         initResults(cp);
         //bbn.fn.log("EVENT " + this.name)
         // Check for any specified modifiers and apply them.
