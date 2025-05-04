@@ -74,9 +74,9 @@ bbnProtoHtml.$on = function (...args) {
       //throw new Error(bbn._("The event %s is already set in %s", event, this.$options.name));
     }
 
-    this.$events[event][hash] = (ev) => {
+    this.$events[event][hash] = ev => {
       const args = [];
-      if (ev.detail?.args) {
+      if (ev.detail?.args?.length) {
         args.push(...ev.detail.args);
       }
       else {
@@ -93,7 +93,7 @@ bbnProtoHtml.$on = function (...args) {
     }
 
     this.$events[event]['controller-' + hash] = controller;
-    this.addEventListener(event, this.$events[event][hash], opt);
+    this.addEventListener(event, e => this.$events[event][hash](e), opt);
   });
 
   return controller;
