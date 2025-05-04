@@ -59,7 +59,7 @@ async function treatQueue(num = 0, cps) {
   if (!cps) {
     cps = bbn.fn.createObject();
   }
-  let isDebug = false;
+  let isDebug = true;
   if (bbn.cp.queue.length) {
     if (bbn.cp.queue.length > 100000) {
       if (!isDebug) {
@@ -94,6 +94,7 @@ async function treatQueue(num = 0, cps) {
       }
       const queueElement = queue.shift();
       if (queueElement.off) {
+        //bbn.fn.log("ELEMENT IS DESTROYED");
         continue;
       }
       const isAttr = queueElement.element instanceof bbnAttr;
@@ -102,9 +103,11 @@ async function treatQueue(num = 0, cps) {
       //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
       if (cp?.$isDestroyed) {
+        //bbn.fn.log("CP IS DESTROYED");
         continue;
       }
       if (isAttr && queueElement.element.node.isDestroyed) {
+        //bbn.fn.log("NODE IS DESTROYED");
         continue;
       }
 
@@ -127,7 +130,8 @@ async function treatQueue(num = 0, cps) {
 
       if (queueElement.element) {
         if (done.includes(queueElement.element)) {
-          continue;
+          //bbn.fn.log("ELEMENT IS DONE");
+          //continue;
         }
 
         done.push(queueElement.element);
@@ -145,6 +149,7 @@ async function treatQueue(num = 0, cps) {
 
       if (isComputed) {
         if (lastElement?.element === queueElement.element) {
+          //bbn.fn.log("LAST IS DONE");
           continue;
         }
 
@@ -170,7 +175,8 @@ async function treatQueue(num = 0, cps) {
             continue;
           }
 
-          if (unconditioned.includes(attr.node) || unconditioned.filter(a => !a.id.indexOf(id + '-') && !a.hash.indexOf(attr.node.hash || '')).length) {
+          if (unconditioned.includes(attr.node) || unconditioned.filter(a => !id.indexOf(a.id + '-') && !(attr.node.hash || '').indexOf(a.hash)).length) {
+            //bbn.fn.log(["UNCONDITIONED", unconditioned, unconditioned.includes(attr.node), unconditioned.filter(a => !a.id.indexOf(id + '-') && !a.hash.indexOf(attr.node.hash || '')).length]);
             continue;
           }
         }

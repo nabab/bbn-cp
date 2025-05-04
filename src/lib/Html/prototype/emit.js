@@ -10,27 +10,12 @@ bbnProtoHtml.$emit = function (eventName, ...args) {
     bbn.fn.log(bbn._("Event %s emitted by %s", eventName, this.$options.name));
   }
 
-  if (args.length) {
-    bbn.fn.each(args, a => {
-      if (!bbn.fn.isPrimitive(a)
-          && (a instanceof CustomEvent)
-          && a.detail
-          && a.detail.__bbnEvent
-      ) {
-        if (a.detail.args) {
-          args = a.detail.args;
-          return false;
-        }
-      }
-    });
-  }
-
   const ev = new CustomEvent(eventName, bbn.fn.createObject({
     cancelable: true,
     detail: {
       __bbnEvent: true,
       __bbnCid: this.$cid,
-      args: args
+      args
     }
   }));
   this.dispatchEvent(ev);

@@ -7,7 +7,7 @@
   'bbn-lborder': (router?.isVisual && visual) || (router?.nav && !router?.parent),
 }]"
      :style="visualStyle"
-     bbn-show="currentView && router?.ready && ((!router?.isVisual && isVisible) || isVisualVisible || isPane)">
+     bbn-show="currentView && router?.ready && (isVisualVisible || isPane || (!router?.isVisual && isVisible))">
   <div class="bbn-container-full-screen bbn-flex-height bbn-background"
        bbn-if="currentView && router?.ready"
        bbn-forget="!fullScreen">

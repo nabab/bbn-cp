@@ -585,12 +585,6 @@ const cpDef = {
         }
       }
     },
-    onChatMounted() {
-      this.pollerObject['appui-chat'].online = this.app?.user?.chat;
-      if (this.ready) {
-        this.poll();
-      }
-    },
     getCurrentContainer() {
       let router = this.getRef('router'),
         container = !!router ? router.searchContainer(bbn.env.path, true) : false;

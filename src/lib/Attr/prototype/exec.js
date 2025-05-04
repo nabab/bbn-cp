@@ -1,16 +1,15 @@
 import bbnAttr from "../Attr.js";
-import bbnConditionAttr from "../Condition.js";
-import bbnEventAttr from "../Event.js";
 
 /**
  * Retrieves the arguments for evaluating the given attribute with the given data.
  * 
  * @param {bbnAttr} attr 
  * @param {Object} data 
+ * @param {Array} real 
  * @returns {Array}
  */
-const getArgs = (attr, data) => {
-  return attr.args ? attr.args.map(a => {
+const getArgs = (attr, data, real) => {
+  return (real ? real : attr.args).map(a => {
     let res;
     try {
       // Process each argument using retrieveArgument.
@@ -23,7 +22,7 @@ const getArgs = (attr, data) => {
     }
 
     return res; // Return the processed argument.
-  }) : [];
+  });
 };
 
 /**
@@ -38,67 +37,135 @@ bbnAttr.prototype.attrExec = function(data) {
     return;
   }
 
+  const usedVars = [];//data?.$event?.detail?.args?.length ? this.args.slice() : (data?.$event ? ['$event'] : []);
+  this.args.filter(a => a in window).forEach(a => usedVars.push(a));
+  //this.argNames?.forEach(a => usedVars.push(a.name));
   const newData = data ? [data] : [];
-  if (this.node.data) {
-    newData.push(this.node.data);
-  }
-
-  if (!(this instanceof bbnEventAttr)) {
-    bbnData.startWatching(this);
-  }
-  const args = getArgs(this, newData);
-  let seq = [];
-  if (!(this instanceof bbnEventAttr)) {
-    seq = bbnData.stopWatching(this);
-  }
-  if (!(this instanceof bbnConditionAttr) && !(this instanceof bbnModelAttr) && bbn.cp.results.has(this)) {
-    const tmp = bbn.cp.results.get(this);
-    let isSame = true;
-    for (let i = 0; i < args.length; i++) {
-      if (tmp.args[i] !== args[i]) {
-        isSame = false;
-        break;
-      }
-    }
-
-    if (isSame) {
-      //return tmp.res;
-    }
+  const node = this.node;
+  const cp = node.component;
+  if (node.data) {
+    newData.push(node.data);
   }
 
   let val;
-  if (!(this instanceof bbnEventAttr)) {
-    bbnData.startWatching(this);
-  }
-  try {
-    val = this.attrFn.bind(this.node.component)(...args);
-  }
-  catch (e) {
-    if (!(this instanceof bbnEventAttr)) {
-      bbnData.stopWatching(this);
+  let isDone = false;
+  const seq = [];
+  let attempts = 0;
+  while (!isDone) {
+    let stFn = '\'use strict\';\n';
+    let fn;
+    let args = [];
+    try {
+      attempts++;
+      if (this instanceof bbnEventAttr) {
+        args = getArgs(this, newData, usedVars);
+        let def = '';
+        bbn.fn.each(usedVars, arg => {
+          let isInData = false;
+          for (let i = 0; i < newData.length; i++) {
+            if (arg in newData[i]) {
+              isInData = true;
+              break;
+            }
+          }
+
+          if (!isInData && (arg in cp.$namespaces) && (cp.$namespaces[arg] !== 'method')) {
+            def += `    ${arg}: bbnData.hash(${arg}),\n`;
+          }
+        });
+        if (def) {
+          stFn += '  const $_bbnData = {';
+          stFn += def;
+          stFn += `  };\n`;
+        }
+
+        stFn += `  ${this.exp}` + (this.exp in cp.$methods ? '(...($event?.detail?.args || [$event]))' : '') + `\n`;
+        bbn.fn.each(usedVars, arg => {
+          let isInData = false;
+          for (let i = 0; i < newData.length; i++) {
+            if (arg in newData[i]) {
+              isInData = true;
+              break;
+            }
+          }
+
+          if (!isInData && (arg in cp.$namespaces) && (cp.$namespaces[arg] !== 'method')) {
+            stFn += `  if ($_bbnData['${arg}'] !== bbnData.hash(${arg})) {\n`;
+            stFn += `    this['${arg}'] = ${arg};\n`;
+            stFn += `  }\n`;
+          }
+
+        });
+      }
+      else {
+        bbnData.startWatching(this);
+        args = getArgs(this, newData, usedVars);
+        stFn += 'const $_bbnRes = (' + (this.exp || (node.type === 'else' ? 'true' : '')) + ')\n';
+        stFn += `return $_bbnRes;\n`;
+      }
+
+      if (!fn) {
+        if (this.argNames) {
+          fn = new Function(...[...usedVars, ...this.argNames.map(b => b.name)], stFn);
+          args.push(...(data?.$event?.detail?.args || []));
+          bbn.fn.log(["WITH ARGNAMES", fn, stFn, [...usedVars, ...this.argNames.map(b => b.name)], args]);
+        }
+        else {
+          fn = new Function(...usedVars, stFn);
+        }
+      }
+
+      val = fn.bind(cp)(...args);
+      /*
+      if (bbn.fn.isFunction(val) && data?.$event) {
+        if (data.$event.detail?.args?.length) {
+          val = val(...data.$event.detail.args);
+        }
+        else {
+          val = val(data.$event);
+        }
+      }
+        */
+      //val = makeFn(this, usedArgs).bind(cp)(...args);
+      if (!(this instanceof bbnEventAttr)) {
+        seq.push(...bbnData.stopWatching(this));
+      }
+      isDone = true;
+      //bbn.fn.log(["ECEC", stFn, usedVars, this]);
     }
-    bbn.fn.log(
-      "*****************",
-      "Error in attrExec",
-      "*****************",
-      e,
-      "COMPONENT: " + this.node.component.$options.name,
-      this.node.component,
-      "ARGUMENTS",
-      args,
-      "FUNCTION: " + this.exp,
-      "ATTRIBUTE " + this.name,
-      this,
-      "*****************",
-    );
-    throw e;
+    catch (e) {
+      if (!(this instanceof bbnEventAttr)) {
+        bbnData.stopWatching(this);
+      }
+      if (e instanceof ReferenceError) {
+        const varName = e.message.split(' ')[0];
+        //bbn.fn.log("ADDING " + varName + " TO " + stFn);
+        usedVars.push(varName);
+      }
+      else {
+        isDone = true;
+        bbn.fn.log(
+          "*****************",
+          "Error in attrExec",
+          "*****************",
+          e,
+          stFn,
+          "COMPONENT: " + this.node.component.$options.name,
+          this.node.component,
+          "ARGUMENTS",
+          usedVars,
+          args,
+          data,
+          "FUNCTION: " + this.exp,
+          "ATTRIBUTE " + this.name,
+          this,
+          "*****************",
+        );
+        throw e;
+      }
+    }
   }
 
-  const res = {val, seq};
-  if (!(this instanceof bbnConditionAttr) && !(this instanceof bbnModelAttr)) {
-    bbn.cp.results.set(this, {args, res});
-  }
-
-  return res;
+  return {val, seq};
 };
 
