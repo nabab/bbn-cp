@@ -1,5 +1,4 @@
 import bbnAttr from "../Attr.js";
-import bbnConditionAttr from "../Condition.js";
 
 /**
  * Retrieves the arguments for evaluating the given attribute with the given data.
@@ -64,17 +63,45 @@ bbnAttr.prototype.attrExec = function(data) {
     try {
       attempts++;
       if (this instanceof bbnEventAttr) {
-        args = getArgs(this, newData, false);
-        fn = this.attrFn;
+        args = getArgs(this, newData, usedVars);
+        stFn += '  const $_bbnData = {';
+        bbn.fn.each(usedVars, arg => {
+          let isInData = false;
+          for (let i = 0; i < newData.length; i++) {
+            if (arg in newData[i]) {
+              isInData = true;
+              break;
+            }
+          }
+
+          if (!isInData && (arg in cp.$namespaces) && (cp.$namespaces[arg] !== 'method')) {
+            stFn += `    ${arg}: bbnData.hash(${arg}),\n`;
+          }
+        });
+        stFn += `  };\n`;
+        stFn += `  ${this.exp}` + (this.exp in cp.$methods ? '(...($event?.detail?.args || [$event]))' : '') + `\n`;
+        bbn.fn.each(usedVars, arg => {
+          let isInData = false;
+          for (let i = 0; i < newData.length; i++) {
+            if (arg in newData[i]) {
+              isInData = true;
+              break;
+            }
+          }
+
+          if (!isInData && (arg in cp.$namespaces) && (cp.$namespaces[arg] !== 'method')) {
+            stFn += `  if ($_bbnData['${arg}'] !== bbnData.hash(${arg})) {\n`;
+            stFn += `    this['${arg}'] = ${arg};\n`;
+            stFn += `  }\n`;
+          }
+
+        });
       }
       else {
         bbnData.startWatching(this);
         args = getArgs(this, newData, usedVars);
         stFn += 'const $_bbnRes = (' + (this.exp || (node.type === 'else' ? 'true' : '')) + ')\n';
         stFn += `return $_bbnRes;\n`;
-        if (this instanceof bbnModelAttr) {
-          this.setter = new Function('bbnValue', ...usedVars, this.exp + ' = bbnValue; return bbnValue;');
-        }
       }
 
       if (!fn) {

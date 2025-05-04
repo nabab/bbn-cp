@@ -62,38 +62,7 @@ export default class bbnEventAttr extends bbnAttr
 
         // If an expression is defined for the event, execute it.
         if (this.attrFn) {
-          const args = [];
-          // Process each argument for the event handler.
-          if (this.args?.length) {
-            bbn.fn.each(this.args, a => {
-              if (a === '$event') {
-                args.push(e); // Pass the event object itself.
-              }
-              else {
-                // Process and push other arguments.
-                args.push(this.retrieveArgument(a, node.hash, [node.data]));
-              }
-            });
-          }
-
-          if (e.detail?.args) {
-            args.push(...e.detail.args);
-          }
-
-          //bbn.fn.log(['EVENT', this.name, args, this.exp]);
-
-          if (cp.$namespaces[this.exp] === 'method') {
-            if (e.detail?.args) {
-              cp.$methods[this.exp].fn.bind(cp)(...e.detail.args);
-            }
-            else {
-              cp.$methods[this.exp].fn.bind(cp)(e);
-            }
-          }
-          else {
-            // Bind the event handler to the component and execute it with the processed arguments.
-            this.attrFn.bind(cp)(...args);
-          }
+          this.attrExec({'$event': e});
         }
       };
     }
