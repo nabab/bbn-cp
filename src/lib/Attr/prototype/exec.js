@@ -31,7 +31,7 @@ const getArgs = (attr, data, real) => {
  * @param {Object} data 
  * @returns 
  */
-bbnAttr.prototype.attrExec = function(data) {
+bbnAttr.prototype.attrExec = function(data, subExec = false) {
   // If the attribute does not have a function, return.
   if (!this.attrFn) {
     return;
@@ -79,7 +79,12 @@ bbnAttr.prototype.attrExec = function(data) {
           stFn += `  };\n`;
         }
 
-        stFn += `  ${this.exp}` + (this.exp in cp.$methods ? '(...($event?.detail?.args || [$event]))' : '') + `\n`;
+        if (subExec) {
+          stFn += '  ' + this.finalFunction.body;
+        }
+        else {
+          stFn += `  ${this.exp}` + (this.exp in cp.$methods ? '(...($event?.detail?.args || [$event]))' : '') + `\n`;
+        }
         bbn.fn.each(usedVars, arg => {
           let isInData = false;
           for (let i = 0; i < newData.length; i++) {
@@ -100,8 +105,15 @@ bbnAttr.prototype.attrExec = function(data) {
       else {
         bbnData.startWatching(this);
         args = getArgs(this, newData, usedVars);
-        stFn += 'const $_bbnRes = (' + (this.exp || (node.type === 'else' ? 'true' : '')) + ')\n';
-        stFn += `return $_bbnRes;\n`;
+        stFn += '  const $_bbnRes = (';
+        if (subExec) {
+          stFn += this.finalFunction.body;
+        }
+        else {
+          stFn += (this.exp || (node.type === 'else' ? 'true' : ''));
+        }
+        stFn += ');\n';
+        stFn += `  return $_bbnRes;\n`;
       }
 
       if (!fn) {
@@ -116,6 +128,17 @@ bbnAttr.prototype.attrExec = function(data) {
       }
 
       val = fn.bind(cp)(...args);
+
+      if (!subExec && (typeof val === 'function')) {
+        const tmp = bbn.fn.analyzeFunction(val);
+        if (tmp.isArrow) {
+          this.finalFunction = tmp;
+          const res = this.attrExec(data, true);
+          val = res.val;
+          seq.push(...res.seq);
+        }
+      }
+        
       /*
       if (bbn.fn.isFunction(val) && data?.$event) {
         if (data.$event.detail?.args?.length) {
