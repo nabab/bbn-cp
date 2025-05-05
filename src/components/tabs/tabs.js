@@ -157,6 +157,11 @@ const cpDef = {
 
         return '';
       },
+      getMenuFnTmp(idx) {
+        return () => {
+          return this.getMenuFn(idx);
+        }
+      },
       getMenuFn(idx) {
         if (this.router) {
           return this.router.getMenuFn(idx);
