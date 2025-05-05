@@ -138,7 +138,12 @@ bbnAttr.prototype.attrExec = function(data) {
         bbnData.stopWatching(this);
       }
       if (e instanceof ReferenceError) {
-        const varName = e.message.split(' ')[0];
+        let msg = e.message;
+        if (!msg.indexOf("Can't find variable:")) {
+          msg = msg.replace("Can't find variable:", '').trim();
+        }
+
+        const varName = msg.split(' ')[0];
         //bbn.fn.log("ADDING " + varName + " TO " + stFn);
         usedVars.push(varName);
       }

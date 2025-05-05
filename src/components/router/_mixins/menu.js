@@ -38,7 +38,7 @@ export default {
       });
 
       if (!view.help) {
-        let sub = this.containers[view.uid].subrouter;
+        let sub = this.containers[view.uid]?.subrouter;
         if (sub && sub.views && sub.views.length) {
           let helps = [];
           sub.views.forEach(a => {

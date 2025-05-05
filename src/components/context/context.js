@@ -148,6 +148,15 @@ const cpDef = {
       };
     },
     methods: {
+      touchstart(e) {
+        bbn.fn.log("TOUCH START", e);
+      },
+      touchmovet(e) {
+        bbn.fn.log("TOUCH MOVe", e);
+      },
+      touchend(e) {
+        bbn.fn.log("TOUCH END", e);
+      },
       select(item, idx, dataIndex, ev) {
         return;
         const ev2 = this.$emit('select', item, idx, dataIndex);
@@ -176,6 +185,7 @@ const cpDef = {
        * @fires updateData
        */
       clickItem(e){
+        bbn.fn.log("CLICK ITEM", e, e.target, this.currentData);
         if (
           !this.disabled
           && (

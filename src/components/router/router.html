@@ -98,7 +98,7 @@
                                 backgroundColor: bc.getBackgroundColor(bc.selected),
                                 color: bc.getFontColor(bc.selected)
                               }">
-                    <bbn-context :source="() => bc.getMenuFn(bc.selected)"
+                    <bbn-context :source="bc.getMenuFn(bc.selected)"
                                 :source-index="isNumber(bc.selected) ? bc.selected : undefined"
                                 tag="div"
                                 min-width="10rem"

@@ -1,12 +1,9 @@
 <div :class="componentClass"
       tabindex="-1"
-      @click.bubbles="clickItem"
+      @click="clickItem"
       @contextmenu="clickItem"
       @doubleclick.prevent.stop="doubleClickItem"
-      @keydown.space.enter="clickItem"
-      @touchstart.passive="touchstart"
-      @touchmove.passive="touchmove"
-      @touchend.passive="touchend">
+      @keydown.space.enter="clickItem">
   <slot></slot>
   <bbn-floater bbn-if="showFloater && !disabled && component"
               :element="attach || null"
