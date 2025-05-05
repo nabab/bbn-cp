@@ -62,7 +62,7 @@ const cpDef = {
        */
       minsec: Array.from({length: 60}, (v,i) => {
         return {
-          text: i.toString().length === 1 ? '0' + i : i,
+          text: i.toString().length === 1 ? '0' + i : i.toString(),
           value: i
         };
       }),
@@ -119,7 +119,7 @@ const cpDef = {
     hours(){
       let res = Array.from({length: 24}, (v, i) => {
         return {
-          text: i.toString().length === 1 ? '0' + i : i,
+          text: i.toString().length === 1 ? '0' + i : i.toString(),
           value: i
         };
       }).filter(v => {
@@ -188,14 +188,16 @@ const cpDef = {
         && !bbn.fn.isNull(this.minute)
         && (!this.showSecond || !bbn.fn.isNull(this.second) )
       ){
-        let v = !!this.value ? dayjs(this.value, this.format) : dayjs();
-        v = dayjs(v).minute(this.minute).hour(this.hour);
+        let d = dayjs().hour(this.hour).minute(this.minute);
+
         if (this.showSecond) {
-          v = dayjs(v).second(this.second);
+          d = dayjs(d).second(this.second);
         }
-        bbn.fn.log('aaa',v.format(this.format))
-        return v.format(this.format);
+
+        bbn.fn.log('getTime', d.format(this.format));
+        return d.format(this.format);
       }
+
       return '';
     },
     /**
@@ -206,12 +208,12 @@ const cpDef = {
      * @emits change
      */
     setHour(h){
-      if (!bbn.fn.isNull(h)) {
+      if (!bbn.fn.isNull(h)
+        && (this.hour !== h)
+      ) {
         this.hour = h;
-        let time = this.getTime();
-        if (!!time && !this.buttons) {
-          this.emitInput(time);
-          this.$emit('change', time, this.format);
+        if (!this.buttons) {
+          this.setValue();
         }
       }
     },
@@ -223,12 +225,12 @@ const cpDef = {
      * @emits change
      */
     setMinute(m){
-      if (!bbn.fn.isNull(m)) {
+      if (!bbn.fn.isNull(m)
+        && (this.minute !== m)
+      ) {
         this.minute = m;
-        let time = this.getTime();
-        if (!!time && !this.buttons) {
-          this.emitInput(time);
-          this.$emit('change', time, this.format);
+        if (!this.buttons) {
+          this.setValue();
         }
       }
     },
@@ -240,14 +242,19 @@ const cpDef = {
      * @emits change
      */
     setSecond(s){
-      if (!bbn.fn.isNull(s)) {
+      if (!bbn.fn.isNull(s)
+        && (this.second !== s)
+      ) {
         this.second = s;
-        let time = this.getTime();
-        if (!!time && !this.buttons) {
-          this.emitInput(time);
-          this.$emit('change', time, this.format);
+        if (!this.buttons) {
+          this.setValue();
         }
       }
+    },
+    setValue(){
+      let time = this.getTime();
+      this.emitInput(time);
+      this.$emit('change', time, this.format);
     },
     /**
      * Emits cancel
@@ -264,11 +271,7 @@ const cpDef = {
      * @emits change
      */
     save(){
-      let time = this.getTime();
-      if (!!time) {
-        this.emitInput(time);
-        this.$emit('change', time, this.format);
-      }
+      this.setValue();
     }
   },
   watch: {
@@ -277,7 +280,9 @@ const cpDef = {
      * @fires setHour
     */
     hour(newVal, oldVal){
-      if ( this.ready && (newVal !== oldVal) ){
+      if (this.ready
+        && (newVal !== oldVal)
+      ) {
         this.setHour(newVal);
       }
     },
@@ -286,7 +291,9 @@ const cpDef = {
      * @fires setMinute
     */
     minute(newVal, oldVal){
-      if ( this.ready && (newVal !== oldVal) ){
+      if (this.ready
+        && (newVal !== oldVal)
+      ) {
         this.setMinute(newVal);
       }
     },
@@ -295,7 +302,10 @@ const cpDef = {
      * @fires setSecond
     */
     second(newVal, oldVal){
-      if ( this.ready && (newVal !== oldVal) && this.showSecond ){
+      if (this.ready
+        && (newVal !== oldVal)
+        && this.showSecond
+      ) {
         this.setSecond(newVal);
       }
     },
@@ -304,6 +314,23 @@ const cpDef = {
      */
     checkReady(val){
       this.ready = val;
+    },
+    value(newVal){
+      if (this.ready) {
+        if (newVal && (newVal !== this.getTime())) {
+          let d = dayjs(newVal, this.format);
+          this.hour = d.hour();
+          this.minute = d.minute();
+          if (this.showSecond) {
+            this.second = d.second();
+          }
+        }
+        else {
+          this.hour = null;
+          this.minute = null;
+          this.second = null;
+        }
+      }
     }
   }
 };

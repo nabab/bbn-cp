@@ -94,7 +94,6 @@ const cpDef = {
           });
         }
       }
-      this.isScrolling = false;
     },
     /**
      * @method scrollTo
@@ -151,7 +150,7 @@ const cpDef = {
     getRefByValue(val){
       let index = this.getIndexByValue(val);
       if (index !== false) {
-        return this.getRef('v-' + index);
+        return this.getRef('d-' + index);
       }
       return false;
     },
@@ -179,6 +178,9 @@ const cpDef = {
         }
       }, 300);
     },
+    onScrollReady(){
+      this.scrollReady = true;
+    },
     /**
      * @method onScroll
      * @fires getRef
@@ -199,9 +201,9 @@ const cpDef = {
     onAfterScroll(){
       let contRect = this.getRef('container').getBoundingClientRect();
       let ele = document.elementFromPoint(contRect.x + (contRect.width / 2), contRect.y + (contRect.height / 2));
-      if (ele && ele.hasAttribute('index')) {
-        let index = parseInt(ele.getAttribute('index')),
-            item = this.currentData[index];
+      if (ele && (ele.index !== undefined)) {
+        let index = parseInt(ele.index),
+            item = bbn.fn.getRow(this.currentData, 'index', index);
         if (item && !this.isNull(item.data[this.sourceValue])) {
           this.setValue(item.data[this.sourceValue]);
         }
@@ -248,6 +250,19 @@ const cpDef = {
     isReady(val){
       if (val) {
         this.onReady();
+      }
+    }
+  },
+  components: {
+    itemspan: {
+      template: '<span bbn-html="text"/>',
+      props: {
+        text: {
+          type: String
+        },
+        index: {
+          type: Number
+        }
       }
     }
   }

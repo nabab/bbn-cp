@@ -861,7 +861,9 @@ const cpDef = {
    * @fires waitReady
    */
   mounted() {
-    this.initSize();
+    this.$nextTick(() => {
+      this.initSize();
+    });
   },
   watch: {
     /**
