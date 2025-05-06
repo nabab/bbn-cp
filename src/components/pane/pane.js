@@ -290,7 +290,7 @@ const cpDef = {
         ) {
           this.prevVisible.collapsed = false;
           this.prevVisible.pane.isCollapsed = false;
-          if (!this.splitter.hasVisiblePaneAuto()
+          if (!this.splitter.hasVisiblePaneAuto(this.prevVisible.index)
             && this.currentConfig.forceAuto
           ) {
             this.currentConfig.forceAuto = false;
