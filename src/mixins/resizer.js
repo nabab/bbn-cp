@@ -121,7 +121,7 @@ const resizer = {
           this.setComputedStyle();
         }
       }
-      
+
       //bbn.fn.log(ele, h, Math.round(ele.clientHeight), ele.clientHeight, '----');
       if (Math.abs(this.lastKnownHeight - h) > 1) {
         this.lastKnownHeight = h;
@@ -138,15 +138,16 @@ const resizer = {
 
     setContainerMeasures() {
       let resize = false;
-      let isAbsolute = this.computedStyle ? ['absolute', 'fixed'].includes(this.computedStyle.position) : false;
-      let offsetParent = this.$el.offsetParent;
       let ctH;
       let ctW;
+      const isAbsolute = this.computedStyle?.position === 'absolute';
+      const isFixed = this.computedStyle?.position === 'fixed';
+      const offsetParent = this.$el.offsetParent;
       if (offsetParent) {
-        ctH = isAbsolute ? bbn.fn.outerHeight(offsetParent) : Math.round(offsetParent.clientHeight);
-        ctW = isAbsolute ? bbn.fn.outerWidth(offsetParent) : Math.round(offsetParent.clientWidth);
+        ctH = isAbsolute || isFixed ? bbn.fn.outerHeight(offsetParent) : Math.round(offsetParent.clientHeight);
+        ctW = isAbsolute || isFixed ? bbn.fn.outerWidth(offsetParent) : Math.round(offsetParent.clientWidth);
       }
-      else if (this.parentResizer && this.parentResizer.lastKnownHeight) {
+      else if (!isFixed && this.parentResizer?.lastKnownHeight) {
         ctH = this.parentResizer.lastKnownHeight;
         ctW = this.parentResizer.lastKnownWidth;
       }
@@ -227,8 +228,7 @@ const resizer = {
       return bbn.fn.formatSize(...args);
     },
     setComputedStyle(){
-      return;
-      if (!this.computedStyle && this.$el && this.$el.clienttWidth) {
+      if (!this.computedStyle && this.$el && this.$el.clientWidth) {
         this.computedStyle = window.getComputedStyle(this.$el);
       }
     }
