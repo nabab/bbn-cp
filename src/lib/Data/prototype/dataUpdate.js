@@ -31,6 +31,7 @@ bbnData.prototype.dataUpdate = function(path) {
   const deps = [];
   this.lastUpdate = num;
 
+
   if (path) {
     deps.push(...(this.deps[path] || []));
   }

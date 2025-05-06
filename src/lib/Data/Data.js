@@ -123,6 +123,15 @@ export default class bbnData/* extends EventTarget*/ {
       configurable: true
     });
 
+    /**
+     * @var {String} old The hash of the data object
+     */
+    Object.defineProperty(this, 'lastSubUpdate', {
+      value: 0,
+      writable: true,
+      configurable: true
+    });
+
     Object.defineProperty(this, 'deps', {
       value: bbn.fn.createObject({
         __bbnRoot: []
