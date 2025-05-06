@@ -32,7 +32,7 @@ bbn-tabs {
   }
   &.bbn-tabs-scrollable.bbn-tabs-rounded{
     .bbn-tabs-container .bbn-tabs-ul-container {
-      height: calc(2.4rem + var(--xxsspace));
+      height: calc(2.4rem + var(--xxsspace) + var(--xxsspace));
     }
   }
   ul.bbn-tabs-tabs:first-child{
@@ -154,7 +154,10 @@ bbn-tabs {
       }
     }
     &.bbn-tabs-tabs-rounded {
-      //padding-bottom: var(--xxsspace);
+      padding: var(--xxsspace) var(--xxsspace) 0 var(--xxsspace);
+      li {
+        margin-bottom: var(--xxsspace);
+      }
       li:not(:last-child) {
         margin-right: var(--xxsspace);
       }

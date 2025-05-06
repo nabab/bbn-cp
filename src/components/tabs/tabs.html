@@ -8,7 +8,11 @@
     <div bbn-forget="!scrollable"
          class="bbn-tabs-ul-container">
       <div bbn-forget="!scrollable"
-           :class="{'bbn-flex-width': !isVertical, 'bbn-flex-height': isVertical}">
+           :class="{
+             'bbn-flex-width': !isVertical,
+             'bbn-flex-height': isVertical,
+             'bbn-vmiddle': !isVertical,
+           }">
         <div bbn-if="scrollable && !isVertical"
              :class="['bbn-tabs-button', 'bbn-tabs-button-prev', 'bbn-p', 'bbn-middle', 'bbn-header', {
                'bbn-right-xsspace': rounded,
@@ -29,11 +33,12 @@
                       :invisible="true"
                       @ready="onScrollReady">
             <ul ref="tabgroup"
-                :class="['bbn-tabs-tabs', 'bbn-border-bottom', {
+                :class="['bbn-tabs-tabs', {
                   'bbn-flex-fill': !isVertical && !scrollable && !$hasSlots(),
                   'bbn-overflow-v': !scrollable,
                   'bbn-flex-width': fill,
                   'bbn-tabs-tabs-rounded': rounded,
+                  'bbn-border-bottom': !rounded && (position === 'top'),
                 }]">
               <li bbn-for="(tab, i) in source"
                   bbn-show="!tab.invisible"
