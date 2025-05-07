@@ -1,4 +1,4 @@
-<div :class="[componentClass, 'bbn-background-internal', 'bbn-block']">
+<div :class="[componentClass, 'bbn-background-internal', 'bbn-block', {'bbn-mobile': isMobile}]">
   <bbn-router :nav="true"
               :url-navigation="false"
               :autoload="false"
@@ -8,11 +8,11 @@
               class="bbn-w-100"
               :storage="false"
               :scroll-content="false">
-    <bbn-container :label="_('Navigation mode')"
+    <bbn-container :label="_('Mode')"
                    url="nav"
                    :scrollable="false"
                    :fixed="true">
-      <div class="bbn-w-100 bbn-padding">
+      <div :class="['bbn-w-100', {'bbn-padding': !isMobile, 'bbn-spadding': isMobile}]">
         <div class="bbn-router-config-mode bbn-w-100 bbn-grid"
             :style="'grid-template-columns: repeat(' + numModes + ', 1fr)'">
           <div class="bbn-h-100"
@@ -302,7 +302,7 @@
              bbn-text="_('That will not only allow you to backup a complex configuration but also to switch between panes configurations')"/>
       </div>
     </bbn-container>
-    <bbn-container :label="_('My backups')"
+    <bbn-container :label="_('Backups')"
                    url="backups"
                    :scrollable="false"
                    :fixed="true">

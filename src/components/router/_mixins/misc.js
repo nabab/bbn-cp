@@ -111,8 +111,15 @@ export default {
      */
     onResize() {
       this.keepCool(() => {
+        let firstTime = false;
+        if (!this.lastKnownWidth) {
+          firstTime = true;
+        }
         let m = this.setResizeMeasures();
         let c = this.setContainerMeasures();
+        if (firstTime) {
+          this.setAutoOrientation();
+        }
         if (m || c) {
           this.$emit('resize');
           if (this.isVisual && (this.orientation === 'auto') && !this.lockedVisualOrientation) {

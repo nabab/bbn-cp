@@ -147,7 +147,7 @@ const cpDef = {
           o.visibility = 'visible';
         }
 
-        o[or.size] = 'auto';
+        o[or.size] = this.isMobile ? '100%' : 'auto';
         o[or.prop] = 0;
         o[this.orientation] = this.currentVisible ? 0 : -this.currentSize + 'px';
 

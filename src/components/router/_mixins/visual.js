@@ -27,7 +27,7 @@ export default {
     },
     minVisualSize: {
       type: Number,
-      default: 60
+      default: 40
     },
   },
   data() {
@@ -141,7 +141,7 @@ export default {
             res.gridTemplateColumns = 'repeat(1, 1fr)';
           }
           else {
-            res.gridTemplateRows = 'repeat(1, 1fr)';
+            res.gridTemplateRows = this.isMobile && (this.numVisualReals > this.numVisualCols) ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)';
           }
         }
       }
@@ -211,15 +211,22 @@ export default {
       return Math.max(0.5, ratio);
     },
 
+    isOrientedVertically() {
+      return this.lastKnownWidth < this.lastKnownHeight;
+    },
     /**
      * The number of columns (width) for the visual mode
      * @computed numVisualCols
      * @return {Number} 
      */
     numVisualCols() {
-      const main = this.getRef('mainPane');
-      if (this.isVisual && this.ready && this.mainPaneMounted && main) {
+      const main = this.splittable ? this.getRef('mainPane') : this;
+      if (this.isVisual && this.ready && (!this.splittable || (this.mainPaneMounted && main))) {
         // Width greater or equal to height
+        if (this.isMobile && this.isOrientedVertically) {
+          return 4;
+        }
+
         let w = main.lastKnownWidth - (this.visualIsOnHeight ? this.visualSize : 0);
 
         if (this.visualRatio >= 1) {
@@ -239,8 +246,8 @@ export default {
      * @return {Number} 
      */
     numVisualRows() {
-      const main = this.getRef('mainPane');
-      if (this.isVisual && this.ready && this.mainPaneMounted && main) {
+      const main = this.splittable ? this.getRef('mainPane') : this;
+      if (this.isVisual && this.ready && (!this.splittable || (this.mainPaneMounted && main))) {
         let h = main.lastKnownHeight - (this.visualIsOnHeight ? 0 : this.visualSize);
 
         if (this.visualRatio > 1) {
@@ -260,16 +267,25 @@ export default {
      * @return {Number} 
      */
     numVisuals() {
+      let res = 0;
       if (this.isVisual && this.numVisualRows && this.numVisualCols) {
+        const max = bbn.fn.count(this.views, { pane: false });
         if (['left', 'right'].includes(this.visualOrientation)) {
-          return this.numVisualRows - 1;
+          res = this.numVisualRows - 1;
+        }
+        else if (this.isMobile) {
+          res = (this.numVisualCols * 2) - 1;
         }
         else {
-          return this.numVisualCols - 1;
+          res = this.numVisualCols - 1;
+        }
+
+        if (res > max) {
+          res = max;
         }
       }
 
-      return 0;
+      return res;
     },
 
 
@@ -358,18 +374,6 @@ export default {
     },
     visualInit() {
       if (!this.single && this.hasStorage) {
-        let storage = this.getStorage(this.routerStorageName);
-        if (storage) {
-          if (storage.visual !== undefined) {
-            this.currentVisual = storage.visual;
-          }
-    
-          if (storage.orientation) {
-            this.visualOrientation = storage.orientation;
-            this.lockedVisualOrientation = true;
-          }
-        }
-
         this.visualIsReady = true;
         this.updateVisualList();
     
@@ -378,6 +382,15 @@ export default {
         window.addEventListener('focus', this.visualOnEvent);
         window.removeEventListener('resize', this.visualOnEvent);
         window.addEventListener('resize', this.visualOnEvent);
+      }
+
+      if (!this.visualOrientation && this.isVisual) {
+        this.setAutoOrientation();
+      }
+    },
+    setAutoOrientation() {
+      if (this.orientation === 'auto') {
+        this.visualOrientation = this.clientWidth > this.clientHeight ? 'left' : (this.isMobile ? 'bottom' : 'top');
       }
     },
     visualOnEvent(e) {
@@ -457,6 +470,17 @@ export default {
     },
   },
   watch: {
+    isOrientedVertically() {
+      if (this.isMobile) {
+        if (this.isVisual) {
+          this.setAutoOrientation();
+        }
+        else if (!this.isBreadcrumb && this.orientation === 'auto') {
+          this.currenttabsOrientation = this.clientWidth > this.clientHeight ? 'left' : (this.isMobile ? 'bottom' : 'top');
+
+        }
+      }
+    },
     visualOrientation() {
       this.$nextTick(this.updateVisualList);
     },
@@ -478,8 +502,12 @@ export default {
         this.changeConfig();
         this.setConfig();
         this.$nextTick(() => {
+          if (v) {
+            this.setAutoOrientation();
+            this.$nextTick(this.updateVisualList);
+          }
+
           this.$forceUpdate();
-          this.$nextTick(this.updateVisualList);
         });
       }
     },

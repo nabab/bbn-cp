@@ -46,11 +46,11 @@
               ref="visualRouter"
               :tabindex="visualShowAll ? 0 : -1">
             <div bbn-if="views.length > numVisuals"
-                class="bbn-bg-black bbn-white bbn-p bbn-container-ratio bbn-radius bbn-sshadow"
+                :class="'bbn-bg-black bbn-white bbn-p bbn-radius bbn-sshadow' + (isMobile ? '' : ' bbn-container-ratio')"
                 style="order: 1;"
                 @click="visualShowAll = !visualShowAll">
-              <div class="bbn-overlay bbn-middle">
-                <div class="bbn-block bbn-xxxl">
+              <div class="bbn-100 bbn-middle bbn-flex">
+                <div :class="{'bbn-block': true, 'bbn-xxxl': !isMobile, 'bbn-xxl': isMobile}">
                   <i :class="'nf nf-md-' + (visualShowAll ? 'minus' : 'plus') + '_thick'"/>
                 </div>
               </div>
@@ -59,7 +59,7 @@
                 :key="a.uid"
                 :style="{order: i + 2}"
                 :ref="'bbn-router-visual-' + i.toString()"
-                class="bbn-sshadow bbn-radius bbn-container-ratio"
+                :class="'bbn-sshadow bbn-radius' + (isMobile ? '' : ' bbn-container-ratio')"
                 bbn-if="!views[a.idx]?.real"
                 bbn-show="(visualShowAll || a.visible) && (a.idx !== selected)"
                 @hook:create="addVisualContainer($event, a.uid)"

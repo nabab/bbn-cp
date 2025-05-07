@@ -106,73 +106,90 @@ const cpDef = {
     },
     computed: {
       visualOrientations() {
-        let tmp = {
+        const tmp = {
           auto: {
             pos: bbn._("Auto"),
             text: bbn._("Picks left or top in function of your window's size"),
-            value: false
-          },
-          left: {
+            value: false,
+          }
+        };
+        if (!this.isMobile || !this.router.isOrientedVertically) {
+          tmp.left = {
             pos: bbn._("Left"),
             text: bbn._("On the left of the main content"),
             area: '1 / 2 / 6 / 6',
             value: false
-          },
-          top: {
+          };
+        }
+        if (!this.isMobile || this.router.isOrientedVertically) {
+          tmp.top = {
             pos: bbn._("Top"),
             text: bbn._("On the top of the main content"),
             area: '2 / 1 / 6 / 6',
             value: false
-          },
-          right: {
+          };
+        }
+        if (!this.isMobile || !this.router.isOrientedVertically) {
+          tmp.right = {
             pos: bbn._("Right"),
             text: bbn._("On the right of the main content"),
             area: '1 / 1 / 6 / 5',
             value: false
-          },
-          bottom: {
+          };
+        }
+        if (!this.isMobile || this.router.isOrientedVertically) {
+          tmp.bottom = {
             pos: bbn._("Bottom"),
             text: bbn._("On the bottom of the main content"),
             area: '1 / 1 / 5 / 6',
             value: false
-          }
-        };
+          };
+        }
+
         tmp.auto.area = tmp[this.guessedOrientation].area;
         return tmp;
       },
       tabsOrientations() {
-        let tmp = {
+        const tmp = {
           auto: {
             pos: bbn._("Auto"),
-            text: bbn._("On top by default... but that might change"),
+            text: bbn._("On top by default..."),
             area: '2 / 1 / 6 / 6',
             value: false
-          },
-          left: {
+          }
+        };
+        if (!this.isMobile || !this.router.isOrientedVertically) {
+          tmp.left = {
             pos: bbn._("Left"),
             text: bbn._("On the left of the main content"),
             area: '1 / 2 / 6 / 6',
             value: false
-          },
-          top: {
+          };
+        }
+        if (!this.isMobile || this.router.isOrientedVertically) {
+          tmp.top = {
             pos: bbn._("Top"),
             text: bbn._("On the top of the main content"),
             area: '2 / 1 / 6 / 6',
             value: false
-          },
-          right: {
+          };
+        }
+        if (!this.isMobile || !this.router.isOrientedVertically) {
+          tmp.right = {
             pos: bbn._("Right"),
             text: bbn._("On the right of the main content"),
             area: '1 / 1 / 6 / 5',
             value: false
-          },
-          bottom: {
+          };
+        }
+        if (!this.isMobile || this.router.isOrientedVertically) {
+          tmp.bottom = {
             pos: bbn._("Bottom"),
             text: bbn._("On the bottom of the main content"),
             area: '1 / 1 / 5 / 6',
             value: false
-          }
-        };
+          };
+        }
 
         return tmp;
       },

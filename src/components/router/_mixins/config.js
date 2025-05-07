@@ -50,9 +50,8 @@ export default {
       let cfg = {
         baseURL: this.parentContainer ? this.parentContainer.currentURL : this.storageName,
         views: [],
-        breadcrumb: this.isBreadcrumb,
-        visual: this.isVisual,
-        orientation: this.lockedVisualOrientation ? this.visualOrientation : null,
+        mode: this.isVisual ? 'visual' : (this.isBreadcrumb ? 'breadcrumb' : 'tabs'),
+        orientation: this.isVisual ? (this.lockedVisualOrientation ? this.visualOrientation : 'auto') : (!this.isBreadcrumb ? this.tabsOrientation : 'top'),
         panes: this.currentPanes.map(a => { return { id: a.id, tabs: a.tabs.map(b => b.url), selected: a.selected } })
       };
 

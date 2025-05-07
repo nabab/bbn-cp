@@ -124,6 +124,9 @@ const cpDef = {
        */
       portal: {
         type: HTMLElement
+      },
+      zIndex: {
+        type: Number
       }
     },
     data(){
@@ -146,6 +149,16 @@ const cpDef = {
         currentMinHeight: this.minHeight || 0,
         currentMaxHeight: this.maxHeight || bbn.env.height
       };
+    },
+    computed: {
+      floaterStyle() {
+        const obj = {};
+        if (this.zIndex) {
+          obj.zIndex = this.zIndex;
+        }
+
+        return obj;
+      }
     },
     methods: {
       touchstart(e) {

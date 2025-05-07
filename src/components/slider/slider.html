@@ -17,12 +17,13 @@
          'bbn-top-left': closeButton === 'top-left',
          'bbn-bottom-left': closeButton === 'bottom-left',
          'bbn-p': true,
-         'bbn-spadding': true,
+         'bbn-spadding': !isMobile,
+         'bbn-xspadding': isMobile,
          'bbn-m': !isMobile,
-         'bbn-xxl': isMobile,
+         'bbn-xl': isMobile,
          'bbn-unselectable': true
        }"
        @click.stop.prevent="hide">
-    <i class="nf nf-fa-times"></i>
+    <i class="nf nf-md-close_thick"></i>
   </div>
 </div>

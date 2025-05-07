@@ -212,22 +212,25 @@ export default {
         tmp.push(this.getDefaultView(a, { real: false }));
       });
 
+      let storage;
       if (!this.single && this.hasStorage) {
         //bbn.fn.log("LOOKING FOR STORAGE FOR " + this.parentContainer.getFullURL());
-        let storage = this.getStorage(this.routerStorageName);
+        storage = this.getStorage(this.routerStorageName);
         //Get config from the storage
-        if (storage && storage.views && tmp) {
-          bbn.fn.each(storage.views, a => {
-            let idx = bbn.fn.search(tmp, { url: a.url });
-            if (idx > -1) {
-              // Static comes only from configuration
-              let isFixed = tmp[idx].fixed;
-              bbn.fn.extend(tmp[idx], a, { fixed: isFixed });
-            }
-            else if (this.autoload) {
-              tmp.push(this.getDefaultView(a));
-            }
-          });
+        if (storage) {
+          if (storage.views && tmp) {
+            bbn.fn.each(storage.views, a => {
+              let idx = bbn.fn.search(tmp, { url: a.url });
+              if (idx > -1) {
+                // Static comes only from configuration
+                let isFixed = tmp[idx].fixed;
+                bbn.fn.extend(tmp[idx], a, { fixed: isFixed });
+              }
+              else if (this.autoload) {
+                tmp.push(this.getDefaultView(a));
+              }
+            });
+          }
         }
       }
   
@@ -236,8 +239,23 @@ export default {
         tmp = bbn.fn.multiorder(tmp, { real: 'desc' });
       }
 
+      if (storage && storage.mode) {
+        if (storage.mode === 'visual') {
+          this.currentVisual = true;
+          if (storage.orientation) {
+            this.visualOrientation = storage.orientation;
+            this.lockedVisualOrientation = true;
+          }
+        }
+        else if (storage.mode === 'breadcrumb') {
+          this.isBreadcrumb = true;
+        }
+        else if (this.isMobile) {
+          this.currentVisual = true;
+        }
+      }
 
-      bbn.fn.each(tmp, a => this.add(a));
+      bbn.fn.each(tmp, this.add);
     },
 
 
@@ -344,7 +362,7 @@ export default {
 
       obj.events = {};
       if (obj.menu === null) {
-        obj.menu = [];
+        obj.menu = this.menu;
       }
 
       bbn.fn.iterate(this.getDefaultView(), (a, n) => {

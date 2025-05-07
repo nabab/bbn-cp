@@ -97,15 +97,8 @@ export default {
       }
     },
     breadcrumbInit() {
-      if (!this.single && this.nav && this.hasStorage) {
-        let storage = this.getStorage(this.routerStorageName);
-        if (storage) {
-          if (storage.breadcrumb !== undefined) {
-            this.isBreadcrumb = storage.breadcrumb;
-          }
-        }
-  
-        if (!this.master && this.parent && this.parentContainer) {
+      if (!this.single && this.nav) {
+        if (!this.master && this.parent && this.parentContainer && this.isBreadcrumb) {
           this.parent.registerBreadcrumb(this);
           bbn.fn.log("VIEW ON BREADCUMB")
           this.parentContainer.$on('view', () => {

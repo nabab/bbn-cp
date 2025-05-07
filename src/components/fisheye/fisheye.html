@@ -5,7 +5,7 @@
               class="bbn-100"
               ref="scroll">
     <div bbn-if="!showIcons"
-         :class="['bbn-fisheye-dots', 'bbn-overlay', 'bbn-middle', {'bbn-invisible': !ready}]"
+         :class="['bbn-fisheye-dots', 'bbn-100', 'bbn-middle', {'bbn-invisible': !ready}]"
          :style="{zIndex: zIndex}">
       <span class="bbn-block bbn-p"
             @click="toggleFloater"
@@ -15,7 +15,7 @@
     </div>
     <ul ref="container"
         :class="['bbn-spadding', {'bbn-invisible': !showIcons || !ready}]"
-        bbn-if="ready"
+        bbn-elseif="ready"
         :style="{zIndex: zIndex}">
       <li bbn-for="it in items"
           :key="it.index"

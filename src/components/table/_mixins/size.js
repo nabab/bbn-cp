@@ -137,7 +137,7 @@ export default {
      * @returns {HTMLElement}
      */
     resizeWidth() {
-      if (!this.checkVisibility()) {
+      if (this.checkVisibility && !this.checkVisibility()) {
         return;
       }
 

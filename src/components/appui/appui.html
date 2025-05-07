@@ -17,7 +17,7 @@
                class="appui-header"
                :is="headerComponent"/>
     <div bbn-elseif="header"
-         :class="['bbn-w-100', {'bbn-vpadding': !isMobile, 'bbn-hspadding': !isMobile, 'bbn-hxspadding': isMobile}]"
+         :class="['bbn-w-100', {'bbn-vpadding': !isMobile, 'bbn-vspadding': isMobile, 'bbn-hspadding': !isMobile, 'bbn-hxspadding': isMobile}]"
          style="overflow: visible">
       <div :class="[
              'bbn-appui-header',
@@ -27,13 +27,13 @@
              'bbn-no-border'
            ]"
            style="align-items: center">
-        <div class="bbn-appui-headleft bbn-flex" style="align-items: center">
+        <div class="bbn-appui-headleft bbn-flex bbn-w-20" style="align-items: center">
           <slot name="headleft"/>
         </div>
         <div class="bbn-flex-fill bbn-hspadding bbn-appui-head bbn-flex" style="align-items: center">
           <slot name="head"/>
         </div>
-        <div class="bbn-appui-headright bbn-flex" style="align-items: center">
+        <div class="bbn-appui-headright bbn-flex bbn-w-20 bbn-r" style="align-items: center">
           <slot name="headright"/>
         </div>
       </div>
@@ -57,9 +57,10 @@
                   :post-base-url="!single"
                   ref="router"
                   :nav="nav"
-                  :splittable="splittable"
+                  :splittable="splittable && !isMobile"
                   :configuration="true"
                   :resizable="true"
+                  :scrollable="isMobile"
                   :collapsible="true"
                   :master="true"
                   :url="!!nav ? undefined : url"
@@ -69,7 +70,6 @@
                   @change="$emit('change', $event)"
                   @shortcut="addShortcut"
                   @route1="$emit('route1')"
-                  :breadcrumb="isMobile"
                   :scroll-content="scrollable"
                   :component="component"
                   :component-source="componentSource"

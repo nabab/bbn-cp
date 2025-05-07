@@ -1,5 +1,6 @@
 <div :class="[componentClass, {
-  'bbn-container-ratio': router?.visualShowAll || (router?.isVisual && !isVisible),
+  'bbn-container-ratio': !isMobile && (router?.visualShowAll || (router?.isVisual && !isVisible)),
+  'bbn-h-100': isMobile && !currentSelected && (router?.visualShowAll || (router?.isVisual && !isVisible)),
   'bbn-100': !visual && router?.scrollContent,
   'bbn-w-100': !router?.scrollContent && !router?.visualShowAll,
   'bbn-background': true,
@@ -23,12 +24,16 @@
           bbn-show="isVisible || router?.isVisual">
         <!-- The header for visual and full screen -->
         <div bbn-if="!isPane && (visual || fullScreen)"
-            :class="'bbn-transition-bcolor bbn-b bbn-xspadding bbn-flex-width ' + (isVisible ? ' bbn-m' : '')"
+            :class="['bbn-transition-bcolor', 'bbn-b', 'bbn-xspadding', {
+              'bbn-flex-width': !isMobile || currentSelected,
+              'bbn-m': isVisible,
+              'bbn-flex-fill': isMobile && !currentSelected
+            }]"
             :style="{
               backgroundColor: bcolor || router?.bcolor,
               color: fcolor || router?.fcolor
             }">
-          <div class="bbn-flex-fill bbn-vmiddle">
+          <div :class="{'bbn-flex-fill': !isMobile || currentSelected, 'bbn-vmiddle': true}">
             <bbn-context bbn-if="isVisible"
                         class="bbn-left-sspace bbn-right-space bbn-lg bbn-p"
                         :floater-title="_('Container menu')"
@@ -40,7 +45,14 @@
                       class="bbn-right-sspace bbn-lg"
                       :content="currentIcon"/>
             <span bbn-text="currentTitle"
-                  style="overflow: hidden"/>
+                  :class="{
+                    'bbn-container-visual-title': isMobile && !currentSelected,
+                    'bbn-ellipsis': isMobile && currentSelected,
+                    'bbn-right-padding': isMobile && currentSelected
+                  }"
+                  style="overflow: hidden"
+                  :tabindex="isMobile ? -1 : null"
+                  @click="isMobile ? onClickVisual() : null"/>
           </div>
           <!-- Icon for restoring size when in full screen mode -->
           <div bbn-if="isVisible && fullScreen"
@@ -62,6 +74,7 @@
           'bbn-w-100': !router?.scrollContent,
           'bbn-container-visible': isVisible
         }"
+            bbn-show="currentSelected || !isMobile"
             ref="canvasSource">
           <!-- This is shown when it's ready -->
           <bbn-scroll bbn-if="ready && isLoaded"
@@ -117,7 +130,7 @@
           <bbn-loader bbn-elseif="isVisible && (!ready || !isLoaded)"
                       class="bbn-overlay bbn-middle"/>
           <!-- Thumbnail image -->
-          <div bbn-if="!isVisible && visual"
+          <div bbn-if="!isVisible && visual && !isMobile"
               style="overflow: hidden"
               class="bbn-overlay">
             <img :src="thumbnail"
@@ -138,12 +151,12 @@
       </div>
     </transition>
     <!-- When in visual mode a layer prevents interaction with the content -->
-    <div bbn-if="currentView && router?.isVisual && (!isVisible || router?.visualShowAll) && !isPane"
+    <div bbn-if="!isMobile && currentView && router?.isVisual && (!isVisible || router?.visualShowAll) && !isPane"
         class="bbn-overlay"
         style="z-index: 12; background-color: transparent">
     </div>
     <!-- When in visual mode this is the interaction layer -->
-    <div bbn-if="currentView && router?.isVisual && (!isVisible || router?.visualShowAll)"
+    <div bbn-if="!isMobile && currentView && router?.isVisual && (!isVisible || router?.visualShowAll)"
          class="bbn-overlay"
          @click="onClickVisual"
          @mouseenter="isOver = true"
