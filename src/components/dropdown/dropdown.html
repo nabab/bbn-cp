@@ -58,13 +58,14 @@
               class="bbn-textbox bbn-no-border bbn-flex-fill bbn-p"
               :required="required"
               ref="input"
-              @blur="ev => {isOpened = false; blur(ev)}"
-              @change="selectOnNative"
-              @focus="ev => {isOpened = true; focus(ev)}"
+              @blur.stop="ev => {isOpened = false; onBlur(ev)}"
+              @change.stop="selectOnNative"
+              @focus.stop="ev => {isOpened = true; onFocus(ev)}"
               @click="isOpened = true"
               :disabled="!!isDisabled || !!readonly"
               :tabindex="currentTabIndex">
-        <option :value="isNullable ? nullValue : ''"
+        <option bbn-if="isNullable || placeholder"
+                :value="isNullable ? nullValue : ''"
                 bbn-html="isNullable && !((value === '') || (value === nullValue)) ? _('Clear') : (placeholder || '')"
                 :disabled="!isNullable"
                 :selected="(value === '') || (value === nullValue)"/>

@@ -128,9 +128,9 @@ const cpDef = {
             else if ((this.sourceUrl !== undefined) && item[this.sourceUrl]) {
               bbn.fn.link(item[this.sourceUrl]);
             }
-            else if (item[this.uid || this.sourceValue] !== undefined) {
-              this.emitInput(item[this.uid || this.sourceValue]);
-              this.$emit('change', item[this.uid || this.sourceValue], idx, this.filteredData[idx].index, ev);
+            else if (item[this.uid ? this.uid : this.sourceValue] !== undefined) {
+              this.emitInput(item[this.uid ? this.uid : this.sourceValue]);
+              this.$emit('change', item[this.uid ? this.uid : this.sourceValue], idx, this.filteredData[idx].index, ev);
             }
           }
         }
