@@ -40,7 +40,11 @@ export default {
           });
         if (pos > -1) {
           if (this.currentOrder[pos].dir.toUpperCase() === 'ASC') {
-            this.currentOrder[pos].dir = 'DESC';
+            //this.currentOrder[pos].dir = 'DESC';
+            this.currentOrder.splice(pos, 1, {
+            field: f,
+            dir: 'DESC'
+          });
           } else {
             this.currentOrder.splice(0, this.currentOrder.length);
           }
