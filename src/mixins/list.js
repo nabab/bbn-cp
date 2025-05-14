@@ -582,7 +582,7 @@ const list = {
       }
 
       let pass = false;
-      return bbn.fn.filter(this.limits.sort(), a => {
+      return bbn.fn.filter(this.limits.sort((a, b) => a - b), a => {
         if (a > this.total) {
           if (!pass) {
             pass = true;

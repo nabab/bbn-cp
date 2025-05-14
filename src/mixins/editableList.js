@@ -94,13 +94,17 @@ const editableList = {
      */
     modifiedRows() {
       let res = [];
-      if (this.isBatch) {
+      if (this.isBatch
+        && this.currentData?.length
+        && this.originalData?.length
+      ) {
         bbn.fn.each(this.currentData, (d, i) => {
           if (!bbn.fn.isSame(d.data, this.originalData[i])) {
             res.push(d);
           }
         })
       }
+
       return res;
     },
   },
