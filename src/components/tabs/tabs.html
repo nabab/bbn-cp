@@ -47,7 +47,8 @@
                   :key="tab.uid || tab.url || tab.idx"
                   :style="{
                     backgroundColor: tab.bcolor,
-                    color: tab.fcolor
+                    color: tab.fcolor,
+                    opacity: i === value ? 1 : 0.75
                   }"
                   :data-index="tab.idx"
                   :class="['bbn-transition-bcolor', 'bbn-border', 'bbn-state-default', 'bbn-unselectable', position, {

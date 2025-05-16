@@ -488,6 +488,9 @@ export default {
                 }
                 else if (this.selected !== viewIdx) {
                   this.selected = viewIdx;
+                  if (force && this.containers[this.views[viewIdx].uid] && this.views[viewIdx].load && this.views[viewIdx].loaded && !this.views[viewIdx].loading) {
+                    this.containers[this.views[viewIdx].uid].reload();
+                  }
                 }
               }
 
