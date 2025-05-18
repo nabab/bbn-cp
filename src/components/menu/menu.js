@@ -76,9 +76,13 @@ const cpDef = {
           if (this.filteredData[idx].data[this.sourceItems] && this.filteredData[idx].data[this.sourceItems].length) {
             this.overIdx = this.overIdx === idx ? -1 : idx;
           }
+          else if (this.sourceUrl && this.filteredData[idx].data[this.sourceUrl]) {
+            bbn.fn.link(this.filteredData[idx].data[this.sourceUrl]);
+          }
           else {
             this.select(this.filteredData[idx].data, idx, idx, ev);
           }
+
           this.currentSelectedIndex = idx;
         }
       },

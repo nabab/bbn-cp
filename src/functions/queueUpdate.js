@@ -9,7 +9,7 @@ export default function queueUpdate(...items) {
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
     if (!item.num) {
-      item.num = bbn.cp.numTicks + 1;
+      item.num = bbn.cp.numTicks;
     }
 
     if (item.element) {

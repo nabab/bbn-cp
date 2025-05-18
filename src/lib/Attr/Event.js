@@ -7,7 +7,24 @@ import initResults from "../Html/private/initResults.js";
 export default class bbnEventAttr extends bbnAttr
 {
   handler = null;
+  #handlerElement;
   cfg = null;
+  setHandler() {
+    if (this.node.element && (this.#handlerElement !== this.node.element)) {
+      if (this.node.element instanceof Comment) {
+        if (this.#handlerElement) {
+          this.#handlerElement.removeEventListener(this.name, this.handler);
+          this.#handlerElement = null;
+        }
+
+        return;
+      }
+
+      this.#handlerElement = this.node.element;
+      //this.node.element.bbnEventsApplied[this.name] = true;
+      this.node.element.addEventListener(this.name, this.handler, this.cfg);
+    }
+  }
   attrSet() {
     if (!this.handler) {
       // Configuration object for the event listener.
@@ -96,6 +113,7 @@ export default class bbnEventAttr extends bbnAttr
           }
         }
       };
+      this.setHandler();
     }
   }
 
@@ -104,11 +122,6 @@ export default class bbnEventAttr extends bbnAttr
       //bbn.fn.log("UPDATE ATTR EVENT " + this.name)
     }
   
-    if (init) {
-      if (this.node.element) {//} && !this.node.element.bbnEventsApplied[this.name]) {
-        //this.node.element.bbnEventsApplied[this.name] = true;
-        this.node.element.addEventListener(this.name, this.handler, this.cfg);
-      }
-    }
+    this.setHandler();
   }
 }

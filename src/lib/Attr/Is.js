@@ -29,10 +29,10 @@ export default class bbnIsAttr extends bbnAttr
       }
     }
 
+    /*
     if (this.isChanged && !this.node.isCreating && this.node.element) {
-      //this.node.nodeRemove(this.node.element);
       this.node.nodeInit();
-    }
+    }*/
   }
 
 

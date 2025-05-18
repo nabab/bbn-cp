@@ -29,7 +29,7 @@ bbnData.prototype.unset = function(noParent) {
         if (idx > -1) {
           //bbn.fn.log(["UPDATE ON UNSET", this, it.parent, cp, it]);
           it.parent.children.splice(idx, 1);
-          it.parent.dataUpdate();
+          //it.parent.dataUpdate();
         }
       }
     }

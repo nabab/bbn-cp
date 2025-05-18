@@ -14,6 +14,12 @@ const checkOwnDeps = node => {
           o.data.deps.__bbnRoot.splice(idx, 1);
         }
       }
+      else if (o.component && o.name && o.component.$deps[o.name]) {
+        let idx = o.component.$deps[o.name].indexOf(a);
+        if (idx > -1) {
+          o.component.$deps[o.name].splice(idx, 1);
+        }
+      }
 
     })
 

@@ -80,7 +80,7 @@ bbnProtoHtml.$connected = function () {
   });
 
   // just after definition to know what is the default model prop
-  const modelCfg = bbn.cp.statics[this.$node.tag]?.cfg?.model || (this.$options.name === 'bbn-anon' ? {prop: 'value'} : null);
+  const modelCfg = bbn.cp.statics[this.$node.tag === 'component' ? this.$node.realTag : this.$node.tag]?.cfg?.model || (this.$options.name === 'bbn-anon' ? {prop: 'value'} : null);
   if (Object.hasOwn(this.$node.model || {}, '_default_') && modelCfg) {
     Object.defineProperty(this.$node.model._default_, 'name', {
       value: modelCfg.prop,

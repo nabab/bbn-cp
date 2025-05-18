@@ -8,6 +8,24 @@ import initResults from "../Html/private/initResults.js";
 export default class bbnModelAttr extends bbnAttr
 {
   handler = null;
+  #handlerElement = null;
+  setHandler() {
+    if (this.node.element && (this.#handlerElement !== this.node.element)) {
+      const eventName = this.modifiers.includes('lazy') ? 'change' : 'input';
+      if (this.node.element instanceof Comment) {
+        if (this.#handlerElement) {
+          this.#handlerElement.removeEventListener(eventName, this.handler);
+          this.#handlerElement = null;
+        }
+
+        return;
+      }
+
+      this.#handlerElement = this.node.element;
+      //bbn.fn.log(["FROM MODEL INIT", eventName, this.name, this.attrGetValue()]);
+      this.#handlerElement.addEventListener(eventName, this.handler);
+    }
+  }
   attrSet() {
     if (!this.handler) {
       const node = this.node;
@@ -121,6 +139,7 @@ export default class bbnModelAttr extends bbnAttr
           }
         }
       };
+      this.setHandler();
     }
   }
   attrUpdate(init) {
@@ -135,7 +154,7 @@ export default class bbnModelAttr extends bbnAttr
         this.node.props[this.name] = value;
       }
 
-      if (this.node.element?.bbn?.$props && Object.hasOwn(this.node.element.bbn.$props, this.name)) {
+      if (this.node.element?.bbn?.$props && (this.name in this.node.element.bbn.$props)) {
         setProp(this.node.element.bbn, this.name, value);
       }
 
@@ -151,10 +170,6 @@ export default class bbnModelAttr extends bbnAttr
       }
     }
 
-    if (init && this.node.element) {
-      const eventName = this.modifiers.includes('lazy') ? 'change' : 'input';
-      //bbn.fn.log(["FROM MODEL INIT", eventName, this.name, this.attrGetValue()]);
-      this.node.element.addEventListener(eventName, this.handler);
-    }
+    this.setHandler();
   }
 }

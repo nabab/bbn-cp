@@ -650,9 +650,7 @@ const list = {
       }
     },
     filteredData() {
-      if (this.currentData.length && this.currentFilters &&
-        this.currentFilters.conditions &&
-        this.currentFilters.conditions.length &&
+      if (this.currentData.length && this.currentFilters?.conditions?.length &&
         (!this.serverFiltering || !this.isAjax)
       ) {
         return bbn.fn.filter(this.currentData, a => {
@@ -1363,6 +1361,7 @@ const list = {
     currentOrder: {
       deep: true,
       handler() {
+        bbn.fn.log("currentOrder CHanGE");
         if (this.ready) {
           if (bbn.fn.isFunction(this.setConfig)) {
             this.setConfig(true);

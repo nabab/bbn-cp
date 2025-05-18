@@ -102,12 +102,13 @@ async function treatQueue(num = 0, cps) {
       const isWatcher = queueElement.element instanceof bbnWatcher;
       //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
-      if (cp?.$isDestroyed) {
-        //bbn.fn.log("CP IS DESTROYED");
+      if (isAttr && queueElement.element.node.isDestroyed) {
+        //bbn.fn.log("ATTR IS DESTROYED: " + queueElement.element.id);
         continue;
       }
-      if (isAttr && queueElement.element.node.isDestroyed) {
-        //bbn.fn.log("NODE IS DESTROYED");
+
+      if (cp?.$isDestroyed) {
+        //bbn.fn.log("CP IS DESTROYED IsAttr ? " + isAttr + " isDestroyed ? " + (isAttr ? queueElement.element.node.isDestroyed : false));
         continue;
       }
 
@@ -238,6 +239,9 @@ async function treatQueue(num = 0, cps) {
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       await treatQueue(num + 1, cps);
+      if (num) {
+        return;
+      }
     }
 
     for (let n in cps) {

@@ -1067,7 +1067,10 @@ const cpDef = {
               this.onClickDocument(ev);
             });
             this.$nextTick(() => {
-              this.getRef('floater').onResize(true);
+              const floater = this.getRef('floater');
+              if (floater) {
+                floater.onResize(true)
+              }
             })
           }
           else {
