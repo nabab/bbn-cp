@@ -131,7 +131,7 @@ async function treatQueue(num = 0, cps) {
 
       if (queueElement.element) {
         if (done.includes(queueElement.element)) {
-          //bbn.fn.log("ELEMENT IS DONE");
+          bbn.fn.log("ELEMENT IS DONE");
           //continue;
         }
 
