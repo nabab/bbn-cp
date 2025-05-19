@@ -136,23 +136,18 @@ bbnAttr.prototype.attrSetResult = function(data) {
     result.state = 'MOD'; // Modified state.
   }
   else {
-    if (isChanged) {
+    const dataObj = bbnData.getObject(expValue);
+    if (dataObj?.root?.component?.$computed?.[dataObj?.root?.path]?.isChanged) {
+      result.state = 'MOD'; // <Modified> state.
+    }
+    else if (dataObj && (component.$lastBuild < dataObj.lastUpdate)) {
       result.state = 'MOD'; // Modified state.
     }
+    else if (isChanged) {
+      result.state = 'MOD'; // <Modified> state.
+    }
     else {
-      const dataObj = bbnData.getObject(expValue);
-      if (dataObj?.root?.component?.$computed?.[dataObj?.root?.path]?.isChanged) {
-        result.state = 'MOD'; // <Modified> state.
-      }
-      else if (dataObj && (component.$lastBuild < dataObj.lastUpdate)) {
-        result.state = 'MOD'; // Modified state.
-      }
-      else if (isChanged) {
-        result.state = 'MOD'; // <Modified> state.
-      }
-      else {
-        result.state = 'OK'; // Unchanged state.
-      }
+      result.state = 'OK'; // Unchanged state.
     }
   }
 
