@@ -56,7 +56,7 @@ export default function() {
             helper.setAttribute(bbn.fn.isString(o.component) ? 'is' : ':is', o.component);
             if (bbn.fn.isObject(o?.componentOptions)
             ) {
-              helper.setAttribute('v-bind', JSON.stringify(o.componentOptions));
+              helper.setAttribute('bbn-bind', JSON.stringify(o.componentOptions));
             }
           }
           if (!!o.helperElement) {

@@ -262,7 +262,7 @@ const cpDef = {
        */
       padding: {
         type: [Boolean, Number, String],
-        default: false
+        default: true
       },
       /**
        * The additional data to send with the ajax call
@@ -338,6 +338,7 @@ const cpDef = {
         if ( bbn.fn.isNumber(this.padding) ){
           return this.padding + 'px';
         }
+
         return this.padding;
       },
       /**

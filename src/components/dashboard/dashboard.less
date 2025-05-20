@@ -3,11 +3,13 @@ bbn-dashboard{
   &.bbn-unselectable{
     cursor: move;
   }
-  .bbn-masonry{
+  .bbn-masonry:first-child {
     overflow: hidden;
+    padding-right: calc(1px + 0.15rem);
+    padding-bottom: calc(1px + 0.15rem);
     > bbn-widget,
     #bbn-draggable-current > bbn-widget{
-      display: grid;
+      display: inline-block !important;
       margin-bottom: 1rem;
       width: 100%;
       page-break-inside: avoid;

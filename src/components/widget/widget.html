@@ -1,8 +1,9 @@
-<div :class="[componentClass, 'bbn-border', 'bbn-radius', 'bbn-alt-background-internal', full ? 'full' : '']"
+<div :class="[componentClass, 'bbn-radius', 'bbn-iflex-height', 'bbn-background', 'bbn-text', full ? 'full' : '']"
      bbn-droppable.data="!!sortable ? {data: {widget: _self}} : false">
   <!-- HEADER -->
-  <div class="bbn-header bbn-no-border bbn-border-bottom bbn-unselectable"
-       bbn-if="label">
+  <div bbn-if="label"
+       class="bbn-header bbn-unselectable"
+       style="border: 0 !important">
     <div class="bbn-flex-width bbn-vxspadding bbn-vmiddle">
       <!-- BUTTONS LEFT -->
       <div class="bbn-header-buttons bbn-widget-button-left bbn-hxspadding">
@@ -21,7 +22,7 @@
             :class="b.icon"/>
       </div>
       <!-- TITLE -->
-      <div :class="['bbn-widget-title', 'bbn-flex-fill', 'bbn-hpadding', {'bbn-middle': !!icon}]">
+      <div :class="['bbn-widget-title', 'bbn-flex-fill', 'bbn-hpadding', 'bbn-secondary-text-alt', {'bbn-middle': !!icon}]">
         <i bbn-if="icon" :class="[icon, 'bbn-right-sspace']"/>
         <h3 :style="dashboard && dashboard.sortable ? 'cursor: move' : ''"
             :class="['bbn-no-margin', {'bbn-iblock': !!icon}]"
@@ -46,9 +47,10 @@
   </div>
 
   <!-- MAIN CONTENT -->
-  <div :class="['bbn-content', 'bbn-radius-bottom', 'bbn-no-border', {'bbn-padding': !component || (contentPadding === true)}]"
+  <div :class="['bbn-content', 'bbn-radius-bottom', 'bbn-no-border', 'bbn-background', 'bbn-text', 'bbn-flex-fill', 'bbn-rel', {'bbn-padding': contentPadding === true}]"
        :style="{
          padding: contentPadding ? contentPadding : null,
+         'padding-bottom': currentPage && pageable ? '2rem' : '',
          minHeight: isLoading && (!currentItems || !currentItems.length) ? '15em' : null
        }">
     <!-- COMPONENT -->
