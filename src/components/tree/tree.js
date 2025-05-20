@@ -1806,6 +1806,7 @@ const cpDef = {
             if (this.tree.dragging
               && this.tree.overNode
               && (this === this.tree.overNode)
+              && (this.tree.dragging.parent !== this.getRef('tree'))
             ) {
               let ev = new CustomEvent('drop', {
                 cancelable: true,
@@ -1814,6 +1815,8 @@ const cpDef = {
               });
               let originalTree = this.tree.dragging.tree;
               this.tree.$emit('drop', this.tree.dragging, this, ev);
+              bbn.fn.log(['drop', this.tree.dragging.data.id, this.data.id, ev, this.tree.overNode.data.id])
+
               if (!ev.defaultPrevented) {
                 if (this.tree.overOrder) {
                   let numBefore = this.tree.dragging.source.num,
@@ -2306,6 +2309,7 @@ const cpDef = {
             }
             this.$set(this.source, 'visible', this.isVisible);
             this.isMounted = true;
+            this.tree.$emit('registernode', this);
             this.$nextTick(() => {
               if ( this.isExpanded && this.numChildren ){
                 let tree = this.getRef('tree');
@@ -2321,6 +2325,7 @@ const cpDef = {
           })
         },
         beforeDestroy(){
+          this.tree.$emit('unregisternode', this);
           if ( this.isSelected ){
             this.removeFromSelected(true, false);
           }

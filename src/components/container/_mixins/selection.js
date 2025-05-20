@@ -144,6 +144,13 @@ export default {
 
       if (response?.status === 200) {
         const d = response.data;
+        if (!d || !bbn.fn.isObject(d)) {
+          this.errorStatus = {
+            status: 404,
+            statusText: bbn._('Not found'),
+          };
+          return;
+        }
         //bbn.fn.log(["RESPONSE", d.url, d, dataObj, this.$el]);
         let callRealInit = true;
         if (!d.label && d.title) {
@@ -242,6 +249,9 @@ export default {
 
         this.isLoaded = true;
         this.init();
+      }
+      else {
+        this.errorStatus = response;
       }
     },
     selectionMounted() {

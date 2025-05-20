@@ -90,6 +90,8 @@
         <component bbn-if="component"
                   ref="component"
                   :is="component"
+                  @hook:mounted="componentRegister"
+                  @hook:beforedestroy="componentUnregister"
                   bbn-bind="realComponentOptions"/>
         <slot bbn-elseif="$slots.default.length && ($slots.default[0].bbnSchema.tag !== 'slot')"/>
         <div bbn-elseif="!!content"

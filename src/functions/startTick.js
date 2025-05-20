@@ -134,10 +134,12 @@ async function treatQueue(num = 0, cps) {
           if (isAttr) {
             continue;
           }
-          bbn.fn.log("ELEMENT IS DONE");
+          
+          //bbn.fn.log("ELEMENT IS DONE");
         }
-
-        done.push(queueElement.element);
+        else {
+          done.push(queueElement.element);
+        }
       }
 
       if (!cps[cp.$cid]) {

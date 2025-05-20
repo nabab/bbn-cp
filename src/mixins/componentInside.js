@@ -24,6 +24,26 @@ const componentInside = {
     componentEvents: {
       type: Object
     }
+  },
+  computed: {
+    componentHasEvents() {
+      return this.component && this.componentEvents ? !!bbn.fn.numProperties(this.componentEvents) : false;
+    }
+  },
+  methods: {
+    componentRegister(e) {
+      const cp = e.target;
+      if (this.componentHasEvents && bbn.cp.isComponent(cp)) {
+        bbn.fn.iterate(this.componentEvents, (ev, name) => cp.$on(name, ev));
+      }
+    },
+    componentUnregister(e) {
+      const cp = e.target;
+      if (this.componentHasEvents && bbn.cp.isComponent(cp)) {
+        bbn.fn.iterate(this.componentEvents, (ev, name) => cp.$off(name, ev));
+      }
+    },
+
   }
 };
 

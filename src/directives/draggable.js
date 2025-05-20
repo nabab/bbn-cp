@@ -279,14 +279,16 @@ export default function() {
       e.preventDefault();
       e.stopImmediatePropagation();
       var options = draggable.options;
+      options.target = e.target;
       options.helper.style.pointerEvents = draggable.pointerEvents;
       let target = options.mode !== 'move' ? e.target : false;
-      if (bbn.fn.isDom(target)
-        && (target.dataset.bbn_droppable_over !== 'true')
-      ) {
+      const isDom = target && bbn.fn.isDom(target);
+      if (isDom && (target.dataset.bbn_droppable_over !== 'true')) {
         target = target.closest('[data-bbn_droppable_over=true]');
       }
-      if (bbn.fn.isDom(target)
+
+      if (isDom
+        && target
         && !target.classList.contains('bbn-undroppable')
         && !!target.bbnDirectives?.droppable?.active
       ) {
@@ -310,6 +312,7 @@ export default function() {
           }
         }
       }
+
       document.removeEventListener('click', fnClick, {once: true, capture: true});
       document.removeEventListener('mouseup', fnEnd, {once: true});
       document.removeEventListener('mousemove', fnDrag);

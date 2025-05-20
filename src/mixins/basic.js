@@ -69,8 +69,8 @@ const basic = {
       if (vm.$options && (vm.$options.name === 'bbn-popup')) {
         return vm;
       }
-      else if (this.popup && (this.popup?.tagName === 'BBN-POPUP')) {
-        return this.popup;
+      else if (vm.popup && (vm.popup?.tagName === 'BBN-POPUP')) {
+        return vm.popup;
       }
       else if ( vm.getRef('popup') ){
         return vm.getRef('popup');
@@ -80,6 +80,7 @@ const basic = {
       if (parent?._retrievePopup) {
         return parent._retrievePopup(parent);
       }
+
       if (parent) {
         return this._retrievePopup(parent);
       }
@@ -249,11 +250,6 @@ const basic = {
     if (this.$options.name && !this.componentClass.includes(this.$options.name)){
       this.componentClass.push(this.$options.name);
     }
-  },
-  mounted(){
-    this.$nextTick(() => {
-      this._currentPopup = this._retrievePopup();
-    });
   },
   watch: {
     /**

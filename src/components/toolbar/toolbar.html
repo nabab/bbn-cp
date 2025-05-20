@@ -1,5 +1,5 @@
 <div :class="['bbn-header', 'bbn-unselectable', componentClass, {
-        'bbn-flex': (orientation === 'horizontal'),
+        'bbn-flex bbn-vmiddle': (orientation === 'horizontal'),
         'bbn-block bbn-h-100': (orientation === 'vertical')
       }]"
      :style="currentStyle">
@@ -28,15 +28,12 @@
                      bbn-bind="s.options"/>
         </div>
         <div bbn-elseif="!s.end && (s.content !== undefined)"
-             class="bbn-block bbn-spadding"
+             class="bbn-block bbn-xspadding"
              bbn-html="s.content"
              :key="'item' + i"
              :ref="'item' + i"/>
         <bbn-button bbn-elseif="!s.end && ((s.url || s.action || s.items) && (s.label || s.icon))"
                     bbn-bind="s"
-                    :class="{
-                      'bbn-hxsmargin': buttonSpace
-                    }"
                     :key="'item' + i"
                     :ref="'item' + i"/>
         <div bbn-elseif="!s.end"
@@ -61,13 +58,10 @@
                       :key="'item' + i"/>
         </div>
         <div bbn-elseif="s.end && (s.content !== undefined)"
-            class="bbn-block bbn-spadding"
+            class="bbn-block bbn-xspadding"
             bbn-html="s.content"
             :key="'item' + i"/>
         <bbn-button bbn-elseif="s.end && ((s.url || s.action) && (s.text || s.icon))"
-                    :class="{
-                      'bbn-hxsmargin': true
-                    }"
                     bbn-bind="s"
                     :key="'item' + i"/>
         <div bbn-elseif="s.end"

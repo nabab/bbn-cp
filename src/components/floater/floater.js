@@ -614,14 +614,6 @@ const cpDef = {
             });
           }
         })
-        if (this.component && this.componentEvents) {
-          const comp = this.getRef('component');
-          if (comp) {
-            bbn.fn.iterate(this.componentEvents, (ev, name) => {
-              comp.$on(name, ev);
-            });
-          }
-        }
       }
     },
     /**

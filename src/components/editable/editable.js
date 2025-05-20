@@ -680,7 +680,7 @@ const cpDef = {
           computed: {
             currentValue: {
               get() {
-                bbn.fn.log("GETTING CURRENT VALUE", type, this.value, this.$el.bbnSchema.model.value.value, this)
+                //bbn.fn.log("GETTING CURRENT VALUE", type, this.value, this.$el.bbnSchema.model.value.value, this)
                 return this.value
               },
               set(v) {
