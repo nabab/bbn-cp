@@ -230,7 +230,8 @@ const cpDef = {
     }
   },
   methods: {
-    clear(){
+    clear() {
+      this.$emit('clear');
       this.emitInput(this.pref || (this.nullable ? null : ''));
       this.currentValue = '';
     },

@@ -38,6 +38,7 @@
                spellcheck="false"
                :required="required"
                :nullable="isNullable"
+               @clear="onClear"
                :force-nullable="isNullable"
                :placeholder="placeholder"
                :tabindex="currentTabIndex"

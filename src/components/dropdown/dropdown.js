@@ -64,6 +64,9 @@ const cpDef = {
     }
   },
   methods: {
+    onClear() {
+      this.emitInput(this.isNullable ? null : '');
+    },
     /**
      * States the role of the enter key on the dropdown menu.
      *

@@ -1505,6 +1505,10 @@ const cpDef = {
           flat: {
             type: Boolean,
             default: false
+          },
+          droppable: {
+            type: Boolean,
+            default: false
           }
         },
         data(){

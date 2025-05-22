@@ -49,11 +49,13 @@
             :uid="uid"
             @selectmenu="clickMenuItem"
             @nodeclick="onNodeClick"
+            @drop="onNodeDrop"
             :tree-state="uid !== undefined ? _getTreeState(it.data[uid]) : undefined">
         <li :class="['bbn-tree-node', 'bbn-vxxspadding', 'bbn-unselectable', {
                       'bbn-p': selectable
                     }]"
             bbn-show="isVisible"
+            bbn-droppable="droppable"
             :title="source.tooltip || textFromText">
           <!-- Sortable interface is set at the top -->
           <span bbn-if="sortable && (source.num === 1)"
