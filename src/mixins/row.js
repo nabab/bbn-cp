@@ -15,9 +15,7 @@ export default {
   },
   data() {
     let o = {
-      table: this.closest('bbn-table'),
-      to: null,
-      rowHeight: null,
+      table: this.closest('bbn-table')
     };
 
     return o;
@@ -51,6 +49,7 @@ export default {
     },
     cellClass() {
       const cls = [{
+        'bbn-invisible': !this.ready,
         'bbn-alt': this.alt,
       }];
 
@@ -66,42 +65,23 @@ export default {
       return cls;
     },
     cellStyle() {
-      let res = '';
       if (this.table?.trStyle) {
         if (bbn.fn.isFunction(this.table.trStyle)) {
-          res = this.table.trStyle(this.source.data);
+          return this.table.trStyle(this.source.data);
         }
 
-        res = this.table.trStyle;
+        return this.table.trStyle;
       }
 
-      return res;
+      return '';
     },
   },
-  methods: {
-    setReady() {
-      let ready = this.table.$refs.scroll.isYInScroll(this.$el, this.table.clientHeight);
-      if (ready !== this.ready) {
-        this.ready = ready;
-      }
-    },
-  },
+  methods: {},
   watch: {
   },
   mounted() {
-    if (!this.index || !this.table.scrollable) {
+    this.$nextTick(() => {
       this.ready = true;
-    }
-    else {
-      this.setReady();
-    }
-    if (this.table.scrollIntersection) {
-      this.table.scrollIntersection.observe(this);
-    }
-  },
-  beforeDestroy() {
-    if (this.table.scrollIntersection) {
-      this.table.scrollIntersection.unobserve(this);
-    }
-  },
+    });
+  }
 };

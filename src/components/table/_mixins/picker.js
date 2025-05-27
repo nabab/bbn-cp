@@ -9,7 +9,7 @@ export default {
      * @fires setConfig
      * @fires init
      */
-    show(colIndexes, hide, noInit) {
+    show(colIndexes, hide) {
       if (!Array.isArray(colIndexes)) {
         colIndexes = [colIndexes];
       }
@@ -27,13 +27,12 @@ export default {
           }
         }
       });
-      if (!noInit) {
-        this.setConfig(true);
-        this.$forceUpdate();
-        setTimeout(() => {
-          this.init(true);
-        }, 500);
-      }
+      this.setConfig(true);
+      this.$forceUpdate();
+      setTimeout(() => {
+        this.init(true);
+      }, 500);
+
     },
     /**
      * Returns the list of the showable columns
@@ -98,7 +97,6 @@ export default {
 `,
           props: ['source'],
           data() {
-            // An array of booleans for each column with true for shown and false for hidden
             let shownColumns = this.source.cols.map(a => !a.invisible);
             return {
               table: table,
@@ -112,9 +110,7 @@ export default {
             applyColumnsShown() {
               let toShow = [];
               let toHide = [];
-              this.initStarted = true;
               bbn.fn.each(this.source.cols, (a, i) => {
-                // invisible is the opposite of shownCols
                 if (a.invisible == this.shownCols[i]) {
                   if (this.shownCols[i]) {
                     toShow.push(a.field || i);
@@ -123,16 +119,12 @@ export default {
                   }
                 }
               });
-
               if (toShow.length) {
-                table.show(toShow, false, toHide.length ? true : false);
+                table.show(toShow);
               }
-
               if (toHide.length) {
                 table.show(toHide, true);
               }
-
-              this.init();
             },
             allVisible(group) {
               let ok = true;
@@ -157,20 +149,18 @@ export default {
               bbn.fn.each(this.source.cols, (a, i) => {
                 if ((a.showable !== false) && (a.group === group) && !a.fixed) {
                   if (this.shownCols[i] != show) {
-                    this.shownCols[i] = show;
+                    this.shownCols.splice(i, 1, show);
                   }
                 }
               });
+              this.$forceUpdate();
             }
           },
           watch: {
             shownCols: {
               deep: true,
               handler() {
-                if (!this.formData.changed) {
-                  // If the shownCols array has changed, we set the changed flag to true
-                  this.formData.changed = true;
-                }
+                this.formData.changed = true;
               }
             }
           }

@@ -57,13 +57,6 @@ export default {
     }
   },
   computed: {
-    theadHeight() {
-      if (this.$refs.thead) {
-        return this.$refs.thead.getBoundingClientRect().height;
-      }
-
-      return 0;
-    },
     /**
      * Return the number of visible columns of the table.
      * @computed numVisible

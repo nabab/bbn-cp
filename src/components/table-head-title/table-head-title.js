@@ -28,26 +28,29 @@ const cpDef = {
   data() {
     const table = this.$origin;
     return {
-      table,
-      to: null,
-      observer: null
+      table
     }
   },
   computed: {
     groupCol() {
       return this.table.groupCols[this.groupIndex]
-    },
-    realIndex() {
-      let num = this.index;
-      for (let i = 0; i < this.groupIndex; i++) {
-        num += this.table.groupCols[i].cols.length;
-      }
-      return num;
     }
   },
-  watch: {
-    ready() {
-      this.setReady();
+  beforeMount() {
+    if (bbn.fn.isInViewport(this)) {
+      this.source.ready = true;
+    }
+    else {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            this.source.ready = true;
+            observer.disconnect();
+          }
+        })
+      })
+
+      observer.observe(this)
     }
   },
 };

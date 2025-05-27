@@ -117,18 +117,28 @@ async function treatQueue(num = 0, cps) {
         unconditioned = [];
         forgotten = [];
         //cps = bbn.fn.createObject();
-        done = new Map();
+        lastNum = queueElement.num;
+
+        /*
+        if (done?.length) {
+          bbn.fn.log(done.slice());
+        }*/
+
+        done = [];
         lastElement = null;
         fns = [];
       }
 
       if (queueElement.element) {
-        if (done.get(queueElement.element) >= queueElement.num) {
-          continue;
+        if (done.includes(queueElement.element)) {
+          if (isAttr) {
+            continue;
+          }
           
+          //bbn.fn.log("ELEMENT IS DONE");
         }
         else {
-          done.set(queueElement.element, queueElement.num);
+          done.push(queueElement.element);
         }
       }
 

@@ -389,6 +389,7 @@ export default {
           let hash = bbn.env.path.split('#')[1];
           if (hash) {
             hash = '#' + hash;
+            location.hash = null;
             location.hash = hash;
           }
           

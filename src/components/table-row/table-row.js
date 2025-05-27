@@ -33,13 +33,14 @@ const cpDef = {
   },
   methods: {
     checkBreak(ele, data) {
+      return false;
       if (this.index) {
-        return this.lastColumnVisible && (data.i > this.lastColumnVisible);
+        return data.col.ready && this.table.currentColumns[data.i+1] && !this.table.currentColumns[data.i+1].ready;
       }
 
-      return false;
+      return !data.col.ready && data.i && this.table.currentColumns[data.i-1].ready;
     }
-  },
+  }
 };
 
 import cpHtml from './table-row.html';

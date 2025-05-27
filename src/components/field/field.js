@@ -177,9 +177,6 @@ const cpDef = {
             else if ( this.source ){
               this.renderedComponent = 'bbn-dropdown';
               this.renderedOptions.source = this.source;
-              if (this.options) {
-                bbn.fn.extend(this.renderedOptions, this.options);
-              }
             }
             else{
               this.renderedComponent  = 'bbn-input';

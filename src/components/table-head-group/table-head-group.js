@@ -25,9 +25,24 @@ const cpDef = {
   },
   data() {
     return {
-      table: this.$origin,
-      to: null,
-      observer: null
+      table: this.$origin
+    }
+  },
+  beforeMount() {
+    if (bbn.fn.isInViewport(this)) {
+      this.source.ready = true;
+    }
+    else {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            this.source.ready = true;
+            observer.disconnect();
+          }
+        })
+      })
+
+      observer.observe(this)
     }
   },
 };

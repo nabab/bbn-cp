@@ -126,16 +126,10 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
   }
   // First time is done in a linear direction
   // @mirko test it!
-  else if (!this.parent.numBuild && (this.loop || !this.loopItem)) {
+  else if (!this.parent.numBuild && !this.loopItem) {
     //bbn.fn.log("NUMBUILD");
-
     if (this.parent?.comment && this.parent.element.parentNode) {
-      let p = this.parent.element;
-      while (p.nextSibling && !p.nextSibling.bbnId.indexOf(this.parent.id)) {
-        p = p.nextSibling;
-      }
-
-      p.after(ele);
+      this.parentElement.insertBefore(ele, this.parent.element);
     }
     else {
       // Append as a new child
@@ -167,38 +161,23 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
       const lst = loopRoot.bbnSchema.loop.list;
       const idx = lst.indexOf(this.hash);
       if (!idx) {
-        loopRoot.after(ele);
+        loopRoot.parentNode.insertBefore(ele, loopRoot);
         //bbn.fn.log(["APPEND ON ROOT IN LOOP", this.tag, this.id, ele])
       }
       else {
         const eleBefore = idx === -1 ? null : this.component.$retrieveElement(this.id, lst[idx-1]);
         if (eleBefore) {
-          if (eleBefore instanceof Comment) {
-            let p = eleBefore;
-            while (p.nextSibling && !p.nextSibling.bbnId.indexOf(eleBefore.bbnId + '-')) {
-              p = p.nextSibling;
-            }
-
-            p.after(ele);
-          }
-          else {
-            eleBefore.after(ele);
-          }
+          eleBefore.after(ele);
         }
         else {
-          loopRoot.after(ele);
+          loopRoot.parentNode.insertBefore(ele, loopRoot);
         }
         //bbn.fn.log(["APPEND AFTER IN LOOP", this.tag, ele])
       }
     }
   }
   else if (this.parent.comment && this.parent.element?.parentNode) {
-    let p = this.parent.element;
-    while (p.nextSibling && !p.nextSibling.bbnId.indexOf(this.parent.element.bbnId + '-')) {
-      p = p.nextSibling;
-    }
-
-    p.after(ele);
+    this.parent.element.parentNode.insertBefore(ele, this.parent.element);
   }
   else if (this.parent.comment) {
     //bbn.fn.log("COMMENT")
@@ -218,7 +197,14 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
 
     if (after) {
       //bbn.fn.log("AFTER");
-      after.after(ele); 
+      if (after.bbnSchema.loop) {
+        after.parentNode.insertBefore(ele, after);
+      }
+      else {
+        // Insert after a specific sibling
+        //bbn.fn.log(["AFTER", this.tag, ele, after])
+        after.after(ele); 
+      }
     }
     else {
       //bbn.fn.log("LAST APPEND");

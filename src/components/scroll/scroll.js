@@ -219,8 +219,7 @@ const cpDef = {
       scrollTimeout: null,
       currentStepX: this.stepX instanceof HTMLElement ? this.stepX.clientHeight : this.stepX,
       currentStepY: this.stepY instanceof HTMLElement ? this.stepY.clientHeight : this.stepY,
-      inFloater: null,
-      bounding: null
+      inFloater: null
     };
   },
   computed: {
@@ -294,34 +293,6 @@ const cpDef = {
     }
   },
   methods: {
-    isVisibleInScroll(element, margin = 0) {
-      bbn.fn.checkType(element, HTMLElement);
-      bbn.fn.checkType(margin, Number);
-      const bounding = this.$position(element);
-      if ((bounding.bottom >= this.bounding.top - margin)
-        && (bounding.right >= this.bounding.left - margin)
-        && (bounding.top <= this.bounding.bottom + margin)
-        && (bounding.left <= this.bounding.right + margin)
-      ) {
-        return true;
-      }
-
-      return false;
-    },
-    isXInScroll(element, margin = 0) {
-      bbn.fn.checkType(element, HTMLElement);
-      bbn.fn.checkType(margin, Number);
-      const bounding = this.$position(element);
-      return (bounding.right >= this.bounding.left - margin)
-        && (bounding.left <= this.bounding.right + margin);
-    },
-    isYInScroll(element, margin = 0) {
-      bbn.fn.checkType(element, HTMLElement);
-      bbn.fn.checkType(margin, Number);
-      const bounding = this.$position(element);
-      return (bounding.bottom >= this.bounding.top - margin)
-        && (bounding.top <= this.bounding.bottom + margin);
-    },
     hashJustChanged(length = 600) {
       if (document.location.hash) {
         let now = (new Date()).getTime();
@@ -387,8 +358,8 @@ const cpDef = {
           e.preventDefault();
           return;
         }
-        this.scrollHorizontal(e, ct.scrollLeft);
-        this.scrollVertical(e, ct.scrollTop);
+        this.currentX = ct.scrollLeft;
+        this.currentY = ct.scrollTop;
         this.$emit('scroll', e);
         if (!e.defaultPrevented) {
           // Leaving touchscroll act normally
@@ -683,9 +654,8 @@ const cpDef = {
      * @emits scrollx
      */
     scrollHorizontal(ev, left) {
-      if (this.currentX !== left) {
-        this.currentX = left;
-      }
+      this.currentX = left;
+      this.$emit('scrollx', left);
     },
     /**
      * @method scrollVertical
@@ -694,15 +664,16 @@ const cpDef = {
      * @emits scrolly
      */
     scrollVertical(ev, top) {
-      if (this.currentY !== top) {
-        this.currentY = top;
-      }
+      this.currentY = top;
+      this.$emit('scrolly', top);
     },
     addVertical(y) {
       this.scrollSet(null, this.currentY + y)
+      this.$emit('scrolly', this.currentY);
     },
     addHorizontal(x) {
       this.scrollSet(this.currentX + x)
+      this.$emit('scrollx', this.currentX);
     },
     /**
      * @method scrollStart
@@ -813,14 +784,11 @@ const cpDef = {
      */
     onResize() {
       const content = this.getRef('scrollContent');
-      this.bounding = this.$position();
       if (content && this.scrollable) {
         this.hasScrollX = ((this.axis === 'both') || (this.axis === 'x'))
           && (content.scrollWidth > this.offsetWidth);
-        this.currentX = content.scrollLeft || this.x || 0;
         this.hasScrollY = ((this.axis === 'both') || (this.axis === 'y'))
           && (content.scrollHeight > this.offsetHeight);
-        this.currentY = content.scrollTop || this.y || 0;
         this.hasScroll = this.hasScrollY || this.hasScrollX;
         this.$emit('resize');
         return new Promise((resolve) => {
@@ -893,7 +861,9 @@ const cpDef = {
    * @fires waitReady
    */
   mounted() {
-    this.initSize();
+    this.$nextTick(() => {
+      this.initSize();
+    });
   },
   watch: {
     /**
@@ -911,7 +881,7 @@ const cpDef = {
         this.hasScrollY = false;
       }
     },
-    currentX(x, ox) {
+    currentX(x) {
       if (!x) {
         this.$emit('reachleft');
       }
@@ -921,9 +891,9 @@ const cpDef = {
           this.$emit('reachright');
         }
       }
-      this.$emit('scrollx', x, ox);
+      this.$emit('scrollx', x);
     },
-    currentY(y, oy) {
+    currentY(y) {
       if (!y) {
         this.$emit('reachtop');
       }
@@ -933,7 +903,7 @@ const cpDef = {
           this.$emit('reachbottom');
         }
       }
-      this.$emit('scrolly', y, oy);
+      this.$emit('scrolly', y);
     },
     stepX(val) {
       this.currentStepX = bbn.fn.isDom(val) ? val.clientHeight : val;

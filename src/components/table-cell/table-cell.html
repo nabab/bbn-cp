@@ -1,4 +1,5 @@
 <div :class="cellClass">
+  <div bbn-if="!column.ready"> </div>
   <slot bbn-if="$hasSlots()"/>
   <component bbn-elseif="column.component"
              :is="column.component"

@@ -132,7 +132,7 @@ const toggle = {
    * @event mounted
    * @memberof focusComponent
    */
-  mounted() {
+  mounted(){
     this.$nextTick(() => {
       if ( !this.focusable ){
         this.focusable = this.$el;

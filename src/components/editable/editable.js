@@ -46,7 +46,7 @@ const cpDef = {
           edit: '<bbn-inline-editor bbn-model="currentValue"/>'
         },
         component: {
-          view: '<div bbn-text="currentText" style="white-space: pre-wrap; word-break: break-word"></div>',
+          view: '<div bbn-text="currentValue" style="white-space: pre-wrap; word-break: break-word"></div>',
           edit: '<div class="bbn-100"><component :is="component" bbn-bind="componentOptions" bbn-model="currentValue"/></div>'
         },
         html: {
@@ -500,9 +500,8 @@ const cpDef = {
        * @method focusout
        * @fires save
        */
-      focusout() {
-        if (this.isEditing && !this.over && !this.mouseIn) {
-          bbn.fn.log("FOCUSOUT");
+      focusout(){
+        if (this.isEditing) {
           this.save()
         }
       },
@@ -656,7 +655,6 @@ const cpDef = {
           throw new Error('The component type ' + type + ' is not defined');
         }
 
-        const cp = this;
         return bbnData.immunizeValue({
           props: {
             value: {},
@@ -680,17 +678,6 @@ const cpDef = {
             }
           },
           computed: {
-            currentText() {
-              if (!cp.isEditing && cp.component && cp.componentOptions?.source) {
-                if (!cp.currentValue) {
-                  return bbn._("No value");
-                }
-
-                return bbn.fn.getField(cp.componentOptions.source, 'text', {[cp.componentOptions.sourceValue]: cp.currentValue}) || bbn._("Not found");
-              }
-
-              return this.currentValue;
-            },
             currentValue: {
               get() {
                 //bbn.fn.log("GETTING CURRENT VALUE", type, this.value, this.$el.bbnSchema.model.value.value, this)
@@ -1153,12 +1140,6 @@ const cpDef = {
           this.newBlock = false;
         }
         //this._setEvents()
-      },
-      over(v) {
-        bbn.fn.log("OVER HAS CHANGED TO ", v);
-      },
-      mouseIn(v) {
-        bbn.fn.log("mouseIn HAS CHANGED TO ", v);
       }
     },
 
