@@ -27,7 +27,7 @@ export default class bbnLoopAttr extends bbnAttr
     this.attrSet(true);
   }
 
-  attrUpdate(init, from) {
+  attrUpdate() {
     //bbn.fn.log("UPDATE ATTR LOOP " + this.exp, this.node.tag, this.isChanged, this.attrGetValue(true));
     const node = this.node;
     /*
@@ -62,6 +62,7 @@ export default class bbnLoopAttr extends bbnAttr
     }
 
     const breakFn = node.attr['bbn-break'] ? node.component[node.attr['bbn-break'].exp] : false;
+    const from = node.attr['bbn-from'] ? node.attr['bbn-from'].attrGetValue() : 0;
     //bbn.fn.log(["IN LOOP " + node.id, root, node, node.hash, cp.$retrieveNode(node.id, node.hash), cp.$retrieveNode(node.id, node.hash)?.element]);
     if (!root) {
       root = node.nodeBuild(null, true);

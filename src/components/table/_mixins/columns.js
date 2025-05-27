@@ -98,7 +98,10 @@ export default {
       return r;
     },
     hasScrollX() {
-      return this.currentColumns[this.currentColumns.length - 1].leftWidth + parseInt(this.currentColumns[this.currentColumns.length - 1].realWidth) > (this.clientWidth * 2);
+      bbn.fn.log(['hasScrollX', this.lastKnownWidth]);
+      const cc = this.currentColumns;
+      return (cc.length > 15) 
+      && (cc[cc.length - 1].leftWidth + parseInt(cc[cc.length - 1].realWidth) > (this.lastKnownWidth * 2));
     },
   },
   methods: {
@@ -111,12 +114,14 @@ export default {
       }
     },
     onScrollX(v) {
-      clearTimeout(this.scrollXTimeout);
+      /*
+      clearTimeout(this.scrollXTimeout);  
       this.scrollXTimeout = setTimeout(() => {
         if (Math.abs(v - this.$refs.scroll.currentX) < 50) {
           this.setColumnsVisibility(v);
         }
       }, 100);
+      */
     },
     onScrollMounted() {
       this.setScrollVertical();
@@ -124,51 +129,77 @@ export default {
       this.scrollIsMounted = true;
       this.$emit('scroll-mounted');
     },
-    onColCreate(e) {
-      if (e.target.getAttribute('data=group-index') == 1) {
-        this.scrollIntersection.observe(e.target);
-      }
-      else {
-        bbn.fn.log(e.target)
-      }
-    },
     setScrollVertical() {
-      if (this.scrollable && !this.scrollIntersection) {
+      const hasScrollX = this.hasScrollX;
+      const scrollable = this.scrollable;
+      if (!this.scrollIntersection && (hasScrollX || scrollable)) {
         this.scrollIntersection = new IntersectionObserver(entries => {
           entries.forEach(entry => {
+            // Going in
             if (entry.intersectionRatio > 0) {
-              if (entry.target instanceof HTMLTableRowElement) {
+              if (scrollable && entry.target instanceof HTMLTableRowElement) {
                 entry.target.ready = true;
               }
-              else if (entry.target instanceof HTMLTableColElement) {
-                bbn.fn.log("COL IN " + entry.target.getAttribute('data-index'), entry.target);
+              else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
+                if (entry.target.groupIndex === 1) {
+                  if (entry.target.visible === null) {
+                    if (entry.target.table.lastColumnVisible < (entry.target.index + 5)) {
+                      entry.target.table.lastColumnVisible = Math.min(entry.target.index + 5, entry.target.table.groupCols[1].cols.length - 1);
+                    }
+                  }
+                  else {
+                    if (entry.target.index + 5 > entry.target.table.lastColumnVisible) {
+                      entry.target.table.lastColumnVisible = Math.min(entry.target.index + 5, entry.target.table.groupCols[1].cols.length - 1);
+                    }
+                    else if (entry.target.index - 5 < entry.target.table.firstColumnVisible) {
+                      entry.target.table.firstColumnVisible = Math.max(0, entry.target.index - 5);
+                    }
+                    bbn.fn.log("Column " + entry.target.index + " is visible, firstColumnVisible: " + entry.target.table.firstColumnVisible + ", lastColumnVisible: " + entry.target.table.lastColumnVisible);
+                  }
+
+                  entry.target.visible = true;
+                }
               }
             }
+            // Going out
             else {
-              if (entry.target instanceof HTMLTableRowElement) {
+              if (scrollable && entry.target instanceof HTMLTableRowElement) {
                 entry.target.ready = false;
               }
-              else if (entry.target instanceof HTMLTableColElement) {
-                bbn.fn.log("COL OUT " + entry.target.getAttribute('data-index'), entry.target);
+              else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
+                if (entry.target.groupIndex === 1) {
+                  if (entry.target.visible !== null) {
+                    if (entry.target.index + 4 < entry.target.table.lastColumnVisible) {
+                      entry.target.table.lastColumnVisible = Math.min(entry.target.index + 4, entry.target.table.groupCols[1].cols.length - 1);
+                    }
+                    else if (entry.target.index - 4 > entry.target.table.firstColumnVisible) {
+                      entry.target.table.firstColumnVisible = Math.max(0, entry.target.index - 4);
+                    }
+                    bbn.fn.log("Column " + entry.target.index + " is not visible, firstColumnVisible: " + entry.target.table.firstColumnVisible + ", lastColumnVisible: " + entry.target.table.lastColumnVisible);
+                  }
+
+                  entry.target.visible = false;
+                }
               }
             }
           });
         }, {
-          root: this.$refs.scroll.$refs.scrollContainer,
-          rootMargin: this.clientHeight + 'px 0px ' + this.clientHeight + 'px 0px',
-          threshold: 0.01
+          root: this.$refs.scroll,
+          rootMargin: this.$refs.scroll.clientHeight + 'px ' + this.$refs.scroll.clientWidth + 'px',
+          threshold: 0.0
         });
         this.rowSizeObserver = new ResizeObserver(entries => {
           for (const e of entries) {
             if (e.target.ready && (!e.target.rowHeight || (e.target.rowHeight < e.contentRect.height))) {
               e.target.rowHeight = e.contentRect.height;
-              bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
+              //bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
             }
           }
         });
       }
     },
     setColumnsVisibility(v) {
+      return;
       if (this.hasScrollX) {
         let first = this.firstColumnVisible;
         let last = this.lastColumnVisible;
@@ -496,6 +527,9 @@ export default {
       bbn.fn.each(groupCols, a => {
         a.sum = bbn.fn.sum(a.cols, 'realWidth');
       });
+      if (!this.hasScrollX) {
+        this.lastColumnVisible = groupCols[1].cols.length - 1;
+      }
       
       this.groupCols.splice(0, this.groupCols.length, ...groupCols);
     },

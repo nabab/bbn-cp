@@ -79,10 +79,7 @@
             <col bbn-for="(col, i) in groupCol.cols"
                 bbn-show="!col.invisible"
                 :style="{width: col.realWidth ? col.realWidth + 'px' : 'auto'}"
-                :data-group-index="groupIndex"
-                :data-index="i"
-                :key="groupIndex + '-'+ i"
-                @hook:create="onColCreate">
+                :key="groupIndex + '-'+ i">
           </colgroup>
           <!-- Thead -->
           <thead :class="{
@@ -90,7 +87,7 @@
             'bbn-invisible': !titles
           }">
             <!-- Group titles -->
-            <tr bbn-if="titleGroups" class="bbn-table-tr-groups-titles">
+            <tr bbn-if="titles && titleGroups" class="bbn-table-tr-groups-titles">
               <template bbn-for="(groupCol, groupIndex) in groupCols">
                 <bbn-table-head-group bbn-if="!!groupCol.cols.length"
                                       bbn-for="(col, i) in titleGroupsCells(groupIndex)"
@@ -106,6 +103,7 @@
                 <bbn-table-head-title bbn-for="(col, i) in groupCol.cols"
                                       :source="col"
                                       :group-index="groupIndex"
+                                      :dead="!titles"
                                       :index="i"
                                       :ref="'title-' + groupIndex + '-' + i"/>
               </template>

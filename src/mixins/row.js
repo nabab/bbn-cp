@@ -101,7 +101,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.index || !this.table.scrollable) {
+    if (!this.table.scrollable) {
       this.ready = true;
     }
     else {
@@ -113,7 +113,7 @@ export default {
     }
 
     if (this.table.rowSizeObserver) {
-      this.table.rowSizeObserver.observe(this.$el);
+      this.table.rowSizeObserver.observe(this);
     }
   },
   beforeDestroy() {
@@ -121,7 +121,7 @@ export default {
       this.table.scrollIntersection.unobserve(this);
     }
     if (this.table.rowSizeObserver) {
-      this.table.rowSizeObserver.unobserve(this.$el);
+      this.table.rowSizeObserver.unobserve(this);
     }
   },
 };

@@ -33,11 +33,8 @@ const cpDef = {
   },
   methods: {
     checkBreak(ele, data) {
-      if (this.index) {
-        return this.lastColumnVisible && (data.i > this.lastColumnVisible);
-      }
-
-      return false;
+      //bbn.fn.log(['checkbreak', ele, data, data.i, this.lastColumnVisible]);
+      return data.i > (this.lastColumnVisible || 0);
     }
   },
 };

@@ -16,6 +16,10 @@ const cpDef = {
   ],
   tag: 'th',
   props: {
+    dead: {
+      type: Boolean,
+      default: false
+    },
     groupIndex: {
       type: Number,
       required: true
@@ -30,7 +34,8 @@ const cpDef = {
     return {
       table,
       to: null,
-      observer: null
+      observer: null,
+      visible: null
     }
   },
   computed: {
@@ -48,6 +53,16 @@ const cpDef = {
   watch: {
     ready() {
       this.setReady();
+    }
+  },
+  mounted() {
+    if (this.table.scrollIntersection) {
+      this.table.scrollIntersection.observe(this);
+    }
+  },
+  beforeDestroy(e) {
+    if (this.table.scrollIntersection) {
+      this.table.scrollIntersection.unobserve(this);
     }
   },
 };

@@ -14,8 +14,8 @@
                             :column="table.currentColumns[0]"
                             :class="[cellClass, (table.currentColumns[0].fixed ? ' ' + cssRuleName + ' bbn-table-fixed-cell bbn-table-fixed-cell-left' : '')]"
                             :ref="'td' + index"/>
-                            <bbn-table-cell-selector bbn-elseif="table.currentColumns[0].isSelection"
-                            :column="table.currentColumns[0]"
+  <bbn-table-cell-selector bbn-elseif="table.currentColumns[0].isSelection"
+                          :column="table.currentColumns[0]"
                           :first-cell="true"
                           :selected="source.selected"
                           :selection="source.selection"
@@ -56,7 +56,7 @@
                   :tabindex="table.editable && table.isEditable(source.data, table.currentColumns[0], index) ? 0 : -1"/>
 
   <!-- IF NOT READY AND INDEX IS NOT 0 -->
-  <component bbn-if="!ready && (!table.hasScrollX || index)"
+  <component bbn-if="!ready"
              :colspan="table.currentColumns.length - 1"
              class="not-ready"
              is="td"/>
@@ -109,15 +109,18 @@
                       :tabindex="table.editable && table.isEditable(source.data, col, index) ? 0 : -1"/>
     </template>
     <!-- INVISIBLE COLUMNS BEFORE VISIBLE -->
-    <component bbn-if="table.hasScrollX && index && (table.firstColumnVisible > 0) && (table.firstColumnVisible > table.groupCols[0].cols.length)"
+    <component bbn-if="table.hasScrollX && (table.firstColumnVisible > 0) && (table.firstColumnVisible > table.groupCols[0].cols.length)"
               :colspan="table.firstColumnVisible"
               class="invisible-before"
               is="td"/>
     <!-- ALL VISIBLE CENTRAL COLUMNS -->
     <template bbn-for="(col, i) in table.groupCols[1].cols"
-              bbn-if="(i || (col !== table.currentColumns[0])) && (!index || ((i >= table.firstColumnVisible) && (i <= table.lastColumnVisible)))"
+              :key="i"
               bbn-break="checkBreak">
-      <bbn-table-cell-expander bbn-if="col.isExpander && !table.isGroupActive"
+      <template bbn-if="(!i && !table.groupCols[0].cols.length) || (table.hasScrollX && (i <= table.firstColumnVisible))">
+      </template>
+
+      <bbn-table-cell-expander bbn-elseif="col.isExpander && !table.isGroupActive"
                               :source="source.data"
                               :index="0"
                               :row-index="index"
@@ -161,13 +164,13 @@
                       :tabindex="table.editable && table.isEditable(source.data, col, index) ? 0 : -1"/>
     </template>
     <!-- INVISIBLE COLUMNS AFTER VISIBLE -->
-    <component bbn-if="index && (table.lastColumnVisible < (table.groupCols[0].cols.length + table.groupCols[1].cols.length - 1))"
+    <component bbn-if="table.hasScrollX && (table.lastColumnVisible < (table.groupCols[0].cols.length + table.groupCols[1].cols.length - 1))"
                :colspan="table.groupCols[1].cols.length - table.lastColumnVisible"
                class="invisible-after"
                is="td"/>
     <!-- LAST FIXED COLUMNS -->
     <template bbn-for="(col, i) in table.groupCols[2].cols">
-      <bbn-table-cell-selector bbn-if="i && (!index || ready) && col.isSelection"
+      <bbn-table-cell-selector bbn-if="i && ready && col.isSelection"
                               :column="col"
                               :selected="source.selected"
                               :selection="source.selection"
@@ -176,7 +179,7 @@
                               :row-index="index"
                               :ref="'td' + index"/>
 
-      <bbn-table-cell-editor bbn-elseif="i && (!index || ready) && !col.isExpander && table.isEdited(source.data, col, index)"
+      <bbn-table-cell-editor bbn-elseif="i && ready && !col.isExpander && table.isEdited(source.data, col, index)"
                             :tabindex="table.editable && table.isEditable(source.data, col, index) ? 0 : -1"
                             @save="table.saveInline"
                             @cancel="table.cancel"
@@ -187,7 +190,7 @@
                             :ref="'td' + index"
                             @focusout="table.focusout(index, $event)"/>
 
-      <bbn-table-cell-buttons bbn-elseif="i && (!index || ready) && col.buttons"
+      <bbn-table-cell-buttons bbn-elseif="i && ready && col.buttons"
                             :source="source.data"
                             :mode="table.buttonMode"
                             :row-index="index"
@@ -195,7 +198,7 @@
                             :index="i"
                             :ref="'td' + index"/>
       <!-- Group lines just have the cell with the expander and a single big cell -->
-      <bbn-table-cell bbn-elseif="i && (!index || ready) && (!col.isExpander || !table.isGroupActive)"
+      <bbn-table-cell bbn-elseif="i && ready && (!col.isExpander || !table.isGroupActive)"
                       :column="col"
                       :source="source.data"
                       :row-index="index"
