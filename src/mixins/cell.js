@@ -1,5 +1,9 @@
 const cell = {
   props: {
+    firstCell: {
+      type: Boolean,
+      default: false
+    },
     rowIndex: {
       type: Number,
     },
@@ -13,10 +17,11 @@ const cell = {
     }
   },
   data() {
-    const tr = this.closest('tr');
+    const tr = this.$origin;
     return {
       table: tr.table,
-      tr
+      tr,
+      ready: this.column.fixed ? true : false,
     }
   },
   computed: {
@@ -38,9 +43,6 @@ const cell = {
       return cls;
     },
   },
-  methods: {},
-  watch: {
-  },
   created() {
     this.$on('click', e => {
       this.table.clickCell(this.column, this.index, this.rowIndex);
@@ -52,6 +54,20 @@ const cell = {
       this.table.focusin(this.rowIndex, e);
     })
   },
+  mounted() {
+    if (this.column.fixed) {
+      return;
+    }
+
+    /*
+    if ([this.table.firstColumnVisible, this.table.lastColumnVisible].includes(this.index)) {
+      const height = this.getBoundingClientRect().height;
+      if (height > this.tr.rowHeight) {
+        this.tr.rowHeight = height;
+      }
+    }
+      */
+  }
 };
 
 export default cell;

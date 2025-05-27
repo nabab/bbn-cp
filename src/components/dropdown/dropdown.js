@@ -79,10 +79,7 @@ const cpDef = {
      * @fires keynav
      */
     onKeydown(e) {
-      if (this.commonKeydown(e)) {
-        return;
-      }
-      else if (this.isOpened && (e.key === 'Escape')) {
+      if (this.isOpened && (e.key === 'Escape')) {
         e.stopPropagation();
         e.preventDefault();
         this.resetDropdown();
@@ -92,6 +89,7 @@ const cpDef = {
         this.resetDropdown();
       }
       else if (bbn.var.keys.upDown.includes(e.keyCode)) {
+        e.stopPropagation();
         e.preventDefault();
         this.keynav(e);
       }
@@ -102,6 +100,9 @@ const cpDef = {
       else if (this.isOpened && (e.key === 'Enter')) {
         e.preventDefault();
         this.selectOver();
+      }
+      else {
+        this.commonKeydown(e);
       }
     },
     paste() {
@@ -211,6 +212,8 @@ const cpDef = {
       if (!val && this.preload && !this.native) {
         this.getRef('list').currentVisible = true;
       }
+
+      this.getRef('element').focus();
     },
     /**
      * @watch  currentText

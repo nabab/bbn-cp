@@ -228,6 +228,29 @@ export default class bbnNode
     return this.component.$rootPath + '_' + (this.hash ? this.hash + '-' : '') + this.id;
   }
 
+  get beforeElement() {
+    let p = this.prev;
+    while (p) {
+      if (p.element?.isConnected) {
+        let ele = p.element;
+        while (true) {
+          if (ele.nextSibling && ele.nextSibling.bbnId.indexOf(p.element.id + '-') === 0) {
+            ele = ele.nextSibling;
+          }
+          else {
+            break;
+          }
+        }
+
+        return ele;
+      }
+
+      p = p.prev;
+    }
+
+    return null;
+  }
+
   #getNextOrPrev(next) {
     const bits = this.id.split('-');
     const idx = bits.pop();

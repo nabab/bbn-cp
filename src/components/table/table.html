@@ -65,7 +65,9 @@
                   :disabled="!scrollable"
                   :offset-y="scrollOffsetY"
                   :offset-x="scrollOffsetX"
-                  @resize="resizeWidth">
+                  @scrollx="onScrollX"
+                  @resize="resizeWidth"
+                  @hook:mounted="setColumnsVisibility(0)">
         <!-- Table -->
         <table :style="{width: totalWidth}"
                ref="table"
@@ -115,7 +117,7 @@
                   'bbn-middle': !!scrollable
                 }"
                 :style="{
-                  paddingTop: $refs.thead && !!scrollable ? $refs.thead.getBoundingClientRect().height + 'px' : 0,
+                  paddingTop: $refs.thead && !!scrollable ? theadHeight + 'px' : 0,
                   maxWidth: !!scrollable ? $el.clientWidth + 'px' : '',
                   left: !!scrollable && getRef('scroll') ? getRef('scroll').currentX + 'px' : ''
                 }">
@@ -141,7 +143,7 @@
                   'bbn-middle': !!scrollable
                 }"
                 :style="{
-                  paddingTop: $refs.thead && !!scrollable ? $refs.thead.getBoundingClientRect().height + 'px' : 0,
+                  paddingTop: $refs.thead && !!scrollable ? theadHeight + 'px' : 0,
                   maxWidth: !!scrollable ? $el.clientWidth + 'px' : '',
                   left: !!scrollable && getRef('scroll') ? getRef('scroll').currentX + 'px' : ''
                 }">
