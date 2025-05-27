@@ -610,11 +610,9 @@ const cpDef = {
     },
     /**
      * @event mounted
-     * @fires setResizeEvent
      * @fires load
      */
     mounted(){
-      this.setResizeEvent();
       this.load().then(() => {
         this.ready = true;
       });

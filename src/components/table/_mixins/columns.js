@@ -43,6 +43,8 @@ export default {
       cols: [],
       firstColumnVisible: 0,
       lastColumnVisible: false,
+      rowSizeObserver: null,
+      scrollIsMounted: false,
       scrollIntersection: null,
       scrollCurrentX: null,
       scrollCurrentY: null,
@@ -111,29 +113,62 @@ export default {
     onScrollX(v) {
       clearTimeout(this.scrollXTimeout);
       this.scrollXTimeout = setTimeout(() => {
-        if (v === this.$refs.scroll.currentX) {
+        if (Math.abs(v - this.$refs.scroll.currentX) < 50) {
           this.setColumnsVisibility(v);
         }
-      }, 250);
+      }, 100);
     },
-    setColumnsVisibility(v) {
+    onScrollMounted() {
+      this.setScrollVertical();
+      this.setColumnsVisibility(0);
+      this.scrollIsMounted = true;
+      this.$emit('scroll-mounted');
+    },
+    onColCreate(e) {
+      if (e.target.getAttribute('data=group-index') == 1) {
+        this.scrollIntersection.observe(e.target);
+      }
+      else {
+        bbn.fn.log(e.target)
+      }
+    },
+    setScrollVertical() {
       if (this.scrollable && !this.scrollIntersection) {
         this.scrollIntersection = new IntersectionObserver(entries => {
           entries.forEach(entry => {
             if (entry.intersectionRatio > 0) {
-              entry.target.ready = true;
+              if (entry.target instanceof HTMLTableRowElement) {
+                entry.target.ready = true;
+              }
+              else if (entry.target instanceof HTMLTableColElement) {
+                bbn.fn.log("COL IN " + entry.target.getAttribute('data-index'), entry.target);
+              }
             }
             else {
-              entry.target.ready = false;
+              if (entry.target instanceof HTMLTableRowElement) {
+                entry.target.ready = false;
+              }
+              else if (entry.target instanceof HTMLTableColElement) {
+                bbn.fn.log("COL OUT " + entry.target.getAttribute('data-index'), entry.target);
+              }
             }
           });
         }, {
           root: this.$refs.scroll.$refs.scrollContainer,
           rootMargin: this.clientHeight + 'px 0px ' + this.clientHeight + 'px 0px',
-          threshold: 0.0
+          threshold: 0.01
+        });
+        this.rowSizeObserver = new ResizeObserver(entries => {
+          for (const e of entries) {
+            if (e.target.ready && (!e.target.rowHeight || (e.target.rowHeight < e.contentRect.height))) {
+              e.target.rowHeight = e.contentRect.height;
+              bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
+            }
+          }
         });
       }
-
+    },
+    setColumnsVisibility(v) {
       if (this.hasScrollX) {
         let first = this.firstColumnVisible;
         let last = this.lastColumnVisible;

@@ -58,15 +58,6 @@ const cell = {
     if (this.column.fixed) {
       return;
     }
-
-    /*
-    if ([this.table.firstColumnVisible, this.table.lastColumnVisible].includes(this.index)) {
-      const height = this.getBoundingClientRect().height;
-      if (height > this.tr.rowHeight) {
-        this.tr.rowHeight = height;
-      }
-    }
-      */
   }
 };
 

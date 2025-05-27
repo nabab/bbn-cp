@@ -1,5 +1,6 @@
 import bbnAttr from "../Attr.js";
 import bbnInternalNode from "../../Node/Internal.js";
+import setDataAttribute from "../private/setNoValueAttribute.js";
 import setNoValueAttribute from "../private/setNoValueAttribute.js";
 import setSVGAttribute from "../private/setSVGAttribute.js";
 import setTransitionAttribute from "../private/setTransitionAttribute.js";
@@ -42,6 +43,7 @@ bbnAttr.prototype.attrUpdate = function(init) {
       if (
         !setSVGAttribute(node, name, v) &&
         !setPropOnComponent(node, name, v, jsName) &&
+        !setDataAttribute(node, name, v, jsName) &&
         !setNoValueAttribute(node, name, v, jsName) &&
         !setTransitionAttribute(node, name, v) &&
         !setRegularAttribute(node, name, v, jsName)

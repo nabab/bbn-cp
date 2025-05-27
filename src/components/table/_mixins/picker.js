@@ -1,4 +1,9 @@
 export default {
+  data() {
+    return {
+      pickerStarted: false,
+    }
+  },
   methods: {
     /**
      * Show or hide the given column index.
@@ -101,7 +106,7 @@ export default {
             // An array of booleans for each column with true for shown and false for hidden
             let shownColumns = this.source.cols.map(a => !a.invisible);
             return {
-              table: table,
+              table,
               formData: {
                 changed: false
               },
@@ -110,29 +115,32 @@ export default {
           },
           methods: {
             applyColumnsShown() {
-              let toShow = [];
-              let toHide = [];
-              this.initStarted = true;
-              bbn.fn.each(this.source.cols, (a, i) => {
-                // invisible is the opposite of shownCols
-                if (a.invisible == this.shownCols[i]) {
-                  if (this.shownCols[i]) {
-                    toShow.push(a.field || i);
-                  } else {
-                    toHide.push(a.field || i);
+              table.pickerStarted = true;
+              this.$nextTick(() => {
+                let toShow = [];
+                let toHide = [];
+                bbn.fn.each(this.source.cols, (a, i) => {
+                  // invisible is the opposite of shownCols
+                  if (a.invisible == this.shownCols[i]) {
+                    if (this.shownCols[i]) {
+                      toShow.push(a.field || i);
+                    } else {
+                      toHide.push(a.field || i);
+                    }
                   }
+                });
+  
+                if (toShow.length) {
+                  table.show(toShow, false, toHide.length ? true : false);
                 }
+  
+                if (toHide.length) {
+                  table.show(toHide, true);
+                }
+  
+                table.init();
+                table.pickerStarted = started;
               });
-
-              if (toShow.length) {
-                table.show(toShow, false, toHide.length ? true : false);
-              }
-
-              if (toHide.length) {
-                table.show(toHide, true);
-              }
-
-              this.init();
             },
             allVisible(group) {
               let ok = true;

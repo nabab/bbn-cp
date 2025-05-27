@@ -75,6 +75,10 @@ export default {
         res = this.table.trStyle;
       }
 
+      if (this.rowHeight) {
+        res = [res, {height: this.rowHeight + 'px'}];
+      }
+
       return res;
     },
   },
@@ -87,21 +91,37 @@ export default {
     },
   },
   watch: {
+    ready(v) {
+      if (!v) {
+        const h = this.getBoundingClientRect().height;
+        if (h > this.rowHeight) {
+          this.rowHeight = h;
+        }
+      }
+    }
   },
   mounted() {
     if (!this.index || !this.table.scrollable) {
       this.ready = true;
     }
     else {
-      this.setReady();
+      this.$nextTick(this.setReady);
     }
+
     if (this.table.scrollIntersection) {
       this.table.scrollIntersection.observe(this);
+    }
+
+    if (this.table.rowSizeObserver) {
+      this.table.rowSizeObserver.observe(this.$el);
     }
   },
   beforeDestroy() {
     if (this.table.scrollIntersection) {
       this.table.scrollIntersection.unobserve(this);
+    }
+    if (this.table.rowSizeObserver) {
+      this.table.rowSizeObserver.unobserve(this.$el);
     }
   },
 };
