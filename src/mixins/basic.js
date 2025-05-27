@@ -251,6 +251,14 @@ const basic = {
       this.componentClass.push(this.$options.name);
     }
   },
+  mounted(){
+    this.$nextTick(() => {
+      const pop = this._retrievePopup();
+      if (pop !== this._currentPopup) {
+        this._currentPopup = pop;
+      }
+    });
+  },
   watch: {
     /**
      * Emits the event 'ready' when the value is true.
