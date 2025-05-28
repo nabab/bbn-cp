@@ -66,7 +66,8 @@
                   :offset-y="scrollOffsetY"
                   :offset-x="scrollOffsetX"
                   @resize="resizeWidth"
-                  @hook:mounted="onScrollMounted">
+                  @hook:mounted="onScrollMounted"
+                  @hook:beforedestroy="onScrollBeforeDestroy">
         <!-- Table -->
         <table :style="{width: totalWidth}"
                ref="table"

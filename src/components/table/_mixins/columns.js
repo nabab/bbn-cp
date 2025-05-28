@@ -156,6 +156,12 @@ export default {
       this.scrollIsMounted = true;
       this.$emit('scroll-mounted');
     },
+    onScrollBeforeDestroy() {
+      if (this.scrollIntersection) {
+        this.scrollIntersection.disconnect();
+        this.scrollIntersection = null;
+      }
+    },
     setScrollVertical() {
       const hasScrollX = this.hasScrollX;
       const scrollable = this.scrollable;

@@ -116,7 +116,7 @@ export default {
           methods: {
             applyColumnsShown() {
               table.pickerStarted = true;
-              this.$nextTick(() => {
+              setTimeout(() => {
                 let toShow = [];
                 let toHide = [];
                 bbn.fn.each(this.source.cols, (a, i) => {
@@ -131,15 +131,15 @@ export default {
                 });
   
                 if (toShow.length) {
-                  table.show(toShow, false, toHide.length ? true : false);
+                  table.show(toShow, false, true);
                 }
   
                 if (toHide.length) {
-                  table.show(toHide, true);
+                  table.show(toHide, true, true);
                 }
   
                 table.init();
-                table.pickerStarted = started;
+                table.pickerStarted = false;
               });
             },
             allVisible(group) {
