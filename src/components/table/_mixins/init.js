@@ -24,8 +24,13 @@ export default {
      * @fires updateData
      */
     init(with_data) {
+      if (this.initStarted) {
+        return;
+      }
       //bbn.fn.warning("INIT TABLE");
-      this.initStarted = true;
+      if (!this.pickerStarted) {
+        this.initStarted = true;
+      }
       //this.setContainerMeasures();
       //this.setResizeMeasures();
       let numUnknown = bbn.fn.count(this.cols, a => !a.invisible && !a.width);
@@ -131,7 +136,9 @@ export default {
       }
       else {
         this.$nextTick(() => {
-          this.initStarted = false;
+          if (this.initStarted) {
+            this.initStarted = false;
+          }
           this.resizeWidth();
           this.$emit('init', this);
         });

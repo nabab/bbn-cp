@@ -253,7 +253,14 @@ export default {
         this.rowSizeObserver = new ResizeObserver(entries => {
           for (const e of entries) {
             if (e.target.ready && (!e.target.rowHeight || (e.target.rowHeight < e.contentRect.height))) {
-              e.target.rowHeight = e.contentRect.height;
+              const ele = e.target;
+              const h = e.contentRect.height;
+              setTimeout(() => {
+                if (ele.ready && (ele.getBoundingClientRect().height === h) && (!ele.rowHeight || (ele.rowHeight < h))) {
+                  ele.rowHeight = h;
+                  //bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
+                }
+              }, 250);
               //bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
             }
           }

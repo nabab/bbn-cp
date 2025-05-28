@@ -41,7 +41,7 @@
     <!-- Main container -->
     <div :class="['bbn-w-100', 'bbn-table-container', {'bbn-flex-fill': scrollable}]">
       <!--<div bbn-if="initStarted || isLoading"-->
-      <div bbn-if="pickerStarted || initStarted || isResizing"
+      <div bbn-if="initStarted || isResizing"
            :class="[
             'bbn-middle',
             'bbn-background-internal',
@@ -71,6 +71,7 @@
         <!-- Table -->
         <table :style="{width: totalWidth}"
                ref="table"
+               bbn-if="!pickerStarted"
                aria-describedby="table"
                :class="['bbn-table-' + cssRuleName, 'bbn-table-table']">
           <!-- Colgroups -->

@@ -88,11 +88,15 @@ export default {
   },
   watch: {
     ready(v) {
-      if (!v) {
+      if (v) {
         const h = this.getBoundingClientRect().height;
-        if (h > this.rowHeight) {
-          this.rowHeight = h;
-        }
+        setTimeout(() => {
+          if (this.ready && (h === this.getBoundingClientRect().height)) {
+            if (h > this.rowHeight) {
+              this.rowHeight = h;
+            }
+          }
+        }, 250);
       }
     }
   },
