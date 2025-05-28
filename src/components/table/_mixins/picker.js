@@ -115,32 +115,36 @@ export default {
           },
           methods: {
             applyColumnsShown() {
-              table.pickerStarted = true;
-              setTimeout(() => {
-                let toShow = [];
-                let toHide = [];
-                bbn.fn.each(this.source.cols, (a, i) => {
-                  // invisible is the opposite of shownCols
-                  if (a.invisible == this.shownCols[i]) {
-                    if (this.shownCols[i]) {
-                      toShow.push(a.field || i);
-                    } else {
-                      toHide.push(a.field || i);
-                    }
+              let toShow = [];
+              let toHide = [];
+              bbn.fn.each(this.source.cols, (a, i) => {
+                // invisible is the opposite of shownCols
+                if (a.invisible == this.shownCols[i]) {
+                  if (this.shownCols[i]) {
+                    toShow.push(a.field || i);
+                  } else {
+                    toHide.push(a.field || i);
                   }
-                });
-  
-                if (toShow.length) {
-                  table.show(toShow, false, true);
                 }
-  
-                if (toHide.length) {
-                  table.show(toHide, true, true);
-                }
-  
-                table.init();
-                table.pickerStarted = false;
               });
+
+              if (toShow.length || toHide.length) {
+                table.pickerStarted = true;
+                setTimeout(() => {
+                  if (toShow.length) {
+                    table.show(toShow, false, true);
+                  }
+    
+                  if (toHide.length) {
+                    table.show(toHide, true, true);
+                  }
+
+                  table.initColumns();
+                  table.$nextTick(() => {
+                    table.pickerStarted = false
+                  });
+                }, 100);
+              }
             },
             allVisible(group) {
               let ok = true;
