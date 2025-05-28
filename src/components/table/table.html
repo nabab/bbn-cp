@@ -120,7 +120,7 @@
                   'bbn-middle': !!scrollable
                 }"
                 :style="{
-                  paddingTop: $refs.thead && !!scrollable ? $refs.thead.getBoundingClientRect().height + 'px' : 0,
+                  paddingTop: $refs.thead && !!scrollable ? theadHeight + 'px' : 0,
                   maxWidth: !!scrollable ? $el.clientWidth + 'px' : '',
                   left: !!scrollable && getRef('scroll') ? getRef('scroll').currentX + 'px' : ''
                 }">
@@ -146,7 +146,7 @@
                   'bbn-middle': !!scrollable
                 }"
                 :style="{
-                  paddingTop: $refs.thead && !!scrollable ? $refs.thead.getBoundingClientRect().height + 'px' : 0,
+                  paddingTop: $refs.thead && !!scrollable ? theadHeight + 'px' : 0,
                   maxWidth: !!scrollable ? $el.clientWidth + 'px' : '',
                   left: !!scrollable && getRef('scroll') ? getRef('scroll').currentX + 'px' : ''
                 }">

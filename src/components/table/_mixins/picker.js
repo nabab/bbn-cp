@@ -14,7 +14,7 @@ export default {
      * @fires setConfig
      * @fires init
      */
-    show(colIndexes, hide) {
+    show(colIndexes, hide, noInit) {
       if (!Array.isArray(colIndexes)) {
         colIndexes = [colIndexes];
       }
@@ -32,12 +32,13 @@ export default {
           }
         }
       });
-      this.setConfig(true);
-      this.$forceUpdate();
-      setTimeout(() => {
-        this.init(true);
-      }, 500);
-
+      if (!noInit) {
+        this.setConfig(true);
+        this.$forceUpdate();
+        setTimeout(() => {
+          this.init(true);
+        }, 500);
+      }
     },
     /**
      * Returns the list of the showable columns
@@ -102,6 +103,7 @@ export default {
 `,
           props: ['source'],
           data() {
+            // An array of booleans for each column with true for shown and false for hidden
             let shownColumns = this.source.cols.map(a => !a.invisible);
             return {
               table,
@@ -163,7 +165,7 @@ export default {
               bbn.fn.each(this.source.cols, (a, i) => {
                 if ((a.showable !== false) && (a.group === group) && !a.fixed) {
                   if (this.shownCols[i] != show) {
-                    this.shownCols.splice(i, 1, show);
+                    this.shownCols[i] = show;
                   }
                 }
               });
@@ -174,7 +176,10 @@ export default {
             shownCols: {
               deep: true,
               handler() {
-                this.formData.changed = true;
+                if (!this.formData.changed) {
+                  // If the shownCols array has changed, we set the changed flag to true
+                  this.formData.changed = true;
+                }
               }
             }
           }

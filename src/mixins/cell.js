@@ -1,5 +1,9 @@
 const cell = {
   props: {
+    firstCell: {
+      type: Boolean,
+      default: false
+    },
     rowIndex: {
       type: Number,
     },
@@ -13,10 +17,11 @@ const cell = {
     }
   },
   data() {
-    const tr = this.closest('tr');
+    const tr = this.$origin;
     return {
       table: tr.table,
-      tr
+      tr,
+      ready: this.column.fixed ? true : false,
     }
   },
   computed: {
@@ -37,9 +42,6 @@ const cell = {
 
       return cls;
     },
-  },
-  methods: {},
-  watch: {
   },
   created() {
     this.$on('click', e => {

@@ -43,7 +43,7 @@ const cpDef = {
 
       return data.i > this.table.lastColumnVisible;
     }
-  }
+  },
 };
 
 import cpHtml from './table-row.html';

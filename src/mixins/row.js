@@ -15,7 +15,9 @@ export default {
   },
   data() {
     let o = {
-      table: this.closest('bbn-table')
+      table: this.closest('bbn-table'),
+      to: null,
+      rowHeight: null,
     };
 
     return o;
@@ -49,7 +51,6 @@ export default {
     },
     cellClass() {
       const cls = [{
-        'bbn-invisible': !this.ready,
         'bbn-alt': this.alt,
       }];
 
@@ -65,16 +66,13 @@ export default {
       return cls;
     },
     cellStyle() {
+      let res = '';
       if (this.table?.trStyle) {
         if (bbn.fn.isFunction(this.table.trStyle)) {
-          return this.table.trStyle(this.source.data);
+          res = this.table.trStyle(this.source.data);
         }
 
-        return this.table.trStyle;
-      }
-
-      if (this.rowHeight) {
-        res = [res, {height: this.rowHeight + 'px'}];
+        res = this.table.trStyle;
       }
 
       return res;

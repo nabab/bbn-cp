@@ -237,14 +237,6 @@ export default {
                 }
               }
             }
-            if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
-              bbn.fn.log([
-                "Column number " + entry.target.index + " / " + (cols.length - 1) + ": " + (entry.intersectionRatio > 0 ? '' : ' NOT') + " VISIBLE",
-                "firstColumnVisible: " + this.firstColumnVisible,
-                "lastColumnVisible: " + this.lastColumnVisible,
-                "tmpColumnVisible: " + this.tmpColumnVisible
-              ]);
-            }
           });
           this.scrollCurrentX = currentScrollX;
         }, {
@@ -380,6 +372,7 @@ export default {
       this.cols.map(a => {
         a.realWidth = 0;
       });
+      let leftWidth = 0;
       bbn.fn.each(this.cols, (a, i) => {
         if (!a.invisible && (!this.groupable || (this.group !== i))) {
           let minWidth = null;
@@ -450,6 +443,11 @@ export default {
               }
             }
             else {
+              if (groupCols[1].cols.length) {
+                leftWidth += groupCols[1].cols[groupCols[1].cols.length-1].realWidth;
+              }
+
+              a.leftWidth = leftWidth;
               if (a.buttons !== undefined) {
                 //colButtons = groupCols[0].cols.length + groupCols[1].cols.length;
               }
@@ -528,11 +526,11 @@ export default {
       for (let n in obj) {
         def[bbn.fn.camelize(n)] = obj[n];
       }
-      if (!!obj.buttons) {
+      if (obj.buttons) {
         def.filterable = false;
         def.sortable = false;
       }
-      def.ready = !this.titles;
+
       this.cols.push(def);
     },
     getColOptions(data, col, idx) {

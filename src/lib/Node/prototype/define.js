@@ -88,6 +88,9 @@ bbnNode.prototype.nodeDefine = function(node, data) {
             else if (n === 'bbn-show') {
               v = new bbnShowAttr(node[a][n], this, n);
             }
+            else if (n === 'bbn-break') {
+              v = new bbnBreakAttr(node[a][n], this, n);
+            }
             else if (n === 'is') {
               v = new bbnIsAttr(node[a][n], this, n);
             }

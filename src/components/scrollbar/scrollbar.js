@@ -391,22 +391,20 @@ const cpDef = {
      */
     adjustFromBar(anim){
       if ( this.shouldBother ){
-        this.$nextTick(() => {
-          this.containerPos = (this.sliderPos / this.ratio);
-          let prop = this.isVertical ? 'scrollTop' : 'scrollLeft';
-          if (this.scroller) {
-            this.axisScrollTo(this.containerPos, anim);
-          }
-          else {
-            this.realContainer[prop] = this.containerPos;
-            bbn.fn.each(this.scrollableElements(), a => {
-              a[prop] = this.containerPos;
-            });
-          }
+        this.containerPos = (this.sliderPos / this.ratio);
+        let prop = this.isVertical ? 'scrollTop' : 'scrollLeft';
+        if (this.scroller) {
+          this.axisScrollTo(this.containerPos, anim);
+        }
+        else {
+          this.realContainer[prop] = this.containerPos;
+          bbn.fn.each(this.scrollableElements(), a => {
+            a[prop] = this.containerPos;
+          });
+        }
 
-          let e = new Event('scroll');
-          this.$emit('scroll' + (this.isVertical ? 'y' : 'x'), e, this.containerPos);
-        })
+        let e = new Event('scroll');
+        this.$emit('scroll', e, this.containerPos);
       }
     },
     /**

@@ -13,8 +13,10 @@ export default function queueUpdate(...items) {
     }
 
     if (item.element) {
-      const idx = bbn.fn.search(bbn.cp.queue, a => a.element === item.element);
+      const idx = bbn.fn.search(bbn.cp.queue, a => a.num === item.num && a.element === item.element);
+      if (idx === -1) {
         bbn.cp.queue.push(item);
+      }
     }
     else {
       bbn.cp.queue.push(item);

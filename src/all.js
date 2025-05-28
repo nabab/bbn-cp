@@ -8,6 +8,7 @@ import bbnTemplateNode from "./lib/Node/Template.js";
 import bbnTextNode from "./lib/Node/Text.js";
 import bbnAttr from "./lib/Attr.js";
 import bbnBindAttr from "./lib/Attr/Bind.js";
+import bbnBreakAttr from "./lib/Attr/Break.js";
 import bbnClassAttr from "./lib/Attr/Class.js";
 import bbnConditionAttr from "./lib/Attr/Condition.js";
 import bbnContentAttr from "./lib/Attr/Content.js";
@@ -417,6 +418,7 @@ export {
   bbnTextNode,
   bbnAttr,
   bbnBindAttr,
+  bbnBreakAttr,
   bbnClassAttr,
   bbnConditionAttr,
   bbnContentAttr,

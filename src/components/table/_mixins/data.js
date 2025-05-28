@@ -136,8 +136,7 @@ export default {
 
         this.isTableDataUpdating = false;
       });
-    },
-
+    }
   },
   watch: {
     /**
