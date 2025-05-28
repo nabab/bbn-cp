@@ -229,6 +229,7 @@ export default {
                     }
                   }
                   else {
+                    /*
                     // Going left
                     if (isLeft) {
                       this.lastColumnVisible = Math.min(entry.target.index + 4, cols.length - 1);
@@ -239,6 +240,7 @@ export default {
                       this.firstColumnVisible = Math.max(0, entry.target.index - 4);
                       this.updateShownCols();
                     }
+                      */
                   }
                   entry.target.visible = false;
                 }
@@ -256,7 +258,7 @@ export default {
               const ele = e.target;
               const h = e.contentRect.height;
               setTimeout(() => {
-                if (ele.ready && (ele.getBoundingClientRect().height === h) && (!ele.rowHeight || (ele.rowHeight < h))) {
+                if (ele?.ready && (ele.getBoundingClientRect().height === h) && (!ele.rowHeight || (ele.rowHeight < h))) {
                   ele.rowHeight = h;
                   //bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
                 }
