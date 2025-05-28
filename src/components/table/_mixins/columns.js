@@ -160,6 +160,7 @@ export default {
       if (this.scrollIntersection) {
         this.scrollIntersection.disconnect();
         this.scrollIntersection = null;
+        this.scrollCurrentX = null;
       }
     },
     setScrollVertical() {
