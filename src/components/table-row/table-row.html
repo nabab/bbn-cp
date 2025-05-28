@@ -56,7 +56,7 @@
                   :tabindex="table.editable && table.isEditable(source.data, table.currentColumns[0], index) ? 0 : -1"/>
 
   <!-- IF NOT READY AND INDEX IS NOT 0 -->
-  <component bbn-if="!ready"
+  <component bbn-if="!ready || (table.hasScrollX && !table.lastColumnVisible)"
              :colspan="table.currentColumns.length - 1"
              class="not-ready"
              is="td"/>
@@ -115,11 +115,10 @@
               is="td"/>
     <!-- ALL VISIBLE CENTRAL COLUMNS -->
     <template bbn-for="(col, i) in table.groupCols[1].cols"
-              :key="i"
+              bbn-if="i || table.groupCols[0].cols.length"
               bbn-break="checkBreak">
-      <template bbn-if="(!i && !table.groupCols[0].cols.length) || (table.hasScrollX && (i <= table.firstColumnVisible))">
+      <template bbn-if="table.hasScrollX && ((i < table.firstColumnVisible) || (i > table.lastColumnVisible))">
       </template>
-
       <bbn-table-cell-expander bbn-elseif="col.isExpander && !table.isGroupActive"
                               :source="source.data"
                               :index="0"

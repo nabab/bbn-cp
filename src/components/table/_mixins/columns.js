@@ -43,6 +43,7 @@ export default {
       cols: [],
       firstColumnVisible: 0,
       lastColumnVisible: false,
+      tmpColumnVisible: 0,
       rowSizeObserver: null,
       scrollIsMounted: false,
       scrollIntersection: null,
@@ -134,50 +135,67 @@ export default {
       const scrollable = this.scrollable;
       if (!this.scrollIntersection && (hasScrollX || scrollable)) {
         this.scrollIntersection = new IntersectionObserver(entries => {
+          const cols = this.groupCols[1].cols;
           entries.forEach(entry => {
             // Going in
             if (entry.intersectionRatio > 0) {
+              // Row
               if (scrollable && entry.target instanceof HTMLTableRowElement) {
                 entry.target.ready = true;
               }
+              // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
                 if (entry.target.groupIndex === 1) {
+                  // Init
                   if (entry.target.visible === null) {
-                    if (entry.target.table.lastColumnVisible < (entry.target.index + 5)) {
-                      entry.target.table.lastColumnVisible = Math.min(entry.target.index + 5, entry.target.table.groupCols[1].cols.length - 1);
+                    if (!this.tmpColumnVisible || (this.tmpColumnVisible < (entry.target.index + 5))) {
+                      this.tmpColumnVisible = Math.min(entry.target.index + 5, cols.length - 1);
+                    }
+                    if (entry.target.index === (cols.length - 1)) {
+                      this.lastColumnVisible = this.tmpColumnVisible;
                     }
                   }
                   else {
-                    if (entry.target.index + 5 > entry.target.table.lastColumnVisible) {
-                      entry.target.table.lastColumnVisible = Math.min(entry.target.index + 5, entry.target.table.groupCols[1].cols.length - 1);
+                    // Going right
+                    if (entry.target.index + 5 > this.lastColumnVisible) {
+                      this.lastColumnVisible = Math.min(entry.target.index + 5, cols.length - 1);
                     }
-                    else if (entry.target.index - 5 < entry.target.table.firstColumnVisible) {
-                      entry.target.table.firstColumnVisible = Math.max(0, entry.target.index - 5);
+                    // Going left
+                    else if (entry.target.index - 5 < this.firstColumnVisible) {
+                      this.firstColumnVisible = Math.max(0, entry.target.index - 5);
                     }
-                    bbn.fn.log("Column " + entry.target.index + " is visible, firstColumnVisible: " + entry.target.table.firstColumnVisible + ", lastColumnVisible: " + entry.target.table.lastColumnVisible);
                   }
-
+                  bbn.fn.log("Column " + entry.target.index + "/" + (cols.length - 1) + " is visible, firstColumnVisible: " + this.firstColumnVisible + ", lastColumnVisible: " + this.lastColumnVisible + ", tmpColumnVisible: " + this.tmpColumnVisible);
                   entry.target.visible = true;
                 }
               }
             }
             // Going out
             else {
+              // Row
               if (scrollable && entry.target instanceof HTMLTableRowElement) {
                 entry.target.ready = false;
               }
+              // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
                 if (entry.target.groupIndex === 1) {
-                  if (entry.target.visible !== null) {
-                    if (entry.target.index + 4 < entry.target.table.lastColumnVisible) {
-                      entry.target.table.lastColumnVisible = Math.min(entry.target.index + 4, entry.target.table.groupCols[1].cols.length - 1);
+                  // Init
+                  if (entry.target.visible === null) {
+                    if (entry.target.index === (cols.length - 1)) {
+                      this.lastColumnVisible = this.tmpColumnVisible;
                     }
-                    else if (entry.target.index - 4 > entry.target.table.firstColumnVisible) {
-                      entry.target.table.firstColumnVisible = Math.max(0, entry.target.index - 4);
-                    }
-                    bbn.fn.log("Column " + entry.target.index + " is not visible, firstColumnVisible: " + entry.target.table.firstColumnVisible + ", lastColumnVisible: " + entry.target.table.lastColumnVisible);
                   }
-
+                  else {
+                    // Going left
+                    if (entry.target.index + 4 < this.lastColumnVisible) {
+                      this.lastColumnVisible = Math.min(entry.target.index + 4, cols.length - 1);
+                    }
+                    // Going right
+                    else if (entry.target.index - 4 > this.firstColumnVisible) {
+                      this.firstColumnVisible = Math.max(0, entry.target.index - 4);
+                    }
+                  }
+                  bbn.fn.log("Column " + entry.target.index + " is not visible, firstColumnVisible: " + this.firstColumnVisible + ", lastColumnVisible: " + this.lastColumnVisible + ", tmpColumnVisible: " + this.tmpColumnVisible);
                   entry.target.visible = false;
                 }
               }
@@ -185,7 +203,6 @@ export default {
           });
         }, {
           root: this.$refs.scroll,
-          rootMargin: this.$refs.scroll.clientHeight + 'px ' + this.$refs.scroll.clientWidth + 'px',
           threshold: 0.0
         });
         this.rowSizeObserver = new ResizeObserver(entries => {
@@ -527,10 +544,6 @@ export default {
       bbn.fn.each(groupCols, a => {
         a.sum = bbn.fn.sum(a.cols, 'realWidth');
       });
-      if (!this.hasScrollX) {
-        this.lastColumnVisible = groupCols[1].cols.length - 1;
-      }
-      
       this.groupCols.splice(0, this.groupCols.length, ...groupCols);
     },
     /**
