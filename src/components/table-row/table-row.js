@@ -33,8 +33,15 @@ const cpDef = {
   },
   methods: {
     checkBreak(ele, data) {
-      //bbn.fn.log(['checkbreak', ele, data, data.i, this.lastColumnVisible]);
-      return data.i > (this.lastColumnVisible || 0);
+      if (!this.table.hasScrollX) {
+        return false;
+      }
+
+      if (!this.table.lastColumnVisible) {
+        return false;
+      }
+
+      return data.i > this.table.lastColumnVisible;
     }
   },
 };

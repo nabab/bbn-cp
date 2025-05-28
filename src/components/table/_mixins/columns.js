@@ -41,6 +41,7 @@ export default {
        * @data {Array} [[]] cols
        */
       cols: [],
+      shownCols: [],
       firstColumnVisible: 0,
       lastColumnVisible: false,
       tmpColumnVisible: 0,
@@ -99,13 +100,39 @@ export default {
       return r;
     },
     hasScrollX() {
-      bbn.fn.log(['hasScrollX', this.lastKnownWidth]);
       const cc = this.currentColumns;
       return (cc.length > 15) 
       && (cc[cc.length - 1].leftWidth + parseInt(cc[cc.length - 1].realWidth) > (this.lastKnownWidth * 2));
     },
   },
   methods: {
+    updateShownCols() {
+      this.keepCool(() => {
+        if (!this.hasScrollX) {
+          const shownCols = this.groupCols[1].cols.map((a, i) => i);
+          if (!this.groupCols[0].cols.length) {
+            shownCols.shift();
+          }
+
+          this.shownCols = shownCols;
+          return;
+        }
+
+        const cols = [];
+        let first = this.hasScrollX ? this.firstColumnVisible : 0;
+        if (!first && !this.groupCols[1].cols.length) {
+          first = 1;
+        }
+        const last = this.hasScrollX ? this.lastColumnVisible : this.groupCols[1].cols.length - 1;
+        if (last > first) {
+          for (let i = first; i <= last; i++) {
+            cols.push(i);
+          }
+        }
+
+        this.shownCols = cols;
+      }, 'updateShownCols', 100);
+    },
     updateScrollCurrentY() {
       if (this.$refs.scroll?.$refs) {
         this.scrollCurrentY = Math.round(this.$refs.scroll.currentY);
@@ -126,7 +153,6 @@ export default {
     },
     onScrollMounted() {
       this.setScrollVertical();
-      this.setColumnsVisibility(0);
       this.scrollIsMounted = true;
       this.$emit('scroll-mounted');
     },
@@ -136,6 +162,13 @@ export default {
       if (!this.scrollIntersection && (hasScrollX || scrollable)) {
         this.scrollIntersection = new IntersectionObserver(entries => {
           const cols = this.groupCols[1].cols;
+          if ((this.scrollCurrentX === null) && hasScrollX) {
+            this.scrollCurrentX = this.$refs.scroll.currentX;
+          }
+
+          const currentScrollX = hasScrollX ? this.$refs.scroll.$refs.scrollContent.scrollLeft : 0;
+          const isLeft = currentScrollX < this.scrollCurrentX;
+
           entries.forEach(entry => {
             // Going in
             if (entry.intersectionRatio > 0) {
@@ -153,19 +186,21 @@ export default {
                     }
                     if (entry.target.index === (cols.length - 1)) {
                       this.lastColumnVisible = this.tmpColumnVisible;
+                      this.updateShownCols();
                     }
                   }
                   else {
-                    // Going right
-                    if (entry.target.index + 5 > this.lastColumnVisible) {
-                      this.lastColumnVisible = Math.min(entry.target.index + 5, cols.length - 1);
-                    }
                     // Going left
-                    else if (entry.target.index - 5 < this.firstColumnVisible) {
+                    if (isLeft) {
                       this.firstColumnVisible = Math.max(0, entry.target.index - 5);
+                      this.updateShownCols();
+                    }
+                    // Going right
+                    else {
+                      this.lastColumnVisible = Math.min(entry.target.index + 5, cols.length - 1);
+                      this.updateShownCols();
                     }
                   }
-                  bbn.fn.log("Column " + entry.target.index + "/" + (cols.length - 1) + " is visible, firstColumnVisible: " + this.firstColumnVisible + ", lastColumnVisible: " + this.lastColumnVisible + ", tmpColumnVisible: " + this.tmpColumnVisible);
                   entry.target.visible = true;
                 }
               }
@@ -183,24 +218,35 @@ export default {
                   if (entry.target.visible === null) {
                     if (entry.target.index === (cols.length - 1)) {
                       this.lastColumnVisible = this.tmpColumnVisible;
+                      this.updateShownCols();
                     }
                   }
                   else {
                     // Going left
-                    if (entry.target.index + 4 < this.lastColumnVisible) {
+                    if (isLeft) {
                       this.lastColumnVisible = Math.min(entry.target.index + 4, cols.length - 1);
+                      this.updateShownCols();
                     }
                     // Going right
-                    else if (entry.target.index - 4 > this.firstColumnVisible) {
+                    else {
                       this.firstColumnVisible = Math.max(0, entry.target.index - 4);
+                      this.updateShownCols();
                     }
                   }
-                  bbn.fn.log("Column " + entry.target.index + " is not visible, firstColumnVisible: " + this.firstColumnVisible + ", lastColumnVisible: " + this.lastColumnVisible + ", tmpColumnVisible: " + this.tmpColumnVisible);
                   entry.target.visible = false;
                 }
               }
             }
+            if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
+              bbn.fn.log([
+                "Column number " + entry.target.index + " / " + (cols.length - 1) + ": " + (entry.intersectionRatio > 0 ? '' : ' NOT') + " VISIBLE",
+                "firstColumnVisible: " + this.firstColumnVisible,
+                "lastColumnVisible: " + this.lastColumnVisible,
+                "tmpColumnVisible: " + this.tmpColumnVisible
+              ]);
+            }
           });
+          this.scrollCurrentX = currentScrollX;
         }, {
           root: this.$refs.scroll,
           threshold: 0.0
@@ -213,92 +259,6 @@ export default {
             }
           }
         });
-      }
-    },
-    setColumnsVisibility(v) {
-      return;
-      if (this.hasScrollX) {
-        let first = this.firstColumnVisible;
-        let last = this.lastColumnVisible;
-        const ov = this.scrollCurrentX || 0;
-        const w = this.clientWidth;
-        const min = v - 300 > 0 ? v - 300 : 0;
-        const max = v + w + 300;
-        const cols = this.groupCols[1].cols;
-        bbn.fn.warning("setColumnsVisibility");
-        bbn.fn.log([v, min, max])
-        if (!v) {
-          first = 0;
-          bbn.fn.each(cols, (a, i) => {
-            if (a.leftWidth <= max) {
-              last = i;
-            }
-            else {
-              return false;
-            }
-          });
-        }
-        else {
-          // Scrolling left
-          if (v < ov) {
-            for (let i = last; i > 0; i--) {
-              if ((cols[i].leftWidth + parseInt(cols[i].realWidth)) <= max) {
-                last = i;
-                break;
-              }
-            }
-
-            for (let i = Math.min(first, last); i >= 0; i--) {
-              if (cols[i].leftWidth < min) {
-                first = i + 1;
-                break;
-              }
-            }
-          }
-          // Scrolling right
-          else if (v > ov) {
-            for (let i = first; i < cols.length - 1; i++) {
-              if (cols[i].leftWidth >= min) {
-                first = i;
-                break;
-              }
-            }
-
-            for (let i = Math.max(first, last); i < cols.length - 1; i++) {
-              if ((cols[i].leftWidth + parseInt(cols[i].realWidth)) > max) {
-                last = i - 1;
-                break;
-              }
-            }
-          }
-        }
-
-        // Waiting to stop
-        if (v !== this.$refs.scroll.currentX) {
-          return;
-        }
-
-        this.scrollCurrentX = v;
-        if ((!v && !ov) || (v > ov)) {
-          if (first !== this.firstColumnVisible) {
-            this.firstColumnVisible = first;
-          }
-          if (last !== this.lastColumnVisible) {
-            this.lastColumnVisible = last;
-          }
-        }
-        else if (v <= ov) {
-          if (last !== this.lastColumnVisible) {
-            this.lastColumnVisible = last;
-          }
-          if (first !== this.firstColumnVisible) {
-            this.firstColumnVisible = first;
-          }
-        }
-      }
-      else {
-        this.firstColumnVisible = 0;
-        this.lastColumnVisible = this.groupCols[1].cols.length - 1;
       }
     },
     /**
@@ -545,6 +505,9 @@ export default {
         a.sum = bbn.fn.sum(a.cols, 'realWidth');
       });
       this.groupCols.splice(0, this.groupCols.length, ...groupCols);
+      if (!this.hasScrollX) {
+        this.updateShownCols();
+      }
     },
     /**
      * Returns the columns configuration.

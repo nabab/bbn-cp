@@ -7,7 +7,8 @@ export default class bbnBreakAttr extends bbnAttr
 {
   attrUpdate(init) {
     bbnAttr.prototype.attrUpdate.call(this, init);
-    if (this.isChanged && !this.comment) {
+    if (this.isChanged && this.node.loopNode && !this.node.loopNode.isRunning) {
+      this.node.loopNode.attrUpdate();
       bbn.fn.log("CHANGE IN BREAK");
     }
   }
