@@ -1,6 +1,20 @@
 import { rectangularSelection } from "@codemirror/view";
 
 const resizer = {
+  statics() {
+    if (!bbn.cp.resizeObserver) {
+      bbn.cp.resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const cp = entry.target.onResize ? entry.target : entry.target.bbnComponent;
+          if (!cp.isResizing) {
+            if (entry.contentBoxSize?.[0]) {
+              entry.target.onResize ? entry.target.onResize() : entry.target.bbnComponent.onResize();
+            }
+          }
+        }
+      });
+    }
+  },
   data() {
     return {
       /**
@@ -61,7 +75,7 @@ const resizer = {
   },
   computed: {
     resizerObserved() {
-      return this.$el;
+      return this;
     }
   },
   methods: {
@@ -185,45 +199,6 @@ const resizer = {
     },
 
 
-    /**
-     * Defines the resize emitter and launches process when it resizes.
-     * @method setResizeEvent
-     * @fires onParentResizerEmit
-     * @memberof resizerComponent
-     */
-    setResizeEvent() {
-      if (!this.resizerObserver && this.resizerObserved) {
-        this.resizerObserver = new ResizeObserver((entries) => {
-          if (!this.isResizing) {
-            for (const entry of entries) {
-              if (entry.contentBoxSize?.[0]) {
-                this.onResize();
-              }
-              //bbn.fn.log(bbn._("RESIZEOBS from %s", this.$options.name), entry.contentBoxSize);
-            }
-          }
-        });
-        this.resizerObserver.observe(this.resizerObserved);
-      }
-
-      if (this.parentResizer) {
-        this.parentResizer.$on('resize', this.onResize, false, this);
-      }
-    },
-    /**
-     * Unsets the resize emitter.
-     * @method unsetResizeEvent
-     * @memberof resizerComponent
-     */
-    unsetResizeEvent() {
-      if (this.resizerObserver) {
-        this.resizerObserver.disconnect();
-        this.resizerObserver = null;
-      }
-      if (this.parentResizer) {
-        this.parentResizer.$off('resize', this.onResize, this);
-      }
-    },
     formatSize(...args) {
       return bbn.fn.formatSize(...args);
     },
@@ -244,23 +219,31 @@ const resizer = {
   /**
    * Defines the resize emitter and emits the event ready.
    * @event mounted
-   * @fires setResizeEvent
    * @emits ready
    * @memberof resizerComponent
    */
   mounted() {
     this.parentResizer = this.getParentResizer();
     this.onResize();
-    this.setResizeEvent();
+    this.$nextTick(() => {
+      if (this.resizerObserved) {
+        bbn.cp.resizeObserver.observe(this.resizerObserved);
+      }
+
+      if (this.parentResizer) {
+        this.parentResizer.$on('resize', this.onResize, false, this);
+      }
+    });
   },
   /**
    * Unsets the resize emitter.
    * @event beforeDestroy
-   * @fires unsetResizeEvent
    * @memberof resizerComponent
    */
   beforeDestroy(){
-    this.unsetResizeEvent();
+    if (this.resizerObserved) {
+      bbn.cp.resizeObserver.unobserve(this.resizerObserved);
+    }
   }
 };
 

@@ -73,15 +73,53 @@ export default {
         return this.table.trStyle;
       }
 
-      return '';
+      if (this.rowHeight) {
+        res = [res, {height: this.rowHeight + 'px'}];
+      }
+
+      return res;
     },
   },
-  methods: {},
+  methods: {
+    setReady() {
+      let ready = this.table.$refs.scroll.isYInScroll(this.$el, this.table.clientHeight);
+      if (ready !== this.ready) {
+        this.ready = ready;
+      }
+    },
+  },
   watch: {
+    ready(v) {
+      if (!v) {
+        const h = this.getBoundingClientRect().height;
+        if (h > this.rowHeight) {
+          this.rowHeight = h;
+        }
+      }
+    }
   },
   mounted() {
-    this.$nextTick(() => {
+    if (!this.table.scrollable) {
       this.ready = true;
-    });
-  }
+    }
+    else {
+      this.$nextTick(this.setReady);
+    }
+
+    if (this.table.scrollIntersection) {
+      this.table.scrollIntersection.observe(this);
+    }
+
+    if (this.table.rowSizeObserver) {
+      this.table.rowSizeObserver.observe(this);
+    }
+  },
+  beforeDestroy() {
+    if (this.table.scrollIntersection) {
+      this.table.scrollIntersection.unobserve(this);
+    }
+    if (this.table.rowSizeObserver) {
+      this.table.rowSizeObserver.unobserve(this);
+    }
+  },
 };

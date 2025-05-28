@@ -41,6 +41,17 @@ export default {
        * @data {Array} [[]] cols
        */
       cols: [],
+      shownCols: [],
+      firstColumnVisible: 0,
+      lastColumnVisible: false,
+      tmpColumnVisible: 0,
+      rowSizeObserver: null,
+      scrollIsMounted: false,
+      scrollIntersection: null,
+      scrollCurrentX: null,
+      scrollCurrentY: null,
+      scrollXTimeout: 0,
+      scrollYTimeout: 0,
     }
   },
   computed: {
@@ -88,8 +99,168 @@ export default {
 
       return r;
     },
+    hasScrollX() {
+      const cc = this.currentColumns;
+      return (cc.length > 15) 
+      && (cc[cc.length - 1].leftWidth + parseInt(cc[cc.length - 1].realWidth) > (this.lastKnownWidth * 2));
+    },
   },
   methods: {
+    updateShownCols() {
+      this.keepCool(() => {
+        if (!this.hasScrollX) {
+          const shownCols = this.groupCols[1].cols.map((a, i) => i);
+          if (!this.groupCols[0].cols.length) {
+            shownCols.shift();
+          }
+
+          this.shownCols = shownCols;
+          return;
+        }
+
+        const cols = [];
+        let first = this.hasScrollX ? this.firstColumnVisible : 0;
+        if (!first && !this.groupCols[1].cols.length) {
+          first = 1;
+        }
+        const last = this.hasScrollX ? this.lastColumnVisible : this.groupCols[1].cols.length - 1;
+        if (last > first) {
+          for (let i = first; i <= last; i++) {
+            cols.push(i);
+          }
+        }
+
+        this.shownCols = cols;
+      }, 'updateShownCols', 100);
+    },
+    updateScrollCurrentY() {
+      if (this.$refs.scroll?.$refs) {
+        this.scrollCurrentY = Math.round(this.$refs.scroll.currentY);
+      }
+      else {
+        this.scrollCurrentY = bbn._("Unknown");
+      }
+    },
+    onScrollX(v) {
+      /*
+      clearTimeout(this.scrollXTimeout);  
+      this.scrollXTimeout = setTimeout(() => {
+        if (Math.abs(v - this.$refs.scroll.currentX) < 50) {
+          this.setColumnsVisibility(v);
+        }
+      }, 100);
+      */
+    },
+    onScrollMounted() {
+      this.setScrollVertical();
+      this.scrollIsMounted = true;
+      this.$emit('scroll-mounted');
+    },
+    setScrollVertical() {
+      const hasScrollX = this.hasScrollX;
+      const scrollable = this.scrollable;
+      if (!this.scrollIntersection && (hasScrollX || scrollable)) {
+        this.scrollIntersection = new IntersectionObserver(entries => {
+          const cols = this.groupCols[1].cols;
+          if ((this.scrollCurrentX === null) && hasScrollX) {
+            this.scrollCurrentX = this.$refs.scroll.currentX;
+          }
+
+          const currentScrollX = hasScrollX ? this.$refs.scroll.$refs.scrollContent.scrollLeft : 0;
+          const isLeft = currentScrollX < this.scrollCurrentX;
+
+          entries.forEach(entry => {
+            // Going in
+            if (entry.intersectionRatio > 0) {
+              // Row
+              if (scrollable && entry.target instanceof HTMLTableRowElement) {
+                entry.target.ready = true;
+              }
+              // Title cells (columns)
+              else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
+                if (entry.target.groupIndex === 1) {
+                  // Init
+                  if (entry.target.visible === null) {
+                    if (!this.tmpColumnVisible || (this.tmpColumnVisible < (entry.target.index + 5))) {
+                      this.tmpColumnVisible = Math.min(entry.target.index + 5, cols.length - 1);
+                    }
+                    if (entry.target.index === (cols.length - 1)) {
+                      this.lastColumnVisible = this.tmpColumnVisible;
+                      this.updateShownCols();
+                    }
+                  }
+                  else {
+                    // Going left
+                    if (isLeft) {
+                      this.firstColumnVisible = Math.max(0, entry.target.index - 5);
+                      this.updateShownCols();
+                    }
+                    // Going right
+                    else {
+                      this.lastColumnVisible = Math.min(entry.target.index + 5, cols.length - 1);
+                      this.updateShownCols();
+                    }
+                  }
+                  entry.target.visible = true;
+                }
+              }
+            }
+            // Going out
+            else {
+              // Row
+              if (scrollable && entry.target instanceof HTMLTableRowElement) {
+                entry.target.ready = false;
+              }
+              // Title cells (columns)
+              else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
+                if (entry.target.groupIndex === 1) {
+                  // Init
+                  if (entry.target.visible === null) {
+                    if (entry.target.index === (cols.length - 1)) {
+                      this.lastColumnVisible = this.tmpColumnVisible;
+                      this.updateShownCols();
+                    }
+                  }
+                  else {
+                    // Going left
+                    if (isLeft) {
+                      this.lastColumnVisible = Math.min(entry.target.index + 4, cols.length - 1);
+                      this.updateShownCols();
+                    }
+                    // Going right
+                    else {
+                      this.firstColumnVisible = Math.max(0, entry.target.index - 4);
+                      this.updateShownCols();
+                    }
+                  }
+                  entry.target.visible = false;
+                }
+              }
+            }
+            if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
+              bbn.fn.log([
+                "Column number " + entry.target.index + " / " + (cols.length - 1) + ": " + (entry.intersectionRatio > 0 ? '' : ' NOT') + " VISIBLE",
+                "firstColumnVisible: " + this.firstColumnVisible,
+                "lastColumnVisible: " + this.lastColumnVisible,
+                "tmpColumnVisible: " + this.tmpColumnVisible
+              ]);
+            }
+          });
+          this.scrollCurrentX = currentScrollX;
+        }, {
+          root: this.$refs.scroll,
+          threshold: 0.0
+        });
+        this.rowSizeObserver = new ResizeObserver(entries => {
+          for (const e of entries) {
+            if (e.target.ready && (!e.target.rowHeight || (e.target.rowHeight < e.contentRect.height))) {
+              e.target.rowHeight = e.contentRect.height;
+              //bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
+            }
+          }
+        });
+      }
+    },
     /**
      * Returns the configuration for the cells of the titles of grouped columns.
      * @method titleGroupsCells
@@ -327,8 +498,10 @@ export default {
       bbn.fn.each(groupCols, a => {
         a.sum = bbn.fn.sum(a.cols, 'realWidth');
       });
-      
       this.groupCols.splice(0, this.groupCols.length, ...groupCols);
+      if (!this.hasScrollX) {
+        this.updateShownCols();
+      }
     },
     /**
      * Returns the columns configuration.

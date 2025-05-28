@@ -13,8 +13,8 @@
       }
     ]"
     :title="bbn.fn.html2text(source.flabel || source.label || source.field || ' ')">
-  <span bbn-if="!source.ready"/>
-  <template bbn-else>
+  <a :name="'anchor-' + source.index"/>
+  <template bbn-if="!dead">
     <div bbn-if="source.isSelection" :title="_('Check all')">
       <bbn-checkbox bbn-model="table.allRowsChecked"/>
     </div>

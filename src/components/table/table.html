@@ -41,7 +41,7 @@
     <!-- Main container -->
     <div :class="['bbn-w-100', 'bbn-table-container', {'bbn-flex-fill': scrollable}]">
       <!--<div bbn-if="initStarted || isLoading"-->
-      <div bbn-if="initStarted || isResizing"
+      <div bbn-if="pickerStarted || initStarted || isResizing"
            :class="[
             'bbn-middle',
             'bbn-background-internal',
@@ -65,7 +65,8 @@
                   :disabled="!scrollable"
                   :offset-y="scrollOffsetY"
                   :offset-x="scrollOffsetX"
-                  @resize="resizeWidth">
+                  @resize="resizeWidth"
+                  @hook:mounted="onScrollMounted">
         <!-- Table -->
         <table :style="{width: totalWidth}"
                ref="table"
@@ -80,9 +81,12 @@
                 :key="groupIndex + '-'+ i">
           </colgroup>
           <!-- Thead -->
-          <thead bbn-if="titles" ref="thead">
+          <thead :class="{
+            'bbn-top-left': !titles,
+            'bbn-invisible': !titles
+          }">
             <!-- Group titles -->
-            <tr bbn-if="titleGroups" class="bbn-table-tr-groups-titles">
+            <tr bbn-if="titles && titleGroups" class="bbn-table-tr-groups-titles">
               <template bbn-for="(groupCol, groupIndex) in groupCols">
                 <bbn-table-head-group bbn-if="!!groupCol.cols.length"
                                       bbn-for="(col, i) in titleGroupsCells(groupIndex)"
@@ -98,6 +102,7 @@
                 <bbn-table-head-title bbn-for="(col, i) in groupCol.cols"
                                       :source="col"
                                       :group-index="groupIndex"
+                                      :dead="!titles"
                                       :index="i"
                                       :ref="'title-' + groupIndex + '-' + i"/>
               </template>

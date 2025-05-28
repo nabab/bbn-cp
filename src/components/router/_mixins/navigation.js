@@ -931,7 +931,7 @@ export default {
   },
   watch: {
     selected(idx) {
-      bbn.fn.warning("SELECTED: " + idx);
+      //bbn.fn.warning("SELECTED: " + idx);
       if ((idx !== false) && !this.views[idx]) {
         throw new Error("The view with index " + idx + " doesn't exist");
       }

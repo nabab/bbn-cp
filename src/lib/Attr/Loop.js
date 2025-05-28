@@ -9,6 +9,10 @@ import queueUpdate from "../../functions/queueUpdate.js";
  */
 export default class bbnLoopAttr extends bbnAttr
 {
+  #isRunning = false;
+  get isRunning() {
+    return this.#isRunning;
+  }
   constructor(def, node, name) {
     super(def, node, name);
     this.node.nodeSwitch(true);
@@ -28,6 +32,9 @@ export default class bbnLoopAttr extends bbnAttr
   }
 
   attrUpdate(init, from) {
+    if (this.isRunning) {
+      return;
+    }
     //bbn.fn.log("UPDATE ATTR LOOP " + this.exp, this.node.tag, this.isChanged, this.attrGetValue(true));
     const node = this.node;
     /*
@@ -39,6 +46,8 @@ export default class bbnLoopAttr extends bbnAttr
       //bbn.fn.log("NODE IS OUT");
       return;
     }
+
+    this.#isRunning = true;
     const cp = node.component;
 
     // Evaluate the loop expression and determine its type.
@@ -135,6 +144,7 @@ export default class bbnLoopAttr extends bbnAttr
       else {
         const newNode = currentNode || generateNode(cloneNode(cp, node.id), cp, node.parent, node, hash, hash, loopData);
         ele = newNode.nodeInit(prevEle || root);
+        newNode.loopNode = this;
       }
 
       elements.push(ele);
@@ -189,5 +199,6 @@ export default class bbnLoopAttr extends bbnAttr
       }
     })
       */
+    this.#isRunning = false;
   }
 }

@@ -52,6 +52,11 @@ const cell = {
       this.table.focusin(this.rowIndex, e);
     })
   },
+  mounted() {
+    if (this.column.fixed) {
+      return;
+    }
+  }
 };
 
 export default cell;

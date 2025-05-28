@@ -197,8 +197,8 @@ const cpDef = {
        * @param {Event} e ì
        * @fires updateData
        */
-      clickItem(e){
-        bbn.fn.log("CLICK ITEM", e, e.target, this.currentData);
+      clickItem(e) {
+        //bbn.fn.log("CLICK ITEM", e, e.target, this.currentData);
         if (
           !this.disabled
           && (

@@ -457,7 +457,6 @@ const cpDef = {
         this.init();
         this.$once('dataloaded', () => {
           this.ready = true;
-          this.setResizeEvent();
           floater.onResize();
         });
       }
@@ -466,7 +465,6 @@ const cpDef = {
           this.init();
           this.$once('dataloaded', () => {
             this.ready = true;
-            this.setResizeEvent();
             floater.onResize();
           });
         });
@@ -486,6 +484,11 @@ const cpDef = {
       setTimeout(() => {
         this.theadOffset = this.getRef('thead') ? this.$position(this.getRef('thead')).height : 0;
       }, 1000);
+    }
+  },
+  beforeDestroy() {
+    if (this.scrollIntersection) {
+      this.scrollIntersection.disconnect();
     }
   }
 };

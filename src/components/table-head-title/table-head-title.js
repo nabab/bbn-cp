@@ -16,6 +16,10 @@ const cpDef = {
   ],
   tag: 'th',
   props: {
+    dead: {
+      type: Boolean,
+      default: false
+    },
     groupIndex: {
       type: Number,
       required: true
@@ -28,29 +32,37 @@ const cpDef = {
   data() {
     const table = this.$origin;
     return {
-      table
+      table,
+      to: null,
+      observer: null,
+      visible: null
     }
   },
   computed: {
     groupCol() {
       return this.table.groupCols[this.groupIndex]
+    },
+    realIndex() {
+      let num = this.index;
+      for (let i = 0; i < this.groupIndex; i++) {
+        num += this.table.groupCols[i].cols.length;
+      }
+      return num;
     }
   },
-  beforeMount() {
-    if (bbn.fn.isInViewport(this)) {
-      this.source.ready = true;
+  watch: {
+    ready() {
+      this.setReady();
     }
-    else {
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            this.source.ready = true;
-            observer.disconnect();
-          }
-        })
-      })
-
-      observer.observe(this)
+  },
+  mounted() {
+    if (this.table.scrollIntersection) {
+      this.table.scrollIntersection.observe(this);
+    }
+  },
+  beforeDestroy(e) {
+    if (this.table.scrollIntersection) {
+      this.table.scrollIntersection.unobserve(this);
     }
   },
 };
