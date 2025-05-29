@@ -13,6 +13,10 @@ export default function queueUpdate(...items) {
     }
 
     if (item.element) {
+      if (item.component.$isDestroyed) {
+        continue;
+      }
+
       const idx = bbn.fn.search(bbn.cp.queue, a => a.num === item.num && a.element === item.element);
       if (idx === -1) {
         bbn.cp.queue.push(item);

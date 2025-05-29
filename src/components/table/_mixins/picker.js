@@ -1,9 +1,4 @@
 export default {
-  data() {
-    return {
-      pickerStarted: false,
-    }
-  },
   methods: {
     /**
      * Show or hide the given column index.
@@ -53,22 +48,16 @@ export default {
     applyPicker() {
       return new Promise((resolve) => {
         this.getPopup().close();
-        //this.pickerStarted = true;
+        this.isResizing = true;
         this.$nextTick(() => {
-          this.currentData.splice(0);
-          setTimeout(() => {
-            this.setConfig(true);
-            this.$nextTick(() => {
-              this.initColumns();
-              this.$nextTick(() => {
-                //this.pickerStarted = false;
-                this.$nextTick(() => {
-                  this.updateData();
-                  resolve();
-                });
-              });
+          this.setConfig(true);
+          this.$nextTick(() => {
+            this.$once('init', () => {
+              this.isResizing = false;
+              resolve();
             });
-          }, 100);
+            this.init(true);
+          });
         });
       });
     },
@@ -151,17 +140,16 @@ export default {
               });
 
               if (toShow.length || toHide.length) {
-                //table.pickerStarted = true;
                 setTimeout(() => {
                   if (toShow.length) {
                     table.show(toShow, false, true);
                   }
-    
+
                   if (toHide.length) {
                     table.show(toHide, true, true);
                   }
 
-                  table.applyPicker()//.then(() => table.pickerStarted = false);
+                  table.applyPicker();
                 }, 100);
               }
             },

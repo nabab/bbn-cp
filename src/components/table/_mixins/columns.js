@@ -12,31 +12,33 @@ export default {
     },
   },
   data() {
+    const groupColsTemplate = [
+      {
+        name: 'left',
+        width: 0,
+        visible: 0,
+        cols: []
+      },
+      {
+        name: 'main',
+        width: 0,
+        visible: 0,
+        cols: []
+      },
+      {
+        name: 'right',
+        width: 0,
+        visible: 0,
+        cols: []
+      }
+    ];
     return {
+      groupColsTemplate,
       /**
        * The group of columns.
        * @data {Object} [[{name: 'left',width: 0,visible: 0,cols: []},{name: 'main',width: 0,visible: 0,cols: []},{name: 'right',width: 0,visible: 0,cols: []}]] groupCols
        */
-      groupCols: [
-        {
-          name: 'left',
-          width: 0,
-          visible: 0,
-          cols: []
-        },
-        {
-          name: 'main',
-          width: 0,
-          visible: 0,
-          cols: []
-        },
-        {
-          name: 'right',
-          width: 0,
-          visible: 0,
-          cols: []
-        }
-      ],
+      groupCols: bbn.fn.clone(groupColsTemplate),
       /**
        * @data {Array} [[]] cols
        */
@@ -150,18 +152,19 @@ export default {
       */
     },
     onScrollMounted() {
-      this.setScrollVertical();
+      this.setScrollIntersection();
       this.scrollIsMounted = true;
       this.$emit('scroll-mounted');
     },
     onScrollBeforeDestroy() {
+      this.scrollIsMounted = false;
       if (this.scrollIntersection) {
         this.scrollIntersection.disconnect();
         this.scrollIntersection = null;
         this.scrollCurrentX = null;
       }
     },
-    setScrollVertical() {
+    setScrollIntersection() {
       const hasScrollX = this.hasScrollX;
       const scrollable = this.scrollable;
       if (!this.scrollIntersection && (hasScrollX || scrollable)) {
@@ -356,26 +359,8 @@ export default {
       }
     },
     initColumns() {
-      const groupCols = [
-        {
-          name: 'left',
-          width: 0,
-          visible: 0,
-          cols: []
-        },
-        {
-          name: 'main',
-          width: 0,
-          visible: 0,
-          cols: []
-        },
-        {
-          name: 'right',
-          width: 0,
-          visible: 0,
-          cols: []
-        }
-      ];
+      const groupCols = bbn.fn.clone(this.groupColsTemplate);
+      this.groupCols = bbn.fn.clone(this.groupColsTemplate);
       let isAggregated = false;
       let aggregatedColIndex = false;
       let aggregatedColTitle = false;
@@ -383,11 +368,10 @@ export default {
       const parentStyle = this.$el.offsetParent ? window.getComputedStyle(this.$el.offsetParent) : {};
       const parentPadding = Math.floor(parseFloat(parentStyle?.paddingLeft || 0) + parseFloat(parentStyle?.paddingRight || 0));
       const parentWidth = Math.floor(this.$el.offsetParent ? this.$el.offsetParent.getBoundingClientRect().width : this.lastKnownCtWidth) - parentPadding;
-      this.cols.map(a => {
-        a.realWidth = 0;
-      });
       let leftWidth = 0;
-      bbn.fn.each(this.cols, (a, i) => {
+      const cols = bbn.fn.map(this.cols, (a, i) => {
+        a = bbn.fn.clone(a);
+        a.realWidth = 0;
         if (!a.invisible && (!this.groupable || (this.group !== i))) {
           let minWidth = null;
           let maxWidth = null;
@@ -472,6 +456,8 @@ export default {
             }
           }
         }
+
+        return a;
       });
       let firstGroup = groupCols[0].visible ? 0 : 1;
       if (this.selection) {
@@ -511,11 +497,13 @@ export default {
         a.sum = bbn.fn.sum(a.cols, 'realWidth');
       });
       bbn.fn.warning("BEFORE")
+      this.cols = cols;
       this.groupCols = groupCols;
-
-      if (!this.hasScrollX) {
-        this.updateShownCols();
-      }
+      this.$nextTick(() => {
+        if (!this.hasScrollX) {
+          this.updateShownCols();
+        }
+      });
       bbn.fn.warning("AFTER")
     },
     /**

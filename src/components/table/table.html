@@ -71,7 +71,7 @@
         <!-- Table -->
         <table :style="{width: totalWidth}"
                ref="table"
-               bbn-if="!pickerStarted"
+               bbn-if="scrollIsMounted"
                aria-describedby="table"
                :class="['bbn-table-' + cssRuleName, 'bbn-table-table']">
           <!-- Colgroups -->

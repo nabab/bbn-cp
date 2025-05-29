@@ -28,9 +28,6 @@ export default {
         return;
       }
       //bbn.fn.warning("INIT TABLE");
-      if (!this.pickerStarted) {
-        this.initStarted = true;
-      }
       //this.setContainerMeasures();
       //this.setResizeMeasures();
       let numUnknown = bbn.fn.count(this.cols, a => !a.invisible && !a.width);
@@ -57,6 +54,7 @@ export default {
             newWidth = bbn.fn.isMobile() ? this.minimumColumnWidthMobile : this.minimumColumnWidth;
           }
           let maxPreAggregatedWidth = 0;
+          debugger;
           bbn.fn.each(this.cols, (a, i) => {
             if (!a.invisible) {
               if (!a.width) {
@@ -84,6 +82,7 @@ export default {
           //let bonus = Math.floor(toFill / num * 100) / 100;
           let bonus = toFill / num;
           let maxPreAggregatedWidth = 0;
+          debugger;
           bbn.fn.each(this.cols, (a, i) => {
             if (!a.invisible && (i >= ignore)) {
               a.realWidth += bonus;
@@ -101,9 +100,10 @@ export default {
       }
 
       let sum = 0,
-        sumLeft = 0,
-        sumRight = 0;
-      bbn.fn.each(this.groupCols, (a, i) => {
+          sumLeft = 0,
+          sumRight = 0;
+      const groupCols = bbn.fn.clone(this.groupCols);
+      bbn.fn.each(groupCols, (a, i) => {
         bbn.fn.each((i !== 2) ? a.cols : a.cols.slice().reverse(), c => {
           if (!c.invisible) {
             sum += c.realWidth;
@@ -122,6 +122,7 @@ export default {
         sumLeft = 0;
         sumRight = 0;
       });
+      this.groupCols = groupCols;
       this.isAggregated = isAggregated;
       this.aggregatedColumns = aggregatedColumns;
       this.resizeWidth();
@@ -132,14 +133,16 @@ export default {
           this.$emit('init', this);
           this.resizeWidth();
         });
-        this.updateData();
+        this.$nextTick(() => {
+          this.updateData();
+        });
       }
       else {
         this.$nextTick(() => {
           if (this.initStarted) {
             this.initStarted = false;
           }
-          this.resizeWidth();
+          //this.resizeWidth();
           this.$emit('init', this);
         });
       }
