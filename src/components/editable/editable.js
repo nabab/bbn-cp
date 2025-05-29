@@ -47,7 +47,7 @@ const cpDef = {
         },
         component: {
           view: '<div bbn-text="currentText" style="white-space: pre-wrap; word-break: break-word"></div>',
-          edit: '<div class="bbn-100"><component :is="component" bbn-bind="componentOptions" bbn-model="currentValue"/></div>'
+          edit: '<div><component :is="component" bbn-bind="componentOptions" bbn-model="currentValue"/></div>'
         },
         html: {
           view: `<div  @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"
