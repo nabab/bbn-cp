@@ -54,7 +54,6 @@ export default {
             newWidth = bbn.fn.isMobile() ? this.minimumColumnWidthMobile : this.minimumColumnWidth;
           }
           let maxPreAggregatedWidth = 0;
-          debugger;
           bbn.fn.each(this.cols, (a, i) => {
             if (!a.invisible) {
               if (!a.width) {
@@ -82,7 +81,6 @@ export default {
           //let bonus = Math.floor(toFill / num * 100) / 100;
           let bonus = toFill / num;
           let maxPreAggregatedWidth = 0;
-          debugger;
           bbn.fn.each(this.cols, (a, i) => {
             if (!a.invisible && (i >= ignore)) {
               a.realWidth += bonus;
