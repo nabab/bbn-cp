@@ -46,6 +46,8 @@ export default {
       shownCols: [],
       firstColumnVisible: 0,
       lastColumnVisible: false,
+      tmpFirstColumnVisible: 0,
+      tmpLastColumnVisible: false,
       tmpColumnVisible: 0,
       rowSizeObserver: null,
       scrollIsMounted: false,
@@ -195,19 +197,18 @@ export default {
                     }
                     if (entry.target.index === (cols.length - 1)) {
                       this.lastColumnVisible = this.tmpColumnVisible;
+                      this.tmpLastColumnVisible = this.tmpColumnVisible;
                       this.updateShownCols();
                     }
                   }
                   else {
                     // Going left
                     if (isLeft) {
-                      this.firstColumnVisible = Math.max(0, entry.target.index - 5);
-                      this.updateShownCols();
+                      this.tmpFirstColumnVisible = Math.max(0, entry.target.index - 5);
                     }
                     // Going right
                     else {
-                      this.lastColumnVisible = Math.min(entry.target.index + 5, cols.length - 1);
-                      this.updateShownCols();
+                      this.tmpLastColumnVisible = Math.min(entry.target.index + 5, cols.length - 1);
                     }
                   }
                   entry.target.visible = true;
@@ -231,18 +232,14 @@ export default {
                     }
                   }
                   else {
-                    /*
                     // Going left
                     if (isLeft) {
-                      this.lastColumnVisible = Math.min(entry.target.index + 4, cols.length - 1);
-                      this.updateShownCols();
+                      this.tmpLastColumnVisible = Math.min(entry.target.index + 5, cols.length - 1);
                     }
                     // Going right
                     else {
-                      this.firstColumnVisible = Math.max(0, entry.target.index - 4);
-                      this.updateShownCols();
+                      this.tmpFirstColumnVisible = Math.max(0, entry.target.index - 5);
                     }
-                      */
                   }
                   entry.target.visible = false;
                 }
@@ -550,6 +547,15 @@ export default {
 
   },
   watch: {
+    tmpFirstColumnVisible(v) {
+      setTimeout(() => {
+        if ((v >= this.tmpFirstColumnVisible) && (v <= this.tmpLastColumnVisible)) {
+          this.firstColumnVisible = this.tmpFirstColumnVisible;
+          this.lastColumnVisible = this.tmpLastColumnVisible;
+          this.updateShownCols();
+        }
+      }, 100);
+    },
     columns() {
       bbn.fn.log("WATCH COLUMNS");
       if (this.ready) {
