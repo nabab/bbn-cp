@@ -330,7 +330,8 @@ const cpDef = {
         titleTemplates,
         htmlTemplates,
         templates,
-        borderStyle
+        borderStyle,
+        currentEdited: null,
       };
     },
     props: {
@@ -1054,13 +1055,20 @@ const cpDef = {
     mounted(){
       this.ready = true;
     },
-
-
+    beforeDestroy() {
+      if (this.currentEdited === this) {
+        this.currentEdited = null;
+      }
+    },
     watch: {
       /**
        * @watch isEditing
        */
-      isEditing() {
+      isEditing(v) {
+        if (v && this.currentEdited && (this.currentEdited !== this)) {
+          this.currentEdited.isEditing = null;
+          this.currentEdited = this;
+        }
         this.componentObject = this.getComponentObject(this.type);
       },
       /**

@@ -1,4 +1,4 @@
-<div :class="['bbn-iblock', componentClass]"
+<div :class="['bbn-iblock', componentClass, {'bbn-editable-editing': isEditing}]"
       @mouseenter="over = true; mouseIn = true"
       @mouseleave="onMouseLeave"
       @focusin="over = true"

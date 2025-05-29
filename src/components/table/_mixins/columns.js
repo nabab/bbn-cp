@@ -185,7 +185,7 @@ export default {
             if (entry.intersectionRatio > 0) {
               // Row
               if (scrollable && entry.target instanceof HTMLTableRowElement) {
-                entry.target.ready = true;
+                entry.target.tmpReady = true;
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
@@ -219,7 +219,7 @@ export default {
             else {
               // Row
               if (scrollable && entry.target instanceof HTMLTableRowElement) {
-                entry.target.ready = false;
+                entry.target.tmpReady = false;
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
@@ -248,7 +248,7 @@ export default {
           });
           this.scrollCurrentX = currentScrollX;
         }, {
-          root: this.$refs.scroll,
+          root: this.$refs.scroll.$refs.scrollContent,
           threshold: 0.0
         });
         this.rowSizeObserver = new ResizeObserver(entries => {

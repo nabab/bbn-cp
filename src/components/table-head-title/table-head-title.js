@@ -11,11 +11,13 @@ const cpDef = {
    * @mixin bbn.cp.mixins.cell
    */
   mixins: [
-    bbn.cp.mixins.basic,
     bbn.cp.mixins.componentInside
   ],
   tag: 'th',
   props: {
+    source: {
+      type: Object
+    },
     dead: {
       type: Boolean,
       default: false
@@ -35,7 +37,8 @@ const cpDef = {
       table,
       to: null,
       observer: null,
-      visible: null
+      visible: null,
+      ready: false,
     }
   },
   computed: {

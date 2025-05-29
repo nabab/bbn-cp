@@ -20,13 +20,19 @@ const cpDef = {
    * @mixin bbn.cp.mixins.row
    */
   mixins: [
-    bbn.cp.mixins.basic,
     bbn.cp.mixins.row
   ],
   tag: 'tr',
-  props: {},
+  props: {
+    source: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
+      ready: false,
+      tmpReady: false,
     };
   },
   computed: {
@@ -44,6 +50,21 @@ const cpDef = {
       return data.i > this.table.lastColumnVisible;
     }
   },
+  watch: {
+    tmpReady(v) {
+      setTimeout(() => {
+        if (this.tmpReady === v) {
+          this.ready = v;
+        }
+      }, 100)
+    },
+  },
+  mounted() {
+    if (this.table.scrollable) {
+      this.ready = this.closest('bbn-scroll').isYInScroll(this);
+      this.tmpReady = this.ready;
+    }
+  }
 };
 
 import cpHtml from './table-row.html';
