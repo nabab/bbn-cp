@@ -20,10 +20,10 @@
   <div bbn-else
        :class="['bbn-overlay', barClass, {'bbn-radius': !!radius}]"
        :style="currentStyle"/>
-  <div :class="['bbn-wrap', realValuePosition, 'bbn-no-border']"
+  <div :class="['bbn-wrap', 'bbn-no-border']"
        style="height: 100%">
     <div :class="['bbn-progress-status', {'bbn-hspadding': (orientation === 'horizontal')}]"
-         bbn-text="(showValue ? (value + ( showUnit ? unit : '' ) ) : '') + (!!text ? ( showValue ? ' ' : '') + '(' + text + ')' : '')"
+         bbn-text="(showValue ? (value + (showUnit ? unit : '')) : '') + (!!text ? (showValue ? ' ' : '') + '(' + text + ')' : '')"
          :style="textColor.length ? 'color: '+ textColor + '!important' : ''"/>
   </div>
 </div>
