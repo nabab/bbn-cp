@@ -9,6 +9,7 @@
         @mousedown.prevent.stop="onClick($event)"
         @mouseenter="over($event)"
         @mouseleave="out($event)"
+        @keypress.space.prevent.stop="onClick($event)"
         @click.stop.prevent
         :tabindex="currentTabIndex"
         :type="currentType"
