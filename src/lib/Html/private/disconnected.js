@@ -14,9 +14,9 @@ export default function disconnected(cp) {
     onHook(cp, 'beforeDestroy');
     if (cp.bbnSchema.events?.['hook:beforedestroy']) {
       const beforeDestroy = new Event('hook:beforedestroy');
-      cp.dispatchEvent(beforeDestroy);
+      cp.bbnSchema.events['hook:beforedestroy'].handler.bind(cp.bbnComponent)(beforeDestroy);
     }
-    
+
     //bbn.fn.log("Before disconnected callback from " + cp.$el.tagName + ' / ' + cp.$el.bbnSchema.id);
     cp.$destroy();
   }

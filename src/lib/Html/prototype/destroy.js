@@ -93,7 +93,7 @@ bbnProtoHtml.$destroy = function() {
   onHook(this, 'destroyed');
   if (hasDestroyEvent) {
     const destroyed = new Event('hook:destroyed');
-    this.dispatchEvent(destroyed);
+    this.bbnSchema.events['hook:destroyed'].handler.bind(this.bbnComponent)(destroyed);
   }
 
   removeComponent(this.bbnCid);

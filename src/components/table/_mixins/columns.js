@@ -157,6 +157,7 @@ export default {
       this.$emit('scroll-mounted');
     },
     onScrollBeforeDestroy() {
+      bbn.fn.log("ON SCROLL BEFORE DESTROY");
       this.scrollIsMounted = false;
       if (this.scrollIntersection) {
         this.scrollIntersection.disconnect();
