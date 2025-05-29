@@ -215,11 +215,10 @@ export default {
     },
     lastFixedIndex() {
       let idx = -1;
-      bbn.fn.each(this.currentColumns, (a, i) => {
-        if (a.fixed && a.isLeft) {
-          idx = i;
-        }
-      });
+      if (this.groupCols[0].cols.length) {
+        idx = this.groupCols[0].cols.length - 1;
+      }
+
       return idx;
     },
 

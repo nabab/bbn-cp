@@ -86,7 +86,7 @@ export default {
      */
     currentColumns() {
       let r = [];
-      bbn.fn.each([].concat(this.groupCols), (a, i) => {
+      bbn.fn.each(this.groupCols, (a, i) => {
         bbn.fn.each(a.cols, b => {
           r.push(bbn.fn.extend(true, {}, b, {
             fixed: i !== 1,
@@ -107,31 +107,29 @@ export default {
   },
   methods: {
     updateShownCols() {
-      this.keepCool(() => {
-        if (!this.hasScrollX) {
-          const shownCols = this.groupCols[1].cols.map((a, i) => i);
-          if (!this.groupCols[0].cols.length) {
-            shownCols.shift();
-          }
-
-          this.shownCols = shownCols;
-          return;
+      if (!this.hasScrollX) {
+        const shownCols = this.groupCols[1].cols.map((a, i) => i);
+        if (!this.groupCols[0].cols.length) {
+          shownCols.shift();
         }
 
-        const cols = [];
-        let first = this.hasScrollX ? this.firstColumnVisible : 0;
-        if (!first && !this.groupCols[1].cols.length) {
-          first = 1;
-        }
-        const last = this.hasScrollX ? this.lastColumnVisible : this.groupCols[1].cols.length - 1;
-        if (last > first) {
-          for (let i = first; i <= last; i++) {
-            cols.push(i);
-          }
-        }
+        this.shownCols = shownCols;
+        return;
+      }
 
-        this.shownCols = cols;
-      }, 'updateShownCols', 100);
+      const cols = [];
+      let first = this.hasScrollX ? this.firstColumnVisible : 0;
+      if (!first && !this.groupCols[1].cols.length) {
+        first = 1;
+      }
+      const last = this.hasScrollX ? this.lastColumnVisible : this.groupCols[1].cols.length - 1;
+      if (last > first) {
+        for (let i = first; i <= last; i++) {
+          cols.push(i);
+        }
+      }
+
+      this.shownCols = cols;
     },
     updateScrollCurrentY() {
       if (this.$refs.scroll?.$refs) {
@@ -512,10 +510,13 @@ export default {
       bbn.fn.each(groupCols, a => {
         a.sum = bbn.fn.sum(a.cols, 'realWidth');
       });
-      this.groupCols.splice(0, this.groupCols.length, ...groupCols);
+      bbn.fn.warning("BEFORE")
+      this.groupCols = groupCols;
+
       if (!this.hasScrollX) {
         this.updateShownCols();
       }
+      bbn.fn.warning("AFTER")
     },
     /**
      * Returns the columns configuration.

@@ -50,6 +50,28 @@ export default {
         return a.showable !== false;
       });
     },
+    applyPicker() {
+      return new Promise((resolve) => {
+        this.getPopup().close();
+        //this.pickerStarted = true;
+        this.$nextTick(() => {
+          this.currentData.splice(0);
+          setTimeout(() => {
+            this.setConfig(true);
+            this.$nextTick(() => {
+              this.initColumns();
+              this.$nextTick(() => {
+                //this.pickerStarted = false;
+                this.$nextTick(() => {
+                  this.updateData();
+                  resolve();
+                });
+              });
+            });
+          }, 100);
+        });
+      });
+    },
     /**
      * Opens the popup containing the column picker.
      * @method openColumnsPicker
@@ -129,7 +151,7 @@ export default {
               });
 
               if (toShow.length || toHide.length) {
-                table.pickerStarted = true;
+                //table.pickerStarted = true;
                 setTimeout(() => {
                   if (toShow.length) {
                     table.show(toShow, false, true);
@@ -139,10 +161,7 @@ export default {
                     table.show(toHide, true, true);
                   }
 
-                  table.initColumns();
-                  table.$nextTick(() => {
-                    table.pickerStarted = false
-                  });
+                  table.applyPicker()//.then(() => table.pickerStarted = false);
                 }, 100);
               }
             },

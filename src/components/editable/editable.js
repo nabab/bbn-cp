@@ -489,8 +489,9 @@ const cpDef = {
        * @emits save
        */
       save() {
-        if (this.currentValue !== this.value) {
-          this.originalValue = bbn.fn.clone(this.value);
+        bbn.fn.log("SAVE", this.currentValue, this.value, this.originalValue);
+        if (this.currentValue !== this.originalValue) {
+          this.originalValue = bbn.fn.isPrimitive(this.currentValue) ? this.currentValue : bbn.fn.clone(this.currentValue);
           this.$emit('save', this.currentValue, this.originalValue);
           this.emitInput(this.currentValue);
         }
@@ -500,11 +501,13 @@ const cpDef = {
        * @method focusout
        * @fires save
        */
-      focusout() {
-        if (this.isEditing && !this.over && !this.mouseIn) {
-          bbn.fn.log("FOCUSOUT");
-          this.save()
-        }
+      onFocusOut() {
+        setTimeout(() => {
+          if (this.isEditing) {
+            bbn.fn.log("FOCUSOUT");
+            this.save();
+          }
+        }, 500);
       },
       /**
        * @method onCancel
@@ -514,12 +517,6 @@ const cpDef = {
         this.currentValue = this.value ? bbn.fn.clone(this.value) : (this.source.nullable ? null : '');
         this.isEditing = false;
         await this.$forceUpdate();
-      },
-      /**
-       * @method mouseleave
-       */
-      mouseleave(){
-        this.over = false
       },
       /**
        * @method mouseover
@@ -556,28 +553,6 @@ const cpDef = {
         alert('test')
       },
       /**
-       * adds the events listener when edit = true
-       * @method _setEvents
-       * @param {boolean} edit
-       */
-      _setEvents(){
-        /*
-        document.addEventListener('mousedown', this.checkMouseDown);
-        document.addEventListener('touchstart', this.checkMouseDown);
-        document.addEventListener('keydown', this.checkKeyCode);
-        */
-        /*if ( edit ){
-          document.addEventListener('mousedown', this.checkMouseDown);
-          document.addEventListener('touchstart', this.checkMouseDown);
-          document.addEventListener('keydown', this.checkKeyCode);
-        }
-        else{
-          document.addEventListener('mouseover', this.mouseover);
-          document.removeEventListener('mousedown', this.checkMouseDown);
-          document.removeEventListener('touchstart', this.checkMouseDown);
-        }*/
-      },
-      /**
        * @method checkKeyCode
        * @param {Event} e
        */
@@ -585,39 +560,6 @@ const cpDef = {
         if ( e.keyCode === 27 ){
           this.edit = false;
         }
-      },
-      /**
-       * set edit to false
-       * @method checkMouseDown
-       * @param {Event} e
-       */
-      checkMouseDown(e){
-        if ( !e.target.closest(".bbn-cms-block-edit") ){
-          /*e.preventDefault();
-          e.stopImmediatePropagation();*/
-          this.edit = false;
-          alert(this.edit)
-        }
-        else{
-          alert(this.edit)
-          this.editMode();
-        }
-      },
-      /**
-       * @method editBlock
-       */
-      editBlock(){
-        if ( this.changed ){
-          appui.success(bbn._('Block changed'))
-          //add a confirm
-         this.$nextTick(()=>{
-           this.edit = false;
-         })
-        }
-        else{
-          this.edit = false;
-        }
-
       },
       /**
        * @method edit
@@ -645,6 +587,19 @@ const cpDef = {
           v.over = false;
         })
         this.edit = true;
+      },
+      onBlur() {
+        if (!this.mouseIn) {
+          setTimeout(() => {
+            this.over = false;
+          }, 50);
+        }
+      },
+      onMouseLeave() {
+        setTimeout(() => {
+          this.over = false;
+          this.mouseIn = false          
+        }, 50);
       },
       /**
        * returns the object of the component basing on the given type
@@ -686,7 +641,7 @@ const cpDef = {
                   return bbn._("No value");
                 }
 
-                return bbn.fn.getField(cp.componentOptions.source, 'text', {[cp.componentOptions.sourceValue]: cp.currentValue}) || bbn._("Not found");
+                return bbn.fn.getField(cp.componentOptions.source, cp.componentOptions.sourceText || 'text', {[cp.componentOptions.sourceValue]: cp.currentValue}) || bbn._("Not found");
               }
 
               return this.currentValue;
@@ -1097,27 +1052,7 @@ const cpDef = {
      * @event mounted
      */
     mounted(){
-      this.initialSource = bbn.fn.extend({}, this.source);
       this.ready = true;
-      if ( bbn.fn.isEmpty(this.source.style) ){
-        bbn.fn.warning(this.source.type + "  HAS STYLE WHICH IS EMPTY?")
-        this.source.style = {};
-      }
-      if ( bbn.fn.isEmpty(this.source.style) || !this.source.style.color ){
-        this.source.style.color = '';
-      }
-      if ( !this.source.align ){
-        this.source.align = 'left'
-      }
-      if ( bbn.fn.isEmpty(this.source.style) || !this.source.style.width ){
-        this.source.width = '100%'
-      }
-      //if alignment is already defined as style property
-      if ( this.source.style && this.source.style.align ){
-        this.source.align = this.source.style.align;
-      }
-
-      bbn.fn.log("I AM THE BLOCK! ", this.source);
     },
 
 

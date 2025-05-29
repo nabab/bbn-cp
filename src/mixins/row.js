@@ -90,13 +90,9 @@ export default {
     ready(v) {
       if (v) {
         const h = this.getBoundingClientRect().height;
-        setTimeout(() => {
-          if (this.ready && (h === this.getBoundingClientRect().height)) {
-            if (h > this.rowHeight) {
-              this.rowHeight = h;
-            }
-          }
-        }, 250);
+        if (h > this.rowHeight) {
+          this.rowHeight = h;
+        }
       }
     }
   },
@@ -105,7 +101,7 @@ export default {
       this.ready = true;
     }
     else {
-      this.$nextTick(this.setReady);
+      this.setReady();
     }
 
     if (this.table.scrollIntersection) {
