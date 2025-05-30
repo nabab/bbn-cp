@@ -95,11 +95,10 @@
                   }">
               <!-- If there are no children we leave the white space -->
               <span bbn-if="flat || !numChildren || (level < tree.minExpandLevel)">&nbsp;</span>
-              <i bbn-else
-                  :class="['bbn-xs', {
-                    'nf nf-fa-caret_down': isExpanded,
-                    'nf nf-fa-caret_right': !isExpanded
-                  }]"/>
+              <span bbn-else
+                   :class="['bbn-tree-caret', {'bbn-tree-caret-down': isExpanded}]">
+                <i class="nf nf-oct-triangle_right"/>
+                </span>
             </span>
 
             <!-- The checkobox if selection -->
