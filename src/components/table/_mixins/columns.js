@@ -256,12 +256,10 @@ export default {
             if (e.target.ready && (!e.target.rowHeight || (e.target.rowHeight < e.contentRect.height))) {
               const ele = e.target;
               const h = e.contentRect.height;
-              setTimeout(() => {
-                if (ele?.ready && (ele.getBoundingClientRect().height === h) && (!ele.rowHeight || (ele.rowHeight < h))) {
-                  ele.rowHeight = h;
-                  //bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
-                }
-              }, 250);
+              if (ele?.ready && (!ele.rowHeight || (ele.rowHeight < h))) {
+                ele.rowHeight = h;
+                //bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
+              }
               //bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
             }
           }
