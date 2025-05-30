@@ -1,4 +1,9 @@
-table-row-group {
-
+.bbn-table-cell-expander {
+  > .bbn-table-cell-expander-container {
+    transition: all 0.3s ease;
+  }
+  &.bbn-table-cell-expander-opened > .bbn-table-cell-expander-container {
+    transform: rotate(90deg);
+  }
 }
 
