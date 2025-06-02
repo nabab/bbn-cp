@@ -1058,10 +1058,8 @@ const list = {
           }
           prom.then(d => {
             if (this.isAjax) {
-              if (!this.loadingRequestID || (this.loadingRequestID !== loadingRequestID)) {
-                this.isLoading = false;
-                this.loadingRequestID = false;
-                throw new Error("No loading request");
+              if (this.loadingRequestID !== loadingRequestID) {
+                // Another call has been made or it has been cancelled
                 return;
               }
 

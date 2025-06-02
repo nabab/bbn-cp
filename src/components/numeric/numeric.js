@@ -198,7 +198,8 @@ const cpDef = {
           let val = this.inputValue;
           return val.length || 1
         }
-        return 0
+
+        return this.size || 0
       }
     },
     methods: {

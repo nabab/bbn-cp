@@ -59,12 +59,11 @@ const input = {
       default: false
     },
     /**
-     * Defines the size of the component.
-     * @prop {Number|String} size
-     * @memberof inputComponent
+     * The size of the input.
+     * @prop {(String|Number)} size
      */
     size: {
-      type: [Number, String]
+      type: [String, Number],
     },
     /**
      * Defines the maxlength of the value.

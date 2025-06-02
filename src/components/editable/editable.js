@@ -1056,8 +1056,8 @@ const cpDef = {
       this.ready = true;
     },
     beforeDestroy() {
-      if (this.currentEdited === this) {
-        this.currentEdited = null;
+      if (this.constructor.currentEdited === this) {
+        this.constructor.currentEdited = null;
       }
     },
     watch: {
@@ -1065,10 +1065,13 @@ const cpDef = {
        * @watch isEditing
        */
       isEditing(v) {
-        if (v && this.currentEdited && (this.currentEdited !== this)) {
-          this.currentEdited.isEditing = null;
-          this.currentEdited = this;
+        if (v && (this.constructor.currentEdited !== this)) {
+          if (this.constructor.currentEdited) {
+            this.constructor.currentEdited.isEditing = false;
+          }
+          this.constructor.currentEdited = this;
         }
+
         this.componentObject = this.getComponentObject(this.type);
       },
       /**

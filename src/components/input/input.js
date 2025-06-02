@@ -126,13 +126,6 @@ const cpDef = {
       type: String
     },
     /**
-     * The size of the input.
-     * @prop {(String|Number)} size
-     */
-    size: {
-      type: [String, Number],
-    },
-    /**
      * @prop {(String|Number)} min
      */
     min: {
