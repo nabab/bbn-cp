@@ -230,15 +230,7 @@ const cpDef = {
       }
 
       clearTimeout(this.filterTimeout);
-      if (!v && this.nullable && this.inputIsVisible) {
-        this.unfilter();
-        this.emitInput(null);
-        this.currentText = '';
-        if (this.currentData.length) {
-          this.currentData.splice(0, this.currentData.length);
-        }
-      }
-      else if (v) {
+      if (v) {
         if (v.length < this.minLength) {
           if (this.currentData.length) {
             this.currentData.splice(0, this.currentData.length);
@@ -262,8 +254,15 @@ const cpDef = {
           }, this.delay);
         }
       }
-      else if ( !v ){
+      else {
         this.unfilter();
+        if (this.nullable) {
+          this.emitInput(null);
+          this.currentText = '';
+          if (this.currentData.length) {
+            this.currentData.splice(0, this.currentData.length);
+          }
+        }
       }
     }
   }

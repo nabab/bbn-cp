@@ -39,7 +39,8 @@
                :autosize="autosize"
                :nullable="isNullable"
                :force-nullable="isNullable"
-               @focus="_setInputVisible"/>
+               @focus="_setInputVisible"
+               @clear="filterString = null"/>
     <bbn-input bbn-if="!isDisabled && !readonly"
                bbn-show="inputIsVisible"
                :tabindex="currentTabIndex"
