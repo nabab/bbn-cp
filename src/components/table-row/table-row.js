@@ -61,7 +61,7 @@ const cpDef = {
   },
   mounted() {
     if (this.table.scrollable) {
-      this.ready = this.closest('bbn-scroll').isYInScroll(this);
+      //this.ready = this.closest('bbn-scroll').isYInScroll(this);
       this.tmpReady = this.ready;
     }
   }

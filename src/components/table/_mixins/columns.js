@@ -111,8 +111,9 @@ export default {
   },
   methods: {
     updateShownCols() {
-      if (!this.hasScrollX) {
+      if (!this.hasScrollX || this.groupable) {
         const shownCols = this.groupCols[1].cols.map((a, i) => i);
+        this.lastColumnVisible = this.shownCols[this.shownCols.length - 1];
         if (!this.groupCols[0].cols.length) {
           shownCols.shift();
         }
@@ -170,7 +171,7 @@ export default {
     setScrollIntersection() {
       const hasScrollX = this.hasScrollX;
       const scrollable = this.scrollable;
-      if (!this.scrollIntersection && (hasScrollX || scrollable)) {
+      if (!this.scrollIntersection && (hasScrollX || scrollable) && !this.groupable) {
         this.scrollIntersection = new IntersectionObserver(entries => {
           const cols = this.groupCols[1].cols;
           if ((this.scrollCurrentX === null) && hasScrollX) {

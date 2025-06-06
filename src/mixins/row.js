@@ -97,7 +97,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.table.scrollable) {
+    if (!this.table.scrollable || this.table.groupable) {
       this.ready = true;
     }
     else {
