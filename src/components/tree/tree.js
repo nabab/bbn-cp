@@ -405,6 +405,9 @@ const cpDef = {
           r.push(...this.droppables);
         }
         return r;
+      },
+      hasExpander(){
+        return !!bbn.fn.filter(this.filteredData || [], d => d.visible && !!d.numChildren).length;
       }
     },
     methods: {

@@ -86,7 +86,8 @@
             }
           ]">
             <!-- The expander -->
-            <span :class="['bbn-tree-node-block-expander', {'bbn-p': numChildren}]"
+            <span bbn-if="parent.hasExpander"
+                  :class="['bbn-tree-node-block-expander', {'bbn-p': numChildren}]"
                   @click="if ( !flat && numChildren && (level >= tree.minExpandLevel) ){
                     isExpanded = !isExpanded;
                   }"
@@ -94,9 +95,8 @@
                     isExpanded = true;
                   }">
               <!-- If there are no children we leave the white space -->
-              <span bbn-if="flat || !numChildren || (level < tree.minExpandLevel)">&nbsp;</span>
-              <span bbn-else
-                   :class="['bbn-tree-caret', {'bbn-tree-caret-down': isExpanded}]">
+              <span :class="['bbn-tree-caret', {'bbn-tree-caret-down': isExpanded}]"
+                    :style="{visibility: flat || !numChildren || (level < tree.minExpandLevel) ? 'hidden' : 'visible'}">
                 <i class="nf nf-fa-caret_right"/>
                 </span>
             </span>
