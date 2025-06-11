@@ -77,14 +77,15 @@
                 bbn-droppable:data="{node: _self}"/>
           <!-- The node starts here -->
           <span :class="[
-            'bbn-tree-node-block', 
-            getCls(source, tree) || '', 
-            {
-              'bbn-state-active': (isActive && !isSelected) || (tree.drag && tree.dragging && (tree.dragging === _self)),
-              'bbn-state-selected': isSelected,
-              'bbn-tree-node-block-no-component': !!component
-            }
-          ]">
+                  'bbn-tree-node-block', 
+                  getCls(source, tree) || '', 
+                  {
+                    'bbn-state-active': (isActive && !isSelected) || (tree.drag && tree.dragging && (tree.dragging === _self)),
+                    'bbn-state-selected': isSelected,
+                    'bbn-tree-node-block-no-component': !!component,
+                    'bbn-left-spadding': !parent.hasExpander && !!level
+                  }
+                ]">
             <!-- The expander -->
             <span bbn-if="parent.hasExpander"
                   :class="['bbn-tree-node-block-expander', {'bbn-p': numChildren}]"
