@@ -2125,10 +2125,6 @@ const cpDef = {
                 // adding to the list of nodes that are currently expanded
                 this.tree.currentExpanded.push(this);
                 // if storage is true we update its content
-                // if emit is true we call unfold event
-                if ( emit ){
-                  this.tree.$emit('unfold', this);
-                }
                 // Starting from the parent
                 let parent = this.parent;
                 // going up until there is no parent anymore
@@ -2161,11 +2157,16 @@ const cpDef = {
                     }, this.tree.currentState)
                   }
                 }
+
                 if (storage) {
-                  this.$nextTick(() => {
-                    this.tree.setLocalStorage();
-                  });
+                  this.tree.setLocalStorage();
                 }
+
+                // if emit is true we call unfold event
+                if (emit) {
+                  this.tree.$emit('unfold', this);
+                }
+
                 return true;
               }
             }
@@ -2225,10 +2226,8 @@ const cpDef = {
                   }, this.tree.currentState);
                 }
                 if (storage) {
-                  this.$nextTick(() => {
-                    // Set the localStorage with the data we get
-                    this.tree.setLocalStorage();
-                  });
+                  // Set the localStorage with the data we get
+                  this.tree.setLocalStorage();
                 }
   
                 if ( emit ){
