@@ -520,7 +520,7 @@ const cpDef = {
         return items;
       },
       onNodeClick(node, ev) {
-        this.$emit('nodeclick', node, ev);
+        this.tree.$emit('nodeclick', node, ev);
       },
       /**
        * Resets the tree to the original configuration.

@@ -178,6 +178,12 @@ export default class bbnNode
       value: bbn.fn.createObject()
     });
 
+    Object.defineProperty(this, 'oldClasses', {
+      writable: false,
+      configurable: false,
+      value: []
+    });
+
     if (data) {
       Object.defineProperty(this, 'data', {
         value: new bbnFacade(this, data),

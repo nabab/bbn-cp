@@ -36,14 +36,24 @@ bbnNode.prototype.nodeSetClass = function() {
       final.unshift('bbn-component');
     }
 
-    Array.from(ele.classList).forEach(cls => {
+    const toRemove = [];
+    bbn.fn.each(this.oldClasses, cls => {
       if (!final.includes(cls)) {
-        if (cls !== 'bbn-component-mounted') {
-          ele.classList.remove(cls);
-        }
+        toRemove.push(cls);
+      }
+    });
+
+    this.oldClasses.splice(0, this.oldClasses.length, ...final.slice());
+
+    Array.from(ele.classList).forEach(cls => {
+      if (toRemove.includes(cls)) {
+        ele.classList.remove(cls);
       }
       else {
-        final.splice(final.indexOf(cls), 1);
+        const idx = final.indexOf(cls);
+        if (idx > -1) {
+          final.splice(idx, 1);
+        }
       }
     });
     final.forEach(cls => {

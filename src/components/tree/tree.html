@@ -85,7 +85,8 @@
                     'bbn-tree-node-block-no-component': !!component,
                     'bbn-left-spadding': !parent.hasExpander && !!level
                   }
-                ]">
+                ]"
+                ref="nodeBlock">
             <!-- The expander -->
             <span bbn-if="parent.hasExpander"
                   :class="['bbn-tree-node-block-expander', {'bbn-p': numChildren}]"
