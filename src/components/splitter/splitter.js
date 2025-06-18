@@ -226,7 +226,7 @@ const cpDef = {
           pos++;
         }
         // If the pane is collapsed we just mark its size at 'max-content'
-        if (a.collapsed) {
+        if (a.collapsed || a.isMaxContent) {
           sz += 'max-content';
         }
         // If it's a number it will be a sum with the existing diff
@@ -395,6 +395,7 @@ const cpDef = {
       let isFixed = false;
       let isNumber = false;
       let isAuto = false;
+      let isMaxContent = false;
       let props = bbn.fn.createObject({}, pane.bbnSchema.props);
       let resizable = (this.resizable || pane.resizable) && (props.resizable !== false);
       let collapsible = (this.collapsible || props.collapsible) && (props.collapsible !== false);
@@ -405,15 +406,21 @@ const cpDef = {
           props.size = false;
           isAuto = true;
         }
-        else if ((typeof props.size === 'string') && (bbn.fn.substr(props.size, -1) === '%')) {
+        else if (props.size === 'max-content') {
+          props.size = false;
+          isMaxContent = true;
+        }
+        else if ((typeof props.size === 'string')
+          && (bbn.fn.substr(props.size, -1) === '%')
+        ) {
           isPercent = true;
         }
-        else if ((typeof props.size === 'string') && (bbn.fn.substr(props.size, -2) === 'px')) {
+        else if ((typeof props.size === 'number')
+          || ((typeof props.size === 'string')
+            && (bbn.fn.substr(props.size, -2) === 'px'))
+        ) {
           isNumber = true;
           props.size = parseInt(props.size);
-        }
-        else if ((typeof props.size === 'number')) {
-          isNumber = true;
         }
       }
       else {
@@ -430,6 +437,7 @@ const cpDef = {
         isFixed,
         isNumber,
         isAuto,
+        isMaxContent,
         forceAuto: false,
         resizable,
         collapsible,
@@ -701,6 +709,48 @@ const cpDef = {
       }
 
       return false;
+    },
+    updatePaneSizeCfg(pane, size) {
+      if (pane.isRegistered) {
+        pane.currentConfig.value = parseInt(size) || 0;
+        if (size) {
+          pane.currentConfig.isFixed = true;
+          if (size === 'auto') {
+            pane.currentConfig.size = false;
+            pane.currentConfig.isAuto = true;
+            pane.currentConfig.isMaxContent = false;
+            pane.currentConfig.isPercent = false;
+            pane.currentConfig.isNumber = false;
+          }
+          else if (size === 'max-content') {
+            pane.currentConfig.size = false;
+            pane.currentConfig.isAuto = false;
+            pane.currentConfig.isMaxContent = true;
+            pane.currentConfig.isPercent = false;
+            pane.currentConfig.isNumber = false;
+          }
+          else if ((typeof size === 'string') && (bbn.fn.substr(size, -1) === '%')) {
+            pane.currentConfig.isPercent = true;
+            pane.currentConfig.isNumber = false;
+            pane.currentConfig.isAuto = false;
+            pane.currentConfig.isMaxContent = false;
+          }
+          else if ((typeof size === 'number')
+            || ((typeof size === 'string')
+              && (bbn.fn.substr(size, -2) === 'px'))
+          ) {
+            pane.currentConfig.isNumber = true;
+            pane.currentConfig.size = parseInt(size);
+            pane.currentConfig.isPercent = false;
+            pane.currentConfig.isAuto = false;
+            pane.currentConfig.isMaxContent = false;
+          }
+        }
+        else {
+          pane.currentConfig.isAuto = true;
+          pane.currentConfig.isMaxContent = false;
+        }
+      }
     }
   },
   created() {

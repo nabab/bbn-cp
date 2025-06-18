@@ -369,6 +369,13 @@ const cpDef = {
       if (this.currentConfig) {
         this.currentConfig.collapsible = val;
       }
+    },
+    size(val) {
+      if (this.isRegistered && this.splitter) {
+        this.$nextTick(() => {
+          this.splitter.updatePaneSizeCfg(this, val);
+        });
+      }
     }
   },
   created() {
