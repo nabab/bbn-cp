@@ -116,9 +116,9 @@ const cpDef = {
          */
         visibleBin: false,
         /**
-         * @data {Number} [-1] visibleText
+         * @data {null|String} visibleText
          */
-        visibleText: -1,
+        visibleText: null,
         /**
          * @data {Number} [-1] draggedIdx
          */
@@ -138,6 +138,12 @@ const cpDef = {
       };
     },
     computed: {
+      textStyle() {
+        const pos = this.$position();
+        return {
+          transform: pos.top < (bbn.env.height / 2) ? 'translateY(120%)' : 'translateY(-120%)',
+        }
+      },
       /**
        * The icons list
        * @computed items
@@ -182,6 +188,7 @@ const cpDef = {
       }
     },
     methods: {
+      
       /**
        * Fires the action given to the item
        * @method onClick
@@ -202,12 +209,12 @@ const cpDef = {
        * @param {Number} idx
        */
       mouseover(idx){
-        if ( !bbn.fn.isMobile() && (this.visibleText !== idx) ){
-          //bbn.fn.log("OVER", idx);
+        if (!bbn.fn.isMobile() && (this.visibleText !== this.items[idx]?.data?.text) ){
+          bbn.fn.log("OVER", idx, this.items[idx]);
           clearTimeout(this.timeout);
-          this.visibleText = -1;
+          this.visibleText = null;
           this.timeout = setTimeout(() => {
-            this.visibleText = this.items[idx].text;
+            this.visibleText = this.items[idx].data.text;
             //bbn.fn.log("OVER OK", idx);
           }, 500);
         }
@@ -219,7 +226,7 @@ const cpDef = {
       mouseout(){
         //bbn.fn.log("OUT", this.visibleText);
         clearTimeout(this.timeout);
-        this.visibleText = -1;
+        this.visibleText = null;
       },
       /**
        * The method called on the dragleave

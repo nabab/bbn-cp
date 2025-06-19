@@ -20,6 +20,7 @@
       <li bbn-for="it in items"
           :key="it.index"
           bbn-draggable="!it.fixed"
+          tabindex="0"
           @mouseenter="mouseover(it.index)"
           @mouseleave="mouseout(it.index)"
           @dragstart="dragstart(it.index, $event)"
@@ -70,6 +71,7 @@
        bbn-droppable/>
   </div>
   <div class="bbn-fisheye-text"
-       bbn-if="(visibleText > -1) && showIcons"
-       bbn-html="items[visibleText].data[sourceText]"/>
+       :style="textStyle"
+       bbn-if="visibleText && showIcons"
+       bbn-html="visibleText"/>
 </div>
