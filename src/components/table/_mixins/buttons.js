@@ -1,5 +1,5 @@
 export default {
-  props: {
+  props: { 
     /**
      * Shows the footer's arrows as buttons
      * @prop {Boolean} [true] footerButtons
