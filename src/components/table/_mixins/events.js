@@ -92,6 +92,7 @@ export default {
      */
     focusout(idx, e) {
       this.clickedTd = null;
+      this.clickedTdIndex = null;
       if ((idx === undefined) || (idx === this.focusedRow)) {
         this.focused = false;
         //this.focusedElement = undefined;
@@ -99,7 +100,7 @@ export default {
           if (!this.focused) {
             this.focusedRow = false;
           }
-        }, 50);
+        }, 100);
       }
     },
     /**
@@ -107,16 +108,17 @@ export default {
      * @param {Number} idx 
      * @param {Event} e 
      */
-    focusin(idx, e) {
+    focusin(rowIndex, e, cellIndex) {
       if (!e.target.closest('td')
         || !e.target.closest('td').classList.contains('bbn-table-buttons')
         || e.target.closest('td').classList.contains('bbn-table-edit-buttons')
       ) {
         this.focused = true;
         this.clickedTd = e.target;
+        this.clickedTdIndex = cellIndex;
         //this.setFocusedElement(e)
-        if (this.focusedRow !== idx) {
-          this.focusedRow = idx;
+        if (this.focusedRow !== rowIndex) {
+          this.focusedRow = rowIndex;
         }
       }
     },
@@ -204,20 +206,23 @@ export default {
           this.$nextTick(() => {
             this.edit(this.items[newIndex].data, null, newIndex);
             this.$nextTick(() => {
-              let ele = this.clickedTd || this.getTr(newIndex);
-              let nextInputs = ele ? ele.querySelectorAll('input') : [];
-              let nextInput;
-              bbn.fn.each(nextInputs, a => {
-                if (a.offsetWidth) {
-                  nextInput = a;
-                  if (!comeFromAfter) {
-                    return false;
+              setTimeout(() => {
+                const tr = this.getTr(newIndex);
+                let ele = !bbn.fn.isNull(this.clickedTdIndex) ? (tr.getRef('td'+this.clickedTdIndex) || tr) : tr;
+                let nextInputs = ele ? ele.querySelectorAll('input') : [];
+                let nextInput;
+                bbn.fn.each(nextInputs, a => {
+                  if (a.offsetWidth) {
+                    nextInput = a;
+                    if (!comeFromAfter) {
+                      return false;
+                    }
                   }
+                });
+                if (nextInput) {
+                  nextInput.focus();
                 }
-              });
-              if (nextInput) {
-                nextInput.focus();
-              }
+              }, 50)
             });
           });
         }

@@ -123,7 +123,7 @@
                               :column="table.currentColumns[0]"
                               :class="[cellClass, (table.currentColumns[0].fixed ? ' ' + cssRuleName + ' bbn-table-fixed-cell bbn-table-fixed-cell-left' : '')]"
                               :style="cellStyle"
-                              :ref="'td' + index"/>
+                              :ref="'td' + i"/>
       <bbn-table-cell-selector bbn-elseif="table.groupCols[1].cols[i].isSelection"
                               :column="table.groupCols[1].cols[i]"
                               :selected="source.selected"
@@ -131,7 +131,7 @@
                               :source="source.data"
                               :index="i"
                               :row-index="index"
-                              :ref="'td' + index"/>
+                              :ref="'td' + i"/>
 
       <bbn-table-cell-editor bbn-elseif="!table.groupCols[1].cols[i].isExpander && table.isEdited(source.data, table.groupCols[1].cols[i], index)"
                              :tabindex="table.editable && table.isEditable(source.data, table.groupCols[1].cols[i], index) ? 0 : -1"
@@ -141,7 +141,7 @@
                              :source="source.data"
                              :row-index="index"
                              :index="i"
-                             :ref="'td' + index"
+                             :ref="'td' + i"
                              @focusout="table.focusout(index, $event)"/>
       <bbn-table-cell-buttons bbn-elseif="table.groupCols[1].cols[i].buttons"
                               :source="source.data"
@@ -149,14 +149,14 @@
                               :row-index="index"
                               :column="table.groupCols[1].cols[i]"
                               :index="i"
-                              :ref="'td' + index"/>
+                              :ref="'td' + i"/>
       <!-- Group lines just have the cell with the expander and a single big cell -->
       <bbn-table-cell bbn-elseif="!table.groupCols[1].cols[i].isExpander || !table.isGroupActive"
                       :column="table.groupCols[1].cols[i]"
                       :source="source.data"
                       :row-index="index"
                       :index="i"
-                      :ref="'td' + index"
+                      :ref="'td' + i"
                       :tabindex="table.editable && table.isEditable(source.data, table.groupCols[1].cols[i], index) ? 0 : -1"/>
     </template>
     <!-- INVISIBLE COLUMNS AFTER VISIBLE -->

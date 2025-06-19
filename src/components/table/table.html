@@ -182,7 +182,7 @@
                                   :class="{'bbn-alt': i % 2}"
                                   :key="d.index"
                                   :index="i"
-                                  ref="rows"/>
+                                  :ref="'row'+d.index"/>
               <bbn-table-row bbn-else
                              :source="d"
                              bbn-show="!isGroupActive || isExpanded(d.data, d.index)"
@@ -190,7 +190,7 @@
                              :class="{'bbn-alt': i % 2}"
                              :editing="editedRow === d.data"
                              :index="i"
-                             ref="rows"/>
+                             :ref="'row'+d.index"/>
               <bbn-table-row-expansion bbn-if="expander && !isGroupActive && isExpanded(d.data, d.index)"
                                        :source="d"
                                        :index="i"

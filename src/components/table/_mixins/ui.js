@@ -337,7 +337,7 @@ export default {
      * @returns {String}
      */
     getTr(i) {
-      return this.getRef('rows')?.[i];
+      return this.getRef('row'+i);
     },
     /**
      * Returns true if the given row has td.

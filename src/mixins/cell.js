@@ -51,7 +51,7 @@ const cell = {
       this.table.dbclickCell(this.column, this.source, this.rowIndex);
     })
     this.$on('focusin', e => {
-      this.table.focusin(this.rowIndex, e);
+      this.table.focusin(this.rowIndex, e, this.index);
     })
   },
   mounted() {
