@@ -22,5 +22,8 @@
              bbn-model="currentValue"
              :source="source"
              @click="e => isEditing ? null : edit()"
-             :class="[{'edit-block' : isEditing, 'bbn-p': !isEditing}]"/>
+             :class="[{'edit-block' : isEditing, 'bbn-p': !isEditing, 'bbn-i': !currentValue}]"/>
+  <span bbn-else bbn-text="currentValue || placeholder"
+        :class="['bbn-p', {'bbn-i': !currentValue, 'bbn-editable-placeholder': !currentValue && !isEditing}]"
+        @click="e => isEditing ? null : edit()"/>
 </div>

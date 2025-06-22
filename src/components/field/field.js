@@ -111,7 +111,7 @@ const cpDef = {
             }
             if ( this.editor ){
               this.renderedComponent = this.editor;
-              if ( this.source ){
+              if (this.source) {
                 this.renderedOptions.source = this.source;
               }
             }
@@ -126,6 +126,14 @@ const cpDef = {
                   break;
                 case "date":
                   this.renderedComponent = 'bbn-datepicker';
+                  break;
+                case "html":
+                case "rte":
+                  this.renderedComponent = 'bbn-rte';
+                  break;
+                case "md":
+                case "markdown":
+                  this.renderedComponent = 'bbn-markdown';
                   break;
                 case "time":
                   this.renderedComponent = 'bbn-timepicker';

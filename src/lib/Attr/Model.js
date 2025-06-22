@@ -111,7 +111,7 @@ export default class bbnModelAttr extends bbnAttr
             const res = this.result;
             if (res?.seq?.length) {
               const last = res.seq[res.seq.length - 1];
-              if (last.data) {
+              if (last.data?.value) {
                 last.data.value[last.data.getLastRequestedProp()] = eventValue;
                 //bbn.fn.log(["SETTING DATA", eventValue, last, last.data.value, res.seq])
               }
@@ -130,7 +130,8 @@ export default class bbnModelAttr extends bbnAttr
               }
               else {
                 bbn.fn.log(last, this, eventValue, oldValue, cp);
-                throw new Error("Invalid model variable 6: " + m.exp);
+                bbn.fn.log(last.data.getLastRequestedProp());
+                throw new Error("Invalid model variable: " + m.exp);
               }
             }
             else {

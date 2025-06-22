@@ -500,7 +500,11 @@ export default {
             }
             // Otherwise the container is activated ie made visible
             else {
-              throw new Error(bbn._("Impossible to find the container for URL %s", url));
+              const ev = new CustomEvent("notfound", {cancelable: true, bubbles: false});
+              this.$emit("notfound", ev, url);
+              if (!ev.defaultPrevented) {
+                throw new Error(bbn._("Impossible to find the container for URL %s", url));
+              }
             }
           }
         }

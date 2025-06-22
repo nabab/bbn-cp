@@ -34,11 +34,11 @@ const cpDef = {
     
       const templates = {
         text: {
-          view: '<div bbn-text="currentValue"/>',
+          view: '<div bbn-text="currentValue || cp.novalue || cp.placeholder || \'...\'"/>',
           edit: '<bbn-input bbn-model="currentValue"/>'
         },
         multilines: {
-          view: '<div bbn-text="currentValue" style="white-space: pre-wrap; word-break: break-word"/>',
+          view: '<div bbn-text="currentValue || cp.novalue || cp.placeholder || \'...\'" style="white-space: pre-wrap; word-break: break-word"/>',
           edit: '<bbn-textarea bbn-model="currentValue" class="bbn-100"/>'
         },
         inline: {
@@ -63,8 +63,12 @@ const cpDef = {
         markdown: {
           view: `<div  @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"
                       :class="['component-container', 'bbn-block-html', alignClass]"
-                      bbn-html="currentValue"
-                      :style="currentStyle"/>`,
+                      :style="currentStyle">
+                  <span bbn-if="currentValue"
+                        bbn-html="currentValue"/>
+                  <span bbn-else
+                        bbn-html="cp.novalue || cp.placeholder || '...'"/>
+                </div>`,
           edit: `<div :class="['component-container', 'bbn-block-html', alignClass ]">
                   <bbn-markdown bbn-model="currentValue"/>
                 </div>`
@@ -632,7 +636,8 @@ const cpDef = {
               borderStyle: bbnEditable.borderStyle,
               ref: (new Date()).getTime(),
               show: true,
-              currentCarouselIdx: 0
+              currentCarouselIdx: 0,
+              cp
             }
           },
           computed: {
@@ -740,14 +745,13 @@ const cpDef = {
               return st;
             },
             alignClass(){
-              let st = 'bbn-c';
-              if ( this.source.align === 'left' ){
-                st = 'bbn-l'
-              }
-              if ( this.source.align === 'right' ){
-                st = 'bbn-r'
-              }
-              return st;
+              return this.source.align === 'left' ? 'bbn-l' : (
+                this.source.align === 'center' ? 'bbn-c' : (
+                  this.source.align === 'justify' ? 'bbn-j' : (
+                    this.source.align === 'right' ? 'bbn-r' : ''
+                  )
+                )
+              );
             },
             currentStyle() {
               let st = '';

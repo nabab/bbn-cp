@@ -1316,11 +1316,6 @@ const cpDef = {
     }
     */
   },
-  beforeDestroy(){
-    if (this.onClose) {
-      this.onClose(this);
-    }
-  },
   updated() {
     /*
     let d = this.oldData;

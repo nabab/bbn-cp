@@ -74,7 +74,7 @@ const data = {
               !!cfg.novalue ? (bbn.fn.isFunction(cfg.novalue) ? cfg.novalue(data[cfg.field], cfg) : cfg.novalue) : '-',
               bbn.env?.money?.decimal || ',',
               bbn.env?.money?.thousands || ' ',
-              cfg.precision === -4 ? 3 : (cfg.precision || cfg.decimals || 0)
+              cfg.precision === -4 ? 3 : (cfg.precision || cfg.decimals || cfg.options?.decimals || cfg.editorOptions?.decimals || 0)
             );
           case "bool":
           case "boolean":

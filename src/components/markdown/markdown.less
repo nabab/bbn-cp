@@ -1,8 +1,14 @@
 bbn-markdown{
   display: block;
   .editor-toolbar {
+    padding: var(--xsspace) !important;
     a, a.active, a:hover, button {
       color: inherit;
+    }
+    button {
+      min-width: 25px;
+      height: 25px;
+      padding: 0 !important;
     }
     button.active, button:hover {
       background: inherit !important;

@@ -90,6 +90,7 @@
             <!-- The expander -->
             <span bbn-if="parent.hasExpander"
                   :class="['bbn-tree-node-block-expander', {'bbn-p': numChildren}]"
+                  ref="expander"
                   @click="if ( !flat && numChildren && (level >= tree.minExpandLevel) ){
                     isExpanded = !isExpanded;
                   }"
@@ -107,6 +108,7 @@
             <span bbn-if="tree.uid && (tree.selection || !!selection)">
               <bbn-checkbox :value="data[tree.uid]"
                             :checked="isChecked(data[tree.uid])"
+                            ref="selector"
                             @change="checkNode"
                             :disabled="isDisabled()"/>
             </span>
@@ -124,6 +126,7 @@
                           @select="clickMenuItem"
                           @open="isActive = true"
                           @close="isActive = false"
+                          ref="context"
                           style="cursor: unset">
               <span @dblclick.stop="dblClickOnNode"
                     @click.stop="clickOnNode"
@@ -133,6 +136,8 @@
                     @drop="drop"
                     @dragend="endDrag"
                     @mouseup.left="onMouseUp"
+                    ref="clicker"
+                    class="bbn-node-clicker"
                     tabindex="0"
                     bbn-draggable.container.data.mode="tree.drag ? {
                       mode: 'clone',
