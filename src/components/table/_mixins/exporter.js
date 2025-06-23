@@ -62,13 +62,13 @@ export default {
             }, {
               label: bbn._('This view'),
               action: () => {
-                bbn.fn.postOut(this.source, this.getExcelPostData(true));
+                bbn.fn.download(this.source, this.getExcelPostData(true));
                 this.getPopup().close();
               }
             }, {
               label: bbn._('All'),
               action: () => {
-                bbn.fn.postOut(this.source, this.getExcelPostData());
+                bbn.fn.download(this.source, this.getExcelPostData());
                 this.getPopup().close();
               }
             }],
@@ -77,7 +77,7 @@ export default {
         }
         else {
           this.confirm(bbn._('Are you sure you want to export to Excel?'), () => {
-            bbn.fn.postOut(this.source, this.getExcelPostData());
+            bbn.fn.download(this.source, this.getExcelPostData());
           });
         }
       }
