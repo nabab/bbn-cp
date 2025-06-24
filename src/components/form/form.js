@@ -334,6 +334,14 @@ const cpDef = {
     mode: {
       type: String,
     },
+    /**
+     * A function taking the source as argument, the returned data is what will be sent in the query.
+     *
+     * @prop {String} target
+     */
+    transform: {
+      type: Function
+    }
   },
   data() {
     let currentSchema = [];
@@ -627,6 +635,10 @@ const cpDef = {
       this.isLoading = true;
       if (this.bbnSchema.props.action && !this.target) {
         let data = bbn.fn.extend(true, {}, this.data || {}, this.source || {});
+        if (this.transform) {
+          data = this.transform(data);
+        }
+
         let method =
           this.blank || this.self || this.target ? "postOut" : "post";
         this[method](
