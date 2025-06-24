@@ -46,7 +46,8 @@ const cpDef = {
   data() {
     return {
       startingTmpValue: '',
-      startingTmpTimeout: null
+      startingTmpTimeout: null,
+      fontSize: bbn.fn.getCssVar("--text-size") || '1rem',
     };
   },
   /**
@@ -62,6 +63,9 @@ const cpDef = {
         this.emitInput(v);
       }
     }
+  },
+  mounted() {
+    this.fontSize = window.getComputedStyle(this).fontSize;
   },
   methods: {
     onClear() {

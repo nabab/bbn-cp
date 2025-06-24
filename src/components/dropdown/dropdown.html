@@ -93,6 +93,7 @@
               bbn-show="isOpened"
               bbn-portal="portalSelector && !isInsideFloater ? portalSelector : false"
               :element="asMobile ? undefined : $el"
+              :style="{fontSize}"
               :max-height="asMobile ? undefined : maxHeight"
               :min-width="$el.clientWidth"
               :width="asMobile ? '100%' : undefined"
