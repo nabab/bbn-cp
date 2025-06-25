@@ -28,21 +28,21 @@
                         icon="nf nf-fa-download"
                         @click="setSelecting('download')"
                         bbn-if="downloadable"
-                        :disabled="isSelecting || !total || isSorting"
+                        :disabled="isSelecting || !currentTotal || isSorting"
                         :notext="buttonsNoText"
                         class="bbn-left-xsspace"/>
             <bbn-button :label="_('Delete')"
                         icon="nf nf-fa-trash"
                         @click="setSelecting('delete')"
                         bbn-if="deletable"
-                        :disabled="isSelecting || !total || isSorting"
+                        :disabled="isSelecting || !currentTotal || isSorting"
                         :notext="buttonsNoText"
                         class="bbn-left-xsspace"/>
             <bbn-button :label="_('Order')"
                         icon="nf nf-fa-sort_numeric_asc"
                         @click="isSorting = !isSorting"
                         bbn-if="sortable && !!uid"
-                        :disabled="isSelecting || !total"
+                        :disabled="isSelecting || !currentTotal"
                         :notext="buttonsNoText"
                         :class="['bbn-left-xsspace', {'bbn-primary': isSorting}]"/>
             <bbn-button :label="_('Ok')"
@@ -112,7 +112,7 @@
                 bbn-text="_('Loading') + '...'"/>
         </div>
         <component :is="scrollable ? 'bbn-scroll' : 'div'"
-                  bbn-elseif="total">
+                  bbn-elseif="currentTotal">
           <div class="bbn-gallery-columns-container"
                :style="{margin: '0 auto', textAlign: align}">
             <column bbn-for="index in cols"
