@@ -966,11 +966,7 @@ const cpDef = {
      * @event created
      */
     created(){
-      if (!this.value
-        && this.$slots.default
-        && this.$slots.default[0]
-        && this.$slots.default[0].text.length
-      ) {
+      if (!this.value && this.$slots.default?.[0]?.text?.length) {
         this.currentValue = this.$slots.default[0].text;
       }
       this.setButtons();
