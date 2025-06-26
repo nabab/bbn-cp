@@ -26,6 +26,7 @@ bbnData.prototype.dataUpdate = function(path) {
   }
 
   const propagation = [];
+  const toPropagate = [];
   const impacted = this.dataImpacted(path, this.lastUpdate);
   let num = bbn.cp.numTicks;
   const deps = [];
@@ -52,10 +53,11 @@ bbnData.prototype.dataUpdate = function(path) {
     if (!propagation.includes(id)) {
       propagation.push(id);
       if ((it.level <= 1) && /*(it.path.length === 1) &&*/ it.component.$deps[it.path[0]]) {
-        propagateDependencyChanges(it.component, it.path[0]);
+        toPropagate.push({cp: it.component, name: it.path[0]});
       }
     }
   });
+  propagateDependencyChanges(toPropagate);
 
   impacted.forEach(it => {
     const bits = it.path.slice();

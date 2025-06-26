@@ -244,18 +244,18 @@
                tabindex="-1"
                :left="focusedElementX"
                :top="focusedElementY">
-        <bbn-button :label="_('Save')"
-                    :disabled="!isEditedValid"
-                    icon="nf nf-fa-save"
-                    :notext="true"
-                    @click.prevent.stop="saveInline"
-                    style="margin: 0 .1rem"
-                    tabindex="-1"/>
-        <bbn-button :label="_('Cancel')"
-                    icon="nf nf-md-close_thick"
-                    :notext="true"
-                    @click.prevent.stop="cancel"
-                    style="margin: 0 .1rem"
-                    tabindex="-1"/>
+    <bbn-button :label="_('Save')"
+                :disabled="!isEditedValid"
+                icon="nf nf-fa-save"
+                :notext="true"
+                @click.prevent.stop="saveInline"
+                style="margin: 0 .1rem"
+                tabindex="-1"/>
+    <bbn-button :label="_('Cancel')"
+                icon="nf nf-md-close_thick"
+                :notext="true"
+                @click.prevent.stop="cancel"
+                style="margin: 0 .1rem"
+                tabindex="-1"/>
   </bbn-floater>
 </div>

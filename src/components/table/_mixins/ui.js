@@ -328,7 +328,6 @@ export default {
         return this.render(data, column, index) || '';
       }
 
-      bbn.fn.log("renderDefault", data, column, index);
       return this.renderData(data, column, index) || '';
     },
     /**
