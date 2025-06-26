@@ -145,8 +145,7 @@
           <!-- The container's popup, from which each floater will come -->
           <bbn-popup ref="popup"
                     :source="popups"
-                    bbn-if="ready"
-                    bbn-show="!invisible && isLoaded && (isVisible || cached) && popups.length"/>
+                    bbn-if="ready"/>
         </div>
       </div>
     </transition>
