@@ -114,30 +114,8 @@
           <tbody ref="tbody"
                  :class="{
                    'bbn-overlay': ((!filteredData.length && !tmpRow) || isLoading) && !!scrollable
-                 }">
-            <!-- Loading -->
-            <tr bbn-if="isLoading"
-                :class="{
-                  'bbn-overlay': !!scrollable,
-                  'bbn-middle': !!scrollable
-                }"
-                :style="{
-                  paddingTop: $refs.thead && !!scrollable ? theadHeight + 'px' : 0,
-                  maxWidth: !!scrollable ? $el.clientWidth + 'px' : '',
-                  left: !!scrollable && getRef('scroll') ? getRef('scroll').currentX + 'px' : ''
-                }">
-              <td :colspan="currentColumns ? currentColumns.length : 1">
-                <div class="bbn-spadding bbn-background-internal bbn-c">
-                  <div bbn-if="loader"
-                       class="bbn-vmiddle">
-                    <bbn-loadicon class="bbn-vmiddle"
-                                  :size="24"/>
-                    <span class="bbn-xl bbn-b bbn-left-sspace"
-                          bbn-text="currentLoaderText"/>
-                  </div>
-                </div>
-              </td>
-            </tr>
+                 }"
+                 bbn-if="!isLoading">
             <!-- Inline insertion -->
             <tr bbn-if="tmpRow">
             </tr>
@@ -210,6 +188,19 @@
           </tbody>
         </table>
       </bbn-scroll>
+      <!-- Loading -->
+      <div bbn-if="isLoading"
+          class="bbn-overlay bbn-middle">
+        <div class="bbn-spadding bbn-background-internal bbn-c">
+          <div bbn-if="loader"
+                class="bbn-vmiddle">
+            <bbn-loadicon class="bbn-vmiddle"
+                          :size="24"/>
+            <span class="bbn-xl bbn-b bbn-left-sspace"
+                  bbn-text="currentLoaderText"/>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- Footer -->
     <bbn-pager class="bbn-table-footer bbn-no-border-right bbn-no-border-left bbn-no-border-bottom"
