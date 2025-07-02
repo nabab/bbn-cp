@@ -69,17 +69,20 @@ export default function generateHtmlClass(name, extendedTag) {
     // Static property to track if the component is mapped.
     static bbnMapped = false;
 
-    $options;
+    #options;
 
     constructor() {
       super();
       // Define $options property.
-      this.$options = new bbnOptions(this, eleName);
+      this.#options = new bbnOptions(this, eleName);
       bbnProtoHtml.construct.call(this);
     }
 
 
-  
+    get $options() {
+      return this.#options;
+    }
+
     connectedCallback() {
       return bbnProtoHtml.connectedCallback.call(this);
     } 
