@@ -166,7 +166,7 @@
                is="td"/>
     <!-- LAST FIXED COLUMNS -->
     <template bbn-for="(col, i) in table.groupCols[2].cols">
-      <bbn-table-cell-selector bbn-if="i && ready && col.isSelection"
+      <bbn-table-cell-selector bbn-if="ready && col.isSelection"
                               :column="col"
                               :selected="source.selected"
                               :selection="source.selection"
@@ -175,7 +175,7 @@
                               :row-index="index"
                               :ref="'td' + index"/>
 
-      <bbn-table-cell-editor bbn-elseif="i && ready && !col.isExpander && table.isEdited(source.data, col, index)"
+      <bbn-table-cell-editor bbn-elseif="ready && !col.isExpander && table.isEdited(source.data, col, index)"
                             :tabindex="table.editable && table.isEditable(source.data, col, index) ? 0 : -1"
                             @save="table.saveInline"
                             @cancel="table.cancel"
@@ -186,7 +186,7 @@
                             :ref="'td' + index"
                             @focusout="table.focusout(index, $event)"/>
 
-      <bbn-table-cell-buttons bbn-elseif="i && ready && col.buttons"
+      <bbn-table-cell-buttons bbn-elseif="ready && col.buttons"
                             :source="source.data"
                             :mode="table.buttonMode"
                             :row-index="index"
@@ -194,7 +194,7 @@
                             :index="i"
                             :ref="'td' + index"/>
       <!-- Group lines just have the cell with the expander and a single big cell -->
-      <bbn-table-cell bbn-elseif="i && ready && (!col.isExpander || !table.isGroupActive)"
+      <bbn-table-cell bbn-elseif="ready && (!col.isExpander || !table.isGroupActive)"
                       :column="col"
                       :source="source.data"
                       :row-index="index"

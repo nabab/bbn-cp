@@ -6,8 +6,7 @@
   </template>
   <template bbn-elseif="mode === 'menu'">
     <bbn-context :source="table.buttonSource(source, column, rowIndex)"
-                  @select="(item, idx, dataIndex, ev, floater) => onButtonsMenuSelect(item, source, column, rowIndex, ev, floater)"
-                  :portal="table.getRef('main')">
+                  @select="(item, idx, dataIndex, ev, floater) => onButtonsMenuSelect(item, source, column, rowIndex, ev, floater)">
       <span class="bbn-iblock bbn-lg">
         <i :class="table.buttonIcon"/>
       </span>
