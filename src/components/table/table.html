@@ -39,7 +39,8 @@
                  :is="toolbar"/>
     </div>
     <!-- Main container -->
-    <div :class="['bbn-w-100', 'bbn-table-container', {'bbn-flex-fill': scrollable}]">
+    <div :class="['bbn-w-100', 'bbn-table-container', {'bbn-flex-fill': scrollable}]"
+         ref="main">
       <!--<div bbn-if="initStarted || isLoading"-->
       <div bbn-if="initStarted || isResizing"
            :class="[
