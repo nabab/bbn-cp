@@ -1,5 +1,6 @@
 import bbnProtoHtml from "../lib/Html/Proto.js";
 import bbnHtml from "../lib/Html/Html.js";
+import bbnOptions from "../lib/Options.js";
 /**
  * Generates the code for creating the public class.
  * Assumes that tpl, cfg, and others are defined in bbn.cp.statics.
@@ -68,26 +69,12 @@ export default function generateHtmlClass(name, extendedTag) {
     // Static property to track if the component is mapped.
     static bbnMapped = false;
 
+    $options;
+
     constructor() {
       super();
       // Define $options property.
-      const options = bbn.fn.createObject({
-        name: eleName,
-        _componentTag: eleName,
-        components: bbn.fn.createObject(),
-        // Define a getter for propsData.
-        get propsData() {
-          if (this.$el) {
-            return this.$el.bbnSchema?.props || {};
-          }
-          return {};
-        }
-      });
-      Object.defineProperty(this, '$options', {
-        value: options,
-        writable: false,
-        configurable: false
-      });
+      this.$options = new bbnOptions(this, eleName);
       bbnProtoHtml.construct.call(this);
     }
 

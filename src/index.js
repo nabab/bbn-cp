@@ -1,6 +1,8 @@
 import {bbn, axios, dayjs} from "@bbn/bbn";
 import bbnData from "./lib/Data.js";
 import bbnNode from "./lib/Node.js";
+import bbnOptions from "./lib/Options.js";
+import bbnResult from "./lib/Result.js";
 import bbnComponentNode from "./lib/Node/Component.js";
 import bbnInternalNode from "./lib/Node/Internal.js";
 import bbnSlotNode from "./lib/Node/Slot.js";
@@ -44,6 +46,8 @@ export {
   bbnProtoHtml,
   bbnAnonHtml,
   bbnNode,
+  bbnOptions,
+  bbnResult,
   bbnComponentNode,
   bbnInternalNode,
   bbnSlotNode,

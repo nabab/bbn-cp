@@ -27,6 +27,8 @@ import bbnStyleAttr from "./lib/Attr/Style.js";
 import bbnTextAttr from "./lib/Attr/Text.js";
 import bbnTransitionAttr from "./lib/Attr/Transition.js";
 import bbnProtoHtml from "./lib/ProtoHtml.js";
+import bbnOptions from "./lib/Options.js";
+import bbnResult from "./lib/Result.js";
 import bbnHtml from "./lib/Html/Html.js";
 import bbnAnonHtml from "./lib/Html/Anon.js";
 import bbnComputed from "./lib/Computed.js";
@@ -407,6 +409,8 @@ export {
   axios,
   dayjs,
   bbn,
+  bbnOptions,
+  bbnResult,
   bbnHtml,
   bbnProtoHtml,
   bbnAnonHtml,

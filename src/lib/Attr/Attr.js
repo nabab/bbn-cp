@@ -1,8 +1,13 @@
 /**
  * Takes care of the data reactivity for non primitive values.
  */
+import bbnResult from '../Result.js';
 export default class bbnAttr
 {
+  #id;
+  #node;
+  #name;
+  #hash = '';
 
   /**
    * Constructor
@@ -16,48 +21,21 @@ export default class bbnAttr
       throw new Error("bbnAttr must be initialized with an id");
     }
 
-    Object.defineProperty(this, 'id', {
-      writable: false,
-      configurable: false,
-      value: def.id
-    });
-
-    if (name) {
-      Object.defineProperty(this, 'name', {
-        writable: name === '_default_',
-        configurable: name === '_default_',
-        value: name
-      });
-    }
-
-    Object.defineProperty(this, 'node', {
-      get() {
-        return node;
-      }
-    });
+    this.#id = def.id;
+    this.#node = node;
+    this.#name = name || '_default_';
 
     for (let n in def) {
-      if (!Object.hasOwn(this, n)) {
+      if (!(n in this)) {
         this[n] = def[n];
+        //bbn.fn.log(["DEFINING ATTR", n, this[n], this]);
       }
-    }
-
-    if (!Object.hasOwn(this, 'hash')) {
-      Object.defineProperty(this, 'hash', {
-        writable: false,
-        configurable: false,
-        value: ''
-      });
     }
 
     Object.defineProperty(this, 'result', {
       writable: false,
       configurable: false,
-      value: bbn.fn.createObject({
-        num: 0,
-        state: 'NEW',
-        value: this.value
-      })
+      value: new bbnResult(this.value)
     });
 
     Object.defineProperty(this, 'ownDeps', {
@@ -67,6 +45,28 @@ export default class bbnAttr
     });
 
     this.node.attributes.push(this);
+  }
+
+  get id() {
+    return this.#id;
+  }
+
+  get node() {
+    return this.#node;
+  }
+
+  get name() {
+    return this.#name;
+  }
+
+  set name(v) {
+    if (this.#name === '_default_') {
+      this.#name = v;
+    }
+  }
+
+  get hash() {
+    return this.#hash;
   }
 
   get isLate() {
