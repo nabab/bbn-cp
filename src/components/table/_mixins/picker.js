@@ -103,9 +103,10 @@ export default {
         <li bbn-for="(col, i) in source.cols"
             bbn-if="!col.fixed && (col.showable !== false) && (col.label || col.flabel)">
           <bbn-checkbox bbn-model="shownCols[i]"
-                        @change="check(col, i)"
                         :label="col.flabel || col.label"
-                        :contrary="true"/>
+                        :contrary="true"
+                        :value="true"
+                        :novalue="false"/>
         </li>
       </ul>
     </div>
