@@ -4,7 +4,6 @@
          :name="name"/>
   <bbn-button bbn-for="(d, idx) in currentData"
               :label="d[sourceText]"
-              :key="d[sourceValue] !== undefined ? d[sourceValue] : idx"
               @click="emitInput(d[sourceValue])"
               :icon="d[sourceIcon] || undefined"
               :class="{'bbn-state-active': value === d[sourceValue]}"
