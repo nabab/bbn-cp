@@ -4,8 +4,9 @@
          :name="name"/>
   <bbn-button bbn-for="(d, idx) in currentData"
               :label="d[sourceText]"
-              @click="emitInput(d[sourceValue])"
+              @click="d.disabled ? false : emitInput(d[sourceValue])"
               :icon="d[sourceIcon] || undefined"
               :class="{'bbn-state-active': value === d[sourceValue]}"
-              :notext="notext"/>
+              :notext="notext"
+              :disabled="!!d.disabled"/>
 </div>
