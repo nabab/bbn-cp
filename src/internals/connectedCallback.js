@@ -3,6 +3,10 @@
  * @param {HTMLElement} cp 
  */
 export default function connectedCallback(ele) {
+  if (ele.classList.has('bbn-is-moving')) {
+    return;
+  }
+
   if (ele.bbnComponent) {
     ele.bbnComponent.$components.add(ele);
   }

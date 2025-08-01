@@ -100,193 +100,20 @@ const bbnProtoHtml = {
     }
     */
 
-    Object.defineProperty(this, 'bbnCid', {
-      value: createCid(),
-      writable: false,
-      configurable: false
-    });
-    Object.defineProperty(this, 'bbnTmpSlots', {
-      value: bbn.fn.createObject(),
-      writable: false,
-      configurable: false
-    });
+    this.bbnCid = createCid();
+    this.bbnTmpSlots = bbn.fn.createObject();
     const tag = this.constructor.bbnTag;
-    /**
-     * A reference to the component Object (cp)
-     */
-    Object.defineProperty(this, '_self', {
-      confifurable: false,
-      writable: false,
-      value: this
-    });
+    this.$tagUsed = [];
 
-
-    // This will become true after all is mounted
-    Object.defineProperty(this, '$isInit', {
-      value: false,
-      writable: false,
-      configurable: true
-    });
-
-    // This will become true after the data functions are launched and the data is set
-    Object.defineProperty(this, '$isDataSet', {
-      value: false,
-      writable: false,
-      configurable: true
-    });
-
-    // This will be true during the construction process (updateComponent)
-    Object.defineProperty(this, '$isCreating', {
-      value: false,
-      writable: true,
-      configurable: true
-    });
-
-    // This will be true during the construction process (updateComponent)
-    Object.defineProperty(this, '$isUpdating', {
-      value: null,
-      writable: true,
-      configurable: true
-    });
-
-    Object.defineProperty(this, '$isCreated', {
-      value: false,
-      writable: true,
-      configurable: true
-    });
-
-    Object.defineProperty(this, '$isWatched', {
-      value: false,
-      writable: true,
-      configurable: true
-    });
-
-    Object.defineProperty(this, '$isDestroying', {
-      value: false,
-      writable: false,
-      configurable: true
-    });
-
-    Object.defineProperty(this, '$isDestroyed', {
-      value: false,
-      writable: false,
-      configurable: true
-    });
-
-    Object.defineProperty(this, '$isMounted', {
-      value: false,
-      writable: true,
-      configurable: true
-    });
-
-    // This will be true during the construction process (updateComponent)
-    Object.defineProperty(this, '$isUpdatingComputed', {
-      value: false,
-      writable: true,
-      configurable: true
-    });
-    // This will be true during the construction process (updateComponent)
-    Object.defineProperty(this, '$tagUsed', {
-      value: [],
-      writable: false,
-      configurable: true
-    });
-
-    Object.defineProperty(this, '$props', {
-      value: bbn.fn.createObject(),
-      writable: false,
-      configurable: false
-    });
-    Object.defineProperty(this, '$propsCfg', {
-      value: bbn.fn.createObject(),
-      writable: false,
-      configurable: false
-    });
-  
-  
-    /**
-     * Object of all the instance properties available directly in the HTML templates.
-     * Indexed by name, the value being the type (data, prop, method, computed)
-     * @return {Object}
-     */
-    Object.defineProperty(this, '$namespaces', {
-      value: bbn.fn.createObject(),
-      writable: false,
-      configurable: false
-    });
-    // Setting up basic props
-    Object.defineProperty(this, '$el', {
-      value: this,
-      writable: false,
-      configurable: false
-    });
-    Object.defineProperty(this, '$node', {
-      get() {
-        return this.bbnSchema;
-      }
-    });
-    Object.defineProperty(this, '$nodes', {
-      value: bbn.fn.createObject(),
-      writable: false,
-      configurable: false
-    });
-
-    /**
-     * Object of DOM building functions indexed on the template ids
-     */
-    Object.defineProperty(this, '$fns', {
-      value: bbn.fn.createObject(),
-      writable: false,
-      configurable: false
-    });
-
-    /**
-     * The class constructor
-     */
-    Object.defineProperty(this, '$cls', {
-      value: this.constructor,
-      writable: false,
-      configurable: false
-    });
-
-    Object.defineProperty(this, '$events', {
-      value: bbn.fn.createObject(),
-      writable: false,
-      configurable: false
-    });
-
-    /**
-     * Array of bbnComponentObject instances direct descendants of the current one
-     * @return {Array}
-     */
-    Object.defineProperty(this, '$children', {
-      value: [],
-      writable: false,
-      configurable: false
-    });
-
-    /**
-     * Array of bbnComponentObject instances direct created by the current one
-     * @return {Array}
-     */
-    Object.defineProperty(this, '$components', {
-      value: new subcomponents(this),
-      writable: false,
-      configurable: false
-    });
-
-    /** @var {Object} $dataCfg The content of the data */
-    Object.defineProperty(this, '$dataCfg', {
-      value: bbn.fn.createObject(),
-      writable: false,
-      configurable: false
-    });
-
-    Object.defineProperty(this, '$refsElements', {
-      value: bbn.fn.createObject(),
-      writable: false,
-      configurable: false
-    });
+    this.$props = bbn.fn.createObject();
+    this.$propsCfg = bbn.fn.createObject();
+    this.$namespaces = bbn.fn.createObject();
+    this.$nodes = bbn.fn.createObject();
+    this.$events = bbn.fn.createObject();
+    this.$children = [];
+    this.$dataCfg = bbn.fn.createObject();
+    this.$refsElements = bbn.fn.createObject();
+    this.$components = new subcomponents(this),
     /**
      * Object referencing all the elements with ref prop
      * Indexed by name, value being the bbnComponentObject if it's a component a HTMLElement otherwise
@@ -308,26 +135,6 @@ const bbnProtoHtml = {
           }
         }
       })
-    });
-
-    /**
-     * Component configuration object
-     */
-    Object.defineProperty(this, '$cfg', {
-      get() {
-        return this.bbnCfg || this.constructor.bbnCfg;
-      }
-    });
-  
-    // Alias for accessing slots directly
-    Object.defineProperty(this, '$dataValues', {
-      get() {
-        const obj = bbn.fn.createObject();
-        bbn.fn.iterate(this.$dataCfg, (a, n) => {
-          obj[n] = a.value;
-        });
-        return obj;
-      }
     });
   },
 
@@ -446,7 +253,7 @@ const bbnProtoHtml = {
       selector += ':nth-of-type(' + index + ')';
     }
 
-    return this.$el.querySelector(selector)?.bbn;
+    return this.$el.querySelector(selector);
   },
 
 
@@ -475,19 +282,12 @@ const bbnProtoHtml = {
       return res;
     }
 
-    return Array.from(this.$el.querySelectorAll(selector)).map(a => a.bbn);
+    return Array.from(this.$el.querySelectorAll(selector));
   },
 
-
-  /**
-  * @method extend
-  * @param {Boolean} selector
-  * @param {Object} source The object to be extended
-  * @param {Object} obj1
-  * @return {Object}
-  */
-  extend(deep, src, obj1) {
-    // to do?
+  findAllByKey(key, selector) {
+    const arr = this.findAll(selector);
+    return arr.filter(a => a.bbnSchema?.props?.key === key);
   },
 
 

@@ -13,9 +13,9 @@ bbnData.treatValue = function(value, component, path, parent) {
     return value;
   }  
 
-  const hasStarted = this.watchStarted;
+  const hasStarted = bbn.cp.watchStarted;
   if (hasStarted) {
-    this.watchStarted = false;
+    bbn.cp.watchStarted = false;
   }
 
   if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor) && !('__bbnNoData' in value)) {
@@ -36,7 +36,7 @@ bbnData.treatValue = function(value, component, path, parent) {
   }
 
   if (hasStarted) {
-    this.watchStarted = true;
+    bbn.cp.watchStarted = true;
   }
 
   return value;

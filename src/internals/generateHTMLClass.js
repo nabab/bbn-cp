@@ -14,18 +14,207 @@ export default function generateHtmlClass(name, extendedTag) {
   if (extendedTag && !bbn.cp.htmlClasses[extendedTag]) {
     //bbn.fn.log(" GENERATE HTML CLASS " + name + " FROM " + extendedTag);
     const ele = document.createElement(extendedTag.toUpperCase());
+
+    const parentClsName = bbn.fn.substr(ele.toString().split(' ')[1], 0 , -1);
+    const clsName = 'bbn' + (!parentClsName.indexOf('HTML') ? bbn.fn.substr(parentClsName, 4) : parentClsName);
+    const parentCls = window[parentClsName];
+    const cls = class extends parentCls {
+      $lastBuild = 0;
+
+      get _self() {
+      return this;
+      }
+
+      get $el() {
+      return this;
+      }
+
+      get $node() {
+      return this.bbnSchema;
+      }
+
+      get $cls() {
+      return this.constructor;
+      }
+
+      connectedCallback() {
+        return bbnProtoHtml.connectedCallback.call(this);
+      } 
+
+      disconnectedCallback() {
+        return bbnProtoHtml.disconnectedCallback.call(this, [this]);
+      }
+
+      attributeChangedCallback(name, oldValue, newValue) {
+        return bbnProtoHtml.attributeChangedCallback.call(this, [this, name, oldValue, newValue]);
+      }
+
+      _(...args) {
+        return bbnProtoHtml._.apply(this, args);
+      }
+
+      getRef(...args) {
+        return bbnProtoHtml.getRef.apply(this, args);
+      }
+
+      ancestors(...args) {
+        return bbnProtoHtml.ancestors.apply(this, args);
+      }
+
+      closest(...args) {
+        return bbnProtoHtml.closest.apply(this, args);
+      }
+
+      find(...args) {
+        return bbnProtoHtml.find.apply(this, args);
+      }
+
+      findAll(...args) {
+        return bbnProtoHtml.findAll.apply(this, args);
+      }
+
+      findAllByKey(...args) {
+        return bbnProtoHtml.findAllByKey.apply(this, args);
+      }
+
+      extend(...args) {
+        return bbnProtoHtml.extend.apply(this, args);
+      }
+
+      getComponents(...args) {
+        return bbnProtoHtml.getComponents.apply(this, args);
+      }
+
+      getComponentName(...args) {
+        return bbnProtoHtml.getComponentName.apply(this, args);
+      }
+      
+      async $connected(...args) {
+        return await bbnProtoHtml.$connected.apply(this, args);;
+      }
+
+      $create(...args) {
+        return bbnProtoHtml.$create.apply(this, args);
+      }
+
+      $delete(...args) {
+        return bbnProtoHtml.$delete.apply(this, args);
+      }
+
+      $destroy(...args) {
+        return bbnProtoHtml.$destroy.apply(this, args);
+      }
+        
+      $emit(...args) {
+        return bbnProtoHtml.$emit.apply(this, args);
+      }
+        
+      $forceUpdate(...args) {
+        return bbnProtoHtml.$forceUpdate.apply(this, args);
+      }
+        
+      $get(...args) {
+        return bbnProtoHtml.$get.apply(this, args);
+      }
+        
+      $has(...args) {
+        return bbnProtoHtml.$has.apply(this, args);
+      }
+        
+      $hasSlots(...args) {
+        return bbnProtoHtml.$hasSlots.apply(this, args);
+      }
+        
+      $is(...args) {
+        return bbnProtoHtml.$is.apply(this, args);
+      }
+        
+      $isComponent(...args) {
+        return bbnProtoHtml.$isComponent.apply(this, args);
+      }
+
+      $isPropNative(...args) {
+        return bbnProtoHtml.$isPropNative.apply(this, args);
+      }
+        
+      $nextTick(...args) {
+        return bbnProtoHtml.$nextTick.apply(this, args);
+      }
+        
+      $off(...args) {
+        return bbnProtoHtml.$off.apply(this, args);
+      }
+        
+      $on(...args) {
+        return bbnProtoHtml.$on.apply(this, args);
+      }
+        
+      $once(...args) {
+        return bbnProtoHtml.$once.apply(this, args);
+      }
+        
+      $position(...args) {
+        return bbnProtoHtml.$position.apply(this, args);
+      }
+        
+      $retrieveComponent(...args) {
+        return bbnProtoHtml.$retrieveComponent.apply(this, args);
+      }
+        
+      $retrieveElement(...args) {
+        return bbnProtoHtml.$retrieveElement.apply(this, args);
+      }
+        
+      $retrieveNode(...args) {
+        return bbnProtoHtml.$retrieveNode.apply(this, args);
+      }
+
+      $retrieveSlotItems(...args) {
+        return bbnProtoHtml.$retrieveSlotItems.apply(this, args);
+      }
+        
+      $set(...args) {
+        return bbnProtoHtml.$set.apply(this, args);
+      }
+        
+      $tick(...args) {
+        return bbnProtoHtml.$tick.apply(this, args);
+      }
+        
+      $treatValue(...args) {
+        return bbnProtoHtml.$treatValue.apply(this, args);
+      }
+        
+      $watch(...args) {
+        return bbnProtoHtml.$watch.apply(this, args);
+      }
+
+      get $rootPath() {
+        let st = this.bbnId;
+        if (this.$origin) {
+          st = this.$origin.$rootPath + '/' + st;
+        }
+
+        return st;
+      }
+
+    };
+    window[clsName] = cls;
     bbn.cp.htmlClasses[extendedTag] = bbn.fn.createObject({
-      name: ele.constructor.name,
-      constructor: ele.constructor,
-      cls: 'bbn' + (!ele.constructor.name.indexOf('HTML') ? bbn.fn.substr(ele.constructor.name, 4) : ele.constructor.name),
+      name: clsName,
+      constructor: window[clsName],
+      cls
     });
   }
+
+
 
   // Convert the class name from camel case to CSS-style (kebab-case).
   const eleName = bbn.fn.camelToCss(name);
   //bbn.fn.log("GENERATE HTML CLASS", name, "FROM", clsExtends);
 
   const clsToExtend = bbn.cp.htmlClasses[extendedTag] ? bbn.cp.htmlClasses[extendedTag].constructor : bbnHtml;
+
 
   //bbn.fn.log(["EXTENDING " + bbn.cp.htmlClasses[extendedTag]?.name, clsToExtend, extendedTag, name])
   // Define the new component class, extending from clsExtends.
@@ -68,177 +257,272 @@ export default function generateHtmlClass(name, extendedTag) {
 
     // Static property to track if the component is mapped.
     static bbnMapped = false;
-
+  
     #options;
+    #bbnSlots;
+    #bbnCid;
+    #bbnTmpSlots;
+    #isConnected = false;
+    #isInit = false;
+    #isDataSet = false;
+    #isCreating = false;
+    #isUpdating = null;
+    #isCreated = false;
+    #isWatched = false;
+    #isDestroying = false;
+    #isDestroyed = false;
+    #isMounted = false;
+    #tagUsed;
+    #props;
+    #propsCfg;
+    #namespaces;
+    #nodes;
+    #events;
+    #children;
+    #components;
+    #dataCfg;
+    #refsElements;
+    #internal;
 
+    get $options() {
+      return this.#options;
+    };
+    set $options(v) {
+      if (!this.#options) {
+        this.#options = v;
+      }
+    };
+
+    get $cfg() {
+      return this.bbnCfg || this.constructor.bbnCfg;
+    }
+
+    get $dataValues() {
+      const obj = bbn.fn.createObject();
+      bbn.fn.iterate(this.$dataCfg, (a, n) => {
+        obj[n] = a.value;
+      });
+      return obj;
+    }
+
+
+    get $isConnected() {
+      return this.#isConnected;
+    }
+    set $isConnected(v) {
+      if (v && !this.#isConnected) {
+        this.#isConnected = v;
+      }
+    };
+
+    get $bbnCid() {
+      return this.#bbnCid;
+    };
+    set $bbnCid(v) {
+      if (!this.#bbnCid) {
+        this.#bbnCid = v;
+      }
+    };
+
+    get $bbnSlots() {
+      return this.#bbnSlots;
+    };
+    set $bbnSlots(v) {
+      if (!this.#bbnSlots) {
+        this.#bbnSlots = v;
+      }
+    };
+
+    get $bbnTmpSlots() {
+      return this.#bbnTmpSlots;
+    };
+    set $bbnTmpSlots(v) {
+      if (!this.#bbnTmpSlots) {
+        this.#bbnTmpSlots = v;
+      }
+    };
+
+    get $isInit() {
+      return this.#isInit;
+    };
+    set $isInit(v) {
+      if (v && !this.#isInit) {
+        this.#isInit = v;
+      }
+    };
+
+    get $isDataSet() {
+      return this.#isDataSet;
+    };
+    set $isDataSet(v) {
+      if (v && !this.#isDataSet) {
+        this.#isDataSet = v;
+      }
+    };
+
+    get $isCreating() {
+      return this.#isCreating;
+    };
+    set $isCreating(v) {
+      this.#isCreating = v;
+    };
+
+    get $isUpdating() {
+      return this.#isUpdating;
+    };
+    set $isUpdating(v) {
+      this.#isUpdating = v;
+    };
+
+    get $isCreated() {
+      return this.#isCreated;
+    };
+    set $isCreated(v) {
+      if (v && !this.#isCreated) {
+        this.#isCreated = v;
+      }
+    };
+
+    get $isWatched() {
+      return this.#isWatched;
+    };
+    set $isWatched(v) {
+      if (v && !this.#isWatched) {
+        this.#isWatched = v;
+      }
+    };
+
+    get $isDestroying() {
+      return this.#isDestroying;
+    };
+    set $isDestroying(v) {
+      this.#isDestroying = v;
+    };
+
+    get $isDestroyed() {
+      return this.#isDestroyed;
+    };
+    set $isDestroyed(v) {
+      if (v && !this.#isDestroyed) {
+        this.#isDestroyed = v;
+      }
+    };
+
+    get $isMounted() {
+      return this.#isMounted;
+    };
+    set $isMounted(v) {
+      if (v && !this.#isMounted) {
+        this.#isMounted = v;
+      }
+    };
+
+    get $tagUsed() {
+      return this.#tagUsed;
+    };
+    set $tagUsed(v) {
+      if (!this.#tagUsed) {
+        this.#tagUsed = v;
+      }
+    };
+
+    get $props() {
+      return this.#props;
+    };
+    set $props(v) {
+      if (!this.#props) {
+        this.#props = v;
+      }
+    };
+
+    get $propsCfg() {
+      return this.#propsCfg;
+    };
+    set $propsCfg(v) {
+      if (!this.#propsCfg) {
+        this.#propsCfg = v;
+      }
+    };
+
+    get $namespaces() {
+      return this.#namespaces;
+    };
+    set $namespaces(v) {
+      if (!this.#namespaces) {
+        this.#namespaces = v;
+      }
+    };
+
+    get $nodes() {
+      return this.#nodes;
+    };
+    set $nodes(v) {
+      if (!this.#nodes) {
+        this.#nodes = v;
+      }
+    };
+
+    get $events() {
+      return this.#events;
+    };
+    set $events(v) {
+      if (!this.#events) {
+        this.#events = v;
+      }
+    };
+
+    get $children() {
+      return this.#children;
+    };
+    set $children(v) {
+      if (!this.#children) {
+        this.#children = v;
+      }
+    };
+
+    get $components() {
+      return this.#components;
+    };
+    set $components(v) {
+      if (!this.#components) {
+        this.#components = v;
+      }
+    };
+
+    get $dataCfg() {
+      return this.#dataCfg;
+    };
+    set $dataCfg(v) {
+      if (!this.#dataCfg) {
+        this.#dataCfg = v;
+      }
+    };
+
+    get $refsElements() {
+      return this.#refsElements;
+    };
+    set $refsElements(v) {
+      if (!this.#refsElements) {
+        this.#refsElements = v;
+      }
+    };
+
+    get $internal() {
+      return this.#internal;
+    }
+    set $internal(v) {
+      if (!this.#internal) {
+        this.#internal = v;
+      }
+    }
     constructor() {
       super();
       // Define $options property.
-      this.#options = new bbnOptions(this, eleName);
+      const eleName = bbn.fn.camelToCss(this.constructor.name);
+      this.$options = new bbnOptions(this, eleName);
       bbnProtoHtml.construct.call(this);
     }
 
 
-    get $options() {
-      return this.#options;
-    }
-
-    connectedCallback() {
-      return bbnProtoHtml.connectedCallback.call(this);
-    } 
-  
-    disconnectedCallback() {
-      return bbnProtoHtml.disconnectedCallback.call(this, [this]);
-    }
-  
-    attributeChangedCallback(name, oldValue, newValue) {
-      return bbnProtoHtml.attributeChangedCallback.call(this, [this, name, oldValue, newValue]);
-    }
-
-    _(...args) {
-      return bbnProtoHtml._.apply(this, args);
-    }
-  
-    getRef(...args) {
-      return bbnProtoHtml.getRef.apply(this, args);
-    }
-  
-    ancestors(...args) {
-      return bbnProtoHtml.ancestors.apply(this, args);
-    }
-
-    closest(...args) {
-      return bbnProtoHtml.closest.apply(this, args);
-    }
-  
-    find(...args) {
-      return bbnProtoHtml.find.apply(this, args);
-    }
-  
-    findAll(...args) {
-      return bbnProtoHtml.findAll.apply(this, args);
-    }
-  
-    extend(...args) {
-      return bbnProtoHtml.extend.apply(this, args);
-    }
-  
-    getComponents(...args) {
-      return bbnProtoHtml.getComponents.apply(this, args);
-    }
-  
-    getComponentName(...args) {
-      return bbnProtoHtml.getComponentName.apply(this, args);
-    }
-   
-    async $connected(...args) {
-      return await bbnProtoHtml.$connected.apply(this, args);;
-    }
-
-    $create(...args) {
-      return bbnProtoHtml.$create.apply(this, args);
-    }
-
-    $delete(...args) {
-      return bbnProtoHtml.$delete.apply(this, args);
-    }
-
-    $destroy(...args) {
-      return bbnProtoHtml.$destroy.apply(this, args);
-    }
-      
-    $emit(...args) {
-      return bbnProtoHtml.$emit.apply(this, args);
-    }
-      
-    $forceUpdate(...args) {
-      return bbnProtoHtml.$forceUpdate.apply(this, args);
-    }
-      
-    $get(...args) {
-      return bbnProtoHtml.$get.apply(this, args);
-    }
-      
-    $has(...args) {
-      return bbnProtoHtml.$has.apply(this, args);
-    }
-      
-    $hasSlots(...args) {
-      return bbnProtoHtml.$hasSlots.apply(this, args);
-    }
-      
-    $is(...args) {
-      return bbnProtoHtml.$is.apply(this, args);
-    }
-      
-    $isComponent(...args) {
-      return bbnProtoHtml.$isComponent.apply(this, args);
-    }
-
-    $isPropNative(...args) {
-      return bbnProtoHtml.$isPropNative.apply(this, args);
-    }
-      
-    $nextTick(...args) {
-      return bbnProtoHtml.$nextTick.apply(this, args);
-    }
-      
-    $off(...args) {
-      return bbnProtoHtml.$off.apply(this, args);
-    }
-      
-    $on(...args) {
-      return bbnProtoHtml.$on.apply(this, args);
-    }
-      
-    $once(...args) {
-      return bbnProtoHtml.$once.apply(this, args);
-    }
-      
-    $position(...args) {
-      return bbnProtoHtml.$position.apply(this, args);
-    }
-      
-    $retrieveComponent(...args) {
-      return bbnProtoHtml.$retrieveComponent.apply(this, args);
-    }
-      
-    $retrieveElement(...args) {
-      return bbnProtoHtml.$retrieveElement.apply(this, args);
-    }
-      
-    $retrieveNode(...args) {
-      return bbnProtoHtml.$retrieveNode.apply(this, args);
-    }
-
-    $retrieveSlotItems(...args) {
-      return bbnProtoHtml.$retrieveSlotItems.apply(this, args);
-    }
-      
-    $set(...args) {
-      return bbnProtoHtml.$set.apply(this, args);
-    }
-      
-    $tick(...args) {
-      return bbnProtoHtml.$tick.apply(this, args);
-    }
-      
-    $treatValue(...args) {
-      return bbnProtoHtml.$treatValue.apply(this, args);
-    }
-      
-    $watch(...args) {
-      return bbnProtoHtml.$watch.apply(this, args);
-    }
-
-    get $rootPath() {
-      let st = this.bbnId;
-      if (this.$origin) {
-        st = this.$origin.$rootPath + '/' + st;
-      }
-  
-      return st;
-    }
-  
   }
 }

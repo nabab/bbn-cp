@@ -1,8 +1,7 @@
 import bbnAttr from "./Attr.js";
 import cloneNode from "../Html/private/cloneNode.js";
 import generateNode from "../Html/private/generateNode.js";
-import bbnNode from "../Node.js";
-import queueUpdate from "../../functions/queueUpdate.js";
+import bbnData from "../Data.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -103,7 +102,7 @@ export default class bbnLoopAttr extends bbnAttr
         key = loopValue[j].__bbnData.uid;
       }
       else {
-        key = bbnData.hash(loopData);
+        key = bbn.cp.hash(loopData);
       }
 
       let hash = oHash + key;

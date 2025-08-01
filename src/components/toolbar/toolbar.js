@@ -151,22 +151,12 @@ const cpDef = {
 
 import cpHtml from './toolbar.html';
 import cpStyle from './toolbar.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/toolbar.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+//import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-toolbar',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  lang: cpLang
+  //lang: cpLang
 };

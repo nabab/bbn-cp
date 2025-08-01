@@ -46,8 +46,9 @@
           }"
           bbn-if="toolbar">
         <component :is="toolbar"
+                   bbn-bind="toolbarOptions"
                    :source="toolbarSource || (!isAjax ? source : undefined)"
-                   :total="total"
+                   :total="currentTotal"
                    class="bbn-vmiddle"
                    :style="{'flex-direction': collapsed ? 'column': 'row'}"/>
       </div>
@@ -71,8 +72,8 @@
                    axis="y"
                    ref="scroll">
           <div :class="['bbn-kanban-element-items', 'bbn-hpadding', {
-                 'bbn-overlay': !scrollable || !items.length,
-                 'bbn-middle': !scrollable || !items.length
+                 'bbn-overlay': scrollable && !items.length,
+                 'bbn-middle': !items.length
                 }]">
             <template bbn-if="items.length">
               <div bbn-for="(item, itemIdx) in items"

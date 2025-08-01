@@ -3,24 +3,24 @@
   <div>
     <bbn-input bbn-if="mode === 'double'"
                bbn-model="currentTextInput"
-              :readonly="!!readonly || (max && (value.length > max))"
+              :readonly="!!readonly || (max && (currentValue.length > max))"
               :disabled="isDisabled"
               :tabindex="currentTabIndex"
               @keydown="onKeydown"
               @focus="isOpened = true"
               ref="input"
               class="bbn-w-100"
-              :placeholder="max && (value.length > max) ? _('Max number of') + ' ' + max : (this.textPlaceholder || _('Text'))"/>
+              :placeholder="max && (currentValue.length > max) ? _('Max number of') + ' ' + max : (this.textPlaceholder || _('Text'))"/>
     <div bbn-elseif="mode === 'dropdown'"
          class="bbn-border bbn-radius bbn-flex-width">
-      <bbn-dropdown :source="source"
-                    :readonly="!!readonly || (max && (value.length > max))"
+      <bbn-dropdown :source="currentSource"
+                    :readonly="!!readonly || (max && (currentValue.length > max))"
                     :disabled="isDisabled"
                     :tabindex="currentTabIndex"
                     :source-value="sourceValue"
                     :source-text="sourceText"
                     ref="input"
-                    :placeholder="max && (value.length > max) ? _('Max number of') + ' ' + max : (this.placeholder || _('Value'))"
+                    :placeholder="max && (currentValue.length > max) ? _('Max number of') + ' ' + max : (this.placeholder || _('Value'))"
                     bbn-model="currentInput"
                     class="bbn-values-dropdown bbn-no-border bbn-flex-fill"/>
       <bbn-button class="bbn-values-dropdown-button bbn-no-vborder bbn-no-right-border"
@@ -28,11 +28,11 @@
                   :tabindex="currentTabIndex"
                   icon="nf nf-fa-plus"
                   @click="add"
-                  :disabled="isDisabled || (max && (value.length > max)) || !currentInput.length"/>
+                  :disabled="isDisabled || (max && (currentValue.length > max)) || !currentInput.length"/>
     </div>
     <bbn-input bbn-if="mode !== 'dropdown'"
                bbn-model="currentInput"
-              :readonly="!!readonly || (max && (value.length > max))"
+              :readonly="!!readonly || (max && (currentValue.length > max))"
               :disabled="isDisabled"
               @keydown="onKeydown"
               @focus="isOpened = true"
@@ -40,14 +40,15 @@
               ref="input"
               @ready="ready = true"
               class="bbn-w-100"
-              :placeholder="max && (value.length > max) ? _('Max number of') + ' ' + max : (this.placeholder || _('Value'))"
+              :placeholder="max && (currentValue.length > max) ? _('Max number of') + ' ' + max : (this.placeholder || _('Value'))"
               :action-right="add"
               button-right="nf nf-fa-plus"
-              :button-right-disabled="(!!max && (value.length >= max)) || isDisabled || !!readonly"
+              :button-right-disabled="(!!max && (currentValue.length >= max)) || isDisabled || !!readonly"
               :button-right-title="_('Add')"/>
   </div>
   <div>
-    <div bbn-for="(v, idx) in value"
+    <div bbn-for="(v, idx) in currentValue"
+         :key="v"
          class="bbn-textbox bbn-iblock bbn-xsmargin">
       <div class="bbn-vxspadding bbn-hspadding">
          <span class="bbn-right-xshmargin"

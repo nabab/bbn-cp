@@ -17,9 +17,5 @@ export default function setUpAllData(cp) {
     );
   }
 
-  Object.defineProperty(cp, '$isDataSet', {
-    value: true,
-    writable: false,
-    configurable: false
-  });
+  cp.$isDataSet = true;
 }

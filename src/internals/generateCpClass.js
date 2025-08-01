@@ -1,3 +1,4 @@
+import bbnData from "../lib/Data.js";
 import bbnComputed from "../lib/Computed.js";
 import setUpProp from "../lib/Html/private/setUpProp.js";
 
@@ -47,7 +48,7 @@ export default function generateCpClass(publicClass, obj) {
       }
       bbn.fn.iterate(res, (v, n) => {
         if (window[publicClass][n] === undefined) {
-          window[publicClass][n] = bbnData.immunizeValue(v);
+          window[publicClass][n] = bbn.cp.immunizeValue(v);
         }
         else {
           throw new Error(bbn._("The static method cannot override an existing property"));

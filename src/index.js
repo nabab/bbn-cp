@@ -2,7 +2,6 @@ import {bbn, axios, dayjs} from "@bbn/bbn";
 import bbnData from "./lib/Data.js";
 import bbnNode from "./lib/Node.js";
 import bbnOptions from "./lib/Options.js";
-import bbnResult from "./lib/Result.js";
 import bbnComponentNode from "./lib/Node/Component.js";
 import bbnInternalNode from "./lib/Node/Internal.js";
 import bbnSlotNode from "./lib/Node/Slot.js";
@@ -21,6 +20,7 @@ import bbnHtmlAttr from "./lib/Attr/Html.js";
 import bbnIsAttr from "./lib/Attr/Is.js";
 import bbnLoopAttr from "./lib/Attr/Loop.js";
 import bbnModelAttr from "./lib/Attr/Model.js";
+import bbnOnceAttr from "./lib/Attr/Once.js";
 import bbnPreAttr from "./lib/Attr/Pre.js";
 import bbnRefAttr from "./lib/Attr/Ref.js";
 import bbnShowAttr from "./lib/Attr/Show.js";
@@ -38,16 +38,17 @@ import "./cp.js";
 
 customElements.define('bbn-anon', bbnAnonHtml);
 
-export {
+Object.assign(window, {
   axios,
   dayjs,
   bbn,
+  bbnOptions,
   bbnHtml,
+  bbnData,
+  bbnComputed,
   bbnProtoHtml,
   bbnAnonHtml,
   bbnNode,
-  bbnOptions,
-  bbnResult,
   bbnComponentNode,
   bbnInternalNode,
   bbnSlotNode,
@@ -73,8 +74,46 @@ export {
   bbnStyleAttr,
   bbnTextAttr,
   bbnTransitionAttr,
+  bbnParser,
+  bbnWatcher
+});
+
+export {
+  axios,
+  dayjs,
+  bbn,
+  bbnOptions,
+  bbnHtml,
   bbnData,
   bbnComputed,
+  bbnProtoHtml,
+  bbnAnonHtml,
+  bbnNode,
+  bbnComponentNode,
+  bbnInternalNode,
+  bbnSlotNode,
+  bbnTemplateNode,
+  bbnTextNode,
+  bbnAttr,
+  bbnBindAttr,
+  bbnBreakAttr,
+  bbnClassAttr,
+  bbnConditionAttr,
+  bbnContentAttr,
+  bbnDirectiveAttr,
+  bbnEventAttr,
+  bbnForgetAttr,
+  bbnHtmlAttr,
+  bbnIsAttr,
+  bbnLoopAttr,
+  bbnModelAttr,
+  bbnPreAttr,
+  bbnRefAttr,
+  bbnShowAttr,
+  bbnSlotAttr,
+  bbnStyleAttr,
+  bbnTextAttr,
+  bbnTransitionAttr,
   bbnParser,
   bbnWatcher
 };

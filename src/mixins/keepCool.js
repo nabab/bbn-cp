@@ -8,7 +8,7 @@ const keepCool =  {
        * @data {Number} [0] coolTimer
        * @memberof keepCoolComponent
        */
-      coolTimers: bbnData.immunizeValue({}),
+      coolTimers: bbn.cp.immunizeValue({}),
       /**
        * The interval.
        * @data {Number} [40] coolInterval

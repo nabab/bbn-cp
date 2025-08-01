@@ -1,3 +1,4 @@
+import bbnData from "./Data.js";
 /**
  * Class representing a computed property watcher.
  * This class is responsible for monitoring changes in a computed property 

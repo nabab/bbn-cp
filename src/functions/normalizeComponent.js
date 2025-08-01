@@ -1,7 +1,5 @@
 import bbn from "@bbn/bbn";
 import "../cp.js";
-import bbnData from '../lib/Data.js';
-
 /**
  * Normalizes the configuration of a component, ensuring it adheres to the expected structure and types.
  * This function also merges configuration from mixins and adds additional properties necessary for the component's lifecycle.
@@ -16,14 +14,14 @@ export default function normalizeComponent(cfg, clsName) {
     throw new Error("Components definition must be objects");
   }
 
-  cfg = bbnData.immunizeValue(cfg, true);
+  cfg = bbn.cp.immunizeValue(cfg, true);
 
   if (!bbn.fn.isObject(cfg)) {
     bbn.fn.log(cfg, clsName);
     throw new Error("Components definition must be objects");
   }
   // Initialize the result object with standard component properties.
-  const res = bbnData.immunizeValue(bbn.fn.createObject({
+  const res = bbn.cp.immunizeValue(bbn.fn.createObject({
     props: bbn.fn.createObject(),
     data: [],
     computed: bbn.fn.createObject(),
@@ -52,7 +50,7 @@ export default function normalizeComponent(cfg, clsName) {
       bbn.fn.each(Object.keys(cp).sort(), name => {
         // Handle array properties like data and statics.
         if (bbn.fn.isArray(cp[name]) && ['data', 'statics', ...bbn.cp.hooks].includes(name)) {
-          res[name] = bbnData.immunizeValue(res[name] || []);
+          res[name] = bbn.cp.immunizeValue(res[name] || []);
           res[name].push(...cp[name]);
         }
         // Merge object properties.
@@ -218,7 +216,7 @@ export default function normalizeComponent(cfg, clsName) {
         // Validate extension.
         if (cfg.extension) {
           bbn.fn.checkType(cfg.extension, 'object', bbn._("Extensions must be objects, check %s", cn));
-          res.extension = bbnData.immunizeValue(cfg.extension);
+          res.extension = bbn.cp.immunizeValue(cfg.extension);
         }
         break;
 
@@ -238,7 +236,7 @@ export default function normalizeComponent(cfg, clsName) {
         // Validate and process static properties.
         if (cfg.statics) {
           if (!bbn.fn.isArray(cfg.statics)) {
-            cfg.statics = bbnData.immunizeValue([cfg.statics]);
+            cfg.statics = bbn.cp.immunizeValue([cfg.statics]);
           }
 
           bbn.fn.each(cfg.statics, fn => {
@@ -293,7 +291,7 @@ export default function normalizeComponent(cfg, clsName) {
           bbn.fn.each(bbn.fn.isArray(cfg[name]) ? cfg[name] : [cfg[name]], fn => {
             bbn.fn.checkType(fn, 'function')
             if (!res[name]) {
-              res[name] = bbnData.immunizeValue([]);
+              res[name] = bbn.cp.immunizeValue([]);
             }
 
             res[name].push(fn);

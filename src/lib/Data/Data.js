@@ -1,6 +1,7 @@
 /**
  * Takes care of the data reactivity for non primitive values.
  */
+import bbnAttr from "../Attr/Attr.js";
 export default class bbnData/* extends EventTarget*/ {
 
   static isWatching = false;

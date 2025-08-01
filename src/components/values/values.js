@@ -101,6 +101,9 @@ const cpDef = {
 
         return !this.currentValue.includes(a);
       });
+    },
+    currentSource() {
+      return this.source.filter(a => !this.currentValue.includes(a.value));
     }
   },
   methods: {
@@ -174,22 +177,19 @@ const cpDef = {
         return val;
       }
     }
+  },
+  watch: {
+    currentValue() {
+      if (this.mode === 'dropdown') {
+        this.getRef('input').updateData();
+      }
+    }
   }
 };
 
 import cpHtml from './values.html';
 import cpStyle from './values.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/values.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-values',

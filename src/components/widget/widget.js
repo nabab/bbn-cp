@@ -12,9 +12,9 @@
 const cpDef = {
     name: 'bbn-widget',
     /**
-     * @mixin bbn.cp.mixins.basic,
-     * @mixin bbn.cp.mixins.localStorage,
-     * @mixin bbn.cp.mixins.observer,
+     * @mixin bbn.cp.mixins.basic
+     * @mixin bbn.cp.mixins.localStorage
+     * @mixin bbn.cp.mixins.observer
      * @mixin bbn.cp.mixins.resizer
      */
     mixins:
@@ -328,7 +328,7 @@ const cpDef = {
     },
     computed: {
       componentOptions() {
-        return bbn.fn.numProperties(this.options) ? this.options : {source: this.source}
+        return bbn.fn.numProperties(this.options) ? this.options : {source: this.currentSource}
       },
       /**
        * @computed contentPadding
@@ -672,17 +672,7 @@ const cpDef = {
 
 import cpHtml from './widget.html';
 import cpStyle from './widget.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/widget.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-widget',

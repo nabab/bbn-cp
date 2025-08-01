@@ -38,21 +38,11 @@ const cpDef = {
 };
 
 import cpHtml from './loadicon.html';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/loadicon.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+//import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-loadicon',
   definition: cpDef,
   template: cpHtml,
-  lang: cpLang
+  //lang: cpLang
 };

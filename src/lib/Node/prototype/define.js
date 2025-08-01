@@ -1,5 +1,24 @@
 import bbnNode from "../Node.js";
 import bbnAttr from "../../Attr.js";
+import bbnModelAttr from "../../Attr/Model.js";
+import bbnEventAttr from "../../Attr/Event.js";
+import bbnDirectiveAttr from "../../Attr/Directive.js";
+import bbnTextAttr from "../../Attr/Text.js";
+import bbnHtmlAttr from "../../Attr/Html.js";
+import bbnShowAttr from "../../Attr/Show.js";
+import bbnBreakAttr from "../../Attr/Break.js";
+import bbnIsAttr from "../../Attr/Is.js";
+import bbnClassAttr from "../../Attr/Class.js";
+import bbnStyleAttr from "../../Attr/Style.js";
+import bbnRefAttr from "../../Attr/Ref.js";
+import bbnConditionAttr from "../../Attr/Condition.js";
+import bbnForgetAttr from "../../Attr/Forget.js";
+import bbnLoopAttr from "../../Attr/Loop.js";
+import bbnOnceAttr from "../../Attr/Once.js";
+import bbnSlotAttr from "../../Attr/Slot.js";
+import bbnPreAttr from "../../Attr/Pre.js";
+import bbnTransitionAttr from "../../Attr/Transition.js";
+import bbnBindAttr from "../../Attr/Bind.js";
 
 const allowed = [
   'id',
@@ -11,6 +30,7 @@ const allowed = [
   'condition',
   'forget',
   'args',
+  'once',
   'bind',
   'transition',
   'attr',
@@ -116,7 +136,7 @@ bbnNode.prototype.nodeDefine = function(node, data) {
           });
         }
       }
-      else if (['condition', 'forget', 'loop', 'pre', 'transition', 'text', 'bind', 'slot'].includes(a)) {
+      else if (['condition', 'forget', 'loop', 'once', 'pre', 'transition', 'text', 'bind', 'slot'].includes(a)) {
         let v;
         switch (a) {
           case 'condition':
@@ -130,6 +150,9 @@ bbnNode.prototype.nodeDefine = function(node, data) {
             break;
           case 'slot':
             v = new bbnSlotAttr(node[a], this)
+            break;
+          case 'once':
+            v = new bbnOnceAttr(node[a], this)
             break;
           case 'pre':
             v = new bbnPreAttr(node[a], this)

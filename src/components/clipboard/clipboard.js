@@ -36,6 +36,9 @@ const cpDef = {
       type: Number,
       default: 20
     },
+    zIndex: {
+      type: Number
+    },
     /**
      * @prop {Array} [[]] max The maximum number of items kept in the clipboard
      */
@@ -156,6 +159,39 @@ const cpDef = {
           this.save(uid, title);
         }
       }
+    },
+    itemMenu() {
+      return [
+        {
+          text: _('Copy plain text'),
+          icon: 'nf nf-md-cursor_text',
+          action: a => bbn.fn.log(a)
+        },
+        {
+          text: _('Copy rich text'), icon: 'nf nf-md-code_tags', disabled: !source.content, action: () => closest('bbn-clipboard').setClipboard(uid, 'html')
+        },
+        {
+          text: _('Copy as image'), icon: 'nf nf-fa-image', disabled: !source.type || (source.type.indexOf('image/')) !== 0, action: () => closest('bbn-clipboard').setClipboard(uid, 'image')
+        },
+        {
+          text: _('Save'), icon: 'nf nf-fa-file_o', action: () => closest('bbn-clipboard').save(uid)
+        },
+        {
+          text: _('Save as...'), icon: 'nf nf-fa-file_o', action: () => closest('bbn-clipboard').saveAs(uid)
+        },
+        {
+          text: _('Pin'), icon: 'nf nf-md-pin', action: () => {source.pinned = true;}, disabled: source.pinned
+        },
+        {
+          text: _('Unpin'), icon: 'nf nf-md-pin_off', action: () => {source.pinned = false;}, disabled: !source.pinned
+        },
+        {
+          text: _('Share'), icon: 'nf nf-fa-share', action: () => null
+        },
+        {
+          text: _('Remove'), icon: 'nf nf-fa-trash_o', action: () => closest('bbn-clipboard').removeItem({uid: source.uid})
+        },
+      ];
     },
     /**
      * @method add
@@ -383,12 +419,14 @@ const cpDef = {
           switch (this.mode) {
             case 'html':
               e.clipboardData.setData('text/html', item.content);
+              e.clipboardData.setData('text/plain', item.text || item.content);
               break;
             case 'image':
               //bbn.fn.log("IMAGE!", item.type);
               if (item.file) {
                 e.clipboardData.setData(item.type, item.file);
                 e.clipboardData.setData('text/html', '<img src="data:' + item.type + ';base64, ' + btoa(item.file) + '" alt="' + item.text + '">');
+                e.clipboardData.setData('text/plain', item.text);
               }
               break;
             case 'file':
@@ -548,17 +586,7 @@ const cpDef = {
 
 import cpHtml from './clipboard.html';
 import cpStyle from './clipboard.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/clipboard.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-clipboard',

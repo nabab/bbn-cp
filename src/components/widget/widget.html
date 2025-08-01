@@ -1,4 +1,4 @@
-<div :class="[componentClass, 'bbn-radius', 'bbn-iflex-height', 'bbn-background', 'bbn-text', full ? 'full' : '']"
+<div :class="[componentClass, 'bbn-radius', 'bbn-flex-height', 'bbn-background', 'bbn-text', full ? 'full' : '']"
      bbn-droppable.data="!!sortable ? {data: {widget: _self}} : false">
   <!-- HEADER -->
   <div bbn-if="label"
@@ -129,14 +129,13 @@
           :style="{visibility: currentStart < (currentTotal-limit) ? 'visible' : 'hidden'}"/>
     </div>
     <!-- LOADING -->
-    <div bbn-if="isLoading && (currentItems === undefined)"
-         class="bbn-overlay"
-         style="opacity: 0.5">
+    <div bbn-if="isLoading"
+         class="bbn-overlay bbn-background">
       <bbn-loader :label="null"
                   type="swing"
+                  style="opacity: 0.5"
                   class="bbn-overlay bbn-middle"/>
     </div>
-    
   </div>
 
 </div>

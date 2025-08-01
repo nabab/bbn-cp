@@ -6,6 +6,10 @@ const resizer = {
       bbn.cp.resizeObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
           const cp = entry.target.onResize ? entry.target : entry.target.bbnComponent;
+          if (!cp.checkVisibility()) {
+            continue;
+          }
+
           if (!cp.isResizing) {
             if (entry.contentBoxSize?.[0]) {
               entry.target.onResize ? entry.target.onResize() : entry.target.bbnComponent.onResize();

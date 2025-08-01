@@ -12,18 +12,32 @@
 import * as htmlToImage from 'html-to-image';
 
 const cpDef = {
-  statics() {
-    window.htmlToImage = htmlToImage;
-  },
   methods: {
-    async capture(ele, width, height) {
+    async capture(ele, width, height, meth = 'png') {
+      let fn;
+      switch (meth) {
+        case 'jpeg':
+          fn = htmlToImage.toJpeg;
+          break;
+        case 'blob':
+          fn = htmlToImage.toBlob;
+          break;
+        case 'svg':
+          fn = htmlToImage.toSvg;
+          break;
+        default:
+          fn = htmlToImage.toPng;
+      }
+
       return new Promise((resolve) => {
         ele.classList.add('bbn-screenshot-element');
         setTimeout(() => {
           const opt = {
             width: ele.clientWidth,
             height: ele.clientHeight,
-            quality: 0.95,
+            preferredFontFormat: 'woff2',
+            backgroundColor: 'white',
+            filter: e => e.tagName !== 'BBN-CHART'
           };
           if (width) {
             opt.canvasWidth = width;
@@ -32,10 +46,21 @@ const cpDef = {
             opt.canvasHeight = height;
           }
 
-          htmlToImage.toPng(ele, opt).then(img => {
+          try {
+            fn(ele, opt).then(img => {
+              ele.classList.remove('bbn-screenshot-element');
+              resolve(img || false);
+            }).catch(e => {
+              bbn.fn.log("There has been an error2", e);
+              ele.classList.remove('bbn-screenshot-element');
+              resolve(false);
+            })
+          }
+          catch (e) {
+            bbn.fn.log("There has been an error", e);
             ele.classList.remove('bbn-screenshot-element');
-            resolve(img || false);
-          })
+            resolve(false);
+          }
         }, 100)
       });
     },

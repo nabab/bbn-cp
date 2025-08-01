@@ -527,16 +527,7 @@ const cpDef = {
 
 import cpHtml from './mini-search.html';
 import cpStyle from './mini-search.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    cpLang = await import(`./_i18n/mini-search.${bbn.env.lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-mini-search',

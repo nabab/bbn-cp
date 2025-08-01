@@ -1,4 +1,5 @@
 import bbnFacade from "../Facade.js";
+import bbnData from "../Data.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -57,7 +58,7 @@ export default class bbnNode
     });
     
     /**
-     * @property {htmlElement} component
+     * @property {HTMLElement} component
      */
     Object.defineProperty(this, 'component', {
       writable: false,

@@ -92,22 +92,12 @@ const cpDef = {
 
 import cpHtml from './icon.html';
 import cpStyle from './icon.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/icon.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+//import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-icon',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  lang: cpLang
+  //lang: cpLang
 };

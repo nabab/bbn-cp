@@ -16,7 +16,7 @@ import menu from './_mixins/menu.js';
 import getters from './_mixins/getters.js';
 import breadcrumb from './_mixins/breadcrumb.js';
 import observers from './_mixins/observers.js';
-import useless from './_mixins/2move.js';
+import toMove from './_mixins/toMove.js';
 import visual from './_mixins/visual.js';
 import misc from './_mixins/misc.js';
 import component from './_mixins/component.js';
@@ -78,6 +78,22 @@ const cpDef = {
    * @mixin bbn.cp.mixins.close
    * @mixin bbn.cp.mixins.observer
    * @mixin bbn.cp.mixins.resizer
+   * @mixin bbn.cp.mixins.keepCool
+   * @mixin elements
+   * @mixin navigation
+   * @mixin registration
+   * @mixin panes
+   * @mixin views
+   * @mixin config
+   * @mixin search
+   * @mixin menu
+   * @mixin getters
+   * @mixin breadcrumb
+   * @mixin observers
+   * @mixin toMove
+   * @mixin visual
+   * @mixin misc
+   * @mixin component
    */
   mixins: [
     bbn.cp.mixins.basic,
@@ -97,7 +113,7 @@ const cpDef = {
     getters,
     breadcrumb,
     observers,
-    useless,
+    toMove,
     visual,
     misc,
     component,
@@ -160,17 +176,7 @@ const cpDef = {
 
 import cpHtml from './router.html';
 import cpStyle from './router.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/router.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) { }
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-router',

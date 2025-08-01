@@ -1,6 +1,5 @@
 import bbnNode from "../Node.js";
 import addUnknownComponent from "../../Html/private/addUnknownComponent.js";
-import fetchComponent from "../../Html/private/fetchComponent.js";
 import generateHtmlClass from "../../../internals/generateHtmlClass.js";
 import stringToTemplate from "../../../internals/stringToTemplate.js";
 import announceComponent from "../../Html/private/announceComponent.js";
@@ -200,7 +199,7 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
   // Register the element in the component's tracking system
   if (!this.comment) {
     for (let i = 0; i < this.attributes.length; i++) {
-      if (!(this.attributes[i] instanceof bbnDirectiveAttr) && !(this.attributes[i] instanceof bbnConditionAttr) && !(this.attributes[i] instanceof bbnForgetAttr)) {
+      if (!['bbnDirectiveAttr', 'bbnConditionAttr', 'bbnForgetAttr'].includes(this.attributes[i].constructor?.name)) {
         this.attributes[i].attrUpdate(true);
       }
     }
@@ -216,7 +215,7 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
     this.nodeInsert(this.element, after);
     if (!this.comment) {
       for (let i = 0; i < this.attributes.length; i++) {
-        if (this.attributes[i] instanceof bbnDirectiveAttr) {
+        if (this.attributes[i].constructor?.name === 'bbnDirectiveAttr') {
           this.attributes[i].attrUpdate(true);
         }
       }

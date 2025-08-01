@@ -19,7 +19,8 @@
                 :tabindex="prefixReadonly ? -1 : currentTabIndex"
                 :autosize="prefixReadonly || prefixAutosize"
                 @focus="onDropDownFocus"
-                @change.stop="onChange"/>
+                @change.stop="onChange"
+                :flag="true"/>
   <bbn-masked  bbn-if="currentMask?.length"
                :mask="currentMask"
                :tabindex="currentTabIndex"

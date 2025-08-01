@@ -1,6 +1,7 @@
 <bbn-slider :orientation="orientation"
             :class="componentClass"
             ref="slider"
+            :z-index="zIndex"
             :visible="false"
             @show="isOpened = true"
             @hide="isOpened = false">
@@ -49,7 +50,7 @@
                 <bbn-context tag="span"
                             class="bbn-right-space"
                             :source="[
-                  {text: _('Copy plain text'), icon: 'nf nf-md-cursor_text', action: () => closest('bbn-clipboard').setClipboard(uid, 'plain')},
+                  {text: _('Copy plain text'), icon: 'nf nf-md-cursor_text', action: (a) => closest('bbn-clipboard').setClipboard(source.uid, 'plain')},
                   {text: _('Copy rich text'), icon: 'nf nf-md-code_tags', disabled: !source.content, action: () => closest('bbn-clipboard').setClipboard(uid, 'html')},
                   {text: _('Copy as image'), icon: 'nf nf-fa-image', disabled: !source.type || (source.type.indexOf('image/')) !== 0, action: () => closest('bbn-clipboard').setClipboard(uid, 'image')},
                   {text: _('Save'), icon: 'nf nf-fa-file_o', action: () => closest('bbn-clipboard').save(uid)},

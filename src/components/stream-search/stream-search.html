@@ -33,7 +33,7 @@
                 :suggest="suggest"
                 :component="searchComponent"
                 :source-items="null"
-                @select="select"
+                @select.stop="select"
                 :source-url="sourceUrl"
                 :source-action="sourceAction"
                 :source-text="sourceText"

@@ -352,16 +352,7 @@ const cpDef = {
 
 import cpHtml from './json-editor.html';
 import cpStyle from './json-editor.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    cpLang = await import(`./_i18n/json-editor.${bbn.env.lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 const def = {
   name: 'bbn-json-editor',

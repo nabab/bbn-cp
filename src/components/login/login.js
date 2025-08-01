@@ -390,17 +390,7 @@ const cpDef = {
 
 import cpHtml from './login.html';
 import cpStyle from './login.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/login.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-login',

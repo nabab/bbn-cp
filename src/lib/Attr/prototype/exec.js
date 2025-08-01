@@ -1,5 +1,7 @@
+import bbnData from "../../Data.js";
 import bbnAttr from "../Attr.js";
 import bbnConditionAttr from "../Condition.js";
+import bbnModelAttr from "../Model.js";
 
 /**
  * Retrieves the arguments for evaluating the given attribute with the given data.

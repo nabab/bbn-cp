@@ -1,0 +1,12 @@
+
+> @bbn/bbn-cp@1.0.110 build
+> ./node_modules/.bin/babel src/index.js -o dist/bbn-cp.js --source-type module
+
+
+> @bbn/bbn-cp@1.0.110 build2
+> ./node_modules/.bin/babel src/all.js -o dist/bbn-cp-components.js --source-type unambiguous
+
+
+> @bbn/bbn-cp@1.0.110 pack-dev
+> ./node_modules/.bin/webpack --config webpack.config.js
+

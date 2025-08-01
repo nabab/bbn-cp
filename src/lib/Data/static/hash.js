@@ -35,15 +35,15 @@ function treatForHash(value, depth = null, level = 0, visited = null) {
  * @param {*} value Value to hash
  * @returns {String} The hash
  */
-bbnData.hash = function(value) {
-  const wasStarted = bbnData.watchStarted;
+bbn.cp.hash = function(value) {
+  const wasStarted = bbn.cp.watchStarted;
   if (wasStarted) {
-    bbnData.watchStarted = false;
+    bbn.cp.watchStarted = false;
   }
 
   let st = treatForHash(value);
   if (wasStarted) {
-    bbnData.watchStarted = true;
+    bbn.cp.watchStarted = true;
   }
 
   return bbn.fn.simpleHash(st);

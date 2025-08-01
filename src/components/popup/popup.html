@@ -1,11 +1,11 @@
 <div :class="['bbn-overlay', componentClass]"
      bbn-show="showPopup"
-     :style="{zIndex: zIndex}">
+     :style="{zIndex: maxZindex > zIndex ? maxZindex - 1 : zIndex}">
   <div bbn-for="(popup, i) in popups"
        bbn-if="popup.modal !== false"
        class="bbn-modal bbn-overlay"
        tabindex="-1"
-       :style="{zIndex: zIndex + i}"
+       :style="{zIndex: popup.zIndex || (zIndex + i)}"
        @keydown.esc.prevent.stop="close(i)"/>
   <bbn-floater bbn-for="(popup, i) in popups"
                :key="popup.uid"
@@ -13,6 +13,6 @@
                :index="popup.index"
                bbn-bind="popup"
                :container="$el"
-               :style="{zIndex: zIndex+i}"
+               :z-index="popup.zIndex || (zIndex + i)"
                @close="onClose(i)"/>
 </div>

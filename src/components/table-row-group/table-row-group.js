@@ -51,22 +51,12 @@ const cpDef = {
 
 import cpHtml from './table-row-group.html';
 import cpStyle from './table-row-group.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/table-row-group.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) { }
-}
+//import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-table-row-group',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  lang: cpLang
+  //lang: cpLang
 };

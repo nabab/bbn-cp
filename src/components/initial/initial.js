@@ -284,21 +284,11 @@ const cpDef = {
 };
 
 import cpHtml from './initial.html';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/initial.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+//import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-initial',
   definition: cpDef,
   template: cpHtml,
-  lang: cpLang
+  //lang: cpLang
 };

@@ -263,6 +263,10 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
             exp: a === 'bbn-else' ? 'true' : value,
             // Adding prefix as conditions can be set to false even when the expression is not
           });
+          if (modifiers[0] === 'keep') {
+            res.condition.keep = true;
+          }
+
           if (!value && (type !== 'else')) {
             throw new Error(bbn._("The condition must have an expression (check %s)", componentName));
           }
@@ -289,6 +293,12 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
           res.cloak = bbn.fn.createObject({
             id: res.id + '-cloak',
             exp: value,
+          });
+          break;
+        case 'bbn-once':
+          res.once = bbn.fn.createObject({
+            id: res.id + '-once',
+            exp: value
           });
           break;
         case 'bbn-pre':
@@ -442,41 +452,41 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
       }
     }
     else if (node.tagName === 'TRANSITION') {
-    const transNodes = Array.prototype.slice.apply(node.childNodes);
-    const attrs = node.getAttributeNames();
-    bbn.fn.each(transNodes, tn => {
-      if (tn?.tagName) {
-        tn.setAttribute('bbn-transition', true);
-        if (node.childElementCount > 1) {
-          tn.setAttribute('bbn-transition-multiple', true);
-        }
+      const transNodes = Array.prototype.slice.apply(node.childNodes);
+      const attrs = node.getAttributeNames();
+      bbn.fn.each(transNodes, tn => {
+        if (tn?.tagName) {
+          tn.setAttribute('bbn-transition', true);
+          if (node.childElementCount > 1) {
+            tn.setAttribute('bbn-transition-multiple', true);
+          }
 
-        bbn.fn.each(attrs, attr => {
-          if (attr.indexOf('bbn-transition-') === 0) {
-            tn.setAttribute(attr, node.getAttribute(attr));
-          }
-          else {
-            let v = node.getAttribute(attr);
-            if (!attr.indexOf(':')) {
-              attr = attr.substr(1);
+          bbn.fn.each(attrs, attr => {
+            if (attr.indexOf('bbn-transition-') === 0) {
+              tn.setAttribute(attr, node.getAttribute(attr));
             }
-            else if (attr.indexOf('@')) {
-              v = "'" + bbn.fn.escapeSquotes(v) + "'";
+            else {
+              let v = node.getAttribute(attr);
+              if (!attr.indexOf(':')) {
+                attr = attr.substr(1);
+              }
+              else if (attr.indexOf('@')) {
+                v = "'" + bbn.fn.escapeSquotes(v) + "'";
+              }
+              //bbn.fn.log("SETTING ATTRIBUTE", attr, v);
+              tn.setAttribute(attr.indexOf('@') ? 'bbn-transition-' + attr : 'bbn-on:' + attr.substr(1), v);
             }
-            //bbn.fn.log("SETTING ATTRIBUTE", attr, v);
-            tn.setAttribute(attr.indexOf('@') ? 'bbn-transition-' + attr : 'bbn-on:' + attr.substr(1), v);
+          })
+          let tmp = analyzeElement(tn, inlineTemplates, idx + '-' + num, componentName, isSVG);
+          if (tmp.res.tag) {
+            prevTag = tmp.res.tag;
+            res.items.push(tmp.res);
+            num++;
+            lastEmpty = false;
           }
-        })
-        let tmp = analyzeElement(tn, inlineTemplates, idx + '-' + num, componentName, isSVG);
-        if (tmp.res.tag) {
-          prevTag = tmp.res.tag;
-          res.items.push(tmp.res);
-          num++;
-          lastEmpty = false;
         }
-      }
-    });
-    //bbn.fn.log("TRANSITION", res);
+      });
+      //bbn.fn.log("TRANSITION", res);
     }
     else if (node.getAttributeNames) {
       let tmp = analyzeElement(node, inlineTemplates, idx + '-' + num, componentName, isSVG);
@@ -485,6 +495,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
       }
 
       prevTag = tmp.res.tag;
+
       res.items.push(tmp.res);
       num++;
       lastEmpty = false;
@@ -517,6 +528,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
             empty: isEmpty,
           },
         });
+
         if (isDynamic) {
           item.text.exp = txt;
           item.text.value = '';
@@ -551,6 +563,9 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
   let conditionId = null;
   for (let i = 0; i < res.items.length; i++) {
     let item = res.items[i];
+    if (res.once) {
+      item.once = res.id;
+    }
     if (item.condition) {
       if (item.condition.type === 'if') {
         conditionId = bbn.fn.randomString(32);

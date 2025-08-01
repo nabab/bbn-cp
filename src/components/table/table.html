@@ -107,6 +107,7 @@
                                       :group-index="groupIndex"
                                       :dead="!titles"
                                       :index="i"
+                                      :key="(col.field || i) + '|' + (col.label || i)"
                                       :ref="'title-' + groupIndex + '-' + i"/>
               </template>
             </tr>
@@ -146,9 +147,8 @@
               </td>
             </tr>
             <!-- Rows -->
-            <template bbn-else
-                      bbn-for="(d, i) in items"
-                      :key="i">
+            <template bbn-elseif="!i || true"
+                      bbn-for="(d, i) in items">
               <!-- Group rows = start of a new group -->
               <bbn-table-row-group bbn-if="isGroupActive && (!i || (items[i-1].data[cols[group].field] !== d.data[cols[group].field]))"
                                    :source="d"

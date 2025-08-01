@@ -2,6 +2,10 @@ import bbnData from "../Data.js";
 
 bbnData.startWatching = function(from) {
   if (from) {
+    if (this.currentWatchers.includes(from)) {
+      bbn.fn.log("WARNING: The watcher is already in the current watchers list", from);
+    }
+
     this.currentWatchers.unshift(from);
   }
 
@@ -14,5 +18,5 @@ bbnData.startWatching = function(from) {
     this.isWatching = true;
   }
 
-  this.watchStarted = true;
+  bbn.cp.watchStarted = true;
 }

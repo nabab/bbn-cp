@@ -1,5 +1,6 @@
 import updateWatcher from "./updateWatcher.js";
 import propagateDependencyChanges from "./propagateDependencyChanges.js";
+import bbnData from "../../Data.js";
 /**
  * Updates a property of a component with a new value, managing data binding and event emission.
  * 

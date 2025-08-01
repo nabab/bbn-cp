@@ -44,7 +44,7 @@ bbnData.prototype.dataUpdate = function(path) {
   deps.push(...(this.deps.__bbnRoot || []));
   const todo = [];
   deps.forEach(a => {
-    if (!(a instanceof bbnComputed) || !this.hasParent(a.component, a.name)) {
+    if ((a.constructor.name !== 'bbnComputed') || !this.hasParent(a.component, a.name)) {
       todo.push({component: a.component || a?.node?.component, element: a, num})
     }
   });

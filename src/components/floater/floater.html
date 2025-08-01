@@ -11,14 +11,14 @@
         componentClass
       ]"
       bbn-show="isVisible"
-      @mouseleave="onFloaterLeave"
-      @mouseenter="isOver = true"
-      @keydown.esc.prevent.stop="close"
       :style="currentStyle"
       bbn-resizable:container.left.right.bottom="ready && resizable ? $el.parentElement : false">
   <div bbn-if="arrow"
        :class="['bbn-floater-arrow', position]"/>
-  <div :class="{'bbn-flex-height': scrollable || footer || label || currentButtons?.length || numButtonsInContainer}">
+  <div :class="{'bbn-flex-height': scrollable || footer || label || currentButtons?.length || numButtonsInContainer}"
+       @mouseleave="onFloaterLeave"
+       @mouseenter="onFloaterEnter"
+       @keydown.esc.prevent.stop="close">
     <div bbn-if="modal"
          class="bbn-overlay bbn-modal"
          @click="$emit('click-modal')"/>
@@ -124,7 +124,9 @@
                   :group-component="groupComponent"
                   :group-style="groupStyle"
                   :pageable="pageable"
-                  :pager-element="pagerElement"/>
+                  :pager-element="pagerElement"
+                  :flag="flag"
+                  :icon-component="iconComponent"/>
       </bbn-scroll>
       <div bbn-if="pageable && ready">
         <bbn-pager class="bbn-table-footer bbn-no-border-right bbn-no-border-left bbn-no-border-bottom"

@@ -378,10 +378,12 @@ export default {
         this.updateVisualList();
     
         this.updateVisualStyleContainer();
+        /*
         window.removeEventListener('focus', this.visualOnEvent);
         window.addEventListener('focus', this.visualOnEvent);
         window.removeEventListener('resize', this.visualOnEvent);
         window.addEventListener('resize', this.visualOnEvent);
+        */
       }
 
       if (!this.visualOrientation && this.isVisual) {

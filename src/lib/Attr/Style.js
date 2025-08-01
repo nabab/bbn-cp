@@ -1,5 +1,5 @@
 import bbnAttr from "./Attr.js";
-
+import bbnInternalNode from "../Node/Internal.js";
 /**
  * Takes care of the data reactivity for non primitive values.
  */
@@ -11,7 +11,7 @@ export default class bbnStyleAttr extends bbnAttr
     }
     
     if (init || (this.exp && (this.isChanged || (bbn.fn.numProperties(this.node.styles) > 1)))) {
-      const node = this.node instanceof bbnInternalNode && !this.node.component.$isRoot ? this.node.element.bbnSchema : this.node;
+      const node = (this.node.constructor.name === 'bbnInternalNode') && !this.node.component.$isRoot ? this.node.element.bbnSchema : this.node;
       node.styles[this.uid] = this.attrGetValue();
       node.nodeSetStyle();
     }

@@ -56,6 +56,18 @@ export default {
 
       return this.containers[this.views[idx]?.uid];
     },
+
+    getContainerByUrl(url) {
+      if (url) {
+        let idx = this.getIndex(url);
+        if (idx > -1) {
+          return this.getContainer(idx);
+        }
+      }
+
+      return null;
+    },
+
     /**
      * Returns the corresponding container's component's DOM element.
      * @method getDOMContainer

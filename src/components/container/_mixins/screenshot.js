@@ -69,7 +69,7 @@ export default {
     },
 
     async saveScreenshot(width, height) {
-      if (this.router.db && (this.currentIndex === this.router.selected) && !this.isPane) {
+      if (this.isVisible && this.router.db && !this.isPane && this.checkVisibility()) {
         let img       = await this.takeScreenshot(width, height);
         let num_tries = 0;
         while (!img && (num_tries < 5)) {
@@ -84,7 +84,6 @@ export default {
         }
 
         this.thumbnail = img;
-        bbn.fn.log("Screenshot", img);
         // This is in fact an insert/update
         this.router.db.insert('containers', {
           url: this.getFullURL(),
@@ -94,16 +93,21 @@ export default {
       }
     },
 
-    takeScreenshot(width, height) {
+    takeScreenshot(width, height, meth = 'png') {
       return new Promise(resolve => {
         if (this.screenshoter
             && this.isVisible
+            && this.checkVisibility()
             && bbn.fn.isActiveInterface(600)
             && !this.router.visualShowAll
         ) {
-          this.screenshoter.capture(this.getRef('canvasSource'), width, height).then(img => {
+          bbn.fn.log("SCREEEEEN", this.getRef('canvasSource'), width, height);
+          this.screenshoter.capture(this.getRef('canvasSource'), width, height, meth).then(img => {
             resolve(img);
           })
+        }
+        else {
+          resolve(false);
         }
       })
     },

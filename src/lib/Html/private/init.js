@@ -1,5 +1,6 @@
 import addNamespace from "./addNamespace.js";
 import addComponent from "../../../internals/addComponent.js";
+import bbnProtoHtml from "../Proto.js";
 
 /**
  * Starts everything up
@@ -245,11 +246,7 @@ export default function init(cp) {
   }
 
   // $isInit, defined in constructor  is made writable before being set to true
-  Object.defineProperty(cp, '$isInit', {
-    value: true,
-    writable: false,
-    configurable: true
-  });
+  cp.$isInit = true;
 
   // Setting up available props for HTML templates
   addNamespace(cp, '$internal', 'internal');

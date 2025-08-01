@@ -190,7 +190,7 @@ const cpDef = {
       // Editor widget/view instance
       widget: null,
       // Holds compartments for dynamic editor configurations
-      compartments: bbnData.immunizeValue(bbn.fn.createObject()),
+      compartments: bbn.cp.immunizeValue(bbn.fn.createObject()),
       currentTheme: this.theme,
       scrollContainer: null,
     }
@@ -357,7 +357,7 @@ const cpDef = {
       // Configuration for the editor state
       const parent = this.getRef('element');
       if (bbn.fn.isString(this.merge)) {
-        this.widget = new cm.merge.MergeView(bbnData.immunizeValue({
+        this.widget = new cm.merge.MergeView(bbn.cp.immunizeValue({
           a: {
             doc: this.merge, 
             // Applied extensions
@@ -393,7 +393,7 @@ const cpDef = {
         };
         // Create editor state
         this.state = cm.state.EditorState.create(editorStateCfg);
-        this.widget = new cm.view.EditorView(bbnData.immunizeValue({
+        this.widget = new cm.view.EditorView(bbn.cp.immunizeValue({
           // Set state
           state: this.state, 
           // Set parent element

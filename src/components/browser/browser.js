@@ -89,18 +89,22 @@ const cpDef = {
         return {
           /**
            * @data {Boolean} [false] ssl
+           * @memberof tab
            */
           ssl: false,
           /**
            * @data {String} ['home'] url
+           * @memberof tab
            */
           url: 'home',
           /**
            * @data {String} [null] rawURL
+           * @memberof tab
            */
           rawURL: null,
           /**
            * @data {String} [null] realURL
+           * @memberof tab
            */
           realURL: null
         }
@@ -120,22 +124,12 @@ const cpDef = {
 
 import cpHtml from './browser.html';
 import cpStyle from './browser.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/browser.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+//import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-browser',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  lang: cpLang
+  //lang: cpLang
 };

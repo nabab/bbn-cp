@@ -1,4 +1,5 @@
 import bbnAttr from "../Attr.js";
+import bbnData from "../Data.js";
 
 /**
  * Retrieves the arguments for evaluating the given attribute with the given data.
@@ -70,7 +71,7 @@ bbnAttr.prototype.attrExecAltError = function(data, subExec = false) {
           }
 
           if (!isInData && (arg in cp.$namespaces) && (cp.$namespaces[arg] !== 'method')) {
-            def += `    ${arg}: bbnData.hash(${arg}),\n`;
+            def += `    ${arg}: bbn.cp.hash(${arg}),\n`;
           }
         });
         if (def) {
@@ -95,7 +96,7 @@ bbnAttr.prototype.attrExecAltError = function(data, subExec = false) {
           }
 
           if (!isInData && (arg in cp.$namespaces) && (cp.$namespaces[arg] !== 'method')) {
-            stFn += `  if ($_bbnData['${arg}'] !== bbnData.hash(${arg})) {\n`;
+            stFn += `  if ($_bbnData['${arg}'] !== bbn.cp.hash(${arg})) {\n`;
             stFn += `    this['${arg}'] = ${arg};\n`;
             stFn += `  }\n`;
           }
@@ -150,14 +151,14 @@ bbnAttr.prototype.attrExecAltError = function(data, subExec = false) {
       }
         */
       //val = makeFn(this, usedArgs).bind(cp)(...args);
-      if (!(this instanceof bbnEventAttr)) {
+      if (this.constructor.name !== 'bbnEventAttr')) {
         seq.push(...bbnData.stopWatching(this));
       }
       isDone = true;
       //bbn.fn.log(["ECEC", stFn, usedVars, this]);
     }
     catch (e) {
-      if (!(this instanceof bbnEventAttr)) {
+      if (this.constructor.name !== 'bbnEventAttr') {
         bbnData.stopWatching(this);
       }
       if (e instanceof ReferenceError) {

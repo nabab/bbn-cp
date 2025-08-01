@@ -49,8 +49,13 @@ export default async function fetchComponent(tag) {
     }
 
     // Translate if language pack provided
-    if (comp.lang) {
-      bbn.fn.translate(comp.lang);
+    if (comp.lang && bbn.fn.isObject(comp.lang)) {
+      let lang = comp.lang;
+      if (bbn.fn.isObject(comp.lang[Object.keys(comp.lang)[0]])) {
+        lang = comp.lang[bbn.env.lang] || {};
+      }
+
+      bbn.fn.translate(lang);
     }
 
     // Include group's mixins in component definition

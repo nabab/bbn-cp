@@ -62,6 +62,9 @@ const cpDef = {
         type: [Boolean, String],
         default: true
       },
+      zIndex: {
+        type: Number
+      },
       /**
        * Defines if the slider is visible.
        * @prop {Boolean} [false] visible
@@ -150,6 +153,9 @@ const cpDef = {
         o[or.size] = this.isMobile ? '100%' : 'auto';
         o[or.prop] = 0;
         o[this.orientation] = this.currentVisible ? 0 : -this.currentSize + 'px';
+        if (this.zIndex) {
+          o.zIndex = this.zIndex;
+        }
 
         return o;
       }
@@ -308,17 +314,7 @@ const cpDef = {
   };
 import cpHtml from './slider.html';
 import cpStyle from './slider.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/slider.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-slider',

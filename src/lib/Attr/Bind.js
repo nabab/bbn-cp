@@ -1,11 +1,9 @@
 import bbnAttr from "./Attr.js";
-import bbnSlotNode from "../Node/Slot.js";
 import setNoValueAttribute from "./private/setNoValueAttribute.js";
 import setSVGAttribute from "./private/setSVGAttribute.js";
 import setPropOnComponent from "./private/setPropOnComponent.js";
 import setRegularAttribute from "./private/setRegularAttribute.js";
 import setUndefinedAttribute from "./private/setUndefinedAttribute.js";
-import bbnInternalNode from "../Node/Internal.js";
 
 
 /**
@@ -34,12 +32,12 @@ export default class bbnBindAttr extends bbnAttr
       if (this.result.value) {
         for (let n in this.result.value) {
           if (n === 'style') {
-            const styleNode = node instanceof bbnInternalNode && !node.component.$isRoot ? node.element.bbnSchema : node;
+            const styleNode = (node.constructor.name === 'bbnInternalNode') && !node.component.$isRoot ? node.element.bbnSchema : node;
             styleNode.styles[this.uid] = this.result.value[n];
             styleNode.nodeSetStyle();
           }
           else if (n === 'class') {
-            const classNode = node instanceof bbnInternalNode && !node.component.$isRoot ? node.element.bbnSchema : node;
+            const classNode = (node.constructor.name === 'bbnInternalNode') && !node.component.$isRoot ? node.element.bbnSchema : node;
             classNode.classes[this.uid] = this.result.value[n];
             classNode.nodeSetStyle();
           }
@@ -60,7 +58,7 @@ export default class bbnBindAttr extends bbnAttr
         }
       }
 
-      if (!(this.node instanceof bbnSlotNode)) {
+      if (this.node.constructor.name !== 'bbnSlotNode') {
         for (let n in this.node.props) {
           if (!this.node.attr[n] && (!this.result.value || !(n in this.result.value))) {
             delete this.node.props[n];

@@ -7,7 +7,6 @@
  */
 
 import countryCodes from './_codes.js';
-import '/node_modules/flag-icons/css/flag-icons.min.css';
 
 
 const cpDef = {
@@ -118,7 +117,7 @@ const cpDef = {
         c.fixedPrefix = c.fixedPrefix || '';
         c.maxlength = c.maxlength || 0;
         if (this.icons) {
-          c.icon = `fi fi-${c.code.toLowerCase()}`;
+          c.icon = c.code.toLowerCase();
         }
 
         return c;
@@ -316,17 +315,7 @@ const cpDef = {
 
 import cpHtml from './phone.html';
 import cpStyle from './phone.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/phone.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-phone',

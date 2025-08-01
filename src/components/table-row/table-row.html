@@ -109,8 +109,8 @@
                       :tabindex="table.editable && table.isEditable(source.data, col, index) ? 0 : -1"/>
     </template>
     <!-- INVISIBLE COLUMNS BEFORE VISIBLE -->
-    <component bbn-if="table.hasScrollX && (table.firstColumnVisible > (table.groupCols[0].cols.length ? 0 : 1))"
-              :colspan="table.firstColumnVisible - (table.groupCols[0].cols.length ? 0 : 1)"
+    <component bbn-if="table.shownCols.length && table.hasScrollX && (table.shownCols[0] > (table.groupCols[0].cols.length ? 0 : 1))"
+              :colspan="table.shownCols[0] - (table.groupCols[0].cols.length ? 0 : 1)"
               class="invisible-before"
               is="td"/>
     <!-- ALL VISIBLE CENTRAL COLUMNS -->
@@ -160,8 +160,8 @@
                       :tabindex="table.editable && table.isEditable(source.data, table.groupCols[1].cols[i], index) ? 0 : -1"/>
     </template>
     <!-- INVISIBLE COLUMNS AFTER VISIBLE -->
-    <component bbn-if="table.hasScrollX && (table.lastColumnVisible < (table.groupCols[0].cols.length + table.groupCols[1].cols.length - 1))"
-               :colspan="table.groupCols[1].cols.length - table.lastColumnVisible"
+    <component bbn-if="table.shownCols.length && table.hasScrollX && (table.lastColumnVisible < (table.groupCols[0].cols.length + table.groupCols[1].cols.length - 1))"
+               :colspan="table.groupCols[1].cols.length - table.shownCols[table.shownCols.length - 1]"
                class="invisible-after"
                is="td"/>
     <!-- LAST FIXED COLUMNS -->

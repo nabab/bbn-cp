@@ -617,7 +617,7 @@ const cpDef = {
         }
 
         const cp = this;
-        return bbnData.immunizeValue({
+        return bbn.cp.immunizeValue({
           props: {
             value: {},
             source: {},
@@ -1116,17 +1116,7 @@ const cpDef = {
 
 import cpHtml from './editable.html';
 import cpStyle from './editable.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/editable.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-editable',

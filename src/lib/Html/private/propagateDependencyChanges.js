@@ -1,5 +1,7 @@
 import bbnComputed from "../../Computed.js";
 import initResults from "./initResults.js";
+import bbnData from "../../Data.js";
+import bbnAttr from "../../Attr.js";
 
 const propagation = [];
 const propagationData = [];

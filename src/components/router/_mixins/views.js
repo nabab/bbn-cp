@@ -569,7 +569,7 @@ export default {
           this.$emit('unpin', idx);
         }
       }
-    }
+    },
   },
   watch: {
     /**

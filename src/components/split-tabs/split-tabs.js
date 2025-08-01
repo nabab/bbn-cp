@@ -1078,16 +1078,7 @@ const cpDef = {
 
 import cpHtml from './split-tabs.html';
 import cpStyle from './split-tabs.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    cpLang = await import(`./_i18n/split-tabs.${bbn.env.lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-split-tabs',

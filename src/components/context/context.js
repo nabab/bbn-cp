@@ -150,16 +150,6 @@ const cpDef = {
         currentMaxHeight: this.maxHeight || bbn.env.height
       };
     },
-    computed: {
-      floaterStyle() {
-        const obj = {};
-        if (this.zIndex) {
-          obj.zIndex = this.zIndex;
-        }
-
-        return obj;
-      }
-    },
     methods: {
       touchstart(e) {
         bbn.fn.log("TOUCH START", e);
@@ -325,22 +315,12 @@ const cpDef = {
 
 import cpHtml from './context.html';
 import cpStyle from './context.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/context.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+//import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-context',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  lang: cpLang
+  //lang: cpLang
 };

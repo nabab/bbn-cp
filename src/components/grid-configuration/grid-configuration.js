@@ -64,16 +64,7 @@ const cpDef = {
 
 import cpHtml from './grid-configuration.html';
 import cpStyle from './grid-configuration.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    cpLang = await import(`./_i18n/grid-configuration.${bbn.env.lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-grid-configuration',

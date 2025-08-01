@@ -34,22 +34,12 @@ const cpDef = {
 
 import cpHtml from './table-cell-selector.html';
 import cpStyle from './table-cell-selector.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/table-cell-selector.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) { }
-}
+//import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-table-cell-selector',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  lang: cpLang
+  //lang: cpLang
 };

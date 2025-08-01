@@ -61,6 +61,7 @@ export default async function createApp(ele, obj) {
 
   // Add prefix handling for component names.
   // Define how to handle 'bbn-' prefixed components.
+
   bbn.cp.addPrefix('bbn-', async cp => {
     const res = bbn.fn.createObject({
       components: []
@@ -140,10 +141,20 @@ export default async function createApp(ele, obj) {
     cp.style.cssText = cls;
   }
 
-  if (bbn.cp.preCompiled) {
-    bbn.fn.iterate(bbn.cp.preCompiled, a => {
-      bbn.cp.define(a.name, a.definition, a.template, a.css);
-    });
+  if (bbn.cp.toDefine?.length) {
+    while (bbn.cp.toDefine?.length) {
+      const r = bbn.cp.toDefine.shift();
+      if (r.lang && bbn.fn.isObject(r.lang)) {
+        let lang = r.lang;
+        if (bbn.fn.isObject(r.lang[Object.keys(r.lang)[0]])) {
+          lang = r.lang[bbn.env.lang] || {};
+        }
+
+        bbn.fn.translate(lang);
+      }
+
+      bbn.cp.define(r.name, r.definition, r.template || '', r.style || '');
+    }
   }
   // Replace the placeholder with the new component.
   parent.replaceChild(cp, placeholder);

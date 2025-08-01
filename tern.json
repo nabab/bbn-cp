@@ -1,0 +1,101 @@
+{
+    "bbn": {
+        "cp": {
+            "addPrefix": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/addPrefix",
+                "!doc": "Adds a prefix to the list of known prefixes for component names."
+            },
+            "addUrlAsPrefix": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/addUrlAsPrefix",
+                "!doc": "Adds a prefix just with a URL, which will be used to query the component definitions."
+            },
+            "attributeChangedCallback": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/attributeChangedCallback",
+                "!doc": null
+            },
+            "createApp": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/createApp",
+                "!doc": "Initializes an anonymous component with given element and configuration object."
+            },
+            "define": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/define",
+                "!doc": "Defines a component with the Object config and the HTML template."
+            },
+            "fetchComponent": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/fetchComponent",
+                "!doc": "Dynamically fetches and defines UI components based on provided component names."
+            },
+            "getComponent": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/getComponent",
+                "!doc": "Retrieves a component in the document based on its id."
+            },
+            "hash": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/hash",
+                "!doc": "Returns a unique identifier from any type of value (hashes only simple objects and arrays)"
+            },
+            "immunizeValue": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/immunizeValue",
+                "!doc": null
+            },
+            "initDefaults": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/initDefaults",
+                "!doc": "Sets default object for a component, accessible through bbn.vue.defaults[__COMPONENT_NAME__]."
+            },
+            "isComponent": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/isComponent",
+                "!doc": "Returns true if the given argument is component, under the form of a bbnSchema object, an HTML element or directly a component"
+            },
+            "isTag": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/isTag",
+                "!doc": "Checks if the given element matches a specific tag."
+            },
+            "mapTemplate": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/mapTemplate",
+                "!doc": null
+            },
+            "normalizeComponent": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/normalizeComponent",
+                "!doc": "Normalizes the configuration of a component, ensuring it adheres to the expected structure and types."
+            },
+            "queueUpdate": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/queueUpdate",
+                "!doc": ""
+            },
+            "setDefaults": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/setDefaults",
+                "!doc": ""
+            },
+            "startTick": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/startTick",
+                "!doc": "Starts the ticking process for component updates."
+            },
+            "stopTick": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/stopTick",
+                "!doc": ""
+            },
+            "updateDirectives": {
+                "!type": "fn() -> mixed",
+                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/updateDirectives",
+                "!doc": "Updates the given directives to the target element."
+            }
+        }
+    }
+}

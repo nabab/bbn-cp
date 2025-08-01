@@ -270,22 +270,10 @@ const cpDef = {
 
 import cpHtml from './wheel.html';
 import cpStyle from './wheel.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/wheel.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
 
 export default {
   name: 'bbn-wheel',
   definition: cpDef,
   template: cpHtml,
-  style: cpStyle,
-  lang: cpLang
+  style: cpStyle
 };

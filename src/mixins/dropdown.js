@@ -191,16 +191,37 @@ const dropdown = {
     sourceUrl: {
       type: [String, Boolean],
       default: false
+    },
+    /**
+     * The component used to display the icon.
+     * @prop {String|Object|HTMLElement} iconComponent
+     */
+    iconComponent: {
+      type: [String, Object, HTMLElement]
+    },
+    /**
+     * A bbn-flag component will be used to show the icons of the items.
+     * @prop {Boolean} [false] flag
+     */
+    flag: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       /**
-       * True when the user's mouse is over the dropdown element or its list
+       * True when the user's mouse is over the dropdown element
        * @data {Bool} [false] isOverDropdown
        * @memberof dropdownComponent
        */
       isOverDropdown: false,
+      /**
+       * True when the user's mouse is over the floater element
+       * @data {Bool} [false] isOverDropdown
+       * @memberof dropdownComponent
+       */
+      isOverFloater: false,
       /**
        * The timeout before closing the floater
        * @data {int} [0] closeTimeout
@@ -526,6 +547,22 @@ const dropdown = {
       if (this.native) {
         this.isOpened = false;
       }
+    },
+    onMouseEnter(ev){
+      //bbn.fn.log("ON MOUSE ENTER", ev);
+      this.isOverDropdown = true;
+    },
+    onMouseLeave(ev){
+      //bbn.fn.log("ON MOUSE LEAVE", ev);
+      this.isOverDropdown = false;
+    },
+    onFloaterEnter(ev){
+      //bbn.fn.log("ON FLOATER ENTER FROM DROPDOWN", ev);
+      this.isOverFloater = true;
+    },
+    onFloaterLeave(ev){
+      //bbn.fn.log("ON FLOATER LEAVE FROM DROPDOWN", ev);
+      this.isOverFloater = false;
     }
   },
   beforeMount() {
@@ -546,8 +583,7 @@ const dropdown = {
     },
     /**
      * Closes the floater menu of the component.
-     * @method leave
-     * @param element 
+     * @watch isOverDropdown
      * @memberof dropdownComponent
      */
     isOverDropdown(v) {
@@ -557,8 +593,25 @@ const dropdown = {
       else {
         this.closeTimeout = setTimeout(() => {
           let lst = this.getRef('list');
-          if (lst) {
-            bbn.fn.log("SHOULD CLOSE");
+          if (lst && !this.isOverFloater) {
+            lst.close(true);
+          }
+        }, this.closeDelay);
+      }
+    },
+    /**
+     * Closes the floater menu of the component.
+     * @watch isFloaterDropdown
+     * @memberof dropdownComponent
+     */
+    isOverFloater(v) {
+      if (v) {
+        clearTimeout(this.closeTimeout);
+      }
+      else {
+        this.closeTimeout = setTimeout(() => {
+          let lst = this.getRef('list');
+          if (lst && !this.isOverDropdown) {
             lst.close(true);
           }
         }, this.closeDelay);
@@ -578,11 +631,7 @@ const dropdown = {
       * @memberof dropdownComponent
       */
     source() {
-      this.updateData().then(() => {
-        if (this.filteredData.length) {
-          this.onResize();
-        }
-      });
+      setTimeout(this.onResize, 250)
     },
     /**
       * @watch buttons

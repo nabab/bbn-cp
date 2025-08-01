@@ -1,5 +1,4 @@
 import bbnAttr from "../Attr.js";
-import bbnInternalNode from "../../Node/Internal.js";
 import setDataAttribute from "../private/setNoValueAttribute.js";
 import setNoValueAttribute from "../private/setNoValueAttribute.js";
 import setSVGAttribute from "../private/setSVGAttribute.js";
@@ -33,7 +32,7 @@ bbnAttr.prototype.attrUpdate = function(init) {
         }
       }
       */
-      if (node instanceof bbnInternalNode) {
+      if (node.constructor.name === 'bbnInternalNode') {
         node = this.node.component.$el?.bbnSchema;
         if (Object.hasOwn(node?.attr || {}, name) || Object.hasOwn(node?.bind?.value || {}, name)) {
           //return;

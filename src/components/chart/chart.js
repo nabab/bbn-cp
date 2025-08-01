@@ -1426,17 +1426,7 @@ const cpDef = {
 
 import cpHtml from './chart.html';
 import cpStyle from './chart.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/chart.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 const def = {
   name: 'bbn-chart',

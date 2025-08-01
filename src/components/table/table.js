@@ -495,17 +495,7 @@ const cpDef = {
 
 import cpHtml from './table.html';
 import cpStyle from './table.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/table.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) { }
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-table',

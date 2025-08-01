@@ -1,3 +1,4 @@
+import bbnData from "./Data.js";
 // Class representing a data facade that interacts with a node's data and allows access to it through proxy methods.
 export default class bbnFacade {
   __bbn_node; // The node associated with this data facade.
@@ -12,7 +13,7 @@ export default class bbnFacade {
     this.__bbn_deps = bbn.fn.createObject(); // Initialize dependencies object.
 
     // If data is provided, assign it and set the keys from the data object.
-    if (data && !(data instanceof bbnFacade)) {
+    if (data && (data.constructor?.name !== bbnFacade)) {
       this.__bbn_data = data;
       this.__bbn_keys = Object.keys(data);
     }

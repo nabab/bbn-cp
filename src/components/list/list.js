@@ -167,12 +167,33 @@ const cpDef = {
       type: [String, Function],
       default: 'action'
     },
+    /**
+     * @prop {Boolean} [false] scrollHidden
+     */
     scrollHidden: {
       type: Boolean,
       default: false
     },
+    /**
+     * @prop {Function} buttons
+     */
     buttons: {
       type: Function
+    },
+    /**
+     * The component used to display the icon.
+     * @prop {String|Object|HTMLElement} iconComponent
+     */
+    iconComponent: {
+      type: [String, Object, HTMLElement]
+    },
+    /**
+     * A bbn-flag component will be used to show the icons of the items.
+     * @prop {Boolean} [false] flag
+     */
+    flag: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -676,22 +697,12 @@ const cpDef = {
 
 import cpHtml from './list.html';
 import cpStyle from './list.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/list.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) { }
-}
+//import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-list',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  lang: cpLang
+  //lang: cpLang
 };

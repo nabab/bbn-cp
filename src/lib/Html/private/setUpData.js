@@ -1,6 +1,7 @@
 import addNamespace from "./addNamespace.js";
 import setData from "./setData.js";
 import updateWatcher from "./updateWatcher.js";
+import bbnData from "../../Data.js";
 
 export default function setUpData(cp, name, value) {
   

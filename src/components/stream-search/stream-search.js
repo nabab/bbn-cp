@@ -307,7 +307,6 @@ const cpDef = {
       if (!this.isDisabled) {
         let ev = new Event('select', { cancelable: true });
         this.$emit('select', ev, item, idx, dataIndex);
-        //bbn.fn.log(["SELECT", item])
         if (!ev.defaultPrevented) {
           if (this.sourceAction && item[this.sourceAction]) {
             if (typeof (item[this.sourceAction]) === 'string') {
@@ -464,7 +463,7 @@ const cpDef = {
 
             if (!this.itv) {
               this.itv = setInterval(() => {
-                bbn.fn.log("ITV");
+                //bbn.fn.log("BIG SEARCH: ITV");
                 if (!this.isRunning && this.queue.length) {
                   this.isRunning = true;
                   let lastAdded = 0;
@@ -512,7 +511,7 @@ const cpDef = {
             }
 
             if (d?.data) {
-              bbn.fn.log("REPLY", d)
+              //bbn.fn.log("BIG SEARCH REPLY", d)
               if (d.value === this.filterString) {
                 this.queue.push(...d.data);
               }
@@ -584,7 +583,7 @@ const cpDef = {
       if (!this.itv) {
         this.itv = setInterval(() => {
           if (!this.isRunning && this.queue.length) {
-            bbn.fn.log(this.queue.slice());
+            //bbn.fn.log(this.queue.slice());
             this.isRunning = true;
             let lastAdded = 0;
             const cd = this.currentData;
@@ -632,7 +631,7 @@ const cpDef = {
 
       bbn.fn.each(arr, d => {
         if (d.done === 1) {
-          bbn.fn.log("DONE SENT FROM SW", d)
+          //bbn.fn.log("DONE SENT FROM SW", d)
           this.isStarted = false;
           if (!this.queue.length) {
             clearInterval(this.itv);

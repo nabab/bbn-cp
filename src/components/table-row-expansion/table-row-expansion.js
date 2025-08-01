@@ -32,22 +32,12 @@ const cpDef = {
 
 import cpHtml from './table-row-expansion.html';
 import cpStyle from './table-row-expansion.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/table-row-expansion.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) { }
-}
+//import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-table-row-expansion',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  lang: cpLang
+  //lang: cpLang
 };

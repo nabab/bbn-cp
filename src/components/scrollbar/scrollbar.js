@@ -310,6 +310,10 @@ const cpDef = {
         this.dragging = true;
         // Start in pixels
         this.start = this.isVertical ? e.pageY : e.pageX;
+        document.addEventListener("mousemove", this.onDrag);
+        document.addEventListener("touchmove", this.onDrag);
+        document.addEventListener("mouseup", this.stopDrag);
+        document.addEventListener("touchend", this.stopDrag);
       }
     },
     /**
@@ -327,13 +331,17 @@ const cpDef = {
             this.adjustFromBar();
           }
           this.start = newStart;
-        })
+        }, 'onDrag', 25);
       }
     },
     /**
      * @method stopDrag
      */
     stopDrag() {
+      document.removeEventListener("mousemove", this.onDrag);
+      document.removeEventListener("touchmove", this.onDrag);
+      document.removeEventListener("mouseup", this.stopDrag);
+      document.removeEventListener("touchend", this.stopDrag);
       this.dragging = false;
     },
     setSliderPos(pos) {
@@ -776,10 +784,6 @@ const cpDef = {
    */
   mounted() {
     this.initContainer();
-    document.addEventListener("mousemove", this.onDrag);
-    document.addEventListener("touchmove", this.onDrag);
-    document.addEventListener("mouseup", this.stopDrag);
-    document.addEventListener("touchend", this.stopDrag);
     this.onResize();
     this.overContent();
   },
@@ -803,32 +807,16 @@ const cpDef = {
         a.removeEventListener('mousemove', this.overContent);
       });
     }
-    document.removeEventListener("mousemove", this.onDrag);
-    document.removeEventListener("touchmove", this.onDrag);
-    document.removeEventListener("mouseup", this.stopDrag);
-    document.removeEventListener("touchend", this.stopDrag);
   },
 };
 
 import cpHtml from './scrollbar.html';
 import cpStyle from './scrollbar.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/scrollbar.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-    
-  }
-  catch (err) {}
-}
-
+//import cpLang from './_i18n/index.js';
 export default {
   name: 'bbn-scrollbar',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  lang: cpLang
+  //lang: cpLang
 };

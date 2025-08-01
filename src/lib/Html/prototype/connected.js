@@ -54,22 +54,14 @@ bbnProtoHtml.$connected = function () {
 
   //bbn.fn.warning(this.$options.name + " / " + this.$el.bbnSchema.id + " / CID: " + this.bbnCid);
 
-  Object.defineProperty(this, '$isConnected', {
-    value: true,
-    writable: false, 
-    configurable: false
-  });
+  this.$isConnected = true;
 
   let realSlots = this.$options.name === 'bbn-anon' ? retrieveSlots(this.bbnTpl || this.items) : bbn.fn.clone(this.constructor.bbnSlots);
   if (!Object.keys(realSlots || {}).length) {
     // Ensure a default slot is always available
     realSlots = { default: [] }; 
   }
-  Object.defineProperty(this, 'bbnSlots', {
-    value: realSlots,
-    writable: false,
-    configurable: false
-  });
+  this.bbnSlots = realSlots;
   bbn.fn.iterate(this.bbnTmpSlots, (a, n) => {
     if (realSlots[n]) {
       realSlots[n].push(...a.splice(0));
@@ -140,18 +132,9 @@ bbnProtoHtml.$connected = function () {
   mapDependencies(this);
 
   if (!this.$isCreated) {
-    Object.defineProperty(this, '$lastBuild', {
-      value: 0,
-      writable: true
-    });
-
     // If no template it's a functional component
     if (this.$tpl['0']) {
-      Object.defineProperty(this, '$internal', {
-        value: generateNode(this.$tpl['0'], this, this.$el, this.$node.root, this.$node.rootHash),
-        writable: false,
-        configurable: false
-      });
+      this.$internal = generateNode(this.$tpl['0'], this, this.$el, this.$node.root, this.$node.rootHash);
     }
 
     onHook(this, 'created');
@@ -160,11 +143,7 @@ bbnProtoHtml.$connected = function () {
       this.$el.dispatchEvent(created);
     }
 
-    Object.defineProperty(this, '$isCreated', {
-      value: true,
-      writable: false, 
-      configurable: false
-    });
+    this.$isCreated = true;
   }
   else {
     bbn.fn.log("ALREADY CREATED")
@@ -209,11 +188,7 @@ bbnProtoHtml.$connected = function () {
     this.$el.dispatchEvent(beforeMount);
   }
 
-  Object.defineProperty(this, '$isWatched', {
-    value: true,
-    writable: false, 
-    configurable: false
-  });
+  this.$isWatched = true;
 
   tryMount(this);
   // Important

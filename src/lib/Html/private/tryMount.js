@@ -32,11 +32,7 @@ export default function tryMount(cp, child) {
       cp.dispatchEvent(mounted);
     }
 
-    Object.defineProperty(cp, '$isMounted', {
-      value: true,
-      writable: false, 
-      configurable: false
-    });
+    cp.$isMounted = true;
     cp.classList.add('bbn-component-mounted');
 
     if (cp.$origin) {

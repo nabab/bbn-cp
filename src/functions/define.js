@@ -1,3 +1,4 @@
+import bbnData from "../lib/Data.js";
 import stringToTemplate from "../internals/stringToTemplate.js";
 import generateCpClass from "../internals/generateCpClass.js";
 import generateHtmlClass from "../internals/generateHtmlClass.js";
@@ -59,7 +60,7 @@ export default function define(name, obj, tplSt, css) {
   }
 
   // Store component configuration in bbn.cp.statics.
-  bbn.cp.statics[name] = bbnData.immunizeValue(bbn.fn.createObject({
+  bbn.cp.statics[name] = bbn.cp.immunizeValue(bbn.fn.createObject({
     tpl: cpTpl,
     map: cpMap,
     cls: publicName + 'HTML',

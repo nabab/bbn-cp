@@ -44,10 +44,14 @@ export default {
        */
       cols: [],
       shownCols: [],
-      firstColumnVisible: 0,
-      lastColumnVisible: false,
-      tmpFirstColumnVisible: 0,
-      tmpLastColumnVisible: false,
+      firstColumnVisible: null,
+      lastColumnVisible: null,
+      lastSentColumnVisible: null,
+      prevLastSentColumnVisible: null,
+      lastColumnRebuild: 0,
+      intersectionWidth: null,
+      columnRebuildDelay: 30,
+      columnRebuildTimeout: null,
       tmpColumnVisible: 0,
       rowSizeObserver: null,
       scrollIsMounted: false,
@@ -111,30 +115,68 @@ export default {
   },
   methods: {
     updateShownCols() {
-      if (!this.hasScrollX || this.groupable) {
-        const shownCols = this.groupCols[1].cols.map((a, i) => i);
-        this.lastColumnVisible = this.shownCols[this.shownCols.length - 1];
-        if (!this.groupCols[0].cols.length) {
-          shownCols.shift();
-        }
-
-        this.shownCols = shownCols;
+      clearTimeout(this.columnRebuildTimeout);
+      if (this.isUpdatingShownCols) {
+        this.columnRebuildTimeout = setTimeout(() => {
+          this.updateShownCols();
+        }, this.columnRebuildDelay);
         return;
       }
 
-      const cols = [];
-      let first = this.hasScrollX ? this.firstColumnVisible : 0;
-      if (!first && !this.groupCols[1].cols.length) {
-        first = 1;
-      }
-      const last = this.hasScrollX ? this.lastColumnVisible : this.groupCols[1].cols.length - 1;
-      if (last > first) {
-        for (let i = first; i <= last; i++) {
-          cols.push(i);
-        }
+      this.isUpdatingShownCols = true;
+      const now = bbn.fn.timestamp();
+      if (this.lastColumnRebuild && (this.lastSentColumnVisible !== this.lastColumnVisible)) {
+        this.lastSentColumnVisible = this.lastColumnVisible;
+        this.columnRebuildTimeout = setTimeout(() => {
+          this.updateShownCols();
+        }, this.columnRebuildDelay);
       }
 
-      this.shownCols = cols;
+      if ((this.lastColumnRebuild + this.columnRebuildDelay) < now) {
+        if (!this.hasScrollX || this.groupable) {
+          const shownCols = this.groupCols[1].cols.map((a, i) => i);
+          this.lastColumnVisible = this.shownCols[this.shownCols.length - 1];
+          if (!this.groupCols[0].cols.length) {
+            shownCols.shift();
+          }
+          
+          this.shownCols = shownCols;
+          this.lastColumnRebuild = bbn.fn.timestamp();
+          this.isUpdatingShownCols = false;
+          return;
+        }
+
+        if ([this.firstColumnVisible, this.lastColumnVisible].includes(null)) {
+          this.isUpdatingShownCols = false;
+          return;
+        }
+
+
+
+        const cols = [];
+        let first = this.firstColumnVisible;
+        if (!first && !this.groupCols[1].cols.length) {
+          first = 1;
+        }
+        const last = this.lastColumnVisible;
+        if (last > first) {
+          for (let i = first; i <= last; i++) {
+            cols.push(i);
+          }
+        }
+
+        this.shownCols = cols;
+        this.lastColumnRebuild = bbn.fn.timestamp();
+        bbn.fn.log(['updateShownCols', this.firstColumnVisible, this.lastColumnVisible, cols]);
+      }
+      else {
+        clearTimeout(this.columnRebuildTimeout);
+        this.columnRebuildTimeout = setTimeout(() => {
+          this.updateShownCols();
+        }, this.columnRebuildDelay);
+      }
+
+      this.isUpdatingShownCols = false;
     },
     updateScrollCurrentY() {
       if (this.$refs.scroll?.$refs) {
@@ -173,6 +215,9 @@ export default {
       const scrollable = this.scrollable;
       if (!this.scrollIntersection && (hasScrollX || scrollable) && !this.groupable) {
         this.scrollIntersection = new IntersectionObserver(entries => {
+          if (!this.checkVisibility()) {
+            return;
+          }
           const cols = this.groupCols[1].cols;
           if ((this.scrollCurrentX === null) && hasScrollX) {
             this.scrollCurrentX = this.$refs.scroll.currentX;
@@ -181,7 +226,12 @@ export default {
           const currentScrollX = hasScrollX ? this.$refs.scroll.$refs.scrollContent.scrollLeft : 0;
           const isLeft = currentScrollX < this.scrollCurrentX;
 
+          let isFirst = this.firstColumnVisible === null;
+          let firstVisible = null;
+          let lastVisible = null;
+          
           entries.forEach(entry => {
+            const isInit = entry.target.visible === null;
             // Going in
             if (entry.intersectionRatio > 0) {
               // Row
@@ -190,29 +240,27 @@ export default {
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
+                entry.target.visible = true;
                 if (entry.target.groupIndex === 1) {
                   // Init
-                  if (entry.target.visible === null) {
-                    if (!this.tmpColumnVisible || (this.tmpColumnVisible < (entry.target.index + 5))) {
-                      this.tmpColumnVisible = Math.min(entry.target.index + 5, cols.length - 1);
+                  if (isInit) {
+                    if (firstVisible === null) {
+                      firstVisible = entry.target.index;
                     }
-                    if (entry.target.index === (cols.length - 1)) {
-                      this.lastColumnVisible = this.tmpColumnVisible;
-                      this.tmpLastColumnVisible = this.tmpColumnVisible;
-                      this.updateShownCols();
-                    }
-                  }
-                  else {
-                    // Going left
-                    if (isLeft) {
-                      this.tmpFirstColumnVisible = Math.max(0, entry.target.index - 5);
-                    }
-                    // Going right
                     else {
-                      this.tmpLastColumnVisible = Math.min(entry.target.index + 5, cols.length - 1);
+                      lastVisible = entry.target.index;
                     }
                   }
-                  entry.target.visible = true;
+                  // Going left
+                  else if (isLeft) {
+                    if ((firstVisible === null) || (entry.target.index < firstVisible)) {
+                      firstVisible = entry.target.index;
+                    }
+                  }
+                  // Going right
+                  else if ((lastVisible === null) || (entry.target.index > lastVisible)) {
+                    lastVisible = entry.target.index;
+                  }
                 }
               }
             }
@@ -224,33 +272,53 @@ export default {
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
-                if (entry.target.groupIndex === 1) {
-                  // Init
-                  if (entry.target.visible === null) {
-                    if (entry.target.index === (cols.length - 1)) {
-                      this.lastColumnVisible = this.tmpColumnVisible;
-                      this.updateShownCols();
-                    }
-                  }
-                  else {
-                    // Going left
-                    if (isLeft) {
-                      this.tmpLastColumnVisible = Math.min(entry.target.index + 5, cols.length - 1);
-                    }
-                    // Going right
-                    else {
-                      this.tmpFirstColumnVisible = Math.max(0, entry.target.index - 5);
-                    }
-                  }
-                  entry.target.visible = false;
-                }
+                entry.target.visible = false;
               }
             }
           });
+
+          const max = this.groupCols[1].cols.length - 1;
+          let pvW = 0;
+          if (isFirst) {
+            this.groupCols[1].cols.slice(firstVisible, lastVisible + 1).forEach((c, i) => {
+              pvW += c.realWidth;
+            });
+            this.intersectionWidth = 3 * this.lastKnownWidth;
+            this.firstColumnVisible = firstVisible;
+            this.lastColumnVisible = lastVisible;
+          }
+          else if (lastVisible !== null) {
+            for (let i = lastVisible; i >= 0; i--) {
+              pvW += cols[i].realWidth;
+              if (!i || (pvW >= this.intersectionWidth)) {
+                if (i < 10) {
+                  i = 0;
+                }
+                this.firstColumnVisible = i;
+                this.lastColumnVisible = this.groupCols[1].cols[lastVisible] ? lastVisible : this.groupCols[1].cols.length - 1;
+                break;
+              }
+            }
+          }
+          else if (firstVisible !== null) {
+            for (let i = firstVisible; i <= max; i++) {
+              pvW += cols[i].realWidth;
+              if ((i === max) || (pvW >= this.intersectionWidth)) {
+                if (i > max - 10) {
+                  i = max;
+                }
+                this.firstColumnVisible = firstVisible > 0 ? firstVisible : 0;
+                this.lastColumnVisible = i;
+                break;
+              }
+            }
+          }
+
           this.scrollCurrentX = currentScrollX;
         }, {
           root: this.$refs.scroll.$refs.scrollContent,
-          threshold: 0.0
+          threshold: 0.0,
+          rootMargin: '150%'
         });
         this.rowSizeObserver = new ResizeObserver(entries => {
           for (const e of entries) {
@@ -493,7 +561,6 @@ export default {
       bbn.fn.each(groupCols, a => {
         a.sum = bbn.fn.sum(a.cols, 'realWidth');
       });
-      bbn.fn.warning("BEFORE")
       this.cols = cols;
       this.groupCols = groupCols;
       this.$nextTick(() => {
@@ -501,7 +568,6 @@ export default {
           this.updateShownCols();
         }
       });
-      bbn.fn.warning("AFTER")
     },
     /**
      * Returns the columns configuration.
@@ -546,14 +612,14 @@ export default {
 
   },
   watch: {
-    tmpFirstColumnVisible(v) {
-      setTimeout(() => {
-        if ((v >= this.tmpFirstColumnVisible) && (v <= this.tmpLastColumnVisible)) {
-          this.firstColumnVisible = this.tmpFirstColumnVisible;
-          this.lastColumnVisible = this.tmpLastColumnVisible;
+    lastColumnVisible(v) {
+      if (this.hasScrollX) {
+        const current = this.shownCols[this.shownCols.length - 1];
+        const cols = this.groupCols[1].cols;
+        if ((v === cols.length - 1) || !this.shownCols.length || !cols[current] || (Math.abs(cols[current].leftWidth - cols[v].leftWidth) > (bbn.env.width/3))) {
           this.updateShownCols();
         }
-      }, 100);
+      }
     },
     columns() {
       bbn.fn.log("WATCH COLUMNS");

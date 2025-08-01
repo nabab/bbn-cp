@@ -46,7 +46,7 @@ const cpDef = {
     },
     data(){
       return {
-        items: this.flatten(this.source),
+        items: null,
         /**
          * @data {Array} [[]] currentSelected
          */
@@ -72,14 +72,20 @@ const cpDef = {
          * @data {Number} [0] maxDepth
          */
         maxDepth: 0,
-        waiter: 0
+        waiter: 0,
+        previousSelected: null
       };
     },
     computed: {
+      currentDepth() {
+        const idx = this.currentSelected[this.currentSelected.length - 1];
+        const item = bbn.fn.getRow(this.items || [], {id: idx});
+        return item ? item.depth : 1;
+      },
       lastSelectedIndex() {
         return this.currentSelected[this.currentSelected.length - 1];
       },
-      lastSelecteList() {
+      lastSelectedList() {
         const lastItemSelected = this.lastSelectedIndex;
         let row = bbn.fn.getRow(this.items, {id: lastItemSelected});
         if (!row) {
@@ -171,6 +177,7 @@ const cpDef = {
     },
     methods: {
       flatten(items, parent = null, depth = 1, index = '0') {
+        const id = parent ? parent + '-' + index : index;
         const cp = this;
         const res = [{
           data: items,
@@ -178,23 +185,30 @@ const cpDef = {
           selected: false,
           visible: false,
           depth,
-          id: parent ? parent + '-' + index : index,
+          id,
           get style() {
+            //bbn.fn.log(["Getting style for " + id, cp.currentSelected, this.id, index, depth])
             let left = '100%';
             let display = 'none';
-            if (cp.currentSelected[cp.currentSelected.length - 1] === this.id) {
+            const cs = cp.currentSelected;
+            if ((cp.lastSelectedIndex === this.id) || ((cs.length > 1) && (cs[cs.length - 2] === this.id) && !cp.lastSelectedItem?.data?.length)) {
               left = '0px';
               display = 'block';
             }
-            else if (cp.currentSelected.includes(this.id)) {
-              let idx = cp.currentSelected.indexOf(this.id);
-              left = bbn.fn.getRow(cp.items, {id: cp.currentSelected[idx + 1]}) ? '-100%' : '0px';
+            else if (cs.includes(this.id)) {
+              let idx = cs.indexOf(this.id);
+              left = bbn.fn.getRow(cp.items, {id: cs[idx + 1]}) ? '-100%' : '0px';
               display = 'block';
             }
-            else if ((cp.currentSelected.length === 1) && (this.depth <= 2)) {
+            else if ((cs.length === 1) && (this.depth <= 2)) {
               display = 'block';
             }
-            else if (this.parent === cp.currentSelected[cp.currentSelected.length - 1]) {
+            else if (this.parent === cs[cs.length - 1]) {
+              display = 'block';
+            }
+            else if (!cs.length && (this.depth === 1)) {
+              bbn.fn.warning("FFFFFF");
+              bbn.fn.log(this);
               display = 'block';
             }
 
@@ -236,7 +250,7 @@ const cpDef = {
        * @emits select
        */
       select(itemIdx, dataIdx) {
-        const lastBits = this.currentSelected[this.currentSelected.length - 1].split('-');
+        const lastBits = this.currentSelected.length ? this.currentSelected[this.currentSelected.length - 1].split('-') : [];
         const thisBits = this.items[itemIdx].id.split('-');
 
         if (thisBits.length + 1 === lastBits.length) {
@@ -260,6 +274,7 @@ const cpDef = {
           last = this.currentSelected.pop();
         }
 
+        this.previousSelected = last;
         this.$emit('unselect', this.currentSelected)
       },
       /**
@@ -270,13 +285,6 @@ const cpDef = {
         this.selectedIndex = false;
         this.currentSelected.splice(0, this.currentSelected.length, '0');
         this.items = this.flatten(this.source);
-        bbn.fn.log("END RESET START")
-      },
-      waitReady() {
-       clearTimeout(this.waiter);
-       this.waiter = setTimeout(() => {
-          this.ready = true;
-       }, 100);
       }
     },
     mounted() {
@@ -284,9 +292,15 @@ const cpDef = {
         if (this.$parent.$options && (this.$parent.$options._componentTag === 'bbn-scroll')) {
           this.hasScroll = true;
         }
+
+        this.reset();
+        this.ready = true;
       });
     },
     watch: {
+      currentDepth(v, o) {
+        bbn.fn.log(["CURRENT DEPTH CHANGED", v, o]);
+      },
       /**
        * @watch source
        * @fires reset

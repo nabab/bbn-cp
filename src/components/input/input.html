@@ -43,6 +43,7 @@
           :minlength="minlength"
           :autocomplete="currentAutocomplete"
           :pattern="currentPattern"
+          @select.stop
           @input="onInput"
           @click="onClick"
           @paste="$emit('paste', $event)"

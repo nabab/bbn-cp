@@ -29,12 +29,12 @@ const list = {
       default: 0
     },
     /**
-     * The total of items in the list. 
-     * @data {Number} [0] total
+     * The total of items in the list, false if the total is unknown.
+     * @data {Boolean|Number} [0] total
      * @memberof listComponent
      */
     total: {
-      type: Number
+      type: [Boolean, Number]
     },
     /**
      * The array of predefined limits.
@@ -486,7 +486,7 @@ const list = {
        * @memberof listComponent
        * @data {Number} [0] currentTotal
        */
-      currentTotal: 0,
+      currentTotal: this.total === false ? 0 : this.total,
       /**
        * True if the list is loading data.
        * @data {Boolean} [false] isLoading
@@ -583,13 +583,15 @@ const list = {
 
       let pass = false;
       return bbn.fn.filter(this.limits.sort((a, b) => a - b), a => {
-        if (a > this.total) {
+        if ((this.total !== false) && (a > this.currentTotal)) {
           if (!pass) {
             pass = true;
             return true;
           }
+
           return false;
         }
+
         return true;
       });
     },
@@ -617,6 +619,9 @@ const list = {
 
       return cp;
     },
+    fakeTotal() {
+      return this.total === false ? this.currentStart + (this.currentLimits[this.currentLimits.length-1] * 100) : 0;
+    },
     /**
      * Return the number of pages of the list.
      * @computed numPages
@@ -625,7 +630,7 @@ const list = {
      */
     numPages() {
       if (this.isAjax) {
-        return Math.ceil(this.currentTotal / this.currentLimit);
+        return Math.ceil((this.fakeTotal || this.currentTotal) / this.currentLimit);
       }
 
       return Math.ceil(this.filteredTotal / this.currentLimit);
@@ -1017,7 +1022,7 @@ const list = {
                 setTimeout(() => {
                   resolve({
                     data: this.currentData,
-                    total: this.currentTotal
+                    total: this.fakeTotal || this.currentTotal
                   })
                 })
               })
@@ -1099,7 +1104,8 @@ const list = {
                   dir: (d.dir || '').toUpperCase() === 'DESC' ? 'DESC' : 'ASC'
                 });
               }
-              this.currentTotal = d.total || this.filteredData.length;
+              this.currentTotal = this.fakeTotal || d.total || this.filteredData.length;
+
               /** @todo Observer part to dissociate */
               if (d.observer && bbn.fn.isFunction(this.observerCheck) && this.observerCheck()) {
                 this._observerReceived = d.observer.value;
@@ -1174,7 +1180,7 @@ const list = {
                 }
               }
 
-              this.total--;
+              this.currentTotal--;
               this.updateIndexes();
               this.$emit('delete', data, ev);
               if (window.appui) {
@@ -1196,7 +1202,7 @@ const list = {
             }
           }
 
-          this.total--;
+          this.currentTotal--;
           if (this.originalData) {
             this.originalData.splice(index, 1);
           }

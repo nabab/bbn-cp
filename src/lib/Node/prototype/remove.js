@@ -20,11 +20,11 @@ const removeElement = function(res, ele, node) {
 
       if (!node.isComponent && ele.tagName && node.attributes?.length) {
         for (let i = 0; i < node.attributes.length; i++) {
-          if (node.attributes[i] instanceof bbnEventAttr) {
+          if (node.attributes[i].constructor.name === 'bbnEventAttr') {
             ele.removeEventListener(node.attributes[i].name, node.attributes[i].handler, node.attributes[i].cfg);
           }
     
-          if (node.attributes[i] instanceof bbnModelAttr) {
+          if (node.attributes[i].constructor.name === 'bbnModelAttr') {
             const eventName = node.attributes[i].modifiers.includes('lazy') ? 'change' : 'input';
             ele.removeEventListener(eventName, node.attributes[i].handler);
           }

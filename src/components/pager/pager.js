@@ -121,11 +121,14 @@ const cpDef = {
           const start = (this.element.currentStart || 0) + 1;
           const limit = this.element.currentLimit;
           const last = (this.element.currentStart || 0)+ limit;
-          const total = isAjax ? this.element.currentTotal : this.element.filteredData.length;
+          const total = isAjax ? (this.element.total === false ? bbn._('unknown') : this.element.currentTotal) : this.element.filteredData.length;
           if (this.isMobile) {
             return `<i class="nf nf-fa-hashtag bbn-m bbn-right-sspace"></i> <span>${total}</span>`;
           }
-          if (total) {
+          if (this.element.total === false) {
+            return start + '-' + last + ' ' + bbn._('of') + ' ' + total;
+          }
+          else if (total) {
             return start + '-' + (last > total ? total : last) + ' ' + bbn._('of') + ' ' + total;
           }
 
@@ -266,17 +269,7 @@ const cpDef = {
 
 import cpHtml from './pager.html';
 import cpStyle from './pager.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/pager.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-pager',

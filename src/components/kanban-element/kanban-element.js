@@ -80,6 +80,13 @@ const cpDef = {
       type: Object
     },
     /**
+     * The options for the toolbar component
+     * @prop {Object} toolbarOptions
+     */
+    toolbarOptions: {
+      type: Object
+    },
+    /**
      * The options for the component
      * @prop {Object} componentOptions
      */
@@ -134,12 +141,14 @@ const cpDef = {
     setCheckCollapse(force){
       if (this.autoCollapse || force) {
         this.$once('dataloaded', () => {
-          if (this.filteredData.length) {
-            this.expand(force);
-          }
-          else {
-            this.collapse(force);
-          }
+          this.$nextTick(() => {
+            if (this.filteredData.length) {
+              this.expand(force);
+            }
+            else {
+              this.collapse(force);
+            }
+          });
         });
       }
     },
@@ -261,16 +270,7 @@ const cpDef = {
 }
 import cpHtml from './kanban-element.html';
 import cpStyle from './kanban-element.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    cpLang = await import(`./_i18n/kanban-element.${bbn.env.lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-kanban-element',

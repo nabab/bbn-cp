@@ -1,7 +1,5 @@
 import bbnAttr from "../Attr.js";
-import bbnConditionAttr from "../Condition.js";
-import bbnModelAttr from "../Model.js";
-import bbnShowAttr from "../Show.js";
+import bbnData from "../../Data.js";
 
 const checkDeps = function (data, name) {
   let i = 0;
@@ -79,7 +77,7 @@ bbnAttr.prototype.attrSetResult = function(data) {
   const component = node.component;
   const result = this.result;
   // Check if the result needs to be updated.
-  if (!(this instanceof bbnModelAttr) && ((this.result?.num || 0) > node.component.$numBuild) && !Object.hasOwn(arguments, 0)) {
+  if ((this.constructor.name !== 'bbnModelAttr') && ((this.result?.num || 0) > node.component.$numBuild) && !Object.hasOwn(arguments, 0)) {
     return this.value;
   }
 
@@ -97,7 +95,7 @@ bbnAttr.prototype.attrSetResult = function(data) {
   }
 
   let expValue = res.val;
-  if (this instanceof bbnConditionAttr || this instanceof bbnForgetAttr || this instanceof bbnShowAttr) {
+  if (['bbnConditionAttr', 'bbnShowAttr', 'bbnForgetAttr'].includes(this.constructor.name)) {
     expValue = !!expValue;
     //bbn.fn.log([this.exp, this.id, expValue, this.node.element])
   }

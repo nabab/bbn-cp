@@ -78,11 +78,11 @@ bbnProtoHtml.$destroy = function() {
   }
 
   for (let i = 0; i < node.attributes.length; i++) {
-    if (node.attributes[i] instanceof bbnEventAttr) {
+    if (node.attributes[i].constructor.name === 'bbnEventAttr') {
       this.removeEventListener(node.attributes[i].name, node.attributes[i].handler, node.attributes[i].cfg);
     }
 
-    if (node.attributes[i] instanceof bbnModelAttr) {
+    if (node.attributes[i].constructor.name === 'bbnModelAttr') {
       const eventName = node.attributes[i].modifiers.includes('lazy') ? 'change' : 'input';
       this.removeEventListener(eventName, node.attributes[i].handler);
     }

@@ -76,8 +76,15 @@
           </span>
           <span bbn-if="hasIcons"
                 class="space bbn-c bbn-iblock">
-            <i bbn-if="li.data[sourceIcon]"
-               :class="'bbn-m ' + li.data[sourceIcon]"/>
+            <template bbn-if="li.data[sourceIcon]">
+              <bbn-flag bbn-if="flag"
+                        :value="li.data[sourceIcon]"/>
+              <component bbn-elseif="iconComponent"
+                        :is="iconComponent"
+                        :source="li.data"/>
+              <i bbn-else
+                 :class="'bbn-m ' + li.data[sourceIcon]"/>
+            </template>
           </span>
           <span class="text"
                 bbn-html="li.data[sourceText]"/>

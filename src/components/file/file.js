@@ -289,17 +289,7 @@ const cpDef = {
 
 import cpHtml from './file.html';
 import cpStyle from './file.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/file.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 const def = {
   name: 'bbn-file',

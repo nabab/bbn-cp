@@ -100,7 +100,7 @@ const cpDef = {
      * The axis where the scroll is applied ( 'x', 'y', 'both')
      * @prop {String} ['both'] axis
      */
-      axis: {
+    axis: {
       type: String,
       default: "both"
     },
@@ -344,12 +344,30 @@ const cpDef = {
     index: {
       type: Number
     },
+    zIndex: {
+      type: Number
+    },
     scrollHidden: {
       type: Boolean,
       default: false
     },
     scrollKeepVisible: {
       type: Boolean
+    },
+    /**
+     * The component used to display the icon.
+     * @prop {String|Object|HTMLElement} iconComponent
+     */
+    iconComponent: {
+      type: [String, Object, HTMLElement]
+    },
+    /**
+     * A bbn-flag component will be used to show the icons of the items.
+     * @prop {Boolean} [false] flag
+     */
+    flag: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -533,6 +551,10 @@ const cpDef = {
             minHeight: this.formatSize(this.currentMinHeight)
           });
         }
+      }
+
+      if (this.zIndex) {
+        s.zIndex = this.zIndex;
       }
 
       s.opacity = this.isResized && this.$isMounted ? '1' : '0';
@@ -1132,6 +1154,10 @@ const cpDef = {
       //bbn.fn.log("ON FLOATER LEAVE")
       this.isOver = false;
     },
+    onFloaterEnter() {
+      //bbn.fn.log("ON FLOATER ENTER")
+      this.isOver = true;
+    },
     /**
      * Closes the floater by hiding it.
      * @method close
@@ -1480,17 +1506,7 @@ const cpDef = {
 
 import cpHtml from './floater.html';
 import cpStyle from './floater.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/floater.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-floater',

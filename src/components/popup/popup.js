@@ -115,6 +115,16 @@ const cpDef = {
     };
   },
   computed: {
+    maxZindex() {
+      let max = 0;
+      bbn.fn.each(this.items, a => {
+        if (a.zIndex && (a.zIndex > max)) {
+          max = a.zIndex;
+        }
+      });
+
+      return max;
+    },
     /**
      * @computed numPopups
      * @return {Number}
@@ -480,6 +490,7 @@ const cpDef = {
      * @fires open
      */
     confirm() {
+      bbn.fn.log(['confirm', arguments]);
       let onYes = false;
       let onNo = false;
       let yesText = bbn._('Yes');
@@ -528,7 +539,7 @@ const cpDef = {
           else if (bbn.cp.isComponent(arguments[i])) {
             o.opener = arguments[i];
           }
-          else if (typeof (arguments[i]) === 'object') {
+          else if (arguments[i] && (typeof(arguments[i]) === 'object')) {
             options = arguments[i];
           }
         }
@@ -565,11 +576,14 @@ const cpDef = {
           }
         }];
 
-        this.open(bbn.fn.extend(o, options, {
+        const cfg = bbn.fn.extend({}, o, options, {
           resizable: false,
           maximizable: false,
           scrollable: true
-        }));
+        });
+        bbn.fn.log(cfg);
+
+        this.open(cfg);
       }
     },
     /**
@@ -630,17 +644,7 @@ const cpDef = {
 
 import cpHtml from './popup.html';
 import cpStyle from './popup.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/popup.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-popup',

@@ -1,13 +1,310 @@
-import bbnAnonCp from "../Html/Anon.js";
 import bbnProtoHtml from "./Proto.js";
 import bbnComputed from "../Computed.js";
 import stringToTemplate from "../../internals/stringToTemplate.js";
 import setUpProp from "./private/setUpProp.js";
+import bbnData from "../Data.js";
 
 const {res: cpTpl, map: cpMap} = stringToTemplate('<slot/>', true, 'bbn-anon');
 
 export default class bbnAnonHtml extends HTMLElement
 {
+  static bbnTag = 'bbn-anon';
+
+  static bbnFn = bbnAnonHtml;
+
+  static bbnCls = 'bbnAnonHtml';
+
+  static bbnTpl = cpTpl;
+
+  static bbnMap = cpMap;
+
+  static bbnCfg = bbn.cp.normalizeComponent({
+    mixins: [bbn.cp.mixins.basic],
+    props: {
+      is: {
+        type: [String, Object],
+        default: 'div'
+      },
+      source: bbn.fn.createObject()
+    }
+  }, 'bbnAnonHtml');
+
+  #options;
+  #bbnSlots;
+  #bbnCid;
+  #bbnTmpSlots;
+  #isConnected = false;
+  #isInit = false;
+  #isDataSet = false;
+  #isCreating = false;
+  #isUpdating = null;
+  #isCreated = false;
+  #isWatched = false;
+  #isDestroying = false;
+  #isDestroyed = false;
+  #isMounted = false;
+  #tagUsed;
+  #props;
+  #propsCfg;
+  #namespaces;
+  #nodes;
+  #events;
+  #children;
+  #components;
+  #dataCfg;
+  #refsElements;
+  #internal;
+
+  $lastBuild = 0;
+
+  get _self() {
+    return this;
+  }
+
+  get $el() {
+    return this;
+  }
+
+  get $node() {
+    return this.bbnSchema;
+  }
+
+  get $cls() {
+    return this.constructor;
+  }
+
+  get $options() {
+    return this.#options;
+  };
+  set $options(v) {
+    if (!this.#options) {
+      this.#options = v;
+    }
+  };
+
+  get $cfg() {
+    return this.bbnCfg || this.constructor.bbnCfg;
+  }
+
+  get $dataValues() {
+    const obj = bbn.fn.createObject();
+    bbn.fn.iterate(this.$dataCfg, (a, n) => {
+      obj[n] = a.value;
+    });
+    return obj;
+  }
+
+
+  get $isConnected() {
+    return this.#isConnected;
+  }
+  set $isConnected(v) {
+    if (v && !this.#isConnected) {
+      this.#isConnected = v;
+    }
+  };
+
+  get $bbnCid() {
+    return this.#bbnCid;
+  };
+  set $bbnCid(v) {
+    if (!this.#bbnCid) {
+      this.#bbnCid = v;
+    }
+  };
+
+  get $bbnSlots() {
+    return this.#bbnSlots;
+  };
+  set $bbnSlots(v) {
+    if (!this.#bbnSlots) {
+      this.#bbnSlots = v;
+    }
+  };
+
+  get $bbnTmpSlots() {
+    return this.#bbnTmpSlots;
+  };
+  set $bbnTmpSlots(v) {
+    if (!this.#bbnTmpSlots) {
+      this.#bbnTmpSlots = v;
+    }
+  };
+
+  get $isInit() {
+    return this.#isInit;
+  };
+  set $isInit(v) {
+    if (v && !this.#isInit) {
+      this.#isInit = v;
+    }
+  };
+
+  get $isDataSet() {
+    return this.#isDataSet;
+  };
+  set $isDataSet(v) {
+    if (v && !this.#isDataSet) {
+      this.#isDataSet = v;
+    }
+  };
+
+  get $isCreating() {
+    return this.#isCreating;
+  };
+  set $isCreating(v) {
+    this.#isCreating = v;
+  };
+
+  get $isUpdating() {
+    return this.#isUpdating;
+  };
+  set $isUpdating(v) {
+    this.#isUpdating = v;
+  };
+
+  get $isCreated() {
+    return this.#isCreated;
+  };
+  set $isCreated(v) {
+    if (v && !this.#isCreated) {
+      this.#isCreated = v;
+    }
+  };
+
+  get $isWatched() {
+    return this.#isWatched;
+  };
+  set $isWatched(v) {
+    if (v && !this.#isWatched) {
+      this.#isWatched = v;
+    }
+  };
+
+  get $isDestroying() {
+    return this.#isDestroying;
+  };
+  set $isDestroying(v) {
+    this.#isDestroying = v;
+  };
+
+  get $isDestroyed() {
+    return this.#isDestroyed;
+  };
+  set $isDestroyed(v) {
+    if (v && !this.#isDestroyed) {
+      this.#isDestroyed = v;
+    }
+  };
+
+  get $isMounted() {
+    return this.#isMounted;
+  };
+  set $isMounted(v) {
+    if (v && !this.#isMounted) {
+      this.#isMounted = v;
+    }
+  };
+
+  get $tagUsed() {
+    return this.#tagUsed;
+  };
+  set $tagUsed(v) {
+    if (!this.#tagUsed) {
+      this.#tagUsed = v;
+    }
+  };
+
+  get $props() {
+    return this.#props;
+  };
+  set $props(v) {
+    if (!this.#props) {
+      this.#props = v;
+    }
+  };
+
+  get $propsCfg() {
+    return this.#propsCfg;
+  };
+  set $propsCfg(v) {
+    if (!this.#propsCfg) {
+      this.#propsCfg = v;
+    }
+  };
+
+  get $namespaces() {
+    return this.#namespaces;
+  };
+  set $namespaces(v) {
+    if (!this.#namespaces) {
+      this.#namespaces = v;
+    }
+  };
+
+  get $nodes() {
+    return this.#nodes;
+  };
+  set $nodes(v) {
+    if (!this.#nodes) {
+      this.#nodes = v;
+    }
+  };
+
+  get $events() {
+    return this.#events;
+  };
+  set $events(v) {
+    if (!this.#events) {
+      this.#events = v;
+    }
+  };
+
+  get $children() {
+    return this.#children;
+  };
+  set $children(v) {
+    if (!this.#children) {
+      this.#children = v;
+    }
+  };
+
+  get $components() {
+    return this.#components;
+  };
+  set $components(v) {
+    if (!this.#components) {
+      this.#components = v;
+    }
+  };
+
+  get $dataCfg() {
+    return this.#dataCfg;
+  };
+  set $dataCfg(v) {
+    if (!this.#dataCfg) {
+      this.#dataCfg = v;
+    }
+  };
+
+  get $refsElements() {
+    return this.#refsElements;
+  };
+  set $refsElements(v) {
+    if (!this.#refsElements) {
+      this.#refsElements = v;
+    }
+  };
+
+  get $internal() {
+    return this.#internal;
+  }
+  set $internal(v) {
+    if (!this.#internal) {
+      this.#internal = v;
+    }
+  }
+
   constructor() {
     super();
     bbnProtoHtml.construct.call(this);
@@ -49,6 +346,10 @@ export default class bbnAnonHtml extends HTMLElement
     return bbnProtoHtml.findAll.apply(this, args);
   }
 
+  findAllByKey(...args) {
+    return bbnProtoHtml.findAllByKey.apply(this, args);
+  }
+
   extend(...args) {
     return bbnProtoHtml.extend.apply(this, args);
   }
@@ -70,49 +371,24 @@ export default class bbnAnonHtml extends HTMLElement
     return st;
   }
 
-  static bbnTag = 'bbn-anon';
-
-  static bbnFn = bbnAnonHtml;
-
-  static bbnCls = 'bbnAnonHtml';
-
-  static bbnTpl = cpTpl;
-
-  static bbnMap = cpMap;
-
-  static bbnCfg = bbn.cp.normalizeComponent({
-    mixins: [bbn.cp.mixins.basic],
-    props: {
-      is: {
-        type: [String, Object],
-        default: 'div'
-      },
-      source: bbn.fn.createObject()
-    }
-  }, 'bbnAnonHtml');
-
   $options = bbn.fn.createObject({
     name: 'bbn-anon'
   });
 
 
   $connected() {
-    Object.defineProperty(this, '$options', {
-      value: {
-        name: this.tagName.toLowerCase(),
-        _componentTag: this.tagName.toLowerCase(),
-        components: bbn.fn.createObject(),
-        get propsData() {
-          if (this.$el) {
-            return this.$el.bbnSchema?.props || {};
-          }
-
-          return {};
+    this.#options = {
+      name: this.tagName.toLowerCase(),
+      _componentTag: this.tagName.toLowerCase(),
+      components: bbn.fn.createObject(),
+      get propsData() {
+        if (this.$el) {
+          return this.$el.bbnSchema?.props || {};
         }
-      },
-      writable: false,
-      configurable: false
-    });
+
+        return {};
+      }
+    };
     Object.defineProperty(this, '$computed', {
       value: bbn.fn.createObject(),
       writable: false,

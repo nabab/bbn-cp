@@ -32,7 +32,7 @@ bbnNode.prototype.nodeSetClass = function() {
     });
   
     const final = treatClassArguments(...args);
-    if ((this instanceof bbnInternalNode) || this.isComponent) {
+    if ((this.constructor.name === 'bbnInternalNode') || this.isComponent) {
       final.unshift('bbn-component');
     }
 

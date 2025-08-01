@@ -9,6 +9,7 @@
  *
  * @created 11/01/2017
  */
+import bbnData from "../../lib/Data.js";
 const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
@@ -26,7 +27,7 @@ const cpDef = {
       const queryCommandState = command => document.queryCommandState(command);
       const queryCommandValue = command => document.queryCommandValue(command);
       const exec = (command, value = null) => document.execCommand(command, false, value);
-      const defaultButtons = bbnData.immunizeValue({
+      const defaultButtons = bbn.cp.immunizeValue({
         blockStyle: {
           text: bbn._('Style'),
           active: false,
@@ -546,9 +547,9 @@ const cpDef = {
             if (url) bbnRte.exec('insertImage', url)
           }
         }
-      });
+      }, true);
       const setButtons = buttons => {
-        let res = bbnData.immunizeValue([]);
+        let res = bbn.cp.immunizeValue([]);
         if (!buttons.length) {
           buttons = Object.keys(bbnRte.defaultButtons);
         }
@@ -1103,17 +1104,7 @@ const cpDef = {
 
 import cpHtml from './rte.html';
 import cpStyle from './rte.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/rte.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-rte',

@@ -1,5 +1,6 @@
 import propagateDependencyChanges from "./Html/private/propagateDependencyChanges.js";
 import updateWatcher from "./Html/private/updateWatcher.js";
+import bbnData from "./Data.js";
 
 /**
  * Class representing a computed property.
@@ -191,7 +192,7 @@ export default class bbnComputed {
         let prev = false;
         for (let i = 0; i < deps.length; i++) {
           const a = deps[i];
-          if (a.data instanceof bbnData) {
+          if (a.data?.constructor?.name === 'bbnData') {
             if (!a.data.targetData) {
               continue;
             }
@@ -252,7 +253,7 @@ export default class bbnComputed {
     let prev = false;
     for (let i = 0; i < deps.length; i++) {
       const a = deps[i];
-      if (a.data instanceof bbnData) {
+      if (a.data?.constructor?.name === 'bbnData') {
         if (!a.data.value) {
           continue;
         }
@@ -364,7 +365,7 @@ export default class bbnComputed {
       this.#data = false;
     }
 
-    if (data instanceof bbnData) {
+    if (data.constructor?.name === 'bbnData') {
       this.#data = data;
     }
   }

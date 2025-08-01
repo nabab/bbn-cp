@@ -60,7 +60,7 @@ export default function checkPropValue(cp, name, cfg, value) {
   }
 
   if (cfg.reactive === false) {
-    v = bbnData.immunizeValue(v);
+    v = bbn.cp.immunizeValue(v);
   }
 
   // Custom validation for the property.

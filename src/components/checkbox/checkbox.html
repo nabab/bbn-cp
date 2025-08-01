@@ -7,7 +7,7 @@
          class="bbn-checkbox"
          :required="required"
          :disabled="isDisabled"
-         :readonly="readonly"
+         :readonly="readonly ? 'readonly' : ''"
          @change.stop="toggle"
          :checked="state"
          ref="element"

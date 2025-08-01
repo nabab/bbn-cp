@@ -1,6 +1,5 @@
 import bbn from '@bbn/bbn';
-import bbnConditionAttr from '../lib/Attr/Condition.js';
-import bbnComputed from '../lib/Computed.js';
+import bbnAttr from '../lib/Attr.js';
 import initResults from '../lib/Html/private/initResults.js';
 import queueUpdate from './queueUpdate.js';
 
@@ -65,7 +64,7 @@ async function treatQueue(num = 0, cps) {
       if (!isDebug) {
         isDebug = bbn.cp.numTicks;
         bbn.fn.log("SETTING DEBUG MODE", bbn.cp.queue);
-        //debugger;
+        debugger;
       }
     }
     else if (isDebug) {
@@ -98,8 +97,8 @@ async function treatQueue(num = 0, cps) {
         continue;
       }
       const isAttr = queueElement.element instanceof bbnAttr;
-      const isComputed = queueElement.element instanceof bbnComputed;
-      const isWatcher = queueElement.element instanceof bbnWatcher;
+      const isComputed = queueElement.element?.constructor?.name === 'bbnComputed';
+      const isWatcher = queueElement.element?.constructor?.name === 'bbnWatcher';
       //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
       if (isAttr && queueElement.element.node.isDestroyed) {
@@ -165,8 +164,8 @@ async function treatQueue(num = 0, cps) {
         }
 
         const id = attr.node.id;
-        if (!(attr instanceof bbnConditionAttr)) {
-          if (!(attr instanceof bbnForgetAttr) && forgotten.includes(attr.node)) {
+        if (attr.constructor.name !== 'bbnConditionAttr') {
+          if ((attr.constructor.name !== 'bbnForgetAttr') && forgotten.includes(attr.node)) {
             continue;
           }
 
@@ -180,7 +179,7 @@ async function treatQueue(num = 0, cps) {
         attr.attrUpdate();
         //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
         const attrValue = attr.attrGetValue();
-        if (attr instanceof bbnConditionAttr) {
+        if (attr.constructor.name === 'bbnConditionAttr') {
           if (attrValue && unconditioned.includes(attr.node)) {
             unconditioned.splice(unconditioned.indexOf(attr.node), 1);
           }
@@ -194,7 +193,7 @@ async function treatQueue(num = 0, cps) {
             unconditioned.push(attr.node);
           }
         }
-        else if (attr instanceof bbnForgetAttr) {
+        else if (attr.constructor.name === 'bbnForgetAttr') {
           if (!attrValue && forgotten.includes(attr.node)) {
             forgotten.splice(forgotten.indexOf(attr.node), 1);
           }
@@ -272,13 +271,10 @@ export default function startTick() {
 
   bbn.cp.isRunning = true;
   requestAnimationFrame(async () => {
-    setTimeout(() => {
-      treatQueue();
-      bbn.cp.isRunning = false;
-      if (bbn.cp.queue.length || bbn.cp.nextQueue.length) {
-        bbn.cp.startTick();
-      }
-    }, 0);
+    await treatQueue();
+    bbn.cp.isRunning = false;
+    if (bbn.cp.queue.length || bbn.cp.nextQueue.length) {
+      bbn.cp.startTick();
+    }
   });
-//  );
 }

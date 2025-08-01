@@ -7,7 +7,6 @@
  *
  * @author Mirko Argentino
  */
-import "flag-icons/css/flag-icons.min.css";
 const icons = [
   "nf-cod-account",
   "nf-cod-activate_breakpoints",
@@ -10905,22 +10904,12 @@ const cpDef = {
 
 import cpHtml from './iconpicker.html';
 import cpStyle from './iconpicker.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/iconpicker.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+//import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-iconpicker',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  lang: cpLang
+  //lang: cpLang
 };

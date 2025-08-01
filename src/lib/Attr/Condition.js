@@ -5,6 +5,15 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnConditionAttr extends bbnAttr
 {
+  keep = false;
+
+  constructor(def, node, name) {
+    super(def, node, name);
+    if (def.keep) {
+      this.keep = true;
+    }
+  }
+
   attrSet() {
     const node = this.node;
     const cp = node.component;

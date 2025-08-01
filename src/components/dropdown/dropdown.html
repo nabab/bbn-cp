@@ -4,14 +4,14 @@
        'bbn-textbox',
        {'bbn-disabled': !!isDisabled}
      ]"
-     @mouseenter="isOverDropdown = true"
-     @mouseleave="isOverDropdown = false"
      @focusin="isActive = true"
      @focusout="onFocusOut"
      tabindex="-1">
   <div :class="['bbn-rel', 'bbn-dropdown-container', 'bbn-flex-width', 'bbn-vmiddle', currentItemCls, {
-    'bbn-dropdown-container-native': native
-  }]">
+         'bbn-dropdown-container-native': native
+       }]"
+       @mouseenter="onMouseEnter"
+       @mouseleave="onMouseLeave">
     <div bbn-if="sourceIcon && hasValue && !!currentItemIcon"
          class="bbn-left-xspadding">
       <i :class="currentItemIcon"
@@ -105,8 +105,8 @@
               @select="onSelect"
               :source-items="null"
               :suggest="true"
-              @mouseenter="isOverDropdown = true"
-              @mouseleave="isOverDropdown = false"
+              @mouseenter.stop="onFloaterEnter"
+              @mouseleave.stop="onFloaterLeave"
               :selected="value ? [value] : []"
               @close="isOpened = false"
               :source="filteredData"
@@ -120,5 +120,7 @@
               :groupable="groupable"
               :source-group="sourceGroup"
               :group-component="groupComponent"
-              :group-style="groupStyle"/>
+              :group-style="groupStyle"
+              :flag="flag"
+              :icon-component="iconComponent"/>
 </div>

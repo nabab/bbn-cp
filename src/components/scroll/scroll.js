@@ -1,14 +1,246 @@
 /**
- * @file bbn-scroll component
- *
- * @description bbn-scroll is a component consisting of horizontal and vertical bars that allow the flow of content in both directions, if the container its smaller than the content, inserts and removes reactively vertical, horizontal bar or both.
- *
+ * bbn-scroll component
+ * 
+ * @component
+ * @description bbn-scroll is a component consisting of horizontal and vertical bars that allow the flow of content in both directions. If the container is smaller than the content, it inserts and removes reactively vertical, horizontal bar or both.
  * @copyright BBN Solutions
- *
  * @author BBN Solutions
- *
  * @created 10/02/2017
+ * 
+ * @mixes bbn.cp.mixins.basic
+ * @mixes bbn.cp.mixins.resizer
+ * @mixes bbn.cp.mixins.keepCool
+ * @mixes bbn.cp.mixins.events
+ * 
+ * @prop {Number} [400] duration - Duration of scroll animation in ms.
+ * @prop {String} ['both'] axis - The axis where the scroll is applied ('x', 'y', 'both').
+ * @prop {HTMLElement|Array|Function} scrollAlso - Not used.
+ * @prop {Number} [0] x - Defines the position of the x axis.
+ * @prop {Number} [0] y - Defines the position of the y axis.
+ * @prop {Boolean|String} [false] invisible - Defines if the scroll has to be hidden for one of the axis or both.
+ * @prop {String} barColor - Defines the color of the scroll bar.
+ * @prop {Number} [25] latency - The time of latency of the scroll.
+ * @prop {Boolean} [true] scrollable - Enables or disables scroll functionality.
+ * @prop {Boolean} [false] fullPage - Will scroll page by page.
+ * @prop {Boolean} [false] disabled - Disables scroll functionality.
+ * @prop {Number|HTMLElement} stepX - Step size for horizontal scroll.
+ * @prop {Number|HTMLElement} stepY - Step size for vertical scroll.
+ * @prop {Number|Array} [0] offsetX - Offset for horizontal scroll.
+ * @prop {Number|Array} [0] offsetY - Offset for vertical scroll.
+ * @prop {Number} [500] afterScrollDelay - Delay after scroll before triggering afterscroll event.
+ * @prop {Boolean} [false] keepVisible - Still show the scrollbar when no activity.
+ * @prop {Boolean} [true] autoresize - Enables or disables autoresize.
+ * 
+ * @data {Boolean} [false] readyDelay - Delay before ready state.
+ * @data {Boolean} [false] show - Not used.
+ * @data {Number} [0] currentX - Current position on the x axis.
+ * @data {Number} [0] currentY - Current position on the y axis.
+ * @data {String} scrollPos - Position of the scroll container.
+ * @data {String} containerPadding - Padding of the scroll container.
+ * @data {Boolean} hiddenX - If the horizontal scroll is hidden.
+ * @data {Boolean} hiddenY - If the vertical scroll is hidden.
+ * @data {Boolean} [false] hasScroll - If the scroll is present.
+ * @data {Boolean} [false] hasScrollX - If the horizontal scroll is present.
+ * @data {Boolean} [false] hasScrollY - If the vertical scroll is present.
+ * @data {Boolean} promise - Promise for scroll actions.
+ * @data {Boolean} isScrolling - If currently scrolling.
+ * @data {Boolean} isDragging - If currently dragging.
+ * @data {Boolean} isFocused - If currently focused.
+ * @data {Object} previousTouch - Previous touch coordinates.
+ * @data {Number} lastResize - Last resize timestamp.
+ * @data {Boolean} scrollReady - If scroll is ready.
+ * @data {Number|Boolean} touchX - Touch position on x axis.
+ * @data {Number|Boolean} touchY - Touch position on y axis.
+ * @data {Object|Boolean} scrollInitial - Initial scroll position.
+ * @data {String|null} touchDirection - Direction of touch.
+ * @data {Number|null} scrollTimeout - Timeout for scroll.
+ * @data {Number} currentStepX - Current step size for x axis.
+ * @data {Number} currentStepY - Current step size for y axis.
+ * @data {Boolean|null} inFloater - If in floater.
+ * @data {Object|null} bounding - Bounding rectangle of scroll container.
+ * 
+ * @computed {Boolean} hasX - If horizontal scroll is enabled.
+ * @computed {Boolean} hasY - If vertical scroll is enabled.
+ * @computed {HTMLElement} resizerObserved - Reference to scroll content.
+ * @computed {String} elementClass - Classes for the scroll element.
+ * @computed {String} contentClass - Classes for the scroll content.
+ * @computed {String} rgbaColor - RGBA color for scroll bar.
+ * @computed {Array} currentOffsetX - Current offset for x axis.
+ * @computed {Array} currentOffsetY - Current offset for y axis.
+ * 
+ * @method isVisibleInScroll
+ * @param {HTMLElement} element - Element to check.
+ * @param {Number} [margin=0] - Margin for visibility.
+ * @returns {Boolean} - True if element is visible in scroll.
+ * 
+ * @method isXInScroll
+ * @param {HTMLElement} element - Element to check.
+ * @param {Number} [margin=0] - Margin for visibility.
+ * @returns {Boolean} - True if element is visible in horizontal scroll.
+ * 
+ * @method isYInScroll
+ * @param {HTMLElement} element - Element to check.
+ * @param {Number} [margin=0] - Margin for visibility.
+ * @returns {Boolean} - True if element is visible in vertical scroll.
+ * 
+ * @method hashJustChanged
+ * @param {Number} [length=600] - Time window in ms.
+ * @returns {Boolean} - True if hash just changed.
+ * 
+ * @method onTouchstart
+ * @param {TouchEvent} e - Touch start event.
+ * 
+ * @method onTouchend
+ * @param {TouchEvent} e - Touch end event.
+ * 
+ * @method onTouchmove
+ * @param {TouchEvent} e - Touch move event.
+ * 
+ * @method onScroll
+ * @param {Event} e - Scroll event.
+ * @emits scroll
+ * 
+ * @method setScrollDelay
+ * @description Sets a delay before triggering afterScroll.
+ * 
+ * @method afterScroll
+ * @description Handles actions after scroll is finished.
+ * 
+ * @method axisSmoothScrollTo
+ * @param {Number} end - Destination coordinate.
+ * @param {Number} duration - Animation duration in ms.
+ * @param {Boolean} vertical - True for vertical scroll.
+ * @returns {Promise} - Resolves when animation is complete.
+ * 
+ * @method axisScrollTo
+ * @param {Number|HTMLElement|String} val - Target position or element.
+ * @param {Boolean} anim - Animate scroll.
+ * @param {Boolean} vertical - True for vertical scroll.
+ * @returns {Promise} - Resolves when scroll is complete.
+ * 
+ * @method scrollLevel
+ * @param {Boolean} before - Scroll before or after.
+ * @param {Boolean} anim - Animate scroll.
+ * @param {Boolean} vertical - True for vertical scroll.
+ * 
+ * @method scrollBefore
+ * @param {Boolean} anim - Animate scroll.
+ * @param {Boolean} vertical - True for vertical scroll.
+ * 
+ * @method scrollAfter
+ * @param {Boolean} anim - Animate scroll.
+ * @param {Boolean} vertical - True for vertical scroll.
+ * 
+ * @method scrollSet
+ * @param {Number} x - X coordinate.
+ * @param {Number} y - Y coordinate.
+ * @param {Boolean} anim - Animate scroll.
+ * @returns {Promise} - Resolves when scroll is complete.
+ * 
+ * @method scrollToX
+ * @param {Number} x - X coordinate.
+ * @param {Boolean} anim - Animate scroll.
+ * @returns {Promise} - Resolves when scroll is complete.
+ * 
+ * @method scrollToY
+ * @param {Number} y - Y coordinate.
+ * @param {Boolean} anim - Animate scroll.
+ * @returns {Promise} - Resolves when scroll is complete.
+ * 
+ * @method scrollHorizontal
+ * @param {Event} ev - Scroll event.
+ * @param {Number} left - Left position.
+ * @emits scrollx
+ * 
+ * @method scrollVertical
+ * @param {Event} ev - Scroll event.
+ * @param {Number} top - Top position.
+ * @emits scrolly
+ * 
+ * @method addVertical
+ * @param {Number} y - Amount to add to vertical scroll.
+ * @emits scrolly
+ * 
+ * @method addHorizontal
+ * @param {Number} x - Amount to add to horizontal scroll.
+ * @emits scrollx
+ * 
+ * @method scrollStart
+ * @param {Boolean} anim - Animate scroll.
+ * @fires scrollStartX
+ * @fires scrollStartY
+ * 
+ * @method scrollEnd
+ * @param {Boolean} anim - Animate scroll.
+ * @fires scrollEndX
+ * @fires scrollEndY
+ * 
+ * @method scrollStartX
+ * @param {Boolean} anim - Animate scroll.
+ * 
+ * @method scrollStartY
+ * @param {Boolean} anim - Animate scroll.
+ * 
+ * @method scrollBeforeX
+ * @param {Boolean} anim - Animate scroll.
+ * 
+ * @method scrollBeforeY
+ * @param {Boolean} anim - Animate scroll.
+ * 
+ * @method scrollAfterX
+ * @param {Boolean} anim - Animate scroll.
+ * 
+ * @method scrollAfterY
+ * @param {Boolean} anim - Animate scroll.
+ * 
+ * @method scrollEndX
+ * @param {Boolean} anim - Animate scroll.
+ * 
+ * @method scrollEndY
+ * @param {Boolean} anim - Animate scroll.
+ * 
+ * @method onResize
+ * @description Handles the resize of the scroll.
+ * @emits resize
+ * @returns {Promise}
+ * 
+ * @method initSize
+ * @description Initializes the size of the scroll container.
+ * @emits resizecontent
+ * @returns {Promise}
+ * 
+ * @method preResize
+ * @description Creates a delay to set the scroll as ready.
+ * 
+ * @event mounted
+ * @description Called when component is mounted.
+ * @fires waitReady
+ * 
+ * @watch scrollable
+ * @param {Boolean} newVal - New value for scrollable.
+ * @fires onResize
+ * 
+ * @watch currentX
+ * @param {Number} x - New x position.
+ * @param {Number} ox - Old x position.
+ * @emits reachleft
+ * @emits reachright
+ * @emits scrollx
+ * 
+ * @watch currentY
+ * @param {Number} y - New y position.
+ * @param {Number} oy - Old y position.
+ * @emits reachtop
+ * @emits reachbottom
+ * @emits scrolly
+ * 
+ * @watch stepX
+ * @param {Number|HTMLElement} val - New stepX value.
+ * 
+ * @watch stepY
+ * @param {Number|HTMLElement} val - New stepY value.
  */
+
 const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
@@ -626,7 +858,7 @@ const cpDef = {
         if (this.hasScrollX
           && (x !== undefined)
           && (x !== null)
-          && this.getRef('xScroller')
+          && this.getRef('xScroller')?.$isCreated
         ) {
           promises.push(this.getRef('xScroller').axisScrollTo(x, anim));
         }
@@ -634,7 +866,7 @@ const cpDef = {
         if (this.hasScrollY
           && (y !== undefined)
           && (y !== null)
-          && this.getRef('yScroller')
+          && this.getRef('yScroller')?.$isCreated
         ) {
           promises.push(this.getRef('yScroller').axisScrollTo(y, anim, true));
         }
@@ -646,32 +878,35 @@ const cpDef = {
     },
     scrollToX(x, anim) {
       return new Promise(resolve => {
+        const xscroll = this.getRef('xScroller');
         if (!this.hasScrollX
           || !this.ready
           || (x === undefined)
           || (x === null)
-          || !this.getRef('xScroller')
+          || !xscroll?.$isCreated
         ) {
           resolve();
         }
 
-        this.this.getRef('xScroller').axisScrollTo(x, anim).then(d => {
+
+        xscroll.axisScrollTo(x, anim).then(d => {
           resolve();
         });
       });
     },
     scrollToY(y, anim) {
       return new Promise(resolve => {
+        const yscroll = this.getRef('xScroller');
         if (!this.hasScrollY
           || !this.ready
           || (y === undefined)
           || (y === null)
-          || !this.getRef('yScroller')
+          || !yscroll.$isCreated
         ) {
           resolve();
         }
 
-        this.getRef('yScroller').axisScrollTo(y, anim, true).then(d => {
+        yscroll.axisScrollTo(y, anim, true).then(d => {
           resolve();
         });
       });

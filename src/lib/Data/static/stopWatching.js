@@ -8,6 +8,6 @@ bbnData.stopWatching = function(from) {
   const res = this.stoppers.pop()();
   this.lastSequence = res.length ? res[res.length - 1] : null;
   this.isWatching = !!this.stoppers.length;
-  this.watchStarted = this.isWatching;
+  bbn.cp.watchStarted = this.isWatching;
   return res;
 }

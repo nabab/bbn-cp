@@ -8,7 +8,8 @@
 const cpDef = {
   /**
    * @mixin bbn.cp.mixins.basic
-   * @mixin bbn.cp.mixins.table
+   * @mixin bbn.cp.mixins.cell
+   * @mixin bbn.cp.mixins.componentInside
    */
   mixins: [
     bbn.cp.mixins.basic,
@@ -35,22 +36,12 @@ const cpDef = {
 
 import cpHtml from './table-cell-aggregate.html';
 import cpStyle from './table-cell-aggregate.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/table-cell-aggregate.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) { }
-}
+//import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-table-cell-aggregate',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  lang: cpLang
+  //lang: cpLang
 };

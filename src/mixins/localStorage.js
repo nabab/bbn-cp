@@ -1,35 +1,32 @@
-let _storage = false;
-if (window.localStorage) {
-  _storage = {
-    get(name){
-      let tmp = window.localStorage.getItem(name);
-      if ( tmp ){
-        tmp = JSON.parse(tmp);
-        return tmp.value;
-      }
-    },
-    set(name, value){
-      return window.localStorage.setItem(name, JSON.stringify({
-        value: value,
-        time: (new Date()).getTime()
-      }));
-    },
-    time(name){
-      let tmp = window.localStorage.getItem(name);
-      if ( tmp ){
-        tmp = JSON.parse(tmp);
-        return tmp.time;
-      }
-      return false;
-    },
-    remove(name){
-      return window.localStorage.removeItem(name);
-    },
-    clear(){
-      return window.localStorage.clear();
+const _storage = {
+  get(name){
+    let tmp = window.localStorage.getItem(name);
+    if ( tmp ){
+      tmp = JSON.parse(tmp);
+      return tmp.value;
     }
-  };
-}
+  },
+  set(name, value){
+    return window.localStorage.setItem(name, JSON.stringify({
+      value: value,
+      time: (new Date()).getTime()
+    }));
+  },
+  time(name){
+    let tmp = window.localStorage.getItem(name);
+    if ( tmp ){
+      tmp = JSON.parse(tmp);
+      return tmp.time;
+    }
+    return false;
+  },
+  remove(name){
+    return window.localStorage.removeItem(name);
+  },
+  clear(){
+    return window.localStorage.clear();
+  }
+};
 
 const localStorage = {
   props: {
@@ -67,16 +64,7 @@ const localStorage = {
   },
   computed: {
     /**
-     *  _storage
-     * @memberof localStorageComponent
-     * 
-     */
-    _storage() {
-      return _storage;
-    },
-    /**
      * Returns if the component has storage.
-     * @memberof localStorageComponent
      * @computed {Boolean} hasStorage
      */
     hasStorage(){
@@ -87,8 +75,7 @@ const localStorage = {
     },
     /**
      * Returns the storage's default name.
-     * @computed storageDefaultName 
-     * @returns {String}
+     * @computed {String} storageDefaultName 
      */
     storageDefaultName(){
       return this._getStorageRealName();

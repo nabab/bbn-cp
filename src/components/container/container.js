@@ -13,7 +13,7 @@
 import view from './_mixins/view.js';
 import screenshot from './_mixins/screenshot.js';
 import menu from './_mixins/menu.js';
-import temp from './_mixins/2change.js';
+import toChange from './_mixins/toChange.js';
 import core from './_mixins/core.js';
 import visual from './_mixins/visual.js';
 import display from './_mixins/display.js';
@@ -46,6 +46,15 @@ const cpDef = {
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.resizer
    * @mixin bbn.cp.mixins.observer
+   * @mixin view
+   * @mixin screenshot
+   * @mixin menu
+   * @mixin toChange
+   * @mixin core
+   * @mixin visual
+   * @mixin display
+   * @mixin component
+   * @mixin selection
    */
   statics() {
     return {
@@ -57,7 +66,7 @@ const cpDef = {
     view,
     screenshot,
     menu,
-    temp,
+    toChange,
     core,
     visual,
     display,
@@ -160,17 +169,7 @@ const cpDef = {
 
 import cpHtml from './container.html';
 import cpStyle from './container.less';
-let cpLang = {};
-if (bbn.env.lang) {
-  try {
-    const lang = bbn.env.lang || 'en';
-    cpLang = await import(`./_i18n/container.${lang}.lang`);
-    if (cpLang.default) {
-      cpLang = cpLang.default;
-    }
-  }
-  catch (err) {}
-}
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-container',
