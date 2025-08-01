@@ -270,11 +270,13 @@ export default function startTick() {
   }
 
   bbn.cp.isRunning = true;
-  requestAnimationFrame(async () => {
-    await treatQueue();
-    bbn.cp.isRunning = false;
-    if (bbn.cp.queue.length || bbn.cp.nextQueue.length) {
-      bbn.cp.startTick();
-    }
-  });
+  setTimeout(() => {
+    requestAnimationFrame(async () => {
+      await treatQueue();
+      bbn.cp.isRunning = false;
+      if (bbn.cp.queue.length || bbn.cp.nextQueue.length) {
+        bbn.cp.startTick();
+      }
+    });
+  }, 0);
 }

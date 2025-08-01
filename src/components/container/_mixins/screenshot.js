@@ -71,16 +71,8 @@ export default {
     async saveScreenshot(width, height) {
       if (this.isVisible && this.router.db && !this.isPane && this.checkVisibility()) {
         let img       = await this.takeScreenshot(width, height);
-        let num_tries = 0;
-        while (!img && (num_tries < 5)) {
-          num_tries++;
-          img = await this.takeScreenshot(width, height);
-        }
-
         if (!img) {
-          appui.error(bbn._("Impossible to take the screenshot of") + ' ' + this.getFullCurrentURL());
           return;
-          //throw new Error(bbn._("Impossible to take the screenshot of " + this.getFullCurrentURL()));
         }
 
         this.thumbnail = img;
