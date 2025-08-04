@@ -123,7 +123,7 @@ const cpDef = {
        */
       label: {
         type: [String, Boolean],
-        default: bbn._("Untitled")
+        default: () => bbn._("Untitled")
       },
       /**
        * @prop {String} uid

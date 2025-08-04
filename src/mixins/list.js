@@ -378,7 +378,7 @@ const list = {
      */
     searchPlaceholder: {
       type: String,
-      default: bbn._("Search")
+      default: () => bbn._("Search")
     },
     /**
      * @todo not used in the component

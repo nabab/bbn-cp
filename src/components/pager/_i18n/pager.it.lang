@@ -15,5 +15,6 @@
     "Go to the last %s": "Vai all'ultima %s",
     "per": "per",
     "View SQL query:": "Vedi richiesta SQL",
-    "records": "registrazioni"
+    "records": "registrazioni",
+    "unknown": "sconosciuto"
 }

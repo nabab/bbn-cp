@@ -71,7 +71,7 @@ const cpDef = {
     },
     textPlaceholder: {
       type: String,
-      default: bbn._("Type a text")
+      default: () => bbn._("Type a text")
     }
   },
   data(){

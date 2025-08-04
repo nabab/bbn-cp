@@ -29,7 +29,7 @@ export default {
      */
     confirmMessage: {
       type: [String, Function, Boolean],
-      default: bbn._('Are you sure you want to delete this row?')
+      default: () =>  bbn._('Are you sure you want to delete this row?')
     },
     /**
      * Customize the loading text or hide it
@@ -54,7 +54,7 @@ export default {
      */
     pageName: {
       type: String,
-      default: bbn._("page")
+      default: () => bbn._("page")
     },
     /**
      * The name of the `record` word as used in the pager interface.
@@ -62,7 +62,7 @@ export default {
      */
     itemName: {
       type: String,
-      default: bbn._("rows")
+      default: () => bbn._("rows")
     },
     /**
      * Allows you to see the contents of a cell in a popup

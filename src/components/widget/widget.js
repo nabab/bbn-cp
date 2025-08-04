@@ -197,7 +197,7 @@ const cpDef = {
        */
       noData: {
         type: String,
-        default: bbn._("There is no available data")
+        default: () => bbn._("There is no available data")
       },
       /**
        * @prop {Array} [[]] menu

@@ -15,5 +15,6 @@
     "Go to the last %s": "Aller \u00e0 la derni\u00e8re %s",
     "per": "par",
     "View SQL query:": "Afficher la requête SQL",
-    "records": "enregistrements"
+    "records": "enregistrements",
+    "unknown": "inconnu"
 }

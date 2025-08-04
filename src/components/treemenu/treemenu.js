@@ -29,7 +29,7 @@ const cpDef = {
        */
       placeholder: {
         type: String,
-        default: bbn._('Search')
+        default: () => bbn._('Search')
       },
       /**
        * The source of the tree.
