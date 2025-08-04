@@ -210,7 +210,7 @@ const cpDef = {
               }
             })
             this.$nextTick(()=>{
-              if ( res[idx] && res[idx].firstElementChild.clientHeight ){
+              if ( res[idx] && res[idx]?.firstElementChild?.clientHeight ){
                 this.childHeight = res[idx].firstElementChild.clientHeight
               }
               return this.size ? {height: this.childHeight + 'px', overflow: 'hidden'} : {};
