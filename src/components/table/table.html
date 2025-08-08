@@ -85,9 +85,10 @@
           </colgroup>
           <!-- Thead -->
           <thead :class="{
-            'bbn-top-left': !titles,
-            'bbn-invisible': !titles
-          }">
+                  'bbn-top-left': !titles,
+                  'bbn-invisible': !titles
+                }"
+                ref="thead">
             <!-- Group titles -->
             <tr bbn-if="titles && titleGroups" class="bbn-table-tr-groups-titles">
               <template bbn-for="(groupCol, groupIndex) in groupCols">
