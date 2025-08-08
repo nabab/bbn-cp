@@ -12,7 +12,7 @@
       user-select: none;
       white-space: nowrap;
       margin: 0;
-      padding: 0.3rem 1rem;
+      padding: var(--xsspace) var(--sspace);
       zoom: 1;
       line-height: normal;
       font-size: 100%;
@@ -24,7 +24,16 @@
         cursor: pointer;
       }
       span.bbn-menu-icon {
-        margin-left: 0.5rem;
+        margin-right: var(--sspace);
+      }
+      span.bbn-menu-items-icon {
+        margin-left: var(--sspace);
+      }
+      .bbn-menu-separator {
+        display: inline-block;
+        &:before{
+          content: '|';
+        }
       }
     }
     > li.bbn-reactive-block:focus:not(.bbn-disabled) {

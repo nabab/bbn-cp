@@ -167,7 +167,7 @@ export default {
             switch (a) {
               case 'insert':
                 o = {
-                  text: bbn._('Add'),
+                  label: bbn._('Add'),
                   action: this.insert,
                   icon: 'nf nf-fa-plus'
                 };

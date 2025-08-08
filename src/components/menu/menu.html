@@ -1,39 +1,56 @@
 <div :class="[componentClass, 'bbn-block']">
-  <ul class="bbn-widget bbn-ul bbn-no-border"
+  <ul class="bbn-ul bbn-no-border"
       data-role="menu"
       role="menubar">
-    <li bbn-for="(item, i) in filteredData"
-        :class="[
-          'bbn-menu-item',
-          'bbn-reactive-block',
-          {'bbn-menu-selected': (!!multiple && currentSelected.includes(item.index)) || (!multiple && (currentSelectedIndex === i))}
-        ]"
-        role="menuitem"
-        :ref="'li' + i"
-        :key="i"
-        :tabindex="item.data.disabled ? '-1' : '0'"
-        @focus="onFocus(i)"
-        @click="clickLi(i, $event)"
-        @keydown.stop="onKeyDown(i, $event)"
-        @mouseenter="_enterLi(i)"
-        @mouseleave="_exitLi(i)">
-      <a bbn-if="item.data.url"
-         :href="item.data.url"
-         @click.stop.prevent="clickLi(i, $event)"
-         bbn-html="item.data.text"/>
-      <span bbn-else
-            bbn-html="item.data.text"/>
-      <span bbn-if="item.data[sourceItems]"
-            class="bbn-menu-icon">
-        <i class="nf nf-fa-chevron_down"/>
-      </span>
-    </li>
+    <template bbn-for="(item, i) in filteredData">
+      <li bbn-if="item.data[sourceSeparator]"
+          class="bbn-menu-item">
+        <div class="bbn-menu-separator"/>
+      </li>
+      <li bbn-else
+          :class="[
+            'bbn-menu-item',
+            'bbn-reactive-block',
+            {
+              'bbn-menu-selected': (!!multiple && currentSelected.includes(item.index)) || (!multiple && (currentSelectedIndex === i)),
+              'bbn-disabled': item.data.disabled,
+            }
+          ]"
+          role="menuitem"
+          :ref="'li' + i"
+          :key="i"
+          :tabindex="item.data.disabled ? '-1' : '0'"
+          @focus="onFocus(i)"
+          @click="clickLi(i, $event)"
+          @keydown.stop="onKeyDown(i, $event)"
+          @mouseenter="_enterLi(i)"
+          @mouseleave="_exitLi(i)">
+        <bbn-icon bbn-if="item.data[sourceIcon]"
+                  class="bbn-menu-icon"
+                  :content="item.data[sourceIcon]"/>
+        <a bbn-if="item.data[sourceUrl]"
+           :href="item.data[sourceUrl]"
+           @click.stop.prevent="clickLi(i, $event)"
+           bbn-html="item.data[sourceText]"/>
+        <span bbn-else
+              bbn-html="item.data[sourceText]"/>
+        <span bbn-if="item.data[sourceItems]"
+              class="bbn-menu-items-icon">
+          <i class="nf nf-fa-chevron_down"/>
+        </span>
+      </li>
+    </template>
   </ul>
   <bbn-floater bbn-if="ready && !isChanging && filteredData?.[overIdx]?.data?.[sourceItems]"
                class="bbn-menu-floater"
                ref="floater"
                :min-width="getRef('li' + overIdx)?.clientWidth || 0"
                :source-items="sourceItems"
+               :source-text="sourceText"
+               :source-value="sourceValue"
+                :source-action="sourceAction"
+                :source-icon="sourceIcon"
+                :source-url="sourceUrl"
                :element="getRef('li' + overIdx)"
                @mouseenter="activeIdx = overIdx"
                @mouseleave="overIdx = -1"

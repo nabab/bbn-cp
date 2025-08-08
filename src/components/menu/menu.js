@@ -17,15 +17,15 @@ const cpDef = {
     ],
     props: {
       /**
-       * @prop {} orientation
+       * @prop orientation
        */
       orientation: {},
       /**
-       * @prop {} direction
+       * @prop direction
        */
       direction: {},
       /**
-       * @prop {} opened
+       * @prop opened
        */
       opened: {},
       /**
@@ -36,10 +36,44 @@ const cpDef = {
         default: -1
       },
       /**
-       * @prop {} ['text'] sourceValue
+       * The name of the property to be used as text.
+       * @prop {String} ['label'] sourceText
+       */
+      sourceText: {
+        type: String,
+        default: 'text'
+      },
+      /**
+       * * The name of the property to be used as value.
+       * @prop {String} ['text'] sourceValue
        */
        sourceValue: {
+        type: String,
         default: 'text'
+      },
+      /**
+       * The name of the property to be used as icon.
+       * @prop {String} ['icon'] sourceIcon
+       */
+      sourceIcon: {
+        type: String,
+        default: 'icon'
+      },
+      /**
+       * The name of the property to be used as action to execute when selected.
+       * @prop {String} ['action'] sourceAction
+       */
+      sourceAction: {
+        type: [String, Function],
+        default: 'action'
+      },
+      /**
+       * The name of the property to be used as action to execute when selected.
+       * @prop {String} ['action'] sourceAction
+       */
+      sourceSeparator: {
+        type: String,
+        default: 'separator'
       },
     },
     data() {
@@ -120,7 +154,23 @@ const cpDef = {
             this.currentSelected.splice(this.currentSelected.indexOf(this.filteredData[idx].index), 1);
           }
         }
-        if (this.sourceUrl && item[this.sourceUrl]) {
+
+        if (item[this.sourceAction]) {
+          if (typeof (item[this.sourceAction]) === 'string') {
+            if (bbn.fn.isFunction(this[item[this.sourceAction]])) {
+              this[item[this.sourceAction]]();
+            }
+          }
+          else if (bbn.fn.isFunction(item[this.sourceAction])) {
+            if (this.actionArguments) {
+              item[this.sourceAction](...this.actionArguments);
+            }
+            else {
+              item[this.sourceAction](item);
+            }
+          }
+        }
+        else if (this.sourceUrl && item[this.sourceUrl]) {
           bbn.fn.link(item[this.sourceUrl]);
         }
 
@@ -131,6 +181,12 @@ const cpDef = {
       }*/
     },
     watch: {
+      source: {
+        deep: true,
+        handler() {
+          this.updateData();
+        }
+      },
       filteredData: {
         deep: true,
         handler() {
