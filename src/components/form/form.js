@@ -500,7 +500,7 @@ const cpDef = {
             typeof a.action === "string" &&
             bbn.fn.isFunction(this[a.action])
           ) {
-            obj.action = this[a.action];
+            obj.action = () => this[a.action]();
           }
 
           if (a.preset) {
@@ -509,9 +509,7 @@ const cpDef = {
                 obj.key = "cancel-" + this.counter;
                 obj.disabled = !!a.disabled || !this._canCancel();
                 if (obj.action === undefined) {
-                  obj.action = () => {
-                    this.cancel();
-                  };
+                  obj.action = () => this.cancel();
                 }
 
                 if (obj.label === undefined) {
@@ -531,9 +529,7 @@ const cpDef = {
                 obj.key = "reset-" + this.counter;
                 obj.disabled = !!a.disabled || (!this.dirty && !this.prefilled);
                 if (obj.action === undefined) {
-                  obj.action = () => {
-                    this.reset();
-                  };
+                  obj.action = () => this.reset();
                 }
 
                 if (obj.label === undefined) {
@@ -553,9 +549,7 @@ const cpDef = {
                 obj.key = "submit-" + this.counter;
                 obj.disabled = !!a.disabled || !this.canSubmit;
                 if (obj.action === undefined) {
-                  obj.action = () => {
-                    this.submit();
-                  };
+                  obj.action = () => this.submit();
                 }
 
                 if (obj.label === undefined) {
