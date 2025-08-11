@@ -611,7 +611,7 @@ const cpDef = {
       return this.realButtons;
     },
     _canCancel() {
-      return this.window || this.isModified();
+      return !!this.window || this.isModified();
     },
     /**
      * Returns true if the form can be submitted.
