@@ -820,12 +820,15 @@ const cpDef = {
      */
     cancel() {
       let ev = new Event("cancel", { cancelable: true });
-      this.$emit("beforecancel");
-      if (!ev.defaultPrevented) {
+      let evb = new Event("beforecancel", { cancelable: true });
+      this.$emit("beforecancel", evb);
+      if (!evb.defaultPrevented) {
         this.$emit("cancel", ev, this);
-        this.reset();
-        if (this.window) {
-          this.window.close(true);
+        if (!ev.defaultPrevented) {
+          this.reset();
+          if (this.window) {
+            this.window.close(true);
+          }
         }
       }
     },

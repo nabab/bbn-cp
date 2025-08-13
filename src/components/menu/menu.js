@@ -142,6 +142,8 @@ const cpDef = {
         //getRef('li' + selectedElement).blur(); selectedElement = -1;
       },
       select(item, idx, idx2, ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
         if (this.selection) {
           let selected = this.currentSelected.includes(this.filteredData[idx].index);
           if (!this.multiple) {
