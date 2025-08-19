@@ -51,10 +51,10 @@
         </div>
         <div bbn-if="closable !== false"
             class="bbn-h-100 bbn-middle bbn-reactive"
-            @click.stop.prevent="close()"
+            @click.stop="close()"
             tabindex="0"
             :title="_('Close')">
-          <i :class="closeIcon" @click.stop.prevent="close()"/>
+          <i :class="closeIcon"/>
         </div>
       </div>
     </header>
