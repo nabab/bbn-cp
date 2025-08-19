@@ -54,7 +54,7 @@
             @click.stop.prevent="close()"
             tabindex="0"
             :title="_('Close')">
-          <i :class="closeIcon"/>
+          <i :class="closeIcon" @click.stop.prevent="close()"/>
         </div>
       </div>
     </header>

@@ -45,6 +45,7 @@ export default {
      * @emit toggle
      */
     checkSelection(index, state) {
+      bbn.fn.log("checkSelection", index, state);
       if (this.cancelSelection) {
         this.cancelSelection = false;
         return;
@@ -83,6 +84,7 @@ export default {
               this.$emit('unselect', row.data);
               toggled = true;
             }
+            bbn.fn.log("checkSelection", index, state, "idx", idx, "isSelected", isSelected, "toggled", toggled);
             /* if (idx > -1) {
               if ([undefined, false].includes(state)) {
                 toggled = true;
