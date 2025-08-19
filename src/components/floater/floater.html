@@ -149,10 +149,13 @@
         'bbn-xxspadding': true,
         'bbn-xxxl': !!modal,
         'bbn-white': !!modal,
-        'bbn-lg': !modal
-      }">
-        <i :class="closeIcon + ' bbn-p'"
-           @click="close()"/>
+        'bbn-lg': !modal,
+        'bbn-p': true,
+      }"
+           @click.stop="close()"
+           tabindex="0"
+           :title="_('Close')">
+        <i :class="closeIcon"/>
       </div>
     </div>
     <footer bbn-if="footer"
