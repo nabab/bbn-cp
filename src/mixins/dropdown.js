@@ -627,6 +627,13 @@ const dropdown = {
       }
     },
     /**
+      * @watch source
+      * @memberof dropdownComponent
+      */
+    source() {
+      setTimeout(this.onResize, 250)
+    },
+    /**
       * @watch buttons
       * @memberof dropdownComponent
       */
