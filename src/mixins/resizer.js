@@ -84,12 +84,7 @@ const resizer = {
   },
   methods: {
     isActiveResizer() {
-      let ct = this.closest('bbn-container');
-      if (ct) {
-        return ct.isVisible;
-      }
-
-      return true;
+      return this.checkVisibility();
     },
     /**
      * A function that can be executed just before the resize event is emitted.

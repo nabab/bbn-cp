@@ -315,10 +315,10 @@ export default function generateHtmlClass(name, extendedTag) {
       }
     };
 
-    get $bbnCid() {
+    get bbnCid() {
       return this.#bbnCid;
     };
-    set $bbnCid(v) {
+    set bbnCid(v) {
       if (!this.#bbnCid) {
         this.#bbnCid = v;
       }

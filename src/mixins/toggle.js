@@ -153,6 +153,16 @@ const toggle = {
     }
   },
   watch: {
+    visible(v) {
+      if (v !== this.currentVisible) {
+        if (v) {
+          this.show();
+        }
+        else {
+          this.hide();
+        }
+      }
+    },
     /**
      * Emits the event 'open' or 'close'
      * @watch currentVisible

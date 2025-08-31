@@ -1436,14 +1436,6 @@ const cpDef = {
       }
     },
     */
-    /**
-     * @watch visible
-     * @fires onResize
-     */
-    visible(v) {
-      this.currentVisible = v;
-      //bbn.fn.log("CHANGING VISIBle")
-    },
     isVisible(v) {
       //bbn.fn.log("CHANGING VISIBILITY")
       if (v) {

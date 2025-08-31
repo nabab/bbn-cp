@@ -45,6 +45,7 @@
     "Show in a new pane": "Afficher dans un nouveau volet",
     "Create a shortcut": "Cr\u00e9er un raccourci",
     "Configuration": "Configuration",
+    "Capture and set as thumbnail": "Faire une capture d'écran et l'utiliser comme vignette",
     "Impossible to find the pane with ID %s": "Impossible de trouver le volet avec l\u0027ID %s",
     "Impossible to remove the pane with ID %s as it has still containers inside": "Impossible de supprimer le volet avec l\u0027ID %s car il contient encore des conteneurs",
     "Impossible to find the view with index": "Impossible de trouver la vue avec index",

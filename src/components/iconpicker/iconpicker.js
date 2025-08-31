@@ -10772,6 +10772,7 @@ const cpDef = {
     mixins: [
       bbn.cp.mixins.basic,
       bbn.cp.mixins.resizer,
+      bbn.cp.mixins.localStorage,
       bbn.cp.mixins.keepCool
     ],
     props: {
@@ -10783,13 +10784,14 @@ const cpDef = {
         type: Function
       }
     },
-    data(){
+    data() {
       if (!bbnIconpicker) {
         throw new Error("HHHH")
       }
+
       return {
         scroller: null,
-        searchIcon:'',
+        searchIcon: '',
         searchFix: '',
         ready: true,
         sectionSize: 125,
@@ -10894,22 +10896,40 @@ const cpDef = {
       searchFix(newVal) {
         this.update();
         this.numberShown = this.iconsPerPage || 10;
+        if (this.storage) {
+          if (newVal) {
+            this.setStorage(newVal);
+          } else {
+            this.unsetStorage();
+          }
+        }
+
         this.$nextTick(() => this.getRef('scroll').onResize(true))
       },
       search() {
         this.updateData();
       },
-    }
+    },
+    beforeCreate() {
+      const storage = this.storage ? this.getStorage() : '';
+      const value = storage || '';
+      
+      if (value && bbn.fn.isString(value) && (this.searchFix !== value)) {
+        bbn.fn.log("ICONPICKER VAL" , value, this.getStorage())
+        this.searchFix = value;
+        this.searchIcon = this.searchFix;
+      }
+    },
   };
 
 import cpHtml from './iconpicker.html';
 import cpStyle from './iconpicker.less';
-//import cpLang from './_i18n/index.js';
+import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-iconpicker',
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  //lang: cpLang
+  lang: cpLang
 };

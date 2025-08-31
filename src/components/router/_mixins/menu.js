@@ -212,53 +212,64 @@ export default {
             }
           }
         });
+        const screenshotItems = [
+          {
+            text: bbn._("Download"),
+            key: "screenshot_dl",
+            icon: "nf nf-md-arrow_expand_all",
+            action: () => {
+              container.takeScreenshot(null, null, 'blob').then(canvas => {
+                if (canvas) {
+                  bbn.fn.downloadContent(
+                    bbn.fn.replaceAll('/', '-', container.getFullCurrentURL() + '_' + bbn.fn.dateSQL(undefined, true) + '.png'),
+                    canvas
+                  )
+                }
+              });
+            }
+          }, {
+            text: bbn._("Copy"),
+            key: "screenshot_copy",
+            icon: "nf nf-md-image_multiple",
+            action: () => {
+              container.takeScreenshot(400, null, 'blob').then(blob => {
+                if (blob) {
+                  bbn.fn.copy(blob).then(() => {
+                    appui.success();
+                  })
+                }
+              });
+            }
+          }, {
+            text: bbn._("Copy full size"),
+            key: "screenshot_copy_fs",
+            icon: "nf nf-md-image_multiple",
+            action: () => {
+              container.takeScreenshot(null, null, 'blob').then(blob => {
+                if (blob) {
+                  bbn.fn.copy(blob).then(() => {
+                    appui.success();
+                  });
+                }
+              });
+            }
+          }
+        ];
+        if (this.isVisual) {
+          screenshotItems.push({
+            text: bbn._("Capture and set as thumbnail"),
+            key: "screenshot_thumbnail",
+            icon: "nf nf-fa-wand_sparkles",
+            action: () => {
+              container.saveScreenshot(400, null, true);
+            }
+          });
+        }
         items.push({
           text: bbn._("Screenshot"),
           icon: "nf nf-md-image_album",
           key: "screenshot",
-          items: [
-            {
-              text: bbn._("Download"),
-              key: "screenshot_dl",
-              icon: "nf nf-md-arrow_expand_all",
-              action: () => {
-                container.takeScreenshot(null, null, 'blob').then(canvas => {
-                  if (canvas) {
-                    bbn.fn.downloadContent(
-                      bbn.fn.replaceAll('/', '-', container.getFullCurrentURL() + '_' + bbn.fn.dateSQL(undefined, true) + '.png'),
-                      canvas
-                    )
-                  }
-                });
-              }
-            }, {
-              text: bbn._("Copy"),
-              key: "screenshot_copy",
-              icon: "nf nf-md-image_multiple",
-              action: () => {
-                container.takeScreenshot(400, null, 'blob').then(blob => {
-                  if (blob) {
-                    bbn.fn.copy(blob).then(() => {
-                      appui.success();
-                    })
-                  }
-                });
-              }
-            }, {
-              text: bbn._("Copy full size"),
-              key: "screenshot_copy",
-              icon: "nf nf-md-image_multiple",
-              action: () => {
-                container.takeScreenshot(null, null, 'blob').then(blob => {
-                  if (blob) {
-                    bbn.fn.copy(blob).then(() => {
-                      appui.success();
-                    });
-                  }
-                });
-              }
-            }
-          ]
+          items: screenshotItems
         });
       }
 

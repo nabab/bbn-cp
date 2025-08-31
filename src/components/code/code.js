@@ -146,6 +146,7 @@ const cpDef = {
   [
     bbn.cp.mixins.basic,
     bbn.cp.mixins.input,
+    bbn.cp.mixins.keepCool,
     bbn.cp.mixins.events
   ],
   props: {
@@ -185,6 +186,7 @@ const cpDef = {
   data() {
     return {
       setterTimeout: null,
+      inputTimeout: null,
       // Editor state
       state: null,
       // Editor widget/view instance
@@ -193,6 +195,7 @@ const cpDef = {
       compartments: bbn.cp.immunizeValue(bbn.fn.createObject()),
       currentTheme: this.theme,
       scrollContainer: null,
+      currentValue: this.value,
     }
   },
 
@@ -340,15 +343,19 @@ const cpDef = {
       // Adding language and theme specific extensions
       this.compartments.language = new cpt;
       extensions.push(this.compartments.language.of(cm.languageExtensions[idx]));
+      extensions.push(bbnCode.cm.view.EditorView.updateListener.of((update) => {
+        if (update.docChanged) {
+          clearTimeout(this.inputTimeout);
+          this.inputTimeout = setTimeout(() => {
+            this.currentValue = this.widget.state.doc.toString(); // Get the current document's content
+            if (this.currentValue !== this.value) {
+              this.emitInput(this.currentValue); // Emit input event if the value has changed
+            }
+          }, 1000);
+        }
+      }));
 
       return extensions; // Return the configured extensions
-    },
-    onChange(tr) {
-      this.widget.update([tr]); // Update the editor widget with the transaction
-      let value = this.widget.state.doc.toString(); // Get the current document's content
-      if (value !== this.value) {
-        this.emitInput(value); // Emit input event if the value has changed
-      }
     },
     init() {
       let cm = this.constructor.cm;
@@ -399,7 +406,6 @@ const cpDef = {
           // Set parent element
           parent, 
           // Dispatch method for handling changes
-          dispatch: t => this.onChange(t), 
           // Line wrapping configuration
           lineWrapping: this.wrap, 
         }));
@@ -515,6 +521,18 @@ const cpDef = {
     replaceAll() {
       this.constructor.cm.search.replaceAll(this.widget);
     },
+    forceUpdate(nv) {
+      if (!this.$isDestroyed && this.widget) {
+        this.widget.dispatch({
+          changes: {
+            from: 0,
+            to: this.widget.state.doc.length,
+            insert: nv
+          }
+        });
+      }
+
+    },
   },
   mounted() {
     this.init();
@@ -555,22 +573,11 @@ const cpDef = {
     value(nv) {
       clearTimeout(this.setterTimeout);
       // Update the document content if the value prop changes - but not too fast
-      if (this.widget) {
-        this.setterTimeout = setTimeout(() => {
-          if (this.widget) {
-            let value = this.widget.state.doc.toString();
-            if (value !== nv) {
-              this.widget.dispatch({
-                changes: {
-                  from: 0,
-                  to: this.widget.state.doc.length,
-                  insert: nv
-                }
-              });
-            }
-          }
-        }, 250)
-      }
+      this.setterTimeout = setTimeout(() => {
+        if (nv !== this.currentValue) {
+          this.forceUpdate(nv);
+        }
+      }, 250)
     }
   }
 };

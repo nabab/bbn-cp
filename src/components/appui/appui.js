@@ -615,6 +615,9 @@ const cpDef = {
      * @method receive
      * @param {Object} message Service worker message payload
      */
+    addShortcut(data) {
+      this.$emit('shortcut', data);
+    },
     receive(message) {
       this.$emit('received', message);
       if (message.type !== undefined) {

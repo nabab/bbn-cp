@@ -78,7 +78,7 @@
             ref="canvasSource">
           <!-- This is shown when it's ready -->
           <bbn-scroll bbn-if="ready && isLoaded"
-                      bbn-show="!router?.isVisual || currentSelected || (router?.isVisual && !thumbnail) || (isPane && isVisible)"
+                      bbn-show="currentSelected || (isPane && isVisible)"
                       ref="scroll"
                       @ready="init"
                       :scrollable="scrollable && router?.scrollContent"
@@ -180,19 +180,19 @@
               </bbn-context>
             </div-->
             <div class="bbn-w-100 bbn-r bbn-vspadding">
-              <span bbn-if="!pinned"
+              <span bbn-if="!currentView?.pinned"
                     @click.stop="pin"
                     class="bbn-right-xsmargin bbn-p">
                 <i class="nf nf-oct-pin"/>
               </span>
               <span class="bbn-right-xsmargin bbn-p"
                     @click.stop="close"
-                    bbn-if="!pinned">
+                    bbn-if="!currentView?.pinned">
                 <i class="nf nf-md-close_thick"/>
               </span>
               <span class="bbn-right-xsmargin bbn-p"
                     @click.stop="unpin"
-                    bbn-elseif="pinned">
+                    bbn-elseif="currentView?.pinned">
                 <i class="nf nf-md-pin_off"/>
               </span>
             </div>

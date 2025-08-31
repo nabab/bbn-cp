@@ -45,6 +45,7 @@
     "Show in a new pane": "Rimuovi dal riquadro",
     "Create a shortcut": "Crea una scorciatoia",
     "Configuration": "Configurazione",
+    "Capture and set as thumbnail": "Fare una schermata e utilizzarla come miniatura",
     "Impossible to find the pane with ID %s": "Impossibile trovare il riquadro con ID %s",
     "Impossible to remove the pane with ID %s as it has still containers inside": "Impossibile rimuovere il riquadro con ID %s in quanto contiene ancora dei contenitori",
     "Impossible to find the view with index": "Impossibile trovare la vista con indice",

@@ -104,10 +104,10 @@ export default class bbnAnonHtml extends HTMLElement
     }
   };
 
-  get $bbnCid() {
+  get bbnCid() {
     return this.#bbnCid;
   };
-  set $bbnCid(v) {
+  set bbnCid(v) {
     if (!this.#bbnCid) {
       this.#bbnCid = v;
     }

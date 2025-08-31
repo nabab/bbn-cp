@@ -12,7 +12,7 @@ export default function addComponent(ele) {
   const cp = bbn.cp.componentsIndex.get(cid);
   if (cp) {
     if (cp !== ele) {
-      bbn.fn.log(ele, cp);
+      bbn.fn.log(ele, cp, cid);
       throw new Error("The component already exists")
     }
   }

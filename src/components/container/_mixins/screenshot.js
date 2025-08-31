@@ -37,18 +37,23 @@ export default {
     }
   },
   methods: {
-    setScreenshot() {
+    async setScreenshot() {
       if (!this._screenshotInterval && this.router.isVisual && this.router.db && !this.isPane && this.isLoaded) {
         let url = this.getFullURL();
-        this.router.db.selectOne('containers', 'time', {url: url}).then(time => {
+        try {
+          const row = await this.router.db.select('containers', ['manual', 'time'], {url: url});
           // Checking if we have a screenshot of less than an hour
-          if ((bbn.fn.timestamp() - (time || 0)) >= this.currentScreenshotDelay) {
-            this.saveScreenshot(400);
+          if (!row || (!row.manual && ((bbn.fn.timestamp() - (row.time || 0)) >= this.currentScreenshotDelay))) {
+            setTimeout(() => {
+              if (this.isVisible) {
+                this.saveScreenshot(400);
+              }
+            }, 1000)
           }
-        }).catch(e => {
+        } catch (e) {
           appui.error(e.message);
           throw e;
-        });
+        }
 
         this._screenshotInterval = setInterval(() => {
           this.saveScreenshot(400);
@@ -68,20 +73,29 @@ export default {
       }
     },
 
-    async saveScreenshot(width, height) {
+    saveScreenshot(width, height, force = false) {
       if (this.isVisible && this.router.db && !this.isPane && this.checkVisibility()) {
-        let img       = await this.takeScreenshot(width, height);
-        if (!img) {
-          return;
-        }
+        this.takeScreenshot(width, height).then(img => {
+          if (!img) {
+            return;
+          }
 
-        this.thumbnail = img;
-        // This is in fact an insert/update
-        this.router.db.insert('containers', {
-          url: this.getFullURL(),
-          image: img,
-          time: bbn.fn.timestamp()
+          this.thumbnail = img;
+          // This is in fact an insert/update
+          const url = this.getFullURL();
+          bbn.fn.log("Saving screenshot for ", url);
+          if (url) {
+            this.router.db.insert('containers', {
+              url: this.getFullURL(),
+              image: img,
+              time: bbn.fn.timestamp(),
+              manual: force ? 1 : 0
+            });
+          }
         });
+      }
+      else {
+        bbn.fn.log(["No screenshot to save", this.isVisible, this.router.db, !this.isPane, this.checkVisibility()]);
       }
     },
 
@@ -93,7 +107,6 @@ export default {
             && bbn.fn.isActiveInterface(600)
             && !this.router.visualShowAll
         ) {
-          bbn.fn.log("SCREEEEEN", this.getRef('canvasSource'), width, height);
           this.screenshoter.capture(this.getRef('canvasSource'), width, height, meth).then(img => {
             resolve(img);
           })
