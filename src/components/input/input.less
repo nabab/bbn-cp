@@ -8,6 +8,9 @@ bbn-input{
   .bbn-button{
     opacity: 0.7;
     //min-width: 2rem;
+    &.bbn-button-right, &.bbn-button-left {
+      height: auto;
+    }
   }
   input{
     //important for safari
@@ -17,22 +20,31 @@ bbn-input{
     font-weight: inherit;
     border-radius: inherit;
     text-align: inherit;
+    &.bbn-ellipsis {
+      overflow: hidden !important;
+    }
   }
   &.bbn-input-nullable{
     .bbn-input-nullable-container{
-      opacity: 0;
-      transition: opacity 0.2s;
       line-height: 100%;
       margin: auto;
       padding-right: 0.2rem;
+      padding-left: 0.2rem;
+      opacity: 0;
+      transition: opacity 0.2s;
       .nf-fa-times_circle{
         line-height: 100%;
         margin: auto;
+        opacity: 0;
+        transition: opacity 0.2s;
       }
     }
     &:hover{
       .bbn-input-nullable-container{
-        opacity: 0.3;
+        opacity: 0.9;
+        .nf-fa-times_circle {
+          opacity: 0.5;
+        }
       }
     }
   }
