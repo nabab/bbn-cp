@@ -24,14 +24,14 @@ function treatForHash(value, depth = null, level = 0, visited = null) {
  * @returns {String} The hash
  */
 export default function hash(value) {
-  const wasStarted = bbn.cp.watchStarted;
+  const wasStarted = bbnData.watchStarted;
   if (wasStarted) {
-    bbn.cp.watchStarted = false;
+    bbnData.watchStarted = false;
   }
 
   let st = treatForHash(value);
   if (wasStarted) {
-    bbn.cp.watchStarted = true;
+    bbnData.watchStarted = true;
   }
 
   return bbn.fn.simpleHash(st);

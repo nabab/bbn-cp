@@ -18,5 +18,5 @@ bbnData.startWatching = function(from) {
     this.isWatching = true;
   }
 
-  bbn.cp.watchStarted = true;
+  this.watchStarted = true;
 }

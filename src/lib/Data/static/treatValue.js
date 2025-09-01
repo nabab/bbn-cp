@@ -13,9 +13,9 @@ bbnData.treatValue = function(value, component, path, parent) {
     return value;
   }  
 
-  const hasStarted = bbn.cp.watchStarted;
+  const hasStarted = bbnData.watchStarted;
   if (hasStarted) {
-    bbn.cp.watchStarted = false;
+    this.watchStarted = false;
   }
 
   if (value && (typeof value === 'object') && [undefined, Object, Array].includes(value.constructor) && !('__bbnNoData' in value)) {
@@ -29,14 +29,17 @@ bbnData.treatValue = function(value, component, path, parent) {
       dataObj = new bbnData(value, component, path, parent);
     }
 
+    if (hasStarted) {
+      this.watchStarted = true;
+    }
+
     value = dataObj.value;
     if (value.__bbnComponent) {
       throw new Error(bbn._("The data object is a component definition"));
     }
   }
-
-  if (hasStarted) {
-    bbn.cp.watchStarted = true;
+  else if (hasStarted) {
+    this.watchStarted = true;
   }
 
   return value;

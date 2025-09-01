@@ -36,14 +36,14 @@ function treatForHash(value, depth = null, level = 0, visited = null) {
  * @returns {String} The hash
  */
 bbn.cp.hash = function(value) {
-  const wasStarted = bbn.cp.watchStarted;
+  const wasStarted = this.watchStarted;
   if (wasStarted) {
-    bbn.cp.watchStarted = false;
+    this.watchStarted = false;
   }
 
   let st = treatForHash(value);
   if (wasStarted) {
-    bbn.cp.watchStarted = true;
+    this.watchStarted = true;
   }
 
   return bbn.fn.simpleHash(st);
