@@ -380,6 +380,7 @@ const cpDef = {
         if (!ok) {
           this.containerPos = container[prop];
         }
+
         this.setSliderPos(this.containerPos * this.ratio);
         /*
         if ( container !== this.realContainer ){
@@ -398,7 +399,7 @@ const cpDef = {
      * @method adjustFromBar
      */
     adjustFromBar(anim){
-      if ( this.shouldBother ){
+      if (this.shouldBother) {
         this.containerPos = (this.sliderPos / this.ratio);
         let prop = this.isVertical ? 'scrollTop' : 'scrollLeft';
         if (this.scroller) {

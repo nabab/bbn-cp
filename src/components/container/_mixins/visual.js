@@ -75,11 +75,4 @@ export default {
       }
     }
   },
-  watch: {
-    visual(v) {
-      if (v) {
-        this.updateScreenshot();
-      }
-    }
-  }
 }

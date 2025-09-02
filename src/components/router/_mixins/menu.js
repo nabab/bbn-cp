@@ -218,7 +218,7 @@ export default {
             key: "screenshot_dl",
             icon: "nf nf-md-arrow_expand_all",
             action: () => {
-              container.takeScreenshot(null, null, 'blob').then(canvas => {
+              this.takeScreenshot(container.currentIndex, null, null, 'blob').then(canvas => {
                 if (canvas) {
                   bbn.fn.downloadContent(
                     bbn.fn.replaceAll('/', '-', container.getFullCurrentURL() + '_' + bbn.fn.dateSQL(undefined, true) + '.png'),
@@ -232,7 +232,7 @@ export default {
             key: "screenshot_copy",
             icon: "nf nf-md-image_multiple",
             action: () => {
-              container.takeScreenshot(400, null, 'blob').then(blob => {
+              this.takeScreenshot(container.currentIndex, 400, null, 'blob').then(blob => {
                 if (blob) {
                   bbn.fn.copy(blob).then(() => {
                     appui.success();
@@ -245,7 +245,7 @@ export default {
             key: "screenshot_copy_fs",
             icon: "nf nf-md-image_multiple",
             action: () => {
-              container.takeScreenshot(null, null, 'blob').then(blob => {
+              this.takeScreenshot(container.currentIndex, null, null, 'blob').then(blob => {
                 if (blob) {
                   bbn.fn.copy(blob).then(() => {
                     appui.success();
@@ -261,7 +261,7 @@ export default {
             key: "screenshot_thumbnail",
             icon: "nf nf-fa-wand_sparkles",
             action: () => {
-              container.saveScreenshot(400, null, true);
+              this.saveScreenshot(container.currentIndex, 400, null, true);
             }
           });
         }

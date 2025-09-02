@@ -25,12 +25,6 @@ export default {
           if (a.pane) {
             return this.paneContainers[a.pane + '-' + a.uid] || false;
           }
-          if (this.isVisual) {
-            const idx = bbn.fn.search(this.visualList, 'uid', a.uid);
-            if (this.visualList[idx]) {
-              return this.getRef('bbn-router-visual-' + idx.toString());
-            }
-          }
         }
         return false;
       });

@@ -58,12 +58,91 @@
             <div bbn-for="(a, i) in visualList"
                 :key="a.uid"
                 :style="{order: i + 2}"
-                :ref="'bbn-router-visual-' + i.toString()"
                 :class="'bbn-sshadow bbn-radius' + (isMobile ? '' : ' bbn-container-ratio')"
-                bbn-if="!views[a.idx]?.real"
-                bbn-show="(visualShowAll || a.visible) && (a.idx !== selected)"
-                @hook:create="addVisualContainer($event, a.uid)"
-                @hook:destroy="removeVisualContainer($event, a.uid)"/>
+                bbn-show="(visualShowAll || a.visible) && (a.idx !== selected)">
+              <div class="bbn-overlay bbn-flex-height">
+                <!-- Thumbnail image -->
+                <div :class="['bbn-transition-bcolor', 'bbn-b', 'bbn-xspadding', {
+                      'bbn-flex-width': !isMobile || (selected === a.idx),
+                      'bbn-flex-fill': isMobile && (selected !== a.idx)
+                    }]"
+                    :style="{
+                      backgroundColor: views[a.idx]?.bcolor || bcolor,
+                      color: views[a.idx]?.fcolor || fcolor
+                    }">
+                  <div :class="{'bbn-flex-fill': !isMobile || views[a.idx]?.selected, 'bbn-vmiddle': true}">
+                    <bbn-icon bbn-if="views[a.idx]?.icon"
+                              class="bbn-right-sspace bbn-lg"
+                              :content="views[a.idx]?.icon"/>
+                    <span bbn-text="views[a.idx].label"
+                          :class="['bbn-p', {
+                            'bbn-router-visual-title': isMobile && !views[a.idx]?.selected,
+                            'bbn-ellipsis': isMobile && views[a.idx]?.selected,
+                            'bbn-right-padding': isMobile && views[a.idx]?.selected,
+                          }]"
+                          style="overflow: hidden"
+                          :tabindex="isMobile ? -1 : null"
+                          @click="getContainer(a.idx).show()"/>
+                  </div>
+                </div>
+                <div :class="['bbn-flex-fill', {'bbn-middle': !views[a.idx]?.thumbnail}]">
+                  <img :src="views[a.idx]?.thumbnail"
+                      style="width: 100%; max-height: 100%; height: auto"
+                      class="bbn-router-thumbnail"
+                      bbn-if="views[a.idx]?.thumbnail">
+                  <div bbn-else
+                      class="bbn-block">
+                    <i class="nf nf-md-camera_off_outline bbn-xxxxl"/>
+                  </div>
+                  <!-- When in visual mode this is the interaction layer -->
+                  <div bbn-if="!isMobile"
+                      class="bbn-overlay"
+                      @click="getContainer(a.idx).show()"
+                      @mouseenter="isOverThumb = a.uid"
+                      @mouseleave="isOverThumb = false"
+                      style="z-index: 1">
+                    <transition name="fade">
+                      <div class="bbn-bottom-left bbn-w-100"
+                          bbn-show="isOverThumb === a.uid"
+                          bbn-if="!views[a.idx]?.fixed && (selected !== a.idx)">
+                        <!-- Semi-transparent dark layer these buttons are not used -->
+                        <div class="bbn-overlay bbn-bg-black"
+                            style="opacity: 0.6; color: transparent"/>
+                        <!-- These buttons are the real ones (white) -->
+                        <div class="bbn-w-100 bbn-white">
+                          <!--div class="bbn-w-50 bbn-spadding">
+                            &nbsp;
+                            <bbn-context class="bbn-spadding bbn-iblock bbn-p"
+                                        tag="span"
+                                        :source="showMenu">
+                              <i class="nf nf-fa-bars"
+                                @click.stop="pin"/>
+                            </bbn-context>
+                          </div-->
+                          <div class="bbn-w-100 bbn-r bbn-vspadding">
+                            <span bbn-if="!bbn.fn.getField(views, 'pinned', {uid: a.uid})"
+                                  @click.stop="getContainer(a.idx).pin()"
+                                  class="bbn-right-xsmargin bbn-p">
+                              <i class="nf nf-oct-pin"/>
+                            </span>
+                            <span class="bbn-right-xsmargin bbn-p"
+                                  @click.stop="getContainer(a.idx).close()"
+                                  bbn-if="!bbn.fn.getField(views, 'pinned', {uid: a.uid})">
+                              <i class="nf nf-md-close_thick"/>
+                            </span>
+                            <span class="bbn-right-xsmargin bbn-p"
+                                  @click.stop="getContainer(a.idx).unpin()"
+                                  bbn-else>
+                              <i class="nf nf-md-pin_off"/>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </transition>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </bbn-scroll>
         <!-- START OF BREADCRUMB -->
@@ -183,10 +262,10 @@
              bbn-forget="!scrollContent">
           <slot :filter="filterIsContainer"/>
           <bbn-container bbn-for="a in views"
-                          bbn-if="ready && !a.real"
+                          bbn-if="!a.real"
                           :key="a.uid"
-                          :visual="isVisual && !a.pane"
                           bbn-portal="portalTargets[a.idx]"
+                          :visual="isVisual && !a.pane"
                           bbn-bind="component ? {component} : a"
                           :url="a.url !== undefined ? a.url : componentSource[componentUrl]"/>
         </div>

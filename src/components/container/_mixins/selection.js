@@ -401,7 +401,7 @@ export default {
         });
         if (this.visual) {
           setTimeout(() => {
-            this.setScreenshot();
+            this.router.setScreenshot(this.currentIndex);
           }, 1000);
         }
       }
@@ -420,10 +420,5 @@ export default {
     },
   },
   watch: {
-    isTabSelected(v) {
-      if (v) {
-        this.show();
-      }
-    }
   }
 }

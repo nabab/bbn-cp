@@ -71,10 +71,10 @@ export default {
 
       if (!this.isPane && this.router?.isVisual && this.isLoaded) {
         if (nv) {
-          this.setScreenshot()
+          this.router.setScreenshot(this.currentIndex)
         }
         else {
-          this.unsetScreenshot();
+          this.router.unsetScreenshot(this.currentIndex);
         }
       }
 

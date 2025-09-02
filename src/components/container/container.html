@@ -7,8 +7,7 @@
   'bbn-radius': router?.isVisual && visual,
   'bbn-lborder': (router?.isVisual && visual) || (router?.nav && !router?.parent),
 }]"
-     :style="visualStyle"
-     bbn-show="currentView && router?.ready && (isVisualVisible || isPane || (!router?.isVisual && isVisible))">
+      bbn-show="isTabSelected">
   <div class="bbn-container-full-screen bbn-flex-height bbn-background"
        bbn-if="currentView && router?.ready"
        bbn-forget="!fullScreen">
@@ -78,7 +77,6 @@
             ref="canvasSource">
           <!-- This is shown when it's ready -->
           <bbn-scroll bbn-if="ready && isLoaded"
-                      bbn-show="currentSelected || (isPane && isVisible)"
                       ref="scroll"
                       @ready="init"
                       :scrollable="scrollable && router?.scrollContent"
@@ -129,19 +127,6 @@
           <!-- If loading showing loader -->
           <bbn-loader bbn-elseif="isVisible && (!ready || !isLoaded)"
                       class="bbn-overlay bbn-middle"/>
-          <!-- Thumbnail image -->
-          <div bbn-if="!isVisible && visual && !isMobile"
-              style="overflow: hidden"
-              :class="['bbn-overlay', {'bbn-middle': !thumbnail}]">
-            <img :src="thumbnail"
-                 style="width: 100%; max-height: 100%; height: auto"
-                 class="bbn-container-thumbnail"
-                 bbn-if="thumbnail">
-            <div bbn-else
-                 class="bbn-block">
-              <i class="nf nf-md-camera_off_outline bbn-xxxxl"/>
-            </div>
-          </div>
           <!-- The container's popup, from which each floater will come -->
           <bbn-popup ref="popup"
                     :source="popups"
@@ -150,56 +135,5 @@
         </div>
       </div>
     </transition>
-    <!-- When in visual mode a layer prevents interaction with the content -->
-    <div bbn-if="!isMobile && currentView && router?.isVisual && (!isVisible || router?.visualShowAll) && !isPane"
-        class="bbn-overlay"
-        style="z-index: 1; background-color: transparent">
-    </div>
-    <!-- When in visual mode this is the interaction layer -->
-    <div bbn-if="!isMobile && currentView && router?.isVisual && (!isVisible || router?.visualShowAll)"
-         class="bbn-overlay"
-         @click="onClickVisual"
-         @mouseenter="isOver = true"
-         @mouseleave="isOver = false"
-         style="z-index: 1">
-      <transition name="fade">
-        <div class="bbn-bottom-left bbn-w-100"
-             bbn-show="isOver"
-             bbn-if="!fixed && !currentSelected">
-          <!-- Semi-transparent dark layer these buttons are not used -->
-          <div class="bbn-overlay bbn-bg-black"
-               style="opacity: 0.6; color: transparent"/>
-          <!-- These buttons are the real ones (white) -->
-          <div class="bbn-w-100 bbn-white">
-            <!--div class="bbn-w-50 bbn-spadding">
-              &nbsp;
-              <bbn-context class="bbn-spadding bbn-iblock bbn-p"
-                           tag="span"
-                           :source="showMenu">
-                <i class="nf nf-fa-bars"
-                   @click.stop="pin"/>
-              </bbn-context>
-            </div-->
-            <div class="bbn-w-100 bbn-r bbn-vspadding">
-              <span bbn-if="!currentView?.pinned"
-                    @click.stop="pin"
-                    class="bbn-right-xsmargin bbn-p">
-                <i class="nf nf-oct-pin"/>
-              </span>
-              <span class="bbn-right-xsmargin bbn-p"
-                    @click.stop="close"
-                    bbn-if="!currentView?.pinned">
-                <i class="nf nf-md-close_thick"/>
-              </span>
-              <span class="bbn-right-xsmargin bbn-p"
-                    @click.stop="unpin"
-                    bbn-elseif="currentView?.pinned">
-                <i class="nf nf-md-pin_off"/>
-              </span>
-            </div>
-          </div>
-        </div>
-      </transition>
-    </div>
   </div>
 </div>

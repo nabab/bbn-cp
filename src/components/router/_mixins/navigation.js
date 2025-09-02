@@ -863,45 +863,53 @@ export default {
 
 
     navigationInit() {
-      if (!this.urlNavigation) {
-        return;
-      }
-      // All routers above (which constitute the fullBaseURL)
-      this.parents = this.ancestors('bbn-router');
-      // The closest
-      this.parent = this.parents.length ? this.parents[0] : false;
-      // The root
-      this.router = this.parents.length ? this.parents[this.parents.length - 1] : this;
-      // Case where the rooter is not at the root level
-
-      if (this.parent) {
-        this.parentContainer = this.closest('bbn-container');
-        this.parentContainer.registerRouter(this);
-        this.updateBaseURL();
-        //bbn.fn.log(['updateBaseURL', this.baseURL, this.getFullBaseURL(), this.parentContainer.currentView, this.parentContainer.currentURL, this.root]);
-      }
-      // Case where the rooter is at root level
-      else {
-        // Opening the database for the visual mode multiview
-        if (!this.single && bbnRouter.db) {
-          bbn.db.open('bbn').then(r => {
-            this.db = r;
-          }, err => {
-            bbn.fn.log("Connection error in router", err);
-          });
+      return new Promise(resolve => {
+        if (!this.urlNavigation) {
+          resolve();
+          return;
         }
-
-        //bbn.fn.log(["SETTING EVENT ON BEFORE UNLOAD", this]);
-        if (!window.onbeforeunload) {
-          window.onbeforeunload = e => {
-            //bbn.fn.log(["BEFORE UNLOAD", this.isDirty]);
-            if (this.isDirty) {
-              e.preventDefault();
-            }
-          };
+        // All routers above (which constitute the fullBaseURL)
+        this.parents = this.ancestors('bbn-router');
+        // The closest
+        this.parent = this.parents.length ? this.parents[0] : false;
+        // The root
+        this.router = this.parents.length ? this.parents[this.parents.length - 1] : this;
+        // Case where the rooter is not at the root level
+  
+        if (this.parent) {
+          this.parentContainer = this.closest('bbn-container');
+          this.parentContainer.registerRouter(this);
+          this.updateBaseURL();
+          resolve();
+          //bbn.fn.log(['updateBaseURL', this.baseURL, this.getFullBaseURL(), this.parentContainer.currentView, this.parentContainer.currentURL, this.root]);
         }
+        // Case where the rooter is at root level
+        else {
+          //bbn.fn.log(["SETTING EVENT ON BEFORE UNLOAD", this]);
+          if (!window.onbeforeunload) {
+            window.onbeforeunload = e => {
+              //bbn.fn.log(["BEFORE UNLOAD", this.isDirty]);
+              if (this.isDirty) {
+                e.preventDefault();
+              }
+            };
+          }
 
-      }
+          // Opening the database for the visual mode multiview
+          if (!this.single && bbnRouter.db) {
+            bbn.db.open('bbn').then(r => {
+              this.db = r;
+              resolve();
+            }, err => {
+              bbn.fn.log("Connection error in router", err);
+              resolve();
+            });
+          }
+          else {
+            resolve();
+          }
+        }
+      })
     },
 
     navigationCreated() {

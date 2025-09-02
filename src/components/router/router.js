@@ -18,6 +18,7 @@ import breadcrumb from './_mixins/breadcrumb.js';
 import observers from './_mixins/observers.js';
 import toMove from './_mixins/toMove.js';
 import visual from './_mixins/visual.js';
+import screenshot from './_mixins/screenshot.js';
 import misc from './_mixins/misc.js';
 import component from './_mixins/component.js';
 
@@ -115,6 +116,7 @@ const cpDef = {
     observers,
     toMove,
     visual,
+    screenshot,
     misc,
     component,
   ],
@@ -145,21 +147,19 @@ const cpDef = {
    * @fires getDefaultURL
    * @fires add
    */
-  beforeMount() {
-    this.navigationInit();
-    this.viewsInit();
-    this.panesInit();
-    this.registrationInit();
-    this.breadcrumbInit();
-    this.visualInit();
-    this.navigationCreated();
-    //bbn.fn.log("END OF BEFORE MOUNT")
-  },
   mounted() {
-    this.$nextTick(() =>{
-      this.ready = true;
-      this.$forceUpdate();
-      this.$nextTick(() => this.init());
+    this.navigationInit().then(() => {
+      this.viewsInit();
+      this.panesInit();
+      this.registrationInit();
+      this.breadcrumbInit();
+      this.visualInit();
+      this.navigationCreated();
+      this.$nextTick(() =>{
+        this.ready = true;
+        this.$forceUpdate();
+        this.$nextTick(() => this.init());
+      });
     });
     //bbn.fn.log("END OF MOUNT")
   },

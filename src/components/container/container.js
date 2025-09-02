@@ -11,7 +11,6 @@
  */
 
 import view from './_mixins/view.js';
-import screenshot from './_mixins/screenshot.js';
 import menu from './_mixins/menu.js';
 import toChange from './_mixins/toChange.js';
 import core from './_mixins/core.js';
@@ -64,7 +63,6 @@ const cpDef = {
   mixins: 
   [
     view,
-    screenshot,
     menu,
     toChange,
     core,
@@ -77,11 +75,6 @@ const cpDef = {
     bbn.cp.mixins.observer
   ],
   methods: {
-    onClickVisual() {
-      bbn.fn.log("CLICK", this.currentCurrent, this.currentIndex, this.router.selected, this.router.views[this.currentIndex]);
-
-      this.show();
-    },
     containerMounted(){
       if (this.currentView.load
         && !this.currentView.loaded
@@ -96,13 +89,13 @@ const cpDef = {
       ) {
         this.$nextTick(() => {
           this.loadView(this.currentView.current).then(() => {
-            this.screenshotMounted();
+            this.router.updateScreenshot(this.currentIndex);
             this.selectionMounted();
           });
         });
       }
       else {
-        this.screenshotMounted();
+        this.router.updateScreenshot(this.currentIndex);
         this.selectionMounted();
       }
   

@@ -56,9 +56,8 @@ export default {
        * @data {Boolean} visual
        */
       currentVisual: this.visual,
-      visualStyleContainer: bbn.fn.createObject(),
-      visualContainers: {},
-      visualList: []
+      visualList: [],
+      isOverThumb: false
     }
   },
   computed: { 
@@ -81,42 +80,6 @@ export default {
     },
     isVisual() {
       return this.currentVisual && !this.parentContainer;
-    },
-    visualContainerStyle() {
-      if (!this.isVisual) {
-        return {};
-      }
-
-      let coord = [1, this.numVisualCols + 1, 1, this.numVisualRows + 1];
-      if (this.views.length > 1) {
-        switch (this.visualOrientation) {
-          case 'top':
-            coord[2] = 2;
-            break;
-          case 'bottom':
-            coord[3] = coord[3] - 1;
-            break;
-          case 'left':
-            coord[0] = 2;
-            break;
-          case 'right':
-            coord[1] = coord[1] - 1;
-            break;
-        }
-      }
-
-      return {
-        position: 'relative',
-        top: null,
-        left: null,
-        right: null,
-        bottom: null,
-        gridColumnStart: coord[0],
-        gridColumnEnd: coord[1],
-        gridRowStart: coord[2],
-        gridRowEnd: coord[3],
-        zoom: 1
-      };
     },
     /**
      * The grid style for showing the router in visual mode
@@ -365,19 +328,10 @@ export default {
       this.$nextTick(this.updatePortalTargets);
     },
   
-    addVisualContainer(e, uid) {
-      this.visualContainers[uid] = e.target;
-    },
-    removeVisualContainer(uid) {
-      bbn.fn.log('removeVisualContainer', arguments);
-      delete this.visualContainers[uid];
-    },
     visualInit() {
       if (!this.single && this.hasStorage) {
         this.visualIsReady = true;
         this.updateVisualList();
-    
-        this.updateVisualStyleContainer();
         /*
         window.removeEventListener('focus', this.visualOnEvent);
         window.addEventListener('focus', this.visualOnEvent);
@@ -398,77 +352,6 @@ export default {
     visualOnEvent(e) {
       this.onResize();
       this.$nextTick(this.updateVisualList);
-    },
-    /**
-     * @method updateVisualStyleContainer
-     * @return {Object}
-     */
-    updateVisualStyleContainer() {
-      if (!this.visualStyleContainer) {
-        this.visualStyleContainer = bbn.fn.createObject();
-      }
-      else if (!this.isVisual) {
-        this.visualStyleContainer = bbn.fn.createObject();
-      }
-
-      if (!this.isVisual) {
-        return;
-      }
-
-      //bbn.fn.warning("updateVisualStyleContainer");
-      bbn.fn.iterate(this.views, view => {
-        if (!this.visualStyleContainer[view.url]) {
-          this.visualStyleContainer[view.url] = {};
-        }
-
-        if (!this.containers[view.uid]) {
-          return;
-        }
-
-        const ct = this.containers[view.uid];
-        if (!ct?.isVisible || this.visualShowAll) {
-          if (this.visualStyleContainer[view.uid].zoom != 0.5) {
-            this.visualStyleContainer[view.uid] = { zoom: 0.1 };
-          }
-
-          return;
-        }
-
-        let num = this.numVisuals + 1;
-        let coord = [1, num, 1, num];
-        switch (this.visualOrientation) {
-          case 'up':
-            coord[2] = 2;
-            break;
-          case 'down':
-            coord[3] = num - 1;
-            break;
-          case 'left':
-            coord[0] = 2;
-            break;
-          case 'right':
-            coord[1] = num - 1;
-            break;
-        }
-
-
-        if ((this.visualStyleContainer[view.uid].zoom != 1)
-          || (this.visualStyleContainer[view.uid].gridColumnStart != coord[0])
-          || (this.visualStyleContainer[view.uid].gridColumnEnd != coord[1])
-          || (this.visualStyleContainer[view.uid].gridRowStart != coord[2])
-          || (this.visualStyleContainer[view.uid].gridRowEnd != coord[3])
-        ) {
-          this.visualStyleContainer[view.uid] = {
-            gridColumnStart: coord[0],
-            gridColumnEnd: coord[1],
-            gridRowStart: coord[2],
-            gridRowEnd: coord[3],
-            zoom: 1
-          };
-        }
-      });
-
-      return this.visualStyleContainer;
     },
   },
   watch: {

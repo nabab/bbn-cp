@@ -209,9 +209,6 @@
  * @emits resizecontent
  * @returns {Promise}
  * 
- * @method preResize
- * @description Creates a delay to set the scroll as ready.
- * 
  * @event mounted
  * @description Called when component is mounted.
  * @fires waitReady
@@ -597,7 +594,7 @@ const cpDef = {
      * @emits scroll
      */
     onScroll(e) {
-      if (!this.scrollable) {
+      if (!this.scrollable || !this.checkVisibility()) {
         return;
       }
 
@@ -1048,22 +1045,27 @@ const cpDef = {
      * @emits resize
      * @returns Promise
      */
-    onResize() {
-      const content = this.getRef('scrollContent');
-      this.bounding = this.$position();
-      if (content && this.scrollable) {
-        this.hasScrollX = ((this.axis === 'both') || (this.axis === 'x'))
-          && (content.scrollWidth > this.offsetWidth);
-        this.currentX = content.scrollLeft || this.x || 0;
-        this.hasScrollY = ((this.axis === 'both') || (this.axis === 'y'))
-          && (content.scrollHeight > this.offsetHeight);
-        this.currentY = content.scrollTop || this.y || 0;
-        this.hasScroll = this.hasScrollY || this.hasScrollX;
-        this.$emit('resize');
-        return new Promise((resolve) => {
+    async onResize() {
+      return new Promise((resolve) => {
+        if (!this.checkVisibility()) {
           resolve();
-        });
-      }
+          return;
+        }
+  
+        const content = this.getRef('scrollContent');
+        if (content && this.scrollable && bbn.cp.mixins.resizer.methods.onResize.apply(this)) {
+          this.bounding = this.$position();
+          this.hasScrollX = ((this.axis === 'both') || (this.axis === 'x'))
+            && (content.scrollWidth > this.offsetWidth);
+          this.currentX = content.scrollLeft || this.x || 0;
+          this.hasScrollY = ((this.axis === 'both') || (this.axis === 'y'))
+            && (content.scrollHeight > this.offsetHeight);
+          //bbn.fn.log(['SCROLLING TO', content.scrollTop || this.y || 0, this]);
+          this.currentY = content.scrollTop || this.y || 0;
+          this.hasScroll = this.hasScrollY || this.hasScrollX;
+          resolve();
+        }
+      });
     },
     /**
      * @method initSize
@@ -1071,56 +1073,11 @@ const cpDef = {
      */
     async initSize() {
       this.scrollReady = true;
-      this.onResize(true);
+      await this.onResize();
       this.ready = true;
       this.$emit('resizecontent');
-      return this.$forceUpdate();
+      await this.$forceUpdate();
     },
-    /**
-     * Creates a delay to set the scroll as ready
-     * @method waitReady
-     * @fires keepCool
-     * @fires onResize
-     */
-    preResize() {
-      /*
-      if (this.scrollable && this.$el.offsetParent && this.isActiveResizer()) {
-        let container = this.getRef('scrollContent');
-        let contentWidth = Math.max(container.scrollWidth, container.clientWidth);
-        let contentHeight = Math.max(container.scrollHeight, container.clientHeight);
-        if (
-          (
-            contentWidth
-            && (this.scrollWidth !== contentWidth)
-            && (
-              !this.scrollWidth
-              || (Math.abs(contentWidth - this.scrollWidth) > 1)
-            )
-          )
-          || (
-            contentHeight
-            && (this.scrollHeight !== contentHeight)
-            && (
-              !this.scrollHeight
-              || (Math.abs(contentHeight - this.scrollHeight) > 1)
-            )
-          )
-        ) {
-          let e = new Event('resizecontent', {
-            cancelable: true
-          });
-          this.$emit('resizecontent', e, {
-            width: contentWidth,
-            height: contentHeight
-          });
-
-          if (!e.defaultPrevented) {
-            this.onResize(true);
-          }
-        }
-      }
-      */
-    }
   },
   created() {
     this.componentClass.push('bbn-resize-emitter');

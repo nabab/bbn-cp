@@ -308,17 +308,17 @@ export default {
             //const replacers = replacer ? [this.getViewObject(replacer)] : [];
             this.views.splice(idx, 1, ...replacers);
             this.fixIndexes();
-              if (selected === idx) {
-                if (!replacers.length && !this.views[idx]?.pane && (idx === this.selected) && this.views.length) {
-                  this.selected = this.latest - (idx < this.latest ? 1 : 0);
-                }
+            if (selected === idx) {
+              if (!replacers.length && !this.views[idx]?.pane && (idx === this.selected) && this.views.length) {
+                this.selected = this.latest - (idx < this.latest ? 1 : 0);
               }
-              else if (selected > idx) {
-                this.selected = selected - 1;
-              }
+            }
+            else if (selected > idx) {
+              this.selected = selected - 1;
+            }
 
-              this.updateVisualList();
-              this.$emit('close', idx, onClose);
+            this.updateVisualList();
+            this.$emit('close', idx, onClose);
 
             return true;
           }
@@ -386,6 +386,11 @@ export default {
      */
     async add(obj, idx) {
       obj = this.getViewObject(obj, idx);
+      if (this.db) {
+        const thumb = await this.db.select('containers', ['manual', 'image'], {url: obj.url});
+        obj.thumbnail = thumb?.image || false;
+        obj.manual = thumb?.manual || false;
+      }
 
       if (bbn.fn.getRow(this.views, {url: obj.url})) {
         bbn.fn.log(bbn.fn.getRow(this.views, {url: obj.url}) === obj, obj)
@@ -598,12 +603,5 @@ export default {
         });
       }
     },
-    /*
-    views() {
-      bbn.fn.log("VIEWS CHANGED")
-      this.updateVisualStyleContainer();
-    }
-    */
-
   }
 }

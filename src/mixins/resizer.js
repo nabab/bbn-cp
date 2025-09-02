@@ -95,7 +95,7 @@ const resizer = {
     onResize() {
       let res = false;
       //this.$forceUpdate();
-      if (this.$el.style.display !== 'none') {
+      if (this.checkVisibility()) {
         // Setting initial dimensions
         let ms2 = this.setContainerMeasures();
         let ms1 = this.setResizeMeasures();
