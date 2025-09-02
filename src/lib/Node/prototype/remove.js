@@ -8,8 +8,9 @@ const removeElement = function(res, ele, node) {
       ele.bbnComponent.$components.remove(ele);
     }
 
-    if (!(ele instanceof Comment) && isComponent(ele)) {
+    if (!(ele instanceof Comment) && isComponent(ele) && !ele.$isDestroying) {
       onHook(ele, 'beforeDestroy');
+      ele.$isDestroying = true;
       if (ele.bbnSchema.events?.['hook:beforedestroy']) {
         const beforeDestroy = new Event('hook:beforedestroy');
         ele.bbnSchema.events['hook:beforedestroy'].handler.bind(ele.bbnComponent)(beforeDestroy);
