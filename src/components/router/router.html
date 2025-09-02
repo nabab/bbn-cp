@@ -74,7 +74,7 @@
                     <bbn-icon bbn-if="views[a.idx]?.icon"
                               class="bbn-right-sspace bbn-lg"
                               :content="views[a.idx]?.icon"/>
-                    <span bbn-text="views[a.idx].label"
+                    <span bbn-text="views[a.idx]?.label || ''"
                           :class="['bbn-p', {
                             'bbn-router-visual-title': isMobile && !views[a.idx]?.selected,
                             'bbn-ellipsis': isMobile && views[a.idx]?.selected,
