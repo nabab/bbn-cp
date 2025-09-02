@@ -32,7 +32,7 @@ import tryMount from "../private/tryMount.js";
 
 bbnProtoHtml.$connected = function () {
   if (this.$isDestroyed) {
-    debugger;
+    throw new Error(bbn._("The component is already destroyed"));
   }
   // Convert the class name from camel case to CSS-style (kebab-case).
   
@@ -49,7 +49,7 @@ bbnProtoHtml.$connected = function () {
   }
 
   if (this.$isConnected) {
-    debugger;
+    throw new Error(bbn._("The component is already connected"));
   }
 
   //bbn.fn.warning(this.$options.name + " / " + this.$el.bbnSchema.id + " / CID: " + this.bbnCid);

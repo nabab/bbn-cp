@@ -49,8 +49,4 @@ export default class bbnTextNode extends bbnNode
   
     this.nodeInsert(this.element, after);
   }
-
-  nodeUpdate() {
-    this.text.attrUpdate();
-  }
 }

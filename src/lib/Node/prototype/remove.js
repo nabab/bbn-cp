@@ -123,6 +123,7 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
             node.component.bbnSchema.element.parentNode.insertBefore(element, node.component.bbnSchema.element);
           }
           else {
+            throw new Error(bbn._("sdsdsdsd"));
             debugger;
             element.parentNode.removeChild(element);
             bbn.fn.log("Removed", element);

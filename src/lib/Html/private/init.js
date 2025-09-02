@@ -185,7 +185,7 @@ export default function init(cp) {
   });
 
   if (!cp.bbnIsRoot && (cp.$root === cp)) {
-    debugger;
+    throw new Error(bbn._("There is a mismatch with the root"));
   }
 
   Object.defineProperty(cp, '$isRoot', {

@@ -9,6 +9,5 @@ import "./Node/prototype/remove.js";
 import "./Node/prototype/setAll.js";
 import "./Node/prototype/setClass.js";
 import "./Node/prototype/setStyle.js";
-import "./Node/prototype/update.js";
 
 export default bbnNode;

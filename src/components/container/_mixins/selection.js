@@ -179,7 +179,7 @@ export default {
           this.router.updateBaseURL();
           if (!d.url) {
             bbn.fn.log("OLD URL " + oldUrl, "OLD CUR " + oldCurrent, "NEW URL " + d.url, "NEW CUR " + finalURL);
-            debugger;
+            throw new Error(bbn._("Impossible to get the view without an URL (OLD URL: %s)", oldUrl));
           }
           //bbn.fn.log("CHANGING URL TO " + d.url + ' / ' + this.router.baseURL);
           if (this.currentCurrent.indexOf(d.url)) {

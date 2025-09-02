@@ -160,6 +160,7 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
     const loopRoot = this.component.$retrieveElement(this.id, rootHash);
     if (!loopRoot) {
       bbn.fn.log(["APPEND IN LOOP", this.tag, ele])
+      throw new Error(bbn._("loopRoot should be there"));
       debugger;
       parent.appendChild(ele);
     }

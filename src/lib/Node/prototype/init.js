@@ -44,7 +44,7 @@ bbnNode.prototype.nodeInit = function(after) {
       }
       else if (!this.element.$isInit) {
         if (!this.element.isConnected) {
-          debugger;
+          throw new Error(bbn._("The element is not connected in component %s", this.$options.name));
         }
 
         this.element.$connected();

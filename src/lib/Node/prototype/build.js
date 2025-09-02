@@ -160,21 +160,6 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
           delete o.node;
         }
 
-        if (o.node) {
-          const n = o.node.component.$nodes[o.node.id];
-          const nn = n && o.node.hash ? n[o.node.hash] : n;
-          if (n && (nn?.element !== this)) {
-            const a = bbn.fn.isComment(nn?.element) ? 1 : 0;
-            const b = bbn.fn.isComment(this) ? 1 : 0;
-            /*
-            if (this.isConnected && (a+b !== 1) && (a || (nn?.element?.tagName === this.tagName))) {
-              debugger;
-            }
-            */
-          }
-
-        }
-
         return o.node;
       }
     },
