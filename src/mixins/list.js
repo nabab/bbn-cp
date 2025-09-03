@@ -1001,6 +1001,9 @@ const list = {
         this._dataPromise = new Promise(resolve => {
           let prom;
           let loadingRequestID;
+          if (this.currentData?.length) {
+            this.currentData.splice(0);
+          }
 
           if (this.isAjax) {
             if (this.loadingRequestID) {
