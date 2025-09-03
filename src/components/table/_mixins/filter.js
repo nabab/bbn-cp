@@ -79,10 +79,16 @@ export default {
         let o = this.editorGetComponentOptions(this.currentFilter);
         if (o.field) {
           const row = bbn.fn.getRow(this.currentFilters.conditions || [], {field: o.field});
-          o.source = row;
-          this.editedFilter = row;
+          if (row) {
+            o.source = row;
+            this.editedFilter = row;
+          }
+          else {
+            o.source = {field: o.field, operator: '', value: ''};
+          }
         }
 
+        bbn.fn.log('getFilterOptions', o);
         return o;
       }
     },

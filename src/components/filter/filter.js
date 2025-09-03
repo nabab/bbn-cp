@@ -86,6 +86,16 @@ const cpDef = {
     name: 'bbn-filter',
     props: {
       /**
+       * The value of the filter.
+       * @prop {Object} value
+       */
+      value: {},
+      /**
+       * The operator of the filter.
+       * @prop operator
+       */
+      operator: {},
+      /**
        * @prop operators
        */
       operators: {},
@@ -161,16 +171,6 @@ const cpDef = {
     },
     data(){
       return {
-        /**
-         * The current value of the filter.
-         * @data currentValue
-         */
-        currentValue: this.value !== undefined ? this.value : null,
-        /**
-         * The current operator.
-         * @data currentOperator
-         */
-        currentOperator: this.operator !== undefined ? this.value : null,
         showForm: true
       };
     },
@@ -229,14 +229,6 @@ const cpDef = {
         if ( obj.field && obj.operator ) {
           //bbn.fn.log("setCondition", obj, this.multi);
           obj.time = (new Date()).getTime();
-          if ( this.multi ){
-            this.source.conditions.push(obj);
-            this.$forceUpdate();
-          }
-          else{
-            this.source.conditions.splice(0);
-            this.source.conditions.push(obj);
-          }
           this.$emit('set', obj)
         }
 

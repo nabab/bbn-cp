@@ -35,7 +35,7 @@ function treatForHash(value, depth = null, level = 0, visited = null) {
  * @param {*} value Value to hash
  * @returns {String} The hash
  */
-bbn.cp.hash = function(value) {
+bbnData.hash = function(value) {
   const wasStarted = this.watchStarted;
   if (wasStarted) {
     this.watchStarted = false;

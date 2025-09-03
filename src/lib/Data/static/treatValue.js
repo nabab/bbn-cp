@@ -13,7 +13,7 @@ bbnData.treatValue = function(value, component, path, parent) {
     return value;
   }  
 
-  const hasStarted = bbnData.watchStarted;
+  const hasStarted = this.watchStarted;
   if (hasStarted) {
     this.watchStarted = false;
   }
