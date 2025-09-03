@@ -32,7 +32,7 @@ export default {
      */
     hasFilter(col) {
       if (col.field) {
-        for (let i = 0; i < this.currentFilters?.conditions?.length || 0; i++) {
+        for (let i = 0; i < this.currentFilters.conditions.length; i++) {
           if (this.currentFilters.conditions[i].field === col.field) {
             return true;
           }
@@ -78,17 +78,14 @@ export default {
       if (this.currentFilter) {
         let o = this.editorGetComponentOptions(this.currentFilter);
         if (o.field) {
-          const row = bbn.fn.getRow(this.currentFilters.conditions || [], {field: o.field});
-          if (row) {
-            o.source = row;
-            this.editedFilter = row;
-          }
-          else {
-            o.source = {field: o.field, operator: '', value: ''};
-          }
+          o.conditions = this.getColFilters(this.currentFilter);
         }
-
-        bbn.fn.log('getFilterOptions', o);
+        if (o.conditions.length) {
+          o.value = o.conditions[0].value;
+          o.operator = o.conditions[0].operator;
+          this.editedFilter = o.conditions[0];
+        }
+        o.multi = false;
         return o;
       }
     },
@@ -102,8 +99,14 @@ export default {
       this.getPopup({
         label: bbn._('Multiple filters'),
         component: {
-          template: `<bbn-scroll><bbn-filter bbn-bind="source" :multi="true"></bbn-filter></bbn-scroll>`,
+          template: `<bbn-scroll><bbn-filter bbn-bind="source" @change="changeConditions" :multi="true"></bbn-filter></bbn-scroll>`,
           props: ['source'],
+          methods: {
+            changeConditions(o) {
+              table.currentFilters.logic = o.logic;
+              table.currentFilters.conditions = o.conditions;
+            }
+          },
         },
         width: '90%',
         height: '90%',
@@ -111,7 +114,8 @@ export default {
           fields: bbn.fn.filter(this.cols, a => {
             return (a.filterable !== false) && !a.buttons;
           }),
-          source: this.currentFilters
+          conditions: this.currentFilters.conditions,
+          logic: this.currentFilters.logic
         }
       });
     },
