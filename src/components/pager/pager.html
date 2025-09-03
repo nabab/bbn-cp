@@ -151,7 +151,7 @@
 										:title="_('Multi Filter')"
 										:class="[
 															'bbn-left-xsspace',
-															{'bbn-red': element.currentFilters && element.currentFilters.conditions.length ? true : false}
+															{'bbn-red': !!element.currentFilters?.conditions?.length}
 														]"
 										@click="element ? element.openMultiFilter() : () => {}"
 										icon="nf nf-md-filter_variant"

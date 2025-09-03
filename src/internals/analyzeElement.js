@@ -142,7 +142,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
         }
       });
       o.exp = value;
-      if (o.exp.match(/^\(\s*[A-z_]+[A-z0-9_,\s]*\)\s*=>/) || o.exp.match(/^\(\s*\)\s*=>/)) {
+      if (o.exp.match(/^\(\s*[A-z_]+[A-z0-9_,\s]*\)\s*=>/) || o.exp.match(/^[A-z_]+[A-z0-9]*\s*=>/) || o.exp.match(/^\(\s*\)\s*=>/)) {
         let analyzed;
         try {
           analyzed = bbn.fn.analyzeFunction(o.exp);

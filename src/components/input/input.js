@@ -271,7 +271,6 @@ const cpDef = {
       }
     },
     value(v) {
-      bbn.fn.log([bbn.fn.timestamp(), "CHANGING VALUE", this, this.isEmittingValue])
       if (this.pref && v && (v.indexOf(this.pref) === 0)) {
         v = bbn.fn.substr(v, this.pref.length);
       }

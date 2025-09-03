@@ -32,7 +32,7 @@ export default {
      */
     hasFilter(col) {
       if (col.field) {
-        for (let i = 0; i < this.currentFilters.conditions.length; i++) {
+        for (let i = 0; i < this.currentFilters?.conditions?.length || 0; i++) {
           if (this.currentFilters.conditions[i].field === col.field) {
             return true;
           }
@@ -99,14 +99,8 @@ export default {
       this.getPopup({
         label: bbn._('Multiple filters'),
         component: {
-          template: `<bbn-scroll><bbn-filter bbn-bind="source" @change="changeConditions" :multi="true"></bbn-filter></bbn-scroll>`,
+          template: `<bbn-scroll><bbn-filter bbn-bind="source" :multi="true"></bbn-filter></bbn-scroll>`,
           props: ['source'],
-          methods: {
-            changeConditions(o) {
-              table.currentFilters.logic = o.logic;
-              table.currentFilters.conditions = o.conditions;
-            }
-          },
         },
         width: '90%',
         height: '90%',
@@ -114,8 +108,7 @@ export default {
           fields: bbn.fn.filter(this.cols, a => {
             return (a.filterable !== false) && !a.buttons;
           }),
-          conditions: this.currentFilters.conditions,
-          logic: this.currentFilters.logic
+          source: this.currentFilters
         }
       });
     },

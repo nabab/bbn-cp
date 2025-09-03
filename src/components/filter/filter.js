@@ -103,19 +103,9 @@ const cpDef = {
        * The pre-existing conditions.
        * @prop {Array} [[]] conditions
        */
-      conditions: {
-        type: Array,
-        default(){
-          return [];
-        }
-      },
-      /**
-       * The previously chosen logic 'AND' or 'OR'.
-       * @prop {String} ['AND'] logic
-       */
-      logic: {
-        type: String,
-        default: 'AND'
+      source: {
+        type: Object,
+        required: true
       },
       /**
        * The list of fields given to the filter.
@@ -182,11 +172,6 @@ const cpDef = {
     data(){
       return {
         /**
-         * The value of the property 'logic'.
-         * @data {String} ['AND'] currentLogic
-         */
-        currentLogic: this.logic,
-        /**
          * The current value of the filter.
          * @data currentValue
          */
@@ -195,7 +180,8 @@ const cpDef = {
          * The current operator.
          * @data currentOperator
          */
-        currentOperator: this.operator !== undefined ? this.value : null
+        currentOperator: this.operator !== undefined ? this.value : null,
+        showForm: true
       };
     },
     computed: {
@@ -250,15 +236,25 @@ const cpDef = {
        * @return {Object}
        */
       setCondition(obj){
-        if ( obj.field && obj.operator ){
+        if ( obj.field && obj.operator ) {
           //bbn.fn.log("setCondition", obj, this.multi);
           obj.time = (new Date()).getTime();
           if ( this.multi ){
-            this.conditions.push(obj);
+            this.source.conditions.push(obj);
             this.$forceUpdate();
+          }
+          else{
+            this.source.conditions.splice(0);
+            this.source.conditions.push(obj);
           }
           this.$emit('set', obj)
         }
+
+        this.showForm = false;
+        setTimeout(() => {
+          this.showForm = true;
+        }, 250);
+
         return obj;
       },
       /**
@@ -272,13 +268,16 @@ const cpDef = {
       unsetCondition(obj){
         if ( obj.field && obj.operator && obj.time ){
           if ( this.multi ){
-            this.conditions.push(obj);
+            this.source.conditions.push(obj);
           }
           else{
             this.$emit('set', obj)
           }
         }
         return obj;
+      },
+      onChange(d, idx) {
+        bbn.fn.log("onChange", d, arguments)
       },
       /**
        * Returns the number of fields.
@@ -296,6 +295,24 @@ const cpDef = {
        * @param {Object} cd
        * @return {String}
        */
+      operatorText(operator, field) {
+        const type = bbnFilter.get_operator_type(field);
+        if (type) {
+          const operators = this.editorOperators[type];
+          if (field.nullable) {
+            if (!operators.isnull) {
+              operators.isnull = this.editorNullOps.isnull;
+              operators.isnotnull = this.editorNullOps.isnotnull;
+            }
+          }
+
+          if (operators?.[operator]) {
+            return operators[operator];
+          }
+        }
+
+        return '';
+      },
       condition_text(cd){
         let st = '';
         if ( cd && cd.field ){
@@ -305,8 +322,9 @@ const cpDef = {
             st += '<strong>' +
               (f.flabel ? f.flabel : (f.label ? f.label : cd.field)) +
               '</strong> ' +
-              this.editorOperators[bbnFilter.get_operator_type(f)][cd.operator] +
+              this.operatorText(cd.operator, f) +
               ' <em>';
+              
             if ( cd.value ){
               if ( cd.value === true ){
                 st += 'true';
@@ -341,7 +359,7 @@ const cpDef = {
        * @emits unset
        */
       delete_full_condition(idx){
-        this.$emit('unset', this.conditions.splice(idx, 1));
+        this.$emit('unset', this.source.conditions.splice(idx, 1));
       },
       /**
        * Deletes the given condition.
@@ -374,7 +392,7 @@ const cpDef = {
             }
           }
         };
-        if ( del(this.conditions) ){
+        if ( del(this.source.conditions) ){
           this.$forceUpdate();
           this.$emit('unset', condition);
         }
@@ -386,46 +404,99 @@ const cpDef = {
        * @param {Number} idx
        */
       add_group(idx){
-        let cond = bbn.fn.extend(true, {}, this.conditions[idx]);
-        this.conditions.splice(idx, 1);
+        const cond = bbn.fn.extend(true, {}, ...this.source.conditions.splice(idx, 1));
         this.$nextTick(() => {
-          this.conditions.splice(idx, 0, {
-            logic: this.currentLogic,
+          this.source.conditions.splice(idx, 0, {
+            logic: this.source.logic,
             conditions: [cond]
           });
-          this.$forceUpdate();
-        });
+        })
+
       },
       /**
        * Deletes a condition.
        * @method delete_group
        */
-      delete_group(){
-        this.$parent.conditions.splice(idx, 1);
+      delete_group() {
+        this.$parent.source.conditions.splice(idx, 1);
       },
     },
     components: {
       /**
-       * @component bbn-filter-form
+       * @component filter-form
        */
-      'bbn-filter-form': {
-        name: 'bbn-filter-form',
+      'filter-form': {
+        name: 'filter-form',
+        template: `
+          <div class="bbn-w-100 filter-form bbn-flex">
+            <div class="bbn-flex bbn-right-sspace" style="flex-direction: column">
+              <!-- Condition creation line -->
+              <div bbn-if="columns.length > 1"
+                   class="bbn-block bbn-filter-padding bbn-db-column">
+                <bbn-dropdown :source="columns"
+                                  bbn-model="currentField"
+                                  name="field[]"
+                                  :placeholder="_('Pick a field')"
+                                  ref="column"/>
+              </div>
+              <div bbn-elseif="field"
+                   class="bbn-block bbn-filter-padding bbn-db-column bbn-right-sspace"
+                   bbn-html="currentTitle"/>
+              <div class="bbn-block bbn-filter-padding bbn-db-operator bbn-top-xsspace">
+                <bbn-dropdown name="operator[]"
+                              :disabled="!currentField"
+                              bbn-model="currentOperator"
+                              :suggest="true"
+                              :required="true"
+                              :source="operators"
+                              ref="operator"
+                              :placeholder="_('Pick an operator')"/>
+              </div>
+              <div :class="[{'bbn-hidden': !!no_value}, 'bbn-block', 'bbn-filter-padding', 'bbn-db-value', 'bbn-top-xsspace']">
+                <component bbn-if="type && currentComponent"
+                           :is="currentComponent"
+                           :disabled="no_value"
+                           name="value"
+                           bbn-model="currentValue"
+                           ref="value"
+                           bbn-bind="currentComponentOptions"
+                           @keyup.enter="validate"/>
+              </div>
+            </div>
+            <div class="bbn-flex bbn-filter-padding bbn-db-column">
+              <bbn-button :disabled="!currentOperator"
+                          @click="validate"
+                          :title="_('Validate')"
+                          ref="check"
+                          icon="nf nf-fa-check"
+                          :notext="true"/>
+              <bbn-button bbn-if="buttonDelete"
+                          :disabled="!currentOperator"
+                          @click="unset"
+                          :title="_('Unset condition')"
+                          ref="unset"
+                          icon="nf nf-fa-times"
+                          :notext="true"
+                          class="bbn-left-xsspace"/>
+            </div>
+          </div>
+        `,
         /**
          * @mixin bbn.cp.mixins.dataEditor
-         * @memberof bbn-filter-form
+         * @memberof filter-form
          */
         mixins: [bbn.cp.mixins.basic, bbn.cp.mixins.dataEditor],
         props: {
           /**
            * The list of fields available for the filter.
            * @prop {Object|Array} [{}] fields
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            */
           fields: {},
           /**
            * The column's value for a single column filter.
            * @prop {String} field
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            */
           field: {
             type: String
@@ -433,7 +504,7 @@ const cpDef = {
           /**
            * The type of data of the operators.
            * @prop {String} ['string'] type
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            */
           type: {
             type: String
@@ -441,7 +512,7 @@ const cpDef = {
           /**
            * The operator of the filter.
            * @prop operator
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            */
           operator: {
             type: String
@@ -449,13 +520,13 @@ const cpDef = {
           /**
            * The value of the filter.
            * @prop value
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            */
           value: {},
           /**
            * The component used for a single filter.
            * @prop component
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            *
            */
           component: {
@@ -464,7 +535,7 @@ const cpDef = {
            /**
            * The component options used for a single filter.
            * @prop {Object} [{}] componentOptions
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            */
           componentOptions: {
             type: Object
@@ -472,7 +543,7 @@ const cpDef = {
           /**
            * Set to true to show the button to delete a condition.
            * @prop {Boolean} [false] buttonDelete
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            */
           buttonDelete: {
             type: Boolean,
@@ -484,49 +555,49 @@ const cpDef = {
             /**
              * The current field.
              * @data {String} currentField
-             * @memberof bbn-filter-form
+             * @memberof filter-form
              */
             currentField: this.field || '',
             /**
              * The current type.
              * @data currentType
-             * @memberof bbn-filter-form
+             * @memberof filter-form
              */
             currentType: this.type || '',
             /**
              * The current value.
              * @data currentValue
-             * @memberof bbn-filter-form
+             * @memberof filter-form
              */
             currentValue: this.value !== undefined ? this.value : '',
             /**
              * The current component.
              * @data {String} currentComponent
-             * @memberof bbn-filter-form
+             * @memberof filter-form
              */
             currentComponent: this.component || false,
             /**
              * The current component's options.
              * @data {Object} currentComponentOptions
-             * @memberof bbn-filter-form
+             * @memberof filter-form
              */
             currentComponentOptions: this.componentOptions,
             /**
              * The current operator.
              * @data {String} currentOperator
-             * @memberof bbn-filter-form
+             * @memberof filter-form
              */
             currentOperator: this.operator || '',
             /**
              * The current operators.
              * @data {Array} [[]] currentOperators
-             * @memberof bbn-filter-form
+             * @memberof filter-form
              */
             currentOperators: [],
             /**
              * The current condition.
              * @data {Boolean} [false] currentCondition
-             * @memberof bbn-filter-form
+             * @memberof filter-form
              */
             currentCondition: false,
             /**
@@ -539,12 +610,12 @@ const cpDef = {
             has_condition: true,
             /**
              * @prop {Array} [[]] items
-             * @memberof bbn-filter-form
+             * @memberof filter-form
              */
             items: [],
             /**
              * @prop cfg
-             * @memberof bbn-filter-form
+             * @memberof filter-form
              */
             cfg: {}
           };
@@ -554,7 +625,7 @@ const cpDef = {
            * Returns the object containing the operators.
            * @computed operators
            * @fires currentFullField
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            * @return {Object}
            */
           operators(){
@@ -568,7 +639,7 @@ const cpDef = {
            * True if the filter form has no value.
            * @computed no_value
            * @fires editorHasNoValue
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            * @return {Boolean}
            */
           no_value(){
@@ -578,7 +649,7 @@ const cpDef = {
            * Normalizes the array 'fields' to use as the source of the form's dropdown.
            * @computed columns
            * @return {Array}
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            */
           columns(){
             let r = [];
@@ -602,7 +673,7 @@ const cpDef = {
           /**
            * Returns the object 'field' of the corresponding current field.
            * @computed currentFullField
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            * @return {Object}
            */
           currentFullField(){
@@ -617,7 +688,7 @@ const cpDef = {
           /**
            * Returns the label of the current field.
            * @computed currentTitle
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            * @return {String}
            */
           currentTitle(){
@@ -634,7 +705,7 @@ const cpDef = {
           /**
            * Resets the current operator, the current value and the current field value (if the number of columns is greater than) to their default.
            * @method _unset
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            */
           _unset(){
             this.currentOperator = '';
@@ -652,7 +723,7 @@ const cpDef = {
            * @emits validate
            * @emits invalidate
            * @emits error
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            */
           validate(cancel){
             if (this.currentField
@@ -688,7 +759,7 @@ const cpDef = {
           /**
            * Calls the "_unset" method and emits "unset" event
            * @method unset
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            * @fires _unset
            * @emit $parent.unset
            */
@@ -699,7 +770,7 @@ const cpDef = {
         },
         /**
          * @event created
-         * @memberof bbn-filter-form
+         * @memberof filter-form
          */
         created(){
           if ( this.type && this.editorOperators[this.type] ){
@@ -721,7 +792,7 @@ const cpDef = {
         },
         /**
          * @event mounted
-         * @memberof bbn-filter-form
+         * @memberof filter-form
          */
         mounted(){
           this.ready = true;
@@ -736,7 +807,7 @@ const cpDef = {
            * @watch currentField
            * @param {} newVal
            * @fires editorGetComponentOptions
-           * @memberof bbn-filter-form
+           * @memberof filter-form
            */
           currentField(newVal){
             let fieldObj = bbn.fn.getRow(this.fields, {field: newVal});

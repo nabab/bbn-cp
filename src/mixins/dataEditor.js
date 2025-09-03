@@ -27,7 +27,7 @@ const dataEditor = {
         lte: bbn._('Is prior to or equal to'),
         lt: bbn._('Is older than'),
       },
-      enums: {
+      enum: {
         eq: bbn._('Is equal to'),
         neq: bbn._('Is not equal to'),
       },
@@ -91,13 +91,13 @@ const dataEditor = {
           o.component = col.filter;
         }
         else if ( col.source ){
-          o.type = 'enums';
+          o.type = 'enum';
           o.component = 'bbn-dropdown';
           o.componentOptions.source = col.source;
           o.componentOptions.placeholder = bbn._('Choose');
         }
         else if ( col.type === 'boolean' ){
-          o.type = 'enums';
+          o.type = 'enum';
           o.component = 'bbn-dropdown';
           o.componentOptions.source = [0, 1];
           o.componentOptions.placeholder = bbn._('Choose');

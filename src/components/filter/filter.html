@@ -3,13 +3,13 @@
       bbn-html="_('Where the following conditions are true')"/>
   <!-- List of the validated conditions -->
   <div class="bbn-form-full"
-       bbn-for="(condition, idx) in conditions"
+       bbn-for="(condition, idx) in source.conditions"
        bbn-if="multi">
-    <div :class="'bbn-filter-items bbn-filter-border bbn-iflex bbn-filter-' + (currentLogic === 'OR' ? 'or' : 'and')"
+    <div :class="'bbn-filter-items bbn-filter-border bbn-iflex bbn-filter-' + (source.logic === 'OR' ? 'or' : 'and')"
          style="align-items: baseline">
       <div class="bbn-filter-logic">
         <span bbn-if="idx"
-              bbn-text="currentLogic === 'OR' ? _('OR') : _('AND')"/>
+              bbn-text="source.logic === 'OR' ? _('OR') : _('AND')"/>
         <bbn-dropdown bbn-else
                       class="bbn-s"
                       :source="[{
@@ -19,10 +19,10 @@
                         text: _('OR'),
                         value: 'OR'
                       }]"
-                      bbn-model="currentLogic"
+                      bbn-model="source.logic"
                       name="logic"
                       ref="logic"
-                      @change="$emit('change', {logic: currentLogic, conditions: conditions})"/>
+                      @change="$emit('change', source)"/>
       </div>
       <div class="bbn-flex"
            :style="{
@@ -33,14 +33,14 @@
           <i class="bbn-p bbn-lg nf nf-fa-minus_circle bbn-right-xsspace"
              @mouseover="over"
              @mouseout="out"
-             :title="_('Delete this condition')"
+             :title="condition.logic ? _('Delete this conditions group') : _('Delete this condition')"
              ref="minus"
              @click="delete_condition(condition)"/>
           <i class="bbn-p bbn-lg nf nf-fa-plus_circle"
              bbn-if="multi"
              @mouseover="$event.target.style.color = 'red'"
              @mouseout="$event.target.style.color = null"
-             :title="_('Add new condition')"
+             :title="_('Add new conditions group')"
              ref="plus"
              @click="add_group(idx)"
              bbn-show="!condition.conditions"/>
@@ -51,9 +51,7 @@
           </div>
           <bbn-filter bbn-elseif="condition.logic"
                       :fields="fields"
-                      :conditions="condition.conditions"
-                      :logic="condition.logic"
-                      @change="d => {condition.logic = d.logic}"
+                      :source="condition"
                       :num="num + 1"
                       :idx="idx"
                       :multi="multi"/>
@@ -68,77 +66,24 @@
         'bbn-filter-border': fields.length > 1,
         'bbn-filter-items': true,
         'bbn-filter-temp': true,
-        'bbn-filter-or': currentLogic === 'OR',
-        'bbn-filter-and': currentLogic === 'AND',
+        'bbn-filter-or': source.logic === 'OR',
+        'bbn-filter-and': source.logic === 'AND',
       }">
       <!-- Showing the logic (AND/OR) if there are already conditions -->
       <div class="bbn-filter-logic bbn-vmiddle"
-           bbn-text="conditions.length ? currentLogic : ''"
+           bbn-text="source.conditions.length ? (source.logic === 'OR' ? _('OR') : _('AND')) : ''"
            bbn-if="multi"/>
       <div class="bbn-filter-main">
-        <bbn-filter-form inline-template
-                         :value="value"
-                         :operator="operator"
-                         :type="type"
-                         :fields="fields"
-                         :field="field"
-                         :button-delete="!multi"
-                         :component="component"
-                         :component-options="componentOptions"
-                         @validate="setCondition">
-          <div class="bbn-w-100 bbn-filter-form bbn-flex">
-            <div class="bbn-flex bbn-right-sspace" style="flex-direction: column">
-              <!-- Condition creation line -->
-              <div bbn-if="columns.length > 1"
-                   class="bbn-block bbn-filter-padding bbn-db-column">
-                <bbn-dropdown :source="columns"
-                                  bbn-model="currentField"
-                                  name="field[]"
-                                  :placeholder="_('Pick a field')"
-                                  ref="column"/>
-              </div>
-              <div bbn-elseif="field"
-                   class="bbn-block bbn-filter-padding bbn-db-column bbn-right-sspace"
-                   bbn-html="currentTitle"/>
-              <div class="bbn-block bbn-filter-padding bbn-db-operator bbn-top-xsspace">
-                <bbn-dropdown name="operator[]"
-                              :disabled="!currentField"
-                              bbn-model="currentOperator"
-                              :suggest="true"
-                              :required="true"
-                              :source="operators"
-                              ref="operator"
-                              :placeholder="_('Pick an operator')"/>
-              </div>
-              <div :class="[{'bbn-hidden': !!no_value}, 'bbn-block', 'bbn-filter-padding', 'bbn-db-value', 'bbn-top-xsspace']">
-                <component bbn-if="type && currentComponent"
-                           :is="currentComponent"
-                           :disabled="no_value"
-                           name="value"
-                           bbn-model="currentValue"
-                           ref="value"
-                           bbn-bind="currentComponentOptions"
-                           @keyup.enter="validate"/>
-              </div>
-            </div>
-            <div class="bbn-flex bbn-filter-padding bbn-db-column">
-              <bbn-button :disabled="!currentOperator"
-                          @click="validate"
-                          :title="_('Validate')"
-                          ref="check"
-                          icon="nf nf-fa-check"
-                          :notext="true"/>
-              <bbn-button bbn-if="buttonDelete"
-                          :disabled="!currentOperator"
-                          @click="unset"
-                          :title="_('Unset condition')"
-                          ref="unset"
-                          icon="nf nf-fa-times"
-                          :notext="true"
-                          class="bbn-left-xsspace"/>
-            </div>
-          </div>
-        </bbn-filter-form>
+        <filter-form bbn-if="showForm"
+                     :value="value"
+                     :operator="operator"
+                     :type="type"
+                     :fields="fields"
+                     :field="field"
+                     :button-delete="!multi"
+                     :component="component"
+                     :component-options="componentOptions"
+                     @validate="setCondition"/>
       </div>
     </div>
   </div>
