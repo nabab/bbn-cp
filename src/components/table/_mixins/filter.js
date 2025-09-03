@@ -78,14 +78,11 @@ export default {
       if (this.currentFilter) {
         let o = this.editorGetComponentOptions(this.currentFilter);
         if (o.field) {
-          o.conditions = this.getColFilters(this.currentFilter);
+          const row = bbn.fn.getRow(this.currentFilters.conditions || [], {field: o.field});
+          o.source = row;
+          this.editedFilter = row;
         }
-        if (o.conditions.length) {
-          o.value = o.conditions[0].value;
-          o.operator = o.conditions[0].operator;
-          this.editedFilter = o.conditions[0];
-        }
-        o.multi = false;
+
         return o;
       }
     },

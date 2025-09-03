@@ -86,16 +86,6 @@ const cpDef = {
     name: 'bbn-filter',
     props: {
       /**
-       * The value of the filter.
-       * @prop {Object} value
-       */
-      value: {},
-      /**
-       * The operator of the filter.
-       * @prop operator
-       */
-      operator: {},
-      /**
        * @prop operators
        */
       operators: {},
