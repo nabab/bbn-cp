@@ -7,10 +7,11 @@
   <template bbn-elseif="mode === 'menu'">
     <bbn-context :source="table.buttonSource(source, column, rowIndex)"
                   @select="(item, idx, dataIndex, ev, floater) => onButtonsMenuSelect(item, source, column, rowIndex, ev, floater)"
-                  :attach="column?.fixed ? $el : null"
-                  :position="column?.fixed ? (firstCell ? 'right' : 'left') : ''">
+                  :attach="menuIconElement">
       <span class="bbn-iblock bbn-lg">
-        <i :class="table.buttonIcon"/>
+        <bbn-icon :content="table.buttonIcon"
+                  ref="menuIcon"
+                  @hook:mounted="menuIconElement = getRef('menuIcon')"/>
       </span>
     </bbn-context>
   </template>

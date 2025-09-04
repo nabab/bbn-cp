@@ -22,6 +22,9 @@ const cpDef = {
     }
   },
   data() {
+    return {
+      menuIconElement: null
+    }
   },
   methods: {
     onButtonsMenuSelect(item, data, col, i, ev, floater) {
