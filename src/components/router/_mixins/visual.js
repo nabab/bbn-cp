@@ -371,6 +371,7 @@ export default {
     },
     numVisuals() {
       this.onResize();
+      this.updateVisualList();
     },
     visualShowAll(v) {
       this.updateVisualList();

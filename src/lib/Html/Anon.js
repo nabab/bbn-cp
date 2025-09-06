@@ -32,6 +32,7 @@ export default class bbnAnonHtml extends HTMLElement
   #options;
   #bbnSlots;
   #bbnCid;
+  #bbnUid;
   #bbnTmpSlots;
   #isConnected = false;
   #isInit = false;
@@ -110,6 +111,15 @@ export default class bbnAnonHtml extends HTMLElement
   set bbnCid(v) {
     if (!this.#bbnCid) {
       this.#bbnCid = v;
+    }
+  };
+
+  get bbnUid() {
+    return this.#bbnUid;
+  };
+  set bbnUid(v) {
+    if (!this.#bbnUid) {
+      this.#bbnUid = v;
     }
   };
 

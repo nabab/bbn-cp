@@ -1,6 +1,5 @@
 const basic = {
   data() {
-    bbn.cp.uid++;
     let o = {
       /**
        * The change of value of this prop to true emits the event 'ready'.
@@ -8,12 +7,6 @@ const basic = {
        * @memberof basicComponent
        */
       ready: false,
-      /**
-       * Each basic component will have a unique UID.
-       * @data {Number} uid
-       * @memberof basicComponent
-       */
-      bbnUid: bbn.cp.uid,
       /**
        * The classes added to the component.
        * @data {Array} [['bbn-basic-component']] componentClass

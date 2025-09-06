@@ -1002,7 +1002,7 @@ const list = {
           let prom;
           let loadingRequestID;
           if (this.currentData?.length) {
-            this.currentData.splice(0);
+            this.currentData = [];
           }
 
           if (this.isAjax) {

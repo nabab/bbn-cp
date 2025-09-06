@@ -14,6 +14,7 @@
               :key="uid || sourceValue ? li.data[uid || sourceValue] || idx : idx"
               bbn-if="!sourceVisible || li.data[sourceVisible]">
       <li bbn-if="groupable
+            && li.data[sourceGroup]
             && (!pageable
               || ((idx >= start)
                 && (idx < start + currentLimit)))
@@ -35,7 +36,7 @@
             || ((idx >= start)
               && (idx < start + currentLimit))
             || (!!pageable && !!serverPaging)"
-          @mouseover="mouseenter($event, idx)"
+          @mouseenter="mouseenter($event, idx)"
           :ref="'li' + idx"
           :key="uid ? li.data[uid] : li.key"
           @click.prevent.stop="select(idx)"

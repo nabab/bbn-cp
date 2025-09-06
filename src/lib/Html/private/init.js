@@ -249,6 +249,8 @@ export default function init(cp) {
   cp.$isInit = true;
 
   // Setting up available props for HTML templates
+  addNamespace(cp, 'bbnCid', 'internal');
+  addNamespace(cp, 'bbnUid', 'internal');
   addNamespace(cp, '$internal', 'internal');
   addNamespace(cp, '$props', 'internal');
   addNamespace(cp, '$el', 'internal');

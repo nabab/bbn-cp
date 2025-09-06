@@ -41,6 +41,8 @@ bbnProtoHtml.$connected = function () {
     this.$options.tag = this.constructor.bbnCfg.tag;
   }
 
+  bbn.cp.uid++;
+  this.bbnUid = bbn.cp.uid;
   // Check we are in the DOm
   //bbn.fn.warning("CALLBACK ON " + this.$options.name + " / " + this.$el.bbnSchema.id + " INIT: " + this.$isInit + " MOUNTED: " + this.$isMounted);
   if (!this.isConnected) {

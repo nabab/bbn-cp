@@ -34,52 +34,54 @@ const cpDef = {
     
       const templates = {
         text: {
-          view: '<div bbn-text="currentValue || cp.novalue || cp.placeholder || \'...\'"/>',
-          edit: '<bbn-input bbn-model="currentValue"/>'
+          view: '<div class="bbn-editable-viewer" bbn-text="currentValue || cp.novalue || cp.placeholder || \'...\'"/>',
+          edit: '<bbn-input class="bbn-editable-editor" bbn-model="currentValue"/>'
         },
         multilines: {
-          view: '<div bbn-text="currentValue || cp.novalue || cp.placeholder || \'...\'" style="white-space: pre-wrap; word-break: break-word"/>',
-          edit: '<bbn-textarea bbn-model="currentValue" class="bbn-100"/>'
+          view: '<div class="bbn-editable-viewer" bbn-text="currentValue || cp.novalue || cp.placeholder || \'...\'" style="white-space: pre-wrap; word-break: break-word"/>',
+          edit: '<bbn-textarea class="bbn-editable-editor" bbn-model="currentValue" class="bbn-100"/>'
         },
         inline: {
-          view: '<div bbn-text="value"></div>',
-          edit: '<bbn-inline-editor bbn-model="currentValue"/>'
+          view: '<div class="bbn-editable-viewer" bbn-text="value"></div>',
+          edit: '<bbn-inline-editor class="bbn-editable-editor" bbn-model="currentValue"/>'
         },
         component: {
-          view: '<div bbn-text="currentText" style="white-space: pre-wrap; word-break: break-word"></div>',
-          edit: '<div><component :is="component" bbn-bind="componentOptions" bbn-model="currentValue"/></div>'
+          view: '<div class="bbn-editable-viewer" bbn-text="currentText" style="white-space: pre-wrap; word-break: break-word"></div>',
+          edit: '<div class="bbn-editable-editor"><component :is="component" bbn-bind="componentOptions" bbn-model="currentValue"/></div>'
         },
         html: {
-          view: `<div  @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"
-                      :class="['component-container', 'bbn-block-html', alignClass]"
+          view: `<div @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"
+                      :class="['bbn-editable-viewer', 'component-container', 'bbn-block-html', alignClass]"
                       bbn-html="currentValue"
                       :style="currentStyle">
     
                 </div>`,
-          edit: `<div :class="['component-container', 'bbn-block-html', alignClass ]">
+          edit: `<div :class="['bbn-editable-editor', 'component-container', 'bbn-block-html', alignClass ]">
                   <bbn-rte bbn-model="currentValue"/>
                 </div>`
         },
         markdown: {
-          view: `<div  @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"
-                      :class="['component-container', 'bbn-block-html', alignClass]"
+          view: `<div @click="$parent.editMode"
+                      @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"
+                      :class="['bbn-editable-viewer', 'component-container', 'bbn-block-html', alignClass]"
                       :style="currentStyle">
                   <span bbn-if="currentValue"
                         bbn-html="currentValue"/>
                   <span bbn-else
                         bbn-html="cp.novalue || cp.placeholder || '...'"/>
                 </div>`,
-          edit: `<div :class="['component-container', 'bbn-block-html', alignClass ]">
+          edit: `<div :class="['bbn-editable-editor', 'component-container', 'bbn-block-html', alignClass ]">
                   <bbn-markdown bbn-model="currentValue"/>
                 </div>`
         },
         title: {
-          view: `<div @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"  :class="['component-container', 'bbn-block-title', {'has-hr': source.hr}, alignClass]":style="currentStyle">
+          view: `<div class="bbn-editable-viewer"
+                      @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"  :class="['component-container', 'bbn-block-title', {'has-hr': source.hr}, alignClass]":style="currentStyle">
                   <hr bbn-if="source.hr">
                   <component :is="cpHTML(source.tag, 'title')" :source="source"/>
                   <hr bbn-if="source.hr">
                  </div>`,
-          edit: `<div :class="['component-container','bbn-cms-block-edit' ,'bbn-block-title', 'bbn-flex-height', {'has-hr': source.hr}, alignClass]" :style="currentStyle">
+          edit: `<div :class="['bbn-editable-editor', 'component-container','bbn-cms-block-edit' ,'bbn-block-title', 'bbn-flex-height', {'has-hr': source.hr}, alignClass]" :style="currentStyle">
                   <div class="edit-title bbn-w-100">
                     <hr bbn-show="source.hr"><component :is="cpHTML(source.tag,'title')" :source="source"/><hr bbn-if="source.hr">
                   </div>
@@ -104,7 +106,7 @@ const cpDef = {
         image: {
           //taglia originale 100% width,width 50% 33% 25%
           view: `
-          <div class="component-container bbn-block-image" :class="alignClass">
+          <div class="bbn-editable-viewer component-container bbn-block-image" :class="alignClass">
             <a bbn-if="source.href" target="_self" :href="$parent.linkURL + source.href" class="bbn-c">
               <img :src="$parent.path + source.src"
                     style="heigth:500px;width:100%"
@@ -129,7 +131,7 @@ const cpDef = {
                bbn-html="(source.details)"/>
           </div>`,
           edit:     `
-          <div class="component-container bbn-block-image" :class="alignClass">
+          <div class="bbn-editable-editor component-container bbn-block-image" :class="alignClass">
             <div class="bbn-padding">
               <div class="bbn-grid-fields bbn-vspadding">
                 <label bbn-text="_('Upload your image')"/>
@@ -159,7 +161,7 @@ const cpDef = {
         },
         carousel: {
           view: `
-          <div :class="['component-container', 'bbn-block-carousel', 'bbn-w-100',  alignClass]" :style="currentStyle" bbn-if="show">
+          <div :class="['bbn-editable-viewer', 'component-container', 'bbn-block-carousel', 'bbn-w-100',  alignClass]" :style="currentStyle" bbn-if="show">
             <div bbn-for="(group, idx) in carouselSource"
                  bbn-if="idx === currentCarouselIdx">
               <bbn-cms-carousel-control :source="idx"
@@ -171,17 +173,17 @@ const cpDef = {
             </div>
           </div>
           `,
-          edit: `<div bbn-text="_('Edit')"/>`
+          edit: `<div class="bbn-editable-editor" bbn-text="_('Edit')"/>`
         },
         gallery: {
           view: `
-          <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="currentStyle" bbn-if="show">
+          <div :class="['bbn-editable-viewer', 'component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="currentStyle" bbn-if="show">
             <bbn-cms-block-gallery-item bbn-for="(image, idx) in source.source" :source="image" :key="idx" :index="idx"/>
           </div>
           `,
           edit: `
           <div>
-            <div :class="['component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="currentStyle" bbn-if="show">
+            <div :class="['bbn-editable-editor', 'component-container', 'bbn-block-gallery', alignClass, galleryCols]" :style="currentStyle" bbn-if="show">
               <!-- GIVE HREF TO VIEW FULL IMAGE -->
               <bbn-cms-block-gallery-item bbn-for="(image, idx) in currentValue" :source="image" :key="idx" :index="idx"/>
             </div>
@@ -205,7 +207,7 @@ const cpDef = {
         },
         video: {
           view: `
-            <div :class="['component-container', 'bbn-cms-block-video', alignClass]">
+            <div :class="['bbn-editable-viewer', 'component-container', 'bbn-cms-block-video', alignClass]">
               <!--ERROR ON HOME-->
               <!--bbn-video :width="source.width"
                          :style="currentStyle"
@@ -220,7 +222,7 @@ const cpDef = {
                       :src="source.src"/>
             </div>`,
           edit: `
-          <div class="component-container" id="video-container">
+          <div class="bbn-editable-editor component-container" id="video-container">
             <div class="bbn-grid-fields bbn-padding">
               <label bbn-text="_('Video source')"/>
               <bbn-input bbn-model="currentValue"/>
@@ -270,8 +272,8 @@ const cpDef = {
           `
         },
         line: {
-          view: `<div class="component-container"><hr :style="currentStyle"></div>`,
-          edit: `<div class="block-line-edit component-container">
+          view: `<div class="bbn-editable-viewer component-container"><hr :style="currentStyle"></div>`,
+          edit: `<div class="bbn-editable-editor block-line-edit component-container">
                   <hr :style="currentStyle">
                   <div class="block-line-edit-command bbn-padding">
                     <div class="bbn-grid-fields bbn-vspadding">
@@ -306,11 +308,11 @@ const cpDef = {
                  </div>`
         },
         space: {
-          view: `<div class="component-container" :style="currentStyle">
+          view: `<div class="bbn-editable-viewer component-container" :style="currentStyle">
                   <div class="block-space-view"/>
                 </div>`,
           edit: `
-              <div class="component-container" :style="currentStyle">
+              <div class="bbn-editable-editor component-container" :style="currentStyle">
                 <div :style="currentStyle" class="block-space-edit">
                   <bbn-cursor bbn-model="source.style.height"
                               unit="px"

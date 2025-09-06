@@ -7,6 +7,6 @@ import bbnProtoHtml from "../../Html/Proto.js";
  * @param {String} propName
  * @return {Function}
  */
-bbnProtoHtml.$has = function(propName){
+bbnProtoHtml.$has = function(propName) {
   return propName in this.$namespaces;
 }

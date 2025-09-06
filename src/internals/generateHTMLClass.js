@@ -261,6 +261,7 @@ export default function generateHtmlClass(name, extendedTag) {
     #options;
     #bbnSlots;
     #bbnCid;
+    #bbnUid;
     #bbnTmpSlots;
     #isConnected = false;
     #isInit = false;
@@ -321,6 +322,15 @@ export default function generateHtmlClass(name, extendedTag) {
     set bbnCid(v) {
       if (!this.#bbnCid) {
         this.#bbnCid = v;
+      }
+    };
+
+    get bbnUid() {
+      return this.#bbnUid;
+    };
+    set bbnUid(v) {
+      if (!this.#bbnUid) {
+        this.#bbnUid = v;
       }
     };
 

@@ -19,7 +19,7 @@ const cpDef = {
   [
     bbn.cp.mixins.basic,
     bbn.cp.mixins.input,
-    bbn.cp.mixins.dropdown,
+    bbn.cp.mixins.list,
     bbn.cp.mixins.keynav
   ],
   props: {
