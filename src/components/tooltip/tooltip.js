@@ -16,6 +16,11 @@ const cpDef = {
       bbn.cp.mixins.basic,
       bbn.cp.mixins.toggle
     ],
+    statics() {
+      return {
+        currentActive: false
+      }
+    },
     props: {
       /**
        * @prop {(String|Object|HTMLElement)} component
@@ -104,6 +109,27 @@ const cpDef = {
       onFloaterClose(){
         this.currentVisible = false;
         this.$emit('close');
+      }
+    },
+    watch: {
+      currentVisible(val) {
+        if (val) {
+          if (this.constructor.currentActive) {
+            this.constructor.currentActive.hide();
+          }
+  
+          this.constructor.currentActive = this;
+          this.visibilityInterval = setInterval(() => {
+            if (!this.checkVisibility()) {
+              this.currentVisible = false;
+              clearInterval(this.visibilityInterval);
+            }
+          }, 1000)
+        }
+        else if (this.constructor.currentActive === this) {
+          this.constructor.currentActive = false;
+          clearInterval(this.visibilityInterval);
+        }
       }
     }
   };

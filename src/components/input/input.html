@@ -70,7 +70,8 @@
             :min="min"
             :max="max"
             :style="{
-              paddingLeft: pref ? 0 : null
+              paddingLeft: pref ? 0 : null,
+              paddingRight: isNullable && (!readonly || forceNullable) && !isDisabled ? '1.5rem' : null
             }">
       <bbn-loadicon bbn-if="loading"
                     class="bbn-top-right bbn-vmiddle bbn-h-100 bbn-right-xspadding"/>

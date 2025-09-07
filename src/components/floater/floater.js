@@ -474,7 +474,8 @@ const cpDef = {
        */
       forms: [],
       buttonsContainer: false,
-      numButtonsInContainer: 0
+      numButtonsInContainer: 0,
+      currentPosition: this.position || 'bottom',
     };
   },
   computed: {
@@ -1079,6 +1080,14 @@ const cpDef = {
           offset = this.distance;
         }
         this.currentLeft = Math.ceil(r.x.res + offset);
+        if (this.element && this.arrow && (coor.left - this.distance > this.currentLeft)) {
+          if (this.position === 'bottom') {
+            this.currentPosition = 'bottomRight';
+          }
+          else if (this.position === 'top') {
+            this.currentPosition = 'topRight';
+          }
+        }
 
         let topPositions = ['topLeft', 'topRight', 'top'];
         let bottomPositions = ['bottomLeft', 'bottomRight', 'bottom'];
@@ -1086,7 +1095,7 @@ const cpDef = {
         if (topPositions.indexOf(this.position) !== -1) {
           offset = -this.distance;
         }
-        if (bottomPositions.indexOf(this.position) !== -1) {
+        else if (bottomPositions.indexOf(this.position) !== -1) {
           offset = this.distance;
         }
         this.currentTop = Math.ceil(r.y.res + offset);

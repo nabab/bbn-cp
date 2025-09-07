@@ -387,6 +387,13 @@ const list = {
       type: Array
     },
     /**
+     * @prop {Number} [1] searchMinLength
+     */
+    searchMinLength: {
+      type: Number,
+      default: 1
+    },
+    /**
      * The operator used by filterString filter
      * @prop {String} ['startswith'] searchOperator
      */
@@ -1385,14 +1392,18 @@ const list = {
       */
     searchValue(v) {
       if (this.search) {
-        this.unsetFilter();
-        if (v) {
+        if (this.currentFilters.conditions.length) {
+          this.unsetFilter();
+        }
+
+        if (v && (v.length >= this.searchMinLength)) {
+          const operator = bbn.fn.isUid(v) ? 'eq' : 'contains';
           let cond = [];
           if (this.searchFields) {
             bbn.fn.each(this.searchFields, a => {
               cond.push({
                 field: a,
-                operator: 'contains',
+                operator,
                 value: v
               });
             });
@@ -1402,7 +1413,7 @@ const list = {
               if (a.field && !bbn.fn.getRow(cond, { field: a.field })) {
                 cond.push({
                   field: a.field,
-                  operator: 'contains',
+                  operator,
                   value: v
                 });
               }

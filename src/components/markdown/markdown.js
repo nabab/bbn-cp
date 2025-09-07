@@ -203,40 +203,48 @@ const cpDef = {
       return this.value ? window.marked.parse(this.value) : '';
     },
     toolbar() {
-      if (this.readonly) {
+      if (this.readonly || this.disabled) {
         return false;
       }
       return this.toolBar || bbnMarkdown.toolbar;
-    }
+    },
   },
   methods: {
-    disableWidget(v){
-      this.widget.codemirror.setOption('disableInput', !!v);
-      if ( !v && !this.readonly ){
-        this.widget.codemirror.setOption('readOnly', false);
-        this.$el.querySelector(".editor-toolbar").display =  'block'
-      }
-      else {
-        this.widget.codemirror.setOption('readOnly', true);
-        this.$el.querySelector(".editor-toolbar").display =  'none'
+    load() {
+      if (!this.widget) {
+        this.widget = new EasyMDE(bbn.fn.extend({
+            element: this.$refs.element,
+            value: this.value,
+          }, this.mdeCfg
+        ));
+        this.widget.codemirror.on("change", () => {
+          this.emitInput(this.widget.value());
+        });
       }
     },
-    readonlyWidget(v){
-      this.widget.codemirror.setOption('readOnly', !!v);
-      if ( !v && !this.isDisabled ){
-        this.$el.querySelector(".editor-toolbar").display =  'block'
-      }
-      else {
-        this.$el.querySelector(".editor-toolbar").display =  'none'
+    unload() {
+      if (this.widget) {
+        this.widget.toTextArea();
+        this.widget = null;
       }
     }
   },
   watch: {
-    isDisabled(newVal){
-      this.disableWidget(newVal);
+    disabled(v) {
+      if (v && !this.readonly) {
+        this.unload();
+      }
+      else if (!v && !this.readonly) {
+        this.load();
+      }
     },
-    readonly(newVal){
-      this.readonlyWidget(newVal);
+    readonly(v) {
+      if (v && !this.disabled) {
+        this.unload();
+      }
+      else if (!v && !this.disabled) {
+        this.load();
+      }
     }
   },
   mounted(){
@@ -247,22 +255,15 @@ const cpDef = {
         return true
       }
     });*/
-    this.widget = new EasyMDE(bbn.fn.extend({
-        element: this.$refs.element,
-        value: this.value,
-      }, this.mdeCfg
-    ));
-    this.widget.codemirror.on("change", () => {
-      this.emitInput(this.widget.value());
-    });
-    if ( this.isDisabled ){
-      this.disableWidget(true);
+    if (!this.disabled && !this.readonly) {
+      this.load();
     }
-    if ( this.readonly ){
-      this.readonlyWidget(true);
-    }
+
     this.ready = true;
   },
+  beforeDestroy() {
+    this.unload();
+  }
 
 };
 

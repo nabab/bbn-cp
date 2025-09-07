@@ -1,6 +1,7 @@
 <component :is="tag"
            :class="componentClass"
-           @mouseenter="currentVisible = true">
+           @mouseenter="currentVisible = true"
+           @click="toggle()">
   <bbn-floater bbn-if="currentVisible"
                :tag="tag"
                ref="floater"
@@ -9,6 +10,7 @@
                :content="getContent()"
                @close="onFloaterClose"
                :component="component"
+               bbn-portal="$root"
                :element="element || $el"
                :element-width="false"
                :arrow="true"

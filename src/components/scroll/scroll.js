@@ -1045,13 +1045,8 @@ const cpDef = {
      * @emits resize
      * @returns Promise
      */
-    async onResize() {
+    onResize() {
       return new Promise((resolve) => {
-        if (!this.checkVisibility()) {
-          resolve();
-          return;
-        }
-  
         const content = this.getRef('scrollContent');
         if (content && this.scrollable && bbn.cp.mixins.resizer.methods.onResize.apply(this)) {
           this.bounding = this.$position();
@@ -1063,8 +1058,9 @@ const cpDef = {
           //bbn.fn.log(['SCROLLING TO', content.scrollTop || this.y || 0, this]);
           this.currentY = content.scrollTop || this.y || 0;
           this.hasScroll = this.hasScrollY || this.hasScrollX;
-          resolve();
         }
+
+        resolve();
       });
     },
     /**

@@ -107,7 +107,7 @@ export default {
      */
     getConfig() {
       return {
-        searchValue: this.searchValue,
+        searchValue: this.searchValue?.length >= this.searchMinLength ? this.searchValue : '',
         limit: this.currentLimit,
         order: this.currentOrder,
         filters: this.currentFilters,
@@ -140,6 +140,10 @@ export default {
           this.currentLimit = cfg.limit;
         }
         if (this.search) {
+          if (cfg.searchValue?.length < this.searchMinLength) {
+            cfg.searchValue = '';
+          }
+
           this.searchValue = cfg.searchValue || '';
         }
         if (this.sortable && (this.currentOrder !== cfg.order)) {

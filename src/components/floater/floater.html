@@ -14,7 +14,7 @@
       :style="currentStyle"
       bbn-resizable:container.left.right.bottom="ready && resizable ? $el.parentElement : false">
   <div bbn-if="arrow"
-       :class="['bbn-floater-arrow', position]"/>
+       :class="['bbn-floater-arrow', currentPosition]"/>
   <div :class="{'bbn-flex-height': scrollable || footer || label || currentButtons?.length || numButtonsInContainer}"
        @mouseleave="onFloaterLeave"
        @mouseenter="onFloaterEnter"

@@ -44,11 +44,7 @@ const basic = {
         }
       }
 
-      if (this._currentPopup) {
-        return this._currentPopup;
-      }
-
-      return null;
+      return this._currentPopup || null;
     }
   },
   methods: {
@@ -243,14 +239,6 @@ const basic = {
     if (this.$options.name && !this.componentClass.includes(this.$options.name)){
       this.componentClass.push(this.$options.name);
     }
-  },
-  mounted(){
-    this.$nextTick(() => {
-      const pop = this._retrievePopup();
-      if (pop !== this._currentPopup) {
-        this._currentPopup = pop;
-      }
-    });
   },
   watch: {
     /**

@@ -74,6 +74,7 @@ const cpDef = {
                   <bbn-markdown bbn-model="currentValue"/>
                 </div>`
         },
+
         title: {
           view: `<div class="bbn-editable-viewer"
                       @click="$parent.editMode" @mouseover="$parent.mouseover" @mouseleave="$parent.mouseleave"  :class="['component-container', 'bbn-block-title', {'has-hr': source.hr}, alignClass]":style="currentStyle">
@@ -572,11 +573,13 @@ const cpDef = {
        * @method edit
        * @emits edit
        */
-      edit(){
-        let ev = new Event('edit', {cancelable: true});
-        this.$emit('edit', ev, this);
-        if (!ev.defaultPrevented) {
-          this.isEditing = true;
+      edit() {
+        if (!this.disabled && !this.readonly) {
+          let ev = new Event('edit', {cancelable: true});
+          this.$emit('edit', ev, this);
+          if (!ev.defaultPrevented) {
+            this.isEditing = true;
+          }
         }
       },
       /**
@@ -1049,6 +1052,9 @@ const cpDef = {
 
         });
       },
+      toggleEdit() {
+        this.isEditing = !this.isEditing;
+      }
     },
 
     beforeMount() {

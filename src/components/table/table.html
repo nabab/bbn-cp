@@ -18,7 +18,7 @@
     <div bbn-if="hasToolbar"
          class="bbn-table-toolbar bbn-header bbn-no-border"
          ref="toolbar">
-      <bbn-toolbar bbn-if="toolbarButtons.length || (search && !bbn.fn.isString(toolbar) && !isObject(toolbar))"
+      <bbn-toolbar bbn-if="toolbarButtons.length || (search && !bbn.fn.isString(toolbar) && !bbn.fn.isObject(toolbar))"
                    :source="toolbarButtons"
                    :slot-before="toolbarSlotBefore"
                    class="bbn-spadding bbn-no-border-left bbn-no-border-right bbn-no-border-top">
@@ -35,7 +35,7 @@
       </bbn-toolbar>
       <div bbn-elseif="typeof toolbar === 'function'"
            bbn-html="toolbar()"/>
-      <component bbn-else
+      <component bbn-elseif="toolbar"
                  :is="toolbar"/>
     </div>
     <!-- Main container -->

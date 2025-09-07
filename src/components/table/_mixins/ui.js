@@ -131,7 +131,7 @@ export default {
      * @returns {Boolean}
      */
     hasToolbar() {
-      return this.toolbarButtons.length || bbn.fn.isObject(this.toolbar) || bbn.fn.isFunction(this.toolbar) || bbn.fn.isString(this.toolbar);
+      return this.search || this.toolbarButtons.length || bbn.fn.isObject(this.toolbar) || bbn.fn.isFunction(this.toolbar) || bbn.fn.isString(this.toolbar);
     },
     /**
      * @computed hasPager
