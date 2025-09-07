@@ -301,6 +301,9 @@ const cpDef = {
 
             bbn.fn.extend(d, r);
             d.label = d.title || d.label;
+            if (!d.label) {
+              d.label = false;
+            }
             delete d.title;
             delete d.url;
             delete d.data;
