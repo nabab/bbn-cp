@@ -107,7 +107,6 @@ export default {
      */
     getConfig() {
       return {
-        searchValue: this.searchValue?.length >= this.searchMinLength ? this.searchValue : '',
         limit: this.currentLimit,
         order: this.currentOrder,
         filters: this.currentFilters,
@@ -132,19 +131,13 @@ export default {
       else if (cfg === true) {
         cfg = this.getConfig();
       }
+
       if (cfg && cfg.limit) {
         if (this.filterable && cfg.filters && (this.currentFilters !== cfg.filters)) {
           this.currentFilters = cfg.filters;
         }
         if (this.pageable && (this.currentLimit !== cfg.limit)) {
           this.currentLimit = cfg.limit;
-        }
-        if (this.search) {
-          if (cfg.searchValue?.length < this.searchMinLength) {
-            cfg.searchValue = '';
-          }
-
-          this.searchValue = cfg.searchValue || '';
         }
         if (this.sortable && (this.currentOrder !== cfg.order)) {
           if (bbn.fn.isObject(cfg.order)) {
@@ -171,18 +164,20 @@ export default {
           });
         }
         this.currentConfig = {
-          searchValue: this.searchValue,
           limit: this.currentLimit,
           order: this.currentOrder,
           filters: this.currentFilters,
           invisible: this.currentHidden
         };
         if (!no_storage) {
-          let cfg = this.currentConfig;
+          let cfg = bbn.fn.extend({}, this.currentConfig);
           if ((this.cols.length > 10) && (this.currentHidden?.length > (this.cols.length / 2))) {
             cfg = bbn.fn.extend({}, cfg);
             cfg.shown = this.allFields.filter(x => !cfg.invisible.includes(x))
             delete cfg.invisible;
+          }
+          if (this.searchValue && this.currentFilters?.conditions?.length) {
+            cfg.filters = {logic: 'AND', conditions: []};
           }
 
           this.setStorage(cfg);
