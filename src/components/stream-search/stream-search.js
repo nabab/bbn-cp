@@ -466,7 +466,7 @@ const cpDef = {
           this.startUrl,
           d => {
             bbn.fn.log("SEARCH STREAM RESPONSE", d)
-            if (d.uid === this.searchUid) {
+            if (d?.uid === this.searchUid) {
               if (d?.id) {
                 this.searchId = d.id;
               }
