@@ -22,10 +22,17 @@ const cpDef = {
   props: {
     /**
      * Specifies whether a loading icon isshown inside the input field.
-     * @prop {Boolean} [false] loading
+     * @prop {String, Boolean} [false] loading
      */
     loading: {
-      type: [Boolean],
+      type: [Boolean, String],
+      validator(v) {
+        if (typeof v === 'string') {
+          return ['right', 'left'].includes(v);
+        }
+
+        return true;
+      },
       default: false
     },
     /**

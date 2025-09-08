@@ -207,10 +207,12 @@ const cpDef = {
       registeredFunctions: this.searchFunctions.slice(),
       requestedText: '',
       isStarted: false,
+      isResetting: false,
       searchUid: bbn.fn.randomString(20) + '-' + bbn.fn.timestamp(),
       itv: false,
       queue: [],
-      searchCategories: []
+      searchCategories: [],
+      showSearching: false
     };
   },
   computed: {
@@ -451,75 +453,92 @@ const cpDef = {
     },
     startSearch() {
       if (!this.isStarted) {
-        this.isLoading = true;
+        this.showSearching = true;
         this.isStarted = true;
-        this.currentData = [];
+        this.currentData.splice(0);
+        this.searchCategories.splice(0);
+        this.searchUid = bbn.fn.randomString(20) + '-' + bbn.fn.timestamp();
+        const postData = {
+          uid: this.searchUid,
+          conditions: this.currentFilters.conditions,
+        };
         bbn.fn.stream(
           this.startUrl,
           d => {
-            if (d?.id) {
-              this.searchId = d.id;
-            }
+            bbn.fn.log("SEARCH STREAM RESPONSE", d)
+            if (d.uid === this.searchUid) {
+              if (d?.id) {
+                this.searchId = d.id;
+              }
 
-            if (!this.itv) {
-              this.itv = setInterval(() => {
-                //bbn.fn.log("BIG SEARCH: ITV");
-                if (!this.isRunning && this.queue.length) {
-                  this.isRunning = true;
-                  let lastAdded = 0;
-                  const cd = this.currentData;
-                  let idxData = 0;
-                  bbn.fn.each(this.queue.splice(0), d => {
-                    const idx = bbn.fn.search(cd, { hash: d.hash });
-                    if (idx > -1) {
-                      if (parseInt(d.score) > parseInt(cd[idx].score)) {
-                        cd[idx].score = d.score;
-                      }
-                    }
-                    else {
-                      let done = false;
-                      for (let i = 0; i < cd.length; i++) {
-                        if (d.score > cd[i].score) {
-                          cd.splice(i, 0, d);
-                          done = true;
-                          break;
+              if (!this.itv) {
+                this.itv = setInterval(() => {
+                  //bbn.fn.log("BIG SEARCH: ITV");
+                  if (!this.isRunning && this.queue.length) {
+                    this.isRunning = true;
+                    let lastAdded = 0;
+                    let idxData = 0;
+                    bbn.fn.each(this.queue.splice(0), d => {
+                      const idx = bbn.fn.search(this.currentData, { hash: d.hash });
+                      if (idx > -1) {
+                        if (parseInt(d.score) > parseInt(this.currentData[idx].score)) {
+                          this.currentData[idx].score = d.score;
                         }
-        
-                        idxData++;
                       }
-        
-                      if (!done) {
-                        cd.push(d);
-                      }
-                    }
-                  });
-                  //const data = bbn.fn.order(cd, [{dir: 'DESC', field: 'score'}]);
-                  this.searchCategories = bbn.fn.order(bbn.fn.getFieldValues(cd, 'search').filter(a => !!a).map(a => {
-                    return {search: a, active: true, num: bbn.fn.count(cd, {search: a}), score: bbn.fn.getField(cd, 'score', {search: a})}
-                  }), {score: 'desc'});
-                  //this.currentData = cd;
-                  this.currentTotal = this.currentData.length;
-      
-                  this.$forceUpdate();
-                  this.isRunning = false;
-                }
-                if (!this.isStarted) {
-                  clearInterval(this.itv);
-                  this.itv = false;
-                }
-              }, 50);
-            }
+                      else {
+                        let done = false;
+                        for (let i = 0; i < this.currentData.length; i++) {
+                          if (d.score > this.currentData[i].score) {
+                            this.currentData.splice(i, 0, d);
+                            done = true;
+                            break;
+                          }
 
-            if (d?.data) {
-              //bbn.fn.log("BIG SEARCH REPLY", d)
-              if (d.value === this.filterString) {
-                this.queue.push(...d.data);
+                          idxData++;
+                        }
+
+                        if (!done) {
+                          this.currentData.push(d);
+                        }
+                      }
+                    });
+                    //const data = bbn.fn.order(cd, [{dir: 'DESC', field: 'score'}]);
+                    this.searchCategories = bbn.fn.order(
+                      bbn.fn.getFieldValues(
+                        this.currentData, 'search').filter(a => !!a).map(a => {
+                          return {
+                            search: a,
+                            active: true,
+                            num: bbn.fn.count(this.currentData, {search: a}),
+                            score: bbn.fn.getField(this.currentData, 'score', {search: a})
+                          }
+                        }),
+                        {score: 'desc'}
+                    );
+                    //this.currentData = cd;
+                    this.currentTotal = this.currentData.length;
+
+                    //this.$forceUpdate();
+                    this.isRunning = false;
+                  }
+
+                  if (!this.isStarted && !this.queue.length) {
+                    clearInterval(this.itv);
+                    this.itv = false;
+                    this.showSearching = false;
+                  }
+                }, 50);
+              }
+
+              if (d?.data) {
+                //bbn.fn.log("BIG SEARCH REPLY", d)
+                if (d.value === this.filterString) {
+                  this.queue.push(...d.data);
+                }
               }
             }
-          }, {
-            uid: this.searchUid,
-            conditions: this.currentFilters.conditions,
           },
+          postData,
           this.onError,
           this.onAbort,
           this.onFinish
@@ -531,15 +550,26 @@ const cpDef = {
       bbn.fn.log(err);
       this.$emit('error', err)
       this.stopSearch();
+      if (!this.queue.length) {
+        this.showSearching = false;
+      }
     },
     onAbort() {
-      bbn.fn.log('abort stream');
+      bbn.fn.log('on abort stream');
       this.stopSearch();
+      if (!this.queue.length) {
+        this.showSearching = false;
+      }
     },
     onFinish() {
+      bbn.fn.log('on finish stream');
       this.isStarted = false
+      if (!this.queue.length) {
+        this.showSearching = false;
+      }
     },
-    stopSearch() {
+    async stopSearch() {
+      bbn.fn.log('stop search');
       if (this.isStarted) {
         appui.poll({
           type: 'search',
@@ -550,12 +580,12 @@ const cpDef = {
         })
 
         this.queue.splice(0)
-        bbn.fn.post(this.stopUrl, { uid: this.searchUid }, d => {
-          this.isStarted = false;
-        });
+        await bbn.fn.post(this.stopUrl, { uid: this.searchUid });
+        this.isStarted = false;
       }
     },
-    resetSearch() {
+    /* resetSearch() {
+      bbn.fn.log('reset search');
       if (this.isStarted) {
         this.currentData.splice(0);
         bbn.fn.post(this.resetUrl + '/' + bbn.fn.microtimestamp(), {
@@ -572,6 +602,18 @@ const cpDef = {
               }
             })
           }
+        });
+      }
+    }, */
+    async resetSearch() {
+      bbn.fn.log('reset search');
+      if (this.isStarted && !this.isResetting) {
+        this.isResetting = true;
+        this.currentData.splice(0);
+        await this.stopSearch();
+        this.$nextTick(() => {
+          this.startSearch();
+          this.isResetting = false;
         });
       }
     },
@@ -696,6 +738,7 @@ const cpDef = {
     isOpened(v) {
       if (!v) {
         if (this.isStarted) {
+          //this.showSearching = false;
           this.stopSearch();
         }
 
@@ -720,12 +763,11 @@ const cpDef = {
       this.emitInput(v);
       this.$emit('change', v);
       if (this.currentData.length) {
-        this.currentData = [];
-        this.searchCategories = [];
+        this.currentData.splice(0);
+        this.searchCategories.splice(0);
       }
 
       this.launchRegisteredFunctions(v);
-
       this.filterTimeout = setTimeout(() => {
         this.filterTimeout = false;
         // We don't relaunch the source if the component has been left
@@ -752,6 +794,7 @@ const cpDef = {
           this.requestedText = '';
           this.unfilter();
           this.stopSearch();
+          this.showSearching = false;
           if (this.currentFilters.conditions?.[0]?.field === this.sourceText) {
             this.currentFilters.conditions.splice(0, 1);
           }

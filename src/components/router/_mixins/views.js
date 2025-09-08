@@ -386,11 +386,6 @@ export default {
      */
     async add(obj, idx) {
       obj = this.getViewObject(obj, idx);
-      if (this.db) {
-        const thumb = await this.db.select('containers', ['manual', 'image'], {url: obj.url});
-        obj.thumbnail = thumb?.image || false;
-        obj.manual = thumb?.manual || false;
-      }
 
       if (bbn.fn.getRow(this.views, {url: obj.url})) {
         bbn.fn.log(bbn.fn.getRow(this.views, {url: obj.url}) === obj, obj)
@@ -421,6 +416,12 @@ export default {
       }
 
       this.fixIndexes();
+      if (this.db) {
+        const thumb = await this.db.select('containers', ['manual', 'image'], {url: obj.url});
+        obj.thumbnail = thumb?.image || false;
+        obj.manual = thumb?.manual || false;
+      }
+
       if (this.ready) {
         this.updateVisualList();
       }

@@ -36,6 +36,8 @@
             'bbn-radius-left': !buttonLeft,
             'bbn-radius-right': !buttonRight
           }">
+      <bbn-loadicon bbn-if="loading === 'left'"
+                    class="bbn-vmiddle bbn-iblock bbn-left-xspadding"/>
       <input :value="currentValue"
             :type="currentType"
             bbn-focused.selected="focused"
@@ -73,8 +75,8 @@
               paddingLeft: pref ? 0 : null,
               paddingRight: isNullable && (!readonly || forceNullable) && !isDisabled ? '1.5rem' : null
             }">
-      <bbn-loadicon bbn-if="loading"
-                    class="bbn-top-right bbn-vmiddle bbn-h-100 bbn-right-xspadding"/>
+      <bbn-loadicon bbn-if="loading && (loading !== 'left')"
+                    class="bbn-vmiddle iblock bbn-right-xspadding"/>
       <div bbn-elseif="isNullable && (!readonly || forceNullable) && !isDisabled"
            class="bbn-input-nullable-container bbn-vmiddle bbn-h-100 bbn-top-right bbn-background"
            :style="{

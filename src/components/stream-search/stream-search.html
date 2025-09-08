@@ -10,7 +10,7 @@
                 autocomplete="off"
                 bbn-model="filterString"
                 bbn-focused.selected
-                :loading="isAjax && isLoading"
+                :loading="showSearching ? 'left' : false"
                 button-right="nf nf-fa-search"/>
   </div>
   <div class="bbn-w-100 bbn-c bbn-bottom-padding">
@@ -43,10 +43,10 @@
     </bbn-scroll>
     <div bbn-elseif="isStarted"
          class="bbn-overlay">
-      <bbn-loader class="bbn-secondary"/>
+      <bbn-loader/>
     </div>
   </div>
-  <div bbn-if="currentData.length > currentLimit"
+  <div bbn-if="filteredData.length > currentLimit"
        class="bbn-w-100">
     <bbn-pager ref="pager"
                :element="$el"/>
