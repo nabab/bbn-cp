@@ -455,8 +455,8 @@ const cpDef = {
       if (!this.isStarted) {
         this.showSearching = true;
         this.isStarted = true;
-        this.currentData.splice(0);
-        this.searchCategories.splice(0);
+        this.currentData = [];
+        this.searchCategories = [];
         this.searchUid = bbn.fn.randomString(20) + '-' + bbn.fn.timestamp();
         const postData = {
           uid: this.searchUid,
