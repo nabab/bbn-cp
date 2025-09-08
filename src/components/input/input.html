@@ -34,10 +34,11 @@
             'bbn-flex-fill' : (buttonLeft || buttonRight || isNullable || pref),
             'bbn-radius': !buttonLeft && !buttonRight,
             'bbn-radius-left': !buttonLeft,
-            'bbn-radius-right': !buttonRight
+            'bbn-radius-right': !buttonRight,
+            'bbn-flex-width': true
           }">
-      <bbn-loadicon bbn-if="loading === 'left'"
-                    class="bbn-vmiddle bbn-iblock bbn-left-xspadding"/>
+      <bbn-loadicon bbn-if="('loading' in $options.propsData) && (loadingPosition === 'left')"
+                    :class="['bbn-vmiddle bbn-left-xspadding', { 'bbn-invisible': !loading}]"/>
       <input :value="currentValue"
             :type="currentType"
             bbn-focused.selected="focused"
@@ -63,6 +64,7 @@
             :tabindex="currentTabIndex"
             :class="{
               'bbn-ellipsis': ellipsis,
+              'bbn-flex-fill': true,
               'bbn-radius': !buttonLeft && !buttonRight,
               'bbn-radius-left': !buttonLeft,
               'bbn-radius-right': !buttonRight
@@ -75,8 +77,8 @@
               paddingLeft: pref ? 0 : null,
               paddingRight: isNullable && (!readonly || forceNullable) && !isDisabled ? '1.5rem' : null
             }">
-      <bbn-loadicon bbn-if="loading && (loading !== 'left')"
-                    class="bbn-vmiddle iblock bbn-right-xspadding"/>
+      <bbn-loadicon bbn-if="('loading' in $options.propsData) && (loadingPosition === 'right')"
+                    :class="['bbn-vmiddle bbn-right-xspadding', {'bbn-invisible': !loading}]"/>
       <div bbn-elseif="isNullable && (!readonly || forceNullable) && !isDisabled"
            class="bbn-input-nullable-container bbn-vmiddle bbn-h-100 bbn-top-right bbn-background"
            :style="{

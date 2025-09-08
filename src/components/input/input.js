@@ -25,15 +25,12 @@ const cpDef = {
      * @prop {String, Boolean} [false] loading
      */
     loading: {
-      type: [Boolean, String],
-      validator(v) {
-        if (typeof v === 'string') {
-          return ['right', 'left'].includes(v);
-        }
-
-        return true;
-      },
+      type: Boolean,
       default: false
+    },
+    loadingPosition: {
+      type: String,
+      default: 'right'
     },
     /**
      * Specifies whether or not the input field should have autocomplete enabled. Accepts boolean or the strings 'on' or 'off'.
