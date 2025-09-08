@@ -836,9 +836,9 @@ const cpDef = {
         let coor = this.$position(this.element);
         return {
           top: this.isHorizontal ? coor.top : coor.bottom - 1,
-          bottom: this.currentMaxHeight - (this.isHorizontal ? coor.bottom : coor.top + 1),
+          bottom: this.isHorizontal ? coor.bottom : coor.top + 1,
           left: this.isHorizontal ? coor.right - 1 : coor.left,
-          right: this.currentMaxWidth - (this.isHorizontal ? coor.left + 1: coor.right)
+          right: this.isHorizontal ? coor.left + 1: coor.right
         };
       }
       else {
