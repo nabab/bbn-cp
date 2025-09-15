@@ -17,11 +17,26 @@ export default {
     },
   },
   methods: {
-    checkAll() {
-      this.getRef('table').querySelectorAll(':scope > tbody > tr > td[is="bbn-table-cell-selector"] bbn-checkbox').forEach(a => a.check());
+    checkAll(force) {
+      if (force) {
+        if (this.uid) {
+          this.currentSelected = this.filteredData.map(a => a.data[this.uid]);
+        }
+        else {
+          this.currentSelected = this.filteredData.map(a => a.index);
+        }
+      }
+      else {
+        this.getRef('table').querySelectorAll(':scope > tbody > tr > td[is="bbn-table-cell-selector"] bbn-checkbox:not(.bbn-checked)').forEach(a => a.closest('tr').selected = true);
+      }
     },
-    uncheckAll() {
-      this.getRef('table').querySelectorAll(':scope > tbody > tr > td[is="bbn-table-cell-selector"] bbn-checkbox').forEach(a => a.uncheck());
+    uncheckAll(force) {
+      if (force) {
+        this.currentSelected = [];
+      }
+      else {
+        this.getRef('table').querySelectorAll(':scope > tbody > tr > td[is="bbn-table-cell-selector"] bbn-checkbox.bbn-checked').forEach(a => a.closest('tr').selected = false);
+      }
     },
     /**
      * Returns true if the given index is selected.
