@@ -7,12 +7,15 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([[28228],{
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["components/iconpicker-_i18n-index-js"],{
 
-/***/ 59182:
+/***/ "./src/components/iconpicker/_i18n/index.js":
+/*!**************************************************************!*\
+  !*** ./src/components/iconpicker/_i18n/index.js + 2 modules ***!
+  \**************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-eval("{// ESM COMPAT FLAG\n__webpack_require__.r(__webpack_exports__);\n\n// EXPORTS\n__webpack_require__.d(__webpack_exports__, {\n  \"default\": () => (/* binding */ _i18n)\n});\n\n;// ./src/components/iconpicker/_i18n/iconpicker.fr.lang\nconst iconpicker_fr_namespaceObject = /*#__PURE__*/JSON.parse('{\"Search in %d icons\":\"Recherche parmi %d icônes\"}');\n;// ./src/components/iconpicker/_i18n/iconpicker.it.lang\nconst iconpicker_it_namespaceObject = /*#__PURE__*/JSON.parse('{\"Search in %d icons\":\"Ricerca tra %d icone\"}');\n;// ./src/components/iconpicker/_i18n/index.js\n\n\n/* harmony default export */ const _i18n = ({\n  fr: iconpicker_fr_namespaceObject,\n  it: iconpicker_it_namespaceObject\n});//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiNTkxODIuanMiLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7OztBQUFzQztBQUNBO0FBRXRDLDRDQUFlO0VBQ2JBLEVBQUU7RUFDRkMsRUFBRUEsRUFBQUEsNkJBQUFBO0FBQ0osQ0FBQyIsInNvdXJjZXMiOlsid2VicGFjazovL0BiYm4vYmJuLWNwLy4vc3JjL2NvbXBvbmVudHMvaWNvbnBpY2tlci9faTE4bi9pbmRleC5qcz9hZjE4Il0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBmciBmcm9tICcuL2ljb25waWNrZXIuZnIubGFuZyc7XG5pbXBvcnQgaXQgZnJvbSAnLi9pY29ucGlja2VyLml0LmxhbmcnO1xuXG5leHBvcnQgZGVmYXVsdCB7XG4gIGZyLFxuICBpdFxufTtcbiJdLCJuYW1lcyI6WyJmciIsIml0Il0sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///59182\n\n}");
+eval("{// ESM COMPAT FLAG\n__webpack_require__.r(__webpack_exports__);\n\n// EXPORTS\n__webpack_require__.d(__webpack_exports__, {\n  \"default\": () => (/* binding */ _i18n)\n});\n\n;// ./src/components/iconpicker/_i18n/iconpicker.fr.lang\nconst iconpicker_fr_namespaceObject = /*#__PURE__*/JSON.parse('{\"Search in %d icons\":\"Recherche parmi %d icônes\"}');\n;// ./src/components/iconpicker/_i18n/iconpicker.it.lang\nconst iconpicker_it_namespaceObject = /*#__PURE__*/JSON.parse('{\"Search in %d icons\":\"Ricerca tra %d icone\"}');\n;// ./src/components/iconpicker/_i18n/index.js\n\n\n/* harmony default export */ const _i18n = ({\n  fr: iconpicker_fr_namespaceObject,\n  it: iconpicker_it_namespaceObject\n});//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvY29tcG9uZW50cy9pY29ucGlja2VyL19pMThuL2luZGV4LmpzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7QUFBc0M7QUFDQTtBQUV0Qyw0Q0FBZTtFQUNiQSxFQUFFO0VBQ0ZDLEVBQUVBLEVBQUFBLDZCQUFBQTtBQUNKLENBQUMiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9AYmJuL2Jibi1jcC8uL3NyYy9jb21wb25lbnRzL2ljb25waWNrZXIvX2kxOG4vaW5kZXguanM/YWYxOCJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgZnIgZnJvbSAnLi9pY29ucGlja2VyLmZyLmxhbmcnO1xuaW1wb3J0IGl0IGZyb20gJy4vaWNvbnBpY2tlci5pdC5sYW5nJztcblxuZXhwb3J0IGRlZmF1bHQge1xuICBmcixcbiAgaXRcbn07XG4iXSwibmFtZXMiOlsiZnIiLCJpdCJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///./src/components/iconpicker/_i18n/index.js\n\n}");
 
 /***/ })
 

@@ -427,8 +427,10 @@ const dropdown = {
       if (this.list) {
         let lst = this.list.getRef('list');
         if (lst && (lst.overIdx > -1)) {
-          this.select(lst.filteredData[lst.overIdx].data);
+          this.currentSelectValue = lst.filteredData[lst.overIdx].data[this.sourceValue];
         }
+
+        this.isOpened = false;
       }
     },
     /**

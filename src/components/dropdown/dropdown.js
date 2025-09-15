@@ -98,10 +98,17 @@ const cpDef = {
         this.keynav(e);
       }
       else if (!this.isSearching && (e.key === ' ')) {
+        e.stopPropagation();
         e.preventDefault();
-        this.isOpened = !this.isOpened;
+        if (this.isOpened) {
+          this.selectOver();
+        }
+        else {
+          this.isOpened = true;
+        }
       }
       else if (this.isOpened && (e.key === 'Enter')) {
+        e.stopPropagation();
         e.preventDefault();
         this.selectOver();
       }
@@ -113,7 +120,7 @@ const cpDef = {
       //alert("PASTE");
     },
     onKeyup(e) {
-      if (e.key.match(/^[A-z0-9\s]{1}$/)) {
+      if (e.key.match(/^[A-z0-9]{1}$/)) {
         this.startingTmpValue += e.key;
         if (!this.isOpened) {
           this.isOpened = true;
@@ -213,7 +220,7 @@ const cpDef = {
         });
       }
 
-      if (!val && this.preload && !this.native) {
+      if (val && this.preload && !this.native) {
         this.getRef('list').currentVisible = true;
       }
 

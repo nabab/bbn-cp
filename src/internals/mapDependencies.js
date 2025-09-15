@@ -74,7 +74,7 @@ const expToFn = (cp, loopVars, a, node, type) => {
  * @param {HTMLElement} cp - The component instance to process.
  */
 export default function mapDependencies(cp) {
-  const elemSrc = cp.$el.constructor === bbnAnonHtml ? cp.$el : cp.$el.constructor;
+  const elemSrc = cp.constructor === bbnAnonHtml ? cp.$el : cp.$el.constructor;
   // Avoid remapping if already done for the component.
   if (elemSrc.bbnMapped) {
     return;

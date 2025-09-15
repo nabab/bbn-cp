@@ -278,5 +278,5 @@ export default function startTick() {
         bbn.cp.startTick();
       }
     });
-  }, 0);
+  }, 20);
 }

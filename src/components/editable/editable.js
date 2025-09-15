@@ -1058,7 +1058,7 @@ const cpDef = {
     },
 
     beforeMount() {
-      bbn.fn.log(this.value, this.currentValue, '-------');
+      //bbn.fn.log(['editable beforeMount',this.value, this.currentValue, '-------']);
       this.componentObject = this.getComponentObject(this.type);
     },
     /**

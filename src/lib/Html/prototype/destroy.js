@@ -65,11 +65,6 @@ bbnProtoHtml.$destroy = function() {
   this.$internal.nodeClean(true);
   const hasDestroyEvent = this.bbnSchema.events?.['hook:destroyed'];
   const node = this.bbnSchema;
-  Object.defineProperty(this, '$isDestroyed', {
-    value: true,
-    writable: false,
-    configurable: false
-  });
   for (let i = 0; i < bbn.cp.queue.length; i++) {
     if (bbn.cp.queue[i].component === this) {
       bbn.cp.queue.splice(i, 1);
@@ -98,6 +93,11 @@ bbnProtoHtml.$destroy = function() {
     const destroyed = new Event('hook:destroyed');
     this.bbnSchema.events['hook:destroyed'].handler.bind(this.bbnComponent)(destroyed);
   }
+  Object.defineProperty(this, '$isDestroyed', {
+    value: true,
+    writable: false,
+    configurable: false
+  });
 
   removeComponent(this.bbnCid);
   if (this.parentNode) {

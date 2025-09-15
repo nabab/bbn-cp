@@ -449,7 +449,7 @@ const cpDef = {
       currentStepX: this.stepX instanceof HTMLElement ? this.stepX.clientHeight : this.stepX,
       currentStepY: this.stepY instanceof HTMLElement ? this.stepY.clientHeight : this.stepY,
       inFloater: null,
-      bounding: null
+      bounding: {}
     };
   },
   computed: {
