@@ -77,7 +77,7 @@ bbnAttr.prototype.attrSetResult = function(data) {
   const component = node.component;
   const result = this.result;
   // Check if the result needs to be updated.
-  if ((this.constructor.name !== 'bbnModelAttr') && ((this.result?.num || 0) > node.component.$numBuild) && !Object.hasOwn(arguments, 0)) {
+  if ((this.constructor.name !== 'bbnModelAttr') && ((this.result?.num || 0) > component.$numBuild) && !Object.hasOwn(arguments, 0)) {
     return this.value;
   }
 

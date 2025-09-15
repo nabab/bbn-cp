@@ -47,21 +47,6 @@ bbnAttr.prototype.attrExec = function(data) {
   bbnData.startWatching(this);
   const args = getArgs(this, newData);
   const seq = bbnData.stopWatching(this);
-  if (!(this instanceof bbnConditionAttr) && !(this instanceof bbnModelAttr) && bbn.cp.results.has(this)) {
-    const tmp = bbn.cp.results.get(this);
-    let isSame = true;
-    for (let i = 0; i < args.length; i++) {
-      if (tmp.args[i] !== args[i]) {
-        isSame = false;
-        break;
-      }
-    }
-
-    if (isSame) {
-      //return tmp.res;
-    }
-  }
-
   let val;
   bbnData.startWatching(this);
   try {
@@ -88,9 +73,6 @@ bbnAttr.prototype.attrExec = function(data) {
 
   seq.push(...bbnData.stopWatching(this));
   const res = {val, seq};
-  if (!(this instanceof bbnConditionAttr) && !(this instanceof bbnModelAttr)) {
-    bbn.cp.results.set(this, {args, res});
-  }
 
   return res;
 };

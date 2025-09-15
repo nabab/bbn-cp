@@ -54,13 +54,11 @@ const sorter = (a, b) => {
   return atA < atB ? -1 : 1;
 };
 
-async function treatQueue(num = 0, cps) {
-  if (!cps) {
-    cps = bbn.fn.createObject();
-  }
+async function treatQueue(num = 0) {
   let isDebug = true;
-  if (bbn.cp.queue.length) {
-    if (bbn.cp.queue.length > 100000) {
+  let queueLength = bbn.cp.queue.length;
+  if (queueLength) {
+    if (queueLength > 100000) {
       if (!isDebug) {
         isDebug = bbn.cp.numTicks;
         bbn.fn.log("SETTING DEBUG MODE", bbn.cp.queue);
@@ -83,7 +81,7 @@ async function treatQueue(num = 0, cps) {
     let forgotten = [];
     const rnd = bbn.fn.randomString();
     bbn.fn.startChrono(rnd);
-    const queueLength = queue.length;
+    queueLength = queue.length;
     //bbn.fn.log("TREATING QUEUE: " + queue.length + '"' + rnd + '" (' + num + ' / ' + bbn.cp.numTicks + ')');
     while (queue.length) {
       if (isDebug) {
@@ -115,7 +113,6 @@ async function treatQueue(num = 0, cps) {
       if (lastNum !== queueElement.num) {
         unconditioned = [];
         forgotten = [];
-        //cps = bbn.fn.createObject();
         done = new Map();
         lastElement = null;
         fns = [];
@@ -129,11 +126,6 @@ async function treatQueue(num = 0, cps) {
         else {
           done.set(queueElement.element, queueElement.num);
         }
-      }
-
-      if (!cps[cp.$cid]) {
-        cps[cp.$cid] = cp;
-        initResults(cp);
       }
 
       // Doing all elements but attributes
@@ -214,7 +206,7 @@ async function treatQueue(num = 0, cps) {
         if (fns.includes(hash)) {
           // If on dropdown don't work
           //bbn.fn.log(["ALREADY DONE", hash, queueElement, queueElement.fn.toString()]);
-          //continue;
+          continue;
         }
 
         fns.push(hash);
@@ -231,14 +223,11 @@ async function treatQueue(num = 0, cps) {
 
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
-      await treatQueue(num + 1, cps);
-      if (num) {
-        return;
-      }
+      queueLength += await treatQueue(num + 1);
     }
 
-    for (let n in cps) {
-      cps[n].$lastBuild = bbn.cp.numTicks;
+    if (num) {
+      return queueLength;
     }
 
     const duration = bbn.fn.stopChrono(rnd);
@@ -248,10 +237,12 @@ async function treatQueue(num = 0, cps) {
   }
 
   if (!num && bbn.cp.nextQueue.length) {
+    queueLength += bbn.cp.nextQueue.length;
     queueUpdate(...bbn.cp.nextQueue.splice(0));
   }
 
   //bbn.fn.log("FINISHED FN (" + num + ") WITH " +bbn.cp.queue.length);
+  return queueLength;
 
 }
 /**
@@ -270,7 +261,7 @@ export default function startTick() {
   }
 
   bbn.cp.isRunning = true;
-  setTimeout(() => {
+  setTimeout(async () => {
     requestAnimationFrame(async () => {
       await treatQueue();
       bbn.cp.isRunning = false;
@@ -278,5 +269,5 @@ export default function startTick() {
         bbn.cp.startTick();
       }
     });
-  }, 20);
+  }, 0);
 }
