@@ -54,7 +54,10 @@ const sorter = (a, b) => {
   return atA < atB ? -1 : 1;
 };
 
-async function treatQueue(num = 0) {
+async function treatQueue(num = 0, cps) {
+  if (!cps) {
+    cps = bbn.fn.createObject();
+  }
   let isDebug = true;
   let queueLength = bbn.cp.queue.length;
   if (queueLength) {
@@ -126,6 +129,11 @@ async function treatQueue(num = 0) {
         else {
           done.set(queueElement.element, queueElement.num);
         }
+      }
+
+      if (!cps[cp.$cid]) {
+        cps[cp.$cid] = cp;
+        initResults(cp);
       }
 
       // Doing all elements but attributes
