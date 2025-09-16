@@ -281,8 +281,7 @@ const cpDef = {
         return this.post(d.url, d.data || {}, r => {
           if (r.content || r.title) {
             if (r.script) {
-              let fn = new Function(r.script);
-              let tmp = fn()();
+              let tmp = eval(r.script);
               delete r.script;
               if (bbn.fn.isFunction(tmp)) {
                 d.open = tmp;
