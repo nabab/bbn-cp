@@ -263,7 +263,7 @@ const cpDef = {
       return this.currentData;
     },
     items() {
-      return this.filteredData.slice(this.currentStart, this.currentStart + this.currentLimit)
+      return bbn.fn.order(this.filteredData, 'score', 'desc').slice(this.currentStart, this.currentStart + this.currentLimit);
     },
 
   },
@@ -476,49 +476,42 @@ const cpDef = {
                   //bbn.fn.log("BIG SEARCH: ITV");
                   if (!this.isRunning && this.queue.length) {
                     this.isRunning = true;
-                    let lastAdded = 0;
-                    let idxData = 0;
+                    const currentData = bbn.fn.clone(this.currentData);
                     bbn.fn.each(this.queue.splice(0), d => {
-                      const idx = bbn.fn.search(this.currentData, { hash: d.hash });
+                      const idx = bbn.fn.search(currentData, { hash: d.hash });
                       if (idx > -1) {
-                        if (parseInt(d.score) > parseInt(this.currentData[idx].score)) {
-                          this.currentData[idx].score = d.score;
+                        if (parseInt(d.score) > parseInt(currentData[idx].score)) {
+                          currentData[idx].score = d.score;
                         }
                       }
                       else {
                         let done = false;
-                        for (let i = 0; i < this.currentData.length; i++) {
-                          if (d.score > this.currentData[i].score) {
-                            this.currentData.splice(i, 0, d);
+                        for (let i = 0; i < currentData.length; i++) {
+                          if (d.score > currentData[i].score) {
+                            currentData.splice(i, 0, d);
                             done = true;
                             break;
                           }
-
-                          idxData++;
                         }
 
                         if (!done) {
-                          this.currentData.push(d);
+                          currentData.push(d);
                         }
                       }
                     });
-                    //const data = bbn.fn.order(cd, [{dir: 'DESC', field: 'score'}]);
                     this.searchCategories = bbn.fn.order(
-                      bbn.fn.getFieldValues(
-                        this.currentData, 'search').filter(a => !!a).map(a => {
+                      bbn.fn.getFieldValues(currentData, 'search').filter(a => !!a).map(a => {
                           return {
                             search: a,
                             active: true,
-                            num: bbn.fn.count(this.currentData, {search: a}),
-                            score: bbn.fn.getField(this.currentData, 'score', {search: a})
+                            num: bbn.fn.count(currentData, {search: a}),
+                            score: bbn.fn.getField(currentData, 'score', {search: a})
                           }
                         }),
                         {score: 'desc'}
                     );
-                    //this.currentData = cd;
+                    this.currentData = currentData;
                     this.currentTotal = this.currentData.length;
-
-                    //this.$forceUpdate();
                     this.isRunning = false;
                   }
 
