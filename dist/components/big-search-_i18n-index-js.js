@@ -7,15 +7,12 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["components/big-search-_i18n-index-js"],{
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([[71046],{
 
-/***/ "./src/components/big-search/_i18n/index.js":
-/*!**************************************************************!*\
-  !*** ./src/components/big-search/_i18n/index.js + 2 modules ***!
-  \**************************************************************/
+/***/ 61751:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-eval("{// ESM COMPAT FLAG\n__webpack_require__.r(__webpack_exports__);\n\n// EXPORTS\n__webpack_require__.d(__webpack_exports__, {\n  \"default\": () => (/* binding */ _i18n)\n});\n\n;// ./src/components/big-search/_i18n/big-search.fr.lang\nconst big_search_fr_namespaceObject = /*#__PURE__*/JSON.parse('{\"%s takes a function as argument\":\"%s prend une fonction comme argument\"}');\n;// ./src/components/big-search/_i18n/big-search.it.lang\nconst big_search_it_namespaceObject = /*#__PURE__*/JSON.parse('{\"%s takes a function as argument\":\"%s accetta una funzione come argomento\"}');\n;// ./src/components/big-search/_i18n/index.js\n\n\n/* harmony default export */ const _i18n = ({\n  fr: big_search_fr_namespaceObject,\n  it: big_search_it_namespaceObject\n});//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvY29tcG9uZW50cy9iaWctc2VhcmNoL19pMThuL2luZGV4LmpzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7QUFBc0M7QUFDQTtBQUV0Qyw0Q0FBZTtFQUNiQSxFQUFFO0VBQ0ZDLEVBQUVBLEVBQUFBLDZCQUFBQTtBQUNKLENBQUMiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9AYmJuL2Jibi1jcC8uL3NyYy9jb21wb25lbnRzL2JpZy1zZWFyY2gvX2kxOG4vaW5kZXguanM/NzgxMyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgZnIgZnJvbSAnLi9iaWctc2VhcmNoLmZyLmxhbmcnO1xuaW1wb3J0IGl0IGZyb20gJy4vYmlnLXNlYXJjaC5pdC5sYW5nJztcblxuZXhwb3J0IGRlZmF1bHQge1xuICBmcixcbiAgaXRcbn07XG4iXSwibmFtZXMiOlsiZnIiLCJpdCJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///./src/components/big-search/_i18n/index.js\n\n}");
+eval("{// ESM COMPAT FLAG\n__webpack_require__.r(__webpack_exports__);\n\n// EXPORTS\n__webpack_require__.d(__webpack_exports__, {\n  \"default\": () => (/* binding */ _i18n)\n});\n\n;// ./src/components/big-search/_i18n/big-search.fr.lang\nconst big_search_fr_namespaceObject = /*#__PURE__*/JSON.parse('{\"%s takes a function as argument\":\"%s prend une fonction comme argument\"}');\n;// ./src/components/big-search/_i18n/big-search.it.lang\nconst big_search_it_namespaceObject = /*#__PURE__*/JSON.parse('{\"%s takes a function as argument\":\"%s accetta una funzione come argomento\"}');\n;// ./src/components/big-search/_i18n/index.js\n\n\n/* harmony default export */ const _i18n = ({\n  fr: big_search_fr_namespaceObject,\n  it: big_search_it_namespaceObject\n});//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiNjE3NTEuanMiLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7OztBQUFzQztBQUNBO0FBRXRDLDRDQUFlO0VBQ2JBLEVBQUU7RUFDRkMsRUFBRUEsRUFBQUEsNkJBQUFBO0FBQ0osQ0FBQyIsInNvdXJjZXMiOlsid2VicGFjazovL0BiYm4vYmJuLWNwLy4vc3JjL2NvbXBvbmVudHMvYmlnLXNlYXJjaC9faTE4bi9pbmRleC5qcz83ODEzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBmciBmcm9tICcuL2JpZy1zZWFyY2guZnIubGFuZyc7XG5pbXBvcnQgaXQgZnJvbSAnLi9iaWctc2VhcmNoLml0LmxhbmcnO1xuXG5leHBvcnQgZGVmYXVsdCB7XG4gIGZyLFxuICBpdFxufTtcbiJdLCJuYW1lcyI6WyJmciIsIml0Il0sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///61751\n\n}");
 
 /***/ })
 
