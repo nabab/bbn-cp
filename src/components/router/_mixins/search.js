@@ -169,7 +169,7 @@ export default {
             res.push({
               url: url,
               label: obj.label,
-              score: match === 'url' ? 10 : 20,
+              score: match === 'url' ? 110 : 120,
               icon: a.icon || null,
               hash: url,
               bcolor: a.bcolor || null,

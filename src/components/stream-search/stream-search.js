@@ -376,61 +376,6 @@ const cpDef = {
       }
     },
     async updateData() {
-      /*
-      if (this.beforeUpdate() !== false) {
-        this.currentData.splice(0, this.currentData.length);
-        this.currentTotal = 0;
-        this._dataPromise = new Promise(resolve => {
-          let loadingRequestID;
-          if (this.loadingRequestID) {
-            bbn.fn.abort(this.loadingRequestID);
-            this.loadingRequestID = false;
-            return this.updateData();
-          }
-
-          this.isLoading = true;
-          this.$emit('startloading');
-          let data = this.getData();
-          loadingRequestID = bbn.fn.getRequestId(this.source, data);
-          this.loadingRequestID = loadingRequestID;
-          this.post(this.source, data).then(d => {
-            if ( !d || (this.requestedText !== this.filterString)) {
-              return;
-            }
-
-            if ( d.status !== 200 ){
-              d.data = undefined;
-            }
-            else {
-              d = d.data;
-            }
-
-            this.$emit('datareceived', d);
-            if (bbn.fn.isArray(d.data) ){
-              this.appendData(d.data);
-            }
-            this.afterUpdate();
-            resolve(this.currentData);
-            if (!this.isLoaded) {
-              this.isLoaded = true;
-            }
-            this.$emit('dataloaded', d);
-            if (this.isAjax && d && d.next_step) {
-              if (d.id && (d.data !== undefined)) {
-                this.searchId = d.id;
-              }
-
-              this.getMoreData(d.next_step);
-            }
-          });
-        }).catch(e => {
-          this.isLoading = false;
-          this.loadingRequestID = false;
-          bbn.fn.log("ERROR", e);
-        });
-        return this._dataPromise;
-      }
-        */
     },
     launchRegisteredFunctions(search) {
       bbn.fn.each(this.registeredFunctions, o => {
@@ -445,9 +390,9 @@ const cpDef = {
             }
 
             r.signature = o.signature;
+            this.queue.push(r)
+            this.setSetInterval(15);
           });
-
-          //bbn.fn.log(res);
         }
       });
     },
@@ -462,6 +407,7 @@ const cpDef = {
           uid: this.searchUid,
           conditions: this.currentFilters.conditions,
         };
+        this.launchRegisteredFunctions(this.requestedText);
         bbn.fn.stream(
           this.startUrl,
           d => {
@@ -471,64 +417,11 @@ const cpDef = {
                 this.searchId = d.id;
               }
 
-              if (!this.itv) {
-                this.itv = setInterval(() => {
-                  //bbn.fn.log("BIG SEARCH: ITV");
-                  if (!this.isRunning && this.queue.length) {
-                    this.isRunning = true;
-                    const currentData = bbn.fn.clone(this.currentData);
-                    bbn.fn.each(this.queue.splice(0), d => {
-                      const idx = bbn.fn.search(currentData, { hash: d.hash });
-                      if (idx > -1) {
-                        if (parseInt(d.score) > parseInt(currentData[idx].score)) {
-                          currentData[idx].score = d.score;
-                        }
-                      }
-                      else {
-                        let done = false;
-                        for (let i = 0; i < currentData.length; i++) {
-                          if (d.score > currentData[i].score) {
-                            currentData.splice(i, 0, d);
-                            done = true;
-                            break;
-                          }
-                        }
-
-                        if (!done) {
-                          currentData.push(d);
-                        }
-                      }
-                    });
-                    this.searchCategories = bbn.fn.order(
-                      bbn.fn.getFieldValues(currentData, 'search').filter(a => !!a).map(a => {
-                          return {
-                            search: a,
-                            active: true,
-                            num: bbn.fn.count(currentData, {search: a}),
-                            score: bbn.fn.getField(currentData, 'score', {search: a})
-                          }
-                        }),
-                        {score: 'desc'}
-                    );
-                    this.currentData = currentData;
-                    this.currentTotal = this.currentData.length;
-                    this.isRunning = false;
-                  }
-
-                  if (!this.isStarted && !this.queue.length) {
-                    clearInterval(this.itv);
-                    this.itv = false;
-                    this.showSearching = false;
-                  }
-                }, 50);
+              if (d?.data && (d.value === this.filterString)) {
+                this.queue.push(...d.data);
               }
 
-              if (d?.data) {
-                //bbn.fn.log("BIG SEARCH REPLY", d)
-                if (d.value === this.filterString) {
-                  this.queue.push(...d.data);
-                }
-              }
+              this.setSetInterval(50);
             }
           },
           postData,
@@ -577,27 +470,6 @@ const cpDef = {
         this.isStarted = false;
       }
     },
-    /* resetSearch() {
-      bbn.fn.log('reset search');
-      if (this.isStarted) {
-        this.currentData.splice(0);
-        bbn.fn.post(this.resetUrl + '/' + bbn.fn.microtimestamp(), {
-          uid: this.searchUid,
-          filters: this.currentFilters
-        }, d => {
-          if (!d.success) {
-            bbn.fn.warning(bbn._("Impossible to update the search"));
-            appui.poll({
-              type: 'search',
-              data: {
-                uid: this.searchUid,
-                filters: this.currentFilters,
-              }
-            })
-          }
-        });
-      }
-    }, */
     async resetSearch() {
       bbn.fn.log('reset search');
       if (this.isStarted && !this.isResetting) {
@@ -610,60 +482,63 @@ const cpDef = {
         });
       }
     },
+    setSetInterval(ms) {
+      if (!this.itv) {
+        this.itv = setInterval(() => {
+          if (!this.isRunning && this.queue.length) {
+            this.isRunning = true;
+            const currentData = bbn.fn.clone(this.currentData);
+            bbn.fn.each(this.queue.splice(0), d => {
+              const idx = bbn.fn.search(currentData, {hash: d.hash});
+              if (idx > -1) {
+                if (parseInt(d.score) > parseInt(currentData[idx].score)) {
+                  currentData[idx].score = d.score;
+                }
+              }
+              else {
+                let done = false;
+                for (let i = 0; i < currentData.length; i++) {
+                  if (d.score > currentData[i].score) {
+                    currentData.splice(i, 0, d);
+                    done = true;
+                    break;
+                  }
+                }
+
+                if (!done) {
+                  currentData.push(d);
+                }
+              }
+            });
+            this.searchCategories = bbn.fn.order(
+              bbn.fn.getFieldValues(currentData, 'search').filter(a => !!a).map(a => {
+                  return {
+                    search: a,
+                    active: true,
+                    num: bbn.fn.count(currentData, {search: a}),
+                    score: bbn.fn.getField(currentData, 'score', {search: a})
+                  }
+                }),
+                {score: 'desc'}
+            );
+            this.currentData = currentData;
+            this.currentTotal = this.currentData.length;
+            this.isRunning = false;
+          }
+
+          if (!this.isStarted && !this.queue.length) {
+            clearInterval(this.itv);
+            this.itv = false;
+            this.showSearching = false;
+          }
+        }, ms);
+      }
+    },
     onReceive(arr) {
       if (!arr.length) {
         return;
       }
       bbn.fn.log("onReceive on bbn-stream-search NUMBER: " + arr.length, arr);
-      if (!this.itv) {
-        this.itv = setInterval(() => {
-          if (!this.isRunning && this.queue.length) {
-            //bbn.fn.log(this.queue.slice());
-            this.isRunning = true;
-            let lastAdded = 0;
-            const cd = this.currentData;
-            let idxData = 0;
-            bbn.fn.each(this.queue.splice(0), d => {
-              const idx = bbn.fn.search(cd, { hash: d.hash });
-              if (idx > -1) {
-                if (parseInt(d.score) > parseInt(cd[idx].score)) {
-                  cd[idx].score = d.score;
-                }
-              }
-              else {
-                let done = false;
-                for (let i = 0; i < cd.length; i++) {
-                  if (d.score > cd[i].score) {
-                    cd.splice(i, 0, d);
-                    done = true;
-                    break;
-                  }
-  
-                  idxData++;
-                }
-  
-                if (!done) {
-                  cd.push(d);
-                }
-              }
-            });
-            //const data = bbn.fn.order(cd, [{dir: 'DESC', field: 'score'}]);
-            this.searchCategories = bbn.fn.order(bbn.fn.getFieldValues(cd, 'search').filter(a => !!a).map(a => {
-              return {search: a, active: true, num: bbn.fn.count(cd, {search: a}), score: bbn.fn.getField(cd, 'score', {search: a})}
-            }), {score: 'desc'});
-            //this.currentData = cd;
-            this.currentTotal = this.currentData.length;
-
-            //this.$forceUpdate();
-            this.isRunning = false;
-          }
-          if (!this.isStarted) {
-            clearInterval(this.itv);
-            this.itv = false;
-          }
-        }, 15);
-      }
-
       bbn.fn.each(arr, d => {
         if (d.done === 1) {
           //bbn.fn.log("DONE SENT FROM SW", d)
@@ -674,57 +549,13 @@ const cpDef = {
             this.itv = false;
           }
 
-          this.$forceUpdate();
+          //this.$forceUpdate();
         }
         else if (d?.data && (d.value === this.filterString)) {
           this.queue.push(...d.data);
         }
       });
-      return;
-
-      const cd = this.currentData;
-      bbn.fn.log("onReceive on bbn-stream-search", arr);
-      bbn.fn.each(arr, data => {
-        if (data.done) {
-          bbn.fn.log("DONE SENT FROM SW")
-          this.isStarted = false;
-        }
-        else if (data.value === this.filterString) {
-          let idxData = 0;
-          bbn.fn.log("PUTTING DATA INTO RES", data.data?.length)
-          bbn.fn.each(data.data, d => {
-            const idx = bbn.fn.search(cd, { hash: d.hash });
-            if ((idx > -1) && (parseInt(d.score) > parseInt(cd[idx].score))) {
-              cd[idx].score = d.score;
-            }
-            else {
-              let done = false;
-              for (let i = idxData; i < cd.length; i++) {
-                if (d.score > cd[i].score) {
-                  cd.splice(i, 0, d);
-                  done = true;
-                  break;
-                }
-
-                idxData++;
-              }
-
-              if (!done) {
-                cd.push(d);
-              }
-            }
-          });
-        }
-        else {
-          bbn.fn.log("NOT!!!!! PUTTING DATA INTO RES")
-        }
-      });
-      this.searchCategories = bbn.fn.getFieldValues(this.currentData, 'search').filter(a => !!a).map(a => {
-        return {search: a, active: true, num: bbn.fn.count(this.currentData, {search: a})}
-      });
-      this.currentTotal = this.currentData.length;
-
-      this.$forceUpdate();
+      this.setSetInterval(15);
     }
   },
   watch: {
@@ -760,7 +591,6 @@ const cpDef = {
         this.searchCategories.splice(0);
       }
 
-      this.launchRegisteredFunctions(v);
       this.filterTimeout = setTimeout(() => {
         this.filterTimeout = false;
         // We don't relaunch the source if the component has been left
