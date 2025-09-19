@@ -14,7 +14,45 @@ const cpDef = {
    * @mixin bbn.cp.mixins.basic
    * @mixin bbn.cp.mixins.localStorage
    */
-  mixins: [bbn.cp.mixins.basic, bbn.cp.mixins.localStorage],
+  mixins: [bbn.cp.mixins.basic],
+  statics() {
+    // IndexedDb access for storing thumbnails in visual mode
+    let db = false;
+    if (bbn.db && bbn.db.ok) {
+      db = true;
+      if (!bbn.db._structures?.bbn?.clipboard) {
+        bbn.db.add('bbn', 'clipboard', {
+          keys: {
+            PRIMARY: {
+              columns: ['uid'],
+              unique: true
+            },
+            MD5: {
+              columns: ['md5'],
+              unique: false
+            },
+            TYPE: {
+              columns: ['type'],
+              unique: false
+            }
+          },
+          fields: {
+            uid: {},
+            preview: {},
+            content: {},
+            len: {},
+            type: {},
+            time: {},
+            md5: {}            
+          },
+          num: 2
+        });
+      }
+    }
+    return {
+      db
+    };
+  },
   props: {
     /**
      * @prop {String} ['right'] orientation
@@ -79,7 +117,14 @@ const cpDef = {
       isUpdatingClipboard: false
     };
   },
-  computed: {},
+  computed: {
+    orderedItems() {
+      return bbn.fn.multiorder(this.items, [
+        {field: 'pinned', dir: 'desc'},
+        {field: 'dt', dir: 'desc'}
+      ]);
+    }
+  },
   methods: {
     /**
      * Emits a change when the state of the checkbox changes.
@@ -160,36 +205,68 @@ const cpDef = {
         }
       }
     },
-    itemMenu() {
+    async pin(uid, unpin) {
+      const item = this.getItem(uid);
+      if (!item) {
+        return 0;
+      }
+
+      const res = await this.db.update('clipboard', {pinned: unpin ? 0 : 1}, {uid});
+      bbn.fn.log("UPDATING", unpin, res, {pinned: unpin ? 0 : 1, uid})
+      item.pinned = unpin ? 0 : 1;
+      return res;
+    },
+    itemMenu(source) {
+      const uid = source.uid;
       return [
         {
-          text: _('Copy plain text'),
+          text: bbn._('Copy plain text'),
           icon: 'nf nf-md-cursor_text',
           action: a => bbn.fn.log(a)
         },
         {
-          text: _('Copy rich text'), icon: 'nf nf-md-code_tags', disabled: !source.content, action: () => closest('bbn-clipboard').setClipboard(uid, 'html')
+          text: bbn._('Copy rich text'),
+          icon: 'nf nf-md-code_tags',
+          disabled: !source.content,
+          action: () => this.setClipboard(uid, 'html')
         },
         {
-          text: _('Copy as image'), icon: 'nf nf-fa-image', disabled: !source.type || (source.type.indexOf('image/')) !== 0, action: () => closest('bbn-clipboard').setClipboard(uid, 'image')
+          text: bbn._('Copy as image'),
+          icon: 'nf nf-fa-image',
+          disabled: !source.type || (source.type.indexOf('image/')) !== 0,
+          action: () => this.setClipboard(uid, 'image')
         },
         {
-          text: _('Save'), icon: 'nf nf-fa-file_o', action: () => closest('bbn-clipboard').save(uid)
+          text: bbn._('Save'),
+          icon: 'nf nf-fa-file_o',
+          action: () => this.save(uid)
         },
         {
-          text: _('Save as...'), icon: 'nf nf-fa-file_o', action: () => closest('bbn-clipboard').saveAs(uid)
+          text: bbn._('Save as...'),
+          icon: 'nf nf-fa-file_o',
+          action: () => this.saveAs(uid)
         },
         {
-          text: _('Pin'), icon: 'nf nf-md-pin', action: () => {source.pinned = true;}, disabled: source.pinned
+          text: bbn._('Pin'),
+          icon: 'nf nf-md-pin',
+          action: () => this.pin(uid),
+          disabled: source.pinned
         },
         {
-          text: _('Unpin'), icon: 'nf nf-md-pin_off', action: () => {source.pinned = false;}, disabled: !source.pinned
+          text: bbn._('Unpin'),
+          icon: 'nf nf-md-pin_off',
+          action: () => this.pin(uid, true),
+          disabled: !source.pinned
         },
         {
-          text: _('Share'), icon: 'nf nf-fa-share', action: () => null
+          text: bbn._('Share'),
+          icon: 'nf nf-fa-share',
+          action: () => null
         },
         {
-          text: _('Remove'), icon: 'nf nf-fa-trash_o', action: () => closest('bbn-clipboard').removeItem({uid: source.uid})
+          text: bbn._('Remove'),
+          icon: 'nf nf-fa-trash_o',
+          action: () => this.removeItem({uid})
         },
       ];
     },
@@ -197,10 +274,8 @@ const cpDef = {
      * @method add
      * @param data
      * @emits add
-     * @fires setStorage
-     * @fires unsetStorage
      */
-    add(data) {
+    async add(data) {
       let dt = bbn.fn.timestamp();
       let uid = dt;
       let ar = [{
@@ -210,6 +285,7 @@ const cpDef = {
         type: 'text/plain',
         stype: 'text',
         size: data.raw.length,
+        md5: bbn.fn.md5(data.raw),
         mdate: null,
         content: '',
         file: '',
@@ -243,6 +319,7 @@ const cpDef = {
             text: o.name,
             type: o.type,
             stype: stype,
+            md5: bbn.fn.md5(o.name),
             size: o.size,
             mdate: o.mdate,
             content: '',
@@ -253,6 +330,7 @@ const cpDef = {
         bbn.fn.each(data.str, o => {
           if (o.type === 'text/plain') {
             ar[0].text = o.data;
+            ar[0].md5 = bbn.fn.md5(o.data);
           } else {
             ar[0].type = o.type;
             if (o.type.indexOf('image/') !== 0) {
@@ -267,25 +345,21 @@ const cpDef = {
       }
 
       let added = [];
-      bbn.fn.each(ar, a => {
-        let idx = bbn.fn.search(this.items, {
-          text: a.text,
-          type: a.type
-        });
-        if (idx !== -1) {
-          this.unsetStorage(this.items[idx].uid);
-          this.items.splice(idx, 1);
-        } else {
-          added.unshift(a);
+
+      for (let i = 0; i < ar.length; i++) {
+        const row = await this.db.select('clipboard', ['uid'], {type: ar[i].type, md5: ar[i].md5});
+        if (row?.uid) {
+          ar[i].dt = bbn.fn.timestamp();
+        }
+        else {
+          const res = await this.db.insert('clipboard', ar[i]);
+          bbn.fn.log("INSERTED", res);
         }
 
-        if (this.hasStorage) {
-          this.setStorage(a, a.uid);
-        }
+        this.items.unshift(ar[i]);
+      }
 
-        this.items.unshift(a);
-      });
-
+      /*
       if (added.length) {
         bbn.fn.each(added, o => {
           bbn.fn.upload(
@@ -303,13 +377,13 @@ const cpDef = {
         });
         this.$emit('add', added);
       }
-      this.$forceUpdate();
+      */
+      //this.$forceUpdate();
     },
     /**
      *
      * @method remove
      * @emits remove
-     * @fires unsetStorage
      */
     removeItem(src) {
       let idx = bbn.fn.search(this.items, {
@@ -321,8 +395,9 @@ const cpDef = {
         });
         this.$emit('remove', e, this.items[idx]);
         if (!e.defaultPrevented) {
-          this.unsetStorage(src.uid);
           this.items.splice(idx, 1);
+          const dbres = this.db.delete('clipboard', {uid: src.uid});
+          bbn.fn.log("DELETED", dbres);
         }
       }
     },
@@ -410,6 +485,7 @@ const cpDef = {
      * @param {Object} e
      */
     onCopy(e) {
+      bbn.fn.log("COPYYING", e, e.clipboardData);
       if (e.clipboardData && this.isSetting && this.uid) {
         let item = this.getItem(this.uid);
         if (item) {
@@ -472,46 +548,19 @@ const cpDef = {
   },
   /**
    * @method created
-   * @fires getStorage
-   * @fires unsetStorage
    */
-  created() {
-    if (!this.items && this.hasStorage) {
-      let items = this.getStorage(this.getComponentName(), true);
-      if (bbn.fn.isArray(items)) {
-        let tmp = [];
-        items.forEach(a => {
-          let it = this.getStorage(a);
-          if (it) {
-            tmp.push(it);
-          }
-        });
-
-        if (tmp.length) {
-          this.items = tmp;
-        }
+  async created() {
+    const items = [];
+    if (bbnClipboard.db) {
+      this.db = await bbn.db.open('bbn');
+      const dbItems = await this.db.selectAll('clipboard');
+      if (dbItems?.length) {
+        items.push(...dbItems.reverse());
       }
     }
 
-    if (!this.items) {
-      this.items = [];
-    }
-
-    if (this.hasStorage) {
-      // Checking if there is no lost clipboard items
-      let local = localStorage;
-      let uid;
-      let cp = this.getComponentName();
-      for (let n in local) {
-        if (!n.indexOf(cp + '-') &&
-          (uid = parseInt(bbn.fn.substr(n, cp.length + 1))) &&
-          !bbn.fn.getRow(this.items, {
-            uid: uid
-          })
-        ) {
-          this.unsetStorage(uid);
-        }
-      }
+    if (items.length && !this.items?.length) {
+      this.items = items;
     }
   },
   /**
@@ -519,7 +568,6 @@ const cpDef = {
    */
   mounted() {
     document.addEventListener('copy', this.onCopy);
-    this.ready = true;
   },
   /**
    * @event beforeDestroy
@@ -532,7 +580,6 @@ const cpDef = {
      * @watch items
      * @fires remove
      * @fires alert
-     * @fires setStorage
      * @emits copy
      */
     items() {
@@ -560,7 +607,6 @@ const cpDef = {
           }
         }
 
-        this.setStorage(this.items.map(a => a.uid), this.getComponentName(), true);
         this.$emit('copy');
         this.isUpdatingClipboard = false;
       }

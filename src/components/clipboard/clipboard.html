@@ -2,11 +2,12 @@
             :class="componentClass"
             ref="slider"
             :z-index="zIndex"
-            :visible="false"
+            :visible="isOpened"
             @show="isOpened = true"
             @hide="isOpened = false">
   <div class="bbn-h-100 bbn-flex-height bbn-clipboard-container">
-    <div class="bbn-xl bbn-c bbn-w-100 bbn-hspadding bbn-top-lmargin bbn-vpadding" bbn-if="!items.length && !search.length">
+    <div class="bbn-xl bbn-c bbn-w-100 bbn-hspadding bbn-top-lmargin bbn-vpadding"
+         bbn-if="!items.length && !search.length">
       <i class="nf nf-fa-clipboard bbn-right-smargin"/>
       <span bbn-text="_('Clipboard is empty')"/>
     </div>
@@ -34,40 +35,39 @@
       <bbn-scroll axis="y">
         <bbn-list :source="items"
                   uid="uid"
+                  :sortable="true"
+                  :order="[{field: 'pinned', dir: 'desc'}, {field: 'dt', dir: 'desc'}]"
                   ref="list"
-                  @remove="remove">
+                  :source-items="false"
+                  :reactive="false"
+                  @remove="remove"
+                  @hook:mounted="ready = true">
           <div bbn-pre>
             <div class="bbn-w-100 bbn-flex-width">
+              <div>
+                <div :class="['bbn-badge bbn-container-ratio bbn-block bbn-primary bbn-xsvpadding', {'bbn-invisible': !source.pinned}]">
+                  <div class="bbn-flex-height">
+                    <div class="bbn-flex-fill bbn-vmiddle">
+                      <i class="nf nf-oct-pin"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                
+              <bbn-context tag="div"
+                          class="bbn-xspadding"
+                          :source="closest('bbn-clipboard').itemMenu(source)">
+                <i class="nf nf-md-dots_vertical"/>
+              </bbn-context>
               <div :title="source.text"
                   class="bbn-clipboard-text bbn-block-left bbn-flex-fill">
-                <i :class="[
-                  'nf nf-oct-pin',
-                  'bbn-s',
-                  'bbn-right-xsspace',
-                  {'bbn-invisible': !source.pinned}
-                  ]"/>
-                  
-                <bbn-context tag="span"
-                            class="bbn-right-space"
-                            :source="[
-                  {text: _('Copy plain text'), icon: 'nf nf-md-cursor_text', action: (a) => closest('bbn-clipboard').setClipboard(source.uid, 'plain')},
-                  {text: _('Copy rich text'), icon: 'nf nf-md-code_tags', disabled: !source.content, action: () => closest('bbn-clipboard').setClipboard(uid, 'html')},
-                  {text: _('Copy as image'), icon: 'nf nf-fa-image', disabled: !source.type || (source.type.indexOf('image/')) !== 0, action: () => closest('bbn-clipboard').setClipboard(uid, 'image')},
-                  {text: _('Save'), icon: 'nf nf-fa-file_o', action: () => closest('bbn-clipboard').save(uid)},
-                  {text: _('Save as...'), icon: 'nf nf-fa-file_o', action: () => closest('bbn-clipboard').saveAs(uid)},
-                  {text: _('Pin'), icon: 'nf nf-md-pin', action: () => {source.pinned = true;}, disabled: source.pinned},
-                  {text: _('Unpin'), icon: 'nf nf-md-pin_off', action: () => {source.pinned = false;}, disabled: !source.pinned},
-                  {text: _('Share'), icon: 'nf nf-fa-share', action: () => null},
-                  {text: _('Remove'), icon: 'nf nf-fa-trash_o', action: () => closest('bbn-clipboard').removeItem({uid: source.uid})},
-                ]">
-                  <i class="nf nf-md-dots_vertical"/>
-                </bbn-context>
-                <span bbn-text="source.text"/>
+                <pre class="bbn-alt-background bbn-nomargin bbn-radius bbn-xspadding"
+                     bbn-text="bbn.fn.shorten((source.text || '').trim(), 50)"/>
               </div>
               <div :class="{
-                    'bbn-block-right': true,
-                    'bbn-narrow': true,
+                    'bbn-narrower': true,
                     'bbn-r': true,
+                    'bbn-xspadding': true,
                     'bbn-green': source.stype === 'html',
                     'bbn-red': source.stype === 'javascript',
                     'bbn-purple': source.type.indexOf('application/') === 0,
@@ -78,6 +78,7 @@
                   }"
                     bbn-text="source.stype"/>
             </div>
+            <hr class="bbn-hr bbn-vxsmargin"/>
           </div>
         </bbn-list>
       </bbn-scroll>

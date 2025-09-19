@@ -145,7 +145,7 @@ const cpDef = {
           o['-webkit-box-shadow'] = o['-moz-box-shadow'] = o['box-shadow'] = or.shadow + ' !important';
         }
 
-        if ((o[or.prop] !== null) && this.ready && !this.isResizing) {
+        if ((o[or.prop] !== null) && this.ready && !this.isResizing && this.hasBeenOpened) {
           o.transition = this.orientation + ' 0.5s';
           o.visibility = 'visible';
         }
@@ -230,9 +230,11 @@ const cpDef = {
             }
           }
           this.isResizing = false;
-          if (!this.ready) {
-            this.ready = true;
-          }
+          this.$nextTick(() => {
+            if (!this.ready) {
+              this.ready = true;
+            }
+          })
         }, 500);
       },
       /**

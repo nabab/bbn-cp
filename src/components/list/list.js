@@ -194,6 +194,13 @@ const cpDef = {
     flag: {
       type: Boolean,
       default: false
+    },
+    /**
+     * If true will add state-hover on mouse over
+     */
+    reactive: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -356,8 +363,8 @@ const cpDef = {
      * @returns {Array}
      */
     filteredData() {
-      let data = this.currentData;
-      if (this.currentData.length
+      let data = this.currentOrder?.length ? bbn.fn.multiorder(this.currentData, this.currentOrder.map(a => bbn.fn.extend({}, a, {field: 'data.' + a.field}))) : this.currentData;
+      if (data.length
         && this.currentFilters
         && this.currentFilters.conditions
         && this.currentFilters.conditions.length
@@ -385,6 +392,7 @@ const cpDef = {
         bbn.fn.each(Object.values(grouped), g => data.push(...g));
         data.push(...ungrouped);
       }
+
       return data;
     },
     /**
@@ -666,6 +674,7 @@ const cpDef = {
     source: {
       deep: true,
       handler() {
+        bbn.fn.log("CHANGE IN SOURCE");
         if (this.isAutobind) {
           this.updateData();
         }

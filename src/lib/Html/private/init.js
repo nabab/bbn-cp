@@ -285,7 +285,7 @@ export default function init(cp) {
   addNamespace(cp, 'extend', 'method');
   addNamespace(cp, 'find', 'method');
   addNamespace(cp, 'findAll', 'method');
-  addNamespace(cp, 'getComponentName', 'method');
+  addNamespace(cp, '$getName', 'method');
   addNamespace(cp, 'getComponents', 'method');
   addNamespace(cp, 'getRef', 'method');
   bbn.fn.each(Object.keys(bbnProtoHtml), a => {

@@ -1025,25 +1025,26 @@ const cpDef = {
           }
         }
         else {
+          const containerSize = this.$parent.$getName() === 'bbn-popup' ? this['lastKnownCt' + a.camel] : bbn.env[a.size];
           if ((coor[a.posStart] !== null) || (coor[a.posEnd] !== null)) {
-            a.res = coor[a.posStart] !== null ? coor[a.posStart] : this['lastKnownCt' + a.camel] - coor[a.posEnd] - size;
+            a.res = coor[a.posStart] !== null ? coor[a.posStart] : containerSize - coor[a.posEnd] - size;
           }
           else {
             // If no vertical position at all, centered (same top and bottom)
-            coor[a.posStart] = Math.floor((this['lastKnownCt' + a.camel] - size) / 2)
-                      + ((this['lastKnownCt' + a.camel] - size) % 2);
+            coor[a.posStart] = Math.floor((containerSize - size) / 2)
+                      + ((containerSize - size) % 2);
             if (coor[a.posStart] < 0) {
               coor[a.posStart] = 0;
             }
-            if (coor[a.posStart] + size > this['lastKnownCt' + a.camel]) {
+            if (coor[a.posStart] + size > containerSize) {
               if (this[a.posStart] === undefined) {
-                coor[a.posStart] = this['lastKnownCt' + a.camel] - size;
+                coor[a.posStart] = containerSize - size;
               }
               scroll = true;
             }
-            else if (coor[a.posEnd] + size > this['lastKnownCt' + a.camel]) {
+            else if (coor[a.posEnd] + size > containerSize) {
               if (this[a.posEnd] !== undefined) {
-                //coor[a.posEnd] = this['lastKnownCt' + a.camel] - size;
+                coor[a.posEnd] = containerSize - size;
               }
               scroll = true;
             }
@@ -1055,7 +1056,7 @@ const cpDef = {
                 a.res = 0;
               }
               else {
-                a.res = this['lastKnownCt' + a.camel] - (coor[a.posEnd] || 0) - size;
+                a.res = containerSize - (coor[a.posEnd] || 0) - size;
               }
             }
             a.res = a.res ? a.res + min : min;

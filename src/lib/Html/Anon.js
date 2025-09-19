@@ -368,8 +368,8 @@ export default class bbnAnonHtml extends HTMLElement
     return bbnProtoHtml.getComponents.apply(this, args);
   }
 
-  getComponentName(...args) {
-    return bbnProtoHtml.getComponentName.apply(this, args);
+  $getName(...args) {
+    return bbnProtoHtml.$getName.apply(this, args);
   }
 
   get $rootPath() {

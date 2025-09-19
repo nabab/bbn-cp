@@ -9,7 +9,7 @@
     <slot></slot>
   </div>
   <ul bbn-if="filteredData.length && ready"
-      :class="['bbn-menulist', mode]">
+      :class="[{'bbn-menulist': !!sourceItems, 'bbn-ul': !sourceItems}, mode]">
     <template bbn-for="(li, idx) in filteredData"
               :key="uid || sourceValue ? li.data[uid || sourceValue] || idx : idx"
               bbn-if="!sourceVisible || li.data[sourceVisible]">
@@ -47,10 +47,10 @@
           @mouseup.stop
           :class="{
             'bbn-no-padding': !!component,
-            'bbn-state-default': true,
+            'bbn-state-default': reactive,
             'bbn-disabled': !component && !!li.data && !!li.data.disabled,
             'bbn-state-selected': isSelected(idx),
-            'bbn-state-hover': (overIdx === idx) && !isSelected(idx),
+            'bbn-state-hover': reactive && (overIdx === idx) && !isSelected(idx),
             'bbn-alt': alternateBackground && (idx % 2)
           }">
         <component bbn-if="currentComponent"

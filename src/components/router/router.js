@@ -47,7 +47,8 @@ const cpDef = {
             image: {
 
             }
-          }
+          },
+          num: 1
         });
       }
     }

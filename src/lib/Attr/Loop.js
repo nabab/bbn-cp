@@ -2,6 +2,7 @@ import bbnAttr from "./Attr.js";
 import cloneNode from "../Html/private/cloneNode.js";
 import generateNode from "../Html/private/generateNode.js";
 import bbnData from "../Data.js";
+import bbn from "@bbn/bbn";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -79,9 +80,10 @@ export default class bbnLoopAttr extends bbnAttr
     // Construct a unique hash for each iteration based on loop values.
     const oHash = node.hash ? node.hash + '-' : '';
     const elements = [];
-    this.list.splice(0);
+    const oldList = this.list.splice(0);
     let num = 0;
     let prevEle;
+    const toMove = [];
     bbn.cp.loopLevel++;
     const defIndex = this.index || '__bbnDataIdx' + bbn.cp.loopLevel.toString();
     for (let j in loopValue) {
@@ -94,6 +96,7 @@ export default class bbnLoopAttr extends bbnAttr
       }
       
       const loopData = {[this.item]: loopValue[j], [defIndex]: j};
+      let hasPrevEle = false;
       let key;
       if (node.attr?.key?.exp) {
         key = node.attr.key.attrExec(loopData).val;
@@ -119,6 +122,15 @@ export default class bbnLoopAttr extends bbnAttr
       if (ele) {
         if (currentNode.data[defIndex] !== j) {
           currentNode.data[defIndex] = j;
+          /*
+          toMove.push({
+            from: currentNode.data[defIndex],
+            to: j,
+            diff: Math.abs(currentNode.data[defIndex] - j),
+            ele,
+            hash
+          });
+          */
         }
         if (currentNode.data[this.item] !== loopData[this.item]) {
           const data = currentNode.data[this.item]?.__bbnData;
@@ -153,7 +165,78 @@ export default class bbnLoopAttr extends bbnAttr
         break;
       }
 
-      prevEle = ele;
+      if (!hasPrevEle) {
+        prevEle = ele;
+      }
+    }
+
+    if (toMove.length) {
+      bbn.fn.order(toMove, 'diff', 'desc');
+      bbn.fn.log("TO MOVE", toMove);
+      for (let i = 0; i < toMove.length; i++) {
+        if (!toMove[i].diff) {
+          continue;
+        }
+
+        const goingUp = toMove[i].from > toMove[i].to;
+        for (let j = i + 1; j < toMove.length; j++) {
+          if (goingUp && (toMove[j].from < toMove[i].from) && (toMove[j].from >= toMove[i].to)) {
+            toMove[j].to--;
+          }
+          else if (!goingUp && (toMove[j].from > toMove[i].from) && (toMove[j].from <= toMove[i].to)) {
+            toMove[j].to++;
+          }
+          let oldDiff = toMove[j].diff;
+          toMove[j].diff = Math.abs(toMove[j].from - toMove[j].to);
+          bbn.fn.log("DIFF CHANGED FROM " + oldDiff + " TO " + toMove[j].diff);
+        }
+
+        let ele = cp.$retrieveElement(node.id, this.list[toMove[i].to+1]);
+        if (ele) {
+          bbn.fn.log("FOUND THE NEXT", ele);
+          ele.before(toMove[i].ele);
+        }
+        else {
+          let ele = cp.$retrieveElement(node.id, this.list[toMove[i].to-1]);
+          if (ele) {
+            bbn.fn.log("FOUND THE PREVIOUS", ele);
+            ele.after(toMove[i].ele);
+          }
+          else {
+            bbn.fn.log("APPENDED TO THE END");
+            ele.parentNode.appendChild(toMove[i].ele);
+          }
+        }
+
+        if (toMove[i].ele instanceof Comment) {
+          const ids = Object.keys(cp.$nodes).filter(a => a.indexOf(toMove[i].ele.bbnId + '-') === 0);
+          const done = [];
+          let prevEle = toMove[i].ele;
+          let next = null;
+          let moved = [];
+          for (let x = 0; x < ids.length; x++) {
+            if (done.filter(a => ids[x].indexOf(a + '-') === 0).length) {
+              bbn.fn.log("FOUND IT");
+              continue;
+            }
+
+            next = cp.$retrieveElement(ids[x], toMove[i].hash);
+            if (next?.isConnected) {
+              bbn.fn.log("MOVING", next, "AFTER", prevEle);
+              prevEle.after(next);
+              moved.push(next);
+              prevEle = next;
+              if (!(prevEle instanceof Comment)) {
+                done.push(ids[x]);
+              }
+            }
+            else {
+              bbn.fn.log("NOT CONNECTED", next);
+            }
+          }
+          bbn.fn.log(["TRYING TO FIND?", ids, done, moved, i]);
+        }
+      }
     }
 
     bbn.cp.loopLevel--;

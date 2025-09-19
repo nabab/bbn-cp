@@ -310,10 +310,10 @@ const bbnProtoHtml = {
 
   /**
    * Returns a component name based on the name of the given component and a path.
-   * @method getComponentName
+   * @method $getName
    * @memberof bbn.cp
    */
-  getComponentName() {
+  $getName() {
     return this.$options.name;
   },
 

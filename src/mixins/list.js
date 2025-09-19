@@ -300,7 +300,7 @@ const list = {
      * @memberof listComponent
      */
     sourceItems: {
-      type: String,
+      type: [String, Boolean],
       default: 'items'
     },
     /**
