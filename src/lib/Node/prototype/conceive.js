@@ -18,9 +18,6 @@ bbnNode.prototype.nodeConceive = function() {
       if (!node.element && !node.isCreating) {
         node.nodeInit();
       }
-      else {
-        bbn.fn.log(["is creating", node.element, node.isCreating]);
-      }
     }
   }
 };
