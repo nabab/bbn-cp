@@ -2,7 +2,7 @@ import bbnAttr from "./Attr.js";
 import cloneNode from "../Html/private/cloneNode.js";
 import generateNode from "../Html/private/generateNode.js";
 import bbnData from "../Data.js";
-import bbn from "@bbn/bbn";
+import setNodeRegion from "../../internals/setNodeRegion.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -10,6 +10,7 @@ import bbn from "@bbn/bbn";
 export default class bbnLoopAttr extends bbnAttr
 {
   #isRunning = false;
+
   get isRunning() {
     return this.#isRunning;
   }
@@ -82,10 +83,9 @@ export default class bbnLoopAttr extends bbnAttr
     const elements = [];
     const oldList = this.list.splice(0);
     let num = 0;
-    let prevEle;
-    const toMove = [];
     bbn.cp.loopLevel++;
     const defIndex = this.index || '__bbnDataIdx' + bbn.cp.loopLevel.toString();
+
     for (let j in loopValue) {
       if (from && (j < from)) {
         continue;
@@ -96,7 +96,6 @@ export default class bbnLoopAttr extends bbnAttr
       }
       
       const loopData = {[this.item]: loopValue[j], [defIndex]: j};
-      let hasPrevEle = false;
       let key;
       if (node.attr?.key?.exp) {
         key = node.attr.key.attrExec(loopData).val;
@@ -119,42 +118,19 @@ export default class bbnLoopAttr extends bbnAttr
         currentNode.element = false;
       }
 
+      if (currentNode && currentNode.data[defIndex] !== j) {
+        currentNode.data[defIndex] = j;
+      }
+
       if (ele) {
-        if (currentNode.data[defIndex] !== j) {
-          currentNode.data[defIndex] = j;
-          /*
-          toMove.push({
-            from: currentNode.data[defIndex],
-            to: j,
-            diff: Math.abs(currentNode.data[defIndex] - j),
-            ele,
-            hash
-          });
-          */
-        }
         if (currentNode.data[this.item] !== loopData[this.item]) {
           const data = currentNode.data[this.item]?.__bbnData;
           currentNode.data[this.item] = loopData[this.item];
-          /*
-          if (data) {
-            const queue = [];
-            bbn.fn.log("LAUNCHING OPTHER DEPENDENCIES");
-            bbn.fn.each(data.deps, d => {
-              for (let n in d) {
-                if (d[n]?.length) {
-                  queue.concat(...d[n])
-                }
-              }
-            });
-
-            queueUpdate(...queue)
-          }
-          */
         }
       }
       else {
         const newNode = currentNode || generateNode(cloneNode(cp, node.id), cp, node.parent, node, hash, hash, loopData);
-        ele = newNode.nodeInit(prevEle || root);
+        ele = newNode.nodeInit(root.bbnSchema._region.end);
         newNode.loopNode = this;
       }
 
@@ -164,80 +140,54 @@ export default class bbnLoopAttr extends bbnAttr
         this.lastBreak = j;
         break;
       }
-
-      if (!hasPrevEle) {
-        prevEle = ele;
-      }
     }
 
-    if (toMove.length) {
-      bbn.fn.order(toMove, 'diff', 'desc');
-      bbn.fn.log("TO MOVE", toMove);
-      for (let i = 0; i < toMove.length; i++) {
-        if (!toMove[i].diff) {
-          continue;
-        }
-
-        const goingUp = toMove[i].from > toMove[i].to;
-        for (let j = i + 1; j < toMove.length; j++) {
-          if (goingUp && (toMove[j].from < toMove[i].from) && (toMove[j].from >= toMove[i].to)) {
-            toMove[j].to--;
+    if (oldList.length) {
+      let copy = oldList.slice();
+      bbn.fn.forir(oldList, (a, i) => {
+        if (this.list.indexOf(a) === -1) {
+          copy.splice(i, 1);
+          const itemRemoved = cp.$retrieveNode(node.id, a);
+          if (itemRemoved) {
+            itemRemoved.nodeClean(true);
           }
-          else if (!goingUp && (toMove[j].from > toMove[i].from) && (toMove[j].from <= toMove[i].to)) {
-            toMove[j].to++;
-          }
-          let oldDiff = toMove[j].diff;
-          toMove[j].diff = Math.abs(toMove[j].from - toMove[j].to);
-          bbn.fn.log("DIFF CHANGED FROM " + oldDiff + " TO " + toMove[j].diff);
         }
-
-        let ele = cp.$retrieveElement(node.id, this.list[toMove[i].to+1]);
-        if (ele) {
-          bbn.fn.log("FOUND THE NEXT", ele);
-          ele.before(toMove[i].ele);
+      });
+      bbn.fn.fori(this.list, (a, i) => {
+        if (oldList.indexOf(a) === -1) {
+          copy.splice(i, 0, a);
+        }
+      });
+      const testArray1 = copy.slice();
+      const testArray2 = this.list.slice();
+      if (JSON.stringify(testArray1) !== JSON.stringify(testArray2)) {
+        testArray1.sort();
+        testArray2.sort();
+        if (JSON.stringify(testArray1) === JSON.stringify(testArray2)) {
+          const moves = [];
+          moves.push(...bbn.fn.getSortingMoves(copy, this.list));
+          if (moves.length) {
+            bbn.fn.log("MOVES", moves);
+            moves.forEach(a => {
+              const source = cp.$retrieveElement(node.id, a.value);
+              let target = this.list[a.to+1];
+              if (target) {
+                const dest = cp.$retrieveElement(node.id, target);
+                source.bbnSchema.nodeMove(dest.bbnSchema._region.start);
+              }
+              else {
+                source.bbnSchema.nodeMove(root.bbnSchema._region.end);
+              }
+            });
+          }
         }
         else {
-          let ele = cp.$retrieveElement(node.id, this.list[toMove[i].to-1]);
-          if (ele) {
-            bbn.fn.log("FOUND THE PREVIOUS", ele);
-            ele.after(toMove[i].ele);
-          }
-          else {
-            bbn.fn.log("APPENDED TO THE END");
-            ele.parentNode.appendChild(toMove[i].ele);
-          }
-        }
-
-        if (toMove[i].ele instanceof Comment) {
-          const ids = Object.keys(cp.$nodes).filter(a => a.indexOf(toMove[i].ele.bbnId + '-') === 0);
-          const done = [];
-          let prevEle = toMove[i].ele;
-          let next = null;
-          let moved = [];
-          for (let x = 0; x < ids.length; x++) {
-            if (done.filter(a => ids[x].indexOf(a + '-') === 0).length) {
-              bbn.fn.log("FOUND IT");
-              continue;
-            }
-
-            next = cp.$retrieveElement(ids[x], toMove[i].hash);
-            if (next?.isConnected) {
-              bbn.fn.log("MOVING", next, "AFTER", prevEle);
-              prevEle.after(next);
-              moved.push(next);
-              prevEle = next;
-              if (!(prevEle instanceof Comment)) {
-                done.push(ids[x]);
-              }
-            }
-            else {
-              bbn.fn.log("NOT CONNECTED", next);
-            }
-          }
-          bbn.fn.log(["TRYING TO FIND?", ids, done, moved, i]);
+          //what to do
+          throw new Error(bbn._("Difficult to compare the arrays"));
         }
       }
     }
+
 
     bbn.cp.loopLevel--;
     const loopHash = oHash || '';

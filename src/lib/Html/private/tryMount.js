@@ -35,9 +35,6 @@ export default function tryMount(cp, child) {
     cp.$isMounted = true;
     cp.classList.add('bbn-component-mounted');
 
-    if (cp.$origin) {
-      tryMount(cp.$origin, cp);
-    }
   }
   else {
     //bbn.fn.log("FAILED MOUNT ON " + fullId(cp), cp.$components.queue);

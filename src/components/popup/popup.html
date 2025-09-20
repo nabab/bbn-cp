@@ -4,9 +4,9 @@
   <div bbn-for="(popup, i) in popups"
        bbn-if="popup.modal !== false"
        class="bbn-modal bbn-overlay"
-       tabindex="-1"
        :style="{zIndex: popup.zIndex || (zIndex + i)}"
-       @keydown.esc.prevent.stop="close(i)"/>
+       @keydown.esc.prevent.stop="close(i)"
+       @click="close(i)"/>
   <bbn-floater bbn-for="(popup, i) in popups"
                :key="popup.uid"
                :ref="popup.uid"

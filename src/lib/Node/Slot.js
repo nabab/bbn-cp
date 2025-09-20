@@ -16,7 +16,7 @@ export default class bbnSlotNode extends bbnNode
     return this.#name
   }
 
-  nodeInit() {
+  nodeInit(after) {
     const old = this.element;
     if (this.isCreating) {
       bbn.fn.log(["ALREADY CREATING", this.element, this]);
@@ -141,7 +141,7 @@ export default class bbnSlotNode extends bbnNode
     if (!ele) {
       ele = this.nodeSwitch(true);
       if (!ele) {
-        ele = this.nodeBuild(null, true);
+        ele = this.nodeBuild(after, true);
       }
       else if (this.numBuild) {
         let num = this.nodeClean();

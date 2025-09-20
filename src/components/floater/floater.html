@@ -11,6 +11,7 @@
         componentClass
       ]"
       bbn-show="isVisible"
+      @keydown.escape.stop.prevent="close()"
       :style="currentStyle"
       bbn-resizable:container.left.right.bottom="ready && resizable ? $el.parentElement : false">
   <div bbn-if="arrow"
@@ -52,6 +53,7 @@
         <div bbn-if="closable !== false"
             class="bbn-h-100 bbn-middle bbn-reactive"
             @click.stop="close()"
+            @keydown.enter.space.stop.prevent="close()"
             tabindex="0"
             :title="_('Close')">
           <i :class="closeIcon"/>

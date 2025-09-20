@@ -61,6 +61,9 @@ const removeElement = function(res, ele, node) {
 };
 
 bbnNode.prototype.nodeRemove = function(ele, noTransition) {
+  if (ele.bbnId && !ele.bbnSchema) {
+    return;
+  }
   /*
   if (ele.bbnDirectives && (ele.bbnSchema?.directives?.['bbn-portal']?.value === ele.parentNode)) {
     const parent = ele.parentNode;
@@ -109,6 +112,9 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
   if (node?.tag === 'slot') {
     for (let i = 0; i < node.component.$slots[node.realName].length; i++) {
       const element = node.component.$slots[node.realName][i];
+      if (element.bbnId && !element.bbnSchema) {
+        continue;
+      }
       if (!element.bbnSchema) {
         if (node.parentNode) {
           node.parentNode.removeChild(element);

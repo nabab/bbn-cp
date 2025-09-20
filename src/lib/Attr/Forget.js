@@ -76,7 +76,7 @@ export default class bbnForgetAttr extends bbnAttr
           let isComponent = node.isComponent;
           while (parent.childNodes[i]) {
             const it = parent.childNodes[i];
-            if (!it.bbnId.indexOf(node.id + '-')) {
+            if (!(it.bbnId || '').indexOf(node.id + '-')) {
               let hasClass = false;
               if (it.isConnected && it.classList) {
                 hasClass = true;

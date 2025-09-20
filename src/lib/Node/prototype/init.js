@@ -1,6 +1,6 @@
 import bbnNode from "../Node.js";
 
-bbnNode.prototype.nodeInit = function(after) {
+bbnNode.prototype.nodeInit = function(after, noChild = false) {
   const old = this.element;
   if (this.isCreating) {
     bbn.fn.log(["ALREADY CREATING", this.element, this]);
@@ -37,7 +37,7 @@ bbnNode.prototype.nodeInit = function(after) {
   });
   */
   if (!this.loop) {
-    this.nodeBuild(after);
+    this.nodeBuild(after, noChild);
     if (this.isComponent && this.element) {
       if (!this.element.bbn) {
         this.element.bbnConnected = true;

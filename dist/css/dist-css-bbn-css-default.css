@@ -1,6 +1,3 @@
-/*!**********************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/@bbn/bbn-css/dist/css/bbn-css-default.css ***!
-  \**********************************************************************************************************/
 /** Default configuration*/
 :root {
   --black: #000000;
@@ -113,7 +110,7 @@
   --default-border: #d5d5d5;
   --alt-border: #d5d5d5;
   --primary-border: #ff6b18;
-  --secondary-border: #0974B3;
+  --secondary-border: #53798f;
   --tertiary-border: #829766;
   --button-text: #2e2e2e;
   --line-height: 1.7rem;
@@ -125,8 +122,8 @@
   --active-border: #b6b6b6;
   --active-background: #C9C1B3;
   --selected-text: #fff;
-  --selected-background: #ff6b18;
-  --selected-border: #ff6b18;
+  --selected-background: #0b27b5;
+  --selected-border: #0b27b5;
   --disabled-text: #c3c3c3;
   --disabled-background: #edebea;
   --disabled-border: #cacaca;
@@ -4546,7 +4543,7 @@ ul.bbn-ul ul.bbn-ul {
 .bbn-reactive-block:focus-within:not(:disabled),
 .bbn-reactive-block:hover:focus-within:not(:disabled),
 .bbn-reactive-block:focus-within:not(.bbn-disabled) {
-  border-color: #ff6b18;
+  border-color: #0b27b5;
 }
 .bbn-middle-line {
   overflow: hidden;
@@ -4595,7 +4592,7 @@ input:hover:focus:not(.bbn-disabled),
 .bbn-button:not(.bbn-button-right):not(.bbn-button-left):focus,
 .bbn-button.bbn-focusnot:not(.bbn-button-right):not(.bbn-button-left),
 .bbn-button:not(.bbn-button-right):not(.bbn-button-left):focus-within {
-  border-color: #ff6b18;
+  border-color: #0b27b5;
 }
 .bbn-state-default,
 a .bbn-state-default {
@@ -4615,7 +4612,7 @@ a .bbn-state-default {
 .bbn-state-selected {
   background-color: var(--selected-background) !important;
   color: var(--selected-text) !important;
-  border-color: #ff6b18 !important;
+  border-color: #0b27b5 !important;
 }
 .bbn-state-error {
   border-color: var(--default-border);
@@ -5237,11 +5234,11 @@ input[type=radio].bbn-radio {
   border-style: var(--default-border-style);
   box-sizing: border-box;
   background-color: var(--default-background);
-  color: #ff6b18;
+  color: #0b27b5;
 }
 .bbn-checkbox:checked + .bbn-checkbox-label:focus:before,
 .bbn-checkbox > .bbn-checkbox-label:focus:before {
-  border-color: #ff6b18;
+  border-color: #0b27b5;
 }
 .bbn-checkbox-label:before {
   border-color: var(--default-border);
@@ -5296,7 +5293,7 @@ input[type=radio].bbn-radio {
   aspect-ratio: 1;
 }
 .bbn-radio:checked + .bbn-radio-label:after {
-  background-color: #ff6b18;
+  background-color: #0b27b5;
   border-radius: 50%;
   content: "";
   width: 0.8rem;
@@ -5311,8 +5308,8 @@ input[type=radio].bbn-radio {
   opacity: 0.5;
 }
 .bbn-radio .bbn-radio-label:focus:before {
-  border-color: #ff6b18;
-  box-shadow: 0 0 3px 0 #ff6b18;
+  border-color: #0b27b5;
+  box-shadow: 0 0 3px 0 #0b27b5;
 }
 .bbn-radio:disabled + .bbn-radio-label {
   color: #c3c3c3;
@@ -5705,7 +5702,7 @@ input[type=radio].bbn-radio {
 .bbn-nav-dots li:active {
   background-color: var(--selected-background) !important;
   color: var(--selected-text) !important;
-  border-color: #ff6b18 !important;
+  border-color: #0b27b5 !important;
 }
 .bbn-transition-all,
 .bbn-transition-bcolor,

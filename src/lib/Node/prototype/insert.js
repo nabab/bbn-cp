@@ -120,112 +120,13 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
     }
 
     //bbn.fn.log("REMOVE " + (bbn.fn.isComment(this.oldElement) ? 'COMMENT' : (this.tag || 'TEXT')) + ' AND REPLACE WITH '+ (bbn.fn.isComment(this.element) ? 'COMMENT' : (this.tag || 'TEXT')));
-    this.oldElement.after(this.element);
+    this._region.end.parentNode.insertBefore(this.element, this._region.end);
     this.nodeRemove(this.oldElement);
     this.oldElement = null;
   }
   // First time is done in a linear direction
   // @mirko test it!
-  else if (!this.parent.numBuild && (this.loop || !this.loopItem)) {
-    //bbn.fn.log("NUMBUILD");
-
-    if (this.parent?.comment && this.parent.element.parentNode) {
-      let p = this.parent.element;
-      while (p.nextSibling && !p.nextSibling.bbnId.indexOf(this.parent.id)) {
-        p = p.nextSibling;
-      }
-
-      p.after(ele);
-    }
-    else {
-      // Append as a new child
-      parent.appendChild(ele); 
-    }
-    //bbn.fn.log(["COMPONENT FIRST TIME", this.tag, ele.tagName])
-  }
-  else if (after !== undefined) {
-    if (!after && parent.childNodes.length) {
-      parent.childNodes[parent.childNodes.length-1].after(ele);
-    }
-    else if (after) {
-      //bbn.fn.log("AFTER", ele, after);
-      after.after(ele);
-    }
-    else {
-      parent.appendChild(ele);
-    }
-  }
-  else if (!this.loop && this.loopItem) {
-    let rootHash = this.hash.split('-').slice(0, -1).join('-');
-    const loopRoot = this.component.$retrieveElement(this.id, rootHash);
-    if (!loopRoot) {
-      bbn.fn.log(["APPEND IN LOOP", this.tag, ele])
-      throw new Error(bbn._("loopRoot should be there"));
-      debugger;
-      parent.appendChild(ele);
-    }
-    else {
-      const lst = loopRoot.bbnSchema.loop.list;
-      const idx = lst.indexOf(this.hash);
-      if (!idx) {
-        loopRoot.after(ele);
-        //bbn.fn.log(["APPEND ON ROOT IN LOOP", this.tag, this.id, ele])
-      }
-      else {
-        const eleBefore = idx === -1 ? null : this.component.$retrieveElement(this.id, lst[idx-1]);
-        if (eleBefore) {
-          if (eleBefore instanceof Comment) {
-            let p = eleBefore;
-            while (p.nextSibling && !p.nextSibling.bbnId.indexOf(eleBefore.bbnId + '-')) {
-              p = p.nextSibling;
-            }
-
-            p.after(ele);
-          }
-          else {
-            eleBefore.after(ele);
-          }
-        }
-        else {
-          loopRoot.after(ele);
-        }
-        //bbn.fn.log(["APPEND AFTER IN LOOP", this.tag, ele])
-      }
-    }
-  }
-  else if (this.parent.comment && this.parent.element?.parentNode) {
-    let p = this.parent.element;
-    while (p.nextSibling && !p.nextSibling.bbnId.indexOf(this.parent.element.bbnId + '-')) {
-      p = p.nextSibling;
-    }
-
-    p.after(ele);
-  }
-  else if (this.parent.comment) {
-    //bbn.fn.log("COMMENT")
-    // Append as a new child
-    parent.appendChild(ele);
-  }
   else {
-    after = false;
-    if (parent.childNodes.length) {
-      for (let i = parent.childNodes.length - 1; i >= 0; i--) {
-        if ((parent.childNodes[i].bbnId !== ele.bbnId) && isBefore(parent.childNodes[i].bbnId, ele.bbnId)) {
-          after = parent.childNodes[i];
-          break;
-        }
-      }
-    }
-
-    if (after) {
-      //bbn.fn.log("AFTER");
-      after.after(ele); 
-    }
-    else {
-      //bbn.fn.log("LAST APPEND");
-      //bbn.fn.log(["APPEND AGAIN", this.tag, ele])
-      // Append as a new child
-      parent.appendChild(ele);
-    }
+    this._region.end.parentNode.insertBefore(this.element, this._region.end);
   }
 };

@@ -6,6 +6,10 @@ import bbnNode from "./Node.js";
  */
 export default class bbnInternalNode extends bbnNode
 {
+  get _region() {
+    return this.component?.bbnSchema?._region || {};
+  }
+
   nodeInit(after) {
     return bbnNode.prototype.nodeInit.call(this, [after]);
   }

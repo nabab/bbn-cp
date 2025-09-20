@@ -251,7 +251,7 @@ const cpDef = {
             list.select(list.overIdx);
           }
         }
-        else if (bbn.var.keys.confirm.indexOf(e.which) > -1) {
+        else if (e.which === 13) {
           e.preventDefault();
           if (list.overIdx > -1) {
             list.select(list.overIdx);

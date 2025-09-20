@@ -3,6 +3,7 @@ import addUnknownComponent from "../../Html/private/addUnknownComponent.js";
 import generateHtmlClass from "../../../internals/generateHtmlClass.js";
 import stringToTemplate from "../../../internals/stringToTemplate.js";
 import announceComponent from "../../Html/private/announceComponent.js";
+import setNodeRegion from "../../../internals/setNodeRegion.js";
 
 bbnNode.prototype.nodeBuild = function(after, noChild = false) {
   if (!this.isValid) {
@@ -149,6 +150,8 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
       }
     }
   }
+
+  setNodeRegion(this, after);
 
   // Assign a unique ID and schema to the element for tracking and management
   Object.defineProperties(this.element, {

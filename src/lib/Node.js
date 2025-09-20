@@ -5,6 +5,7 @@ import "./Node/prototype/conceive.js";
 import "./Node/prototype/define.js";
 import "./Node/prototype/init.js";
 import "./Node/prototype/insert.js";
+import "./Node/prototype/move.js";
 import "./Node/prototype/remove.js";
 import "./Node/prototype/setAll.js";
 import "./Node/prototype/setClass.js";

@@ -396,8 +396,7 @@ const cpDef = {
         this.$emit('remove', e, this.items[idx]);
         if (!e.defaultPrevented) {
           this.items.splice(idx, 1);
-          const dbres = this.db.delete('clipboard', {uid: src.uid});
-          bbn.fn.log("DELETED", dbres);
+          this.db.delete('clipboard', {uid: src.uid});
         }
       }
     },

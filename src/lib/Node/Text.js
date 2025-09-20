@@ -1,4 +1,5 @@
 import bbnNode from "./Node.js";
+import setNodeRegion from "../../internals/setNodeRegion.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -13,6 +14,7 @@ export default class bbnTextNode extends bbnNode
     const parent = this.parentElement || this.component.$el;
     const cp = this.component;
     this.element = document.createTextNode(this.text.attrGetValue());
+    setNodeRegion(this, after);
     Object.defineProperty(this.element, 'bbnId', {
       value: this.id,
       writable: false,

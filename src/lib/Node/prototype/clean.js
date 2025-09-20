@@ -31,6 +31,19 @@ const checkOwnDeps = node => {
   })
 };
 
+const removeRegion = node => {
+  const r = document.createRange();
+  if (node._region?.start?.isConnected) {
+    r.setStartAfter(node._region.start);
+    r.setEndBefore(node._region.end);
+    r.deleteContents();
+    node._region.start.remove();
+    node._region.end.remove();
+  }
+
+  delete node._region;
+};
+
 bbnNode.prototype.nodeClean = function(full) {
   const cp = this.component;
   const id = this.id;
@@ -85,6 +98,7 @@ bbnNode.prototype.nodeClean = function(full) {
               res++;
             }
 
+            removeRegion(obj[n]);
             delete obj[n];
           }
         }
@@ -96,6 +110,7 @@ bbnNode.prototype.nodeClean = function(full) {
           res++;
         }
 
+        removeRegion(obj);
         delete cp.$nodes[idx];
       }
       else {
@@ -106,6 +121,7 @@ bbnNode.prototype.nodeClean = function(full) {
             res++;
           }
 
+          removeRegion(obj[n]);
           delete obj[n];
         }
       }

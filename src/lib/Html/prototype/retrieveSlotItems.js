@@ -10,7 +10,7 @@ bbnProtoHtml.$retrieveSlotItems = function (name) {
   for (let i = 0; i < this.$slots[name].length; i++) {
     const item = this.$slots[name][i];
     const node = item.bbnSchema;
-    if (node.constructor.name === 'bbnSlotNode') {
+    if (node?.constructor?.name === 'bbnSlotNode') {
       items.push(...item.bbnComponent.$retrieveSlotItems(node.realName));
     }
     else {
