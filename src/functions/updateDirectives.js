@@ -21,9 +21,6 @@ export default function updateDirectives(directives, target) {
       if (bbn.fn.isFunction(bbn.cp.directives[name].update) &&
           !bbn.fn.isSame(dir.value, dir.oldValue)) {
 
-        // Update the 'lastUpdate' property of the directive.
-        dir.lastUpdate = bbn.fn.dateSQL();
-
         // Call the 'update' function of the directive with the target element and directive info.
         bbn.cp.directives[name].update(target, dir);
       }

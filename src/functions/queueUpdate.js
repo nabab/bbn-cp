@@ -17,6 +17,10 @@ export default function queueUpdate(...items) {
         continue;
       }
 
+      if (item.element) {
+        item.element.setLastRequest();
+      }
+
       const idx = bbn.fn.search(bbn.cp.queue, a => a.element === item.element);
       if (idx === -1) {
         bbn.cp.queue.push(item);

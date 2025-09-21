@@ -8,6 +8,33 @@ export default class bbnAttr
   #node;
   #name;
   #hash = '';
+  #lastRequest = 0;
+  #lastUpdate = 0;
+  #lastChange = 0;
+
+  setLastRequest() {
+    this.#lastRequest = bbn.cp.numTicks;
+  }
+  
+  setLastUpdate() {
+    this.#lastUpdate = bbn.cp.numTicks;
+  }
+
+  setLastChange() {
+    this.#lastChange = bbn.cp.numTicks;
+  }
+
+  get lastRequest() {
+    return this.#lastRequest;
+  }
+
+  get lastUpdate() {
+    return this.#lastUpdate;
+  }
+
+  get lastChange() {
+    return this.#lastChange;
+  }
 
   /**
    * Constructor
@@ -74,7 +101,7 @@ export default class bbnAttr
       return false;
     }
 
-    return this.result.num <= this.node.component.$numBuild;
+    return !this.#lastUpdate || (this.#lastRequest > this.#lastUpdate);
   }
 
   get isChanged() {

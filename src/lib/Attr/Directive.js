@@ -27,8 +27,6 @@ export default class bbnDirectiveAttr extends bbnAttr
       }
     }
     else if (this.inserted && this.isChanged && this.node.element) {
-      // Update the 'lastUpdate' property of the directive.
-      this.lastUpdate = bbn.fn.dateSQL();
       // Update the 'oldValue' property of the directive.
       this.oldValue = this.lastValue;
       // Update the 'lastValue' property of the directive.

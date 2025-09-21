@@ -73,8 +73,7 @@ const cpObj = bbn.fn.createObject({
   tickDelay: 25,
   results: new WeakMap(),
   uid: 0,
-  numBuild: 0,
-  numTicks: 0,
+  numTicks: 1,
   loopLevel: 0,
   htmlClasses: {},
   mixins: bbn.fn.createObject({

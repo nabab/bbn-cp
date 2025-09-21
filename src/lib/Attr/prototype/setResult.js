@@ -1,18 +1,6 @@
 import bbnAttr from "../Attr.js";
 import bbnData from "../../Data.js";
 
-const checkDeps = function (data, name) {
-  let i = 0;
-  while (i < data.deps[name].length) {
-    if ((data.deps[name][i] instanceof bbnAttr)) {
-      data.deps[name].splice(i, 1);
-    }
-    else {
-      i++;
-    }
-  }
-};
-
 /**
  * Updates the dependency sequence for a given result and attribute.
  * @param {Object} result - The result object containing state and sequence information.
@@ -77,10 +65,15 @@ bbnAttr.prototype.attrSetResult = function(data) {
   const component = node.component;
   const result = this.result;
   // Check if the result needs to be updated.
-  if ((this.constructor.name !== 'bbnModelAttr') && ((this.result?.num || 0) > component.$numBuild) && !Object.hasOwn(arguments, 0)) {
+  if ((this.constructor.name !== 'bbnModelAttr')
+    && !Object.hasOwn(arguments, 0)
+    && this.lastUpdate
+    && (this.lastRequest <= this.lastUpdate)
+  ) {
     return this.value;
   }
 
+  this.setLastUpdate();
   result.num = component.$numBuild + 1;
   let res;
   try {
@@ -93,6 +86,7 @@ bbnAttr.prototype.attrSetResult = function(data) {
 
     throw e;
   }
+
 
   let expValue = res.val;
   if (['bbnConditionAttr', 'bbnShowAttr', 'bbnForgetAttr'].includes(this.constructor.name)) {
@@ -151,6 +145,7 @@ bbnAttr.prototype.attrSetResult = function(data) {
 
   if (this.value !== result.value) {
     this.value = result.value;
+    this.setLastChange();
   }
   
   result.seq = res.seq;

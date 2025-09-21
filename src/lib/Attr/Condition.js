@@ -6,6 +6,10 @@ import bbnAttr from "./Attr.js";
 export default class bbnConditionAttr extends bbnAttr
 {
   keep = false;
+  #isConditionUpdating = false;
+  get isConditionUpdating() {
+    return this.#isConditionUpdating;
+  }
 
   constructor(def, node, name) {
     super(def, node, name);
@@ -23,63 +27,82 @@ export default class bbnConditionAttr extends bbnAttr
     }
 
     const allIfs = this.node.parent.items.filter(a => (a.conditionId === node.conditionId));
+    const isOrigin = allIfs.filter(a => cp.$retrieveNode(a.id, node.hash)?.condition?.isConditionUpdating).length === 0;
+    if (isOrigin) {
+      this.#isConditionUpdating = true;
+      for (let i = 0; i < allIfs.length; i++) {
+        const n = cp.$retrieveNode(allIfs[i].id, node.hash);
+        if (n?.condition) {
+          n.condition.setLastRequest();
+        }
+      }
+
+      bbn.cp.numTicks++;
+    }
+
     let conditionValue;
     let isTrue = false;
     let isPassed = false;
-    for (let i = 0; i < allIfs.length; i++) {
-      const ai = allIfs[i];
-      if (ai.condition.id === this.id) {
-        isPassed = true;
-        if (this.type === 'else') {
-          if (this.value !== !isTrue) {
-            this.attrSetResult(!isTrue);
-          }
-          //bbn.fn.log(["ON COND", this.value, this.attrGetValue()])
-        }
-        else if (isTrue) {
-          if (this.value) {
-            this.attrSetResult(false);
-          }
-        }
-        else {
-          this.attrGetValue();
-        }
 
-        conditionValue = this.value;
-        if (conditionValue) {
-          isTrue = true;
-        }
-      }
-      else {
-        const otherCondNode = cp.$retrieveElement(ai.id, node.hash)?.bbnSchema;
-        if (otherCondNode?.condition) {
-          if (isTrue || (otherCondNode.condition.type === 'else')) {
-            if (otherCondNode.condition.value !== !isTrue) {
-              otherCondNode.condition.attrSetResult(!isTrue);
+    if (isOrigin) {
+      for (let i = 0; i < allIfs.length; i++) {
+        const ai = allIfs[i];
+        if (ai.condition.id === this.id) {
+          isPassed = true;
+          if (this.type === 'else') {
+            if (this.value !== !isTrue) {
+              this.attrSetResult(!isTrue);
+            }
+            //bbn.fn.log(["ON COND", this.value, this.attrGetValue()])
+          }
+          else if (isTrue) {
+            if (this.value) {
+              this.attrSetResult(false);
             }
           }
           else {
-            otherCondNode.condition.attrGetValue();
+            this.attrGetValue();
           }
 
-          if (otherCondNode.condition.value) {
+          conditionValue = this.value;
+          if (conditionValue) {
             isTrue = true;
-            if (otherCondNode.isCommented) {
-              if (node.forget) {
-                otherCondNode.forget.attrUpdate();
-              }
-              else {
-                otherCondNode.nodeSwitch(false);
+          }
+        }
+        else {
+          const otherCondNode = cp.$retrieveElement(ai.id, node.hash)?.bbnSchema;
+          if (otherCondNode?.condition) {
+            if (isTrue || (otherCondNode.condition.type === 'else')) {
+              if (otherCondNode.condition.value !== !isTrue) {
+                otherCondNode.condition.attrSetResult(!isTrue);
               }
             }
-          }
-          else if (!otherCondNode.isCommented) {
-            otherCondNode.nodeSwitch(true);
-            let num = otherCondNode.nodeClean();
-            //bbn.fn.log(["CLEANING OTHER COND", num]);
+            else {
+              otherCondNode.condition.attrGetValue();
+            }
+
+            if (otherCondNode.condition.value) {
+              isTrue = true;
+              if (otherCondNode.isCommented) {
+                if (node.forget) {
+                  otherCondNode.forget.attrUpdate();
+                }
+                else {
+                  otherCondNode.nodeSwitch(false);
+                }
+              }
+            }
+            else if (!otherCondNode.isCommented) {
+              otherCondNode.nodeSwitch(true);
+              let num = otherCondNode.nodeClean();
+              //bbn.fn.log(["CLEANING OTHER COND", num]);
+            }
           }
         }
       }
+    }
+    else {
+      conditionValue = this.attrGetValue();
     }
 
     if (conditionValue && node.isCommented) {
@@ -103,6 +126,10 @@ export default class bbnConditionAttr extends bbnAttr
         let num = node.nodeClean();
         //bbn.fn.log(["CLEANING CONDITION", num]);
       }
+    }
+
+    if (isOrigin) {
+      this.#isConditionUpdating = false;
     }
   }
 

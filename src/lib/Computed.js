@@ -13,8 +13,35 @@ export default class bbnComputed {
   #getter;
   #setter = false;
   #data = false;
-  #num = 0;
   #changed = false;
+  #lastRequest = 0;
+  #lastUpdate = 0;
+  #lastChange = 0;
+
+  setLastRequest() {
+    this.#lastRequest = bbn.cp.numTicks;
+  }
+  
+  setLastUpdate() {
+    this.#lastUpdate = bbn.cp.numTicks;
+  }
+
+  setLastChange() {
+    this.#lastChange = bbn.cp.numTicks;
+  }
+
+  get lastRequest() {
+    return this.#lastRequest;
+  }
+
+  get lastUpdate() {
+    return this.#lastUpdate;
+  }
+
+  get lastChange() {
+    return this.#lastChange;
+  }
+
 
   static queue = [];
 
@@ -91,13 +118,6 @@ export default class bbnComputed {
   }
 
   /**
-   * @returns {number} The update count of the computed property.
-   */
-  get num() {
-    return this.#num;
-  }
-
-  /**
    * @returns {Object} The component to which the computed property belongs.
    */
   get component() {
@@ -115,13 +135,14 @@ export default class bbnComputed {
     }
 
     // If not forced and the computed property has been updated more recently than the component, return.
-    if (!force && (this.#num > this.#component.$numBuild)) {
+    if (!force && this.lastUpdate && (this.lastRequest <= this.lastUpdate)) {
       return;
     }
 
     let forceUpdate = false;
     //bbn.fn.log("UPDATNG COMPUTED " + this.#name + ' ' + this.#component.$cid);
 
+    this.setLastUpdate();
     // Start watching the process before executing the getter.
     bbnData.startWatching();
     // Get the new value using the getter.
@@ -187,6 +208,8 @@ export default class bbnComputed {
       }
 
       if (hasChanged || (this.#val !== v)) {
+        const lastChange = this.#lastChange;
+        this.setLastChange();
         // Taking care of dependencies only if the result has changed
         /*
         let prev = false;
@@ -234,7 +257,7 @@ export default class bbnComputed {
 
         this.#changed = true;
         //bbn.fn.log(["UPDATING COMPUTED " + this.#name + " ON " + this.#component.$options.name, bbn.fn.diffObj(this.#val, v)]);
-        if (this.#num) {
+        if (lastChange) {
           // Update the component with the new value.
           this.#updateComponent(v, forceUpdate || hasChanged);
         }
@@ -295,10 +318,6 @@ export default class bbnComputed {
 
       prev = a;
     }
-
-    // Update the build number.
-    this.#num = this.#component.$numBuild + 1;
-    //bbn.fn.log("FINISHED UPDATNG COMPUTED " + this.#name + ' ' + this.#component.$cid);
   }
 
   /**
@@ -318,7 +337,7 @@ export default class bbnComputed {
         }
 
         // If the computed property has not been updated yet, update it.
-        if (!_t.num) {
+        if (!_t.lastUpdate) {
           // Update the computed property's value.
           _t.computedUpdate();
           // Initialize the watcher for the computed property.
