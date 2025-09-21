@@ -532,7 +532,6 @@ const input = {
      * @memberof inputComponent
      */
     value(newVal){
-      bbn.fn.log("WATCH IN MIXIN", newVal)
       if (newVal !== this.currentValue) {
         this.currentValue = newVal;
       }
