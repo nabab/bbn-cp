@@ -649,7 +649,6 @@ const cpDef = {
      * @emits sort
      */
     updateMenu() {
-      bbn.fn.log("UPDATE MENU");
       let tab = this.closest("bbn-container");
       if (tab) {
         if (this.selectable && this.menu && this.menu.length) {

@@ -89,7 +89,6 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
         d.value = null;
         d.oldValue = parent;
         d.lastValue = parent;
-        bbn.fn.log("RM PORTAL 3")
         bbn.cp.directives['bbn-portal'].update(p, {value: null, oldValue: parent});
       });
     }

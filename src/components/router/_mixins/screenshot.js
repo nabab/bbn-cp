@@ -86,7 +86,6 @@ export default {
           ct.thumbnail = img;
           // This is in fact an insert/update
           const url = ct.getFullURL();
-          bbn.fn.log("Saving screenshot for ", url);
           if (url) {
             this.db.insert('containers', {
               url,

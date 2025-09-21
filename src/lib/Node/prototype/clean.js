@@ -59,7 +59,6 @@ bbnNode.prototype.nodeClean = function(full) {
         p.bbnSchema.directives['bbn-portal'].value = null;
         p.bbnSchema.directives['bbn-portal'].oldValue = parent;
         p.bbnSchema.directives['bbn-portal'].lastValue = parent;
-        bbn.fn.log("REMOVING PORTAL 1")
         bbn.cp.directives['bbn-portal'].update(p, {value: null, oldValue: parent});
       });
     }
