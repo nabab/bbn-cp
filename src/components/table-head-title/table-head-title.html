@@ -8,7 +8,7 @@
         'bbn-table-fixed-cell-left-last': (groupIndex === 0) && !groupCol.cols[index+1],
         'bbn-table-fixed-cell-right': groupIndex === 2,
         'bbn-table-cell-first': (groupIndex === 1)
-          && table.groupCols[0].cols.length
+          && table.groupCols?.[0]?.cols?.length
           && (index === 0)
       }
     ]"

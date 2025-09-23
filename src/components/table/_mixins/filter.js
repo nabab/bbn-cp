@@ -31,7 +31,9 @@ export default {
      * @returns {Boolean}
      */
     hasFilter(col) {
-      if (col.field) {
+      if (col.field
+        && this.currentFilters?.conditions?.length
+      ) {
         for (let i = 0; i < this.currentFilters.conditions.length; i++) {
           if (this.currentFilters.conditions[i].field === col.field) {
             return true;
