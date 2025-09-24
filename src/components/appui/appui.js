@@ -19,7 +19,7 @@ const cpDef = {
     bbn.cp.mixins.localStorage,
     bbn.cp.mixins.observer,
     bbn.cp.mixins.serviceWorker,
-    bbn.cp.mixins.browserNotification
+    bbn.cp.mixins.browserNotification,
   ],
   props: {
     /**
@@ -29,7 +29,7 @@ const cpDef = {
      */
     root: {
       type: String,
-      default: ''
+      default: "",
     },
     /**
      * Summary: Base URL for API calls.
@@ -38,7 +38,7 @@ const cpDef = {
      */
     url: {
       type: String,
-      default: bbn.env.path
+      default: bbn.env.path,
     },
     /**
      * Summary: Reference to popup component.
@@ -46,7 +46,7 @@ const cpDef = {
      * @type HTMLElement
      */
     popup: {
-      type: HTMLElement
+      type: HTMLElement,
     },
     /**
      * Summary: Enable internal scrolling.
@@ -55,7 +55,7 @@ const cpDef = {
      */
     scrollable: {
       type: Boolean,
-      default: true
+      default: true,
     },
     /**
      * Summary: Default definition string.
@@ -63,7 +63,7 @@ const cpDef = {
      * @type String
      */
     def: {
-      type: String
+      type: String,
     },
     /**
      * Summary: Auto-load data on mount.
@@ -72,7 +72,7 @@ const cpDef = {
      */
     autoload: {
       type: Boolean,
-      default: true
+      default: true,
     },
     /**
      * Summary: Disable component.
@@ -81,7 +81,7 @@ const cpDef = {
      */
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * Summary: Configuration options object.
@@ -90,7 +90,9 @@ const cpDef = {
      */
     options: {
       type: Object,
-      default() { return {} }
+      default() {
+        return {};
+      },
     },
     /**
      * Summary: Keyboard shortcuts definitions.
@@ -99,7 +101,9 @@ const cpDef = {
      */
     shortcuts: {
       type: Array,
-      default() { return [] }
+      default() {
+        return [];
+      },
     },
     /**
      * Summary: Plugin registry.
@@ -108,7 +112,9 @@ const cpDef = {
      */
     plugins: {
       type: Object,
-      default() { return {} }
+      default() {
+        return {};
+      },
     },
     /**
      * Summary: Component config parameters.
@@ -116,7 +122,7 @@ const cpDef = {
      * @type Object
      */
     cfg: {
-      type: Object
+      type: Object,
     },
     /**
      * Summary: Data source for navigation items.
@@ -125,7 +131,9 @@ const cpDef = {
      */
     source: {
       type: Array,
-      default() { return []; }
+      default() {
+        return [];
+      },
     },
     /**
      * Summary: Search bar configuration or disabled state.
@@ -134,7 +142,9 @@ const cpDef = {
      */
     searchBar: {
       type: [Object, Boolean],
-      default() { return {} }
+      default() {
+        return {};
+      },
     },
     /**
      * Summary: Single item mode flag.
@@ -143,7 +153,7 @@ const cpDef = {
      */
     single: {
       type: Boolean,
-      default: false
+      default: false,
     },
     /**
      * Summary: Enable URL navigation on select.
@@ -152,7 +162,7 @@ const cpDef = {
      */
     urlNavigation: {
       type: Boolean,
-      default: true
+      default: true,
     },
     /**
      * Summary: Label displayed in header.
@@ -161,7 +171,7 @@ const cpDef = {
      */
     label: {
       type: String,
-      default: bbn.env.siteTitle || bbn._('App-UI')
+      default: bbn.env.siteTitle || bbn._("App-UI"),
     },
     /**
      * Summary: Single component to render.
@@ -169,7 +179,7 @@ const cpDef = {
      * @type String|Object
      */
     component: {
-      type: [String, Object]
+      type: [String, Object],
     },
     /**
      * Summary: Source definition for component loading.
@@ -242,13 +252,23 @@ const cpDef = {
      * @prop users
      * @type Array
      */
-    users: { type: Array, default() { return [] } },
+    users: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
     /**
      * Summary: List of group objects.
      * @prop groups
      * @type Array
      */
-    groups: { type: Array, default() { return [] } },
+    groups: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
     /**
      * Summary: Current user information.
      * @prop user
@@ -260,7 +280,7 @@ const cpDef = {
      * @prop pollable
      * @type Boolean
      */
-    pollable: { type: Boolean, default: false }
+    pollable: { type: Boolean, default: false },
   },
   /**
    * Summary: Reactive data properties for UI state and config.
@@ -270,7 +290,9 @@ const cpDef = {
     // Detect device type and freeze user object
     let isMobile = bbn.fn.isMobile();
     let isTablet = bbn.fn.isTabletDevice();
-    if (this.user) { Object.freeze(this.user); }
+    if (this.user) {
+      Object.freeze(this.user);
+    }
     return {
       isFocused: false,
       intervalBugChrome: null,
@@ -296,7 +318,7 @@ const cpDef = {
       isOverDebug: false,
       app: null,
       cool: false,
-      searchString: '',
+      searchString: "",
       observerTimeout: false,
       colorEnvVisible: true,
       currentTitle: this.label,
@@ -314,8 +336,8 @@ const cpDef = {
       showBookmarks: false,
       bookmarksLoaded: false,
       isLoading: false,
-      loadingText: bbn._('Loading'),
-      registeredComponents: bbn.cp.immunizeValue(bbn.fn.createObject())
+      loadingText: bbn._("Loading"),
+      registeredComponents: bbn.cp.immunizeValue(bbn.fn.createObject()),
     };
   },
   computed: {
@@ -328,7 +350,7 @@ const cpDef = {
       if (this.user?.id) {
         let idGroup = this.getUserGroup(this.user.id) || this.user.id_group;
         if (idGroup) {
-          return bbn.fn.getRow(this.groups, 'id', idGroup);
+          return bbn.fn.getRow(this.groups, "id", idGroup);
         }
       }
     },
@@ -337,38 +359,57 @@ const cpDef = {
      * @computed isDev
      * @return Boolean
      */
-    isDev() { return bbn.env.isDev; },
+    isDev() {
+      return bbn.env.isDev;
+    },
     /**
      * Summary: Renders application component wrapper.
      * @computed appComponent
      * @return String|Object
      */
     appComponent() {
-      return 'span';
-      return bbn.fn.extend({ render(createElement) { return createElement(); } }, this.cfg);
+      return "span";
+      return bbn.fn.extend(
+        {
+          render(createElement) {
+            return createElement();
+          },
+        },
+        this.cfg
+      );
     },
     /**
      * Summary: Returns header component if object.
      * @computed headerComponent
      * @return Object|false
      */
-    headerComponent() { return this.header && bbn.fn.isObject(this.header) ? this.header : false; },
+    headerComponent() {
+      return this.header && bbn.fn.isObject(this.header) ? this.header : false;
+    },
     /**
      * Summary: Returns footer component if object.
      * @computed footerComponent
      * @return Object|false
      */
-    footerComponent() { return this.footer && bbn.fn.isObject(this.footer) ? this.footer : false; },
+    footerComponent() {
+      return this.footer && bbn.fn.isObject(this.footer) ? this.footer : false;
+    },
     /**
      * Summary: Descriptive text for current app mode.
      * @computed appMode
      * @return String
      */
     appMode() {
-      if (this.mode === 'dev') { return bbn._("Application in development mode"); }
-      if (this.mode === 'prod') { return bbn._("Application in production mode"); }
-      if (this.mode === 'test') { return bbn._("Application in testing mode"); }
-    }
+      if (this.mode === "dev") {
+        return bbn._("Application in development mode");
+      }
+      if (this.mode === "prod") {
+        return bbn._("Application in production mode");
+      }
+      if (this.mode === "test") {
+        return bbn._("Application in testing mode");
+      }
+    },
   },
   methods: {
     /**
@@ -384,10 +425,12 @@ const cpDef = {
      * @method onCopy
      */
     onCopy() {
-      let cpb = this.getRegistered('clipboard-button');
+      let cpb = this.getRegistered("clipboard-button");
       if (cpb) {
-        cpb.style.color = 'green';
-        setTimeout(() => { cpb.style.color = null; }, 250);
+        cpb.style.color = "green";
+        setTimeout(() => {
+          cpb.style.color = null;
+        }, 250);
       }
     },
     /**
@@ -400,7 +443,12 @@ const cpDef = {
       this.bigMessage = msg;
       setTimeout(() => {
         this.hasBigMessage = true;
-        setTimeout(() => { this.closeBigMessage(); }, timeout < 100 ? timeout * 1000 : timeout);
+        setTimeout(
+          () => {
+            this.closeBigMessage();
+          },
+          timeout < 100 ? timeout * 1000 : timeout
+        );
       }, 50);
     },
     /**
@@ -409,7 +457,9 @@ const cpDef = {
      */
     closeBigMessage() {
       this.hasBigMessage = false;
-      setTimeout(() => { this.bigMessage = false; }, 250);
+      setTimeout(() => {
+        this.bigMessage = false;
+      }, 250);
     },
     /**
      * Summary: Constructs developer tools menu entries based on URL.
@@ -423,21 +473,46 @@ const cpDef = {
       if (bbn.env.isDev) {
         let plugin;
         bbn.fn.iterate(this.plugins, (a, n) => {
-          if (tab.url.indexOf(a + '/') === 0) { plugin = n; return false; }
+          if (tab.url.indexOf(a + "/") === 0) {
+            plugin = n;
+            return false;
+          }
         });
-        let url = this.plugins['appui-project'] + '/router/' + bbn.env.appName + '/ide/editor/file/';
+        let url =
+          this.plugins["appui-project"] +
+          "/router/" +
+          bbn.env.appName +
+          "/ide/editor/file/";
         if (plugin) {
-          url += 'lib/' + plugin + '/mvc' + bbn.fn.substr(tab.url, this.plugins[plugin].length);
+          url +=
+            "lib/" +
+            plugin +
+            "/mvc" +
+            bbn.fn.substr(tab.url, this.plugins[plugin].length);
         } else {
-          url += 'app/main/mvc/' + tab.url;
+          url += "app/main/mvc/" + tab.url;
         }
-        url += '/_end_/';
-        url += (tab.url.indexOf('test/') === 0) ? 'private' : 'php';
+        url += "/_end_/";
+        url += tab.url.indexOf("test/") === 0 ? "private" : "php";
         res.push({
-          text: bbn._('Dev tools'), icon: 'nf nf-fa-code', items: [
-            { text: bbn._('Open in editor'), icon: 'nf nf-fa-edit', action() { bbn.fn.link(url); } },
-            { text: bbn._('Log the container'), icon: 'nf nf-md-sign_text', action() { let idx = router.search(tab.url); } }
-          ]
+          text: bbn._("Dev tools"),
+          icon: "nf nf-fa-code",
+          items: [
+            {
+              text: bbn._("Open in editor"),
+              icon: "nf nf-fa-edit",
+              action() {
+                bbn.fn.link(url);
+              },
+            },
+            {
+              text: bbn._("Log the container"),
+              icon: "nf nf-md-sign_text",
+              action() {
+                let idx = router.search(tab.url);
+              },
+            },
+          ],
         });
       }
       return res;
@@ -448,13 +523,17 @@ const cpDef = {
      * @param {Event} ev Route event
      * @param {String} path Route path
      */
-    onBeforeRoute(ev, path) { this.$emit('beforeroute', ev, path); },
+    onBeforeRoute(ev, path) {
+      this.$emit("beforeroute", ev, path);
+    },
     /**
      * Summary: Emits a route event.
      * @method onRoute
      * @param {String} path Route path
      */
-    onRoute(path) { this.$emit('route', path); },
+    onRoute(path) {
+      this.$emit("route", path);
+    },
     /**
      * Summary: Routes to specified URL via router ref.
      * @method route
@@ -463,7 +542,7 @@ const cpDef = {
      * @return {Boolean} always false
      */
     route(url, force) {
-      this.getRef('router').route(url, force);
+      this.getRef("router").route(url, force);
       return false;
     },
     /**
@@ -477,8 +556,16 @@ const cpDef = {
       if (this.registeredComponents[name]) {
         throw new Error(bbn._("%s is already registered", name));
       }
-      if (cp) { this.registeredComponents[name] = cp; }
-      else { throw new Error(bbn._("The component that should be registered as %s does not exist", name)); }
+      if (cp) {
+        this.registeredComponents[name] = cp;
+      } else {
+        throw new Error(
+          bbn._(
+            "The component that should be registered as %s does not exist",
+            name
+          )
+        );
+      }
     },
     /**
      * Summary: Unregisters a component by name.
@@ -487,9 +574,12 @@ const cpDef = {
      * @param {Boolean} ignore If true, suppress error
      */
     unregister(name, ignore) {
-      if (this.registeredComponents[name]) { delete this.registeredComponents[name]; }
-      else if (!ignore) {
-        throw new Error(bbn._("The component") + ' ' + name + ' ' + bbn._("is not registered"));
+      if (this.registeredComponents[name]) {
+        delete this.registeredComponents[name];
+      } else if (!ignore) {
+        throw new Error(
+          bbn._("The component") + " " + name + " " + bbn._("is not registered")
+        );
       }
     },
     /**
@@ -499,8 +589,12 @@ const cpDef = {
      * @return {Object|<any>}
      */
     getRegistered(name) {
-      if (this.registeredComponents[name]) { return this.registeredComponents[name]; }
-      if (name === undefined) { return this.registeredComponents; }
+      if (this.registeredComponents[name]) {
+        return this.registeredComponents[name];
+      }
+      if (name === undefined) {
+        return this.registeredComponents;
+      }
     },
     /**
      * Summary: Proxy to bbn.fn.getField for nested data access.
@@ -512,8 +606,10 @@ const cpDef = {
      * @method toggleDebug
      */
     toggleDebug() {
-      let debug = this.getRef('debug');
-      if (debug) { debug.toggle(); }
+      let debug = this.getRef("debug");
+      if (debug) {
+        debug.toggle();
+      }
     },
     /**
      * Summary: Retrieves or opens popup component.
@@ -522,8 +618,10 @@ const cpDef = {
      * @return {Object|<any>}
      */
     getPopup() {
-      let popup = this.popup || this.getRef('popup');
-      if (arguments.length) { return popup.open(...arguments); }
+      let popup = this.popup || this.getRef("popup");
+      if (arguments.length) {
+        return popup.open(...arguments);
+      }
       return popup;
     },
     /**
@@ -532,21 +630,27 @@ const cpDef = {
      * @param {Object} obj Popup configuration
      * @return {Promise}
      */
-    loadPopup(obj) { return this.getPopup().load.apply(this, arguments); },
+    loadPopup(obj) {
+      return this.getPopup().load.apply(this, arguments);
+    },
     /**
      * Summary: Retrieves username by user id.
      * @method getUserName
      * @param {Number|String} id User identifier
      * @return {String} User name text
      */
-    getUserName: function (id) { return bbn.fn.getField(this.users, "text", "value", id); },
+    getUserName: function (id) {
+      return bbn.fn.getField(this.users, "text", "value", id);
+    },
     /**
      * Summary: Retrieves user's group id by user id.
      * @method getUserGroup
      * @param {Number|String} id User identifier
      * @return {any} Group id or undefined
      */
-    getUserGroup: function (id) { return bbn.fn.getField(this.users, "id_group", "value", id); },
+    getUserGroup: function (id) {
+      return bbn.fn.getField(this.users, "id_group", "value", id);
+    },
     /**
      * Summary: Returns active users ordered by name.
      * @method getActiveUsers
@@ -554,7 +658,11 @@ const cpDef = {
      */
     getActiveUsers() {
       if (bbn.fn.isArray(this.users)) {
-        return bbn.fn.order(this.users.filter(user => user.active), 'text', 'ASC');
+        return bbn.fn.order(
+          this.users.filter((user) => user.active),
+          "text",
+          "ASC"
+        );
       }
       return [];
     },
@@ -566,8 +674,10 @@ const cpDef = {
      * @param {Number} timeout Duration in seconds
      */
     notify(obj, type, timeout) {
-      let notification = this.getRegistered('notification');
-      if (notification) { return notification.show(obj, type, timeout); }
+      let notification = this.getRegistered("notification");
+      if (notification) {
+        return notification.show(obj, type, timeout);
+      }
       bbn.fn.log("NOTIFICATION: " + type, obj);
     },
     /**
@@ -576,74 +686,99 @@ const cpDef = {
      * @param {Object} obj
      * @param {Number} timeout
      */
-    error(obj, timeout) { return this.notify(obj, "error", timeout); },
+    error(obj, timeout) {
+      return this.notify(obj, "error", timeout);
+    },
     /**
      * Summary: Shortcut to show warning.
      * @method warning
      * @param {Object} obj
      * @param {Number} timeout
      */
-    warning(obj, timeout) { return this.notify(obj, "warning", timeout); },
+    warning(obj, timeout) {
+      return this.notify(obj, "warning", timeout);
+    },
     /**
      * Summary: Shortcut to show success.
      * @method success
      * @param {Object} obj
      * @param {Number} timeout
      */
-    success(obj, timeout) { return this.notify(obj, "success", timeout || 5); },
+    success(obj, timeout) {
+      return this.notify(obj, "success", timeout || 5);
+    },
     /**
      * Summary: Shortcut to show info.
      * @method info
      * @param {Object} obj
      * @param {Number} timeout
      */
-    info(obj, timeout) { return this.notify(obj, "info", timeout || 30); },
+    info(obj, timeout) {
+      return this.notify(obj, "info", timeout || 30);
+    },
     /**
      * Summary: Proxy to global confirm dialog.
      * @method confirm
      * @return {Promise}
      */
-    confirm() { let p = appui.getPopup(); return p.confirm.apply(p, arguments); },
+    confirm() {
+      let p = appui.getPopup();
+      return p.confirm.apply(p, arguments);
+    },
     /**
      * Summary: Proxy to global alert dialog.
      * @method alert
      * @return {Promise}
      */
-    alert() { let p = appui.getPopup(); return p.alert.apply(p, arguments); },
+    alert() {
+      let p = appui.getPopup();
+      return p.alert.apply(p, arguments);
+    },
     /**
      * Summary: Handles incoming service worker messages and emits events accordingly.
      * @method receive
      * @param {Object} message Service worker message payload
      */
     addShortcut(data) {
-      this.$emit('shortcut', data);
+      this.$emit("shortcut", data);
     },
     receive(message) {
-      this.$emit('received', message);
+      this.$emit("received", message);
       if (message.type !== undefined) {
         switch (message.type) {
-          case 'message':
-            if (!bbn.fn.numProperties(message.data)) { return; }
-            if (message.data.disconnected) { bbn.fn.log(["DISCONNECTED", message.data]); }
-            if (message.data.plugins && Object.keys(message.data.plugins).length) {
+          case "message":
+            if (!bbn.fn.numProperties(message.data)) {
+              return;
+            }
+            if (message.data.disconnected) {
+              bbn.fn.log(["DISCONNECTED", message.data]);
+            }
+            if (
+              message.data.plugins &&
+              Object.keys(message.data.plugins).length
+            ) {
               bbn.fn.iterate(message.data.plugins, (d, i) => {
-                if ('serviceWorkers' in d) {
-                  this.$set(this.pollerObject, i, bbn.fn.extend(true, this.pollerObject[i], d.serviceWorkers));
+                if ("serviceWorkers" in d) {
+                  this.$set(
+                    this.pollerObject,
+                    i,
+                    bbn.fn.extend(true, this.pollerObject[i], d.serviceWorkers)
+                  );
                   delete d.serviceWorkers;
                 }
                 this.$emit(i, message.type, d);
               });
             }
             break;
-          case 'log':
+          case "log":
             bbn.fn.log(message.data);
-            this.$emit('swlog', message.data);
+            this.$emit("swlog", message.data);
             break;
-          case 'messageFromChannel':
+          case "messageFromChannel":
             bbn.fn.log("messageFromChannel", message);
             this.$emit(message.channel, message.type, message.data);
             break;
-          case 'notificationClick':
+          case "notificationClick":
             bbn.fn.log("notificationClick", message.data);
             this.browserNotificationClick(message.data);
         }
@@ -656,7 +791,9 @@ const cpDef = {
      */
     poll(data) {
       if (this.pollable) {
-        if (!data) { data = { 'appui-core': { observers: this.observers } }; }
+        if (!data) {
+          data = { "appui-core": { observers: this.observers } };
+        }
         if (this._postMessage(bbn.fn.extendOut({}, data, this.pollerObject))) {
           this.observersCopy = bbn.fn.clone(this.observers);
         }
@@ -668,25 +805,45 @@ const cpDef = {
      * @return {Object} Container component or root
      */
     getCurrentContainer() {
-      let router = this.getRef('router'), container = router ? router.searchContainer(bbn.env.path, true) : false;
+      let router = this.getRef("router"),
+        container = router ? router.searchContainer(bbn.env.path, true) : false;
       return container || this;
     },
     /**
      * Summary: Blur handler for search bar.
      * @method searchBarBlur
      */
-    searchBarBlur() { setTimeout(() => { this.searchIsActive = false; }, 500); },
+    searchBarBlur() {
+      setTimeout(() => {
+        this.searchIsActive = false;
+      }, 500);
+    },
     /**
      * Summary: Global keydown listener for shortcuts.
      * @method onKeydown
      * @param {Event} e Keyboard event
      */
     onKeydown(e) {
-      if (this.longPressed) { e.preventDefault(); }
-      if (this.pressedKey) { this.pressedKey = false; }
-      if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && !this.isTouch) {
+      if (this.longPressed) {
+        e.preventDefault();
+      }
+      if (this.pressedKey) {
+        this.pressedKey = false;
+      }
+      if (
+        !e.metaKey &&
+        !e.ctrlKey &&
+        !e.shiftKey &&
+        !e.altKey &&
+        !this.isTouch
+      ) {
         let tag = e.target.tagName;
-        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag) || (tag === 'DIV' && e.target.isContentEditable)) { return; }
+        if (
+          ["INPUT", "TEXTAREA", "SELECT"].includes(tag) ||
+          (tag === "DIV" && e.target.isContentEditable)
+        ) {
+          return;
+        }
         this.pressedKey = e.key;
       }
     },
@@ -694,7 +851,10 @@ const cpDef = {
      * Summary: Removes long press listener.
      * @method removePressListener
      */
-    removePressListener() { this.longPressed = false; document.removeEventListener('keyup', this.removePressListener); },
+    removePressListener() {
+      this.longPressed = false;
+      document.removeEventListener("keyup", this.removePressListener);
+    },
     /**
      * Summary: Handles long key press shortcuts.
      * @method longPress
@@ -702,54 +862,85 @@ const cpDef = {
      */
     longPress(key) {
       this.longPressed = true;
-      document.addEventListener('keyup', this.removePressListener);
+      document.addEventListener("keyup", this.removePressListener);
       if (bbn.fn.isNumber(key)) {
-        let router = this.getRef('router');
-        if (key === '0') { if (router.isVisual) { router.visualShowAll = !router.visualShowAll; } return; }
+        let router = this.getRef("router");
+        if (key === "0") {
+          if (router.isVisual) {
+            router.visualShowAll = !router.visualShowAll;
+          }
+          return;
+        }
         let idx = parseInt(key);
         if (router.isVisual) {
           if (router.visualList[idx]) {
             idx = router.visualList[idx].idx;
-            this.getRef('router').activateIndex(idx);
+            this.getRef("router").activateIndex(idx);
           }
         } else {
           idx--;
-          if (router.isValidIndex(idx)) { this.getRef('router').activateIndex(idx); }
+          if (router.isValidIndex(idx)) {
+            this.getRef("router").activateIndex(idx);
+          }
         }
         return;
       }
       switch (key) {
-        case 'f': this.searchOn = true; break;
-        case 'b': this.showBookmarks = true; break;
-        case 'g':
-          let loadbar = this.getRef('loading'); if (loadbar) { loadbar.show(); } break;
-        case 'c':
-          let clipboard = this.getRegistered('clipboard'); if (clipboard) { clipboard.show(); } break;
-        case 'm':
-          let menu = this.getRegistered('menu'); if (menu) { menu.show(); } break;
-        case 'ArrowLeft': history.back(); break;
-        case 'ArrowRight': history.forward(); break;
+        case "f":
+          this.searchOn = true;
+          break;
+        case "b":
+          this.showBookmarks = true;
+          break;
+        case "g":
+          let loadbar = this.getRef("loading");
+          if (loadbar) {
+            loadbar.show();
+          }
+          break;
+        case "c":
+          let clipboard = this.getRegistered("clipboard");
+          if (clipboard) {
+            clipboard.show();
+          }
+          break;
+        case "m":
+          let menu = this.getRegistered("menu");
+          if (menu) {
+            menu.show();
+          }
+          break;
+        case "ArrowLeft":
+          history.back();
+          break;
+        case "ArrowRight":
+          history.forward();
+          break;
       }
     },
     /**
      * Summary: Emits load event on component.
      * @method onLoad
      */
-    onLoad() { this.$emit('load', ...arguments); },
+    onLoad() {
+      this.$emit("load", ...arguments);
+    },
     /**
      * Summary: Shows loading indicator with optional text.
      * @method startLoading
      * @param {String|Boolean} text Text or false to clear
      */
     startLoading(text) {
-      this.loadingText = text === false ? '' : text || bbn._('Loading');
+      this.loadingText = text === false ? "" : text || bbn._("Loading");
       this.isLoading = true;
     },
     /**
      * Summary: Hides loading indicator.
      * @method stopLoading
      */
-    stopLoading() { this.isLoading = false; }
+    stopLoading() {
+      this.isLoading = false;
+    },
   },
   /**
    * Summary: Set global default AJAX and routing handlers before creation.
@@ -758,23 +949,26 @@ const cpDef = {
   beforeCreate() {
     bbn.env.loadersHistory = this.loaders;
     bbn.fn.defaultAjaxErrorFunction = (jqXHR, textStatus, errorThrown) => {
-      if (window.appui?.status) {
-        this.$nextTick(() => { const loadBar = this.getRef('loading'); if (bbn.fn.isCp(loadBar)) { loadBar.$forceUpdate(); } });
-      }
       appui.error({ label: textStatus, content: errorThrown }, 4);
       return false;
     };
-    bbn.fn.defaultPreLinkFunction = url => { appui.route(url); return false; };
-    bbn.fn.defaultAlertFunction = ele => { let c = appui.getCurrentContainer(); c.alert.apply(c, arguments); };
-    bbn.fn.defaultStartLoadingFunction = () => {
-      if (window.appui?.status) {
-        this.$nextTick(() => { const loadBar = this.getRef('loading'); if (bbn.fn.isCp(loadBar)) { loadBar.$forceUpdate(); } });
-      }
+    bbn.fn.defaultPreLinkFunction = (url) => {
+      appui.route(url);
+      return false;
     };
+    bbn.fn.defaultAlertFunction = (ele) => {
+      let c = appui.getCurrentContainer();
+      c.alert.apply(c, arguments);
+    };
+    bbn.fn.defaultStartLoadingFunction = () => {};
     bbn.fn.defaultEndLoadingFunction = (url, timestamp, data, res) => {
-      if (res?.data && (bbn.fn.numProperties(res.data) === 1) && res.data.disconnected) { window.location.reload(); return; }
-      if (window.appui?.status) {
-        this.$nextTick(() => { const loadBar = this.getRef('loading'); if (bbn.fn.isCp(loadBar)) { loadBar.$forceUpdate(); } });
+      if (
+        res?.data &&
+        bbn.fn.numProperties(res.data) === 1 &&
+        res.data.disconnected
+      ) {
+        window.location.reload();
+        return;
       }
     };
   },
@@ -784,76 +978,177 @@ const cpDef = {
    */
   created() {
     if (window.appui) {
-      throw new Error("Impossible to have 2 bbn-appui components on a same page. bbn-appui is meant to hold a whole web app");
+      throw new Error(
+        "Impossible to have 2 bbn-appui components on a same page. bbn-appui is meant to hold a whole web app"
+      );
     }
     window.appui = this;
-    this.componentClass.push('bbn-resize-emitter', 'bbn-observer');
-    let preloaded = ['container', 'router', 'scroll', 'floater', 'popup'];
-    if (!this.single) { preloaded.push('pane', 'splitter', 'tabs', 'context', 'loadicon'); }
-    if (this.header) { preloaded.push('pane', 'splitter', 'search', 'fisheye'); }
-    if (this.plugins['appui-menu']) { preloaded.push('slider', 'tree', 'treemenu', 'menu', 'input', 'list', 'dropdown', 'checkbox', 'button'); }
-    if (this.plugins['appui-notification']) { preloaded.push('notification'); }
-    if (this.status) { preloaded.push('splitter', 'input', 'loadbar', 'checkbox', 'button'); if (this.chat) { preloaded.push('chat'); } }
-    if (this.clipboard) { preloaded.push('slider', 'clipboard'); }
+    this.componentClass.push("bbn-resize-emitter", "bbn-observer");
+    let preloaded = ["container", "router", "scroll", "floater", "popup"];
+    if (!this.single) {
+      preloaded.push("pane", "splitter", "tabs", "context", "loadicon");
+    }
+    if (this.header) {
+      preloaded.push("pane", "splitter", "search", "fisheye");
+    }
+    if (this.plugins["appui-menu"]) {
+      preloaded.push(
+        "slider",
+        "tree",
+        "treemenu",
+        "menu",
+        "input",
+        "list",
+        "dropdown",
+        "checkbox",
+        "button"
+      );
+    }
+    if (this.plugins["appui-notification"]) {
+      preloaded.push("notification");
+    }
+    if (this.status) {
+      preloaded.push("splitter", "input", "loadbar", "checkbox", "button");
+      if (this.chat) {
+        preloaded.push("chat");
+      }
+    }
+    if (this.clipboard) {
+      preloaded.push("slider", "clipboard");
+    }
     // Prefetch components
     // bbn.cp.fetchComponent(preloaded.map(c => 'bbn-'+c));
-    this.$on('focusin', () => this.isFocused = true);
-    this.$on('focusout', () => this.isFocused = false);
-    document.addEventListener('keydown', this.onKeydown);
-    document.addEventListener('keyup', () => { this.pressedKey = false; });
-    this.$on('messageToChannel', data => { this.messageChannel(this.primaryChannel, data); });
+    this.$on("focusin", () => (this.isFocused = true));
+    this.$on("focusout", () => (this.isFocused = false));
+    document.addEventListener("keydown", this.onKeydown);
+    document.addEventListener("keyup", () => {
+      this.pressedKey = false;
+    });
+    this.$on("messageToChannel", (data) => {
+      this.messageChannel(this.primaryChannel, data);
+    });
     // Event listeners for SW channels
-    this.$on('appui', (type, data) => { if (type === 'messageFromChannel') { this.messageFromChannel(data); } });
-    this.$on('appui-chat', (type, data) => { let chat = this.getRegistered('chat'); if (type === 'message' && bbn.cp.isComponent(chat)) { chat.receive(data); } if (type === 'messageFromChannel' && bbn.cp.isComponent(chat)) { chat.messageFromChannel(data); } });
-    this.$on('appui-core', (type, data) => { if (type === 'message' && data.observers) { bbn.fn.each(data.observers, obs => bbn.fn.each(bbn.fn.filter(this.observers, { id: obs.id }), o => this.observerEmit(obs.result, o))); } });
-    this.$on('appui-notification', (type, data) => { if (this.plugins['appui-notification'] && type === 'message') { let tray = this.getRegistered('appui-notification-tray'); if (bbn.cp.isComponent(tray) && bbn.fn.isFunction(tray.receive)) { tray.receive(data); } if ('browser' in data) { bbn.fn.each(data.browser, n => this.browserNotify(n.title, { body: bbn.fn.html2text(n.content), tag: n.id, timestamp: n.browser, requireInteraction: true })); } } });
-    this.$on('appui-cron', (type, data) => { if (type === 'message') { let cron = appui.getRegistered('appui-cron'); if (bbn.cp.isComponent(cron) && bbn.fn.isFunction(cron.receive)) { cron.receive(data); } } });
-    if (!this.pollerObject.token) { this.pollerObject.token = bbn.env.token; }
-    if (this.plugins['appui-chat']) { this.$set(this.pollerObject, 'appui-chat', { online: null, usersHash: false, chatsHash: false }); }
-    if (this.plugins['appui-notification']) { this.$set(this.pollerObject, 'appui-notification', { unreadHash: false }); }
+    this.$on("appui", (type, data) => {
+      if (type === "messageFromChannel") {
+        this.messageFromChannel(data);
+      }
+    });
+    this.$on("appui-chat", (type, data) => {
+      let chat = this.getRegistered("chat");
+      if (type === "message" && bbn.cp.isComponent(chat)) {
+        chat.receive(data);
+      }
+      if (type === "messageFromChannel" && bbn.cp.isComponent(chat)) {
+        chat.messageFromChannel(data);
+      }
+    });
+    this.$on("appui-core", (type, data) => {
+      if (type === "message" && data.observers) {
+        bbn.fn.each(data.observers, (obs) =>
+          bbn.fn.each(bbn.fn.filter(this.observers, { id: obs.id }), (o) =>
+            this.observerEmit(obs.result, o)
+          )
+        );
+      }
+    });
+    this.$on("appui-notification", (type, data) => {
+      if (this.plugins["appui-notification"] && type === "message") {
+        let tray = this.getRegistered("appui-notification-tray");
+        if (bbn.cp.isComponent(tray) && bbn.fn.isFunction(tray.receive)) {
+          tray.receive(data);
+        }
+        if ("browser" in data) {
+          bbn.fn.each(data.browser, (n) =>
+            this.browserNotify(n.title, {
+              body: bbn.fn.html2text(n.content),
+              tag: n.id,
+              timestamp: n.browser,
+              requireInteraction: true,
+            })
+          );
+        }
+      }
+    });
+    this.$on("appui-cron", (type, data) => {
+      if (type === "message") {
+        let cron = appui.getRegistered("appui-cron");
+        if (bbn.cp.isComponent(cron) && bbn.fn.isFunction(cron.receive)) {
+          cron.receive(data);
+        }
+      }
+    });
+    if (!this.pollerObject.token) {
+      this.pollerObject.token = bbn.env.token;
+    }
+    if (this.plugins["appui-chat"]) {
+      this.$set(this.pollerObject, "appui-chat", {
+        online: null,
+        usersHash: false,
+        chatsHash: false,
+      });
+    }
+    if (this.plugins["appui-notification"]) {
+      this.$set(this.pollerObject, "appui-notification", { unreadHash: false });
+    }
   },
   /**
    * Summary: Apply CSS classes before mounting.
    * @lifecycle beforeMount
    */
   beforeMount() {
-    this.componentClass.push('bbn-background-internal', this.scrollable ? 'bbn-overlay' : 'bbn-w-100');
-    if (this.isMobile) { this.componentClass.push('bbn-desktop'); }
+    this.componentClass.push(
+      "bbn-background-internal",
+      this.scrollable ? "bbn-overlay" : "bbn-w-100"
+    );
+    if (this.isMobile) {
+      this.componentClass.push("bbn-desktop");
+    }
   },
   /**
    * Summary: Setup component refs and service worker messaging after mount.
    * @lifecycle mounted
    */
   mounted() {
-    if (this.$refs.app) { this.app = this.$refs.app; }
+    if (this.$refs.app) {
+      this.app = this.$refs.app;
+    }
     this.ready = true;
-    setTimeout(() => {
-      setTimeout(() => {
-        if (navigator?.serviceWorker?.controller) {
-          navigator.serviceWorker.addEventListener('message', event => {
-            if (event.data?.data) {
-              this.receive(event.data);
-            }
-          });
-          this.poll();
-        }
-        this._postMessage({ type: 'initCompleted' });
-        this.registerChannel('appui', true);
-        if (this.plugins['appui-chat']) { this.registerChannel('appui-chat'); }
-        if (this.plugins['appui-notification']) { this.registerChannel('appui-notification'); this.browserNotificationURL = this.plugins['appui-notification']; this.browserNotificationSW = true; }
-      }, 1000);
-      this.onResize();
-      this.opacity = 1;
-    }, this.app?.header ? 250 : 50);
+    setTimeout(
+      () => {
+        setTimeout(() => {
+          if (navigator?.serviceWorker?.controller) {
+            navigator.serviceWorker.addEventListener("message", (event) => {
+              if (event.data?.data) {
+                this.receive(event.data);
+              }
+            });
+            this.poll();
+          }
+          this._postMessage({ type: "initCompleted" });
+          this.registerChannel("appui", true);
+          if (this.plugins["appui-chat"]) {
+            this.registerChannel("appui-chat");
+          }
+          if (this.plugins["appui-notification"]) {
+            this.registerChannel("appui-notification");
+            this.browserNotificationURL = this.plugins["appui-notification"];
+            this.browserNotificationSW = true;
+          }
+        }, 1000);
+        this.onResize();
+        this.opacity = 1;
+      },
+      this.app?.header ? 250 : 50
+    );
   },
   /**
    * Summary: Cleanup event listeners before destruction.
    * @lifecycle beforeDestroy
    */
   beforeDestroy() {
-    this.$off('appui-chat');
-    this.$off('appui-core');
-    this.$off('appui-notification');
+    this.$off("appui-chat");
+    this.$off("appui-core");
+    this.$off("appui-notification");
   },
   watch: {
     /**
@@ -862,7 +1157,12 @@ const cpDef = {
      */
     pressedKey(v) {
       clearTimeout(this.pressedTimeout);
-      if (v) { this.pressedTimeout = setTimeout(() => { this.longPress(v); this.pressedKey = false; }, 500); }
+      if (v) {
+        this.pressedTimeout = setTimeout(() => {
+          this.longPress(v);
+          this.pressedKey = false;
+        }, 500);
+      }
     },
     /**
      * Summary: Watches observers to debounce poll calls.
@@ -871,29 +1171,35 @@ const cpDef = {
     observers: {
       deep: true,
       handler() {
-        if (this.observerTimeout) { clearTimeout(this.observerTimeout); }
-        this.observerTimeout = setTimeout(() => { this.poll(); }, 1000);
-      }
+        if (this.observerTimeout) {
+          clearTimeout(this.observerTimeout);
+        }
+        this.observerTimeout = setTimeout(() => {
+          this.poll();
+        }, 1000);
+      },
     },
     /**
      * Summary: Resets loadingText when loading finishes.
      * @watch isLoading
      */
     isLoading(newVal) {
-      if (!newVal) { this.loadingText = bbn._('Loading'); }
-    }
-  }
+      if (!newVal) {
+        this.loadingText = bbn._("Loading");
+      }
+    },
+  },
 };
 
-import bbn from '@bbn/bbn';
-import cpHtml from './appui.html';
-import cpStyle from './appui.less';
-import cpLang from './_i18n/index.js';
+import bbn from "@bbn/bbn";
+import cpHtml from "./appui.html";
+import cpStyle from "./appui.less";
+import cpLang from "./_i18n/index.js";
 
 export default {
-  name: 'bbn-appui',
+  name: "bbn-appui",
   definition: cpDef,
   template: cpHtml,
   style: cpStyle,
-  lang: cpLang
+  lang: cpLang,
 };
