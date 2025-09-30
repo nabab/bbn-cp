@@ -378,6 +378,13 @@ const cpDef = {
           components: {}
         };
       }
+    },
+    /**
+     * The unique code of the dashboard.
+     * It is used to store the configuration of the dashboard in the database and in the local storage.
+     */
+    code: {
+      type: String
     }
   },
   data() {
