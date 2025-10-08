@@ -101,6 +101,7 @@ import bbnCpProgressbar from "./components/progressbar/progressbar.js";
 import bbnCpRadio from "./components/radio/radio.js";
 import bbnCpRadiobuttons from "./components/radiobuttons/radiobuttons.js";
 import bbnCpRange from "./components/range/range.js";
+import bbnCpRating from "./components/rating/rating.js";
 import bbnCpRouter from "./components/router/router.js";
 import bbnCpRouterConfig from "./components/router-config/router-config.js";
 import bbnCpRouterGroup from "./components/router-group/router-group.js";
@@ -219,6 +220,7 @@ bbn.cp.toDefine = [
   bbnCpRadio,
   bbnCpRadiobuttons,
   bbnCpRange,
+  bbnCpRating,
   bbnCpRouter,
   bbnCpRouterConfig,
   bbnCpRouterGroup,

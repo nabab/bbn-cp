@@ -1,0 +1,14 @@
+<div :class="[componentClass, 'bbn-iflex', {
+       'bbn-disabled': !!isDisabled
+     }]">
+  <bbn-icon bbn-for="n in score"
+            :key="n"
+            :content="icon"
+            @click="setValue(n)"
+            :class="{'bbn-p': !isDisabled && !readonly}"
+            @mouseover="isOver = n"
+            @mouseleave="isOver = null"
+            :style="{color: getColor(n)}"/>
+  <input type="hidden"
+         :value="value">
+</div>
