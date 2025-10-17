@@ -88,7 +88,10 @@ export default {
       //bbn.fn.log(["ON SHOW", this.isVisible, this.router?.selected, this.currentIndex, this.isLoaded, this.isLoading, this.ready]);
       this.$nextTick(() => {
         if (this.isVisible && this.router) {
-          if (!this.isLoaded && !this.isLoading) {
+          if (this.errorStatus) {
+
+          }
+          else if (!this.isLoaded && !this.isLoading) {
             this.loadView(this.currentCurrent)
           }
           else if (!this.ready) {
@@ -116,6 +119,9 @@ export default {
      * @emit update
     */
     async loadView(url, force, index) {
+      if (!this.router) {
+        throw new Error(bbn._("Impossible to load the view without a router"));
+      }
       if (!url) {
         throw new Error(bbn._("Impossible to get the view without an URL"));
       }
@@ -129,56 +135,91 @@ export default {
       //bbn.fn.warning("ROUTING " + url + ' / CURRENT: ' + this.router.currentURL + ' / FULL: ' + this.router.getFullCurrentURL() + ' / FINAL: ' + finalURL);
       this.isLoading = true;
       this.router.$emit('update', this.router.views);
-      this.router.$emit("load", url);
-      let dataObj = this.router.postBaseUrl ? { _bbn_baseURL: this.router.fullBaseURL } : {};
-      let response;
-      try {
-        response = await this.post(finalURL, dataObj);
+      const row = await this.router.db.select('routercache', ['response'], {url: (this.router.postBaseUrl ? this.router.fullBaseURL : '') + '|' + finalURL});
+      let d;
+      if (row?.response) {
+        d = JSON.parse(row.response);
+
+        this.isLoaded = true;
         this.isLoading = false;
       }
-      // Abort
-      catch (e) {
-        bbn.fn.warning("ABORTED")
-        this.isLoading = false;
-      }
-
-      if (response?.status === 200) {
-        const d = response.data;
-        if (!d || !bbn.fn.isObject(d)) {
-          this.errorStatus = {
-            status: 404,
-            statusText: bbn._('Not found'),
-          };
-          return;
+      else {
+        this.router.$emit("load", url);
+        let dataObj = this.router.postBaseUrl ? { _bbn_baseURL: this.router.fullBaseURL } : {};
+        let response;
+        try {
+          response = await bbn.fn.post(finalURL, dataObj);
+          this.isLoaded = true;
+          this.isLoading = false;
         }
-        //bbn.fn.log(["RESPONSE", d.url, d, dataObj, this.$el]);
-        let callRealInit = true;
-        if (!d.label && d.title) {
-          d.label = d.title;
-          delete d.title;
+        // Abort
+        catch (e) {
+          bbn.fn.log("ABORTED")
+          this.isLoaded = true;
+          this.isLoading = false;
         }
-
-        if (!d.label || (d.label === bbn._('Loading'))) {
-          let label = bbn._('Untitled');
-          let num = 0;
-          while (bbn.fn.search(this.router.views, a => a.label.indexOf(label) === 0) > -1) {
-            num++;
-            label = bbn._('Untitled') + ' ' + num;
+  
+        if (response?.status === 200) {
+          d = response.data;
+          if (!d || !bbn.fn.isObject(d)) {
+            this.errorStatus = {
+              status: 400,
+              statusText: bbn._('Invalid request'),
+            };
+            return;
           }
-
-          d.label = label;
+          if (!d.label && d.title) {
+            d.label = d.title;
+            delete d.title;
+          }
+  
+          if (!d.label || (d.label === bbn._('Loading'))) {
+            let label = bbn._('Untitled');
+            let num = 0;
+            while (bbn.fn.search(this.router.views, a => a.label.indexOf(label) === 0) > -1) {
+              num++;
+              label = bbn._('Untitled') + ' ' + num;
+            }
+  
+            d.label = label;
+          }
+          if (d.hash) {
+            const json = JSON.stringify(d);
+            await this.router.db.insert('routercache', {
+              url: (this.router.postBaseUrl ? this.router.fullBaseURL + '|' : '') + finalURL,
+              response: json,
+              hash: d.hash,
+              date: Date.now(),
+            });
+          }
         }
+        else {
+          this.errorStatus = response;
+        }
+      }
 
+      this.setView(d, finalURL);
+    },
+    setView(d, requestedURL) {
+      if (d) {
+        if (d.url && (requestedURL !== d.url)) {
+          const idx = this.router.search(d.url);
+          if (this.router.views[idx] && (idx !== this.currentIndex)) {
+            this.router.containers[this.router.views[idx].uid].setView(d);
+            this.router.activateIndex(idx);
+            this.$nextTick(() => this.router.removeItem(this.currentIndex, true));
+            return;
+          }
+        }
         this.currentTitle = d.label;
-
         const oldUrl = d.url;
         const oldCurrent = d.url;
-        d.url = this.router.parseURL(d.url || finalURL);
+        d.url = this.router.parseURL(d.url || requestedURL);
         if (d.url !== this.currentURL) {
           this.currentURL = d.url;
           this.router.updateBaseURL();
           if (!d.url) {
-            bbn.fn.log("OLD URL " + oldUrl, "OLD CUR " + oldCurrent, "NEW URL " + d.url, "NEW CUR " + finalURL);
+            bbn.fn.log("OLD URL " + oldUrl, "OLD CUR " + oldCurrent, "NEW URL " + d.url, "NEW CUR " + requestedURL);
             throw new Error(bbn._("Impossible to get the view without an URL (OLD URL: %s)", oldUrl));
           }
           //bbn.fn.log("CHANGING URL TO " + d.url + ' / ' + this.router.baseURL);
@@ -249,9 +290,6 @@ export default {
 
         this.isLoaded = true;
         this.init();
-      }
-      else {
-        this.errorStatus = response;
       }
     },
     selectionMounted() {
@@ -416,6 +454,7 @@ export default {
      */
     reload() {
       this.isLoaded = false;
+      this.errorStatus = false;
       this.$nextTick(() => this.loadView(this.currentCurrent, true));
     },
   },

@@ -693,12 +693,21 @@ export default {
     }
   },
   watch: {
+    errorStatus(v) {
+      if (v) {
+        this.currentTitle = bbn._('Error: %s', v.statusText);
+        this.currentIcon = 'nf nf-fa-warning';
+      }
+      else if (this.currentIcon === 'nf nf-fa-warning') {
+        this.currentIcon = null;
+      }
+    },
     /**
      * The source of the component.
      * @prop {Object|Function} source
      */
     source(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.source = v;
       }
     },
@@ -707,7 +716,7 @@ export default {
      * @prop {Object} options
      */
     options(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.options = v;
       }
     },
@@ -716,7 +725,7 @@ export default {
      * @prop {Boolean} [false] cached
      */
     cached(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.cached = v;
       }
     },
@@ -725,7 +734,7 @@ export default {
      * @prop {Boolean} [true] scrollable
      */
     scrollable(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.scrollable = v;
       }
     },
@@ -734,7 +743,7 @@ export default {
      * @prop component
      */
     component(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.component = v;
       }
     },
@@ -743,7 +752,7 @@ export default {
      * @prop {String|Boolean} icon
      */
     icon(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.icon = v;
       }
     },
@@ -752,7 +761,7 @@ export default {
      * @prop {Boolean} [false] notext
      */
     notext(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.notext = v;
       }
     },
@@ -761,7 +770,7 @@ export default {
      * @prop {String} [''] content
      */
     content(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.content = v;
       }
     },
@@ -770,7 +779,7 @@ export default {
      * @prop {Array|Function} menu
      */
     menu(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.menu = v;
       }
     },
@@ -779,7 +788,7 @@ export default {
      * @prop {String} fcolor
      */
     fcolor(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.fcolor = v;
       }
     },
@@ -788,7 +797,7 @@ export default {
      * @prop {String} bcolor
      */
     bcolor(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.bcolor = v;
       }
     },
@@ -797,7 +806,7 @@ export default {
      * @prop {String} [''] css
      */
     css(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.css = v;
       }
     },
@@ -805,7 +814,7 @@ export default {
      * @prop {String|Object} advert
      */
     advert(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.advert = v;
       }
     },
@@ -813,7 +822,7 @@ export default {
      * @prop {String} help
      */
     help(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.help = v;
       }
     },
@@ -821,7 +830,7 @@ export default {
      * @prop {Array} imessages
      */
     imessages(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.imessages = v;
       }
     },
@@ -829,7 +838,7 @@ export default {
      * @prop script
      */
     script(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.script = v;
       }
     },
@@ -838,7 +847,7 @@ export default {
      * @prop {Object} cfg
      */
     cfg(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.cfg = v;
       }
     },
@@ -846,7 +855,7 @@ export default {
      * @prop {Object} events
      */
     events(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.events = v;
       }
     },
@@ -855,7 +864,7 @@ export default {
      * @prop {Boolean} [false] disabled
      */
     disabled(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.disabled = v;
       }
     },
@@ -864,12 +873,12 @@ export default {
      * @prop {Boolean} [false] invisible
      */
     invisible(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.invisible = v;
       }
     },
     label(v) {
-      if (this.real) {
+      if (this.real && this.currentView) {
         this.currentView.label = v;
       }
     },

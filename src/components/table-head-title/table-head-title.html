@@ -14,7 +14,7 @@
     ]"
     :title="bbn.fn.html2text(source.flabel || source.label || source.field || ' ')">
   <a :name="'anchor-' + source.index"/>
-  <template bbn-if="!dead">
+  <template bbn-if="!currentDead">
     <div bbn-if="source.isSelection" :title="_('Check all')">
       <bbn-checkbox bbn-model="table.allRowsChecked"/>
     </div>

@@ -39,6 +39,7 @@ const cpDef = {
       observer: null,
       visible: null,
       ready: false,
+      currentDead: this.dead
     }
   },
   computed: {
@@ -56,6 +57,12 @@ const cpDef = {
   watch: {
     ready() {
       this.setReady();
+    },
+    dead(v) {
+      if (!v && this.currentDead) {
+        this.currentDead = false;
+        this.ready = true;
+      }
     }
   },
   mounted() {

@@ -1,10 +1,18 @@
 const _storage = {
+  getRaw(name){
+    return window.localStorage.getItem(name);
+  },
   get(name){
-    let tmp = window.localStorage.getItem(name);
-    if ( tmp ){
+    let tmp = this.getRaw(name);
+    if (tmp) {
       tmp = JSON.parse(tmp);
       return tmp.value;
     }
+
+    return undefined;
+  },
+  has(name) {
+    return !!this.getRaw(name);
   },
   set(name, value){
     return window.localStorage.setItem(name, JSON.stringify({
@@ -146,6 +154,9 @@ const localStorage = {
         return this._storage.remove(isFullName ? name : this._getStorageRealName(name))
       }
       return false;
+    },
+    initStorage() {
+
     }
   },
   /**

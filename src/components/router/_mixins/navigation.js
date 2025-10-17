@@ -2,6 +2,10 @@ import bbn from "@bbn/bbn";
 
 export default {
   props: {
+    defaultNavMode: {
+      type: String,
+      default: 'tabs'
+    },
     /**
      * Set it to true if you want to see the navigation bar (tabs, breadcrumb, or visual).
      * @prop {Boolean} [false] nav
@@ -271,7 +275,7 @@ export default {
     getDefaultURL() {
       let url;
       if (!this.routed) {
-        url = this.parseURL(bbn.env.path);
+        url = this.parseURL(window.location.pathname);
       }
 
       const row = bbn.fn.getRow(this.views, { selected: true });
@@ -284,7 +288,7 @@ export default {
       }
 
       if (!url) {
-        url = this.parseURL(bbn.env.path);
+        url = this.parseURL(window.location.pathname);
       }
 
       if (!url && this.parentContainer && (this.parentContainer.currentURL !== this.parentContainer.currentCurrent) && !this.parentContainer.currentCurrent.indexOf(this.parentContainer.currentURL)) {
@@ -452,8 +456,8 @@ export default {
           else if (url && !st && this.autoload) {
             //bbn.fn.log("ADDING NEW VIEW IN " + this.baseURL, url);
             //bbn.fn.log("NUM VIEWS 1: " + this.views.length)
-            const uid = await this.add({
-              url: url,
+            return await this.add({
+              url,
               label: bbn._('Loading'),
               load: true,
               loading: false,
@@ -808,6 +812,7 @@ export default {
           fullURL = '';
         }
       }
+
       return fullURL;
     },
     /**
@@ -895,19 +900,7 @@ export default {
             };
           }
 
-          // Opening the database for the visual mode multiview
-          if (!this.single && bbnRouter.db) {
-            bbn.db.open('bbn').then(r => {
-              this.db = r;
-              resolve();
-            }, err => {
-              bbn.fn.log("Connection error in router", err);
-              resolve();
-            });
-          }
-          else {
-            resolve();
-          }
+          resolve();
         }
       })
     },

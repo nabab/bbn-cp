@@ -27,6 +27,7 @@ export default class bbnConditionAttr extends bbnAttr
     }
 
     const allIfs = this.node.parent.items.filter(a => (a.conditionId === node.conditionId));
+
     const isOrigin = allIfs.filter(a => cp.$retrieveNode(a.id, node.hash)?.condition?.isConditionUpdating).length === 0;
     if (isOrigin) {
       this.#isConditionUpdating = true;
@@ -37,7 +38,7 @@ export default class bbnConditionAttr extends bbnAttr
         }
       }
 
-      bbn.cp.numTicks++;
+      //bbn.cp.numTicks++;
     }
 
     let conditionValue;

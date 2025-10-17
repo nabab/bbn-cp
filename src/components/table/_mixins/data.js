@@ -122,6 +122,7 @@ export default {
       this.editedRow = false;
       this.editedIndex = false;
       this.$forceUpdate();
+      this.visibleRows.splice(0, this.visibleRows.length);
       //bbn.fn.log('forceupdate4');
       return bbn.cp.mixins.list.methods.updateData.apply(this, [withoutOriginal]).then(() => {
         if (this.currentData?.length && this.selection && this.currentSelected.length && !this.uid) {

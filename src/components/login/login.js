@@ -348,7 +348,7 @@ const cpDef = {
               }
             });
           }
-        }, 1000);
+        }, 125);
         if (this.expires) {
           if (this.expires > 300000) {
             setTimeout(() => {

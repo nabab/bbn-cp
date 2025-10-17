@@ -29,7 +29,7 @@ export default function setData(cp, name, v) {
     
     v = cp.$treatValue(v, name);
     cp.$dataCfg[name].value = v;
-    propagateDependencyChanges(cp, name);
+    bbnData.propagateDependencyChanges(cp, name);
     updateWatcher(cp, name);
   }
 }

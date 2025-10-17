@@ -148,7 +148,7 @@
               </td>
             </tr>
             <!-- Rows -->
-            <template bbn-elseif="!i || true"
+            <template bbn-else
                       bbn-for="(d, i) in items">
               <!-- Group rows = start of a new group -->
               <bbn-table-row-group bbn-if="isGroupActive && (!i || (items[i-1].data[cols[group].field] !== d.data[cols[group].field]))"
@@ -157,20 +157,14 @@
                                    :group="group"
                                    :class="{'bbn-alt': i % 2}"
                                    ref="groupRows"/>
-              <bbn-table-row-full bbn-if="d.full"
-                                  :source="d"
-                                  :class="{'bbn-alt': i % 2}"
-                                  :key="d.index"
-                                  :index="i"
-                                  :ref="'row'+d.index"/>
-              <bbn-table-row bbn-else
-                             :source="d"
-                             bbn-show="!isGroupActive || isExpanded(d.data, d.index)"
-                             :key="d.index"
-                             :class="{'bbn-alt': i % 2}"
-                             :editing="editedRow === d.data"
-                             :index="i"
-                             :ref="'row'+d.index"/>
+              <component :is="d.full ? 'bbn-table-row-full' : 'bbn-table-row'"
+                         :source="d"
+                         :class="{'bbn-alt': i % 2}"
+                         :key="d.index"
+                         :index="i"
+                         :ref="'row' + d.index"
+                         bbn-show="d.full || !isGroupActive || isExpanded(d.data, d.index)"
+                         :editing="editedRow === d.data"/>
               <bbn-table-row-expansion bbn-if="expander && !isGroupActive && isExpanded(d.data, d.index)"
                                        :source="d"
                                        :index="i"

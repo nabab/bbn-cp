@@ -11,7 +11,7 @@
   <ul bbn-if="filteredData.length && ready"
       :class="[{'bbn-menulist': !!sourceItems, 'bbn-ul': !sourceItems}, mode]">
     <template bbn-for="(li, idx) in filteredData"
-              :key="uid || sourceValue ? li.data[uid || sourceValue] || idx : idx"
+              :key="uid ? li.data[uid] : (sourceValue && li.data[sourceValue] ? li.data[sourceValue] : idx)"
               bbn-if="!sourceVisible || li.data[sourceVisible]">
       <li bbn-if="groupable
             && li.data[sourceGroup]

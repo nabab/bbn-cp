@@ -408,7 +408,7 @@ export default class bbnComputed {
       this.#val = value;
 
       // Update the computed property's watcher and propagate any dependency changes
-      propagateDependencyChanges(this.#component, this.#name);
+      bbnData.propagateDependencyChanges(this.#component, this.#name);
       updateWatcher(this.#component, this.#name);
 
     }

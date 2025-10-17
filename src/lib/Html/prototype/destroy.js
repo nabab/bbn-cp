@@ -62,13 +62,15 @@ bbnProtoHtml.$destroy = function() {
     return;
   }
   //bbn.fn.log("DESTROYING: " + this.tagName + ' / ' + this.bbnCid);
-  this.$internal.nodeClean(true);
+  if (this.$internal) {
+    this.$internal.nodeClean(true);
+  }
+
   const hasDestroyEvent = this.bbnSchema.events?.['hook:destroyed'];
   const node = this.bbnSchema;
-  for (let i = 0; i < bbn.cp.queue.length; i++) {
+  for (let i = bbn.cp.queue.length - 1; i >= 0; i--) {
     if (bbn.cp.queue[i].component === this) {
       bbn.cp.queue.splice(i, 1);
-      i--;
     }
   }
 

@@ -1,0 +1,39 @@
+<div class="componentClass"
+     :style="currentStyle">
+  <div class="bbn-iblock bbn-lg">
+    <bbn-button :notext="true"
+                icon="nf nf-fa-bug"
+                :title="_('Toggle debugger')"
+                @click="toggle"/>
+  </div>
+  <bbn-floater v-if="isVisible"
+               :closable="true"
+               :label="_('Debugger for %s', origin.$options.name + ' ' + origin.$cid)"
+               :min-width="700"
+               :min-height="350"
+               :scrollable="true"
+               @close="isVisible = false">
+    <div class="bbn-padding">
+      <div class="bbn-w-100"
+           bbn-for="type in Object.keys(availableKeys)">
+        <div class="bbn-bold bbn-lg bbn-bottom-smargin">
+          {{ type }}
+        </div>
+        <bbn-checkbox bbn-for="idx in availableKeys[type]"
+                      class="bbn-right-smargin"
+                      :checked="selectedKeys.includes(idx)"
+                      @change="select(idx)"
+                      :label="idx"
+                      :scrollable="true"
+                      :required="true"
+                      :multiple="true"
+                      :nullable="false"/>
+      </div>
+      <div class="bbn-w-100 bbn-vsmargin">
+        <bbn-json-editor bbn-if="json"
+                        bbn-model="json"
+                        :height="200"/>
+      </div>
+    </div>
+  </bbn-floater>
+</div>

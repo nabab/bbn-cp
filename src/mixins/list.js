@@ -951,6 +951,19 @@ const list = {
     afterUpdate() {
       return true;
     },
+    addToData(obj, before = false) {
+      if (bbn.fn.isObject(obj)) {
+        let o = this.treatData([obj]);
+        o = o[0];
+        if (before) {
+          bbn.fn.each(this.currentData, a => a.index++);
+          this.currentData.unshift(o);
+        }
+        else {
+          this.currentData.push(o);
+        }
+      }
+    },
     getData() {
       let data = {
         limit: this.currentLimit,
@@ -1147,7 +1160,7 @@ const list = {
       if (this.currentData.length) {
         bbn.fn.each(this.currentData, (a, i) => {
           if (a.index !== i) {
-            this.$set(this.currentData[i], 'index', i);
+            this.currentData[i].index = i;
             //a.index = i;
           }
         });

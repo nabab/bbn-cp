@@ -45,7 +45,7 @@ const cpDef = {
             time: {},
             md5: {}            
           },
-          num: 2
+          num: 4
         });
       }
     }
@@ -180,7 +180,6 @@ const cpDef = {
       if (item) {
         let content = item.file || item.text;
         if (!title) {
-          bbn.fn.log("NO TITLE", item);
           title = item.text;
           if (!item.file && (title.length > 15)) {
             title = bbn.fn.sanitize(bbn.fn.substr(title, 0, 50)).substr(15);
@@ -212,7 +211,6 @@ const cpDef = {
       }
 
       const res = await this.db.update('clipboard', {pinned: unpin ? 0 : 1}, {uid});
-      bbn.fn.log("UPDATING", unpin, res, {pinned: unpin ? 0 : 1, uid})
       item.pinned = unpin ? 0 : 1;
       return res;
     },
@@ -353,7 +351,6 @@ const cpDef = {
         }
         else {
           const res = await this.db.insert('clipboard', ar[i]);
-          bbn.fn.log("INSERTED", res);
         }
 
         this.items.unshift(ar[i]);
@@ -445,7 +442,6 @@ const cpDef = {
       bbn.fn.getEventData(e).then(data => {
         this.add(data);
         this.updateSlider();
-        bbn.fn.log("DATA FROM " + type, data);
       });
       return true;
     },
@@ -484,7 +480,6 @@ const cpDef = {
      * @param {Object} e
      */
     onCopy(e) {
-      bbn.fn.log("COPYYING", e, e.clipboardData);
       if (e.clipboardData && this.isSetting && this.uid) {
         let item = this.getItem(this.uid);
         if (item) {

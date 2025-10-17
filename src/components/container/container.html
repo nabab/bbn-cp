@@ -6,6 +6,7 @@
   'bbn-background': true,
   'bbn-radius': router?.isVisual && visual,
   'bbn-lborder': (router?.isVisual && visual) || (router?.nav && !router?.parent),
+  'bbn-container-dirty': dirty
 }]"
       bbn-show="isTabSelected">
   <div class="bbn-container-full-screen bbn-flex-height bbn-background"
@@ -75,8 +76,24 @@
         }"
             bbn-show="currentSelected || !isMobile"
             ref="canvasSource">
+          <!-- If error showing status -->
+          <div bbn-if="isVisible && errorStatus"
+               class="bbn-overlay bbn-middle bbn-lg">
+            <div class="bbn-lpadding bbn-state-error bbn-block bbn-nowrap">
+              <h1 bbn-text="errorStatus.status"/>
+              <div bbn-text="url"/>
+              <div class="bbn-vlpadding bbn-b"
+                   bbn-text="errorStatus.statusText"/>
+              <div class="bbn-c">
+                <bbn-button @click="close"
+                            icon="nf nf-md-close_thick"
+                            :label="_('Close')"
+                            class="bbn-state-error"/>
+              </div>
+            </div>
+          </div>
           <!-- This is shown when it's ready -->
-          <bbn-scroll bbn-if="ready && isLoaded"
+          <bbn-scroll bbn-elseif="ready && isLoaded"
                       ref="scroll"
                       @ready="init"
                       :scrollable="scrollable && router?.scrollContent"
@@ -108,24 +125,8 @@
                       scoped="scoped"
                       bbn-html="currentCss"/>
           </bbn-scroll>
-          <!-- If error showing status -->
-          <div bbn-elseif="isVisible && errorStatus"
-               class="bbn-overlay bbn-middle bbn-lg">
-            <div class="bbn-lpadding bbn-state-error bbn-block bbn-nowrap">
-              <h1 bbn-text="errorStatus.status"/>
-              <div bbn-text="url"/>
-              <div class="bbn-vlpadding bbn-b"
-                   bbn-text="errorStatus.statusText"/>
-              <div class="bbn-c">
-                <bbn-button @click="close"
-                            icon="nf nf-md-close_thick"
-                            :label="_('Close')"
-                            class="bbn-state-error"/>
-              </div>
-            </div>
-          </div>
           <!-- If loading showing loader -->
-          <bbn-loader bbn-elseif="isVisible && (!ready || !isLoaded)"
+          <bbn-loader bbn-elseif="isVisible"
                       class="bbn-overlay bbn-middle"/>
           <!-- The container's popup, from which each floater will come -->
           <bbn-popup ref="popup"

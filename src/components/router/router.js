@@ -32,6 +32,23 @@ const cpDef = {
     let db = false;
     if (bbn.db && bbn.db.ok) {
       db = true;
+      if (!bbn.db._structures?.bbn?.routercache) {
+        bbn.db.add('bbn', 'routercache', {
+          keys: {
+            PRIMARY: {
+              columns: ['url'],
+              unique: true
+            }
+          },
+          fields: {
+            url: {},
+            response: {},
+            date: {}
+          },
+          num: 3
+        });
+      }
+
       if (!bbn.db._structures?.bbn?.containers) {
         bbn.db.add('bbn', 'containers', {
           keys: {
@@ -48,12 +65,13 @@ const cpDef = {
 
             }
           },
-          num: 1
+          num: 2
         });
       }
+
     }
     return {
-      db,
+      db: bbn.db,
       possibleOrientations: [
         {
           name: 'auto',
@@ -139,8 +157,11 @@ const cpDef = {
   /**
    * @event created
    */
-  created() {
+  async created() {
     this.componentClass.push('bbn-resize-emitter');
+    if (bbnRouter.db) {
+      this.db = await bbnRouter.db.open('bbn');
+    }
   },
   /**
    * @event mounted

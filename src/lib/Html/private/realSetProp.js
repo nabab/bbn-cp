@@ -34,7 +34,7 @@ export default function realSetProp(cp, name, value) {
   if (original !== value) {
     cp.$propsCfg[name].value = value;
     // Update any watchers that might be observing this property.
-    propagateDependencyChanges(cp, name);
+    bbnData.propagateDependencyChanges(cp, name);
     updateWatcher(cp, name);
   }
 }

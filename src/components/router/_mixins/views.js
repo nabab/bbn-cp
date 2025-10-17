@@ -258,9 +258,6 @@ export default {
       bbn.fn.each(tmp, this.add);
     },
 
-
-
-
     /**
      * Removes an element from the views
      * 

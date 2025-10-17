@@ -93,10 +93,6 @@ export default async function createApp(ele, obj) {
   delete schema.slots;
   const placeholder = document.createComment("bbn-component placeholder");
   const parent = ele.parentNode;
-  let cls = ele.style.cssText;
-  if (cls) {
-    cls = cls.trim();
-  }
 
   parent.replaceChild(placeholder, ele);
   bbn.fn.iterate(inlineTemplates, (tpl, tag) => {
@@ -137,9 +133,9 @@ export default async function createApp(ele, obj) {
       bbnMapped: false
     }
   );
-  if (cls) {
-    cp.style.cssText = cls;
-  }
+  bbn.fn.each(ele.getAttributeNames(), a => {
+    cp.setAttribute(a, ele.getAttribute(a));
+  })
 
   if (bbn.cp.toDefine?.length) {
     while (bbn.cp.toDefine?.length) {

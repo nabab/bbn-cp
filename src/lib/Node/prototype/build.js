@@ -43,12 +43,13 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
     }
   }
   else {
+    let is;
     if (this.attr?.is) {
-      this.attr.is.attrGetValue();
+      is = this.attr.is.attrGetValue();
     }
 
     const realTag = this.realTag;
-    let tag = this.tag === 'component' ? realTag : this.tag;
+    let tag = this.tag === 'component' ? (is && bbn.fn.isString(is) ? is : realTag) : this.tag;
     const isDiff = realTag !== tag;
     
     // Special handling for components and unknown components

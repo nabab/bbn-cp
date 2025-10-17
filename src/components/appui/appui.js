@@ -338,9 +338,13 @@ const cpDef = {
       isLoading: false,
       loadingText: bbn._("Loading"),
       registeredComponents: bbn.cp.immunizeValue(bbn.fn.createObject()),
+      online: bbn.env.online
     };
   },
   computed: {
+    db() {
+      return this.constructor.db;
+    },
     /**
      * Summary: Finds the group object for the current user.
      * @computed userGroup
@@ -949,7 +953,8 @@ const cpDef = {
   beforeCreate() {
     bbn.env.loadersHistory = this.loaders;
     bbn.fn.defaultAjaxErrorFunction = (jqXHR, textStatus, errorThrown) => {
-      appui.error({ label: textStatus, content: errorThrown }, 4);
+      appui.error(textStatus);
+      bbn.fn.log(errorThrown);
       return false;
     };
     bbn.fn.defaultPreLinkFunction = (url) => {
@@ -1016,6 +1021,12 @@ const cpDef = {
     if (this.clipboard) {
       preloaded.push("slider", "clipboard");
     }
+    window.addEventListener('online', () => {
+      this.online = true
+    });
+    window.addEventListener('offline', () => {
+      this.online = false
+    });
     // Prefetch components
     // bbn.cp.fetchComponent(preloaded.map(c => 'bbn-'+c));
     this.$on("focusin", () => (this.isFocused = true));

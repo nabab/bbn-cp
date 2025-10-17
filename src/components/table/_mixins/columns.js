@@ -50,7 +50,7 @@ export default {
       prevLastSentColumnVisible: null,
       lastColumnRebuild: 0,
       intersectionWidth: null,
-      columnRebuildDelay: 30,
+      columnRebuildDelay: 250,
       columnRebuildTimeout: null,
       tmpColumnVisible: 0,
       rowSizeObserver: null,
@@ -60,6 +60,7 @@ export default {
       scrollCurrentY: null,
       scrollXTimeout: 0,
       scrollYTimeout: 0,
+      visibleRows: [],
     }
   },
   computed: {
@@ -123,16 +124,17 @@ export default {
         return;
       }
 
-      this.isUpdatingShownCols = true;
       const now = bbn.fn.timestamp();
       if (this.lastColumnRebuild && (this.lastSentColumnVisible !== this.lastColumnVisible)) {
         this.lastSentColumnVisible = this.lastColumnVisible;
         this.columnRebuildTimeout = setTimeout(() => {
           this.updateShownCols();
         }, this.columnRebuildDelay);
+        return;
       }
 
       if ((this.lastColumnRebuild + this.columnRebuildDelay) < now) {
+        this.isUpdatingShownCols = true;
         if (!this.hasScrollX || this.groupable) {
           const shownCols = this.groupCols[1].cols.map((a, i) => i);
           this.lastColumnVisible = this.shownCols[this.shownCols.length - 1];
@@ -167,6 +169,9 @@ export default {
 
         this.shownCols = cols;
         this.lastColumnRebuild = bbn.fn.timestamp();
+        this.$nextTick(() => {
+          bbn.fn.each(this.visibleRows, r => r.updateSequences());
+        })
         bbn.fn.log(['updateShownCols', this.firstColumnVisible, this.lastColumnVisible, cols]);
       }
       else {
@@ -229,14 +234,14 @@ export default {
           let isFirst = this.firstColumnVisible === null;
           let firstVisible = null;
           let lastVisible = null;
-          
+
           entries.forEach(entry => {
             const isInit = entry.target.visible === null;
             // Going in
             if (entry.intersectionRatio > 0) {
               // Row
               if (scrollable && entry.target instanceof HTMLTableRowElement) {
-                entry.target.tmpReady = true;
+                entry.target.intersectionEnter();
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
@@ -268,7 +273,7 @@ export default {
             else {
               // Row
               if (scrollable && entry.target instanceof HTMLTableRowElement) {
-                entry.target.tmpReady = false;
+                entry.target.intersectionExit();
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
@@ -283,7 +288,7 @@ export default {
             this.groupCols[1].cols.slice(firstVisible, lastVisible + 1).forEach((c, i) => {
               pvW += c.realWidth;
             });
-            this.intersectionWidth = 3 * this.lastKnownWidth;
+            this.intersectionWidth = 300 + this.lastKnownWidth;
             this.firstColumnVisible = firstVisible;
             this.lastColumnVisible = lastVisible;
           }
@@ -314,11 +319,11 @@ export default {
             }
           }
 
+          bbn.fn.log("INTERSECTION", this.firstColumnVisible, this.lastColumnVisible, isLeft);
           this.scrollCurrentX = currentScrollX;
         }, {
           root: this.$refs.scroll.$refs.scrollContent,
-          threshold: 0.0,
-          rootMargin: '150%'
+          threshold: 0.0
         });
         this.rowSizeObserver = new ResizeObserver(entries => {
           for (const e of entries) {

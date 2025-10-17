@@ -652,7 +652,13 @@ const cpDef = {
                   return bbn._("No value");
                 }
 
-                return bbn.fn.getField(cp.componentOptions.source, cp.componentOptions.sourceText || 'text', {[cp.componentOptions.sourceValue]: cp.currentValue}) || bbn._("Not found");
+                if (cp.componentOptions?.source?.length) {
+                  if (bbn.fn.isPrimitive(cp.componentOptions.source[0])) {
+                    return cp.currentValue;
+                  }
+
+                  return bbn.fn.getField(cp.componentOptions.source, cp.componentOptions.sourceText || 'text', {[cp.componentOptions.sourceValue]: cp.currentValue}) || bbn._("Not found");
+                }
               }
 
               return this.currentValue;

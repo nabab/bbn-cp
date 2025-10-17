@@ -128,7 +128,7 @@ const cpDef = {
     },
     // Returns true if there are any unsaved views
     isDirty(){
-      return !!this.dirtyContainers.length;
+      return !!this.querySelectorAll('.bbn-container-dirty').length;
     }
   },
 
@@ -188,21 +188,6 @@ const cpDef = {
       })
     },
     
-    retrieveDirtyContainers(){
-    // Array of unsaved views
-      let r = []
-      bbn.fn.iterate(this.urls, v => {
-        if ( v.dirty ){
-          r.push({
-            idx: v.idx,
-            url: v.url
-          });
-        }
-      });
-      this.dirtyContainers = r;
-      this.dirty = this.dirtyContainers.length > 0;
-    },
-
     /**
      * Given a URL returns the existing path of a corresponding view or false, or the default view if forced
      *

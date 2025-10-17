@@ -76,6 +76,9 @@ const cpDef = {
         if (this.resizable) {
           st.resize = bbn.fn.isString(this.resizable) ? this.resizable : 'both';
         }
+        else if (!this.currentHeight) {
+          st.minHeight = '100%';
+        }
         if (this.currentHeight) {
           st.height = this.currentHeight + 'px';
         }

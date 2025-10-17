@@ -18,6 +18,7 @@ export default {
       table: this.closest('bbn-table'),
       to: null,
       rowHeight: null,
+      intersectionTimeout: null,
     };
 
     return o;
@@ -79,8 +80,29 @@ export default {
     },
   },
   methods: {
+    intersectionEnter() {
+      clearTimeout(this.intersectionTimeout);
+      this.intersectionTimeout = setTimeout(() => {
+        this.table.visibleRows.push(this);
+        if (this.ready) {
+          this.updateSequences();
+        }
+        else {
+          this.setReady();
+        }
+      }, 250);
+
+    },
+    intersectionExit() {
+      clearTimeout(this.intersectionTimeout);
+      const idx = this.table.visibleRows.indexOf(this);
+      if (idx > -1) {
+        this.table.visibleRows.splice(idx, 1);
+      }
+    },
     setReady() {
-      let ready = this.table.$refs.scroll.isYInScroll(this.$el, this.table.clientHeight);
+      let ready = this.table.$refs.scroll.isYInScroll(this.$el, 0);
+      bbn.fn.log("SETTING FROM SETREADY : " + ready);
       if (ready !== this.ready) {
         this.ready = ready;
       }
@@ -101,7 +123,7 @@ export default {
       this.ready = true;
     }
     else {
-      this.setReady();
+      setTimeout(() => this.setReady(), 50);
     }
 
     if (this.table.scrollIntersection) {

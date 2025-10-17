@@ -116,7 +116,7 @@
   --secondary-border: #53798f;
   --tertiary-border: #829766;
   --button-text: #fff;
-  --line-height: 1.25;
+  --line-height: 1.7rem;
   --header-background: #2e2e2e;
   --hover-text: #2e2e2e;
   --hover-border: #38d2a8;
@@ -143,7 +143,7 @@
   --error-background: #fff;
   --error-border: #db3340;
   --header-alt-text: #fff;
-  --line-height-mobile: 2;
+  --line-height-mobile: 2rem;
   --header-alt-background: #fff;
   --success-alt-text: #00a03e;
   --success-atl-background: #fff;
@@ -5236,7 +5236,7 @@ button,
   padding: 0.1rem 0.25rem;
   box-sizing: border-box;
   background-color: transparent;
-  min-height: 100%;
+  min-height: max(100%, 1.7rem);
 }
 input[type=checkbox].bbn-checkbox,
 input[type=radio].bbn-radio {

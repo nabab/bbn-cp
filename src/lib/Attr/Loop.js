@@ -153,21 +153,20 @@ export default class bbnLoopAttr extends bbnAttr
           }
         }
       });
-      bbn.fn.fori(this.list, (a, i) => {
+      bbn.fn.each(this.list, a => {
         if (oldList.indexOf(a) === -1) {
-          copy.splice(i, 0, a);
+          copy.push(a);
         }
       });
       const testArray1 = copy.slice();
       const testArray2 = this.list.slice();
-      if (JSON.stringify(testArray1) !== JSON.stringify(testArray2)) {
+
+      if ((testArray1.length === testArray2.length) && (JSON.stringify(testArray1) !== JSON.stringify(testArray2))) {
         testArray1.sort();
         testArray2.sort();
         if (JSON.stringify(testArray1) === JSON.stringify(testArray2)) {
-          const moves = [];
-          moves.push(...bbn.fn.getSortingMoves(copy, this.list));
+          const moves = [...bbn.fn.getSortingMoves(copy, this.list)];
           if (moves.length) {
-            bbn.fn.log("MOVES", moves);
             moves.forEach(a => {
               const source = cp.$retrieveElement(node.id, a.value);
               let target = this.list[a.to+1];

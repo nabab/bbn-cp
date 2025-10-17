@@ -293,15 +293,12 @@ const cpDef = {
         this.router = this.getRef('router');
         this.form = this.getRef('form');
         setTimeout(() => {
-          this.router.route(this.router.getDefaultURL(), true);
+          this.router.route(this.router.getDefaultURL());
         }, 100)
       },
       onReset() {
         this.unsetStorage();
         this.$emit('reset');
-      },
-      focusout(e){
-        bbn.fn.log("FOCUSING OUT")
       },
       leaveBefore(e){
         if (this.hasPrev) {
@@ -335,6 +332,7 @@ const cpDef = {
 import cpHtml from './multipart.html';
 import cpStyle from './multipart.less';
 import cpLang from './_i18n/index.js';
+import bbn from '@bbn/bbn';
 
 export default {
   name: 'bbn-multipart',

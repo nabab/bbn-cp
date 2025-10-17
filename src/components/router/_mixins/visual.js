@@ -5,8 +5,7 @@ export default {
      * @prop {Boolean} [false] visual
      */
     visual: {
-      type: Boolean,
-      default: false
+      type: Boolean
     },
     /**
      * The position of the visual mini containers

@@ -21,7 +21,7 @@ bbnNode.prototype.nodeMove = function(element) {
   while (n) {
     const next = n.nextSibling;
     if (cur === next) {
-      bbn.fn.log("It's already in place", next, element);
+      //bbn.fn.log("It's already in place", next, element);
       return;
     }
     if (n instanceof HTMLElement) {

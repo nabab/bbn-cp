@@ -346,6 +346,9 @@ export default class bbnNode
         if (bbn.fn.isObject(tag)) {
           tag = tag.tag || tag.name || 'bbn-anon';
         }
+        else if (tag && bbn.cp.tagAliases[tag]) {
+          tag = bbn.cp.tagAliases[tag];
+        }
       }
 
       return tag;

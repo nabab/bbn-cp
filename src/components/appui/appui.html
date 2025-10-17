@@ -63,6 +63,7 @@
                   :scrollable="isMobile"
                   :collapsible="true"
                   :master="true"
+                  :default-nav-mode="splittable ? 'visual' : 'tabs'"
                   :url="!!nav ? undefined : url"
                   @beforeroute="onBeforeRoute"
                   @route="onRoute"
@@ -102,6 +103,9 @@
       <div class="bbn-vmiddle bbn-appui-status"
            style="overflow: visible">
         <slot name="status"/>
+        <i :class="['nf bbn-right-smargin', {'nf-md-lan_connect bbn-green': online, 'nf-md-lan_disconnect bbn-red': !online}]"
+             style="width: 1.2rem; height: 1.2rem"
+             :title="online ? _('You are online') : _('You are offline')"/>
       </div>
     </div>
   </div>

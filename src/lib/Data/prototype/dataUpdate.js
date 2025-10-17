@@ -57,7 +57,7 @@ bbnData.prototype.dataUpdate = function(path) {
       }
     }
   });
-  propagateDependencyChanges(toPropagate);
+  bbnData.propagateDependencyChanges(toPropagate);
 
   impacted.forEach(it => {
     const bits = it.path.slice();
