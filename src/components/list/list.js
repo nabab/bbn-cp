@@ -168,6 +168,15 @@ const cpDef = {
       default: 'action'
     },
     /**
+     * The name of the property to be used as separator identifier.
+     * @prop {String} sourceSeparator
+     * @memberof listComponent
+     */
+    sourceSeparator: {
+      type: String,
+      default: 'separator'
+    },
+    /**
      * @prop {Boolean} [false] scrollHidden
      */
     scrollHidden: {

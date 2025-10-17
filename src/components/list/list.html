@@ -39,21 +39,23 @@
           @mouseenter="mouseenter($event, idx)"
           :ref="'li' + idx"
           :key="uid ? li.data[uid] : li.key"
-          @click.prevent.stop="select(idx)"
+          @click.prevent.stop="li.data[sourceSeparator] ? false : select(idx)"
           @touchstart.stop
           @touchend.stop
           @touchmove.stop
           @touchcancel.stop
           @mouseup.stop
           :class="{
-            'bbn-no-padding': !!component,
-            'bbn-state-default': reactive,
-            'bbn-disabled': !component && !!li.data && !!li.data.disabled,
-            'bbn-state-selected': isSelected(idx),
-            'bbn-state-hover': reactive && (overIdx === idx) && !isSelected(idx),
-            'bbn-alt': alternateBackground && (idx % 2)
+            'bbn-no-padding': !!component || !!li.data[sourceSeparator],
+            'bbn-state-default': reactive && !li.data[sourceSeparator],
+            'bbn-disabled': !component && !!li.data && !!li.data.disabled && !li.data[sourceSeparator],
+            'bbn-state-selected': isSelected(idx) && !li.data[sourceSeparator],
+            'bbn-state-hover': reactive && (overIdx === idx) && !isSelected(idx) && !li.data[sourceSeparator],
+            'bbn-alt': alternateBackground && (idx % 2) && !li.data[sourceSeparator]
           }">
-        <component bbn-if="currentComponent"
+        <hr bbn-if="li.data[sourceSeparator]"
+            class="bbn-hr bbn-list-separator">
+        <component bbn-else-if="currentComponent"
                    :is="currentComponent"
                    bbn-bind="componentOptions"
                    :source="li.data"
