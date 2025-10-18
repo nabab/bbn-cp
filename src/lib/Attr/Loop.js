@@ -4,6 +4,61 @@ import generateNode from "../Html/private/generateNode.js";
 import bbnData from "../Data.js";
 import setNodeRegion from "../../internals/setNodeRegion.js";
 
+const lisIndices = (arr) => { const n = arr.length, tails = [], prev = Array(n).fill(-1); for (let i = 0; i < n; i++) { let x = arr[i], lo = 0, hi = tails.length; while (lo < hi) { const mid = (lo + hi) >> 1; if (arr[tails[mid]] < x) lo = mid + 1; else hi = mid; } if (lo > 0) prev[i] = tails[lo - 1]; tails[lo] = i; } const res = []; for (let k = tails.length ? tails[tails.length - 1] : -1; k !== -1; k = prev[k]) res.push(k); return res.reverse(); };
+const getSortingMovesAnchored = function(src, dst) {
+  if (src.length !== dst.length) throw new Error("Lengths must match.");
+  const setDst = new Set(dst);
+  if (setDst.size !== dst.length) throw new Error("dst has duplicates.");
+  const setSrc = new Set(src);
+  if (setSrc.size !== src.length) throw new Error("src has duplicates.");
+  if (src.length !== setDst.size || Array.from(setSrc).some(v => !setDst.has(v))) {
+    throw new Error("Arrays must contain the same unique values.");
+  }
+
+  const posInDst = new Map(dst.map((v, i) => [v, i]));
+  const pos = src.map(v => posInDst.get(v));
+  const lisIdx = lisIndices(pos);
+  const keepSet = new Set(lisIdx.map(i => src[i])); // values we won't move
+
+  // For each dst index, what's the next kept value to the right?
+  const nextKeptAfterIdx = Array(dst.length).fill(-1);
+  for (let i = dst.length - 2; i >= 0; i--) {
+    nextKeptAfterIdx[i] = nextKeptAfterIdx[i + 1];
+    if (keepSet.has(dst[i + 1])) nextKeptAfterIdx[i] = i + 1;
+  }
+
+  // Simulate to decide the correct order of operations, but emit anchors.
+  const work = src.slice();
+  const indexOf = new Map(work.map((v, i) => [v, i]));
+  const plan = [];
+
+  for (let i = 0; i < dst.length; i++) {
+    const v = dst[i];
+    if (keepSet.has(v)) continue;
+
+    const from = indexOf.get(v);
+    const j = nextKeptAfterIdx[i];
+    const beforeValue = (j !== -1) ? dst[j] : null; // anchor by VALUE
+
+    // Compute actual 'to' only to keep the simulation coherent
+    const to = (j !== -1) ? indexOf.get(beforeValue) : work.length;
+    const adjustedTo = from < to ? to - 1 : to;
+
+    if (from !== adjustedTo) {
+      const [moved] = work.splice(from, 1);
+      work.splice(adjustedTo, 0, moved);
+
+      plan.push({ value: v, before: beforeValue });
+
+      // refresh indices
+      indexOf.clear();
+      for (let p = 0; p < work.length; p++) indexOf.set(work[p], p);
+    }
+  }
+
+  return plan;
+}
+
 /**
  * Takes care of the data reactivity for non primitive values.
  */
@@ -165,19 +220,21 @@ export default class bbnLoopAttr extends bbnAttr
         testArray1.sort();
         testArray2.sort();
         if (JSON.stringify(testArray1) === JSON.stringify(testArray2)) {
-          const moves = [...bbn.fn.getSortingMoves(copy, this.list)];
+          const moves = [...getSortingMovesAnchored(copy, this.list)];
           if (moves.length) {
-            moves.forEach(a => {
-              const source = cp.$retrieveElement(node.id, a.value);
-              let target = this.list[a.to+1];
+            const nodeByValue = new Map(this.list.map(v => [v, cp.$retrieveElement(node.id, v)]));
+            //bbn.fn.log(JSON.stringify(copy), JSON.stringify(this.list), JSON.stringify(moves));
+            moves.forEach(step => {
+              const source = nodeByValue.get(step.value);
+              const target = step.before ? nodeByValue.get(step.before) : null;
               if (target) {
-                const dest = cp.$retrieveElement(node.id, target);
-                source.bbnSchema.nodeMove(dest.bbnSchema._region.start);
+                source.bbnSchema.nodeMove(target.bbnSchema._region.start);
               }
               else {
                 source.bbnSchema.nodeMove(root.bbnSchema._region.end);
               }
             });
+            //bbn.fn.log(JSON.stringify(copy), '-------------');
           }
         }
         else {

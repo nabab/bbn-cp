@@ -284,11 +284,11 @@ export default {
 
           const max = this.groupCols[1].cols.length - 1;
           let pvW = 0;
+          let isDiff;
           if (isFirst) {
-            this.groupCols[1].cols.slice(firstVisible, lastVisible + 1).forEach((c, i) => {
-              pvW += c.realWidth;
-            });
-            this.intersectionWidth = 300 + this.lastKnownWidth;
+            isDiff = (this.firstColumnVisible !== firstVisible) || (this.lastColumnVisible !== lastVisible);
+            this.groupCols[1].cols.slice(firstVisible, lastVisible + 1).forEach(c => pvW += c.realWidth);
+            this.intersectionWidth = this.lastKnownWidth;
             this.firstColumnVisible = firstVisible;
             this.lastColumnVisible = lastVisible;
           }
@@ -299,6 +299,7 @@ export default {
                 if (i < 10) {
                   i = 0;
                 }
+                isDiff = (this.firstColumnVisible !== i) || (this.lastColumnVisible !== this.groupCols[1].cols[lastVisible] ? lastVisible : this.groupCols[1].cols.length - 1);
                 this.firstColumnVisible = i;
                 this.lastColumnVisible = this.groupCols[1].cols[lastVisible] ? lastVisible : this.groupCols[1].cols.length - 1;
                 break;
@@ -312,6 +313,7 @@ export default {
                 if (i > max - 10) {
                   i = max;
                 }
+                isDiff = (this.firstColumnVisible !== firstVisible) || (this.lastColumnVisible !== i);
                 this.firstColumnVisible = firstVisible > 0 ? firstVisible : 0;
                 this.lastColumnVisible = i;
                 break;
@@ -319,11 +321,16 @@ export default {
             }
           }
 
-          bbn.fn.log("INTERSECTION", this.firstColumnVisible, this.lastColumnVisible, isLeft);
+          if (isDiff) {
+            this.updateShownCols();
+          }
+          
+          //bbn.fn.log("INTERSECTION", this.firstColumnVisible, this.lastColumnVisible, isLeft);
           this.scrollCurrentX = currentScrollX;
         }, {
           root: this.$refs.scroll.$refs.scrollContent,
-          threshold: 0.0
+          delay: 100,
+          threshold: 0.0,
         });
         this.rowSizeObserver = new ResizeObserver(entries => {
           for (const e of entries) {
@@ -617,15 +624,6 @@ export default {
 
   },
   watch: {
-    lastColumnVisible(v) {
-      if (this.hasScrollX) {
-        const current = this.shownCols[this.shownCols.length - 1];
-        const cols = this.groupCols[1].cols;
-        if ((v === cols.length - 1) || !this.shownCols.length || !cols[current] || (Math.abs(cols[current].leftWidth - cols[v].leftWidth) > (bbn.env.width/3))) {
-          this.updateShownCols();
-        }
-      }
-    },
     columns() {
       bbn.fn.log("WATCH COLUMNS");
       if (this.ready) {

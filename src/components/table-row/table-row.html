@@ -115,7 +115,7 @@
       <template bbn-if="seq.visible">
         <component bbn-for="i in loopSequence(idx)"
                    key="i"
-                   bbn-if="idx || i"
+                   bbn-if="idx || i || table.groupCols[0].cols.length"
                    :is="getComponentType(i)"
                    :source="source.data"
                    :index="i"
