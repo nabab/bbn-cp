@@ -3,6 +3,7 @@ import cloneNode from "../Html/private/cloneNode.js";
 import generateNode from "../Html/private/generateNode.js";
 import bbnData from "../Data.js";
 import setNodeRegion from "../../internals/setNodeRegion.js";
+import data from "../../mixins/data.js";
 
 // LIS indices on `pos` (strictly increasing)
 const lisIndices = arr => {
@@ -152,7 +153,7 @@ export default class bbnLoopAttr extends bbnAttr
     // Construct a unique hash for each iteration based on loop values.
     const oHash = node.hash ? node.hash + '-' : '';
     const elements = [];
-    const datas = [];
+    const lst = [];
     const oldList = this.list.splice(0);
     let num = 0;
     let prevElement = null;
@@ -180,13 +181,14 @@ export default class bbnLoopAttr extends bbnAttr
         key = bbn.cp.hash(loopData);
       }
 
-      this.list.push(oHash + key);
-      datas.push(loopData);
+      lst.push({hash: oHash + key, key: j, data: loopData});
     }
 
-    for (let j in this.list) {
-      const hash = this.list[j];
-      const loopData = datas[j];
+    for (let x in lst) {
+      const hash = lst[x].hash;
+      this.list.push(hash);
+      const loopData = lst[x].data;
+      const j = lst[x].key;
       const currentNode = cp.$retrieveNode(node.id, hash);
       let ele = currentNode?.element;
       if (ele && !ele.parentNode) {

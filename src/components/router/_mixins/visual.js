@@ -43,6 +43,7 @@ export default {
        * @data {Boolean} lockedVisualOrientation
        */
       lockedVisualOrientation: false,
+      lockedTabsOrientation: false,
       /**
        * If true visual mode is used for nav (instead of tabs or breadcrumbs)
        * @data {Boolean} visual
@@ -116,7 +117,7 @@ export default {
             return 'column';
         }
       }
-      else if (!this.isVisual && !this.isBreadcrumb && this.isNav) {
+      else if (this.isTabs) {
         switch (this.tabsOrientation) {
           case 'right':
             return 'row-reverse';

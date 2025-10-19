@@ -3,7 +3,10 @@ import generateNode from "../../Html/private/generateNode.js";
 
 bbnNode.prototype.nodeConceive = function() {
   if (this.items?.length && (!this.comment || (!this.loop && (!this.condition || this.condition.value)))) {
-    let element;
+    if ((this.id === '0-0-1-1-0-0-0') && (this.component.$options.name === 'bbn-router')) {
+      debugger;
+    }
+
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i];
       let hash = this.hash;

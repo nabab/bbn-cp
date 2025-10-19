@@ -18,7 +18,7 @@ const getArgs = (attr, data, real) => {
     }
     catch(e) {
       // Log and rethrow any errors encountered during argument processing.
-      bbn.fn.log(["ERROR IN TREAT ARGUMENT", e, a, attr.node.component, attr, data]);
+      bbn.fn.log(["ERROR IN ALT TREAT ARGUMENT", e, a, attr.node.component, attr, data]);
       throw new Error(e.message + ' (' + bbn._("Expression") + ': ' + attr.exp + ')');
     }
 

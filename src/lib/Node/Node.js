@@ -315,9 +315,10 @@ export default class bbnNode
         }
       }
       //bbn.fn.log(["SET COMMENT", v, this.#comment, this.element, this.id, this]);
+
       this.#comment = !!v;
       if (this.numBuild) {
-        return this.nodeInit();
+        return this.nodeInit(this.next?._region?.start);
       }
     }
 

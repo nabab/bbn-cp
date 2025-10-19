@@ -226,8 +226,8 @@ const cpDef = {
         },
         set(v) {
           if (this.tabsOrientations[v]) {
-            this.router.lockedTabsOrientation = v !== 'auto'
-            this.router.tabsOrientation = v ===  'auto' ? 'top' : v;
+            this.router.lockedTabsOrientation = v !== 'auto';
+            this.router.tabsOrientation = v === 'auto' ? 'top' : v;
           }
         }
       }
