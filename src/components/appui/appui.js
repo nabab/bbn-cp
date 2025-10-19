@@ -234,7 +234,10 @@ const cpDef = {
      * @prop nav
      * @type <any>
      */
-    nav: {},
+    mode: {
+      type: String,
+      default: 'none'
+    },
     /**
      * Summary: Status bar component definition.
      * @prop status
@@ -296,7 +299,7 @@ const cpDef = {
     return {
       isFocused: false,
       intervalBugChrome: null,
-      mode: bbn.env.mode,
+      platform: bbn.env.mode,
       opacity: 0,
       pollerObject: { token: bbn.env.token || null },
       chatOnline: true,
@@ -404,13 +407,13 @@ const cpDef = {
      * @return String
      */
     appMode() {
-      if (this.mode === "dev") {
+      if (this.platform === "dev") {
         return bbn._("Application in development mode");
       }
-      if (this.mode === "prod") {
+      if (this.platform === "prod") {
         return bbn._("Application in production mode");
       }
-      if (this.mode === "test") {
+      if (this.platform === "test") {
         return bbn._("Application in testing mode");
       }
     },

@@ -100,7 +100,7 @@ const toggle = {
             this.$el.focus();
           }
         }
-        else if ( this.prevFocused && this.prevFocused.focus ){
+        else if (this.prevFocused && bbn.fn.isInside(bbn.env.focused, this) && this.prevFocused.focus ){
           this.prevFocused.focus();
         }
       }
@@ -110,7 +110,7 @@ const toggle = {
         if ( !this.hasBeenOpened ){
           this.hasBeenOpened = true;
         }
-        if ( bbn.env.focused && (bbn.env.focused !== this.prevFocused) ){
+        if (bbn.env.focused && (bbn.env.focused !== this.prevFocused) ){
           this.prevFocused = bbn.env.focused;
         }
       }

@@ -1,14 +1,6 @@
 export default {
   props: {
     /**
-     * Set it to true if you want to show the breadcrumb instead of the tabs.
-     * @prop {Boolean} [false] breadcrumb
-     */
-    breadcrumb: {
-      type: Boolean,
-      default: false
-    },
-    /**
      * Set it to true if you want to set this nav as a master.
      * @prop {Boolean} [false] master
      */
@@ -21,16 +13,6 @@ export default {
   data() {
     return {
       /**
-       * Shows if the navigation mode is set to breacrumb.
-       * @data {Boolean} isBreadcrumb
-       */
-      isBreadcrumb: !!this.breadcrumb,
-      /**
-       * itsMaster.isBreadcrumb watcher.
-       * @data {Boolean} breadcrumbWatcher
-       */
-      breadcrumbWatcher: false,
-      /**
        * List of breadcrumbs
        * @data {Array} breadcrumbsList
        */
@@ -38,6 +20,9 @@ export default {
     }
   },
   computed: {
+    isBreadcrumb() {
+      return this.currentMode === 'breadcrumb';
+    },
     /**
      * Returns the breadcrumbs array
      * @computed breadcrumbs
@@ -53,51 +38,36 @@ export default {
       }
       return res;
     },
-
-    /**
-     * The master bbn-router of this one.
-     * @computed itsMaster
-     * @return {HTMLElement}
-     */
-    itsMaster() {
-      let r = this;
-      if (this.master) {
-        return r;
-      }
-
-      if (this.parents.length) {
-        let i = 0;
-        while (this.parents[i] && this.parents[i].isBreadcrumb) {
-          r = this.parents[i];
-          i++;
-          if (r.master) {
-            break;
-          }
+    breadcrumbMaster() {
+      const routers = [this, ...this.parents];
+      let r = null;
+      for (let i = 0; i < routers.length; i++) {
+        if (routers[i].isBreadcrumb) {
+          r = routers[i];
         }
       }
+
       return r;
     },
-    isBreadcrumbMaster() {
-      if (this.isBreadcrumb) {
-        return this.itsMaster === this;
+    breadcrumbMasterElement() {
+      if (this.breadcrumbMaster && this.ready) {
+        return this.breadcrumbMaster.getRef('breadcrumb');
       }
 
-      return false;
+      return null;
     },
-    masterBreadcrumb() {
-      if (this.itsMaster && this.ready) {
-        return this.itsMaster.getRef('breadcrumb');
-      }
-    }
+    isBreadcrumbMaster() {
+      return this.isBreadcrumb && (this.breadcrumbMaster === this);
+    },
   },
   methods: {
     routerBreadcrumbDestroy() {
-      if (!this.single && this.nav && !this.master && this.parent) {
+      if (!this.single && this.isNav && !this.master && this.parent) {
         this.parent.unregisterBreadcrumb(this);
       }
     },
     breadcrumbInit() {
-      if (!this.single && this.nav) {
+      if (!this.single && this.isNav) {
         if (!this.master && this.parent && this.parentContainer && this.isBreadcrumb) {
           this.parent.registerBreadcrumb(this);
           bbn.fn.log("VIEW ON BREADCUMB")
@@ -120,10 +90,11 @@ export default {
      * @param {String} url
      */
     registerBreadcrumb(bc) {
-      let url = bbn.fn.substr(bc.baseURL, 0, bc.baseURL.length - 1);
-      this.breadcrumbsList.push(bc);
-      if (this.itsMaster && !this.master) {
-        this.itsMaster.breadcrumbsList.push(bc);
+      if (this.breadcrumbsList.indexOf(bc) === -1) {
+        this.breadcrumbsList.push(bc);
+        if (this.breadcrumbMaster && (this.breadcrumbMaster.breadcrumbsList.indexOf(bc) === -1) && (this.breadcrumbMaster !== this)) {
+          this.breadcrumbMaster.breadcrumbsList.push(bc);
+        }
       }
     },
 
@@ -139,10 +110,10 @@ export default {
         if (idx !== -1) {
           this.breadcrumbsList.splice(idx, 1);
         }
-        if (this.itsMaster && !this.master) {
-          idx = bbn.fn.search(this.itsMaster.breadcrumbsList, { baseURL: bc.baseURL });
+        if (this.breadcrumbMaster && (this.breadcrumbMaster !== this)) {
+          idx = bbn.fn.search(this.breadcrumbMaster.breadcrumbsList, { baseURL: bc.baseURL });
           if (idx !== -1) {
-            this.itsMaster.breadcrumbsList.splice(idx, 1);
+            this.breadcrumbMaster.breadcrumbsList.splice(idx, 1);
           }
         }
       }
@@ -163,26 +134,6 @@ export default {
 
   },
   watch: {
-    /**
-     * @watch itsMaster
-     * @fires breadcrumbWatcher
-     */
-    itsMaster(newVal, oldVal) {
-      if (this.nav && (newVal !== oldVal)) {
-        this.isBreadcrumb = newVal ? newVal.isBreadcrumb : this.breadcrumb;
-        if (this.breadcrumbWatcher) {
-          this.breadcrumbWatcher();
-        }
-        if (newVal) {
-          /**
-           * @watch itsMaster.isBreadcrumb
-           */
-          this.breadcrumbWatcher = this.$watch('itsMaster.isBreadcrumb', isB => {
-            this.isBreadcrumb = isB;
-          });
-        }
-      }
-    },
     breadcrumb(v) {
       this.changeConfig();
       this.isBreadcrumb = v;

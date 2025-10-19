@@ -1,5 +1,5 @@
 <div :class="[componentClass, 'bbn-background-internal', 'bbn-block', {'bbn-mobile': isMobile}]">
-  <bbn-router :nav="true"
+  <bbn-router mode="tabs"
               :url-navigation="false"
               :autoload="false"
               :visual="false"
@@ -127,8 +127,8 @@
         </div>
 
         <h2 bbn-text="_('Visual orientation')"
-            bbn-if="currentModeSelected === 'visual'"/>
-        <div bbn-if="currentModeSelected === 'visual'"
+            bbn-if="mode === 'visual'"/>
+        <div bbn-if="mode === 'visual'"
              class="bbn-router-config-orientation bbn-grid bbn-w-100">
           <div class="bbn-h-100"
               bbn-for="(ori, dir) in visualOrientations"
@@ -163,8 +163,8 @@
         </div>
 
         <h2 bbn-text="_('Tabs orientation')"
-            bbn-if="currentModeSelected === 'tabs'"/>
-        <div bbn-if="currentModeSelected === 'tabs'"
+            bbn-if="mode === 'tabs'"/>
+        <div bbn-if="mode === 'tabs'"
              class="bbn-router-config-orientation bbn-grid bbn-w-100">
           <div class="bbn-h-100"
               bbn-for="(ori, dir) in tabsOrientations"

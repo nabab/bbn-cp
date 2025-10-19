@@ -145,7 +145,7 @@ export default {
         source: null,
         label: bbn._("Untitled"),
         options: null,
-        cached: !this.single && this.nav,
+        cached: !this.single && this.isNav,
         scrollable: true,
         component: null,
         icon: '',
@@ -241,17 +241,20 @@ export default {
 
       if (storage && storage.mode) {
         if (storage.mode === 'visual') {
-          this.currentVisual = true;
+          this.currentMode = 'visual';
           if (storage.orientation) {
             this.visualOrientation = storage.orientation;
             this.lockedVisualOrientation = true;
           }
         }
         else if (storage.mode === 'breadcrumb') {
-          this.isBreadcrumb = true;
+          this.currentMode = 'breadcrumb';
         }
         else if (this.isMobile) {
-          this.currentVisual = true;
+          this.currentMode = 'visual';
+        }
+        else if (storage.mode === 'tabs') {
+          this.currentMode = 'tabs';
         }
       }
 

@@ -198,32 +198,10 @@ const cpDef = {
       },
       mode: {
         get() {
-          if (this.router.isVisual) {
-            return 'visual';
-          }
-          if (this.router.isBreadcrumb) {
-            return 'breadcrumb';
-          }
-          if (this.router.nav) {
-            return 'tabs';
-          }
-          return false;
+          return this.router.currentMode;
         },
         set(v) {
-          switch (v) {
-            case 'visual':
-              this.router.currentVisual = true;
-              this.router.isBreadcrumb = false;
-              break;
-            case 'breadcrumb':
-              this.router.isBreadcrumb = true;
-              this.router.currentVisual = false;
-              break;
-            default:
-              this.router.isBreadcrumb = false;
-              this.router.currentVisual = false;
-              break;
-          }
+          this.router.currentMode = v;
         }
       },
       guessedOrientation() {
@@ -257,16 +235,8 @@ const cpDef = {
 
     methods: {
       onSelect(mode, index) {
-        this.currentModeSelected = mode;
-        let v = this[mode + 'Selected'];
-        if (v !== undefined) {
-          if (v === index) {
-            this.mode = mode;
-          }
-          else {
-            this[mode + 'Selected'] = index;
-            this.visualShowAll = false;
-          }
+        if (this[mode]) {
+          this.mode = mode;
         }
       }
     },

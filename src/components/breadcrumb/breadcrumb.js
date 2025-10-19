@@ -65,12 +65,6 @@ const cpDef = {
       default: 20
     },
     /**
-     * @prop {Function} menu
-     */
-    menu: {
-      type: Function
-    },
-    /**
      * Set it to true if you want to set this breadcrumb as a master.
      * @prop {Boolean} [false] master
      */
@@ -119,7 +113,7 @@ const cpDef = {
     },
     /**
      * The master bbn-router of this breadcrumb.
-     * @computed itsMaster
+     * @computed router
      * @return {HTMLElement}
      */
     router(){
@@ -127,6 +121,9 @@ const cpDef = {
         return this.$parent;
       }
       return false;
+    },
+    isBreadcrumbMaster() {
+      return this.isBreadcrumb && (this.itsMaster === this);
     },
     /**
      * Returns the master bbn-breadcrumb of this one

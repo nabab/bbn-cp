@@ -22,15 +22,16 @@
                   'bbn-100': scrollContent,
                   'bbn-flex-height': scrollContent && !hasVerticalTabs && (!isVisual || !['left', 'right'].includes(visualOrientation)),
                   'bbn-flex-width': hasVerticalTabs || (isVisual && ['left', 'right'].includes(visualOrientation)),
-                  'bbn-router-nav': nav && !isVisual,
-                  'bbn-router-nav-bc': nav && isBreadcrumb && !itsMaster.isVisual,
+                  'bbn-router-nav': isNav && !isVisual,
+                  'bbn-router-nav-bc': !!breadcrumbMaster,
                   'bbn-router-nav-verticaltabs': hasVerticalTabs
                   }"
-           bbn-forget="!nav && !scrollContent"
+           bbn-forget="!isNav && !scrollContent"
            :style="{
               backgroundColor: parentContainer?.currentView?.bcolor || 'inherit',
               flexDirection: flexDirectionStyle
             }">
+        <!-- VISUAL MODE -->
         <bbn-scroll class="bbn-router-scroller"
                     axis="y"
                     :scrollable="visualShowAll"
@@ -146,7 +147,7 @@
           </div>
         </bbn-scroll>
         <!-- START OF BREADCRUMB -->
-        <div bbn-if="nav && isBreadcrumb && !itsMaster.isVisual"
+        <div bbn-if="isNav && breadcrumbMaster"
             ref="breadcrumb"
             :class="['bbn-router-breadcrumb', {'bbn-router-breadcrumb-master': master}]">
           <div bbn-if="isBreadcrumbMaster"
@@ -170,7 +171,7 @@
                               :class="['bbn-h-100', 'bbn-vmiddle', {
                                 'bbn-flex-fill': i === breadcrumbs.length - 1
                               }]"
-                              :attach="masterBreadcrumb"
+                              :attach="breadcrumbMasterElement"
                               :attach-width="true"
                               :autobind="false"
                               :style="{
@@ -240,7 +241,7 @@
         </div>
         <!-- END OF BREADCRUMB -->
         <!-- START OF TABS -->
-        <bbn-tabs bbn-elseif="nav && !isBreadcrumb && !isVisual && routed"
+        <bbn-tabs bbn-elseif="isNav && !isBreadcrumb && !isVisual && routed"
                   ref="tabs"
                   bbn-model="selectedTab"
                   @close="closeTab"
