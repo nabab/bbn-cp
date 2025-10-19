@@ -17,9 +17,13 @@ export default {
        */
       showRouterCfg: false,
       changingConfig: false,
+      currentMode: this.mode
     }
   },
   computed: {
+    isNav() {
+      return this.currentMode !== 'none';
+    },
     routerStorageName() {
       return this.parentContainer ? this.parentContainer.getFullURL() : this.storageName;
     }
@@ -93,4 +97,10 @@ export default {
       }
     }
   },
+  watch: {
+    mode(newVal) {
+      this.currentMode = newVal;
+      this.changeConfig();
+    }
+  }
 }

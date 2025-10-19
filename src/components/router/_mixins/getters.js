@@ -110,7 +110,7 @@ export default {
     */
     getList(idx) {
       let list = [],
-        parents = bbn.fn.map(idx && this.itsMaster && (this.baseURL !== this.itsMaster.baseURL) ?
+        parents = bbn.fn.map(idx && this.breadcrumbMaster && (this.baseURL !== this.breadcrumbMaster.baseURL) ?
           this.getParents() : [],
           p => {
             return {

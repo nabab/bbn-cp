@@ -1,13 +1,6 @@
 export default {
   props: {
     /**
-     * Set it to true if you want to see the visual navigation bar
-     * @prop {Boolean} [false] visual
-     */
-    visual: {
-      type: Boolean
-    },
-    /**
      * The position of the visual mini containers
      * @prop {Number} [180] visualSize
      */
@@ -54,7 +47,6 @@ export default {
        * If true visual mode is used for nav (instead of tabs or breadcrumbs)
        * @data {Boolean} visual
        */
-      currentVisual: this.visual,
       visualList: [],
       isOverThumb: false
     }
@@ -78,7 +70,7 @@ export default {
         ), this.maxVisualSize);
     },
     isVisual() {
-      return this.currentVisual && !this.parentContainer;
+      return this.currentMode === 'visual';
     },
     /**
      * The grid style for showing the router in visual mode
@@ -124,7 +116,7 @@ export default {
             return 'column';
         }
       }
-      else if (!this.isVisual && !this.isBreadcrumb && this.nav) {
+      else if (!this.isVisual && !this.isBreadcrumb && this.isNav) {
         switch (this.tabsOrientation) {
           case 'right':
             return 'row-reverse';

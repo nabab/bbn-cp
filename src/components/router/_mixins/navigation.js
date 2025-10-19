@@ -10,9 +10,9 @@ export default {
      * Set it to true if you want to see the navigation bar (tabs, breadcrumb, or visual).
      * @prop {Boolean} [false] nav
      */
-    nav: {
-      type: Boolean,
-      default: false
+    mode: {
+      type: String,
+      default: 'none'
     },
     /**
      * Routes automatically after mount.
@@ -620,7 +620,7 @@ export default {
 
         container.show();
         // Scrolling tabs
-        if (this.scrollable && this.nav && !this.breadcrumb && !this.isVisual) {
+        if (this.scrollable && this.isNav && !this.breadcrumb && !this.isVisual) {
           const scroll = this.getRef('horizontal-scroll');
           const tab = this.getRef('tab-' + container.currentView?.idx);
           if (scroll?.ready) {

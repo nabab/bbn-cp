@@ -21,8 +21,8 @@ export default {
      */
     getMenuFn(idx) {
       const view = bbn.fn.getRow(this.views, {idx});
-      if (!this.menu || !this.nav || !view || (view.menu === false)) {
-        //bbn.fn.log("NO MENU", idx, this.menu, this.nav, view, view?.menu)
+      if (!this.menu || !this.isNav || !view || (view.menu === false)) {
+        //bbn.fn.log("NO MENU", idx, this.menu, this.isNav, view, view?.menu)
         return [];
       }
 

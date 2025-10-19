@@ -68,7 +68,7 @@ export default {
           display: bbn.fn.getRow(this.router.visualList, 'uid', this.currentView.uid) ? 'block' : 'none'
         };
       }
-      else if (this.router?.nav && !this.parent) {
+      else if (this.router?.isNav && !this.parent) {
         return {
           borderColor: this.currentBcolor || null
         };
