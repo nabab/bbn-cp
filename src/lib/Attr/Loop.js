@@ -4,7 +4,23 @@ import generateNode from "../Html/private/generateNode.js";
 import bbnData from "../Data.js";
 import setNodeRegion from "../../internals/setNodeRegion.js";
 
-const lisIndices = (arr) => { const n = arr.length, tails = [], prev = Array(n).fill(-1); for (let i = 0; i < n; i++) { let x = arr[i], lo = 0, hi = tails.length; while (lo < hi) { const mid = (lo + hi) >> 1; if (arr[tails[mid]] < x) lo = mid + 1; else hi = mid; } if (lo > 0) prev[i] = tails[lo - 1]; tails[lo] = i; } const res = []; for (let k = tails.length ? tails[tails.length - 1] : -1; k !== -1; k = prev[k]) res.push(k); return res.reverse(); };
+// LIS indices on `pos` (strictly increasing)
+const lisIndices = arr => {
+  const n = arr.length, tails = [], prev = Array(n).fill(-1);
+  for (let i = 0; i < n; i++) {
+    let x = arr[i], lo = 0, hi = tails.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (arr[tails[mid]] < x) lo = mid + 1; else hi = mid;
+    }
+    if (lo > 0) prev[i] = tails[lo - 1];
+    tails[lo] = i;
+  }
+  const res = [];
+  for (let k = tails.length ? tails[tails.length - 1] : -1; k !== -1; k = prev[k]) res.push(k);
+  return res.reverse();
+};
+
 const getSortingMovesAnchored = function(src, dst) {
   if (src.length !== dst.length) throw new Error("Lengths must match.");
   const setDst = new Set(dst);
@@ -136,8 +152,10 @@ export default class bbnLoopAttr extends bbnAttr
     // Construct a unique hash for each iteration based on loop values.
     const oHash = node.hash ? node.hash + '-' : '';
     const elements = [];
+    const datas = [];
     const oldList = this.list.splice(0);
     let num = 0;
+    let prevElement = null;
     bbn.cp.loopLevel++;
     const defIndex = this.index || '__bbnDataIdx' + bbn.cp.loopLevel.toString();
 
@@ -162,9 +180,14 @@ export default class bbnLoopAttr extends bbnAttr
         key = bbn.cp.hash(loopData);
       }
 
-      let hash = oHash + key;
-      this.list.push(hash);
-      let currentNode = cp.$retrieveNode(node.id, hash);
+      this.list.push(oHash + key);
+      datas.push(loopData);
+    }
+
+    for (let j in this.list) {
+      const hash = this.list[j];
+      const loopData = datas[j];
+      const currentNode = cp.$retrieveNode(node.id, hash);
       let ele = currentNode?.element;
       if (ele && !ele.parentNode) {
         //bbn.fn.log(["ELEMENT NOT IN DOM", node.id, ele, hash]);
@@ -179,13 +202,21 @@ export default class bbnLoopAttr extends bbnAttr
 
       if (ele) {
         if (currentNode.data[this.item] !== loopData[this.item]) {
-          const data = currentNode.data[this.item]?.__bbnData;
           currentNode.data[this.item] = loopData[this.item];
         }
       }
       else {
         const newNode = currentNode || generateNode(cloneNode(cp, node.id), cp, node.parent, node, hash, hash, loopData);
-        ele = newNode.nodeInit(root.bbnSchema._region.end);
+        let nextElement = null;
+        if (this.list[j+1]) {
+          const nextNode = cp.$retrieveNode(node.id, this.list[j+1]);
+          if (nextNode) {
+            nextElement = nextNode.element;
+            oldList.splice(oldList.indexOf(this.list[j+1]), 0, hash);
+          }
+        }
+
+        ele = newNode.nodeInit(nextElement ? nextElement.bbnSchema._region.start : root.bbnSchema._region.end);
         newNode.loopNode = this;
       }
 
@@ -213,29 +244,23 @@ export default class bbnLoopAttr extends bbnAttr
           copy.push(a);
         }
       });
-      const testArray1 = copy.slice();
-      const testArray2 = this.list.slice();
 
-      if ((testArray1.length === testArray2.length) && (JSON.stringify(testArray1) !== JSON.stringify(testArray2))) {
-        testArray1.sort();
-        testArray2.sort();
-        if (JSON.stringify(testArray1) === JSON.stringify(testArray2)) {
-          const moves = [...getSortingMovesAnchored(copy, this.list)];
-          if (moves.length) {
-            const nodeByValue = new Map(this.list.map(v => [v, cp.$retrieveElement(node.id, v)]));
-            //bbn.fn.log(JSON.stringify(copy), JSON.stringify(this.list), JSON.stringify(moves));
-            moves.forEach(step => {
-              const source = nodeByValue.get(step.value);
-              const target = step.before ? nodeByValue.get(step.before) : null;
-              if (target) {
-                source.bbnSchema.nodeMove(target.bbnSchema._region.start);
-              }
-              else {
-                source.bbnSchema.nodeMove(root.bbnSchema._region.end);
-              }
-            });
-            //bbn.fn.log(JSON.stringify(copy), '-------------');
-          }
+      if (JSON.stringify(copy) !== JSON.stringify(this.list)) {
+        const moves = [...getSortingMovesAnchored(copy, this.list)];
+        if (moves.length) {
+          const nodeByValue = new Map(this.list.map(v => [v, cp.$retrieveElement(node.id, v)]));
+          //bbn.fn.log(JSON.stringify(copy), JSON.stringify(this.list), JSON.stringify(moves));
+          moves.forEach(step => {
+            const source = nodeByValue.get(step.value);
+            const target = step.before ? nodeByValue.get(step.before) : null;
+            if (target) {
+              source.bbnSchema.nodeMove(target.bbnSchema._region.start);
+            }
+            else {
+              source.bbnSchema.nodeMove(root.bbnSchema._region.end);
+            }
+          });
+          //bbn.fn.log(JSON.stringify(copy), '-------------');
         }
         else {
           //what to do

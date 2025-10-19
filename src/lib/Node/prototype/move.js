@@ -35,7 +35,7 @@ bbnNode.prototype.nodeMove = function(element) {
   }
 
   const nodes = Array.from(frag.childNodes);
-  bbn.fn.log(["Moving node", "Element", this.element, "to", cur]);
+  //bbn.fn.log(["Moving node", "Element", this.element, "to", cur]);
   cur.parentNode.insertBefore(frag, cur);
   nodes.forEach(n => {
     if (n instanceof HTMLElement) {

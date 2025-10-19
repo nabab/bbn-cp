@@ -102,7 +102,6 @@ export default {
     },
     setReady() {
       let ready = this.table.$refs.scroll.isYInScroll(this.$el, 0);
-      bbn.fn.log("SETTING FROM SETREADY : " + ready);
       if (ready !== this.ready) {
         this.ready = ready;
       }
