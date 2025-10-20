@@ -85,7 +85,9 @@ export default {
       this.intersectionTimeout = setTimeout(() => {
         this.table.visibleRows.push(this);
         if (this.ready) {
-          this.updateSequences();
+          if (this.$namespaces.updateSequences === 'method') {
+            this.updateSequences();
+          }
         }
         else {
           this.setReady();

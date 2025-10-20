@@ -170,7 +170,11 @@ export default {
         this.shownCols = cols;
         this.lastColumnRebuild = bbn.fn.timestamp();
         this.$nextTick(() => {
-          bbn.fn.each(this.visibleRows, r => r.updateSequences());
+          bbn.fn.each(this.visibleRows, r => {
+            if (r.$namespaces.updateSequences === 'method') {
+              r.updateSequences();
+            }
+          });
         })
         bbn.fn.log(['updateShownCols', this.firstColumnVisible, this.lastColumnVisible, cols]);
       }

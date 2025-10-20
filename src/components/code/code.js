@@ -27,6 +27,7 @@ import * as sql from "@codemirror/lang-sql";
 import * as python from "@codemirror/lang-python";
 import * as xml from "@codemirror/lang-xml";
 import * as yaml from "@codemirror/lang-yaml";
+import * as lspClient from "@codemirror/lsp-client";
 import * as theme from "thememirror";
 import { abbreviationTracker } from '@emmetio/codemirror6-plugin';
 
