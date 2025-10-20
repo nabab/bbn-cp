@@ -452,7 +452,7 @@ export default {
               closable: true,
               component: 'bbn-router-config',
               width: 800,
-              height: 500,
+              height: 600,
               componentOptions: {
                 router: this,
                 visual: !this.parent

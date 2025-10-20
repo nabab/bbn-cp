@@ -16,7 +16,6 @@ export default {
        * @data {Boolean} visual
        */
       showRouterCfg: false,
-      changingConfig: false,
       currentMode: this.mode
     }
   },
@@ -29,12 +28,6 @@ export default {
     }
   },
   methods: {
-    changeConfig() {
-      this.changingConfig = true;
-      setTimeout(() => {
-        this.changingConfig = false;
-      }, 1500);
-    },
     /**
      * @method setconfig
      * @fires setStorage
@@ -54,7 +47,7 @@ export default {
       let cfg = {
         baseURL: this.parentContainer ? this.parentContainer.currentURL : this.storageName,
         views: [],
-        mode: this.isVisual ? 'visual' : (this.isBreadcrumb ? 'breadcrumb' : 'tabs'),
+        mode: this.currentMode,
         orientation: this.isVisual ? (this.lockedVisualOrientation ? this.visualOrientation : 'auto') : (!this.isBreadcrumb ? this.tabsOrientation : 'top'),
         panes: this.currentPanes.map(a => { return { id: a.id, tabs: a.tabs.map(b => b.url), selected: a.selected } })
       };
@@ -100,7 +93,11 @@ export default {
   watch: {
     mode(newVal) {
       this.currentMode = newVal;
-      this.changeConfig();
+    },
+    currentMode(newVal) {
+      if (this.ready) {
+        this.setConfig();
+      }
     }
   }
 }

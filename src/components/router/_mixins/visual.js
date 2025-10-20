@@ -360,6 +360,17 @@ export default {
     },
     visualOrientation() {
       this.$nextTick(this.updateVisualList);
+      this.setConfig();
+    },
+    tabsOrientation() {
+      this.$nextTick(this.updateVisualList);
+      this.setConfig();
+    },
+    lockedVisualOrientation() {
+      this.setConfig();
+    },
+    lockedTabsOrientation() {
+      this.setConfig();
     },
     numVisuals() {
       this.onResize();
@@ -377,12 +388,10 @@ export default {
      */
     isVisual(v) {
       if (this.ready) {
-        this.changeConfig();
-        this.setConfig();
         this.$nextTick(() => {
           if (v) {
             this.setAutoOrientation();
-            this.$nextTick(this.updateVisualList);
+            this.updateVisualList();
           }
 
           this.$forceUpdate();

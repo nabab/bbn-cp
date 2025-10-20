@@ -134,10 +134,6 @@ export default {
 
   },
   watch: {
-    breadcrumb(v) {
-      this.changeConfig();
-      this.isBreadcrumb = v;
-    },
     /**
      * @watch isBreadcrumb
      * @fires setConfig

@@ -244,7 +244,7 @@ export default {
           this.currentMode = 'visual';
           if (storage.orientation) {
             this.visualOrientation = storage.orientation;
-            this.lockedVisualOrientation = true;
+            this.lockedVisualOrientation = storage.orientation !== 'auto';
           }
         }
         else if (storage.mode === 'breadcrumb') {
@@ -255,6 +255,10 @@ export default {
         }
         else if (storage.mode === 'tabs') {
           this.currentMode = 'tabs';
+          if (storage.orientation) {
+            this.tabsOrientation = storage.orientation;
+            this.lockedTabsOrientation = storage.orientation !== 'auto';
+          }
         }
       }
 
