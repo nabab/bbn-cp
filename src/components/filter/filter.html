@@ -22,7 +22,7 @@
                       bbn-model="currentLogic"
                       name="logic"
                       ref="logic"
-                      @change="$emit('change', {logic: currentLogic, conditions: conditions})"/>
+                      @change.stop="$emit('change', {logic: currentLogic, conditions: conditions})"/>
       </div>
       <div class="bbn-flex"
            :style="{
@@ -53,9 +53,9 @@
                       :fields="fields"
                       :conditions="condition.conditions"
                       :logic="condition.logic"
-                      @change="d => {condition.logic = d.logic}"
+                      @change.stop="d => d?.logic ? condition.logic = d.logic : null"
                       :num="num + 1"
-                      :idx="idx"
+                      :index="idx"
                       :multi="multi"/>
         </div>
       </div>
@@ -92,10 +92,10 @@
               <div bbn-if="columns.length > 1"
                    class="bbn-block bbn-filter-padding bbn-db-column">
                 <bbn-dropdown :source="columns"
-                                  bbn-model="currentField"
-                                  name="field[]"
-                                  :placeholder="_('Pick a field')"
-                                  ref="column"/>
+                              bbn-model="currentField"
+                              name="field[]"
+                              :placeholder="_('Pick a field')"
+                              ref="column"/>
               </div>
               <div bbn-elseif="field"
                    class="bbn-block bbn-filter-padding bbn-db-column bbn-right-sspace"
@@ -118,7 +118,8 @@
                            bbn-model="currentValue"
                            ref="value"
                            bbn-bind="currentComponentOptions"
-                           @keyup.enter="validate"/>
+                           @keyup.enter="validate"
+                           @change.stop/>
               </div>
             </div>
             <div class="bbn-flex bbn-filter-padding bbn-db-column">

@@ -299,13 +299,13 @@ const cpDef = {
       condition_text(cd){
         let st = '';
         if ( cd && cd.field ){
-          let index = bbn.fn.search(this.fields, {field: cd.field});
-          if ( index > -1 ){
-            let f = this.fields[index];
+          const f = bbn.fn.getRow(this.fields, {field: cd.field});
+          if (f){
+            let type = this.editorGetComponentOptions(f).type;
             st += '<strong>' +
               (f.flabel ? f.flabel : (f.label ? f.label : cd.field)) +
               '</strong> ' +
-              this.editorOperators[bbnFilter.get_operator_type(f)][cd.operator] +
+              this.editorOperators[type][cd.operator] +
               ' <em>';
             if ( cd.value ){
               if ( cd.value === true ){
@@ -747,6 +747,11 @@ const cpDef = {
                 this.currentComponent = o.component;
                 this.currentComponentOptions = o.componentOptions;
               }
+            }
+            else {
+              this.currentType = '';
+              this.currentComponent = false;
+              this.currentComponentOptions = {};
             }
           }
         }
