@@ -70,6 +70,9 @@
                 bbn-html="isNullable && !((value === '') || (value === nullValue)) ? _('Clear') : (placeholder || '')"
                 :disabled="!isNullable"
                 :selected="(value === '') || (value === nullValue)"/>
+        <option bbn-else
+                value=""
+                :selected="(value === '') || (value === nullValue)"/>
         <option bbn-for="d in filteredData"
                 :value="d.data[sourceValue]"
                 bbn-html="d.data[sourceText]"
