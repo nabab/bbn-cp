@@ -22,7 +22,7 @@ export default function setNodeRegion(node, after) {
     }
     const cp = node.component || node.parent?.component;
     let p;
-    if (after) {
+    if (after?.isConnected) {
       p = after.parentNode;
       if (after.bbnSchema) {
         after = after.bbnSchema._region.start;

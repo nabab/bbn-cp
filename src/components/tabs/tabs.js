@@ -133,8 +133,14 @@ const cpDef = {
        * @param {String} title
        * @return {String}
        */
-      cutTitle(title){
-        return bbn.fn.shorten(title, this.maxTitleLength)
+      cutTitle(title) {
+        if (title.length > this.maxTitleLength) {
+          const remain = (this.maxTitleLength - 3) % 2;
+          const parts = Math.floor((this.maxTitleLength - 3) / 2);
+          return bbn.fn.substr(title, 0, parts) + '...' + bbn.fn.substr(title, - (parts + remain));
+        }
+
+        return title;
       },
       /**
        * @method getFontColor
