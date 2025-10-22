@@ -617,25 +617,26 @@ const cpDef = {
     init() {
       if (!this.ready) {
         this.ready = true;
-        this.onResize(true);
         this.$nextTick(() => {
-          this.isResized = true;
-          this.updateButtonsInContainer();
-          this.$emit('resized', this);
-          const scroll = this.closest('bbn-scroll');
-          if (scroll) {
-            const onScroll = () => {
-              //bbn.fn.log("ON SCROLL", this.isVisible)
-              if (this.isVisible) {
-                this.onResize();
-              }
-            };
+          this.onResize();
+          this.$nextTick(() => {
+            this.isResized = true;
+            this.updateButtonsInContainer();
+            this.$emit('resized', this);
+            const scroll = this.closest('bbn-scroll');
+            if (scroll) {
+              const onScroll = () => {
+                if (this.isVisible) {
+                  this.onResize();
+                }
+              };
 
-            scroll.$on('scroll', onScroll);
-            this.$on('hook:beforeDestroy', () => {
-              scroll.$off('scroll', onScroll);
-            });
-          }
+              scroll.$on('scroll', onScroll);
+              this.$on('hook:beforeDestroy', () => {
+                scroll.$off('scroll', onScroll);
+              });
+            }
+          })
         })
       }
     },
@@ -851,10 +852,14 @@ const cpDef = {
         };
       }
     },
-    onResize(force) {
-      bbn.cp.mixins.resizer.methods.onResize.apply(this);
-      this._setMinMax();
-      this.updatePosition();
+    onResize() {
+      if (this.ready) {
+        this.keepCool(() => {
+          bbn.cp.mixins.resizer.methods.onResize.apply(this);
+          this._setMinMax();
+          this.updatePosition();
+        }, 'onresize', 100)
+      }
     },
     /**
      * Returns an object of numbers as width and height based on whatever unit given.
@@ -914,6 +919,7 @@ const cpDef = {
         return;
       }
 
+      //bbn.fn.log("Updating position of floater", this.$cid);
       let r = {
         x: {
           size: 'width',
@@ -947,13 +953,14 @@ const cpDef = {
       bbn.fn.iterate(r, (a, ax) => {
         let scroll = false;
         let size = this['lastKnown' + a.camel];
-        if (!size) {
+        if (!size || (size < 5)) {
           ok = false;
           return false;
         }
 
         let min = 0;
         if (this.element) {
+          //bbn.fn.log(["Element:", this.element, ax, size, this['lastKnownCt' + a.camel], coor[a.ideal], coor[a.nideal]]);
           // Fixed position
           if (!!this.position) {
             let isTop = this.position.startsWith('top') || (this.position === 'left') || (this.position === 'right'),
@@ -1338,51 +1345,8 @@ const cpDef = {
         this.init();
       }
     });
-    
-    /* Useful ?
-    let ancestors = this.ancestors('bbn-floater');
-    if (this.element) {
-      let ct = ancestors.length ? ancestors[ancestors.length-1] : this;
-      let scroll = ct.closest('bbn-scroll');
-      if (scroll) {
-        scroll.$once('scroll', () => {
-          this.close();
-        });
-      }
-    }
-    */
-  },
-  updated() {
-    /*
-    let d = this.oldData;
-    this.oldData = JSON.parse(JSON.stringify(this.$data));
-    if (d) {
-      bbn.fn.log(bbn.fn.diffObj(d, this.oldData));
-    }
-    */
   },
   watch: {
-    /*
-    lastKnownCtWidth() {
-      if (this.ready && !this.isResizing) {
-        this.keepCool(() => {
-          bbn.fn.log("ON CHANGE CT WIDTH");
-          this._setMinMax();
-          this.onResize();
-          this.updatePosition();
-        }, 'changeDimension', 20)
-      }
-    },
-    lastKnownCtHeight() {
-      if (this.ready && !this.isResizing) {
-        this.keepCool(() => {
-          bbn.fn.log("ON CHANGE CT HEIGHT");
-          this._setMinMax();
-          this.onResize();
-          this.updatePosition();
-        }, 'changeDimension', 20)
-      }
-    },
     /**
      * @watch left
      * @fires updatePosition
@@ -1412,42 +1376,12 @@ const cpDef = {
       this.updatePosition();
     },
     /**
-     * @watch source
-     * @fires updateData
-     * @todo This can trigger a bug if source is an object at the moment of the destruction
-     *
-    source: {
-      deep: true,
-      handler() {
-        if ( this.currentData.length ){
-          //this.updateData();
-        }
-      }
-    },
-    */
-    /**
-     * @watch filteredData
-     * @fires getRef
+     * @watch isVisible
+     * @fires init
      * @fires onResize
+     * @emit open
      */
-    /*
-    filteredData() {
-      if (this.ready) {
-        this.$nextTick(() => {
-          let sc = this.getRef('scroll');
-          if (sc) {
-            sc.initSize();
-          }
-          this.$nextTick(() => {
-            //bbn.fn.log("CHANGE FILTERED DATA");
-            this.onResize();
-          });
-        });
-      }
-    },
-    */
     isVisible(v) {
-      //bbn.fn.log("CHANGING VISIBILITY")
       if (v) {
         if (!this.ready) {
           this.init();
