@@ -1,6 +1,6 @@
 import bbnNode from "../Node.js";
 
-bbnNode.prototype.nodeMove = function(element) {
+bbnNode.prototype.nodeMove = function(element, after) {
   let cur = element;
   if (element === this.element) {
     bbn.fn.log("Can't move to itself");
@@ -36,7 +36,13 @@ bbnNode.prototype.nodeMove = function(element) {
 
   const nodes = Array.from(frag.childNodes);
   //bbn.fn.log(["Moving node", "Element", this.element, "to", cur]);
-  cur.parentNode.insertBefore(frag, cur);
+  if (after) {
+    cur.after(frag);
+  }
+  else {
+    cur.parentNode.insertBefore(frag, cur);
+  }
+
   nodes.forEach(n => {
     if (n instanceof HTMLElement) {
       n.classList.remove('bbn-is-moving');

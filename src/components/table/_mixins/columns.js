@@ -135,7 +135,7 @@ export default {
         return;
       }
 
-      if ((this.lastColumnRebuild + this.columnRebuildDelay) < now) {
+      this.columnRebuildTimeout = setTimeout(() => {
         this.isUpdatingShownCols = true;
         if (!this.hasScrollX || this.groupable) {
           const shownCols = this.groupCols[1].cols.map((a, i) => i);
@@ -181,18 +181,11 @@ export default {
                 r.updateSequences();
               }
             });
-            bbn.fn.log(['updateShownCols', this.firstColumnVisible, this.lastColumnVisible, cols]);
+            //bbn.fn.log(['updateShownCols', this.firstColumnVisible, this.lastColumnVisible, cols]);
           }
+          this.isUpdatingShownCols = false;
         })
-      }
-      else {
-        clearTimeout(this.columnRebuildTimeout);
-        this.columnRebuildTimeout = setTimeout(() => {
-          this.updateShownCols();
-        }, this.columnRebuildDelay);
-      }
-
-      this.isUpdatingShownCols = false;
+      });
     },
     updateScrollCurrentY() {
       if (this.$refs.scroll?.$refs) {
@@ -459,6 +452,10 @@ export default {
       let leftWidth = 0;
       const cols = bbn.fn.map(this.cols, (a, i) => {
         a = bbn.fn.clone(a);
+        if (!a.uid) {
+          a.uid = bbn.fn.randomString(10);
+        }
+
         a.realWidth = 0;
         if (!a.invisible && (!this.groupable || (this.group !== i))) {
           let minWidth = null;

@@ -124,9 +124,13 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
     this.nodeRemove(this.oldElement);
     this.oldElement = null;
   }
+  else if (after) {
+    after.after(this._region.start, this.element, this._region.end);
+  }
   // First time is done in a linear direction
   // @mirko test it!
   else {
+    //bbn.fn.log(["INSERTING", this.tag || 'TEXT', "AFTER", after, "IN", parent]);
     this._region.end.parentNode.insertBefore(this.element, this._region.end);
   }
 };

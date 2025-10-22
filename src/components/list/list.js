@@ -683,7 +683,7 @@ const cpDef = {
     source: {
       deep: true,
       handler(v, ov) {
-        bbn.fn.log(["CHANGE IN SOURCE", this, v, ov, bbn.fn.diffObj(v, ov)]);
+        //bbn.fn.log(["CHANGE IN SOURCE", this, v, ov, bbn.fn.diffObj(v, ov)]);
         if (this.isAutobind) {
           this.updateData();
         }

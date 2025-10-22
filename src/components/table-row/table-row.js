@@ -95,7 +95,7 @@ const cpDef = {
     loopSequence(i) {
       const start = this.sequences[i].start;
       const end = this.sequences[i].end;
-      return [...Array(end - start + 1)].map((_, i) => i + start);
+      return [...Array(end - start + 1)].map((_, i) => ({index: i + start, uid: this.table.groupCols[1].cols[i + start].uid}));
     },
     updateSequences() {
       if (!bbn.fn.isInViewport(this.$el)) {
