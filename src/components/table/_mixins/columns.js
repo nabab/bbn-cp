@@ -52,6 +52,7 @@ export default {
       intersectionWidth: null,
       columnRebuildDelay: 250,
       columnRebuildTimeout: null,
+      columnRebuildCancel: false,
       tmpColumnVisible: 0,
       rowSizeObserver: null,
       scrollIsMounted: false,
@@ -118,6 +119,7 @@ export default {
     updateShownCols() {
       clearTimeout(this.columnRebuildTimeout);
       if (this.isUpdatingShownCols) {
+        this.columnRebuildCancel = true;
         this.columnRebuildTimeout = setTimeout(() => {
           this.updateShownCols();
         }, this.columnRebuildDelay);
@@ -170,13 +172,18 @@ export default {
         this.shownCols = cols;
         this.lastColumnRebuild = bbn.fn.timestamp();
         this.$nextTick(() => {
-          bbn.fn.each(this.visibleRows, r => {
-            if (r.$namespaces.updateSequences === 'method') {
-              r.updateSequences();
-            }
-          });
+          if (this.columnRebuildCancel) {
+            this.columnRebuildCancel = false;
+          }
+          else {
+            bbn.fn.each(this.visibleRows, r => {
+              if (r.$namespaces.updateSequences === 'method') {
+                r.updateSequences();
+              }
+            });
+            bbn.fn.log(['updateShownCols', this.firstColumnVisible, this.lastColumnVisible, cols]);
+          }
         })
-        bbn.fn.log(['updateShownCols', this.firstColumnVisible, this.lastColumnVisible, cols]);
       }
       else {
         clearTimeout(this.columnRebuildTimeout);
