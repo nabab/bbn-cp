@@ -92,7 +92,7 @@ bbnNode.prototype.nodeClean = function(full) {
       if (hash) {
         for (let n in obj) {
           if ((n === hash) || !n.indexOf(hash + '-')) {
-            checkOwnDeps(obj[n]);
+            //checkOwnDeps(obj[n]);
             if (obj[n].element) {
               obj[n].nodeRemove(obj[n].element, true);
               res++;
@@ -104,7 +104,7 @@ bbnNode.prototype.nodeClean = function(full) {
         }
       }
       else if (obj instanceof bbnNode) {
-        checkOwnDeps(obj);
+        //checkOwnDeps(obj);
         if (obj.element) {
           obj.nodeRemove(obj.element, true);
           res++;
@@ -115,7 +115,7 @@ bbnNode.prototype.nodeClean = function(full) {
       }
       else {
         for (let n in obj) {
-          checkOwnDeps(obj[n]);
+          //checkOwnDeps(obj[n]);
           if (obj[n].element) {
             obj[n].nodeRemove(obj[n].element, true);
             res++;
