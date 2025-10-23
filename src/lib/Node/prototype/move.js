@@ -7,11 +7,6 @@ bbnNode.prototype.nodeMove = function(element, after) {
     return;
   }
 
-  // If the given elementis a node element, get its end region by default
-  if (element?.bbnSchema) {
-    cur = element.bbnSchema._region.end;
-  }
-
   if (!element.isConnected || !cur.isConnected) {
     bbn.fn.log("Element or region not connected", element, cur);
     return;

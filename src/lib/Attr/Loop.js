@@ -194,8 +194,18 @@ export default class bbnLoopAttr extends bbnAttr
 
       if (currentNode) {
         if (currentNode.data[defIndex] !== j) {
+          let oldIndex = currentNode.data[defIndex];
           currentNode.data[defIndex] = j;
+          if (prevElement) {
+            currentNode.nodeMove(prevElement.bbnSchema._region.end, true);
+            bbn.fn.move(oldList, oldList.indexOf(currentNode.hash), j);
+          }
+          else {
+            currentNode.nodeMove(root, true);
+            bbn.fn.move(oldList, oldList.indexOf(currentNode.hash), 0);
+          }
         }
+
         if (currentNode.data[this.item] !== loopData[this.item]) {
           currentNode.data[this.item] = loopData[this.item];
         }
@@ -245,6 +255,7 @@ export default class bbnLoopAttr extends bbnAttr
       bbn.fn.each(this.list, a => {
         if (oldList.indexOf(a) === -1) {
           copy.push(a);
+          bbn.fn.log("ADDING");
         }
       });
 
@@ -271,7 +282,7 @@ export default class bbnLoopAttr extends bbnAttr
         }
       }
     }
-    */
+      */
 
 
     bbn.cp.loopLevel--;
