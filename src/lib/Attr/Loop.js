@@ -194,7 +194,6 @@ export default class bbnLoopAttr extends bbnAttr
 
       if (currentNode) {
         if (currentNode.data[defIndex] !== j) {
-          let oldIndex = currentNode.data[defIndex];
           currentNode.data[defIndex] = j;
           if (prevElement) {
             currentNode.nodeMove(prevElement.bbnSchema._region.end, true);
@@ -225,7 +224,7 @@ export default class bbnLoopAttr extends bbnAttr
           oldList.unshift(hash);
         }
 
-        ele = newNode.nodeInit(prevElement ? prevElement.bbnSchema._region.end : root.bbnSchema._region.start);
+        ele = newNode.nodeInit(prevElement ? prevElement.bbnSchema._region.end : root);
         newNode.loopNode = this;
       }
 
