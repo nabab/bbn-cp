@@ -5,7 +5,7 @@ import onHook from "./onHook.js";
  * @returns 
  */
 export default function disconnected(cp) {
-  if (!cp.$isDestroyed && !cp.isConnected && cp.$isInit) {
+  if (!cp.$isDestroyed && !cp.isDestroying && !cp.isConnected && cp.$isInit) {
     if (cp.matches('.bbn-is-moving') || cp.closest('.bbn-is-moving')) {
       return;
     }
