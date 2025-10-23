@@ -114,7 +114,7 @@
               :key="seq.uid">
       <template bbn-if="seq.visible">
         <component bbn-for="groupCol in loopSequence(idx)"
-                   key="groupCol.uid"
+                   key="uid"
                    bbn-if="idx || groupCol.index || table.groupCols[0].cols.length"
                    :is="getComponentType(groupCol.index)"
                    :source="source.data"
