@@ -98,10 +98,6 @@ const cpDef = {
       return [...Array(end - start + 1)].map((_, i) => ({index: i + start, uid: this.table.groupCols[1].cols[i + start].uid}));
     },
     updateSequences() {
-      if (!bbn.fn.isInViewport(this.$el)) {
-        return;
-      }
-
       const first = this.table.firstColumnVisible;
       const last  = this.table.lastColumnVisible;
       if (!last) {

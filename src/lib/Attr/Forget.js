@@ -99,7 +99,7 @@ export default class bbnForgetAttr extends bbnAttr
                   }
                 }
                 if (node.element.$slotElements[it.bbnSchema?.attr?.slot?.value || 'default']) {
-                  node.element.$slotElements[it.bbnSchema?.attr?.slot?.value || 'default'].bbnSchema.nodeInit(true);
+                  node.element.$slotElements[it.bbnSchema?.attr?.slot?.value || 'default'].bbnSchema.nodeInit();
                 }
 
                 if (it.parentNode === parent) {
