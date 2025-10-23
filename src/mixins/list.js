@@ -1160,7 +1160,7 @@ const list = {
       if (this.currentData.length) {
         bbn.fn.each(this.currentData, (a, i) => {
           if (a.index !== i) {
-            this.currentData[i].index = i;
+            a.index = i;
             //a.index = i;
           }
         });

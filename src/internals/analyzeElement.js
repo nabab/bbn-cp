@@ -435,7 +435,9 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
           i--;
         }
       }
-      if (noSpaceTags.includes(childNodes[i].tagName.toLowerCase())) {
+      if (noSpaceTags.includes(childNodes[i].tagName.toLowerCase()) || (
+        bbn.cp.tagAliases[childNodes[i].tagName.toLowerCase()] && noSpaceTags.includes(bbn.cp.tagAliases[childNodes[i].tagName.toLowerCase()])
+      )) {
         hasNoSpaceTag = true;
       }
     }

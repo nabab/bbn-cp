@@ -161,14 +161,13 @@ export default class bbnLoopAttr extends bbnAttr
     const defIndex = this.index || '__bbnDataIdx' + bbn.cp.loopLevel.toString();
 
     for (let j in loopValue) {
-      if (from && (j < from)) {
-        continue;
-      }
-
       if (isArray) {
         j = parseInt(j);
+        if (from && (j < from)) {
+          continue;
+        }
       }
-      
+
       const loopData = {[this.item]: loopValue[j], [defIndex]: j};
       let key;
       if (node.attr?.key?.exp) {
@@ -181,6 +180,9 @@ export default class bbnLoopAttr extends bbnAttr
         key = bbn.cp.hash(loopData);
       }
 
+      if (key === undefined) {
+        debugger;
+      }
       const hash = oHash + key;
       this.list.push(hash);
       const currentNode = cp.$retrieveNode(node.id, hash);
@@ -239,10 +241,12 @@ export default class bbnLoopAttr extends bbnAttr
     }
 
 
-    /*
     if (oldList.length) {
       let copy = oldList.slice();
       bbn.fn.forir(oldList, (a, i) => {
+        if (!a) {
+          debugger;
+        }
         if (this.list.indexOf(a) === -1) {
           copy.splice(i, 1);
           const itemRemoved = cp.$retrieveNode(node.id, a);
@@ -251,6 +255,8 @@ export default class bbnLoopAttr extends bbnAttr
           }
         }
       });
+    }
+    /*
       bbn.fn.each(this.list, a => {
         if (oldList.indexOf(a) === -1) {
           copy.push(a);

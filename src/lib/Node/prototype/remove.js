@@ -10,7 +10,6 @@ const removeElement = function(res, ele, node) {
 
     if (!(ele instanceof Comment) && isComponent(ele) && !ele.$isDestroying) {
       onHook(ele, 'beforeDestroy');
-      ele.$isDestroying = true;
       if (ele.bbnSchema.events?.['hook:beforedestroy']) {
         const beforeDestroy = new Event('hook:beforedestroy');
         ele.bbnSchema.events['hook:beforedestroy'].handler.bind(ele.bbnComponent)(beforeDestroy);
@@ -29,6 +28,19 @@ const removeElement = function(res, ele, node) {
         ele.dispatchEvent(destroy);
       }
 
+      if (!node.isComponent && ele.tagName && node.attributes?.length) {
+        for (let i = 0; i < node.attributes.length; i++) {
+          if (node.attributes[i].constructor.name === 'bbnEventAttr') {
+            ele.removeEventListener(node.attributes[i].name, node.attributes[i].handler, node.attributes[i].cfg);
+          }
+    
+          if (node.attributes[i].constructor.name === 'bbnModelAttr') {
+            const eventName = node.attributes[i].modifiers.includes('lazy') ? 'change' : 'input';
+            ele.removeEventListener(eventName, node.attributes[i].handler);
+          }
+        }
+      }
+    
       if (node?.oldElement === ele) {
         node.oldElement = null;
       }
