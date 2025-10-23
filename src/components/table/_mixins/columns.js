@@ -552,7 +552,8 @@ export default {
           label: ' ',
           filterable: false,
           width: 40,
-          realWidth: 40
+          realWidth: 40,
+          uid: bbn.fn.randomString()
         };
         if (firstGroup === 0) {
           o.fixed = true;
@@ -568,7 +569,8 @@ export default {
           label: ' ',
           filterable: false,
           width: 30,
-          realWidth: 30
+          realWidth: 30,
+          uid: bbn.fn.randomString()
         };
         if (firstGroup === 0) {
           o.fixed = true;
