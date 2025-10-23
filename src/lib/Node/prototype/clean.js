@@ -48,7 +48,8 @@ bbnNode.prototype.nodeClean = function(full) {
   const cp = this.component;
   const id = this.id;
   const hash = this.hash;
-  const indexes = Object.keys(cp.$nodes).filter(idx => !idx.indexOf(id + '-') || (full && (idx === id)));
+  const nodes = cp.$nodes;
+  const indexes = Object.keys(nodes).filter(idx => !idx.indexOf(id + '-') || (full && (idx === id)));
   let res = 0;
   if (this.element?.querySelector) {
     const portals = this.element.querySelectorAll('.bbn-portal-active');
@@ -87,7 +88,7 @@ bbnNode.prototype.nodeClean = function(full) {
 
     while (indexes.length) {
       const idx = indexes.shift();
-      const obj = cp.$nodes[idx];
+      const obj = nodes[idx];
       if (hash) {
         for (let n in obj) {
           if ((n === hash) || !n.indexOf(hash + '-')) {
@@ -110,7 +111,7 @@ bbnNode.prototype.nodeClean = function(full) {
         }
 
         removeRegion(obj);
-        delete cp.$nodes[idx];
+        delete nodes[idx];
       }
       else {
         for (let n in obj) {
