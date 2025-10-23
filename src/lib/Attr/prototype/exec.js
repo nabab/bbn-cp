@@ -44,16 +44,29 @@ bbnAttr.prototype.attrExec = function(data) {
     newData.push(this.node.data);
   }
 
-  bbnData.startWatching(this);
+  const loopOk = !this.node.loop || (this.constructor.name === 'bbnLoopAttr');
+  if (loopOk) {
+    bbnData.startWatching(this);
+  }
   const args = getArgs(this, newData);
-  const seq = bbnData.stopWatching(this);
+
+  const seq = [];
+  if (loopOk) {
+    seq.push(...bbnData.stopWatching(this));
+  }
+
   let val;
-  bbnData.startWatching(this);
+  if (loopOk) {
+    bbnData.startWatching(this);
+  }
   try {
     val = this.attrFn.bind(this.node.component)(...args);
   }
   catch (e) {
-    bbnData.stopWatching(this);
+    if (loopOk) {
+      bbnData.stopWatching(this);
+    }
+
     bbn.fn.log(
       "*****************",
       "Error in attrExec",
@@ -71,7 +84,10 @@ bbnAttr.prototype.attrExec = function(data) {
     throw e;
   }
 
-  seq.push(...bbnData.stopWatching(this));
+  if (loopOk) {
+    seq.push(...bbnData.stopWatching(this));
+  }
+
   const res = {val, seq};
 
   return res;

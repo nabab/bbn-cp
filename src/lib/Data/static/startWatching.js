@@ -4,6 +4,7 @@ bbnData.startWatching = function(from) {
   if (from) {
     if (this.currentWatchers.includes(from)) {
       bbn.fn.log(`WARNING: The attribute is already in the current watchers list`, from);
+      debugger;
     }
 
     this.currentWatchers.unshift(from);

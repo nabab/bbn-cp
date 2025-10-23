@@ -153,18 +153,46 @@ export default {
 
       // Adding a shortcut
       if (window.appui) {
-        items.push({
-          text: bbn._("Create a shortcut"),
-          key: "shortcut",
-          icon: "nf nf-fa-link",
-          action: () => {
-            this.$emit('shortcut', {
-              text: view.label,
-              icon: view.icon || 'nf nf-fa-link',
-              url: this.getFullBaseURL() + view.url
-            });
+        if (appui.plugins['appui-menu']) {
+          items.push({
+            text: bbn._("Create a shortcut"),
+            key: "shortcut",
+            icon: "nf nf-fa-link",
+            action: () => {
+              this.$emit('shortcut', {
+                text: view.label,
+                icon: view.icon || 'nf nf-fa-link',
+                url: this.getFullBaseURL() + view.url
+              });
+            }
+          });
+          /* @todo
+          if (appui.user.isDev) {
+            const menu = appui.getRegistered('menu');
+            if (menu) {
+              items.push({
+                text: bbn._("Add to a menu"),
+                key: "addToMenu",
+                icon: "nf nf-fa-plus_square",
+                items: menu.source.menus.map(mn => {
+                  return {
+                    text: mn.text,
+                    key: mn.value,
+                    action: () => {
+                      menu.$emit('add-to-menu', {
+                        menu: mn.value,
+                        text: view.label,
+                        icon: view.icon || 'nf nf-fa-link',
+                        url: this.getFullBaseURL() + view.url
+                      });
+                    }
+                  }
+                })
+              });
+            }
           }
-        });
+            */
+        }
       }
 
       if (container) {
