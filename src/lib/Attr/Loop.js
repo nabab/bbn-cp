@@ -180,9 +180,6 @@ export default class bbnLoopAttr extends bbnAttr
         key = bbn.cp.hash(loopData);
       }
 
-      if (key === undefined) {
-        debugger;
-      }
       const hash = oHash + key;
       this.list.push(hash);
       const currentNode = cp.$retrieveNode(node.id, hash);
@@ -244,9 +241,6 @@ export default class bbnLoopAttr extends bbnAttr
     if (oldList.length) {
       let copy = oldList.slice();
       bbn.fn.forir(oldList, (a, i) => {
-        if (!a) {
-          debugger;
-        }
         if (this.list.indexOf(a) === -1) {
           copy.splice(i, 1);
           const itemRemoved = cp.$retrieveNode(node.id, a);

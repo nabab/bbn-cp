@@ -14,24 +14,6 @@ bbnProtoHtml.$destroy = function() {
     configurable: false
   });
 
-  const node = this.bbnSchema;
-  /*
-  for (let i = bbn.cp.queue.length - 1; i >= 0; i--) {
-    if (bbn.cp.queue[i].component === this) {
-      bbn.cp.queue.splice(i, 1);
-    }
-  }
-  for (let i = 0; i < node.attributes.length; i++) {
-    if (node.attributes[i].constructor.name === 'bbnEventAttr') {
-      this.removeEventListener(node.attributes[i].name, node.attributes[i].handler, node.attributes[i].cfg);
-    }
-
-    if (node.attributes[i].constructor.name === 'bbnModelAttr') {
-      const eventName = node.attributes[i].modifiers.includes('lazy') ? 'change' : 'input';
-      this.removeEventListener(eventName, node.attributes[i].handler);
-    }
-  }
-    */
   this.bbnComponent.$components.remove(this);
   unregisterChild(this);
   this.bbnConnected = false;
@@ -85,6 +67,23 @@ bbnProtoHtml.$destroy = function() {
   }
 
   const hasDestroyEvent = this.bbnSchema.events?.['hook:destroyed'];
+  const node = this.bbnSchema;
+  for (let i = bbn.cp.queue.length - 1; i >= 0; i--) {
+    if (bbn.cp.queue[i].component === this) {
+      bbn.cp.queue.splice(i, 1);
+    }
+  }
+
+  for (let i = 0; i < node.attributes.length; i++) {
+    if (node.attributes[i].constructor.name === 'bbnEventAttr') {
+      this.removeEventListener(node.attributes[i].name, node.attributes[i].handler, node.attributes[i].cfg);
+    }
+
+    if (node.attributes[i].constructor.name === 'bbnModelAttr') {
+      const eventName = node.attributes[i].modifiers.includes('lazy') ? 'change' : 'input';
+      this.removeEventListener(eventName, node.attributes[i].handler);
+    }
+  }
 
   if (node && (node.element === this)) {
     node.element = null;

@@ -91,6 +91,7 @@ export default {
      * @param {Number} idx 
      */
     focusout(idx, e) {
+      return;
       this.clickedTd = null;
       this.clickedTdIndex = null;
       if ((idx === undefined) || (idx === this.focusedRow)) {

@@ -149,188 +149,14 @@
             </tr>
             <!-- Rows -->
             <template bbn-else
-                      bbn-for="(row, rowIndex) in items">
+                      bbn-for="(d, i) in items">
               <!-- Group rows = start of a new group -->
-              <bbn-table-row-group bbn-if="isGroupActive && (!rowIndex || (items[rowIndex-1].data[cols[group].field] !== row.data[cols[group].field]))"
-                                   :source="row"
-                                   :index="rowIndex"
+              <bbn-table-row-group bbn-if="isGroupActive && (!i || (items[i-1].data[cols[group].field] !== d.data[cols[group].field]))"
+                                   :source="d"
+                                   :index="i"
                                    :group="group"
-                                   :class="{'bbn-alt': rowIndex % 2}"
+                                   :class="{'bbn-alt': i % 2}"
                                    ref="groupRows"/>
-              <tr :class="rowClass(row)"
-                  :style="rowStyle(row)"
-                  @hook:created="onRowCreated">
-
-
-                <!-- VERY FIRST COLUMN WHEN THERE IS XSCROLL -->
-                <bbn-table-cell-expander bbn-if="currentColumns[0].isExpander && !isGroupActive"
-                                         :source="row.data"
-                                         :index="0"
-                                         :first-cell="true"
-                                         :row-index="rowIndex"
-                                         :column="currentColumns[0]"
-                                         :class="[cellClass, (currentColumns[0].fixed ? ' ' + cssRuleName + ' bbn-table-fixed-cell bbn-table-fixed-cell-left' : '')]"
-                                         :ref="'td' + rowIndex"/>
-                <bbn-table-cell-selector bbn-elseif="currentColumns[0].isSelection"
-                                        :column="currentColumns[0]"
-                                        :first-cell="true"
-                                        :selected="row.selected"
-                                        :selection="row.selection"
-                                        :source="row.data"
-                                        :index="0"
-                                        :row-index="rowIndex"
-                                        :ref="'td' + rowIndex"/>
-
-                <bbn-table-cell-editor bbn-elseif="!currentColumns[0].isExpander && isEdited(row.data, currentColumns[0], rowIndex)"
-                                      :tabindex="editable && isEditable(row.data, currentColumns[0], rowIndex) ? 0 : -1"
-                                      :first-cell="true"
-                                      @save="saveInline"
-                                      @cancel="cancel"
-                                      :column="currentColumns[0]"
-                                      :source="row.data"
-                                      :row-index="rowIndex"
-                                      :index="0"
-                                      :ref="'td' + rowIndex"
-                                      @focusout="focusout(rowIndex, $event)"/>
-
-                <bbn-table-cell-buttons bbn-elseif="currentColumns[0].buttons"
-                                      :source="row.data"
-                                      :first-cell="true"
-                                      :mode="buttonMode"
-                                      :row-index="rowIndex"
-                                      :column="currentColumns[0]"
-                                      :index="0"
-                                      :ref="'td' + rowIndex"/>
-                <!-- Group lines just have the cell with the expander and a single big cell -->
-                <bbn-table-cell bbn-elseif="!currentColumns[0].isExpander || !isGroupActive"
-                                :column="currentColumns[0]"
-                                :first-cell="true"
-                                :source="row.data"
-                                :style="'height: ' + (rowsDesc[rowIndex].height ? rowsDesc[rowIndex].height + 'px' : 'auto')"
-                                :row-index="rowIndex"
-                                :index="0"
-                                :ref="'td' + rowIndex"
-                                :tabindex="editable && isEditable(row.data, currentColumns[0], rowIndex) ? 0 : -1"/>
-
-                <!-- IF NOT READY AND INDEX IS NOT 0 -->
-                <td bbn-if="!ready || (hasScrollX && !lastColumnVisible)"
-                          :colspan="currentColumns.length - 1"
-                          class="not-ready"/>
-                <template bbn-else>
-                  <!-- FIRST FIXED COLUMNS -->
-                  <template bbn-for="(col, colIndex) in groupCols[0].cols"
-                            bbn-if="colIndex">
-                    <bbn-table-cell-expander bbn-if="isExpander(col) && !isGroupActive"
-                                            :source="row.data"
-                                            :index="0"
-                                            :row-index="rowIndex"
-                                            :column="currentColumns[0]"
-                                            :class="[cellClass(row), (currentColumns[0].fixed ? ' ' + cssRuleName + ' bbn-table-fixed-cell bbn-table-fixed-cell-left' : '')]"
-                                            :style="cellStyle(row)"
-                                            :ref="'td' + colIndex"/>
-                    <bbn-table-cell-selector bbn-elseif="isSelection(col)"
-                                            :column="col"
-                                            :selected="row.selected"
-                                            :selection="row.selection"
-                                            :source="row.data"
-                                            :index="colIndex"
-                                            :row-index="rowIndex"
-                                            :ref="'td' + rowIndex"/>
-
-                    <bbn-table-cell-editor bbn-elseif="!col.isExpander && isEdited(row.data, col, colIndex)"
-                                          :tabindex="editable && isEditable(row.data, col, colIndex) ? 0 : -1"
-                                          @save="saveInline"
-                                          @cancel="cancel"
-                                          :column="col"
-                                          :source="row.data"
-                                          :row-index="rowIndex"
-                                          :index="colIndex"
-                                          :ref="'td' + colIndex"
-                                          @focusout="focusout(colIndex, $event)"/>
-
-                    <bbn-table-cell-buttons bbn-elseif="col.buttons"
-                                          :source="row.data"
-                                          :mode="buttonMode"
-                                          :row-index="rowIndex"
-                                          :column="col"
-                                          :index="colIndex"
-                                          :ref="'td' + colIndex"/>
-                    <!-- Group lines just have the cell with the expander and a single big cell -->
-                    <bbn-table-cell bbn-elseif="!col.isExpander || !isGroupActive"
-                                    :column="col"
-                                    :source="row.data"
-                                    :row-index="rowIndex"
-                                    :index="colIndex"
-                                    :ref="'td' + colIndex"
-                                    :tabindex="editable && isEditable(row.data, col, colIndex) ? 0 : -1"/>
-                  </template>
-                  <!-- ALL VISIBLE CENTRAL COLUMNS -->
-                  <!-- INVISIBLE COLUMNS BEFORE VISIBLE -->
-                  <template bbn-for="(seq, idx) in rowDesc[i].sequences"
-                            :key="seq.uid">
-                    <template bbn-if="seq.visible">
-                      <component bbn-for="groupCol in seq.items"
-                                :key="groupCol?.uid"
-                                bbn-if="idx || groupCol.index || groupCols[0].cols.length"
-                                :is="getComponentType(groupCol.index)"
-                                :source="row.data"
-                                :index="groupCol.index"
-                                :class="getComponentClass(groupCol.index)"
-                                bbn-bind="getComponentOptions(groupCol.index)"
-                                :ref="'td' + groupCol.index"
-                                  @save="saveInline"
-                                  @cancel="cancel"
-                                  @focusout="focusout(index, $event)"/>
-                    </template>
-                    <template bbn-else>
-                      <td :colspan="(seq.end - seq.start + 1)">-</td>
-                    </template>
-                  </template>
-                  <!-- LAST FIXED COLUMNS -->
-                  <template bbn-for="(col, colIndex) in groupCols[2].cols">
-                    <bbn-table-cell-selector bbn-if="ready && col.isSelection"
-                                            :column="col"
-                                            :selected="row.selected"
-                                            :selection="row.selection"
-                                            :source="row.data"
-                                            :index="colIndex + groupCols[0].cols.length + groupCols[1].cols.length"
-                                            :row-index="rowIndex"
-                                            :ref="'td' + colIndex"/>
-
-                    <bbn-table-cell-editor bbn-elseif="ready && !col.isExpander && isEdited(row.data, col, colIndex)"
-                                          :tabindex="editable && isEditable(row.data, col, colIndex) ? 0 : -1"
-                                          @save="saveInline"
-                                          @cancel="cancel"
-                                          :column="col"
-                                          :source="row.data"
-                                          :row-index="rowIndex"
-                                          :index="colIndex + groupCols[0].cols.length + groupCols[1].cols.length"
-                                          :ref="'td' + colIndex"
-                                          @focusout="focusout(colIndex, $event)"/>
-
-                    <bbn-table-cell-buttons bbn-elseif="ready && col.buttons"
-                                          :source="row.data"
-                                          :mode="buttonMode"
-                                          :row-index="rowIndex"
-                                          :column="col"
-                                          :index="colIndex"
-                                          :ref="'td' + colIndex"/>
-                    <!-- Group lines just have the cell with the expander and a single big cell -->
-                    <bbn-table-cell bbn-elseif="ready && (!col.isExpander || !table.isGroupActive)"
-                                    :column="col"
-                                    :source="row.data"
-                                    :row-index="rowIndex"
-                                    :index="colIndex"
-                                    :ref="'td' + colIndex"
-                                    :tabindex="editable && isEditable(row.data, col, colIndex) ? 0 : -1"/>
-                  </template>
-                </template>
-
-
-
-
-
-              </tr>
               <component :is="d.full ? 'bbn-table-row-full' : 'bbn-table-row'"
                          :source="d"
                          :class="{'bbn-alt': i % 2}"
@@ -338,7 +164,9 @@
                          :index="i"
                          :ref="'row' + d.index"
                          bbn-show="d.full || !isGroupActive || isExpanded(d.data, d.index)"
-                         :editing="editedRow === d.data"/>
+                         :editing="editedRow === d.data"
+                         @focusin="focusRow($event, i)"
+                         @focusout="focusout(i, $event)"/>
               <bbn-table-row-expansion bbn-if="expander && !isGroupActive && isExpanded(d.data, d.index)"
                                        :source="d"
                                        :index="i"

@@ -14,53 +14,50 @@ export default {
     }
   },
   data() {
-    return {
-      rowsDesc: [],
+    let o = {
+      table: this.closest('bbn-table'),
+      to: null,
       rowHeight: null,
       intersectionTimeout: null,
     };
 
     return o;
   },
-  methods: {
-    isSelected(row) {
-      if (this.selection) {
-        const i = this.uid ? row.data[this.uid] : row.index;
-        return this.currentSelected.includes(i);
+  computed: {
+    selected: {
+      get() {
+        if (this.table.selection) {
+          const i = this.table.uid ? this.source.data[this.table.uid] : this.source.index;
+          return this.table.currentSelected.includes(i);
       }
+
       return false;
     },
-    setSelected(row, v) {
-      if (this.selection) {
-        const i = this.uid ? row.data[this.uid] : row.index;
+      set(v) {
+        if (this.table.selection) {
+          const i = this.table.uid ? this.source.data[this.table.uid] : this.source.index;
         if (v) {
-          if (!this.currentSelected.includes(i)) {
-            this.currentSelected.push(i);
+            if (!this.table.currentSelected.includes(i)) {
+              this.table.currentSelected.push(i);
           }
         }
         else {
-          const idx = this.currentSelected.indexOf(i);
+            const idx = this.table.currentSelected.indexOf(i);
           if (idx > -1) {
-            this.currentSelected.splice(idx, 1);
+              this.table.currentSelected.splice(idx, 1);
+            }
           }
         }
       }
     },
-    rowClass(row, i) {
-      const cls = [];
-      if (i % 2) {
-        if (this.table.alt) {
-          cls.push('bbn-alt');
-        }
-      }
+    cellClass() {
+      const cls = [{
+        'bbn-alt': this.alt,
+      }];
 
-      if (this.selection && this.isSelected(row)) {
-        cls.push('bbn-row-selected');
-      }
-
-      if (this.trClass) {
-        if (bbn.fn.isFunction(this.trClass)) {
-          cls.push(this.trClass(row.data));
+      if (this.table?.trClass) {
+        if (bbn.fn.isFunction(this.table.trClass)) {
+          cls.push(this.table.trClass(this.source.data));
         }
         else {
           cls.push(this.trClass);
@@ -69,19 +66,20 @@ export default {
 
       return cls;
     },
-    rowStyle(row) {
+    cellStyle() {
       let res = '';
-      if (this.trStyle) {
-        if (bbn.fn.isFunction(this.trStyle)) {
-          res = this.trStyle(row.data);
+      if (this.table?.trStyle) {
+        if (bbn.fn.isFunction(this.table.trStyle)) {
+          res = this.table.trStyle(this.source.data);
         }
-        else {
-          res = this.trStyle;
-        }
+
+        res = this.table.trStyle;
       }
 
       return res;
     },
+  },
+  methods: {
     intersectionEnter() {
       clearTimeout(this.intersectionTimeout);
       this.intersectionTimeout = setTimeout(() => {

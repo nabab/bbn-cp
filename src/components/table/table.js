@@ -56,8 +56,6 @@ const cpDef = {
     bbn.cp.mixins.observer,
     bbn.cp.mixins.keepCool,
     bbn.cp.mixins.data,
-    bbn.cp.mixins.row,
-    bbn.cp.mixins.cell,
     aggregation,
     buttons,
     columns,

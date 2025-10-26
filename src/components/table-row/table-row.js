@@ -27,6 +27,10 @@ const cpDef = {
     source: {
       type: Object,
       required: true
+    },
+    editing: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -39,6 +43,13 @@ const cpDef = {
   computed: {
   },
   methods: {
+    onfocusCell(idx, col, e) {
+      bbn.fn.log(["focus cell", idx, col, e, this.index, (this.table.editMode === 'inline'), this.table.editable, this.table.isEditable(this.source.data, col, this.index)]);
+      if (this.table.editable && (this.table.editMode === 'inline') && this.table.isEditable(this.source, col, this.index)) {
+        bbn.fn.log("DITTTT")
+        this.table.edit(e.target.source, {}, this.index);
+      }
+    },
     getComponentType(idx) {
       if (this.table.groupCols[1].cols[idx].isExpander && !this.table.isGroupActive) {
         return 'bbn-table-cell-expander';
@@ -46,7 +57,7 @@ const cpDef = {
       if (this.table.groupCols[1].cols[idx].isSelection) {
         return 'bbn-table-cell-selector';
       }
-      if (this.table.groupCols[1].cols[idx].isExpander && this.table.isEdited(this.source.data, this.table.groupCols[1].cols[idx], this.index)) {
+      if (!this.table.groupCols[1].cols[idx].isExpander && this.editing) {
         return 'bbn-table-cell-editor';
       }
       if (this.table.groupCols[1].cols[idx].buttons) {

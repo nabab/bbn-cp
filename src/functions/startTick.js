@@ -101,7 +101,7 @@ async function treatQueue(num = 0, cps) {
       const isComputed = queueElement.element?.constructor?.name === 'bbnComputed';
       const isWatcher = queueElement.element?.constructor?.name === 'bbnWatcher';
       //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
-      const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
+      const cp = queueElement.component;
       if (isAttr && queueElement.element.node.isDestroyed) {
         //bbn.fn.log("ATTR IS DESTROYED: " + queueElement.element.id);
         continue;

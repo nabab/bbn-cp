@@ -53,7 +53,8 @@
                   :row-index="index"
                   :index="0"
                   :ref="'td' + index"
-                  :tabindex="table.editable && table.isEditable(source.data, table.currentColumns[0], index) ? 0 : -1"/>
+                  :tabindex="table.editable && table.isEditable(source.data, table.currentColumns[0], index) ? 0 : -1"
+                  @focusin="onfocusCell(0)"/>
 
   <!-- IF NOT READY AND INDEX IS NOT 0 -->
   <component bbn-if="!ready || (table.hasScrollX && !table.lastColumnVisible)"
@@ -116,7 +117,7 @@
         <component bbn-for="groupCol in loopSequence(idx)"
                    :key="groupCol?.uid"
                    bbn-if="idx || groupCol.index || table.groupCols[0].cols.length"
-                   :is="getComponentType(groupCol.index)"
+                   :is="editing ? getComponentType(groupCol.index, editing) : getComponentType(groupCol.index)"
                    :source="source.data"
                    :index="groupCol.index"
                    :class="getComponentClass(groupCol.index)"
@@ -124,7 +125,7 @@
                    :ref="'td' + groupCol.index"
                     @save="table.saveInline"
                     @cancel="table.cancel"
-                    @focusout="table.focusout(index, $event)"/>
+                    :tabindex="table.editable && table.isEditable(source.data, groupCol, index) ? 0 : -1"/>
       </template>
       <template bbn-else>
         <td :colspan="(seq.end - seq.start + 1)">-</td>
@@ -141,7 +142,7 @@
                               :row-index="index"
                               :ref="'td' + index"/>
 
-      <bbn-table-cell-editor bbn-elseif="ready && !col.isExpander && table.isEdited(source.data, col, index)"
+      <bbn-table-cell-editor bbn-elseif="ready && !col.isExpander && editing"
                             :tabindex="table.editable && table.isEditable(source.data, col, index) ? 0 : -1"
                             @save="table.saveInline"
                             @cancel="table.cancel"
