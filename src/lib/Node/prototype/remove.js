@@ -50,12 +50,7 @@ const removeElement = function(res, ele, node) {
       }
     }
 
-    if (ele.parentNode) {
-      ele.parentNode.removeChild(ele);
-    }
-    else {
-      ele.remove();
-    }
+    ele.remove();
   }
 };
 

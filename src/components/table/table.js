@@ -17,6 +17,7 @@
 
 import aggregation from './_mixins/aggregation.js';
 import buttons from './_mixins/buttons.js';
+import cell from './_mixins/cell.js';
 import columns from './_mixins/columns.js';
 import config from './_mixins/config.js';
 import data from './_mixins/data.js';
@@ -28,6 +29,7 @@ import filter from './_mixins/filter.js';
 import group from './_mixins/group.js';
 import init from './_mixins/init.js';
 import picker from './_mixins/picker.js';
+import row from './_mixins/row.js';
 import selection from './_mixins/selection.js';
 import size from './_mixins/size.js';
 import sort from './_mixins/sort.js';
@@ -56,10 +58,9 @@ const cpDef = {
     bbn.cp.mixins.observer,
     bbn.cp.mixins.keepCool,
     bbn.cp.mixins.data,
-    bbn.cp.mixins.row,
-    bbn.cp.mixins.cell,
     aggregation,
     buttons,
+    cell,
     columns,
     config,
     data,
@@ -71,6 +72,7 @@ const cpDef = {
     group,
     init,
     picker,
+    row,
     selection,
     size,
     sort,

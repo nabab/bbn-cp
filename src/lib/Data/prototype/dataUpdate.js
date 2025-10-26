@@ -1,7 +1,5 @@
 import bbnData from "../Data.js";
-import propagateDependencyChanges from "../../Html/private/propagateDependencyChanges.js";
 import queueUpdate from "../../../functions/queueUpdate.js";
-import initResults from "../../Html/private/initResults.js";
 
 const getFn = function(watcher, lev, lastUpdate) {
   return () => {
@@ -57,7 +55,7 @@ bbnData.prototype.dataUpdate = function(path) {
       }
     }
   });
-  bbnData.propagateDependencyChanges(toPropagate);
+  bbnData.propagate(toPropagate);
 
   impacted.forEach(it => {
     const bits = it.path.slice();

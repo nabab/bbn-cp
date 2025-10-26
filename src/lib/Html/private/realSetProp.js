@@ -1,5 +1,4 @@
 import updateWatcher from "./updateWatcher.js";
-import propagateDependencyChanges from "./propagateDependencyChanges.js";
 import bbnData from "../../Data.js";
 /**
  * Updates a property of a component with a new value, managing data binding and event emission.
@@ -34,7 +33,7 @@ export default function realSetProp(cp, name, value) {
   if (original !== value) {
     cp.$propsCfg[name].value = value;
     // Update any watchers that might be observing this property.
-    bbnData.propagateDependencyChanges(cp, name);
+    bbnData.propagate(cp, name);
     updateWatcher(cp, name);
   }
 }

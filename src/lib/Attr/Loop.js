@@ -104,6 +104,10 @@ export default class bbnLoopAttr extends bbnAttr
     this.attrSet(true);
   }
 
+  reset() {
+    this.node.nodeClean(true);
+  }
+
   attrUpdate(init, from) {
     if (this.isRunning) {
       return;
@@ -145,16 +149,55 @@ export default class bbnLoopAttr extends bbnAttr
 
     const breakFn = node.attr['bbn-break'] ? node.component[node.attr['bbn-break'].exp] : false;
     //bbn.fn.log(["IN LOOP " + node.id, root, node, node.hash, cp.$retrieveNode(node.id, node.hash), cp.$retrieveNode(node.id, node.hash)?.element]);
-    if (!root) {
-      root = node.nodeBuild(null, true);
-    }
-
     const isArray = bbn.fn.isArray(loopValue);
+    const numItems = isArray ? loopValue.length : Object.keys(loopValue).length;
     // Construct a unique hash for each iteration based on loop values.
     const oHash = node.hash ? node.hash + '-' : '';
     const elements = [];
     const lst = [];
     const oldList = this.list.splice(0);
+    if (!root) {
+      root = node.nodeBuild(null, true);
+    }
+    else if (!numItems && oldList.length) {
+      if (this.exp === 'items') {
+        debugger;
+      }
+      bbn.fn.log("CLEANING " + node.realTag + ' ' + node.id + ' IN ' + cp.$options.name + ' - ' + this.exp);
+      const indexes = Object.keys(cp.$nodes).filter(idx => !idx.indexOf(node.id + '-'));
+      const nodes = cp.$nodes;
+      while (indexes.length) {
+        const idx = indexes.shift();
+        const obj = nodes[idx];
+        const hash = node.hash;
+        if (hash) {
+          for (let n in obj) {
+            if ((n === hash) || !n.indexOf(hash + '-')) {
+              obj[n].off = true;
+              delete obj[n];
+            }
+          }
+        }
+        else if (obj instanceof bbnNode) {
+          nodes[idx].off = true;
+          delete nodes[idx];
+        }
+        else {
+          for (let n in obj) {
+            obj[n].off = true;
+            delete obj[n];
+          }
+        }
+      }
+
+      const r = document.createRange();
+      r.setStartAfter(node._region.start);
+      r.setEndBefore(node._region.end);
+      r.deleteContents();
+      root = node.nodeBuild(null, true);
+      oldList.splice(0);
+    }
+
     let num = 0;
     let prevElement = null;
     bbn.cp.loopLevel++;
@@ -199,7 +242,7 @@ export default class bbnLoopAttr extends bbnAttr
           currentNode.data[defIndex] = j;
           if (prevElement) {
             currentNode.nodeMove(prevElement.bbnSchema._region.end, true);
-            bbn.fn.move(oldList, oldList.indexOf(currentNode.hash), j);
+            bbn.fn.move(oldList, oldList.indexOf(currentNode.hash), j in oldList ? j : oldList.length -1);
           }
           else {
             currentNode.nodeMove(root, true);
@@ -216,7 +259,7 @@ export default class bbnLoopAttr extends bbnAttr
         const newNode = currentNode || generateNode(cloneNode(cp, node.id), cp, node.parent, node, hash, hash, loopData);
         if (prevElement) {
           if (oldList.includes(prevElement.bbnHash)) {
-            oldList.splice(oldList.indexOf(prevElement.bbnHash), 0, hash);
+            oldList.splice(oldList.indexOf(prevElement.bbnHash) + 1, 0, hash);
           }
           else {
             oldList.splice(j, 0, hash);

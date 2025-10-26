@@ -93,11 +93,11 @@ async function treatQueue(num = 0, cps) {
         }
       }
       const queueElement = queue.shift();
-      if (queueElement.off) {
+      const isAttr = queueElement.element instanceof bbnAttr;
+      if (isAttr && queueElement.element.node.off) {
         //bbn.fn.log("ELEMENT IS DESTROYED");
         continue;
       }
-      const isAttr = queueElement.element instanceof bbnAttr;
       const isComputed = queueElement.element?.constructor?.name === 'bbnComputed';
       const isWatcher = queueElement.element?.constructor?.name === 'bbnWatcher';
       //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
@@ -229,6 +229,7 @@ async function treatQueue(num = 0, cps) {
       lastElement = queueElement;
     }
 
+    /*
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       queueLength += await treatQueue(num + 1);
@@ -236,7 +237,7 @@ async function treatQueue(num = 0, cps) {
 
     if (num) {
       return queueLength;
-    }
+    }*/
 
     const duration = bbn.fn.stopChrono(rnd);
     if (duration > 1000) {
@@ -270,6 +271,7 @@ export default function startTick() {
 
   bbn.cp.isRunning = true;
   setTimeout(async () => {
+    bbn.fn.log(bbn.cp.numTicks);
     requestAnimationFrame(async () => {
       await treatQueue();
       bbn.cp.isRunning = false;

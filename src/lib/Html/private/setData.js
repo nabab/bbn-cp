@@ -1,6 +1,5 @@
 import updateWatcher from "./updateWatcher.js";
 import setUpData from "./setUpData.js";
-import propagateDependencyChanges from "./propagateDependencyChanges.js";
 import bbnData from "../../Data.js";
 /**
  * Set the data properties of the object
@@ -29,7 +28,7 @@ export default function setData(cp, name, v) {
     
     v = cp.$treatValue(v, name);
     cp.$dataCfg[name].value = v;
-    bbnData.propagateDependencyChanges(cp, name);
+    bbnData.propagate(cp, name);
     updateWatcher(cp, name);
   }
 }

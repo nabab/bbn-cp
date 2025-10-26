@@ -1,4 +1,3 @@
-import propagateDependencyChanges from "./Html/private/propagateDependencyChanges.js";
 import updateWatcher from "./Html/private/updateWatcher.js";
 import bbnData from "./Data.js";
 
@@ -408,7 +407,7 @@ export default class bbnComputed {
       this.#val = value;
 
       // Update the computed property's watcher and propagate any dependency changes
-      bbnData.propagateDependencyChanges(this.#component, this.#name);
+      bbnData.propagate(this.#component, this.#name);
       updateWatcher(this.#component, this.#name);
 
     }

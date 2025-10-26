@@ -366,55 +366,59 @@ const cpDef = {
      * @method adjustFromContainer
      * @param {HTMLElement} container
      */
-    adjustFromContainer(container){
-      if (this.shouldBother && !this.dragging) {
-        let prop = this.isVertical ? 'scrollTop' : 'scrollLeft';
-        let ok = false;
-        if (!container) {
-          container = this.realContainer;
-          if (this.scroller) {
-            this.containerPos = this.scroller['current' + (this.isVertical ? 'Y' : 'X')];
-            ok = true;
+    adjustFromContainer(container) {
+      this.keepCool(() => {
+        if (this.shouldBother && !this.dragging) {
+          let prop = this.isVertical ? 'scrollTop' : 'scrollLeft';
+          let ok = false;
+          if (!container) {
+            container = this.realContainer;
+            if (this.scroller) {
+              this.containerPos = this.scroller['current' + (this.isVertical ? 'Y' : 'X')];
+              ok = true;
+            }
           }
-        }
-        if (!ok) {
-          this.containerPos = container[prop];
-        }
+          if (!ok) {
+            this.containerPos = container[prop];
+          }
 
-        this.setSliderPos(this.containerPos * this.ratio);
-        /*
-        if ( container !== this.realContainer ){
-          this.realContainer[prop] = this.containerPos;
-        }
-        */
-        bbn.fn.each(this.scrollableElements(), a => {
-          if ( a !== container ){
-            a[prop] = this.containerPos;
+          this.setSliderPos(this.containerPos * this.ratio);
+          /*
+          if ( container !== this.realContainer ){
+            this.realContainer[prop] = this.containerPos;
           }
-        });
-        this.overContent();
-      }
+          */
+          bbn.fn.each(this.scrollableElements(), a => {
+            if ( a !== container ){
+              a[prop] = this.containerPos;
+            }
+          });
+          this.overContent();
+        }
+      }, 'adjustFromContainer', 50);
     },
     /**
      * @method adjustFromBar
      */
     adjustFromBar(anim){
-      if (this.shouldBother) {
-        this.containerPos = (this.sliderPos / this.ratio);
-        let prop = this.isVertical ? 'scrollTop' : 'scrollLeft';
-        if (this.scroller) {
-          this.axisScrollTo(this.containerPos, anim);
-        }
-        else {
-          this.realContainer[prop] = this.containerPos;
-          bbn.fn.each(this.scrollableElements(), a => {
-            a[prop] = this.containerPos;
-          });
-        }
+      this.keepCool(() => {
+        if (this.shouldBother) {
+          this.containerPos = (this.sliderPos / this.ratio);
+          let prop = this.isVertical ? 'scrollTop' : 'scrollLeft';
+          if (this.scroller) {
+            this.axisScrollTo(this.containerPos, anim);
+          }
+          else {
+            this.realContainer[prop] = this.containerPos;
+            bbn.fn.each(this.scrollableElements(), a => {
+              a[prop] = this.containerPos;
+            });
+          }
 
-        let e = new Event('scroll');
-        this.$emit('scroll', e, this.containerPos);
-      }
+          let e = new Event('scroll');
+          this.$emit('scroll', e, this.containerPos);
+        }
+      }, 'adjustFromBar', 50);
     },
     /**
      * When the users jumps by clicking the scrollbar while a double click will activate tillEnd.

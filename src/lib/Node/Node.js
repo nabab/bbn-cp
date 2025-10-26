@@ -7,6 +7,7 @@ import bbnData from "../Data.js";
 export default class bbnNode
 {
   #comment = false;
+  #off = false;
   #realElement = null;
   numBuild = 0;
   oldElement = null;
@@ -356,6 +357,16 @@ export default class bbnNode
     }
 
     return null;
+  }
+
+  get off() {
+    return this.#off;
+  }
+
+  set off(v) {
+    if (!this.#off && v) {
+      this.#off = true;
+    }
   }
 }
 

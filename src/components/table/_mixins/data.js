@@ -21,7 +21,7 @@ export default {
      * @returns {Array}
      */
     items() {
-      if (!this.cols.length) {
+      if (!this.cols.length || !this.currentData?.length) {
         return [];
       }
       // The final result
@@ -116,13 +116,13 @@ export default {
      */
     updateData(withoutOriginal) {
       /** Mini reset?? */
+
       this.isTableDataUpdating = true;
       this.allRowsChecked = false;
       this.currentExpanded = [];
       this.editedRow = false;
       this.editedIndex = false;
       this.$forceUpdate();
-      this.visibleRows.splice(0, this.visibleRows.length);
       //bbn.fn.log('forceupdate4');
       return bbn.cp.mixins.list.methods.updateData.apply(this, [withoutOriginal]).then(() => {
         if (this.currentData?.length && this.selection && this.currentSelected.length && !this.uid) {
@@ -134,7 +134,9 @@ export default {
             return a.data;
           })));
         }
-
+        
+        this.visibleRows.splice(0);
+        this.currentRows.splice(0);
         this.isTableDataUpdating = false;
       });
     }

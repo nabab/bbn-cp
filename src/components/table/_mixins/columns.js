@@ -176,10 +176,8 @@ export default {
             this.columnRebuildCancel = false;
           }
           else {
-            bbn.fn.each(this.visibleRows, r => {
-              if (r.$namespaces.updateSequences === 'method') {
-                r.updateSequences();
-              }
+            bbn.fn.each(this.visibleRows, tr => {
+              this.updateSequences(tr);
             });
             //bbn.fn.log(['updateShownCols', this.firstColumnVisible, this.lastColumnVisible, cols]);
           }
@@ -245,7 +243,7 @@ export default {
             if (entry.intersectionRatio > 0) {
               // Row
               if (scrollable && entry.target instanceof HTMLTableRowElement) {
-                entry.target.intersectionEnter();
+                this.intersectionEnter(entry.target);
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
@@ -277,7 +275,7 @@ export default {
             else {
               // Row
               if (scrollable && entry.target instanceof HTMLTableRowElement) {
-                entry.target.intersectionExit();
+                this.intersectionExit(entry.target);
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {

@@ -1,6 +1,11 @@
+import bbn from "@bbn/bbn";
 import bbnNode from "../Node.js";
 
 const checkOwnDeps = node => {
+  if (!node.attributes || !node.attributes.length) {
+    return;
+  }
+
   bbn.fn.each(node.attributes, a => {
     bbn.fn.each(a.ownDeps, o => {
       if (o.data) {
@@ -32,8 +37,16 @@ const checkOwnDeps = node => {
 };
 
 const removeRegion = node => {
-  const r = document.createRange();
   if (node._region?.start?.isConnected) {
+    if ((node instanceof bbnTextNode) || ((node.element?.previousSibling === node._region.start) && (node.element?.nextSibling === node._region.end ))) {
+      node._region.start.remove();
+      node._region.end.remove();
+      delete node._region;
+      return;
+    }
+
+    //bbn.fn.log(["Removing region ", (node.realTag || node.tag || node)]);
+    const r = document.createRange();
     r.setStartAfter(node._region.start);
     r.setEndBefore(node._region.end);
     r.deleteContents();
@@ -41,7 +54,9 @@ const removeRegion = node => {
     node._region.end.remove();
   }
 
-  delete node._region;
+  if (node._region) {
+    delete node._region;
+  }
 };
 
 bbnNode.prototype.nodeClean = function(full) {
@@ -49,6 +64,7 @@ bbnNode.prototype.nodeClean = function(full) {
   const id = this.id;
   const hash = this.hash;
   const nodes = cp.$nodes;
+  const rootNumBits = full ? id.split('-').length : id.split('-').length + 1;
   const indexes = Object.keys(nodes).filter(idx => !idx.indexOf(id + '-') || (full && (idx === id)));
   let res = 0;
   if (this.element?.querySelector) {
@@ -86,6 +102,7 @@ bbnNode.prototype.nodeClean = function(full) {
       return 0;
     });
 
+    const oldIndexes = indexes.slice();
     while (indexes.length) {
       const idx = indexes.shift();
       const obj = nodes[idx];
@@ -98,7 +115,9 @@ bbnNode.prototype.nodeClean = function(full) {
               res++;
             }
 
-            removeRegion(obj[n]);
+            if (rootNumBits === (obj[n].id.split('-').length)) {
+              removeRegion(obj[n]);
+            }
             delete obj[n];
           }
         }
@@ -110,7 +129,9 @@ bbnNode.prototype.nodeClean = function(full) {
           res++;
         }
 
-        removeRegion(obj);
+        if (rootNumBits === (obj.id.split('-').length)) {
+          removeRegion(obj);
+        }
         delete nodes[idx];
       }
       else {
@@ -121,7 +142,9 @@ bbnNode.prototype.nodeClean = function(full) {
             res++;
           }
 
-          removeRegion(obj[n]);
+          if (rootNumBits === (obj[n].id.split('-').length)) {
+            removeRegion(obj[n]);
+          }
           delete obj[n];
         }
       }
