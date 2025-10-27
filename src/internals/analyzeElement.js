@@ -164,7 +164,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
 
     /** @var {String} name The attribute's real name */
     let tmp = a.indexOf(':') === 0 ? a.substr(1) : a;
-    const name = tmp.indexOf('bbn-') === 0 ? tmp : (!isSVG && (tmp.indexOf('-') > -1) ? bbn.fn.camelize(tmp) : tmp);
+    const name = (tmp.indexOf('bbn-') === 0) || (tmp.indexOf('data-') === 0) ? tmp : (!isSVG && (tmp.indexOf('-') > -1) ? bbn.fn.camelize(tmp) : tmp);
     if (res.attr[name] !== undefined) {
       bbn.fn.warning(bbn._("The attribute %s can't be defined more than once (check %s)", name, componentName));
       return;

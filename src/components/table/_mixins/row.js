@@ -184,18 +184,21 @@ export default {
           seq.splice(i, 0, row);
         }
       })
+      tr.style.height = 'auto';
     },
     onRowCreated(e) {
       const tr = e.target;
-      if (this.scrollIntersection) {
-        this.scrollIntersection.observe(tr);
-      }
-
+      const row = {
+        tr,
+        visible: false,
+        sequences: [
+          {start: 0, end: this.groupCols[1].cols.length - 1, visible: false, uid: bbn.fn.randomString()}
+        ]
+      };
+      this.currentRows.push(row);
       this.$nextTick(() => {
-        const visible = this.$refs.scroll.isYInScroll(tr);
-        this.currentRows.push({tr, visible, sequences: [{start: 0, end: this.groupCols[1].cols.length - 1, visible: false, uid: bbn.fn.randomString()}]});
-        if (visible) {
-          this.updateSequences(tr);
+        if (this.scrollIntersection) {
+          this.scrollIntersection.observe(tr);
         }
       })
     },

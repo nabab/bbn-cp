@@ -15,6 +15,18 @@ export default {
     titleGroups: {
       type: [Array, Function]
     },
+  },
+  methods: {
+    onTitleCellDestroyed(e) {
+      if (this.scrollIntersection) {
+        this.scrollIntersection.unobserve(e.target);
+      }
+    },
+    onTitleCellCreated(e) {
+      if (this.scrollIntersection) {
+        this.scrollIntersection.observe(e.target);
+      }
+    }
   }
 }
 

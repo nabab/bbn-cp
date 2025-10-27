@@ -1,5 +1,5 @@
 import bbnAttr from "../Attr.js";
-import setDataAttribute from "../private/setNoValueAttribute.js";
+import setDataAttribute from "../private/setDataAttribute.js";
 import setNoValueAttribute from "../private/setNoValueAttribute.js";
 import setSVGAttribute from "../private/setSVGAttribute.js";
 import setTransitionAttribute from "../private/setTransitionAttribute.js";

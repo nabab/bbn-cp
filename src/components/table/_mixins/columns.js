@@ -126,15 +126,6 @@ export default {
         return;
       }
 
-      const now = bbn.fn.timestamp();
-      if (this.lastColumnRebuild && (this.lastSentColumnVisible !== this.lastColumnVisible)) {
-        this.lastSentColumnVisible = this.lastColumnVisible;
-        this.columnRebuildTimeout = setTimeout(() => {
-          this.updateShownCols();
-        }, this.columnRebuildDelay);
-        return;
-      }
-
       this.columnRebuildTimeout = setTimeout(() => {
         this.isUpdatingShownCols = true;
         if (!this.hasScrollX || this.groupable) {
@@ -183,7 +174,7 @@ export default {
           }
           this.isUpdatingShownCols = false;
         })
-      });
+      }, 250);
     },
     updateScrollCurrentY() {
       if (this.$refs.scroll?.$refs) {
@@ -238,7 +229,7 @@ export default {
           let lastVisible = null;
 
           entries.forEach(entry => {
-            const isInit = entry.target.visible === null;
+            const isInit = !entry.target.dataset.visible;
             // Going in
             if (entry.intersectionRatio > 0) {
               // Row
@@ -247,26 +238,23 @@ export default {
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
-                entry.target.visible = true;
-                if (entry.target.groupIndex === 1) {
+                const index = parseInt(entry.target.dataset.index);
+                entry.target.dataset.visible = 1;
+                if (entry.target.dataset.groupIndex == 1) {
                   // Init
-                  if (isInit) {
-                    if (firstVisible === null) {
-                      firstVisible = entry.target.index;
-                    }
-                    else {
-                      lastVisible = entry.target.index;
-                    }
+                  if (firstVisible === null) {
+                    firstVisible = index;
+                    lastVisible = index;
                   }
                   // Going left
                   else if (isLeft) {
-                    if ((firstVisible === null) || (entry.target.index < firstVisible)) {
-                      firstVisible = entry.target.index;
+                    if ((firstVisible === null) || (index < firstVisible)) {
+                      firstVisible = index;
                     }
                   }
                   // Going right
-                  else if ((lastVisible === null) || (entry.target.index > lastVisible)) {
-                    lastVisible = entry.target.index;
+                  else if ((lastVisible === null) || (index > lastVisible)) {
+                    lastVisible = index;
                   }
                 }
               }
@@ -279,7 +267,7 @@ export default {
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
-                entry.target.visible = false;
+                entry.target.dataset.visible = 0;
               }
             }
           });
