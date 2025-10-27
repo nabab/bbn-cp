@@ -121,6 +121,9 @@ export default {
       this.currentExpanded = [];
       this.editedRow = false;
       this.editedIndex = false;
+      if (this.isAjax) {
+        this.currentData = [];
+      }
       this.$forceUpdate();
       //bbn.fn.log('forceupdate4');
       return bbn.cp.mixins.list.methods.updateData.apply(this, [withoutOriginal]).then(() => {
@@ -134,7 +137,7 @@ export default {
           })));
         }
 
-        this.visibleRows.splice(0, this.visibleRows.length);
+        this.visibleRows = [];
         this.isTableDataUpdating = false;
       });
     }
