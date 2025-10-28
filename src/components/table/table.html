@@ -250,7 +250,7 @@
                         :data-index="rowIndex"
                         @hook:create="onRowCreated"
                         @hook:destroy="onRowDestroyed">
-                <template bbn-for="(seq, idx) in currentRows[rowIndex]?.sequences || []"
+                <template bbn-for="seq in currentRows[rowIndex]?.sequences || []"
                           :key="seq.uid">
                   <template bbn-if="seq.visible">
                     <component bbn-for="c in seq.items"
@@ -266,7 +266,18 @@
 
                       <span class="bbn-table-dirty bbn-top-left"
                             bbn-if="isDirty(columns[c.index], rowIndex)"/>
-                      <div bbn-if="isEdited(row, columns[c.index], rowIndex)">
+                      <div bbn-if="row.selection && isSelectable"
+                          class="bbn-c bbn-w-100">
+                        <bbn-checkbox bbn-model="row.selected"
+                                      :value="true"
+                                      :novalue="false"
+                                      :strict="true"
+                                      @click.stop
+                                      @beforechange="(ev, state) => beforeSelect(rowIndex, ev, !state)"
+                                      @change="v => checkSelection(rowIndex, v)"
+                                      class="bbn-middle bbn-flex"/>
+                      </div>
+                      <div bbn-elseif="isEdited(row, columns[c.index], rowIndex)">
                         <div bbn-if="(editMode === 'inline')
                               && (editable !== 'nobuttons')
                               && (c.index === colButtons)">
@@ -313,6 +324,49 @@
                               bbn-html="renderDefault(row.data, columns[c.index], rowIndex)"/>
                         <div bbn-else> </div>
                       </div>
+                      <template bbn-elseif="columns[c.index].buttons">
+                        <template bbn-if="buttonMode === 'dropdown'">
+                          <bbn-dropdown :source="buttonSource(row.data, columns[c.index], rowIndex)"
+                                        :placeholder="columns[c.index].label.trim() === '' ? _('Action') : columns[c.index].label"
+                                        @select="_execCommand"/>
+                        </template>
+                        <template bbn-elseif="buttonMode === 'menu'">
+                          <bbn-context :source="buttonSource(row.data, columns[c.index], rowIndex)"
+                                        @select="(it, idx, dataIndex, ev, floater) => onButtonsMenuSelect(it, row.data, columns[c.index], rowIndex, ev, floater)"
+                                        :attach="menuIconElement[columns[c.index].uid]">
+                            <span class="bbn-iblock bbn-lg">
+                              <bbn-icon :content="buttonIcon"
+                                        ref="menuIcon"
+                                        @hook:created="menuIconElement[columns[c.index].uid] = getRef('menuIcon')"/>
+                            </span>
+                          </bbn-context>
+                        </template>
+                        <div bbn-elseif="colButtons === columns[c.index].index">
+                          <template bbn-for="(button, bi) in buttonSource(row.data, columns[c.index], rowIndex)"
+                                    :key="bi">
+                            <component bbn-if="button.component"
+                                      :is="button.component"
+                                      bbn-bind="button.options || {source: row.data}"
+                                      style="margin: 0 .1rem"/>
+                            <bbn-button bbn-else
+                                        :key="bi"
+                                        bbn-bind="button"
+                                        @focusin.prevent.stop
+                                        @focusout.prevent.stop
+                                        @click.prevent.stop="_execCommand(button, row.data, columns[c.index], rowIndex, $event)"
+                                        style="margin: 0 .1rem"/>
+                          </template>
+                        </div>
+                        <template bbn-else>
+                          <bbn-button bbn-for="(button, bi) in (Array.isArray(columns[c.index].buttons) ? columns[c.index].buttons : columns[c.index].buttons(row.data, columns[c.index], rowIndex))"
+                                      :key="bi"
+                                      bbn-bind="button"
+                                      @focusin.prevent.stop
+                                      @focusout.prevent.stop
+                                      @click.prevent.stop="_execCommand(button, row.data, columns[c.index], rowIndex, $event)"
+                                      style="margin: 0 .1rem"/>
+                        </template>
+                      </template>
                       <!--slot bbn-elseif="$hasSlots('c')"/-->
                       <component bbn-elseif="columns[c.index].component"
                                 :is="columns[c.index].component"

@@ -147,19 +147,7 @@ export default function normalizeComponent(cfg, clsName) {
           else {
             bbn.fn.checkType(cfg[name][methName], 'function', bbn._("Methods must be functions, check %s in %s", methName, cn));
             res[name][methName] = bbn.fn.analyzeFunction(cfg[name][methName]);
-            res[name][methName].fn = function(...args) {
-              let isOrigin = false;
-              if (!bbn.cp.currentFunction) {
-                bbn.cp.currentFunction = bbn.fn.randomString();
-                isOrigin = true;
-              }
-              const r = cfg[name][methName].bind(this)(...args);
-              if (isOrigin) {
-                bbn.cp.currentFunction = null;
-              }
-
-              return r;
-            };
+            res[name][methName].fn = cfg[name][methName];
             if (!res[name][methName].name) {
               res[name][methName].name = methName;
             }

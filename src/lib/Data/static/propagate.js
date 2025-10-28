@@ -46,10 +46,7 @@ bbnData.propagate = function(cp, name) {
         if (!propagation.length) {
           if (!propagationFromHere) {
             propagationFromHere = true;
-            if (!bbn.cp.currentFunction || (propagationCaller !== bbn.cp.currentFunction)) {
-              propagationCaller = bbn.cp.currentFunction;
-              bbn.cp.numTicks++;
-            }
+            bbn.cp.numTicks++;
           }
         }
 

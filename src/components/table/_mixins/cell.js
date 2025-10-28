@@ -1,4 +1,9 @@
 export default {
+  data() {
+    return {
+      menuIconElement: {},
+    }
+  },
   methods: {
     cellClass(col, row) {
       const cls = [{
