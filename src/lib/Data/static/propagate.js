@@ -5,6 +5,7 @@ import initResults from "../../Html/private/initResults.js";
 const propagation = [];
 const propagationData = [];
 const propagationCp = [];
+let propagationCaller = null;
 
 bbnData.propagate = function(cp, name) {
   let propagationFromHere = false;
@@ -44,8 +45,11 @@ bbnData.propagate = function(cp, name) {
         const acp = a.component || a.node.component || cp;
         if (!propagation.length) {
           if (!propagationFromHere) {
-            bbn.cp.numTicks++;
             propagationFromHere = true;
+            if (!bbn.cp.currentFunction || (propagationCaller !== bbn.cp.currentFunction)) {
+              propagationCaller = bbn.cp.currentFunction;
+              bbn.cp.numTicks++;
+            }
           }
         }
 

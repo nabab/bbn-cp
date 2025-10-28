@@ -195,6 +195,10 @@ export default {
         uid: bbn.fn.randomString(),
         visible: false
       });
+      if (!this.hasScrollX) {
+        sequences[sequences.length - 1].visible = true;
+        sequences[sequences.length - 1].items = this.groupCols[1].cols.map(c => ({index: c.index, uid: c.uid}));
+      }
       if (this.groupCols[2].cols.length) {
         sequences.push({
           start: this.groupCols[0].cols.length + this.groupCols[1].cols.length,
