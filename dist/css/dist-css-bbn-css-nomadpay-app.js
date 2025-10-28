@@ -7,15 +7,12 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([["dist-css-bbn-css-nomadpay-app"],{
+(self["webpackChunk_bbn_bbn_cp"] = self["webpackChunk_bbn_bbn_cp"] || []).push([[27704],{
 
-/***/ "./node_modules/@bbn/bbn-css/dist/css/bbn-css-nomadpay-app.css":
-/*!*********************************************************************!*\
-  !*** ./node_modules/@bbn/bbn-css/dist/css/bbn-css-nomadpay-app.css ***!
-  \*********************************************************************/
+/***/ 1698:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("{__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9ub2RlX21vZHVsZXMvQGJibi9iYm4tY3NzL2Rpc3QvY3NzL2Jibi1jc3Mtbm9tYWRwYXktYXBwLmNzcyIsIm1hcHBpbmdzIjoiO0FBQUEiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9AYmJuL2Jibi1jcC8uL25vZGVfbW9kdWxlcy9AYmJuL2Jibi1jc3MvZGlzdC9jc3MvYmJuLWNzcy1ub21hZHBheS1hcHAuY3NzPzNkODUiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gZXh0cmFjdGVkIGJ5IG1pbmktY3NzLWV4dHJhY3QtcGx1Z2luXG5leHBvcnQge307Il0sIm5hbWVzIjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./node_modules/@bbn/bbn-css/dist/css/bbn-css-nomadpay-app.css\n\n}");
+eval("{__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extract-plugin\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiMTY5OC5qcyIsIm1hcHBpbmdzIjoiO0FBQUEiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9AYmJuL2Jibi1jcC8uL25vZGVfbW9kdWxlcy9AYmJuL2Jibi1jc3MvZGlzdC9jc3MvYmJuLWNzcy1ub21hZHBheS1hcHAuY3NzPzNkODUiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gZXh0cmFjdGVkIGJ5IG1pbmktY3NzLWV4dHJhY3QtcGx1Z2luXG5leHBvcnQge307Il0sIm5hbWVzIjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///1698\n\n}");
 
 /***/ })
 

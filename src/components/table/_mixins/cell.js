@@ -1,9 +1,8 @@
 export default {
   methods: {
     cellClass(col, row) {
-      bbn.fn.log("CELL CLASS", col, row);
       const cls = [{
-        [this.$options.name]: true,
+        'bbn-table-cell': true,
         'bbn-table-fixed-cell': !!col.fixed,
         'bbn-table-fixed-cell-left': col.isLeft,
         'bbn-table-fixed-cell-left-last': col.isLeft && !this.currentColumns[col.index+1]?.isLeft,

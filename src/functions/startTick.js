@@ -229,7 +229,6 @@ async function treatQueue(num = 0, cps) {
       lastElement = queueElement;
     }
 
-    /*
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       queueLength += await treatQueue(num + 1);
@@ -237,7 +236,7 @@ async function treatQueue(num = 0, cps) {
 
     if (num) {
       return queueLength;
-    }*/
+    }
 
     const duration = bbn.fn.stopChrono(rnd);
     if (duration > 1000) {

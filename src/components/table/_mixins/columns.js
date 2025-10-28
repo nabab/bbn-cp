@@ -149,10 +149,7 @@ export default {
 
 
         const cols = [];
-        let first = this.firstColumnVisible;
-        if (!first && !this.groupCols[1].cols.length) {
-          first = 1;
-        }
+        let first = this.firstColumnVisible || 0;
         const last = this.lastColumnVisible;
         if (last > first) {
           for (let i = first; i <= last; i++) {
@@ -216,7 +213,7 @@ export default {
           if (!this.checkVisibility()) {
             return;
           }
-          const cols = this.groupCols[1].cols;
+          const cols = this.currentColumns;
           if ((this.scrollCurrentX === null) && hasScrollX) {
             this.scrollCurrentX = this.$refs.scroll.currentX;
           }
@@ -229,7 +226,7 @@ export default {
           let lastVisible = null;
 
           entries.forEach(entry => {
-            const isInit = !entry.target.dataset.visible;
+            const isInit = entry.target.dataset.visible == '';
             // Going in
             if (entry.intersectionRatio > 0) {
               // Row
@@ -241,19 +238,20 @@ export default {
                 const index = parseInt(entry.target.dataset.index);
                 entry.target.dataset.visible = 1;
                 if (entry.target.dataset.groupIndex == 1) {
-                  // Init
-                  if (firstVisible === null) {
-                    firstVisible = index;
-                    lastVisible = index;
+                  if (isInit) {
+                    if (firstVisible === null) {
+                      firstVisible = index;
+                      lastVisible = index;
+                    }
                   }
                   // Going left
                   else if (isLeft) {
-                    if ((firstVisible === null) || (index < firstVisible)) {
+                    if (index < firstVisible) {
                       firstVisible = index;
                     }
                   }
                   // Going right
-                  else if ((lastVisible === null) || (index > lastVisible)) {
+                  else if (index > lastVisible) {
                     lastVisible = index;
                   }
                 }
@@ -271,13 +269,14 @@ export default {
               }
             }
           });
+          bbn.fn.log('SCROLL INTER: ' + firstVisible + ' - ' + lastVisible);
 
-          const max = this.groupCols[1].cols.length - 1;
+          const max = this.currentColumns.length - this.groupCols[2].cols.length - 1;
           let pvW = 0;
           let isDiff;
           if (isFirst) {
             isDiff = (this.firstColumnVisible !== firstVisible) || (this.lastColumnVisible !== lastVisible);
-            this.groupCols[1].cols.slice(firstVisible, lastVisible + 1).forEach(c => pvW += c.realWidth);
+            pvW += bbn.fn.sum(this.currentColumns.slice(firstVisible, lastVisible + 1), 'realWidth');
             this.intersectionWidth = this.lastKnownWidth;
             this.firstColumnVisible = firstVisible;
             this.lastColumnVisible = lastVisible;
@@ -287,11 +286,11 @@ export default {
               pvW += cols[i].realWidth;
               if (!i || (pvW >= this.intersectionWidth)) {
                 if (i < 10) {
-                  i = 0;
+                  i = this.groupCols[0].cols.length;
                 }
-                isDiff = (this.firstColumnVisible !== i) || (this.lastColumnVisible !== this.groupCols[1].cols[lastVisible] ? lastVisible : this.groupCols[1].cols.length - 1);
+                isDiff = (this.firstColumnVisible !== i) || (this.lastColumnVisible !== this.currentColumns[lastVisible] ? lastVisible : this.currentColumns.length - 1);
                 this.firstColumnVisible = i;
-                this.lastColumnVisible = this.groupCols[1].cols[lastVisible] ? lastVisible : this.groupCols[1].cols.length - 1;
+                this.lastColumnVisible = this.currentColumns[lastVisible] ? lastVisible : this.currentColumns.length - 1;
                 break;
               }
             }
@@ -319,8 +318,8 @@ export default {
           this.scrollCurrentX = currentScrollX;
         }, {
           root: this.$refs.scroll.$refs.scrollContent,
-          delay: 100,
           threshold: 0.0,
+          rootMargin: '100px 250px'
         });
         this.rowSizeObserver = new ResizeObserver(entries => {
           for (const e of entries) {
