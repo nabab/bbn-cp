@@ -24,9 +24,6 @@ export default {
       let prevSeq;
       let done;
       const updateItems = [];
-      if (!row.index) {
-        debugger;
-      }
       for (let i = 0; i < seq.length; i++) {
         if (seq[i].fixed) {
           continue;
