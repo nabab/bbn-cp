@@ -453,7 +453,6 @@ export default {
           if (a.maxWidth) {
             maxWidth = this.getDimensionWidth(a.maxWidth)
           }
-          a.index = i;
           if (a.invisible) {
             a.realWidth = 0;
           }
@@ -567,8 +566,13 @@ export default {
         groupCols[firstGroup].visible++;
       }
 
+      let i = 0;
       bbn.fn.each(groupCols, a => {
         a.sum = bbn.fn.sum(a.cols, 'realWidth');
+        bbn.fn.each(a.cols, b => {
+          b.index = i;
+          i++;
+        });
       });
       this.cols = cols;
       this.groupCols = groupCols;

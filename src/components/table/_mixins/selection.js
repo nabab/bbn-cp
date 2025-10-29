@@ -2,6 +2,7 @@ export default {
   data() {
     return {
       allRowsChecked: false,
+      currentMessage: false,
     }
   },
   computed: {
@@ -17,26 +18,34 @@ export default {
     },
   },
   methods: {
-    checkAll(force) {
-      if (force) {
-        if (this.uid) {
-          this.currentSelected = this.filteredData.map(a => a.data[this.uid]);
-        }
-        else {
-          this.currentSelected = this.filteredData.map(a => a.index);
-        }
-      }
-      else {
-        this.getRef('table').querySelectorAll(':scope > tbody > tr > td[is="bbn-table-cell-selector"] bbn-checkbox:not(.bbn-checked)').forEach(a => a.closest('tr').selected = true);
-      }
+    isSelectable(row) {
+      return this.selection && (!bbn.fn.isFunction(this.selection) || this.selection(row));
     },
-    uncheckAll(force) {
-      if (force) {
-        this.currentSelected = [];
-      }
-      else {
-        this.getRef('table').querySelectorAll(':scope > tbody > tr > td[is="bbn-table-cell-selector"] bbn-checkbox.bbn-checked').forEach(a => a.closest('tr').selected = false);
-      }
+    checkAll() {
+      this.currentMessage = bbn._("Selecting all rows...");
+      this.$nextTick(() => {
+        bbn.fn.each(this.items, a => {
+          if (this.isSelectable(a) && !this.currentSelected.includes(this.uid ? a.data[this.uid] : a.index)) {
+            this.checkSelection(a.index, true);
+          }
+        });
+        this.$nextTick(() => {
+          this.currentMessage = false;
+        })
+      })
+    },
+    uncheckAll() {
+      this.currentMessage = bbn._("Unselecting all rows...")
+      this.$nextTick(() => {
+        bbn.fn.each(this.items, a => {
+          if (this.isSelectable(a) && this.currentSelected.includes(this.uid ? a.data[this.uid] : a.index)) {
+            this.checkSelection(a.index, false);
+          }
+        })
+        this.$nextTick(() => {
+          this.currentMessage = false;
+        })
+      })
     },
     /**
      * Returns true if the given index is selected.
@@ -60,7 +69,6 @@ export default {
      * @emit toggle
      */
     checkSelection(index, state) {
-      bbn.fn.log("checkSelection", index, state);
       if (this.cancelSelection) {
         this.cancelSelection = false;
         return;
@@ -68,61 +76,37 @@ export default {
 
 
       // Obliged to add this otherwise there are 2 changes events canceling each other
-      if (!this.isCheckingSelection) {
-        this.isCheckingSelection = [];
-      }
-
-      if (!this.isCheckingSelection.includes(index)) {
-        this.isCheckingSelection.push(index);
-        const row = this.items[index];
-        if (row) {
-          if (this.groupable && row.group) {
-            if (row.expanded) {
-              bbn.fn.fori((d, i) => {
-                if (d && d.selection && (this.getProp(d.data, this.cols[this.group].field) === row.value)) {
-                  this.checkSelection(i, state)
-                }
-              }, this.items, index + row.num, index + 1)
-            }
-          }
-          else if (row.selection ||
-            (this.selection && (!bbn.fn.isFunction(this.selection) || this.selection(row)))
-          ) {
-            const idx = this.currentSelected.indexOf(this.uid ? this.currentData[row.index].data[this.uid] : row.index);
-            const isSelected = !!state;
-            let toggled = false;
-            if (state && (idx > -1)) {
-              this.$emit('select', row.data);
-              toggled = true;
-            }
-            else if (!state && (idx === -1)) {
-              this.$emit('unselect', row.data);
-              toggled = true;
-            }
-            bbn.fn.log("checkSelection", index, state, "idx", idx, "isSelected", isSelected, "toggled", toggled);
-            /* if (idx > -1) {
-              if ([undefined, false].includes(state)) {
-                toggled = true;
-                this.$emit('unselect', row.data);
-                this.currentSelected.splice(idx, 1);
+      const row = this.items[index];
+      if (row) {
+        if (this.groupable && row.group) {
+          if (row.expanded) {
+            bbn.fn.fori((d, i) => {
+              if (d && d.selection && (this.getProp(d.data, this.cols[this.group].field) === row.value)) {
+                this.checkSelection(i, state)
               }
-            }
-            else if ([undefined, true].includes(state)) {
-              toggled = true;
-              this.$emit('select', row.data);
-              this.currentSelected.push(this.uid ? this.currentData[row.index].data[this.uid] : row.index);
-              isSelected = true;
-            } */
-
-            if (toggled) {
-              this.$emit('toggle', isSelected, row.data);
-            }
+            }, this.items, index + row.num, index + 1)
           }
         }
-
-        this.$nextTick(() => {
-          this.isCheckingSelection.splice(this.isCheckingSelection.indexOf(index), 1);
-        })
+        else if (row.selection ||
+          (this.selection && (!bbn.fn.isFunction(this.selection) || this.selection(row)))
+        ) {
+          const idx = this.currentSelected.indexOf(this.uid ? this.currentData[row.index].data[this.uid] : row.index);
+          const isSelected = !!state;
+          let toggled = false;
+          if (state && (idx === -1)) {
+            this.currentSelected.push(this.uid ? this.currentData[row.index].data[this.uid] : row.index);
+            this.$emit('select', row.data);
+            toggled = true;
+          }
+          else if (!state && (idx > -1)) {
+            this.currentSelected.splice(idx, 1);
+            this.$emit('unselect', row.data);
+            toggled = true;
+          }
+          if (toggled) {
+            this.$emit('toggle', isSelected, row.data);
+          }
+        }
       }
     },
     beforeSelect(index, ev, isSelected) {

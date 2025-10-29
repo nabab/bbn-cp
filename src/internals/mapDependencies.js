@@ -28,12 +28,12 @@ const expToFn = (cp, loopVars, a, node, type) => {
     if (type === 'event') {
       stFn += '  const $_bbnData = {';
       bbn.fn.each(args, arg => {
-        stFn += `    ${arg}: bbn.cp.hash(${arg}),\n`;
+        stFn += `    ${arg}: bbnData.hash(${arg}),\n`;
       });
       stFn += `  };\n`;
       stFn += `  ${a.exp}\n`;
       bbn.fn.each(args, arg => {
-        stFn += `  if ($_bbnData['${arg}'] !== bbn.cp.hash(${arg})) {\n`;
+        stFn += `  if ($_bbnData['${arg}'] !== bbnData.hash(${arg})) {\n`;
         if (loopVars[arg]) {
         }
         else if (Object.hasOwn(cp, arg)) {

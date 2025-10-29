@@ -160,10 +160,6 @@ export default class bbnLoopAttr extends bbnAttr
       root = node.nodeBuild(null, true);
     }
     else if (!numItems && oldList.length) {
-      if (this.exp === 'items') {
-        debugger;
-      }
-      bbn.fn.log("CLEANING " + node.realTag + ' ' + node.id + ' IN ' + cp.$options.name + ' - ' + this.exp);
       const indexes = Object.keys(cp.$nodes).filter(idx => !idx.indexOf(node.id + '-'));
       const nodes = cp.$nodes;
       while (indexes.length) {
@@ -220,7 +216,7 @@ export default class bbnLoopAttr extends bbnAttr
         key = loopValue[j].__bbnData.uid;
       }
       else {
-        key = bbn.cp.hash(loopData);
+        key = bbnData.hash(loopData);
       }
 
       if (key === undefined) {

@@ -6,7 +6,6 @@ import createApp from "./functions/createApp.js";
 import define from "./functions/define.js";
 import fetchComponent from "./functions/fetchComponent.js";
 import getComponent from "./functions/getComponent.js";
-import hash from "./functions/hash.js";
 import immunizeValue from "./functions/immunizeValue.js";
 import initDefaults from "./functions/initDefaults.js";
 import isComponent from "./functions/isComponent.js";
@@ -232,7 +231,6 @@ const cpObj = bbn.fn.createObject({
   define,
   fetchComponent,
   getComponent,
-  hash,
   immunizeValue,
   initDefaults,
   isComponent,

@@ -67,6 +67,23 @@ export default {
     },
   },
   methods: {
+    expanderRowspan(d, index) {
+      if (this.isExpanded(d, index)) {
+        if (this.isGroupActive) {
+          const field = this.cols[this.group].field;
+          const idx = 'data.' + field;
+          const num = bbn.fn.count(this.items, {[idx] : this.getProp(d, idx)});
+          if (num) {
+            return num + 1;
+          }
+        }
+        else {
+          return 2;
+        }
+      }
+
+      return 1;
+    },
     /**
      * Returns if the given row is expanded.
      * @method isExpanded
@@ -75,7 +92,7 @@ export default {
      */
     isExpanded(d, index) {
       if (!this.expander && ((this.group === false) || !this.groupable)) {
-        return true;
+        return false;
       }
       if (this.expander && !this.groupable) {
         return this.currentExpanded.includes(index);

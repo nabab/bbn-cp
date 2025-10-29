@@ -5,7 +5,11 @@ export default {
     }
   },
   methods: {
-    cellClass(col, row) {
+    cellClass(col, row, c) {
+      if (!col) {
+        debugger;
+      }
+      //bbn.fn.log(['cellClass', col, row, c]);
       const cls = [{
         'bbn-table-cell': true,
         'bbn-table-fixed-cell': !!col.fixed,
@@ -14,6 +18,7 @@ export default {
         'bbn-table-fixed-cell-right': col.isRight,
         'bbn-spadding': !col.component,
         'bbn-table-cell-first': !col.isLeft && !col.isRight && ((col.index === 0) || (!!this.currentColumns[this.index-1]?.isLeft)),
+        'bbn-table-cell-expander-opened': this.isExpanded(row, col.index)
       }];
 
       if (col.cls) {

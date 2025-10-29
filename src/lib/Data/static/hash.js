@@ -21,6 +21,17 @@ function treatForHash(value, depth = null, level = 0, visited = null) {
       value = "__BBN_DATA__" + data.uid;
     }
   }
+  else if (value && bbn.fn.isDom(value)) {
+    if (value.$cid) {
+      value = "__BBN_COMPONENT__" + value.$cid;
+    }
+    else {
+      value = "__BBN_ELEMENT__" + value.bbnId + (value.bbnHash ? '/' + value.bbnHash : '');
+    }
+  }
+  else if (value && (value instanceof Comment)) {
+    value = "__BBN_DATA__" + value.bbnId + (value.bbnHash ? '/' + value.bbnHash : '');
+  }
   else {
     value = bbn.fn.treatForHash(value, depth, level, visited, treatForHash);
   }

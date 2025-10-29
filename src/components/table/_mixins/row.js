@@ -16,6 +16,10 @@ export default {
       const last  = this.lastColumnVisible;
       const row = bbn.fn.getRow(this.currentRows, {tr});
       //bbn.fn.log(["Updating sequences for row", row, first, last]);
+      if (!row.visible) {
+        row.visible = true;
+      }
+
       if (!last || !bbn.fn.count(row.sequences, {visible: false})) {
         return;
       }
@@ -229,13 +233,6 @@ export default {
         this.scrollIntersection.unobserve(tr);
       }
     },
-    isSelected(row) {
-      if (this.selection) {
-        const i = this.uid ? row.data[this.uid] : row.index;
-        return this.currentSelected.includes(i);
-      }
-      return false;
-    },
     setSelected(row, v) {
       if (this.selection) {
         const i = this.uid ? row.data[this.uid] : row.index;
@@ -254,13 +251,11 @@ export default {
     },
     rowClass(row, i) {
       const cls = [];
-      if (i % 2) {
-        if (this.table.alt) {
-          cls.push('bbn-alt');
-        }
+      if ((i % 2) && this.alt) {
+        cls.push('bbn-alt');
       }
 
-      if (this.selection && this.isSelected(row)) {
+      if (this.selection && this.isSelected(row.index)) {
         cls.push('bbn-row-selected');
       }
 

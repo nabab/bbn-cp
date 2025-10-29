@@ -12,6 +12,7 @@ import "./Data/prototype/unset.js";
 import "./Data/static/addSequence.js";
 import "./Data/static/getObject.js";
 import "./Data/static/getValue.js";
+import "./Data/static/hash.js";
 import "./Data/static/propagate.js";
 import "./Data/static/proxy.js";
 import "./Data/static/proxyPop.js";

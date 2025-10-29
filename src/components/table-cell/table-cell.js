@@ -27,13 +27,11 @@ const cpDef = {
 };
 
 import cpHtml from './table-cell.html';
-import cpStyle from './table-cell.less';
 //import cpLang from './_i18n/index.js';
 
 export default {
   name: 'bbn-table-cell',
   definition: cpDef,
   template: cpHtml,
-  style: cpStyle,
   //lang: cpLang
 };
