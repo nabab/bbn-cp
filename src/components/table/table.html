@@ -218,7 +218,8 @@
                 :style="{
                   paddingTop: $refs.thead && !!scrollable ? theadHeight + 'px' : 0,
                   maxWidth: !!scrollable ? $el.clientWidth + 'px' : '',
-                  left: !!scrollable && getRef('scroll') ? getRef('scroll').currentX + 'px' : ''
+                  left: !!scrollable && getRef('scroll') ? getRef('scroll').currentX + 'px' : '',
+                  height: 'auto'
                 }">
               <td :colspan="currentColumns ? currentColumns.length : 1">
                 <div class="bbn-spadding bbn-background-internal bbn-c">
