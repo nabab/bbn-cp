@@ -44,7 +44,7 @@ bbnProtoHtml.$connected = function () {
   bbn.cp.uid++;
   this.bbnUid = bbn.cp.uid;
   // Check we are in the DOm
-  //bbn.fn.warning("CALLBACK ON " + this.$options.name + " / " + this.$el.bbnSchema.id + " INIT: " + this.$isInit + " MOUNTED: " + this.$isMounted);
+  //bbn.fn.warning("CALLBACK ON " + this.$options.name + " / " + this.$el.bbnNode.id + " INIT: " + this.$isInit + " MOUNTED: " + this.$isMounted);
   if (!this.isConnected) {
     //bbn.fn.log("CONNECTED CALLBACK: not connected or already initialized", this.$el.isConnected, bbn.cp.getComponent(this.$el.bbnCid), this);
     return;
@@ -54,7 +54,7 @@ bbnProtoHtml.$connected = function () {
     throw new Error(bbn._("The component is already connected"));
   }
 
-  //bbn.fn.warning(this.$options.name + " / " + this.$el.bbnSchema.id + " / CID: " + this.bbnCid);
+  //bbn.fn.warning(this.$options.name + " / " + this.$el.bbnNode.id + " / CID: " + this.bbnCid);
 
   this.$isConnected = true;
 
@@ -152,17 +152,17 @@ bbnProtoHtml.$connected = function () {
   }
 
   // just after definition to know what is the default model prop
-  if (this.$el.bbnSchema.model?._default_ && this.$cfg?.model) {
+  if (this.$el.bbnNode.model?._default_ && this.$cfg?.model) {
     const modelCfg = this.$cfg.model;
-    Object.defineProperty(this.$el.bbnSchema.model._default_, 'name', {
+    Object.defineProperty(this.$el.bbnNode.model._default_, 'name', {
       value: modelCfg.prop,
       configurable: false,
       writable: false
     });
-    this.$el.bbnSchema.model[modelCfg.prop] = this.$el.bbnSchema.model._default_;
-    delete this.$el.bbnSchema.model._default_;
-    delete this.$el.bbnSchema.props._default_;
-    this.$el.bbnSchema.props[modelCfg.prop] = this.$el.bbnSchema.model[modelCfg.prop].value;
+    this.$el.bbnNode.model[modelCfg.prop] = this.$el.bbnNode.model._default_;
+    delete this.$el.bbnNode.model._default_;
+    delete this.$el.bbnNode.props._default_;
+    this.$el.bbnNode.props[modelCfg.prop] = this.$el.bbnNode.model[modelCfg.prop].value;
   }
 
 

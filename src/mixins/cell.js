@@ -44,15 +44,6 @@ const cell = {
     },
   },
   created() {
-    this.$on('click', e => {
-      this.table.clickCell(this.column, this.index, this.rowIndex);
-    })
-    this.$on('doubleclick', e => {
-      this.table.dbclickCell(this.column, this.source, this.rowIndex);
-    })
-    this.$on('focusin', e => {
-      this.table.focusin(this.rowIndex, e, this.index);
-    })
   },
   mounted() {
     if (this.column.fixed) {

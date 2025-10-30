@@ -33,7 +33,7 @@ bbnAttr.prototype.attrUpdate = function(init) {
       }
       */
       if (node.constructor.name === 'bbnInternalNode') {
-        node = this.node.component.$el?.bbnSchema;
+        node = this.node.component.$el?.bbnNode;
         if (Object.hasOwn(node?.attr || {}, name) || Object.hasOwn(node?.bind?.value || {}, name)) {
           //return;
         }

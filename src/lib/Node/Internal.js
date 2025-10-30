@@ -7,7 +7,7 @@ import bbnNode from "./Node.js";
 export default class bbnInternalNode extends bbnNode
 {
   get _region() {
-    return this.component?.bbnSchema?._region || {};
+    return this.component?.bbnNode?._region || {};
   }
 
   nodeInit(after) {

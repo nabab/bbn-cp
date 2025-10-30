@@ -1,5 +1,5 @@
 export default function prepareTransition(ele, type) {
-  const transition = ele?.bbnSchema?.transition;
+  const transition = ele?.bbnNode?.transition;
   if (transition && ele?.classList) {
     const name = transition.name || 'bbn';
     ele.classList.add(name + "-" + type + "-from");

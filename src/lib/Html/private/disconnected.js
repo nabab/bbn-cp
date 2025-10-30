@@ -10,7 +10,7 @@ export default function disconnected(cp) {
       return;
     }
     //bbn.fn.log("Disconnected callback from " + cp.$el.tagName);
-    //bbn.fn.log("Before disconnected callback from " + cp.$el.tagName + ' / ' + cp.$el.bbnSchema.id);
+    //bbn.fn.log("Before disconnected callback from " + cp.$el.tagName + ' / ' + cp.$el.bbnNode.id);
     cp.$destroy();
   }
 }

@@ -287,7 +287,7 @@ const bbnProtoHtml = {
 
   findAllByKey(key, selector) {
     const arr = this.findAll(selector);
-    return arr.filter(a => a.bbnSchema?.props?.key === key);
+    return arr.filter(a => a.bbnNode?.props?.key === key);
   },
 
 

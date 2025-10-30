@@ -50,7 +50,7 @@ bbnNode.prototype.nodeDefine = function(node, data) {
   Object.defineProperty(this, 'parent', {
     writable: false,
     configurable: false,
-    value: parentId ? (parentId === '0' ? cp.$internal : parent.bbnSchema) : null
+    value: parentId ? (parentId === '0' ? cp.$internal : parent.bbnNode) : null
   });
   */
 

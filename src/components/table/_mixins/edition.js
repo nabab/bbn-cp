@@ -131,7 +131,7 @@ export default {
     isEdited(data, col, idx) {
       return this.isEditable(data, col, idx) &&
         (this.editMode === 'inline') &&
-        (this.filteredData[idx]?.index === this.editedIndex);
+        (this.items[idx]?.index === this.editedIndex);
     },
     /**
      * Returns an object of the default values for the different types of fields.

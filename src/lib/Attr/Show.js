@@ -11,7 +11,7 @@ export default class bbnShowAttr extends bbnAttr
   }
 
   attrUpdate(init) {
-    const node = (this.node.constructor.name === 'bbnInternalNode') && !this.node.component.$isRoot ? this.node.element.bbnSchema : this.node;
+    const node = (this.node.constructor.name === 'bbnInternalNode') && !this.node.component.$isRoot ? this.node.element.bbnNode : this.node;
     if (node.comment) {
       return;
     }

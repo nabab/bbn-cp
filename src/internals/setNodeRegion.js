@@ -9,9 +9,9 @@ export default function setNodeRegion(node, after) {
       node._region.end.remove();
     }
 
-    const hash = node.id + (node.hash ? ('-' + node.hash) : '');
-    const start = document.createComment(`⟨item:${hash}:start⟩`);
-    const end   = document.createComment(`⟨item:${hash}:end⟩`);
+    const hash = node.id + (node.hash ? ('|' + node.hash) : '');
+    const start = document.createComment(`⟨${node.tag}:${hash}:start⟩`);
+    const end   = document.createComment(`⟨${node.tag}:${hash}:end⟩`);
     start.bbnId = node.id + '-start';
     end.bbnId = node.id + '-end';
     start.bbnNode = node;
@@ -24,8 +24,8 @@ export default function setNodeRegion(node, after) {
     let p;
     if (after?.isConnected) {
       p = after.parentNode;
-      if (after.bbnSchema) {
-        after = after.bbnSchema._region.start;
+      if (after.bbnNode) {
+        after = after.bbnNode._region.start;
       }
       p.insertBefore(end, after);
     }

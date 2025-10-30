@@ -33,26 +33,38 @@ export default {
       // Aggregated
       // Paging locally
       // Grouping (and sorting) locally
-      let pos;
       if (
         isGroup &&
-        ((this.isAjax && this.serverGrouping) || (!this.isAjax && this.localGrouping)) &&
-        ((pos = bbn.fn.search(this.currentOrder, {
-          field: this.cols[this.group].field
-        })) !== 0)
+        ((this.isAjax && !this.serverGrouping) || (!this.isAjax && this.localGrouping))
       ) {
-        // First ordering the data
-        let orders = [{
-          field: this.cols[this.group].field,
-          dir: (pos > 0 ? this.currentOrder[pos].dir : 'asc')
-        }];
-        if (this.sortable && this.currentOrder.length) {
-          orders = orders.concat(JSON.parse(JSON.stringify(this.currentOrder)))
+        let pos;
+        if ((pos = bbn.fn.search(this.currentOrder, {
+          field: this.cols[this.group].field
+        })) !== 0) {
+          // First ordering the data
+          let orders = [{
+            field: this.cols[this.group].field,
+            dir: (pos > 0 ? this.currentOrder[pos].dir : 'asc')
+          }];
+          if (this.sortable && this.currentOrder.length) {
+            orders = orders.concat(JSON.parse(JSON.stringify(this.currentOrder)))
+          }
+          data = bbn.fn.multiorder(data, orders.map(item => {
+            item.field = 'data.' + item.field;
+            return item;
+          }));
         }
-        data = bbn.fn.multiorder(data, orders.map(item => {
-          item.field = 'data.' + item.field;
-          return item;
-        }));
+        let group = this.cols[this.group].field;
+        let groupIndex = -1;
+        let currentGroup;
+        data.map(a => {
+          if (a.data[group] !== currentGroup) {
+            currentGroup = a.data[group];
+            groupIndex++;
+          }
+
+          a.groupIndex = groupIndex;
+        })
       }
       // Sorting locally
       else if (this.sortable && this.currentOrder.length && (!this.serverSorting || !this.isAjax)) {
@@ -165,11 +177,12 @@ export default {
       this.currentExpanded = [];
       this.init();
     },
+    /*
     items(val){
       if (this.expanded && !this.currentExpanded.length) {
         this.currentExpanded = val.map(a => a.index);
       }
-    }
+    }*/
   }
 }
 

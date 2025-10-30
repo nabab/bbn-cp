@@ -182,7 +182,7 @@ export default {
       // Adding bbns-container from the slot
       if (this.$slots.default) {
         for (let item of this.$retrieveSlotItems('default')) {
-          let node = item.bbnSchema;
+          let node = item.bbnNode;
           //bbn.fn.log("ROUTER SLOT", node, '-------------');
   
           if (!node.comment && ['bbn-container', 'bbns-container'].includes(node?.tag)) {

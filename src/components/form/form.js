@@ -627,7 +627,7 @@ const cpDef = {
     _post() {
       this.isPosted = true;
       this.isLoading = true;
-      if (this.bbnSchema.props.action && !this.target) {
+      if (this.bbnNode.props.action && !this.target) {
         let data = bbn.fn.extend(true, {}, this.data || {}, this.source || {});
         if (this.transform) {
           data = this.transform(data);
@@ -636,7 +636,7 @@ const cpDef = {
         let method =
           this.blank || this.self || this.target ? "postOut" : "post";
         this[method](
-          this.bbnSchema.props.action,
+          this.bbnNode.props.action,
           data,
           (d) => {
             if (d && [false, null, 0].includes(d.success)) {

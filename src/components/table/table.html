@@ -240,13 +240,12 @@
               <component is="tr"
                          bbn-if="isGroupActive && (!rowIndex || (items[rowIndex-1].data[cols[group].field] !== row.data[cols[group].field]))"
                         :data-index="rowIndex"
-                        :data-group="group"
-                        :class="{'bbn-alt': rowIndex % 2}"
+                        :data-group="row.data[isGroupActive]"
+                        :class="rowClass(row, rowIndex)"
                         ref="groupRows">
                 <component is="td"
-                           bbn-if="groupCols[0].cols.length > 1"
-                           class="cellClass(currentColumns[0], row)"
-                           :rowspan="expanderRowspan(row, rowIndex)">
+                           :class="cellClass(currentColumns[0], row)"
+                           :rowspan="expanderRowspan(row.data, rowIndex)">
                   <div @click="toggleExpanded(rowIndex)"
                        class="bbn-table-cell-expander-container bbn-lg bbn-p bbn-unselectable bbn-c">
                     <i class="nf nf-oct-triangle_right bbn-unselectable bbn-table-cell-expander-icon"
@@ -255,27 +254,29 @@
                 </component>
                 <component is="td"
                            bbn-if="groupCols[0].cols.length > 1"
-                           class="cellClass(currentColumns[c.index], row)"
+                           :class="cellClass(null, row)"
                            :colspan="groupCols[0].cols.length - 1">
                 </component>
                 <component is="td"
-                           class="cellClass(currentColumns[c.index], row)"
+                           :class="cellClass(cols[group], row)"
                            :colspan="groupCols[1].cols.length">
-                  <component bbn-if="currentColumns[c.index].component"
-                            :is="currentColumns[c.index].component"
-                            bbn-bind="getColOptions(row.data, currentColumns[c.index], rowIndex)"
-                            :source="currentColumns[c.index].mapper ? currentColumns[c.index].mapper(row.data) : row.data"/>
+                  <component bbn-if="cols[group].component"
+                            :is="cols[group].component"
+                            bbn-bind="getColOptions(row.data, cols[group], rowIndex)"
+                            :source="cols[group].mapper ? cols[group].mapper(row.data) : row.data"/>
                   <div bbn-else
-                        bbn-html="renderDefault(row.data, currentColumns[c.index], rowIndex)"/>
+                       bbn-html="renderDefault(row.data, cols[group], rowIndex)"/>
                 </component>
                 <component is="td"
                            bbn-if="groupCols[2].cols.length"
-                           class="cellClass(currentColumns[c.index], row)"
+                           class="cellClass(groupCols[2].cols[0], row)"
                            :colspan="groupCols[2].cols.length">
                 </component>
               </component>
               <component is="tr"
                         :class="rowClass(row, rowIndex)"
+                        bbn-if="!groupable || !isGroupActive || isExpanded(row.data, row.index)"
+                        :data-group="isGroupActive ? row.data[isGroupActive] : ''"
                         :style="rowStyle(row)"
                         :data-index="rowIndex"
                         @hook:create="onRowCreated"
@@ -290,18 +291,28 @@
                     <template bbn-if="seq.visible">
                       <component bbn-for="c in seq.items"
                                 :key="c.uid"
+                                bbn-if="!isGroupActive || !currentColumns[c.index].isExpander"
                                 is="td"
-                                :class="cellClass(currentColumns[c.index], row, c)"
-                                :ref="'td' + c.index"
-                                @hook:create="onCellCreated(row, currentColumns[c.index], rowIndex, c.index)"
+                                :class="cellClass(currentColumns[c.index], row)"
+                                :ref="'td-' + rowIndex + '-' + c.index"
                                 @save="saveInline"
                                 @cancel="cancel"
+                                :rowspan="!isGroupActive && currentColumns[c.index].isExpander && isExpanded(row.data, row.index) ? 2 : 1"
+                                :tabindex="editable && (currentColumns[c.index].editable !== false) ? 0 : -1"
+                                @click="clickCell(currentColumns[c.index], c.index, rowIndex)"
+                                @doubleclick="dbClickCell(currentColumns[c.index], row.data, rowIndex)"
                                 @focusout="focusout(rowIndex, $event)"
                                 @focusin="focusin(rowIndex, $event, c.index)">
   
                         <span class="bbn-table-dirty bbn-top-left"
                               bbn-if="isDirty(currentColumns[c.index], rowIndex)"/>
-                        <div bbn-if="currentColumns[c.index].isSelection && isSelectable(row)"
+                        <div bbn-if="!isGroupActive && currentColumns[c.index].isExpander"
+                             @click="toggleExpanded(rowIndex)"
+                             class="bbn-table-cell-expander-container bbn-lg bbn-p bbn-unselectable bbn-c">
+                          <i class="nf nf-oct-triangle_right bbn-unselectable bbn-table-cell-expander-icon"
+                            tabindex="0"/>
+                        </div>
+                        <div bbn-elseif="currentColumns[c.index].isSelection && isSelectable(row)"
                             class="bbn-c bbn-w-100">
                           <bbn-checkbox :checked="currentSelected.includes(uid ? row.data[uid] : row.index)"
                                         :value="true"
@@ -312,13 +323,7 @@
                                         @change="v => checkSelection(rowIndex, v)"
                                         class="bbn-middle bbn-flex"/>
                         </div>
-                        <div bbn-elseif="currentColumns[c.index].isExpander && !isGroupActive"
-                             @click="toggleExpanded(rowIndex)"
-                             class="bbn-table-cell-expander-container bbn-lg bbn-p bbn-unselectable bbn-c">
-                          <i class="nf nf-oct-triangle_right bbn-unselectable bbn-table-cell-expander-icon"
-                            tabindex="0"/>
-                        </div>
-                        <div bbn-elseif="isEdited(row, currentColumns[c.index], rowIndex)">
+                        <div bbn-elseif="isEdited(row.data, currentColumns[c.index], rowIndex)">
                           <div bbn-if="(editMode === 'inline')
                                 && (editable !== 'nobuttons')
                                 && (c.index === colButtons)">
@@ -342,7 +347,8 @@
                                       bbn-bind="getEditableOptions(currentColumns[c.index])"
                                       :is="getEditableComponent(currentColumns[c.index])"
                                       @click.stop
-                                      bbn-model="editedRow[currentColumns[c.index].field]"
+                                      :source="row.data"
+                                      bbn-model="row.data[currentColumns[c.index].field]"
                                       style="width: 100%"/>
                           <!--<bbn-field bbn-elseif="(editMode === 'inline')
                                           && table.isValidField(column.field)
@@ -373,12 +379,11 @@
                           </template>
                           <template bbn-elseif="buttonMode === 'menu'">
                             <bbn-context :source="buttonSource(row.data, currentColumns[c.index], rowIndex)"
-                                          @select="(it, idx, dataIndex, ev, floater) => onButtonsMenuSelect(it, row.data, currentColumns[c.index], rowIndex, ev, floater)"
-                                          :attach="menuIconElement[currentColumns[c.index].uid]">
+                                         :portal="$el"
+                                          @select="(it, idx, dataIndex, ev, floater) => onButtonsMenuSelect(it, row.data, currentColumns[c.index], rowIndex, ev, floater)">
                               <span class="bbn-iblock bbn-lg">
                                 <bbn-icon :content="buttonIcon"
-                                          ref="menuIcon"
-                                          @hook:created="menuIconElement[currentColumns[c.index].uid] = getRef('menuIcon')"/>
+                                          ref="menuIcon">
                               </span>
                             </bbn-context>
                           </template>
@@ -434,21 +439,93 @@
                   </template>
                 </template>
               </component>
-              <bbn-table-row-expansion bbn-if="expander && !isGroupActive && isExpanded(row.data, row.index)"
+              <template bbn-if="currentRows[rowIndex]?.visible">
+                <component is="tr"
+                            bbn-if="expander && !isGroupActive && isExpanded(row.data, row.index)"
+                            :class="rowClass(row, rowIndex)"
+                            ref="expansionRows">
+                  <component is="td"
+                            bbn-if="groupCols[0].cols.length > 1"
+                            class="cellClass(currentColumns[0], row)"
+                            :colspan="groupCols[0].cols.length - 1">
+                  </component>
+                  <component is="td"
+                            class="bbn-border-left bbn-border-bottom"
+                            :colspan="bbn.fn.count(groupCols[1].cols, d => !d.isExpander && (d.realWidth > 0))"
+                            :style="{
+                              width: 'auto',
+                              borderRight: '0px',
+                              overflow: 'unset'
+                            }">
+                    <div class="bbn-block">
+                      <component bbn-if="typeof(expander) !== 'function'"
+                                :is="expander"
+                                class="bbn-spadding"
+                                :source="row.data" />
+                      <component bbn-elseif="(typeof(expander(row)) === 'object')"
+                                :is="expander(row)"
+                                :source="row.data"/>
+                      <div bbn-else
+                            bbn-html="expander(row.data, rowIndex)"/>
+                    </div>
+                  </component>
+                  <component is="td"
+                            bbn-if="groupCols[2].cols.length"
+                            class="cellClass(currentColumns[0], row)"
+                            :colspan="groupCols[2].cols.length">
+                  </component>
+                </component>
+                <component is="tr"
+                          bbn-elseif="row.aggregated || row.groupAggregated"
+                                        :source="row"
+                                        :class="{'bbn-alt': rowIndex % 2}"
+                                        :index="rowIndex"
+                                        ref="aggregateRows">
+                  <component is="td"
+                             bbn-for="col in currentColumns"
+                            :class="cellClass(col, row)">
+                    <span bbn-if="col.isAggregatedTitle"
+                          :class="row.aggregated ? 'bbn-b' : ''"
+                          bbn-text="aggregateExp[row.name]"/>
+                    <div bbn-elseif="col.aggregate"
+                        bbn-html="renderDefault(row.data, col, rowIndex)"/>
+                    <span bbn-else> </span>
+                  </component>
+                </component>
+                <component is="tr"
+                          bbn-elseif="row.footer && groupFooter && groupable"
                                       :source="row"
-                                      :index="rowIndex"
-                                      :class="{'bbn-alt': rowIndex % 2}"
-                                      ref="expansionRows"/>
-              <bbn-table-row-aggregate bbn-elseif="row.aggregated || row.groupAggregated"
-                                      :source="row"
                                       :class="{'bbn-alt': rowIndex % 2}"
                                       :index="rowIndex"
-                                      ref="aggregateRows"/>
-              <bbn-table-row-footer bbn-elseif="row.footer && groupFooter && groupable"
-                                    :source="row"
-                                    :class="{'bbn-alt': rowIndex % 2}"
-                                    :index="rowIndex"
-                                    ref="footerRows"/>
+                                      ref="footerRows">
+                  <component is="td"
+                            bbn-if="groupCols[0].cols.length"
+                            class="cellClass(currentColumns[0], row)"
+                            :colspan="groupCols[0].cols.length">
+                  </component>
+                  <component is="td"
+                            :class="cellClass(col, row)"
+                            :colspan="groupCols[1].cols.length"
+                            :style="{
+                              width: 'auto',
+                              borderRight: '0px',
+                              overflow: 'unset'
+                            }">
+                    <div bbn-if="typeof groupFooter === 'function'"
+                          bbn-html="groupFooter(row.data)"/>
+                    <component bbn-elseif="groupFooter"
+                                :is="groupFooter"
+                                :source="row.data"/>
+                    <div bbn-elseif="row.footer"
+                         bbn-html="row.footer"/>
+                  </component>
+                  <component is="td"
+                            bbn-if="groupCols[2].cols.length"
+                            class="cellClass(currentColumns[0], row)"
+                            :colspan="groupCols[2].cols.length">
+                  </component>
+                </component>
+              </template>
             </template>
           </tbody>
         </table>
@@ -469,9 +546,9 @@
          bbn-html="footer()"
          class="bbn-table-footer bbn-no-border-right bbn-no-border-left bbn-no-border-bottom"/>
     <!-- Loading -->
-    <div bbn-if="isLoading || isTableDataUpdating"
-        class="bbn-overlay bbn-middle">
-      <div class="bbn-spadding bbn-background-internal bbn-c">
+    <div bbn-if="isLoading || isTableDataUpdating || !rowsShownFinished"
+        class="bbn-overlay bbn-background-internal bbn-middle">
+      <div class="bbn-spadding bbn-c">
         <div bbn-if="loader"
               class="bbn-vmiddle">
           <bbn-loadicon class="bbn-vmiddle"

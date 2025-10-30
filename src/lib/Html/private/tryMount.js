@@ -27,7 +27,7 @@ export default function tryMount(cp, child) {
     //bbn.fn.log("SUCCEED MOUNT ON " + fullId(cp));
     // Sending mounted event
     onHook(cp, 'mounted');
-    if (cp.bbnSchema.events?.['hook:mounted'] || cp.$events?.['hook:mounted']) {
+    if (cp.bbnNode.events?.['hook:mounted'] || cp.$events?.['hook:mounted']) {
       const mounted = new Event('hook:mounted');
       cp.dispatchEvent(mounted);
     }

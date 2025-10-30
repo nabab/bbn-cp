@@ -13,8 +13,8 @@ const config = {
     if (this.$slots.default) {
       bbn.fn.each(this.$slots.default.reverse(), a => {
         //bbn.fn.log(['config mixin', a.tagName])
-        if ((a.tagName === this.constructor.config.name.toUpperCase()) && a.bbnSchema) {
-          this[this.constructor.config.data].unshift(a.bbnSchema.props);
+        if ((a.tagName === this.constructor.config.name.toUpperCase()) && a.bbnNode) {
+          this[this.constructor.config.data].unshift(a.bbnNode.props);
         }
       });
     }

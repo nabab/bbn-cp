@@ -45,7 +45,7 @@ export default function() {
 
       let target = el.bbnDirectives?.portal?.originalParent;
       if (!target) {
-        target = el.bbnSchema.parentElement;
+        target = el.bbnNode.parentElement;
       }
  
       return moveToTarget(el, target);
@@ -56,9 +56,9 @@ export default function() {
     inserted: (el, binding) => {
       let original = el.parentNode;
       if (el.bbnId.indexOf(el.parentNode.bbnId)) {
-        original = el.bbnSchema.parent.element;
+        original = el.bbnNode.parent.element;
         if (!original || (original instanceof Comment)) {
-          original = el.bbnSchema.parent.parentElement;
+          original = el.bbnNode.parent.parentElement;
         }
       }
       el.bbnDirectives.portal = bbn.fn.createObject({
@@ -77,7 +77,7 @@ export default function() {
       else {
         let target = el.bbnDirectives?.portal?.originalParent;
         if (!target) {
-          target = el.bbnSchema.parentElement;
+          target = el.bbnNode.parentElement;
         }
 
         moveToTarget(el, target);

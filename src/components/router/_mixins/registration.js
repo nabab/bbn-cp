@@ -69,7 +69,7 @@ export default {
           idx = this.views.length;
         }
 
-        const props = bbn.fn.extendOut({idx}, cp.bbnSchema.props);
+        const props = bbn.fn.extendOut({idx}, cp.bbnNode.props);
         this.add(props, idx);
       }
 

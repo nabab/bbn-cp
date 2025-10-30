@@ -65,7 +65,7 @@ bbnProtoHtml.$on = function (...args) {
   const hash = bbn.fn.md5((bound || this).$cid + '-' + fn.hash);
   const controller = new AbortController();
   bbn.fn.each(events, event => {
-    const obj = dom.$events || dom.bbnSchema.events;
+    const obj = dom.$events || dom.bbnNode.events;
     if (!obj[event]) {
       obj[event] = bbn.fn.createObject();
     }

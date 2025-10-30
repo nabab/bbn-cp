@@ -16,7 +16,7 @@ export default class bbnClassAttr extends bbnAttr
     }
 
     if (init || (this.exp && this.isChanged)) {
-      const node = this.node instanceof bbnInternalNode && !this.node.component.$isRoot ? this.node.element.bbnSchema : this.node;
+      const node = this.node instanceof bbnInternalNode && !this.node.component.$isRoot ? this.node.element.bbnNode : this.node;
       node.classes[this.uid] = this.attrGetValue();
       node.nodeSetClass();
     }

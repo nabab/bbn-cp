@@ -396,7 +396,7 @@ const cpDef = {
       let isNumber = false;
       let isAuto = false;
       let isMaxContent = false;
-      let props = bbn.fn.createObject({}, pane.bbnSchema.props);
+      let props = bbn.fn.createObject({}, pane.bbnNode.props);
       let resizable = (this.resizable || pane.resizable) && (props.resizable !== false);
       let collapsible = (this.collapsible || props.collapsible) && (props.collapsible !== false);
       let value = parseInt(props.size) || 0;

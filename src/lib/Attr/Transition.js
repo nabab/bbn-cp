@@ -57,7 +57,7 @@ export default class bbnTransitionAttr extends bbnAttr
   
     return new Promise((resolve, reject) => {
       requestAnimationFrame(() => {
-        const transition = ele?.bbnSchema?.transition;
+        const transition = ele?.bbnNode?.transition;
         if (!transition || !ele?.classList) {
           //bbn.fn.log("NO TRANSITION", ele);
           return resolve(true);

@@ -95,7 +95,7 @@
                   @hook:mounted="componentRegister"
                   @hook:beforedestroy="componentUnregister"
                   bbn-bind="realComponentOptions"/>
-        <slot bbn-elseif="$slots.default.length && ($slots.default[0].bbnSchema.tag !== 'slot')"/>
+        <slot bbn-elseif="$slots.default.length && ($slots.default[0].bbnNode.tag !== 'slot')"/>
         <div bbn-elseif="!!content"
             bbn-html="content"
             :style="HTMLStyle"/>

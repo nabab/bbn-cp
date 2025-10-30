@@ -10,9 +10,9 @@ const removeElement = function(res, ele, node) {
 
     if (!(ele instanceof Comment) && isComponent(ele) && !ele.$isDestroying) {
       onHook(ele, 'beforeDestroy');
-      if (ele.bbnSchema.events?.['hook:beforedestroy']) {
+      if (ele.bbnNode.events?.['hook:beforedestroy']) {
         const beforeDestroy = new Event('hook:beforedestroy');
-        ele.bbnSchema.events['hook:beforedestroy'].handler.bind(ele.bbnComponent)(beforeDestroy);
+        ele.bbnNode.events['hook:beforedestroy'].handler.bind(ele.bbnComponent)(beforeDestroy);
       }
     }
 
@@ -55,15 +55,15 @@ const removeElement = function(res, ele, node) {
 };
 
 bbnNode.prototype.nodeRemove = function(ele, noTransition) {
-  if (ele.bbnId && !ele.bbnSchema) {
+  if (ele.bbnId && !ele.bbnNode) {
     return;
   }
   /*
-  if (ele.bbnDirectives && (ele.bbnSchema?.directives?.['bbn-portal']?.value === ele.parentNode)) {
+  if (ele.bbnDirectives && (ele.bbnNode?.directives?.['bbn-portal']?.value === ele.parentNode)) {
     const parent = ele.parentNode;
-    bbn.fn.log("rm PORTAL 2", ele.bbnSchema.comment, ele.bbnSchema.isCommented)
+    bbn.fn.log("rm PORTAL 2", ele.bbnNode.comment, ele.bbnNode.isCommented)
     debugger;
-    const d = ele.bbnSchema.directives['bbn-portal'];
+    const d = ele.bbnNode.directives['bbn-portal'];
     d.attrGetValue();
     d.value = null;
     d.oldValue = parent;
@@ -78,7 +78,7 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
     if (portals.length) {
       bbn.fn.each(portals, p => {
         const parent = p.parentNode;
-        const d = p.bbnSchema.directives['bbn-portal'];
+        const d = p.bbnNode.directives['bbn-portal'];
         d.attrGetValue();
         d.value = null;
         d.oldValue = parent;
@@ -88,8 +88,8 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
     }
   }
 
-  if (ele?.bbnSchema?.attr?.ref) {
-    const refs = ele.bbnComponent.$refsElements[ele.bbnSchema.attr.ref.value];
+  if (ele?.bbnNode?.attr?.ref) {
+    const refs = ele.bbnComponent.$refsElements[ele.bbnNode.attr.ref.value];
     if (bbn.fn.isArray(refs)) {
       const idx = refs.indexOf(ele);
       if (idx > -1) {
@@ -97,18 +97,18 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
       }
     }
     else if (refs === ele) {
-      ele.bbnComponent.$refsElements[ele.bbnSchema.attr.ref.value] = null;
+      ele.bbnComponent.$refsElements[ele.bbnNode.attr.ref.value] = null;
     }
   }
 
-  const node = ele.bbnSchema;
+  const node = ele.bbnNode;
   if (node?.tag === 'slot') {
     for (let i = 0; i < node.component.$slots[node.realName].length; i++) {
       const element = node.component.$slots[node.realName][i];
-      if (element.bbnId && !element.bbnSchema) {
+      if (element.bbnId && !element.bbnNode) {
         continue;
       }
-      if (!element.bbnSchema) {
+      if (!element.bbnNode) {
         if (node.parentNode) {
           node.parentNode.removeChild(element);
         }
@@ -118,19 +118,19 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
         continue;
       }
 
-      if (element.bbnSchema.tag === 'slot') {
-        element.bbnSchema.nodeRemove(element);
+      if (element.bbnNode.tag === 'slot') {
+        element.bbnNode.nodeRemove(element);
         continue;
       }
 
-      if (element.bbnComponent?.isConnected && element.bbnSchema?.parentElement?.isConnected) {
+      if (element.bbnComponent?.isConnected && element.bbnNode?.parentElement?.isConnected) {
         if (element.classList) {
           element.classList.add('bbn-is-moving');
         }
 
         if (element.isConnected) {
-          if (node.component.bbnSchema?.forget?.value) {
-            node.component.bbnSchema.element.parentNode.insertBefore(element, node.component.bbnSchema.element);
+          if (node.component.bbnNode?.forget?.value) {
+            node.component.bbnNode.element.parentNode.insertBefore(element, node.component.bbnNode.element);
           }
           else {
             throw new Error(bbn._("sdsdsdsd"));
@@ -141,7 +141,7 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
         }
       }
       else {
-        element.bbnSchema.nodeRemove(element);
+        element.bbnNode.nodeRemove(element);
       }
     }
   }

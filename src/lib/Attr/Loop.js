@@ -237,7 +237,7 @@ export default class bbnLoopAttr extends bbnAttr
         if (currentNode.data[defIndex] !== j) {
           currentNode.data[defIndex] = j;
           if (prevElement) {
-            currentNode.nodeMove(prevElement.bbnSchema._region.end, true);
+            currentNode.nodeMove(prevElement.bbnNode._region.end, true);
             bbn.fn.move(oldList, oldList.indexOf(currentNode.hash), j in oldList ? j : oldList.length -1);
           }
           else {
@@ -265,7 +265,7 @@ export default class bbnLoopAttr extends bbnAttr
           oldList.unshift(hash);
         }
 
-        ele = newNode.nodeInit(prevElement ? prevElement.bbnSchema._region.end : root);
+        ele = newNode.nodeInit(prevElement ? prevElement.bbnNode._region.end : root);
         newNode.loopNode = this;
       }
 
@@ -312,10 +312,10 @@ export default class bbnLoopAttr extends bbnAttr
             const source = nodeByValue.get(step.value);
             const target = step.before ? nodeByValue.get(step.before) : null;
             if (target) {
-              source.bbnSchema.nodeMove(target.bbnSchema._region.start);
+              source.bbnNode.nodeMove(target.bbnNode._region.start);
             }
             else {
-              source.bbnSchema.nodeMove(root.bbnSchema._region.end);
+              source.bbnNode.nodeMove(root.bbnNode._region.end);
             }
           });
           //bbn.fn.log(JSON.stringify(copy), '-------------');
@@ -355,7 +355,7 @@ export default class bbnLoopAttr extends bbnAttr
     /*
     bbn.fn.each(elements, (e, i) => {
       let next = e.nextSibling;
-      if ((e instanceof Comment) && !e.bbnSchema.isCommented) {
+      if ((e instanceof Comment) && !e.bbnNode.isCommented) {
         while (next && !next.bbnId.indexOf(e.bbnId + '-') && !next.bbnHash.indexOf(e.bbnHash) && (next.parentNode === e.parentNode)) {
           let oldNext = next;
           next = next.nextSibling;

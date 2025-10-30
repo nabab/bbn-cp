@@ -27,7 +27,7 @@ export default class bbnTextNode extends bbnNode
     });
   
     const node = this;
-    Object.defineProperty(this.element, 'bbnSchema', {
+    Object.defineProperty(this.element, 'bbnNode', {
       get() {
         return node;
       }

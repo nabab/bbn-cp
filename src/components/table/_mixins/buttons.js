@@ -95,6 +95,11 @@ export default {
     },
   },
   methods: {
+    onButtonsMenuSelect(item, data, col, i, ev, floater) {
+      ev.preventDefault();
+      this._execCommand(item, data, col, i, ev);
+      floater.closeAll();
+    },
     buttonSource() {
       if (bbn.fn.isFunction(this.realButtons)) {
         return this.realButtons(...arguments);

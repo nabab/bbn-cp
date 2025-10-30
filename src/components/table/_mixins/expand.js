@@ -67,12 +67,10 @@ export default {
     },
   },
   methods: {
-    expanderRowspan(d, index) {
-      if (this.isExpanded(d, index)) {
+    expanderRowspan(data, index) {
+      if (this.isExpanded(data, index)) {
         if (this.isGroupActive) {
-          const field = this.cols[this.group].field;
-          const idx = 'data.' + field;
-          const num = bbn.fn.count(this.items, {[idx] : this.getProp(d, idx)});
+          const num = bbn.fn.count(this.items, {['data.' + this.isGroupActive] : data[this.isGroupActive]});
           if (num) {
             return num + 1;
           }
@@ -90,29 +88,34 @@ export default {
      * @param {Object} d
      * @returns {boolean}
      */
-    isExpanded(d, index) {
+    isExpanded(data, index) {
       if (!this.expander && ((this.group === false) || !this.groupable)) {
         return false;
       }
+
       if (this.expander && !this.groupable) {
         return this.currentExpanded.includes(index);
       }
+
       if (
         this.groupable &&
         (this.group !== false) &&
         this.cols[this.group] &&
         this.cols[this.group].field
       ) {
-        if (this.getProp(d, this.cols[this.group].field) !== undefined) {
-          return this.currentExpandedValues.includes(this.getProp(d, this.cols[this.group].field));
+        if (data[this.cols[this.group].field] !== undefined) {
+          return this.currentExpandedValues.includes(data[this.cols[this.group].field]);
         }
+
         return true;
       }
+
       if ((d.isGrouped || d.groupAggregated)
-        && this.currentExpanded.includes(d.link)
+        && this.currentExpanded.includes(index)
       ) {
         return true;
       }
+
       return false;
     },
     /**
@@ -121,6 +124,7 @@ export default {
      * @param {Number} idx
      */
     toggleExpanded(rowIdx) {
+      bbn.fn.log("toggleExpanded", rowIdx);
       if (this.items[rowIdx]) {
         const idx = this.items[rowIdx].index;
         if (
@@ -128,9 +132,9 @@ export default {
           (this.group !== false) &&
           this.cols[this.group] &&
           this.cols[this.group].field &&
-          (this.getProp(this.currentData[idx].data, this.cols[this.group].field) !== undefined)
+          (this.currentData[idx].data[this.cols[this.group].field] !== undefined)
         ) {
-          let groupValue = this.getProp(this.currentData[idx].data, this.cols[this.group].field);
+          let groupValue = this.currentData[idx].data[this.cols[this.group].field];
           let groupIndex = this.currentExpandedValues.indexOf(groupValue);
           if (groupIndex > -1) {
             this.currentExpandedValues.splice(groupIndex, 1);

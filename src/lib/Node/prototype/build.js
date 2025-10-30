@@ -158,7 +158,7 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
   Object.defineProperties(this.element, {
     'bbnId': { value: this.id, writable: false, configurable: false },
     'bbnComponent': { value: cp, writable: false, configurable: false },
-    'bbnSchema': {
+    'bbnNode': {
       get() {
         if (this.$isDestroyed) {
           delete o.node;

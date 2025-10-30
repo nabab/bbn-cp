@@ -1,14 +1,25 @@
 import bbn from "@bbn/bbn";
 
 export default {
+  props: {
+    /**
+     * Alternates the background color on the list
+     * @prop {Boolean} [false] alternateBackground
+     */
+    alternateBackground: {
+      type: Boolean,
+      default: true
+    },
+
+  },
   data() {
     return {
       currentRows: [],
       rowHeight: null,
       intersectionTimeout: null,
+      rowsShownFinished: false,
+      rowsShownTimer: null
     };
-
-    return o;
   },
   methods: {
     updateSequences(tr) {
@@ -46,6 +57,8 @@ export default {
                 else {
                   seq[i].visible = true;
                 }
+
+                updateItems.push(i);
               }
               else if (last < seq[i].end) {
                 seq[i].start = last + 1;
@@ -121,6 +134,7 @@ export default {
                     visible: true
                   };
                   seq.splice(i+1, 0, newSeq);
+                  updateItems.push(i+1);
                   i++;
                 }
               }
@@ -129,6 +143,7 @@ export default {
               if (prevSeq.end < last) {
                 prevSeq.end = last;
                 seq[i].start = last + 1;
+                updateItems.push(i-1);
               }
             }
             else {
@@ -151,11 +166,12 @@ export default {
         prevSeq = seq[i];
       }
 
-      seq.map(a => {
-        if (a.visible && !a.fixed) {
+      seq.map((a, i) => {
+        if (a.visible && !a.fixed && (!a.items || updateItems.includes(i))) {
           if (!a.items) {
             a.items = [];
           }
+
           for (let i = a.start; i <= a.end; i++) {
             const uid = this.currentColumns[i].uid;
             if (!uid) {
@@ -216,7 +232,7 @@ export default {
       }
       const row = {
         tr,
-        visible: false,
+        visible: !this.scrollable || (this.groupable && this.isGroupActive),
         index: parseInt(tr.dataset.index),
         sequences
       };
@@ -251,8 +267,15 @@ export default {
     },
     rowClass(row, i) {
       const cls = [];
-      if ((i % 2) && this.alt) {
-        cls.push('bbn-alt');
+      if (this.alternateBackground) {
+        if (this.isGroupActive) {
+          if (row.groupIndex % 2) {
+            cls.push('bbn-alt');
+          }
+        }
+        else if (i % 2) {
+          cls.push('bbn-alt');
+        }
       }
 
       if (this.selection && this.isSelected(row.index)) {
@@ -284,13 +307,26 @@ export default {
       return res;
     },
     intersectionEnter(tr) {
-      this.visibleRows.push(tr);
-      setTimeout(() => {
-        if (this.visibleRows.includes(tr)) {
-          this.updateSequences(tr);
-        }
-      }, 250);
+      if (!this.currentRows.filter(a => a.tr === tr).length) {
+        return;
+      }
 
+      if (this.rowsShownFinished) {
+        setTimeout(() => {
+          if (!this.visibleRows.includes(tr)) {
+            this.visibleRows.push(tr);
+            this.updateSequences(tr);
+          }
+        }, 250);
+      }
+      else {
+        this.visibleRows.push(tr);
+        this.updateSequences(tr);
+        clearTimeout(this.rowsShownTimer);
+        this.rowsShownTimer = setTimeout(() => {
+          this.rowsShownFinished = true;
+        }, 250);
+      }
     },
     intersectionExit(tr) {
       const idx = this.visibleRows.indexOf(tr);
@@ -299,5 +335,10 @@ export default {
       }
     },
   },
+  created() {
+    if (!this.rowsShownFinished && (!this.scrollable || this.groupable)) {
+      this.rowsShownFinished = true;
+    }
+  }
 };
 

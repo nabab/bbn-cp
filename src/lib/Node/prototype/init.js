@@ -10,7 +10,7 @@ bbnNode.prototype.nodeInit = function(after, noChild = false) {
 
   this.isCreating = true;
   this.nodeSetAll();
-  if (old && (old.bbnSchema === this)) {
+  if (old && (old.bbnNode === this)) {
     //this.update();
     if (this.comment && (this.comment === bbn.fn.isComment(old))) {
       this.isCreating = false;

@@ -32,7 +32,7 @@ export default class bbnSlotNode extends bbnNode
     if (this.component.$slots[name]) {
       if (this.bind) {
         for (let i = 0; i < this.component.$slots[name].length; i++) {
-          const item = this.component.$slots[name][i].bbnSchema;
+          const item = this.component.$slots[name][i].bbnNode;
           if (item.slot?.slotValue && item.pre) {
             let fnStr = `return bbn.cp.normalizeComponent({
               props: ['${item.slot.slotValue}'],

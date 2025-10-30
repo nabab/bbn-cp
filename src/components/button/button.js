@@ -143,8 +143,8 @@ const cpDef = {
      * @return {String}
      */
     titleString(){
-      if (this.bbnSchema.props.title) {
-        return this.bbnSchema.props.title;
+      if (this.bbnNode.props.title) {
+        return this.bbnNode.props.title;
       }
 
       if (this.notext) {
@@ -190,8 +190,8 @@ const cpDef = {
       return obj;
     },
     currentType() {
-      if (this.bbnSchema.props.type && ['button', 'submit', 'reset'].includes(this.bbnSchema.props.type)) {
-        return this.bbnSchema.props.type;
+      if (this.bbnNode.props.type && ['button', 'submit', 'reset'].includes(this.bbnNode.props.type)) {
+        return this.bbnNode.props.type;
       }
 
       return 'button';
@@ -213,7 +213,7 @@ const cpDef = {
         e.preventDefault();
         e.stopPropagation();
       }
-      else if (!this.$el.bbnSchema.events?.click && this.action && bbn.fn.isFunction(this.action)) {
+      else if (!this.$el.bbnNode.events?.click && this.action && bbn.fn.isFunction(this.action)) {
         this.action.bind(this.$origin)(e, this);
         //bbn.fn.log(["CLICK BUTTON EVENT", this.$origin, this.action])
         e.preventDefault();

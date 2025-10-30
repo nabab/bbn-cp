@@ -72,10 +72,10 @@ bbnNode.prototype.nodeClean = function(full) {
     if (portals.length) {
       portals.forEach(p => {
         const parent = p.parentNode;
-        p.bbnSchema.directives['bbn-portal'].attrGetValue();
-        p.bbnSchema.directives['bbn-portal'].value = null;
-        p.bbnSchema.directives['bbn-portal'].oldValue = parent;
-        p.bbnSchema.directives['bbn-portal'].lastValue = parent;
+        p.bbnNode.directives['bbn-portal'].attrGetValue();
+        p.bbnNode.directives['bbn-portal'].value = null;
+        p.bbnNode.directives['bbn-portal'].oldValue = parent;
+        p.bbnNode.directives['bbn-portal'].lastValue = parent;
         bbn.cp.directives['bbn-portal'].update(p, {value: null, oldValue: parent});
       });
     }

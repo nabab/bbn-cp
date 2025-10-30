@@ -21,28 +21,6 @@ export default {
   },
   methods: {
     /**
-     * Focuses the given row index.
-     * @method focusRow
-     * @param {Event} ev
-     * @param {Number} idx
-     */
-    focusRow(ev, idx) {
-      if (ev.target.tagName !== 'BUTTON') {
-        this.focusedRow = idx;
-      }
-    },
-    /**
-     * Blurs the given row index.
-     * @method blurRow
-     * @param {Event} ev
-     * @param {Number} idx
-     */
-    blurRow(ev, idx) {
-      if (ev.target.tagName !== 'BUTTON') {
-        this.focusedRow = false;
-      }
-    },
-    /**
      * @method clickCell
      * @param {Object} col
      * @param {Number} colIndex
@@ -96,11 +74,6 @@ export default {
       if ((idx === undefined) || (idx === this.focusedRow)) {
         this.focused = false;
         //this.focusedElement = undefined;
-        setTimeout(() => {
-          if (!this.focused) {
-            this.focusedRow = false;
-          }
-        }, 100);
       }
     },
     /**
@@ -208,7 +181,7 @@ export default {
             this.$nextTick(() => {
               setTimeout(() => {
                 const tr = this.getTr(newIndex);
-                let ele = !bbn.fn.isNull(this.clickedTdIndex) ? (tr.getRef('td'+this.clickedTdIndex) || tr) : tr;
+                let ele = !bbn.fn.isNull(this.clickedTdIndex) ? (this.getRef('td-' + newIndex + '-' + this.clickedTdIndex) || tr) : tr;
                 let nextInputs = ele ? ele.querySelectorAll('input') : [];
                 let nextInput;
                 bbn.fn.each(nextInputs, a => {
@@ -222,7 +195,7 @@ export default {
                 if (nextInput) {
                   nextInput.focus();
                 }
-              }, 50)
+              }, 100)
             });
           });
         }

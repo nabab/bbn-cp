@@ -24,7 +24,7 @@ export default function init(cp) {
 
   Object.defineProperty(cp.$options, 'propsData', {
     get() {
-      return _t.bbnSchema?.props || {};
+      return _t.bbnNode?.props || {};
     }
   });
 

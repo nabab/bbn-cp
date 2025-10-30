@@ -596,7 +596,7 @@ export default {
         
         row = row[0];
         if (!this.containers[row.uid]) {
-          const ct = this.$components.find(a => a?.bbnSchema?.props.uid === row.uid);
+          const ct = this.$components.find(a => a?.bbnNode?.props.uid === row.uid);
           if (ct) {
             bbn.fn.warning("CT FOUND")
             ct.$on('hook:created', e => {

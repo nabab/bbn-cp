@@ -423,7 +423,7 @@ const cpDef = {
     if (this.$slots.default) {
       //bbn.fn.log("SLOTS TABLE CREATED", this.$slots, this.$el.bbnSlots);
       for (let node of this.$slots.default) {
-        if (node.bbnSchema?.tag === 'tr') {
+        if (node.bbnNode?.tag === 'tr') {
           this.hasTrSlot = true;
           break;
         }

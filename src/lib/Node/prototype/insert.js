@@ -20,7 +20,7 @@ const isBefore = (id1, id2) => {
 const insertInSlot = function (parent, node, ele) {
   const cp = node.component;
   if ((parent.bbnCid !== cp.$cid) && cp.$isComponent(parent)) {
-    const slot = ele.bbnSchema.slot?.name || ele.bbnSchema?.attr?.slot?.value || 'default';
+    const slot = ele.bbnNode.slot?.name || ele.bbnNode?.attr?.slot?.value || 'default';
     if (!parent.bbnTmpSlots[slot]) {
       parent.bbnTmpSlots[slot] = [];
     }

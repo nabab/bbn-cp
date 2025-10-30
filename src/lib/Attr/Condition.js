@@ -71,7 +71,7 @@ export default class bbnConditionAttr extends bbnAttr
           }
         }
         else {
-          const otherCondNode = cp.$retrieveElement(ai.id, node.hash)?.bbnSchema;
+          const otherCondNode = cp.$retrieveElement(ai.id, node.hash)?.bbnNode;
           if (otherCondNode?.condition) {
             if (isTrue || (otherCondNode.condition.type === 'else')) {
               if (otherCondNode.condition.value !== !isTrue) {
