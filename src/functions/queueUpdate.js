@@ -17,7 +17,7 @@ export default function queueUpdate(...items) {
         continue;
       }
 
-      if (item.element) {
+      if (item.element.setLastRequest) {
         item.element.setLastRequest();
       }
 

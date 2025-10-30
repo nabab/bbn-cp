@@ -54,14 +54,37 @@ const sorter = (a, b) => {
   return atA < atB ? -1 : 1;
 };
 
+let fullQueueLength = 0;
+let numAttr = 0;
+let numRepeat = 0;
+let numNodeDest = 0;
+let numNodeOff = 0;
+let numCpDest = 0;
+let numWatcher = 0;
+let numCpu  = 0;
+let numFn  = 0;
+let numDone  = 0;
 async function treatQueue(num = 0, cps) {
   if (!cps) {
     cps = bbn.fn.createObject();
   }
   let isDebug = true;
+  if (!num) {
+    fullQueueLength = 0;
+    numAttr = 0;
+    numRepeat = 0;
+    numNodeDest = 0;
+    numNodeOff = 0;
+    numCpDest = 0;
+    numWatcher = 0;
+    numCpu  = 0;
+    numFn  = 0;
+    numDone  = 0;
+  }
+  fullQueueLength += bbn.cp.queue.length;
   let queueLength = bbn.cp.queue.length;
   if (queueLength) {
-    if (queueLength > 100000) {
+    if (fullQueueLength > 100000) {
       if (!isDebug) {
         isDebug = bbn.cp.numTicks;
         bbn.fn.log("SETTING DEBUG MODE", bbn.cp.queue);
@@ -94,20 +117,35 @@ async function treatQueue(num = 0, cps) {
       }
       const queueElement = queue.shift();
       const isAttr = queueElement.element instanceof bbnAttr;
+      if (isAttr) {
+        numAttr++;
+      }
       if (isAttr && queueElement.element.node.off) {
+        numNodeOff++;
         //bbn.fn.log("ELEMENT IS DESTROYED");
         continue;
       }
       const isComputed = queueElement.element?.constructor?.name === 'bbnComputed';
       const isWatcher = queueElement.element?.constructor?.name === 'bbnWatcher';
+      if (isComputed) {
+        numCpu++;
+      }
+      else if (isWatcher) {
+        numWatcher++;
+      }
+      else if (!isAttr) {
+        numFn++;
+      }
       //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
       const cp = queueElement.element?.node?.component || queueElement.element?.component || queueElement.component;
       if (isAttr && queueElement.element.node.isDestroyed) {
+        numNodeDest++;
         //bbn.fn.log("ATTR IS DESTROYED: " + queueElement.element.id);
         continue;
       }
 
       if (cp?.$isDestroyed) {
+        numCpDest++;
         //bbn.fn.log("CP IS DESTROYED IsAttr ? " + isAttr + " isDestroyed ? " + (isAttr ? queueElement.element.node.isDestroyed : false));
         continue;
       }
@@ -123,6 +161,7 @@ async function treatQueue(num = 0, cps) {
 
       if (queueElement.element) {
         if (done.get(queueElement.element) >= queueElement.num) {
+          numDone++;
           continue;
           
         }
@@ -143,6 +182,7 @@ async function treatQueue(num = 0, cps) {
 
       if (isComputed) {
         if (lastElement?.element === queueElement.element) {
+          numRepeat++;
           //bbn.fn.log("LAST IS DONE");
           continue;
         }
@@ -231,7 +271,7 @@ async function treatQueue(num = 0, cps) {
 
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
-      queueLength += await treatQueue(num + 1);
+      //queueLength += await treatQueue(num + 1);
     }
 
     if (num) {
@@ -239,13 +279,25 @@ async function treatQueue(num = 0, cps) {
     }
 
     const duration = bbn.fn.stopChrono(rnd);
-    if (duration > 1000) {
-      bbn.fn.log("TREATING QUEUE DURATION: " + duration + " / NUMBER OF ELEMENTS IN QUEUE: " + queueLength + " / NUM TICKS: " + bbn.cp.numTicks);
+    if ((duration > 1000) || (fullQueueLength > 1000)) {
+      bbn.fn.log(
+        "TREATING QUEUE DURATION: " + duration 
+        + " / NUMBER OF ELEMENTS IN QUEUE: " 
+        + fullQueueLength + " / NUM TICKS: " + bbn.cp.numTicks
+        + "\n ATTRS: " + numAttr
+        + "\n COMPUTED: " + numCpu
+        + "\n WATCHERS: " + numWatcher
+        + "\n FUNCTIONS: " + numFn
+        + "\n REPEATS: " + numRepeat
+        + "\n DONE: " + numDone
+        + "\n NODE DESTROYED: " + numNodeDest
+        + "\n NODE OFF: " + numNodeOff
+        + "\n CP DESTROYED: " + numCpDest
+      );
     }
   }
 
   if (!num && bbn.cp.nextQueue.length) {
-    queueLength += bbn.cp.nextQueue.length;
     queueUpdate(...bbn.cp.nextQueue.splice(0));
   }
 
@@ -270,7 +322,7 @@ export default function startTick() {
 
   bbn.cp.isRunning = true;
   setTimeout(async () => {
-    bbn.fn.log(bbn.cp.numTicks);
+    //bbn.fn.log(bbn.cp.numTicks);
     requestAnimationFrame(async () => {
       await treatQueue();
       bbn.cp.isRunning = false;

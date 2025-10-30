@@ -284,7 +284,8 @@
                         @hook:destroy="onRowDestroyed">
                 <component bbn-if="!currentRows[rowIndex]?.visible"
                            is="td"
-                           :colspan="currentColumns.length">
+                           :class="cellClass(null, row)"
+                           :colspan="currentColumns.length"> 
                 </component>
                 <template bbn-else>
                   <template bbn-for="seq in currentRows[rowIndex]?.sequences || []"

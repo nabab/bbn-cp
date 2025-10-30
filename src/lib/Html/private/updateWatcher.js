@@ -24,7 +24,7 @@ export default function updateWatcher(cp, name) {
   }
   //bbn.fn.log(["INIT UPDATE WATCHER", cp.$options.name, name])
   // Initialize the level of nesting for the property name.
-  let lev = 0;
+  let level = 0;
 
   // Split the property name into its nested parts.
   const bits = name.split(".");
@@ -36,11 +36,16 @@ export default function updateWatcher(cp, name) {
     // bbn.fn.log("WATCHER ON " + fullName + " IN " + cp.$options.name);
     // Check if the watcher has a handler for this property.
     if (cp.$watcher[fullName]) {
-      cp.$watcher[fullName].watcherUpdate(false, lev);
+      bbn.cp.queueUpdate({
+        element: cp.$watcher[fullName],
+        component: cp,
+        hash: fullName,
+        level
+      });
     }
 
     // Remove the last part of the property name for the next iteration.
     bits.pop();
-    lev++;
+    level++;
   }
 }
