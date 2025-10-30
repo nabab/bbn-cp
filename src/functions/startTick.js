@@ -249,7 +249,7 @@ async function treatQueue(num = 0, cps) {
     queueUpdate(...bbn.cp.nextQueue.splice(0));
   }
 
-  //bbn.fn.log("FINISHED FN (" + num + ") WITH " +bbn.cp.queue.length);
+  ///bbn.fn.log("FINISHED FN (" + num + ") WITH " +bbn.cp.queue.length);
   return queueLength;
 
 }
