@@ -165,7 +165,10 @@ export default {
           }
           else {
             bbn.fn.each(this.visibleRows, tr => {
-              this.updateSequences(tr);
+              const row = bbn.fn.getRow(this.currentRows, tr);
+              if (row.visible || !this.rowsShownFinished) {
+                this.updateSequences(tr);
+              }
             });
             //bbn.fn.log(['updateShownCols', this.firstColumnVisible, this.lastColumnVisible, cols]);
           }
@@ -322,19 +325,6 @@ export default {
           root: this.$refs.scroll.$refs.scrollContent,
           threshold: 0.0,
           rootMargin: '100px 250px'
-        });
-        this.rowSizeObserver = new ResizeObserver(entries => {
-          for (const e of entries) {
-            if (e.target.ready && (!e.target.rowHeight || (e.target.rowHeight < e.contentRect.height))) {
-              const ele = e.target;
-              const h = e.contentRect.height;
-              if (ele?.ready && (!ele.rowHeight || (ele.rowHeight < h))) {
-                ele.rowHeight = h;
-                //bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
-              }
-              //bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
-            }
-          }
         });
       }
     },

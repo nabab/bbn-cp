@@ -21,6 +21,21 @@ export default {
       rowsShownTimer: null
     };
   },
+  computed: {
+    averageRowHeight() {
+      if (this.currentRows.length) {
+        let total = 0;
+        let count = 0;
+        this.currentRows.forEach(r => {
+          if (r.height) {
+            total += r.height;
+            count++;
+          }
+        });
+        return count ? Math.floor(total / count) : this.rowHeight;
+      }
+    }
+  },
   methods: {
     updateSequences(tr) {
       const first = this.firstColumnVisible;
@@ -192,8 +207,10 @@ export default {
           }
         }
       });
+      this.$nextTick(() => {
+        row.height = this.$position(row.tr).height;
+      })
 
-      tr.style.height = 'auto';
     },
     onRowCreated(e) {
       const tr = e.target;
@@ -241,6 +258,7 @@ export default {
         if (this.scrollIntersection) {
           this.scrollIntersection.observe(tr);
         }
+        row.height = this.$position(tr).height;
       })
     },
     onRowDestroyed(e) {
@@ -307,20 +325,25 @@ export default {
       return res;
     },
     intersectionEnter(tr) {
-      if (!this.currentRows.filter(a => a.tr === tr).length) {
+      const row = bbn.fn.getRow(this.currentRows, {tr});
+      if (!row) {
         return;
       }
 
       if (this.rowsShownFinished) {
-        setTimeout(() => {
-          if (!this.visibleRows.includes(tr)) {
-            this.visibleRows.push(tr);
-            this.updateSequences(tr);
-          }
-        }, 250);
+        if (!this.visibleRows.includes(tr)) {
+          this.visibleRows.push(tr);
+          setTimeout(() => {
+            if (this.visibleRows.includes(tr)) {
+              row.visible = true;
+              this.updateSequences(tr);
+            }
+          }, 250);
+        }
       }
       else {
         this.visibleRows.push(tr);
+        row.visible = true;
         this.updateSequences(tr);
         clearTimeout(this.rowsShownTimer);
         this.rowsShownTimer = setTimeout(() => {

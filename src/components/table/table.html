@@ -284,7 +284,8 @@
                         @hook:destroy="onRowDestroyed">
                 <component bbn-if="!currentRows[rowIndex]?.visible"
                            is="td"
-                           :class="cellClass(null, row)"
+                           :class="['bbn-spadding', cellClass(null, row)]"
+                           :style="averageRowHeight ? {height: averageRowHeight + 'px'} : {}"
                            :colspan="currentColumns.length"> 
                 </component>
                 <template bbn-else>

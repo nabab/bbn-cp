@@ -271,7 +271,7 @@ async function treatQueue(num = 0, cps) {
 
     if (oneDone) {
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
-      //queueLength += await treatQueue(num + 1);
+      queueLength += await treatQueue(num + 1);
     }
 
     if (num) {
