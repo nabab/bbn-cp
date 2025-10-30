@@ -167,8 +167,8 @@
                               :is="col.tcomponent"
                               :source="col"/>
                     <span class="bbn-p"
-                          bbn-elseif="table.sortable && (col.sortable !== false) && !col.buttons && col.field"
-                          @click="table.sort(col)">
+                          bbn-elseif="sortable && (col.sortable !== false) && !col.buttons && col.field"
+                          @click="sort(col)">
                       <span bbn-if="col.encoded"
                             bbn-text="col.label || col.field || ' '"/>
                       <span bbn-else
@@ -180,7 +180,7 @@
                       <span bbn-else
                             bbn-html="col.label || col.field || ' '"/>
                     </span>
-                    <i bbn-if="table.sortable && (col.sortable !== false) && !col.buttons && col.field"
+                    <i bbn-if="sortable && (col.sortable !== false) && !col.buttons && col.field"
                       :class="['bbn-xs bbn-p bbn-bottom-left bbn-left-xsmargin', {
                         'bbn-table-sortable-icon bbn-p bbn-bottom-left': true,
                         'nf nf-md-sort_ascending': isSorted(col)?.dir === 'ASC',
@@ -351,12 +351,12 @@
                                       bbn-model="row.data[currentColumns[c.index].field]"
                                       style="width: 100%"/>
                           <!--<bbn-field bbn-elseif="(editMode === 'inline')
-                                          && table.isValidField(column.field)
+                                          && isValidField(column.field)
                                           && (column.editable !== false)"
                                       bbn-bind="column"
                                       mode="write"
                                       @click.stop
-                                      bbn-model="table.editedRow[column.field]"
+                                      bbn-model="editedRow[column.field]"
                                       style="width: 100%"/>-->
                           <bbn-field bbn-elseif="isValidField(currentColumns[c.index].field)
                                       && !currentColumns[c.index].render
