@@ -1,5 +1,7 @@
 import bbn from "@bbn/bbn";
 import bbnNode from "../Node.js";
+import onHook from "../../Html/private/onHook.js";
+import isComponent from "../../../functions/isComponent.js";
 
 const checkOwnDeps = node => {
   if (!node.attributes || !node.attributes.length) {
@@ -102,7 +104,44 @@ bbnNode.prototype.nodeClean = function(full) {
       return 0;
     });
 
-    const oldIndexes = indexes.slice();
+    const oldIndexes = indexes.slice().reverse();
+    const elementsToDo = [];
+    while (oldIndexes.length) {
+      const idx = oldIndexes.shift();
+      const obj = nodes[idx];
+      if (hash) {
+        for (let n in obj) {
+          if ((n === hash) || !n.indexOf(hash + '-')) {
+            if (obj[n].element) {
+              elementsToDo.push(obj[n].element);
+            }
+          }
+        }
+      }
+      else if (obj instanceof bbnNode) {
+        if (obj.element) {
+          elementsToDo.push(obj.element);
+        }
+      }
+      else {
+        for (let n in obj) {
+          if (obj[n].element) {
+            elementsToDo.push(obj[n].element);
+          }
+        }
+      }
+    }
+
+    elementsToDo.forEach(ele => {
+      if (!(ele instanceof Comment) && isComponent(ele) && !ele.$isDestroying) {
+        onHook(ele, 'beforeDestroy');
+        if (ele.bbnNode.events?.['hook:beforedestroy']) {
+          const beforeDestroy = new Event('hook:beforedestroy');
+          ele.bbnNode.events['hook:beforedestroy'].handler.bind(ele.bbnComponent)(beforeDestroy);
+        }
+      }
+    })
+
     while (indexes.length) {
       const idx = indexes.shift();
       const obj = nodes[idx];
@@ -143,6 +182,10 @@ bbnNode.prototype.nodeClean = function(full) {
           }
 
           if (rootNumBits === (obj[n].id.split('-').length)) {
+            if (indexes.length) {
+              bbn.fn.log("DELETING BEFORE WITH ROOT " + id + ' / ' + obj[n].id)
+            }
+              bbn.fn.log("DELETING3 ON " +indexes.length)
             removeRegion(obj[n]);
           }
           delete obj[n];

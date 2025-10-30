@@ -8,11 +8,7 @@ bbnProtoHtml.$destroy = function() {
     return;
   }
 
-  Object.defineProperty(this, '$isDestroying', {
-    value: true,
-    writable: false,
-    configurable: false
-  });
+  this.$isDestroying = true;
 
   const node = this.bbnNode;
   /*
@@ -103,10 +99,4 @@ bbnProtoHtml.$destroy = function() {
   });
 
   removeComponent(this.bbnCid);
-  if (this.parentNode) {
-    this.parentNode.removeChild(this);
-  }
-  else {
-    this.remove();
-  }
 }
