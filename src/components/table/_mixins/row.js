@@ -255,10 +255,13 @@ export default {
       };
       this.currentRows.push(row);
       this.$nextTick(() => {
+        row.height = this.$position(tr).height;
+        if (this.getRef('scroll').isYInScroll(tr)) {
+          row.visible = true;
+        }
         if (this.scrollIntersection) {
           this.scrollIntersection.observe(tr);
         }
-        row.height = this.$position(tr).height;
       })
     },
     onRowDestroyed(e) {
