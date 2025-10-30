@@ -58,6 +58,11 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
   if (ele.bbnId && !ele.bbnNode) {
     return;
   }
+
+  if ((bbn.fn.substr(ele.bbnId, -6) === '-start') || (bbn.fn.substr(ele.bbnId, -4) === '-end')) {
+    ele.remove();
+    return;
+  }
   /*
   if (ele.bbnDirectives && (ele.bbnNode?.directives?.['bbn-portal']?.value === ele.parentNode)) {
     const parent = ele.parentNode;

@@ -150,6 +150,9 @@ export default {
         this.visibleRows.splice(0);
         this.currentRows.splice(0);
         this.isTableDataUpdating = false;
+        if (!this.currentData?.length) {
+          this.rowsShownFinished = true;
+        }
       });
     }
   },

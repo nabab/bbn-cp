@@ -339,14 +339,6 @@ export default {
     if (!this.rowsShownFinished && (!this.scrollable || this.groupable)) {
       this.rowsShownFinished = true;
     }
-
-    this.$once('dataloaded', () => {
-      this.$nextTick(() => {
-        if (!this.filteredData.length) {
-          this.rowsShownFinished = true;
-        }
-      });
-    });
   }
 };
 
