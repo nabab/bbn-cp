@@ -14,6 +14,8 @@ export default function setNodeRegion(node, after) {
     const end   = document.createComment(`⟨${node.tag}:${hash}:end⟩`);
     start.bbnId = node.id + '-start';
     end.bbnId = node.id + '-end';
+    start.bbnIsStart = true;
+    end.bbnIsEnd = true;
     start.bbnNode = node;
     end.bbnNode = node;
     if (node.hash) {

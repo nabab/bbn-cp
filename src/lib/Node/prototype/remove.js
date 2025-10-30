@@ -59,8 +59,7 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
     return;
   }
 
-  if ((bbn.fn.substr(ele.bbnId, -6) === '-start') || (bbn.fn.substr(ele.bbnId, -4) === '-end')) {
-    ele.remove();
+  if (ele.bbnIsStart || ele.bbnIsEnd) {
     return;
   }
   /*
