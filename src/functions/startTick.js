@@ -123,7 +123,7 @@ async function treatQueue(num = 0, cps) {
           throw new Error("Too many ticks");
         }
       }
-      if (queue.length % 20 === 0) {
+      if (queue.length % 100 === 0) {
         await yieldToBrowser();
       }
 

@@ -139,9 +139,9 @@ bbnNode.prototype.nodeClean = function(full) {
           const beforeDestroy = new Event('hook:beforedestroy');
           ele.bbnNode.events['hook:beforedestroy'].handler.bind(ele.bbnComponent)(beforeDestroy);
         }
-        bbn.fn.each(ele.$components.all, component => {
+        /*bbn.fn.each(ele.$components.all, component => {
           component.bbnNode.nodeClean(true);
-        })
+        })*/
       }
     })
 

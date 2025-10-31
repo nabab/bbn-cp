@@ -205,7 +205,7 @@
                  :class="{
                    'bbn-overlay': ((!filteredData.length && !tmpRow) || isLoading || isTableDataUpdating) && !!scrollable
                  }"
-                 bbn-if="!isLoading && !isTableDataUpdating">
+                 bbn-if="$isMounted && currentRows && ready && !isLoading && !isTableDataUpdating">
             <!-- Inline insertion -->
             <tr bbn-if="tmpRow">
             </tr>
@@ -273,7 +273,7 @@
                         :data-index="rowIndex"
                         @hook:create="onRowCreated"
                         @hook:destroy="onRowDestroyed">
-                <component bbn-if="!bbn.fn.getField(currentRows, 'visible', {index: rowIndex})"
+                <component bbn-if="!currentRows.filter(a => a.index === rowIndex)?.[0]?.visible"
                            is="td"
                            :class="['bbn-spadding', cellClass(null, row)]"
                            :style="averageRowHeight ? {height: averageRowHeight + 'px'} : {}"

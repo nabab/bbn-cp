@@ -16,6 +16,7 @@ import bbnForgetAttr from "../../Attr/Forget.js";
 import bbnLoopAttr from "../../Attr/Loop.js";
 import bbnOnceAttr from "../../Attr/Once.js";
 import bbnSlotAttr from "../../Attr/Slot.js";
+import bbnSubdataAttr from "../../Attr/Subdata.js";
 import bbnPreAttr from "../../Attr/Pre.js";
 import bbnTransitionAttr from "../../Attr/Transition.js";
 import bbnBindAttr from "../../Attr/Bind.js";
@@ -107,6 +108,9 @@ bbnNode.prototype.nodeDefine = function(node, data) {
             }
             else if (n === 'bbn-show') {
               v = new bbnShowAttr(node[a][n], this, n);
+            }
+            else if (n === 'bbn-subdata') {
+              v = new bbnSubdataAttr(node[a][n], this, n);
             }
             else if (n === 'bbn-break') {
               v = new bbnBreakAttr(node[a][n], this, n);

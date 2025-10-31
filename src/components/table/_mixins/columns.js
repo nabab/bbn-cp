@@ -347,9 +347,9 @@ export default {
             this.scrollCurrentX = currentScrollX;
           }
         }, {
-          root: this.$refs.scroll,
+          root: this.$refs.scroll.$refs.scrollContent,
           threshold: 0,
-          rootMargin: this.$refs.scroll.clientHeight + 'px ' + this.$refs.scroll.clientWidth + 'px'
+          rootMargin: this.$refs.scroll.$refs.scrollContent.offsetHeight + 'px ' + this.$refs.scroll.$refs.scrollContent.offsetWidth + 'px'
         });
       }
     },
