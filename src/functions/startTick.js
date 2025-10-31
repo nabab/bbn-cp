@@ -322,7 +322,7 @@ async function treatQueue(num = 0, cps) {
  * Starts the ticking process for component updates.
  * Throws an error if the tick process is already running.
  */
-export default async function startTick() {
+export default function startTick() {
   // Check if the tick process is already initiated.
   if (bbn.cp.interval) {
     throw new Error(bbn._("The tick is already started"));
@@ -335,13 +335,10 @@ export default async function startTick() {
 
   bbn.cp.isRunning = true;
   setTimeout(async () => {
-    //bbn.fn.log(bbn.cp.numTicks);
-    requestAnimationFrame(async () => {
-      await treatQueue();
-      bbn.cp.isRunning = false;
-      if (bbn.cp.queue.length || bbn.cp.nextQueue.length) {
-        await bbn.cp.startTick();
-      }
-    });
+    await treatQueue();
+    bbn.cp.isRunning = false;
+    if (bbn.cp.queue.length || bbn.cp.nextQueue.length) {
+      bbn.cp.startTick();
+    }
   }, 0);
 }

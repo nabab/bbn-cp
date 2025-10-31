@@ -623,6 +623,19 @@ const cpDef = {
             this.isResized = true;
             this.updateButtonsInContainer();
             this.$emit('resized', this);
+            const scroll = this.closest('bbn-scroll');
+            if (scroll) {
+              const onScroll = () => {
+                if (this.isVisible) {
+                  this.onResize();
+                }
+              };
+
+              scroll.$on('scroll', onScroll);
+              this.$on('hook:beforeDestroy', () => {
+                scroll.$off('scroll', onScroll);
+              });
+            }
           })
         })
       }

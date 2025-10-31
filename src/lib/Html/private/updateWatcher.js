@@ -36,12 +36,7 @@ export default function updateWatcher(cp, name) {
     // bbn.fn.log("WATCHER ON " + fullName + " IN " + cp.$options.name);
     // Check if the watcher has a handler for this property.
     if (cp.$watcher[fullName]) {
-      bbn.cp.queueUpdate({
-        element: cp.$watcher[fullName],
-        component: cp,
-        hash: fullName,
-        level
-      });
+      cp.$watcher[fullName].watcherUpdate(false, level);
     }
 
     // Remove the last part of the property name for the next iteration.
