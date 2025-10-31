@@ -10,8 +10,8 @@ export default function setNodeRegion(node, after) {
     }
 
     const hash = node.id + (node.hash ? ('|' + node.hash) : '');
-    const start = document.createComment(`⟨${node.tag}:${hash}:start⟩`);
-    const end   = document.createComment(`⟨${node.tag}:${hash}:end⟩`);
+    const start = document.createComment(`⟨${node.tag || 'text'}:${hash}:start⟩`);
+    const end   = document.createComment(`⟨${node.tag || 'text'}:${hash}:end⟩`);
     start.bbnId = node.id + '-start';
     end.bbnId = node.id + '-end';
     start.bbnIsStart = true;
