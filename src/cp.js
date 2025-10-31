@@ -224,6 +224,7 @@ const cpObj = bbn.fn.createObject({
   forbidden: ['bbn-forget', 'bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else'],
   /** @var {Object} components All the components in the DOM are referenced in this object through their CID */
   componentsIndex: new Map(),
+  nextFrame: () => new Promise(requestAnimationFrame),
   addPrefix,
   addUrlAsPrefix,
   attributeChangedCallback,

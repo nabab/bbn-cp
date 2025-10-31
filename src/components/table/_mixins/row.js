@@ -23,11 +23,12 @@ export default {
   },
   computed: {
     averageRowHeight() {
+      return 40;
       if (this.currentRows.length) {
         let total = 0;
         let count = 0;
         this.currentRows.forEach(r => {
-          if (r.height) {
+          if (r.height && r.visible) {
             total += r.height;
             count++;
           }
@@ -249,20 +250,21 @@ export default {
       }
       const row = {
         tr,
-        visible: !this.scrollable || (this.groupable && this.isGroupActive),
+        visible: !this.scrollable || !!(this.groupable && this.isGroupActive) || this.groupCols[0].cols.length || this.groupCols[2].cols.length,
         index: parseInt(tr.dataset.index),
         sequences
       };
       this.currentRows.push(row);
-      this.$nextTick(() => {
-        row.height = this.$position(tr).height;
-        if (this.getRef('scroll').isYInScroll(tr)) {
-          row.visible = true;
-        }
-        if (this.scrollIntersection) {
-          this.scrollIntersection.observe(tr);
-        }
-      })
+      if (this.scrollIntersection) {
+        this.scrollIntersection.observe(tr);
+      }
+      if (!row.visible) {
+        setTimeout(() => {
+          if (this.getRef('scroll').isYInScroll(tr)) {
+            row.visible = true;
+          }
+        }, 25)
+      }
     },
     onRowDestroyed(e) {
       const tr = e.target;
@@ -328,6 +330,9 @@ export default {
       return res;
     },
     intersectionEnter(tr) {
+      if (this.groupable && this.isGroupActive) {
+        return;
+      }
       const row = bbn.fn.getRow(this.currentRows, {tr});
       if (!row) {
         return;
@@ -341,20 +346,23 @@ export default {
               row.visible = true;
               this.updateSequences(tr);
             }
-          }, 250);
+          }, 100);
         }
       }
       else {
         this.visibleRows.push(tr);
         row.visible = true;
-        this.updateSequences(tr);
         clearTimeout(this.rowsShownTimer);
+        this.updateSequences(tr);
         this.rowsShownTimer = setTimeout(() => {
           this.rowsShownFinished = true;
-        }, 250);
+        }, 100);
       }
     },
     intersectionExit(tr) {
+      if (this.groupable && this.isGroupActive) {
+        return;
+      }
       const idx = this.visibleRows.indexOf(tr);
       if (idx > -1) {
         this.visibleRows.splice(idx, 1);

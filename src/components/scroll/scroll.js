@@ -446,6 +446,7 @@ const cpDef = {
       scrollInitial: false,
       touchDirection: null,
       scrollTimeout: null,
+      onScrollTimeout: null,
       currentStepX: this.stepX instanceof HTMLElement ? this.stepX.clientHeight : this.stepX,
       currentStepY: this.stepY instanceof HTMLElement ? this.stepY.clientHeight : this.stepY,
       inFloater: null,
@@ -593,56 +594,55 @@ const cpDef = {
      * @param {Event} e 
      * @emits scroll
      */
-    onScroll(e) {
+    async onScroll(e) {
       if (!this.scrollable || !this.checkVisibility()) {
         return;
       }
 
       let ct = this.getRef('scrollContent');
-      if (ct) {
-        if (this.disabled) {
-          e.preventDefault();
-          return;
-        }
+      if (this.disabled) {
+        e.preventDefault();
+        return;
+      }
 
-        if (this.hasScrollX && (ct.scrollLeft < 0)) {
-          ct.scrollLeft = 0;
-          e.preventDefault();
-          return;
-        }
+      if (this.isScrolling) {
+        clearTimeout(this.onScrollTimeout);
+        this.onScrollTimeout = setTimeout(async () => {
+          await this.onScroll(e);
+        });
+        return;
+      }
 
-        if (this.hasScrollY && (ct.scrollTop < 0)) {
-          ct.scrollTop = 0;
-          e.preventDefault();
+      this.isScrolling = true;
+      await bbn.cp.nextFrame();
+      this.scrollHorizontal(e, ct.scrollLeft);
+      this.scrollVertical(e, ct.scrollTop);
+      this.$emit('scroll', e);
+      if (!e.defaultPrevented) {
+        // Leaving touchscroll act normally
+        if (this.scrollInitial && (this.scrollInitial.touched === true)) {
+          // Removing the finishing delay in case it was pre-recorded
+          clearTimeout(this.scrollTimeout);
           return;
         }
-        this.scrollHorizontal(e, ct.scrollLeft);
-        this.scrollVertical(e, ct.scrollTop);
-        this.$emit('scroll', e);
-        if (!e.defaultPrevented) {
-          // Leaving touchscroll act normally
-          if (this.scrollInitial && (this.scrollInitial.touched === true)) {
-            // Removing the finishing delay in case it was pre-recorded
-            clearTimeout(this.scrollTimeout);
-            return;
-          }
-          // Not acting for events sent by scrollTo (scrollbars will write in nextLevel)
-          if (this.hasScrollX && this.$refs.xScroller && bbn.fn.isNumber(this.$refs.xScroller.nextLevel) && (Math.abs(this.currentX-this.$refs.xScroller.nextLevel) < 2)) {
-            return;
-          }
-          // Not acting for events sent by scrollTo (scrollbars will write in nextLevel)
-          if (this.hasScrollY && this.$refs.yScroller && bbn.fn.isNumber(this.$refs.yScroller.nextLevel) && (Math.abs(this.currentY-this.$refs.yScroller.nextLevel) < 2)) {
-            return;
-          }
-          if (!this.scrollInitial) {
-            this.scrollInitial = {x: this.currentX, y: this.currentY};
-          }
-          this.setScrollDelay();
+        // Not acting for events sent by scrollTo (scrollbars will write in nextLevel)
+        if (this.hasScrollX && this.$refs.xScroller && bbn.fn.isNumber(this.$refs.xScroller.nextLevel) && (Math.abs(this.currentX-this.$refs.xScroller.nextLevel) < 2)) {
+          return;
         }
+        // Not acting for events sent by scrollTo (scrollbars will write in nextLevel)
+        if (this.hasScrollY && this.$refs.yScroller && bbn.fn.isNumber(this.$refs.yScroller.nextLevel) && (Math.abs(this.currentY-this.$refs.yScroller.nextLevel) < 2)) {
+          return;
+        }
+        if (!this.scrollInitial) {
+          this.scrollInitial = {x: this.currentX, y: this.currentY};
+        }
+        this.setScrollDelay();
       }
       if (this.scrollable && e) {
         e.stopImmediatePropagation();
       }
+
+      this.isScrolling = false;
     },
     setScrollDelay() {
       clearTimeout(this.scrollTimeout);

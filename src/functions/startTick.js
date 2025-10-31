@@ -64,6 +64,14 @@ let numWatcher = 0;
 let numCpu  = 0;
 let numFn  = 0;
 let numDone  = 0;
+async function yieldToBrowser() {
+  if (self.scheduler?.yield) {
+    await scheduler.yield(); // cooperative yield
+  } else {
+    await new Promise(requestAnimationFrame);
+  }
+}
+
 async function treatQueue(num = 0, cps) {
   if (!cps) {
     cps = bbn.fn.createObject();
@@ -115,6 +123,10 @@ async function treatQueue(num = 0, cps) {
           throw new Error("Too many ticks");
         }
       }
+      if (queue.length % 20 === 0) {
+        await yieldToBrowser();
+      }
+
       const queueElement = queue.shift();
       const isAttr = queueElement.element instanceof bbnAttr;
       if (isAttr) {
@@ -269,7 +281,8 @@ async function treatQueue(num = 0, cps) {
       lastElement = queueElement;
     }
 
-    if (oneDone) {
+    if (oneDone && bbn.cp.queue.length) {
+      //await bbn.cp.nextFrame();
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       queueLength += await treatQueue(num + 1);
     }
@@ -309,7 +322,7 @@ async function treatQueue(num = 0, cps) {
  * Starts the ticking process for component updates.
  * Throws an error if the tick process is already running.
  */
-export default function startTick() {
+export default async function startTick() {
   // Check if the tick process is already initiated.
   if (bbn.cp.interval) {
     throw new Error(bbn._("The tick is already started"));
@@ -327,7 +340,7 @@ export default function startTick() {
       await treatQueue();
       bbn.cp.isRunning = false;
       if (bbn.cp.queue.length || bbn.cp.nextQueue.length) {
-        bbn.cp.startTick();
+        await bbn.cp.startTick();
       }
     });
   }, 0);

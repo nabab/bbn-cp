@@ -401,24 +401,22 @@ const cpDef = {
      * @method adjustFromBar
      */
     adjustFromBar(anim){
-      this.keepCool(() => {
-        if (this.shouldBother) {
-          this.containerPos = (this.sliderPos / this.ratio);
-          let prop = this.isVertical ? 'scrollTop' : 'scrollLeft';
-          if (this.scroller) {
-            this.axisScrollTo(this.containerPos, anim);
-          }
-          else {
-            this.realContainer[prop] = this.containerPos;
-            bbn.fn.each(this.scrollableElements(), a => {
-              a[prop] = this.containerPos;
-            });
-          }
-
-          let e = new Event('scroll');
-          this.$emit('scroll', e, this.containerPos);
+      if (this.shouldBother) {
+        this.containerPos = (this.sliderPos / this.ratio);
+        let prop = this.isVertical ? 'scrollTop' : 'scrollLeft';
+        if (this.scroller) {
+          this.axisScrollTo(this.containerPos, anim);
         }
-      }, 'adjustFromBar', 50);
+        else {
+          this.realContainer[prop] = this.containerPos;
+          bbn.fn.each(this.scrollableElements(), a => {
+            a[prop] = this.containerPos;
+          });
+        }
+
+        let e = new Event('scroll');
+        this.$emit('scroll', e, this.containerPos);
+      }
     },
     /**
      * When the users jumps by clicking the scrollbar while a double click will activate tillEnd.

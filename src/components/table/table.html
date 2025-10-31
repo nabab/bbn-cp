@@ -135,13 +135,13 @@
                            bbn-for="(col, colIndex) in groupCol.cols"
                           :key="(col.field || colIndex) + '|' + (col.label || colIndex)"
                           :ref="'title-' + groupIndex + '-' + colIndex"
-                          :data-index="colIndex + (groupIndex === 0 ? 0 : (groupCols[0].cols.length + (groupIndex === 1 ? 0 : groupCols[1].cols.length)))"
+                          :data-index="col.index"
                           :data-group-index="groupIndex"
                           :data-visible=""
-                          bbn-show="!source.invisible"
+                          bbn-show="!col.invisible"
                           :class="[
                             'bbn-table-fixed-cell', 'bbn-header', 'bbn-no-border-top', 'bbn-c', 'bbn-ellipsis',
-                            titleClass ? (bbn.fn.isFunction(titleClass) ? titleClass(source) : titleClass) : '',
+                            titleClass ? (bbn.fn.isFunction(titleClass) ? titleClass(col) : titleClass) : '',
                             col.titleCls || '',
                             {
                               'bbn-table-fixed-cell-left': groupIndex === 0,
@@ -210,7 +210,7 @@
             <tr bbn-if="tmpRow">
             </tr>
             <!-- No data -->
-            <tr bbn-if="!filteredData.length"
+            <tr bbn-if="!isLoading && !filteredData.length"
                 :class="{
                   'bbn-overlay': !!scrollable,
                   'bbn-middle': !!scrollable
@@ -222,17 +222,8 @@
                   height: 'auto'
                 }">
               <td :colspan="currentColumns ? currentColumns.length : 1">
-                <div class="bbn-spadding bbn-background-internal bbn-c">
-                  <div bbn-if="!isLoading"
-                       bbn-html="noData || ' '"/>
-                  <div bbn-elseif="loader"
-                       class="bbn-vmiddle">
-                    <bbn-loadicon class="bbn-vmiddle"
-                                  :size="24"/>
-                    <span class="bbn-xl bbn-b bbn-left-sspace"
-                          bbn-text="currentLoaderText"/>
-                  </div>
-                </div>
+                <div class="bbn-spadding bbn-background-internal bbn-c"
+                     bbn-html="noData || ' '"/>
               </td>
             </tr>
             <!-- Rows -->
@@ -282,14 +273,14 @@
                         :data-index="rowIndex"
                         @hook:create="onRowCreated"
                         @hook:destroy="onRowDestroyed">
-                <component bbn-if="!currentRows[rowIndex]?.visible"
+                <component bbn-if="!bbn.fn.getField(currentRows, 'visible', {index: rowIndex})"
                            is="td"
                            :class="['bbn-spadding', cellClass(null, row)]"
                            :style="averageRowHeight ? {height: averageRowHeight + 'px'} : {}"
                            :colspan="currentColumns.length"> 
                 </component>
                 <template bbn-else>
-                  <template bbn-for="seq in currentRows[rowIndex]?.sequences || []"
+                  <template bbn-for="seq in bbn.fn.getRow(currentRows, {index: rowIndex})?.sequences || []"
                             :key="seq.uid">
                     <template bbn-if="seq.visible">
                       <component bbn-for="c in seq.items"
@@ -442,7 +433,7 @@
                   </template>
                 </template>
               </component>
-              <template bbn-if="currentRows[rowIndex]?.visible">
+              <template bbn-if="bbn.fn.getRow(currentRows, {index: rowIndex})?.visible">
                 <component is="tr"
                             bbn-if="expander && !isGroupActive && isExpanded(row.data, row.index)"
                             :class="rowClass(row, rowIndex)"

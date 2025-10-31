@@ -42,7 +42,7 @@ class subcomponents
   clean() {
     let i = 0;
     while (this.#components[i]) {
-      if (!this.#components[i].$isDestroyed) {
+      if (this.#components[i].$isDestroyed || this.#components[i].$isDestroying) {
         this.#components.splice(i, 1);
       }
       else {
@@ -57,6 +57,10 @@ class subcomponents
 
   get isOk() {
     return !this.#components.filter(a => !a.$isDestroyed && (!a.bbn || !a.$isMounted)).length;
+  }
+
+  get all() {
+    return this.#components.filter(a => !a.$isDestroyed && a.$isMounted);
   }
 
   get queue() {
