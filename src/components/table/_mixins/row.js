@@ -41,180 +41,136 @@ export default {
     updateSequences(tr) {
       const first = this.firstColumnVisible;
       const last  = this.lastColumnVisible;
-      const row = bbn.fn.getRow(this.currentRows, {tr});
-      //bbn.fn.log(["Updating sequences for row", row, first, last]);
-      if (!row.visible) {
-        row.visible = true;
-      }
-
-      if (!last || !bbn.fn.count(row.sequences, {visible: false})) {
-        return;
-      }
-
+      const index = parseInt(tr.dataset.index);
+      const row = this.currentRows[index];
+      if (!row.visible) row.visible = true;
       const seq = row.sequences;
-      let prevSeq;
-      let done;
-      const updateItems = [];
-      for (let i = 0; i < seq.length; i++) {
-        if (seq[i].fixed) {
+      if (!Array.isArray(seq) || !seq.length || !last) return;
+
+      // Helpers
+      const newUid = () => bbn.fn.randomString();
+      const clamp  = (v, a, b) => Math.max(a, Math.min(b, v));
+      const overlaps = (s, e, a, b) => !(e < a || s > b);
+
+      // 1) Split each original segment into up to 3 parts around [first,last]
+      //    left (original visibility), mid (forced visible), right (original visibility)
+      const parts = [];
+      for (const s of seq) {
+        const S = {start: s.start, end: s.end, visible: s.visible, fixed: !!s.fixed, uid: s.uid || newUid()};
+        if (!overlaps(S.start, S.end, first, last)) {
+          // untouched
+          parts.push({...S});
           continue;
         }
-
-        if ((first <= seq[i].end) && (last >= seq[i].start)) {
-          done = true;
-          if (!seq[i].visible) {
-            if (first === seq[i].start) {
-              if (last === seq[i].end) {
-                if (seq[i+1] && seq[i+1].visible && !seq[i+1].fixed) {
-                  seq.splice(i, 1);
-                  i--;
-                  seq[i].start = start;
-                }
-                else {
-                  seq[i].visible = true;
-                }
-
-                updateItems.push(i);
-              }
-              else if (last < seq[i].end) {
-                seq[i].start = last + 1;
-                const newSeq = {
-                  start: first,
-                  end: last,
-                  uid: bbn.fn.randomString(),
-                  visible: true
-                };
-                seq.splice(i, 0, newSeq);
-                updateItems.push(i);
-                i++;
-              }
-              else {
-                if (seq[i+1] && seq[i+1].visible && !seq[i+1].fixed) {
-                  seq.splice(i, 1);
-                  seq[i].start = first;
-                  updateItems.push(i);
-                }
-                else {
-                  seq[i].end = last;
-                  if (seq[i+1]) {
-                    seq[i+1].start = last + 1;
-                    updateItems.push(i+1);
-                  }
-                }
-              }
-            }
-            else if (first > seq[i].start) {
-              const oldEnd = seq[i].end;
-              seq[i].end = first - 1;
-              if (oldEnd === last) {
-                if (seq[i+1] && seq[i+1].visible && !seq[i+1].fixed) {
-                  seq[i+1].start = first;
-                  updateItems.push(i+1);
-                }
-                else {
-                  const newSeq = {
-                    start: first,
-                    end: last,
-                    uid: bbn.fn.randomString(),
-                    visible: true
-                  };
-                  seq.splice(i+1, 0, newSeq);
-                  i++;
-                }
-              }
-              else if (oldEnd > last) {
-                const newSeq = {
-                  start: first,
-                  end: last,
-                  uid: bbn.fn.randomString(),
-                  visible: true
-                };
-                seq.splice(i+1, 0, newSeq, {
-                  start: last + 1,
-                  end: oldEnd,
-                  uid: bbn.fn.randomString(),
-                  visible: false
-                });
-                i += 2;
-              }
-              else {
-                if (seq[i+1] && seq[i+1].visible && !seq[i+1].fixed) {
-                  seq[i+1].start = first;
-                  updateItems.push(i+1);
-                }
-                else {
-                  const newSeq = {
-                    start: first,
-                    end: oldEnd,
-                    uid: bbn.fn.randomString(),
-                    visible: true
-                  };
-                  seq.splice(i+1, 0, newSeq);
-                  updateItems.push(i+1);
-                  i++;
-                }
-              }
-            }
-            else if (prevSeq) {
-              if (prevSeq.end < last) {
-                prevSeq.end = last;
-                seq[i].start = last + 1;
-                updateItems.push(i-1);
-              }
-            }
-            else {
-              const newSeq = {
-                start: seq[i].start,
-                end: last,
-                uid: bbn.fn.randomString(),
-                visible: true
-              };
-              seq[i].start = last + 1;
-              seq.splice(i, 0, newSeq);
-              i++;
-            }
-          }
+        // left
+        if (S.start < first) {
+          parts.push({
+            ...S,
+            end: first - 1,
+            fixed: S.fixed && S.end === (first - 1) // survives only if not trimmed internally
+          });
         }
-        else if (done) {
-          break;
+        // mid (forced visible, never fixed)
+        const ms = clamp(S.start, first, last);
+        const me = clamp(S.end, first, last);
+        parts.push({start: ms, end: me, visible: true, fixed: false, uid: newUid()});
+        // right
+        if (S.end > last) {
+          parts.push({
+            ...S,
+            start: last + 1,
+            fixed: S.fixed && S.start === (last + 1)
+          });
         }
-
-        prevSeq = seq[i];
       }
 
-      seq.map((a, i) => {
-        if (a.visible && !a.fixed && (!a.items || updateItems.includes(i))) {
-          if (!a.items) {
-            a.items = [];
-          }
+      // 2) Sort by start and enforce strict contiguity (fill gaps, trim overlaps)
+      parts.sort((a, b) => a.start - b.start || a.end - b.end);
+      const contiguous = [];
+      for (const cur of parts) {
+        if (!contiguous.length) {
+          contiguous.push({...cur});
+          continue;
+        }
+        const prev = contiguous[contiguous.length - 1];
+        if (cur.start > prev.end + 1) {
+          // fill gap with invisible
+          contiguous.push({start: prev.end + 1, end: cur.start - 1, visible: false, fixed: false, uid: newUid()});
+          contiguous.push({...cur});
+        } else if (cur.start <= prev.end) {
+          // trim overlap
+          const newStart = prev.end + 1;
+          if (newStart <= cur.end) contiguous.push({...cur, start: newStart});
+          // else fully covered; drop
+        } else {
+          contiguous.push({...cur});
+        }
+      }
 
-          for (let i = a.start; i <= a.end; i++) {
-            const uid = this.currentColumns[i].uid;
-            if (!uid) {
-              throw new Error("Cannot find uid for column at index " + i);
-            }
+      // 3) Fuse adjacent visible segments, except when a fixed block sits at the very edges
+      const fused = [];
+      for (let i = 0; i < contiguous.length; i++) {
+        const cur = contiguous[i];
+        if (!fused.length) {
+          fused.push({...cur});
+          continue;
+        }
+        const prev = fused[fused.length - 1];
+        const adjacent = cur.start === prev.end + 1;
+        const bothVisible = prev.visible && cur.visible;
 
-            const row = bbn.fn.getRow(a.items, {uid});
-            if (row && (row === a.items[i - a.start])) {
-              continue;
-            }
-            else if (row) {
-              row.index = this.currentColumns[i].index;
-              a.items.splice(i - a.start, 0, row);
-            }
-            else {
-              a.items.splice(i - a.start, 0, {index: this.currentColumns[i].index, uid});
-            }
+        // Edge-fixed rule: only protect the very first or very last segment if fixed
+        const protectPrev = prev.fixed && fused.length === 1;                         // start edge
+        const protectCur  = cur.fixed  && i === (contiguous.length - 1);              // end edge
+
+        if (adjacent && bothVisible && !protectPrev && !protectCur) {
+          prev.end = cur.end;
+          prev.fixed = false;       // merged blocks are not fixed
+          // keep prev.uid
+        } else {
+          fused.push({...cur});
+        }
+      }
+
+      // 4) One more pass to guarantee contiguity after fusing
+      const finalSeq = [];
+      for (const seg of fused) {
+        if (!finalSeq.length) {
+          finalSeq.push({...seg});
+          continue;
+        }
+        const prev = finalSeq[finalSeq.length - 1];
+        if (seg.start > prev.end + 1) {
+          finalSeq.push({start: prev.end + 1, end: seg.start - 1, visible: false, fixed: false, uid: newUid()});
+          finalSeq.push({...seg});
+        } else if (seg.start <= prev.end) {
+          const ns = prev.end + 1;
+          if (ns <= seg.end) finalSeq.push({...seg, start: ns});
+        } else {
+          finalSeq.push({...seg});
+        }
+      }
+
+      // 5) Rebuild items for visible, non-fixed sequences (simple & safe)
+      for (const s of finalSeq) {
+        if (s.visible && !s.fixed) {
+          s.items = [];
+          for (let i = s.start; i <= s.end; i++) {
+            const col = this.currentColumns[i];
+            if (!col || !col.uid) throw new Error("Cannot find uid for column at index " + i);
+            s.items.push({index: col.index, uid: col.uid});
           }
         }
-      });
+      }
+
+      // 6) In-place replace (keep original array reference)
+      seq.splice(0, seq.length, ...finalSeq);
+
       this.$nextTick(() => {
         row.height = this.$position(row.tr).height;
-      })
-
+      });
     },
-    onRowCreated(e) {
-      const tr = e.target;
+    setSequences(row) {
       const sequences = [];
       if (this.groupCols[0].cols.length) {
         sequences.push({
@@ -248,11 +204,17 @@ export default {
           items: this.groupCols[2].cols.map(c => ({index: c.index, uid: c.uid})),
         });
       }
+
+      return sequences;
+    },
+    onRowCreated(e) {
+      bbn.fn.log("ON ROW CREATED");
+      const tr = e.target;
       const row = {
         tr,
         visible: !this.scrollable || !!(this.groupable && this.isGroupActive) || this.groupCols[0].cols.length || this.groupCols[2].cols.length,
         index: parseInt(tr.dataset.index),
-        sequences
+        sequences: this.setSequences(tr)
       };
       this.currentRows.push(row);
       if (this.scrollIntersection) {
@@ -329,7 +291,7 @@ export default {
 
       return res;
     },
-    intersectionEnter(tr) {
+    intersectionEnterRow(tr) {
       if (this.groupable && this.isGroupActive) {
         return;
       }
@@ -359,7 +321,7 @@ export default {
         }, 100);
       }
     },
-    intersectionExit(tr) {
+    intersectionExitRow(tr) {
       if (this.groupable && this.isGroupActive) {
         return;
       }

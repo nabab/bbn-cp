@@ -42,7 +42,7 @@ class subcomponents
   clean() {
     let i = 0;
     while (this.#components[i]) {
-      if (this.#components[i].$isDestroyed || this.#components[i].$isDestroying) {
+      if (!this.#components[i].$isDestroyed) {
         this.#components.splice(i, 1);
       }
       else {
@@ -57,10 +57,6 @@ class subcomponents
 
   get isOk() {
     return !this.#components.filter(a => !a.$isDestroyed && (!a.bbn || !a.$isMounted)).length;
-  }
-
-  get all() {
-    return this.#components.filter(a => !a.$isDestroyed && a.$isMounted);
   }
 
   get queue() {
@@ -291,7 +287,7 @@ const bbnProtoHtml = {
 
   findAllByKey(key, selector) {
     const arr = this.findAll(selector);
-    return arr.filter(a => a.bbnNode?.props?.key === key);
+    return arr.filter(a => a.bbnSchema?.props?.key === key);
   },
 
 

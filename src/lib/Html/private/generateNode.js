@@ -6,8 +6,6 @@ import bbnTemplateNode from "../../Node/Template.js";
 import bbnSvgNode from "../../Node/Svg.js";
 import bbnInternalNode from "../../Node/Internal.js";
 
-
-const allowed = ['id', 'args', 'attr', 'condition', 'conditionId', 'dependencies', 'directives', 'events', 'exp', 'fn', 'forget', 'hash', 'loop', 'loopIndex', 'loopItem', 'model', 'pre', 'tag', 'text'];
 export default function generateNode(model, cp, parent, root, rootHash, hash, data)
 {
   let node;

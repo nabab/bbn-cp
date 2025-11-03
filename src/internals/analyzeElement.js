@@ -170,7 +170,7 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
       return;
     }
     // create the attribute object
-    if (!['bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else', 'bbn-forget', 'bbn-model', 'bbn-bind', 'bbn-slot'].includes(a)) {
+    if (!['bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else', 'bbn-forget', 'bbn-model', 'bbn-bind', 'bbn-slot', 'bbn-var-names', 'bbn-var-values'].includes(a)) {
       res.attr[name] = bbn.fn.createObject({
         id: idx + '-' + name
       });
@@ -184,6 +184,8 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
     // Special attributes
     else if (a.indexOf('bbn-') === 0) {
       switch (a) {
+        case 'bbn-var-names':
+          break;
         case 'bbn-for':
           if (attr['bbn-elseif'] || attr['bbn-else']) {
             throw new Error(bbn._("bbn-for can't be used with bbn-else-if or bbn-else (check %s)", componentName));
@@ -328,6 +330,18 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
             running: false,
             num: 0,
             type:  null
+          });
+          break;
+        case 'bbn-var-values':
+          const idx = attr.indexOf('bbn-var-names');
+          if (idx === -1) {
+            throw new Error(bbn._("bbn-var-values must be used with bbn-var-names (check %s)", componentName));
+          }
+          let names = ele.getAttribute('bbn-var-names').trim().split(",");
+          res.vars = bbn.fn.createObject({
+            id: res.id + '-vars',
+            exp: value,
+            names: names.map(n => n.trim())
           });
           break;
         default:

@@ -113,6 +113,7 @@ async function treatQueue(num = 0, cps) {
     let fns;
     let unconditioned = [];
     let forgotten = [];
+    let chronoDiff = 0;
     const rnd = bbn.fn.randomString();
     bbn.fn.startChrono(rnd);
     queueLength = queue.length;
@@ -123,8 +124,13 @@ async function treatQueue(num = 0, cps) {
           throw new Error("Too many ticks");
         }
       }
-      if (queue.length % 100 === 0) {
-        await yieldToBrowser();
+      if (queue.length % 20 === 0) {
+        let currentChrono = bbn.fn.getChrono(rnd) - chronoDiff;
+        if (currentChrono > 50) {
+          chronoDiff += currentChrono;
+          await yieldToBrowser();
+          //await bbn.cp.nextFrame();
+        }
       }
 
       const queueElement = queue.shift();

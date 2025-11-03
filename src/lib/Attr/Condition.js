@@ -19,6 +19,7 @@ export default class bbnConditionAttr extends bbnAttr
   }
 
   attrSet() {
+    //bbn.fn.log("SETTING CONDITION IN " + this.node.component.$options.name + " - " + this.id);
     const node = this.node;
     const cp = node.component;
 
@@ -27,7 +28,6 @@ export default class bbnConditionAttr extends bbnAttr
     }
 
     const allIfs = this.node.parent.items.filter(a => (a.conditionId === node.conditionId));
-
     const isOrigin = allIfs.filter(a => cp.$retrieveNode(a.id, node.hash)?.condition?.isConditionUpdating).length === 0;
     if (isOrigin) {
       this.#isConditionUpdating = true;
@@ -96,7 +96,6 @@ export default class bbnConditionAttr extends bbnAttr
             else if (!otherCondNode.isCommented) {
               otherCondNode.nodeSwitch(true);
               let num = otherCondNode.nodeClean();
-              //bbn.fn.log(["CLEANING OTHER COND", num]);
             }
           }
         }
@@ -125,7 +124,6 @@ export default class bbnConditionAttr extends bbnAttr
       }
       else {
         let num = node.nodeClean();
-        //bbn.fn.log(["CLEANING CONDITION", num]);
       }
     }
 

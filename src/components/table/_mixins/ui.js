@@ -337,7 +337,7 @@ export default {
      * @returns {String}
      */
     getTr(i) {
-      return bbn.fn.getRow(this.currentRows, {index: i})?.tr;
+      return this.items[i]?.tr;
     },
     /**
      * Returns true if the given row has td.

@@ -16,7 +16,7 @@ import bbnForgetAttr from "../../Attr/Forget.js";
 import bbnLoopAttr from "../../Attr/Loop.js";
 import bbnOnceAttr from "../../Attr/Once.js";
 import bbnSlotAttr from "../../Attr/Slot.js";
-import bbnSubdataAttr from "../../Attr/Subdata.js";
+import bbnVarsAttr from "../../Attr/Vars.js";
 import bbnPreAttr from "../../Attr/Pre.js";
 import bbnTransitionAttr from "../../Attr/Transition.js";
 import bbnBindAttr from "../../Attr/Bind.js";
@@ -27,6 +27,7 @@ const allowed = [
   'loop',
   'loopIndex',
   'loopItem',
+  'vars',
   'conditionId',
   'condition',
   'forget',
@@ -109,9 +110,6 @@ bbnNode.prototype.nodeDefine = function(node, data) {
             else if (n === 'bbn-show') {
               v = new bbnShowAttr(node[a][n], this, n);
             }
-            else if (n === 'bbn-subdata') {
-              v = new bbnSubdataAttr(node[a][n], this, n);
-            }
             else if (n === 'bbn-break') {
               v = new bbnBreakAttr(node[a][n], this, n);
             }
@@ -140,7 +138,7 @@ bbnNode.prototype.nodeDefine = function(node, data) {
           });
         }
       }
-      else if (['condition', 'forget', 'loop', 'once', 'pre', 'transition', 'text', 'bind', 'slot'].includes(a)) {
+      else if (['condition', 'forget', 'loop', 'once', 'pre', 'transition', 'text', 'bind', 'vars', 'slot'].includes(a)) {
         let v;
         switch (a) {
           case 'condition':
@@ -151,6 +149,9 @@ bbnNode.prototype.nodeDefine = function(node, data) {
             break;
           case 'loop':
             v = new bbnLoopAttr(node[a], this)
+            break;
+          case 'vars':
+            v = new bbnVarsAttr(node[a], this);
             break;
           case 'slot':
             v = new bbnSlotAttr(node[a], this)

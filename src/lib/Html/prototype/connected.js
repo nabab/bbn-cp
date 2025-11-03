@@ -136,7 +136,7 @@ bbnProtoHtml.$connected = function () {
   if (!this.$isCreated) {
     // If no template it's a functional component
     if (this.$tpl['0']) {
-      this.$internal = generateNode(this.$tpl['0'], this, this.$el, this.$node.root, this.$node.rootHash);
+      this.$internal = generateNode(this.$tpl['0'], this, null, this.$node.root, this.$node.rootHash);
     }
 
     onHook(this, 'created');

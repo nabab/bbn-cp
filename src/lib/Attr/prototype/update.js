@@ -17,6 +17,9 @@ import setUndefinedAttribute from "../private/setUndefinedAttribute.js";
  */
 bbnAttr.prototype.attrUpdate = function(init) {
   if (this.name && this.node.element) {
+    if (this.node.loop) {
+      return;
+    }
     const name = this.name;
     const jsName = bbn.cp.badCaseAttributes[this.name] || this.name;
 

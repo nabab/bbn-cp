@@ -23,7 +23,7 @@ export default function tryMount(cp, child) {
     return;
   }
 
-  if (true) {
+  if (cp.$components.isOk) {
     //bbn.fn.log("SUCCEED MOUNT ON " + fullId(cp));
     // Sending mounted event
     onHook(cp, 'mounted');
@@ -37,7 +37,7 @@ export default function tryMount(cp, child) {
 
   }
   else {
-    bbn.fn.log("FAILED MOUNT ON " + fullId(cp), cp.$components.queue, cp.$components.all);
+    //bbn.fn.log("FAILED MOUNT ON " + fullId(cp), cp.$components.queue);
     if (timeouts[cp.$cid]) {
       clearTimeout(timeouts[cp.$cid].to);
     }

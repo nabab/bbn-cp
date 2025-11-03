@@ -26,7 +26,7 @@ import bbnRefAttr from "./lib/Attr/Ref.js";
 import bbnShowAttr from "./lib/Attr/Show.js";
 import bbnSlotAttr from "./lib/Attr/Slot.js";
 import bbnStyleAttr from "./lib/Attr/Style.js";
-import bbnSubdataAttr from "./lib/Attr/Subdata.js";
+import bbnVarsAttr from "./lib/Attr/Vars.js";
 import bbnTextAttr from "./lib/Attr/Text.js";
 import bbnTransitionAttr from "./lib/Attr/Transition.js";
 import bbnProtoHtml from "./lib/ProtoHtml.js";
@@ -73,7 +73,7 @@ Object.assign(window, {
   bbnShowAttr,
   bbnSlotAttr,
   bbnStyleAttr,
-  bbnSubdataAttr,
+  bbnVarsAttr,
   bbnTextAttr,
   bbnTransitionAttr,
   bbnParser,

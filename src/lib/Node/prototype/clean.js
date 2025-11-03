@@ -1,7 +1,5 @@
 import bbn from "@bbn/bbn";
 import bbnNode from "../Node.js";
-import onHook from "../../Html/private/onHook.js";
-import isComponent from "../../../functions/isComponent.js";
 
 const checkOwnDeps = node => {
   if (!node.attributes || !node.attributes.length) {
@@ -61,15 +59,14 @@ const removeRegion = node => {
   }
 };
 
-bbnNode.prototype.nodeClean = function(full) {
-  const cp = this.component;
-  const id = this.id;
-  const hash = this.hash;
-  const nodes = cp.$nodes;
-  const rootNumBits = full ? id.split('-').length : id.split('-').length + 1;
-  const indexes = Object.keys(nodes).filter(idx => !idx.indexOf(id + '-') || (full && (idx === id)));
+bbnNode.prototype.nodeClean = function(full, noPortals) {
+  if (this.tag === 'apst-adherent') {
+    debugger;
+  }
+  //bbn.fn.log((full ? 'FULL ' : '') + "CLEANING NODE " + this.realTag + ' - ' + this.id + (this.hash ? (' / ' + this.hash) : ''));
   let res = 0;
-  if (this.element?.querySelector) {
+  if (!noPortals && this.element?.querySelector) {
+    noPortals = true;
     const portals = this.element.querySelectorAll('.bbn-portal-active');
     if (portals.length) {
       portals.forEach(p => {
@@ -83,125 +80,40 @@ bbnNode.prototype.nodeClean = function(full) {
     }
   }
 
-  if (indexes.length) {
-    indexes.sort((a, b) => {
-      a = a.split('-').map(v => parseInt(v));
-      b = b.split('-').map(v => parseInt(v));
-      for (let i = 0; i < a.length; i++) {
-        if (!Object.hasOwn(b, i)) {
-          return -1;
+  while (this.children.length) {
+    const child = this.children.shift();
+    if (!child.off) {
+      checkOwnDeps(child);
+      const obj = child.component.$nodes[child.id];
+      if (obj) {
+        if (obj instanceof bbnNode) {
+          delete child.component.$nodes[child.id];
         }
-
-        if (a[i] !== b[i]) {
-          return a[i] < b[i] ? 1 : -1;
+        else if (obj[child.hash]) {
+          delete child.component.$nodes[child.id][child.hash];
         }
-      }
-
-      if (Object.hasOwn(b, a.length)) {
-        return 1;
-      }
-
-      return 0;
-    });
-
-    const oldIndexes = indexes.slice().reverse();
-    const elementsToDo = [];
-    while (oldIndexes.length) {
-      const idx = oldIndexes.shift();
-      const obj = nodes[idx];
-      if (hash) {
-        for (let n in obj) {
-          if ((n === hash) || !n.indexOf(hash + '-')) {
-            if (obj[n].element) {
-              elementsToDo.push(obj[n].element);
-            }
-          }
+        else {
+          bbn.fn.log("NOTHING TO DELETE");
         }
       }
-      else if (obj instanceof bbnNode) {
-        if (obj.element) {
-          elementsToDo.push(obj.element);
-        }
+      if (child.children.length) {
+        child.nodeClean(true, noPortals);
       }
-      else {
-        for (let n in obj) {
-          if (obj[n].element) {
-            elementsToDo.push(obj[n].element);
-          }
-        }
+      else if (child.element) {
+        child.nodeRemove(child.element);
       }
-    }
 
-    elementsToDo.forEach(ele => {
-      if (!(ele instanceof Comment) && isComponent(ele) && !ele.$isDestroying) {
-        onHook(ele, 'beforeDestroy');
-        if (ele.bbnNode.events?.['hook:beforedestroy']) {
-          const beforeDestroy = new Event('hook:beforedestroy');
-          ele.bbnNode.events['hook:beforedestroy'].handler.bind(ele.bbnComponent)(beforeDestroy);
-        }
-        /*bbn.fn.each(ele.$components.all, component => {
-          component.bbnNode.nodeClean(true);
-        })*/
-      }
-    })
-
-    while (indexes.length) {
-      const idx = indexes.shift();
-      const obj = nodes[idx];
-      if (hash) {
-        for (let n in obj) {
-          if ((n === hash) || !n.indexOf(hash + '-')) {
-            checkOwnDeps(obj[n]);
-            if (obj[n].element) {
-              obj[n].nodeRemove(obj[n].element, true);
-              res++;
-            }
-
-            if (rootNumBits === (obj[n].id.split('-').length)) {
-              removeRegion(obj[n]);
-            }
-            delete obj[n];
-          }
-        }
-      }
-      else if (obj instanceof bbnNode) {
-        checkOwnDeps(obj);
-        if (obj.element) {
-          obj.nodeRemove(obj.element, true);
-          res++;
-        }
-
-        if (rootNumBits === (obj.id.split('-').length)) {
-          removeRegion(obj);
-        }
-        delete nodes[idx];
-      }
-      else {
-        for (let n in obj) {
-          checkOwnDeps(obj[n]);
-          if (obj[n].element) {
-            obj[n].nodeRemove(obj[n].element, true);
-            res++;
-          }
-
-          if (rootNumBits === (obj[n].id.split('-').length)) {
-            if (indexes.length) {
-              bbn.fn.log("DELETING BEFORE WITH ROOT " + id + ' / ' + obj[n].id)
-            }
-              bbn.fn.log("DELETING3 ON " +indexes.length)
-            removeRegion(obj[n]);
-          }
-          delete obj[n];
-        }
-      }
+      removeRegion(child);
+      child.off = true;
+      res++;
     }
   }
 
-  bbn.cp.queue.filter(e => e.component === cp).forEach(e => {
-    if (e.element?.id && (!e.element.id.indexOf(id + '-'))) {
-      e.off = true;
-    }
-  });
+  if (full && this.element) {
+    checkOwnDeps(this);
+    this.nodeRemove(this.element);
+    res++;
+  }
 
   return res;
 };

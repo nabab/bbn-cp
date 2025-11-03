@@ -62,6 +62,9 @@ bbnAttr.prototype.attrSetResult = function(data) {
   }
 
   const node = this.node;
+  if (this.node.loop && (this.name === 'key')) {
+    return this.value;
+  }
   const component = node.component;
   const result = this.result;
   // Check if the result needs to be updated.
@@ -94,28 +97,32 @@ bbnAttr.prototype.attrSetResult = function(data) {
     //bbn.fn.log([this.exp, this.id, expValue, this.node.element])
   }
 
-  //const hash = '';
   //bbn.fn.log(["SET RESULT", this.exp, this.id, expValue, hash, this.node.element]);
   let isChanged = false;
 
   // Update the value if it has changed.
-  if (result.value !== expValue) {
-    /*
-    const o = bbnData.recognize(expValue, result.value, component, this);
-    if (result.value !== o.value) {
-      result.value = o.value;
+  if (bbn.fn.isPrimitive(expValue)) {
+    if (result.value !== expValue) {
+      result.value = expValue;
+      //result.hash = hash;
+      isChanged = true;
     }
-    //result.hash = hash;
-    isChanged = o.changed;
-    */
-    result.value = expValue;
-    isChanged = true;
   }
-/*
-  else if (hash !== this.result.hash) {
-    this.result.hash = hash;
-    isChanged = true;
-  }*/
+  else {
+    const hash = bbnData.hash(expValue);
+    if (result.value !== expValue) {
+      if (hash !== result.hash) {
+        /*const o = bbnData.recognize(expValue, result.value, component, this);
+        if (result.value !== o.value) {
+          result.value = o.value;
+        }
+        //result.hash = hash;
+        isChanged = o.changed;*/
+        result.value = expValue;
+        isChanged = true;
+      }
+    }
+  }
 
   // Create or update the result object based on its state.
   if (result.num === 1) {
@@ -132,9 +139,6 @@ bbnAttr.prototype.attrSetResult = function(data) {
     if (dataObj?.root?.component?.$computed?.[dataObj?.root?.path]?.isChanged) {
       result.state = 'MOD'; // <Modified> state.
     }
-    else if (dataObj && (component.$lastBuild < dataObj.lastUpdate)) {
-      result.state = 'MOD'; // Modified state.
-    }
     else if (isChanged) {
       result.state = 'MOD'; // <Modified> state.
     }
@@ -145,11 +149,18 @@ bbnAttr.prototype.attrSetResult = function(data) {
 
   if (this.value !== result.value) {
     this.value = result.value;
+  }
+  if (isChanged) {
     this.setLastChange();
   }
   
   result.seq = res.seq;
   updateSequence(result, this);
+
+  if ((this.constructor.name === 'bbnVarsAttr') && isChanged) {
+    this.varsUpdate(expValue);
+    //bbn.fn.log("VARS UPDATE FROM SET RESULT");
+  }
 
   // Return the updated result value.
   return this.value;

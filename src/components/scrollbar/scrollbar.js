@@ -368,34 +368,34 @@ const cpDef = {
      */
     adjustFromContainer(container) {
       this.keepCool(() => {
-        if (this.shouldBother && !this.dragging) {
-          let prop = this.isVertical ? 'scrollTop' : 'scrollLeft';
-          let ok = false;
-          if (!container) {
-            container = this.realContainer;
-            if (this.scroller) {
-              this.containerPos = this.scroller['current' + (this.isVertical ? 'Y' : 'X')];
-              ok = true;
-            }
+      if (this.shouldBother && !this.dragging) {
+        let prop = this.isVertical ? 'scrollTop' : 'scrollLeft';
+        let ok = false;
+        if (!container) {
+          container = this.realContainer;
+          if (this.scroller) {
+            this.containerPos = this.scroller['current' + (this.isVertical ? 'Y' : 'X')];
+            ok = true;
           }
-          if (!ok) {
-            this.containerPos = container[prop];
-          }
-
-          this.setSliderPos(this.containerPos * this.ratio);
-          /*
-          if ( container !== this.realContainer ){
-            this.realContainer[prop] = this.containerPos;
-          }
-          */
-          bbn.fn.each(this.scrollableElements(), a => {
-            if ( a !== container ){
-              a[prop] = this.containerPos;
-            }
-          });
-          this.overContent();
         }
-      }, 'adjustFromContainer', 50);
+        if (!ok) {
+          this.containerPos = container[prop];
+        }
+
+        this.setSliderPos(this.containerPos * this.ratio);
+        /*
+        if ( container !== this.realContainer ){
+          this.realContainer[prop] = this.containerPos;
+        }
+        */
+        bbn.fn.each(this.scrollableElements(), a => {
+          if ( a !== container ){
+            a[prop] = this.containerPos;
+          }
+        });
+        this.overContent();
+      }
+      }, 'adjustFromContainer', 25);
     },
     /**
      * @method adjustFromBar
@@ -556,15 +556,15 @@ const cpDef = {
      */
     overContent(){
       this.keepCool(() => {
-        clearTimeout(this.moveTimeout);
-        if ( !this.show ){
-          this.show = true;
+      clearTimeout(this.moveTimeout);
+      if ( !this.show ){
+        this.show = true;
+      }
+      this.moveTimeout = setTimeout(() => {
+        if (!this.isOverSlider) {
+          this.hideSlider();
         }
-        this.moveTimeout = setTimeout(() => {
-          if (!this.isOverSlider) {
-            this.hideSlider();
-          }
-        }, 500);
+      }, 500);
       }, 'overContent', 250)
     },
     /**

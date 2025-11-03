@@ -25,6 +25,21 @@ bbnAttr.prototype.retrieveArgument = function(a, hash, dataArr) {
         // Return the value from the provided data.
         done = true;
         v = data[varName];
+        let node = data.__bbn_node;
+        let firstNode = true;
+        while (node) {
+          if (node.hasData && node.data.__bbn_keys.includes(varName)) {
+            // Register the dependency for the argument in the data object.
+            if (node.vars && node.vars.names.includes(varName)) {
+              node.vars.addDependency(varName, this);
+            }
+
+            break;
+          }
+
+          firstNode = false;
+          node = node.parent;
+        }
       }
     }
   });

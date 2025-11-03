@@ -80,7 +80,7 @@ export default {
     },
   },
   methods: {
-    intersectionEnter() {
+    intersectionEnterRow() {
       clearTimeout(this.intersectionTimeout);
       this.intersectionTimeout = setTimeout(() => {
         this.table.visibleRows.push(this);
@@ -95,7 +95,7 @@ export default {
       }, 250);
 
     },
-    intersectionExit() {
+    intersectionExitRow() {
       clearTimeout(this.intersectionTimeout);
       const idx = this.table.visibleRows.indexOf(this);
       if (idx > -1) {

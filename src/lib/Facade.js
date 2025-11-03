@@ -34,9 +34,9 @@ export default class bbnFacade {
         target.set(key, value);
         return true;
       },
-      // Intercept has operations and call the `has` method.
-      has(target, key) {
-        return target.has(key);
+      add(target, key, value) {
+        target.set(key, value);
+        return true;
       }
     });
   }
@@ -48,15 +48,27 @@ export default class bbnFacade {
       return this[key];
     }
 
+    if (typeof this[key] === 'function') {
+      return this[key];
+    }
+
     // Start from the current node and traverse up through parent nodes.
     let node = this.__bbn_node;
     while (node) {
       // If node has data and the key exists in its data, return the value.
-      if (node.hasData && (node.data.__bbn_keys.indexOf(key) > -1)) {
+      if (node.hasData && node.data.__bbn_keys.includes(key)) {
         const dataObj = bbnData.getObject(node.data.__bbn_data[key]);
+        if (node.vars && node.vars.names.includes(key)) {
+          if (node.vars === bbnData.currentWatchers[0]) {
+            return node.data.__bbn_data[key];
+          }
+          if (dataObj && bbnData.currentWatchers[0]) {
+            node.vars.addDependency(key, bbnData.currentWatchers[0]);
+          }
+        }
 
         // If the value is a data object, add it to the sequence for the component.
-        if (dataObj) {
+        else if (dataObj) {
           bbnData.addSequence(node.component, '', dataObj);
         }
 
@@ -70,6 +82,7 @@ export default class bbnFacade {
               node.data.__bbn_deps[key].push(bbnData.currentWatchers[0]);
             }
           }
+
         }
     
         return node.data.__bbn_data[key];
@@ -82,6 +95,17 @@ export default class bbnFacade {
     // If key is not found, return undefined.
     return undefined;
   }
+
+  add(key, value) {
+    if (!this.hasOwn(key)) {
+      this.__bbn_keys.push(key);
+    }
+
+    if (this.__bbn_data[key] !== value) {
+      this.__bbn_data[key] = value;
+    }
+  }
+
 
   // Sets the value for the given key, updating the value in the current node and its parents.
   set(key, value) {
@@ -113,10 +137,14 @@ export default class bbnFacade {
     }
   }
 
+  hasOwn(key) {
+    return this.__bbn_keys.indexOf(key) > -1;
+  }
+
   // Checks if the given key exists in the current data or in any parent nodes.
   has(key) {
     // If the key is in the current data, return true.
-    if (this.__bbn_keys.indexOf(key) > -1) {
+    if (this.hasOwn(key)) {
       return true;
     }
 

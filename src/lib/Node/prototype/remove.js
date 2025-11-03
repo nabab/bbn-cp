@@ -1,13 +1,27 @@
 import bbnNode from "../Node.js";
+import onHook from "../../Html/private/onHook.js";
+import isComponent from "../../../functions/isComponent.js";
 
 const removeElement = function(res, ele, node) {
   if (res) {
-    if (ele.bbnComponent) {
-      ele.bbnComponent.$components.remove(ele);
-    }
 
     if (node) {
-      if (!(ele instanceof Comment) && node.events?.['hook:destroy']) {
+      if (!(ele instanceof Comment) && isComponent(ele) && !ele.$isDestroying) {
+        onHook(ele, 'beforeDestroy');
+        if (ele.bbnNode.events?.['hook:beforedestroy']) {
+          const beforeDestroy = new Event('hook:beforedestroy');
+          ele.bbnNode.events['hook:beforedestroy'].handler.bind(ele.bbnComponent)(beforeDestroy);
+        }
+
+        if (ele.bbnComponent) {
+          ele.bbnComponent.$components.remove(ele);
+        }
+        /*bbn.fn.each(ele.$components.all, component => {
+          component.bbnNode.nodeClean(true);
+        })*/
+        ele.$destroy();
+      }
+      else if (!(ele instanceof Comment) && node.events?.['hook:destroy']) {
         const destroy = new CustomEvent('hook:destroy', bbn.fn.createObject({
           cancelable: false,
           detail: {
@@ -50,6 +64,9 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
   }
   if (ele.bbnIsStart || ele.bbnIsEnd) {
     return;
+  }
+  if (ele.tag === 'apst-adherent') {
+    debugger;
   }
   /*
   if (ele.bbnDirectives && (ele.bbnNode?.directives?.['bbn-portal']?.value === ele.parentNode)) {
@@ -126,8 +143,8 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
             node.component.bbnNode.element.parentNode.insertBefore(element, node.component.bbnNode.element);
           }
           else {
-            throw new Error(bbn._("sdsdsdsd"));
-            debugger;
+            //throw new Error(bbn._("sdsdsdsd"));
+            //debugger;
             element.parentNode.removeChild(element);
             bbn.fn.log("Removed", element);
           }

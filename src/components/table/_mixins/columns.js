@@ -160,7 +160,6 @@ export default {
           }
         }
 
-        this.shownCols = cols;
         this.lastColumnRebuild = bbn.fn.timestamp();
         this.$nextTick(() => {
           if (this.columnRebuildCancel) {
@@ -168,12 +167,24 @@ export default {
           }
           else {
         bbn.fn.log("UPDATING " + this.visibleRows.length + '/' + this.visibleRows.filter(tr => !!bbn.fn.getRow(this.currentRows, a => a.tr === tr).visible).length + " SEQUENCES FOR VISIBLE ROW FROM " + this.firstColumnVisible + " TO " + this.lastColumnVisible, this.rowsShownFinished);
-            bbn.fn.each(this.visibleRows, tr => {
-              const row = bbn.fn.getRow(this.currentRows, a => a.tr === tr);
+            for (let tr of this.visibleRows) {
+              const index = parseInt(tr.dataset.index);
+              const row = this.currentRows[index];
               if (row.visible || !this.rowsShownFinished) {
                 this.updateSequences(tr);
               }
-            });
+
+              if (this.columnRebuildCancel) {
+                this.columnRebuildCancel = false;
+                break;
+              }
+            }
+            if (this.columnRebuildCancel) {
+              this.columnRebuildCancel = false;
+            }
+            else {
+              this.shownCols = cols;
+            }
             //bbn.fn.log(['updateShownCols', this.firstColumnVisible, this.lastColumnVisible, cols]);
           }
           this.isUpdatingShownCols = false;
@@ -209,8 +220,10 @@ export default {
     },
     onScrollMounted() {
       this.setScrollIntersection();
-      this.scrollIsMounted = true;
-      this.$emit('scroll-mounted');
+      this.$nextTick(() => {
+        this.scrollIsMounted = true;
+        this.$emit('scroll-mounted');
+      });
     },
     onScrollBeforeDestroy() {
       bbn.fn.log("ON SCROLL BEFORE DESTROY");
@@ -250,7 +263,7 @@ export default {
             if (entry.intersectionRatio > 0) {
               // Row
               if (scrollable && entry.target instanceof HTMLTableRowElement) {
-                this.intersectionEnter(entry.target);
+                this.intersectionEnterRow(entry.target);
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
@@ -284,7 +297,7 @@ export default {
             else {
               // Row
               if (scrollable && entry.target instanceof HTMLTableRowElement) {
-                this.intersectionExit(entry.target);
+                this.intersectionExitRow(entry.target);
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
@@ -347,9 +360,9 @@ export default {
             this.scrollCurrentX = currentScrollX;
           }
         }, {
-          root: this.$refs.scroll.$refs.scrollContent,
-          threshold: 0,
-          rootMargin: this.$refs.scroll.$refs.scrollContent.offsetHeight + 'px ' + this.$refs.scroll.$refs.scrollContent.offsetWidth + 'px'
+          root: this.$refs.scroll,
+          threshold: 0.001,
+          rootMargin: '0px'//this.$refs.scroll.$refs.scrollContent.offsetHeight + 'px ' + this.$refs.scroll.$refs.scrollContent.offsetWidth + 'px'
         });
       }
     },

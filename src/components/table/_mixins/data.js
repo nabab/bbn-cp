@@ -134,6 +134,11 @@ export default {
       this.currentExpanded = [];
       this.editedRow = false;
       this.editedIndex = false;
+      this.visibleRows = [];
+      if (this.scrollIntersection) {
+        bbn.fn.each(this.currentRows, r => this.scrollIntersection.unobserve(r.tr))
+      }
+      this.currentRows = [];
       this.$forceUpdate();
       //bbn.fn.log('forceupdate4');
       return bbn.cp.mixins.list.methods.updateData.apply(this, [withoutOriginal]).then(() => {
@@ -147,8 +152,6 @@ export default {
           })));
         }
         
-        this.visibleRows.splice(0);
-        this.currentRows.splice(0);
         this.isTableDataUpdating = false;
         if (!this.currentData?.length) {
           this.rowsShownFinished = true;

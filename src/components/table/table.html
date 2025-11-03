@@ -205,7 +205,7 @@
                  :class="{
                    'bbn-overlay': ((!filteredData.length && !tmpRow) || isLoading || isTableDataUpdating) && !!scrollable
                  }"
-                 bbn-if="$isMounted && currentRows && ready && !isLoading && !isTableDataUpdating">
+                 bbn-if="scrollIsMounted && currentRows && ready && !isLoading && !isTableDataUpdating">
             <!-- Inline insertion -->
             <tr bbn-if="tmpRow">
             </tr>
@@ -227,7 +227,10 @@
               </td>
             </tr>
             <!-- Rows -->
-            <template bbn-for="(row, rowIndex) in items">
+            <template bbn-for="(row, rowIndex) in items"
+                      bbn-var-names="currentRow"
+                      bbn-var-values="[bbn.fn.getRow(currentRows, {index: rowIndex})]"
+                      :key="row.uid || row.index">
               <!-- Group rows = start of a new group -->
               <component is="tr"
                          bbn-if="isGroupActive && (!rowIndex || (items[rowIndex-1].data[cols[group].field] !== row.data[cols[group].field]))"
@@ -273,40 +276,42 @@
                         :data-index="rowIndex"
                         @hook:create="onRowCreated"
                         @hook:destroy="onRowDestroyed">
-                <component bbn-if="!currentRows.filter(a => a.index === rowIndex)?.[0]?.visible"
+                <component bbn-if="!currentRow?.visible"
                            is="td"
                            :class="['bbn-spadding', cellClass(null, row)]"
                            :style="averageRowHeight ? {height: averageRowHeight + 'px'} : {}"
                            :colspan="currentColumns.length"> 
                 </component>
                 <template bbn-else>
-                  <template bbn-for="seq in bbn.fn.getRow(currentRows, {index: rowIndex})?.sequences || []"
+                  <template bbn-for="seq in currentRow.sequences || []"
                             :key="seq.uid">
                     <template bbn-if="seq.visible">
                       <component bbn-for="c in seq.items"
                                 :key="c.uid"
-                                bbn-if="!isGroupActive || !currentColumns[c.index].isExpander"
+                                bbn-var-names="column"
+                                bbn-var-values="[currentColumns[c.index]]"
+                                bbn-if="!isGroupActive || !column.isExpander"
                                 is="td"
-                                :class="cellClass(currentColumns[c.index], row)"
+                                :class="cellClass(column, row)"
                                 :ref="'td-' + rowIndex + '-' + c.index"
                                 @save="saveInline"
                                 @cancel="cancel"
-                                :rowspan="!isGroupActive && currentColumns[c.index].isExpander && isExpanded(row.data, row.index) ? 2 : 1"
-                                :tabindex="editable && (currentColumns[c.index].editable !== false) ? 0 : -1"
-                                @click="clickCell(currentColumns[c.index], c.index, rowIndex)"
-                                @doubleclick="dbClickCell(currentColumns[c.index], row.data, rowIndex)"
+                                :rowspan="!isGroupActive && column.isExpander && isExpanded(row.data, row.index) ? 2 : 1"
+                                :tabindex="editable && (column.editable !== false) ? 0 : -1"
+                                @click="clickCell(column, c.index, rowIndex)"
+                                @doubleclick="dbClickCell(column, row.data, rowIndex)"
                                 @focusout="focusout(rowIndex, $event)"
                                 @focusin="focusin(rowIndex, $event, c.index)">
   
                         <span class="bbn-table-dirty bbn-top-left"
-                              bbn-if="isDirty(currentColumns[c.index], rowIndex)"/>
-                        <div bbn-if="!isGroupActive && currentColumns[c.index].isExpander"
+                              bbn-if="isDirty(column, rowIndex)"/>
+                        <div bbn-if="!isGroupActive && column.isExpander"
                              @click="toggleExpanded(rowIndex)"
                              class="bbn-table-cell-expander-container bbn-lg bbn-p bbn-unselectable bbn-c">
                           <i class="nf nf-oct-triangle_right bbn-unselectable bbn-table-cell-expander-icon"
                             tabindex="0"/>
                         </div>
-                        <div bbn-elseif="currentColumns[c.index].isSelection && isSelectable(row)"
+                        <div bbn-elseif="column.isSelection && isSelectable(row)"
                             class="bbn-c bbn-w-100">
                           <bbn-checkbox :checked="currentSelected.includes(uid ? row.data[uid] : row.index)"
                                         :value="true"
@@ -317,7 +322,7 @@
                                         @change="v => checkSelection(rowIndex, v)"
                                         class="bbn-middle bbn-flex"/>
                         </div>
-                        <div bbn-elseif="isEdited(row.data, currentColumns[c.index], rowIndex)">
+                        <div bbn-elseif="isEdited(row.data, column, rowIndex)">
                           <div bbn-if="(editMode === 'inline')
                                 && (editable !== 'nobuttons')
                                 && (c.index === colButtons)">
@@ -336,13 +341,13 @@
                                         style="margin: 0 0.1rem"/>
                           </div>
                           <component bbn-elseif="(editMode === 'inline')
-                                      && isValidField(currentColumns[c.index].field)
-                                      && (currentColumns[c.index].editable !== false)"
-                                      bbn-bind="getEditableOptions(currentColumns[c.index])"
-                                      :is="getEditableComponent(currentColumns[c.index])"
+                                      && isValidField(column.field)
+                                      && (column.editable !== false)"
+                                      bbn-bind="getEditableOptions(column)"
+                                      :is="getEditableComponent(column)"
                                       @click.stop
                                       :source="row.data"
-                                      bbn-model="row.data[currentColumns[c.index].field]"
+                                      bbn-model="row.data[column.field]"
                                       style="width: 100%"/>
                           <!--<bbn-field bbn-elseif="(editMode === 'inline')
                                           && isValidField(column.field)
@@ -352,27 +357,27 @@
                                       @click.stop
                                       bbn-model="editedRow[column.field]"
                                       style="width: 100%"/>-->
-                          <bbn-field bbn-elseif="isValidField(currentColumns[c.index].field)
-                                      && !currentColumns[c.index].render
-                                      && !currentColumns[c.index].buttons"
-                                    bbn-bind="currentColumns[c.index]"
+                          <bbn-field bbn-elseif="isValidField(column.field)
+                                      && !column.render
+                                      && !column.buttons"
+                                    bbn-bind="column"
                                     @click.stop
-                                    :value="row.data[currentColumns[c.index].field]"
+                                    :value="row.data[column.field]"
                                     :data="row.data"/>
-                          <div bbn-elseif="!currentColumns[c.index].buttons && currentColumns[c.index].render"
-                                bbn-html="currentColumns[c.index].render(row.data, currentColumns[c.index], rowIndex)"/>
-                          <div bbn-elseif="!currentColumns[c.index].buttons"
-                                bbn-html="renderDefault(row.data, currentColumns[c.index], rowIndex)"/>
+                          <div bbn-elseif="!column.buttons && column.render"
+                                bbn-html="column.render(row.data, column, rowIndex)"/>
+                          <div bbn-elseif="!column.buttons"
+                                bbn-html="renderDefault(row.data, column, rowIndex)"/>
                           <div bbn-else> </div>
                         </div>
-                        <template bbn-elseif="currentColumns[c.index].buttons">
+                        <template bbn-elseif="column.buttons">
                           <template bbn-if="buttonMode === 'dropdown'">
-                            <bbn-dropdown :source="buttonSource(row.data, currentColumns[c.index], rowIndex)"
-                                          :placeholder="currentColumns[c.index].label.trim() === '' ? _('Action') : currentColumns[c.index].label"
+                            <bbn-dropdown :source="buttonSource(row.data, column, rowIndex)"
+                                          :placeholder="column.label.trim() === '' ? _('Action') : column.label"
                                           @select="_execCommand"/>
                           </template>
                           <template bbn-elseif="buttonMode === 'menu'">
-                            <bbn-context :source="buttonSource(row.data, currentColumns[c.index], rowIndex)"
+                            <bbn-context :source="buttonSource(row.data, column, rowIndex)"
                                          :portal="$el"
                                           @select="(it, idx, dataIndex, ev, floater) => onButtonsMenuSelect(it, row.data, currentColumns[c.index], rowIndex, ev, floater)">
                               <span class="bbn-iblock bbn-lg">
@@ -381,8 +386,8 @@
                               </span>
                             </bbn-context>
                           </template>
-                          <div bbn-elseif="colButtons === currentColumns[c.index].index">
-                            <template bbn-for="(button, bi) in buttonSource(row.data, currentColumns[c.index], rowIndex)"
+                          <div bbn-elseif="colButtons === column.index">
+                            <template bbn-for="(button, bi) in buttonSource(row.data, column, rowIndex)"
                                       :key="bi">
                               <component bbn-if="button.component"
                                         :is="button.component"
@@ -398,26 +403,26 @@
                             </template>
                           </div>
                           <template bbn-else>
-                            <bbn-button bbn-for="(button, bi) in (Array.isArray(currentColumns[c.index].buttons) ? currentColumns[c.index].buttons : currentColumns[c.index].buttons(row.data, currentColumns[c.index], rowIndex))"
+                            <bbn-button bbn-for="(button, bi) in (Array.isArray(column.buttons) ? column.buttons : column.buttons(row.data, column, rowIndex))"
                                         :key="bi"
                                         bbn-bind="button"
                                         @focusin.prevent.stop
                                         @focusout.prevent.stop
-                                        @click.prevent.stop="_execCommand(button, row.data, currentColumns[c.index], rowIndex, $event)"
+                                        @click.prevent.stop="_execCommand(button, row.data, column, rowIndex, $event)"
                                         style="margin: 0 .1rem"/>
                           </template>
                         </template>
                         <!--slot bbn-elseif="$hasSlots('c')"/-->
-                        <component bbn-elseif="currentColumns[c.index].component"
-                                  :is="currentColumns[c.index].component"
-                                  bbn-bind="getColOptions(row.data, currentColumns[c.index], rowIndex)"
-                                  :source="currentColumns[c.index].mapper ? currentColumns[c.index].mapper(row.data) : row.data"/>
-  
+                        <component bbn-elseif="column.component"
+                                  :is="column.component"
+                                  bbn-bind="getColOptions(row.data, column, rowIndex)"
+                                  :source="column.mapper ? column.mapper(row.data) : row.data"/>
+
                         <div bbn-else
-                             bbn-html="renderDefault(row.data, currentColumns[c.index], rowIndex)"/>
-                        <table-dots bbn-if="currentColumns[c.index].dots"
+                             bbn-html="renderDefault(row.data, column, rowIndex)"/>
+                        <table-dots bbn-if="column.dots"
                                     :source="{
-                                          column: currentColumns[c.index],
+                                          column: column,
                                           index: index,
                                           dataIndex: row.index,
                                           data: row.data,
@@ -433,7 +438,7 @@
                   </template>
                 </template>
               </component>
-              <template bbn-if="bbn.fn.getRow(currentRows, {index: rowIndex})?.visible">
+              <template bbn-if="currentRow?.visible">
                 <component is="tr"
                             bbn-if="expander && !isGroupActive && isExpanded(row.data, row.index)"
                             :class="rowClass(row, rowIndex)"

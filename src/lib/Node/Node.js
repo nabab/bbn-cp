@@ -158,6 +158,15 @@ export default class bbnNode
       value: parent
     });
 
+    Object.defineProperty(this, 'children', {
+      writable: false,
+      configurable: false,
+      value: []
+    });
+    if (parent) {
+      parent.children.push(this);
+    }
+
     Object.defineProperty(this, 'deps', {
       writable: false,
       value: []
@@ -302,6 +311,9 @@ export default class bbnNode
   }
 
   nodeSwitch(v) {
+    if (v && (this.tag === 'apst-adherent')) {
+      debugger;
+    }
     if (this.#comment !== !!v) {
       if (this.directives && v) {
         for (let n in this.directives) {

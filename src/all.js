@@ -27,6 +27,7 @@ import bbnSlotAttr from "./lib/Attr/Slot.js";
 import bbnStyleAttr from "./lib/Attr/Style.js";
 import bbnTextAttr from "./lib/Attr/Text.js";
 import bbnTransitionAttr from "./lib/Attr/Transition.js";
+import bbnVarsAttr from "./lib/Attr/Vars.js";
 import bbnProtoHtml from "./lib/ProtoHtml.js";
 import bbnOptions from "./lib/Options.js";
 import bbnHtml from "./lib/Html/Html.js";
@@ -312,6 +313,7 @@ Object.assign(window, {
   bbnStyleAttr,
   bbnTextAttr,
   bbnTransitionAttr,
+  bbnVarsAttr,
   bbnParser,
   bbnWatcher
 });
