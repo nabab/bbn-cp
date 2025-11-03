@@ -341,6 +341,7 @@ updateSequences(row) {
 
       const index = parseInt(tr.dataset.index);
       const row = this.items[index];
+      bbn.fn.log("INTERSECTION", row);
       if (!row) {
         return;
       }

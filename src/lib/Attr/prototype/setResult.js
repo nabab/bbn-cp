@@ -77,7 +77,7 @@ bbnAttr.prototype.attrSetResult = function(data) {
   }
 
   this.setLastUpdate();
-  result.num = component.$numBuild + 1;
+  result.num = component.$numTicks + 1;
   let res;
   try {
     res = Object.hasOwn(arguments, 0) ? {val: arguments[0], seq: []} : this.attrExec(data);

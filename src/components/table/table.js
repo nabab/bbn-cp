@@ -459,18 +459,10 @@ const cpDef = {
     if (floater) {
       if (floater.ready) {
         this.init();
-        this.$once('dataloaded', () => {
-          this.ready = true;
-          floater.onResize();
-        });
       }
       else {
         floater.$on('ready', () => {
           this.init();
-          this.$once('dataloaded', () => {
-            this.ready = true;
-            floater.onResize();
-          });
         });
       }
       if (this.isAutobind) {
@@ -478,9 +470,6 @@ const cpDef = {
       }
     }
     else {
-      this.$once('dataloaded', () => {
-        this.ready = true;
-      });
       this.init(!!this.isAutobind);
     }
 

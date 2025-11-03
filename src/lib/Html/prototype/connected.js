@@ -194,6 +194,7 @@ bbnProtoHtml.$connected = function () {
 
   tryMount(this);
   // Important
-  this.$numBuild = bbn.cp.numTicks;
+  this.$numBuild = 1
+  this.$numTicks = bbn.cp.numTicks;
 }
 

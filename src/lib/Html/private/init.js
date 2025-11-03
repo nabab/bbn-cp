@@ -137,6 +137,14 @@ export default function init(cp) {
     writable: true,
     configurable: true
   });
+  /**
+   * Counts the number of times the component has been repainted through the method updateComponent
+   */
+  Object.defineProperty(cp, '$numTicks', {
+    value: bbn.cp.numTicks,
+    writable: true,
+    configurable: true
+  });
 
   //Object.defineProperty
   //cp.$event = null;

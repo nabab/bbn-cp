@@ -126,7 +126,10 @@ export default {
       this.resizeWidth();
       this.initReady = true;
       if (with_data) {
+        bbn.fn.log("dataloaded: with_data");
         this.$once('dataloaded', () => {
+          bbn.fn.log("dataloaded only");
+          this.ready = true;
           this.initStarted = false;
           this.$emit('init', this);
           this.resizeWidth();
@@ -136,7 +139,9 @@ export default {
         });
       }
       else {
+        bbn.fn.log("dataloaded: without_data");
         this.$nextTick(() => {
+          this.ready = true;
           if (this.initStarted) {
             this.initStarted = false;
           }
