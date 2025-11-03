@@ -157,10 +157,13 @@ const cpDef = {
   /**
    * @event created
    */
-  async created() {
+  beforeCreate() {
     this.componentClass.push('bbn-resize-emitter');
     if (bbnRouter.db) {
-      this.db = await bbnRouter.db.open('bbn');
+      bbnRouter.db.open('bbn').then(res => {
+        bbn.fn.log("DB OPENED", res);
+        this.db = res;
+      });
     }
   },
   /**

@@ -107,6 +107,7 @@ import bbnCpRouter from "./components/router/router.js";
 import bbnCpRouterConfig from "./components/router-config/router-config.js";
 import bbnCpRouterGroup from "./components/router-group/router-group.js";
 import bbnCpRte from "./components/rte/rte.js";
+import bbnCpScreenshot from "./components/screenshot/screenshot.js";
 import bbnCpScroll from "./components/scroll/scroll.js";
 import bbnCpScrollbar from "./components/scrollbar/scrollbar.js";
 import bbnCpSearch from "./components/search/search.js";
@@ -226,6 +227,7 @@ bbn.cp.toDefine = [
   bbnCpRouterConfig,
   bbnCpRouterGroup,
   bbnCpRte,
+  bbnCpScreenshot,
   bbnCpScroll,
   bbnCpScrollbar,
   bbnCpSearch,

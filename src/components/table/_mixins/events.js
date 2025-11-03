@@ -82,6 +82,10 @@ export default {
      * @param {Event} e 
      */
     focusin(rowIndex, e, cellIndex) {
+      if (!e.target) {
+        return;
+      }
+
       if (!e.target.closest('td')
         || !e.target.closest('td').classList.contains('bbn-table-buttons')
         || e.target.closest('td').classList.contains('bbn-table-edit-buttons')

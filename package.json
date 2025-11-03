@@ -75,6 +75,7 @@
     "@lezer/highlight": "^1.2.2",
     "@lezer/lr": "^1.4.2",
     "@uiw/codemirror-extensions-color": "^4.25.2",
+    "@zumer/snapdom": "^2.0.0-dev.1",
     "acorn": "^8.15.0",
     "apexcharts": "^5.3.5",
     "codemirror-languageserver": "^1.18.1",

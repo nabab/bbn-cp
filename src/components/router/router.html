@@ -86,11 +86,11 @@
                           @click="getContainer(a.idx).show()"/>
                   </div>
                 </div>
-                <div :class="['bbn-flex-fill', {'bbn-middle': !views[a.idx]?.thumbnail}]">
-                  <img :src="views[a.idx]?.thumbnail"
+                <div :class="['bbn-flex-fill', {'bbn-middle': !thumbnails[a.uid]}]">
+                  <img :src="thumbnails[a.uid].image"
                       style="width: 100%; max-height: 100%; height: auto"
                       class="bbn-router-thumbnail"
-                      bbn-if="views[a.idx]?.thumbnail">
+                      bbn-if="thumbnails[a.uid]">
                   <div bbn-else
                       class="bbn-block">
                     <i class="nf nf-md-camera_off_outline bbn-xxxxl"/>
@@ -260,7 +260,9 @@
           'bbn-left-spadding': isVisual && !visualShowAll && ['left', 'right', 'top', 'bottom'].includes(visualOrientation),
           'bbn-bottom-spadding': isVisual && !visualShowAll && ['right', 'top', 'left', 'bottom'].includes(visualOrientation),
         }]"
-             bbn-forget="!scrollContent">
+             bbn-forget="!scrollContent"
+             bbn-show="!visualShowAll"
+             bbn-if="db && ready">
           <slot :filter="filterIsContainer"/>
           <bbn-container bbn-for="a in views"
                           bbn-if="!a.real"

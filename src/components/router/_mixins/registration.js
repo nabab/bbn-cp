@@ -78,6 +78,15 @@ export default {
         cp.routerUid = this.views[idx].uid;
       }
 
+      if (this.db) {
+        this.db.select('containers', ['manual', 'image'], {url: this.views[idx].url}).then(thumb => {
+          this.thumbnails[cp.routerUid] = bbn.cp.immunizeValue(thumb);
+        });
+      }
+      else {
+        bbn.fn.warning("KKKKKKKKK")
+      }
+
       this.numRegistered++;
       this.containers[cp.routerUid] = cp;
       //bbn.fn.log("VIEW ON VISUAL")

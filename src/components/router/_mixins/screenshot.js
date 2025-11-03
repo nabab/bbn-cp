@@ -17,15 +17,11 @@ export default {
        */
       currentScreenshotDelay: this.screenshotDelay,
       /**
-       * The base 64 encoded thumbnail image.
-       * @data {String} thumbnail
-       */
-      thumbnail: false,
-      /**
        * The bbn-screenshot element inside router
        */
       _screenshoter: false,
-      _screenshotInterval: {}
+      _screenshotInterval: {},
+      thumbnails: bbn.fn.createObject()
     }
   },
   computed: {
@@ -83,6 +79,10 @@ export default {
             return;
           }
 
+          if (img instanceof Image) {
+            img = img.src;
+          }
+
           ct.thumbnail = img;
           // This is in fact an insert/update
           const url = ct.getFullURL();
@@ -95,6 +95,9 @@ export default {
             });
           }
         });
+      }
+      else if (force) {
+        throw new Error(bbn._("The container is not visible, the screenshot cannot be saved."));
       }
       else {
         bbn.fn.log(["No screenshot to save", this.isVisible, this.router.db, !this.isPane, this.checkVisibility()]);
@@ -123,7 +126,7 @@ export default {
 
     updateScreenshot(idx, force) {
       const ct = this.getContainer(idx);
-      if (ct && this.visual && this.db) {
+      if (ct && this.isVisual && this.db) {
         let url = ct.getFullURL();
         this.db.select('containers', ['manual', 'image'], {url}).then(res => {
           if (res && (!res.manual || force)) {

@@ -10,44 +10,50 @@
  * @created 10/02/2017
  */
 import * as htmlToImage from 'html-to-image';
+import { snapdom } from '@zumer/snapdom';
 
 const cpDef = {
+  statics() {
+    return {htmlToImage, snapdom};
+  },
   methods: {
     async capture(ele, width, height, meth = 'png') {
       let fn;
       switch (meth) {
         case 'jpeg':
-          fn = htmlToImage.toJpeg;
+          fn = snapdom.toJpeg;
           break;
         case 'blob':
-          fn = htmlToImage.toBlob;
+          fn = snapdom.toBlob;
           break;
         case 'svg':
-          fn = htmlToImage.toSvg;
+          fn = snapdom.toSvg;
           break;
         default:
-          fn = htmlToImage.toPng;
+          fn = snapdom.toPng;
       }
 
       return new Promise((resolve) => {
         ele.classList.add('bbn-screenshot-element');
         setTimeout(() => {
           const opt = {
+            iconFonts: ['.nf'],
+            backgroundColor: 'white',
+            filter: e => e.tagName !== 'BBN-CHART',
             width: ele.clientWidth,
             height: ele.clientHeight,
-            preferredFontFormat: 'woff2',
-            backgroundColor: 'white',
-            filter: e => e.tagName !== 'BBN-CHART'
           };
+          /*
           if (width) {
-            opt.canvasWidth = width;
+            opt.width = width;
           }
           if (height) {
-            opt.canvasHeight = height;
-          }
+            opt.height = height;
+          }*/
 
           try {
             fn(ele, opt).then(img => {
+              bbn.fn.log("RESPONSE", img)
               ele.classList.remove('bbn-screenshot-element');
               resolve(img || false);
             }).catch(e => {

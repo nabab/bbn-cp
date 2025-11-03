@@ -420,11 +420,6 @@ export default {
       }
 
       this.fixIndexes();
-      if (this.db) {
-        const thumb = await this.db.select('containers', ['manual', 'image'], {url: obj.url});
-        obj.thumbnail = thumb?.image || false;
-        obj.manual = thumb?.manual || false;
-      }
 
       if (this.ready) {
         this.updateVisualList();
