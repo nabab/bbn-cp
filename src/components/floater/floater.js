@@ -854,11 +854,18 @@ const cpDef = {
     },
     onResize() {
       if (this.ready) {
-        this.keepCool(() => {
+        if (this.isResized) {
+          this.keepCool(() => {
+            bbn.cp.mixins.resizer.methods.onResize.apply(this);
+            this._setMinMax();
+            this.updatePosition();
+          }, 'onresize', 100)
+        }
+        else {
           bbn.cp.mixins.resizer.methods.onResize.apply(this);
           this._setMinMax();
           this.updatePosition();
-        }, 'onresize', 100)
+        }
       }
     },
     /**
