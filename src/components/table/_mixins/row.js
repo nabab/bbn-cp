@@ -37,136 +37,184 @@ export default {
     }
   },
   methods: {
-    updateSequences(row) {
-      const first = this.firstColumnVisible;
-      const last  = this.lastColumnVisible;
-      if (!row.visible) row.visible = true;
-      const seq = row.sequences;
-      if (!Array.isArray(seq) || !seq.length || !last) return;
+updateSequences(row) {
+  const first = this.firstColumnVisible;
+  const last  = this.lastColumnVisible;
+  if (!row.visible) {
+    row.visible = true;
+  }
 
-      // Helpers
-      const newUid = () => bbn.fn.randomString();
-      const clamp  = (v, a, b) => Math.max(a, Math.min(b, v));
-      const overlaps = (s, e, a, b) => !(e < a || s > b);
+  // Nothing to do if `last` missing or nothing hidden in row
+  if (!last || !bbn.fn.count(row.sequences, {visible: false})) {
+    return;
+  }
 
-      // 1) Split each original segment into up to 3 parts around [first,last]
-      //    left (original visibility), mid (forced visible), right (original visibility)
-      const parts = [];
-      for (const s of seq) {
-        const S = {start: s.start, end: s.end, visible: s.visible, fixed: !!s.fixed, uid: s.uid || newUid()};
-        if (!overlaps(S.start, S.end, first, last)) {
-          // untouched
-          parts.push({...S});
-          continue;
-        }
-        // left
-        if (S.start < first) {
-          parts.push({
-            ...S,
-            end: first - 1,
-            fixed: S.fixed && S.end === (first - 1) // survives only if not trimmed internally
-          });
-        }
-        // mid (forced visible, never fixed)
-        const ms = clamp(S.start, first, last);
-        const me = clamp(S.end, first, last);
-        parts.push({start: ms, end: me, visible: true, fixed: false, uid: newUid()});
-        // right
-        if (S.end > last) {
-          parts.push({
-            ...S,
-            start: last + 1,
-            fixed: S.fixed && S.start === (last + 1)
-          });
-        }
+  const orig = (row.sequences || []).slice().sort((a, b) => a.start - b.start);
+
+  // Small helpers
+  const makeSeq = (start, end, visible, fixed = false) => ({
+    start, end, visible, fixed, uid: bbn.fn.randomString()
+  });
+
+  const overlaps = (s, e, a, b) => !(e < a || s > b);
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+  // 1) Split around the visible window [first, last]
+  //    Every original segment becomes up to 3 pieces: left (invisible), mid (visible), right (invisible)
+  //    We only keep non-empty pieces (start <= end).
+  const pieces = [];
+  for (const seg of orig) {
+    const {start: s, end: e, visible, fixed} = seg;
+
+    if (!overlaps(s, e, first, last)) {
+      // Completely outside the window: keep as-is
+      pieces.push({...seg});
+      continue;
+    }
+
+    // Left (before first)
+    const Ls = s;
+    const Le = Math.min(e, first - 1);
+    if (Ls <= Le) {
+      // Stays as original visibility; fixed preserved only if segment untouched
+      pieces.push(makeSeq(Ls, Le, seg.visible && Le < first, fixed && (seg.start === Ls) && (seg.end === Le)));
+    }
+
+    // Mid (inside [first, last]) => enforced visible
+    const Ms = clamp(s, first, last);
+    const Me = clamp(e, first, last);
+    if (Ms <= Me) {
+      // Mid slice is never fixed
+      pieces.push(makeSeq(Ms, Me, true, false));
+    }
+
+    // Right (after last)
+    const Rs = Math.max(s, last + 1);
+    const Re = e;
+    if (Rs <= Re) {
+      pieces.push(makeSeq(Rs, Re, seg.visible && Rs > last, fixed && (seg.start === Rs) && (seg.end === Re)));
+    }
+  }
+
+  // 2) Sort and normalize adjacency (fix overlaps/gaps into contiguous ranges)
+  pieces.sort((a, b) => a.start - b.start || a.end - b.end);
+
+  // If there are tiny overlaps or gaps due to upstream data, fix to strict adjacency by
+  // snapping current.start to prev.end + 1 where needed, provided it doesn't invert the range.
+  const normalized = [];
+  for (const seg of pieces) {
+    if (!normalized.length) {
+      normalized.push({...seg});
+      continue;
+    }
+    const prev = normalized[normalized.length - 1];
+
+    // If current starts before or at prev.end, push its start to prev.end+1
+    if (seg.start <= prev.end) {
+      const newStart = prev.end + 1;
+      if (newStart <= seg.end) {
+        normalized.push({...seg, start: newStart});
       }
+      // else the segment collapses completely; drop it
+    }
+    // If there is a gap, fill with an invisible block
+    else if (seg.start > prev.end + 1) {
+      normalized.push(makeSeq(prev.end + 1, seg.start - 1, false, false));
+      normalized.push({...seg});
+    } else {
+      // Adjacent already
+      normalized.push({...seg});
+    }
+  }
 
-      // 2) Sort by start and enforce strict contiguity (fill gaps, trim overlaps)
-      parts.sort((a, b) => a.start - b.start || a.end - b.end);
-      const contiguous = [];
-      for (const cur of parts) {
-        if (!contiguous.length) {
-          contiguous.push({...cur});
-          continue;
-        }
-        const prev = contiguous[contiguous.length - 1];
-        if (cur.start > prev.end + 1) {
-          // fill gap with invisible
-          contiguous.push({start: prev.end + 1, end: cur.start - 1, visible: false, fixed: false, uid: newUid()});
-          contiguous.push({...cur});
-        } else if (cur.start <= prev.end) {
-          // trim overlap
-          const newStart = prev.end + 1;
-          if (newStart <= cur.end) contiguous.push({...cur, start: newStart});
-          // else fully covered; drop
-        } else {
-          contiguous.push({...cur});
-        }
+  // 3) Fuse consecutive visible sequences,
+  //    EXCEPT when they’re fixed and at the extreme edges.
+  //    (By convention, only the extreme edges may be fixed.)
+  const fused = [];
+  for (let i = 0; i < normalized.length; i++) {
+    const cur = normalized[i];
+    if (!fused.length) {
+      fused.push({...cur});
+      continue;
+    }
+    const prev = fused[fused.length - 1];
+
+    const adjacent = cur.start === prev.end + 1;
+    const bothVisible = prev.visible && cur.visible;
+
+    // Determine if we must preserve a fixed visible block at the array edges.
+    const isPrevEdgeFixed = prev.fixed && fused.length === 1; // at start
+    const isCurEdgeFixed  = cur.fixed && (i === normalized.length - 1); // at end
+
+    if (adjacent && bothVisible && !isPrevEdgeFixed && !isCurEdgeFixed) {
+      // Fuse into prev
+      prev.end = cur.end;
+      prev.fixed = false; // fused block can't remain fixed
+    } else {
+      fused.push({...cur});
+    }
+  }
+
+  // 4) Guarantee global contiguity (no gaps, no overlaps)
+  //    (Run once more in case fusing created adjacency we need to re-check)
+  const seq = [];
+  for (const seg of fused) {
+    if (!seq.length) {
+      seq.push({...seg});
+      continue;
+    }
+    const prev = seq[seq.length - 1];
+    if (seg.start > prev.end + 1) {
+      seq.push(makeSeq(prev.end + 1, seg.start - 1, false, false));
+      seq.push({...seg});
+    } else if (seg.start <= prev.end) {
+      const newStart = prev.end + 1;
+      if (newStart <= seg.end) {
+        seq.push({...seg, start: newStart});
       }
+      // else drop collapsed
+    } else {
+      seq.push({...seg});
+    }
+  }
 
-      // 3) Fuse adjacent visible segments, except when a fixed block sits at the very edges
-      const fused = [];
-      for (let i = 0; i < contiguous.length; i++) {
-        const cur = contiguous[i];
-        if (!fused.length) {
-          fused.push({...cur});
-          continue;
+  // 5) Determine which indices need items rebuilt
+  //    Rebuild items for any visible, non-fixed sequence and any sequence that changed.
+  //    We compare to original by range+visibility (quick heuristic).
+  const updateItemsIdx = new Set();
+  const keyOf = s => `${s.start}-${s.end}-${s.visible ? 1 : 0}-${s.fixed ? 1 : 0}`;
+
+  // Build a map of "unchanged-looking" slices from the old array for quick check
+  const origKeys = new Set(orig.map(keyOf));
+  seq.forEach((s, i) => {
+    const changed = !origKeys.has(keyOf(s));
+    if ((s.visible && !s.fixed) && (changed || !s.items || !Array.isArray(s.items))) {
+      updateItemsIdx.add(i);
+    }
+  });
+
+  // 6) Rebuild items for marked sequences
+  for (let i = 0; i < seq.length; i++) {
+    const a = seq[i];
+    if (a.visible && !a.fixed && updateItemsIdx.has(i)) {
+      a.items = [];
+      for (let c = a.start; c <= a.end; c++) {
+        const col = this.currentColumns[c];
+        if (!col || !col.uid) {
+          throw new Error("Cannot find uid for column at index " + c);
         }
-        const prev = fused[fused.length - 1];
-        const adjacent = cur.start === prev.end + 1;
-        const bothVisible = prev.visible && cur.visible;
-
-        // Edge-fixed rule: only protect the very first or very last segment if fixed
-        const protectPrev = prev.fixed && fused.length === 1;                         // start edge
-        const protectCur  = cur.fixed  && i === (contiguous.length - 1);              // end edge
-
-        if (adjacent && bothVisible && !protectPrev && !protectCur) {
-          prev.end = cur.end;
-          prev.fixed = false;       // merged blocks are not fixed
-          // keep prev.uid
-        } else {
-          fused.push({...cur});
-        }
+        a.items.push({index: col.index, uid: col.uid});
       }
+    }
+  }
 
-      // 4) One more pass to guarantee contiguity after fusing
-      const finalSeq = [];
-      for (const seg of fused) {
-        if (!finalSeq.length) {
-          finalSeq.push({...seg});
-          continue;
-        }
-        const prev = finalSeq[finalSeq.length - 1];
-        if (seg.start > prev.end + 1) {
-          finalSeq.push({start: prev.end + 1, end: seg.start - 1, visible: false, fixed: false, uid: newUid()});
-          finalSeq.push({...seg});
-        } else if (seg.start <= prev.end) {
-          const ns = prev.end + 1;
-          if (ns <= seg.end) finalSeq.push({...seg, start: ns});
-        } else {
-          finalSeq.push({...seg});
-        }
-      }
+  // 7) Commit back and measure height
+  row.sequences = seq;
 
-      // 5) Rebuild items for visible, non-fixed sequences (simple & safe)
-      for (const s of finalSeq) {
-        if (s.visible && !s.fixed) {
-          s.items = [];
-          for (let i = s.start; i <= s.end; i++) {
-            const col = this.currentColumns[i];
-            if (!col || !col.uid) throw new Error("Cannot find uid for column at index " + i);
-            s.items.push({index: col.index, uid: col.uid});
-          }
-        }
-      }
-
-      // 6) In-place replace (keep original array reference)
-      seq.splice(0, seq.length, ...finalSeq);
-
-      this.$nextTick(() => {
-        row.height = this.$position(row.tr).height;
-      });
-    },
+  this.$nextTick(() => {
+    row.height = this.$position(row.tr).height;
+  });
+},
     setSequences(row) {
       const sequences = [];
       if (this.groupCols[0].cols.length) {

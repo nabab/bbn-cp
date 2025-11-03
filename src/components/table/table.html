@@ -283,7 +283,7 @@
                 <template bbn-else>
                   <template bbn-for="seq in row.sequences || []"
                             :key="seq.uid">
-                    <template bbn-if="seq.visible">
+                    <template bbn-if="seq.visible && seq.items">
                       <component bbn-for="c in seq.items"
                                 :key="c.uid"
                                 bbn-var-names="column"
