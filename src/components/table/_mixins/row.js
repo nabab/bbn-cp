@@ -14,7 +14,6 @@ export default {
   },
   data() {
     return {
-      currentRows: [],
       rowHeight: null,
       intersectionTimeout: null,
       rowsShownFinished: false,
@@ -38,11 +37,9 @@ export default {
     }
   },
   methods: {
-    updateSequences(tr) {
+    updateSequences(row) {
       const first = this.firstColumnVisible;
       const last  = this.lastColumnVisible;
-      const index = parseInt(tr.dataset.index);
-      const row = this.currentRows[index];
       if (!row.visible) row.visible = true;
       const seq = row.sequences;
       if (!Array.isArray(seq) || !seq.length || !last) return;
@@ -210,13 +207,11 @@ export default {
     onRowCreated(e) {
       bbn.fn.log("ON ROW CREATED");
       const tr = e.target;
-      const row = {
-        tr,
-        visible: !this.scrollable || !!(this.groupable && this.isGroupActive) || this.groupCols[0].cols.length || this.groupCols[2].cols.length,
-        index: parseInt(tr.dataset.index),
-        sequences: this.setSequences(tr)
-      };
-      this.currentRows.push(row);
+      const index = parseInt(tr.dataset.index);
+      const row = this.items[index];
+      row.tr = tr;
+      row.visible = !this.scrollable || !!(this.groupable && this.isGroupActive) || this.groupCols[0].cols.length || this.groupCols[2].cols.length;
+      row.sequences = this.setSequences(tr)
       if (this.scrollIntersection) {
         this.scrollIntersection.observe(tr);
       }
@@ -295,7 +290,9 @@ export default {
       if (this.groupable && this.isGroupActive) {
         return;
       }
-      const row = bbn.fn.getRow(this.currentRows, {tr});
+
+      const index = parseInt(tr.dataset.index);
+      const row = this.items[index];
       if (!row) {
         return;
       }
@@ -306,7 +303,7 @@ export default {
           setTimeout(() => {
             if (this.visibleRows.includes(tr)) {
               row.visible = true;
-              this.updateSequences(tr);
+              this.updateSequences(row);
             }
           }, 100);
         }
@@ -315,7 +312,7 @@ export default {
         this.visibleRows.push(tr);
         row.visible = true;
         clearTimeout(this.rowsShownTimer);
-        this.updateSequences(tr);
+        this.updateSequences(row);
         this.rowsShownTimer = setTimeout(() => {
           this.rowsShownFinished = true;
         }, 100);

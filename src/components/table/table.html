@@ -205,7 +205,7 @@
                  :class="{
                    'bbn-overlay': ((!filteredData.length && !tmpRow) || isLoading || isTableDataUpdating) && !!scrollable
                  }"
-                 bbn-if="scrollIsMounted && currentRows && ready && !isLoading && !isTableDataUpdating">
+                 bbn-if="scrollIsMounted && items && ready && !isLoading && !isTableDataUpdating">
             <!-- Inline insertion -->
             <tr bbn-if="tmpRow">
             </tr>
@@ -228,8 +228,6 @@
             </tr>
             <!-- Rows -->
             <template bbn-for="(row, rowIndex) in items"
-                      bbn-var-names="currentRow"
-                      bbn-var-values="[bbn.fn.getRow(currentRows, {index: rowIndex})]"
                       :key="row.uid || row.index">
               <!-- Group rows = start of a new group -->
               <component is="tr"
@@ -276,14 +274,14 @@
                         :data-index="rowIndex"
                         @hook:create="onRowCreated"
                         @hook:destroy="onRowDestroyed">
-                <component bbn-if="!currentRow?.visible"
+                <component bbn-if="!row?.visible"
                            is="td"
                            :class="['bbn-spadding', cellClass(null, row)]"
                            :style="averageRowHeight ? {height: averageRowHeight + 'px'} : {}"
                            :colspan="currentColumns.length"> 
                 </component>
                 <template bbn-else>
-                  <template bbn-for="seq in currentRow.sequences || []"
+                  <template bbn-for="seq in row.sequences || []"
                             :key="seq.uid">
                     <template bbn-if="seq.visible">
                       <component bbn-for="c in seq.items"
@@ -438,7 +436,7 @@
                   </template>
                 </template>
               </component>
-              <template bbn-if="currentRow?.visible">
+              <template bbn-if="row?.visible">
                 <component is="tr"
                             bbn-if="expander && !isGroupActive && isExpanded(row.data, row.index)"
                             :class="rowClass(row, rowIndex)"

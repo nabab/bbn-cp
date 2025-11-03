@@ -166,12 +166,12 @@ export default {
             this.columnRebuildCancel = false;
           }
           else {
-        bbn.fn.log("UPDATING " + this.visibleRows.length + '/' + this.visibleRows.filter(tr => !!bbn.fn.getRow(this.currentRows, a => a.tr === tr).visible).length + " SEQUENCES FOR VISIBLE ROW FROM " + this.firstColumnVisible + " TO " + this.lastColumnVisible, this.rowsShownFinished);
+        //bbn.fn.log("UPDATING " + this.visibleRows.length + '/' + this.visibleRows.filter(tr => !!bbn.fn.getRow(this.currentRows, a => a.tr === tr).visible).length + " SEQUENCES FOR VISIBLE ROW FROM " + this.firstColumnVisible + " TO " + this.lastColumnVisible, this.rowsShownFinished);
             for (let tr of this.visibleRows) {
               const index = parseInt(tr.dataset.index);
-              const row = this.currentRows[index];
+              const row = this.items[index];
               if (row.visible || !this.rowsShownFinished) {
-                this.updateSequences(tr);
+                this.updateSequences(row);
               }
 
               if (this.columnRebuildCancel) {
