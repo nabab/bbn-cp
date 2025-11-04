@@ -88,7 +88,7 @@ const keepCool =  {
       });
 
       return this.coolTimers[idx].promise;
-    }
+    },
   }
 };
 

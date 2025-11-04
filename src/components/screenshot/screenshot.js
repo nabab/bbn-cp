@@ -40,20 +40,22 @@ const cpDef = {
             iconFonts: ['.nf'],
             backgroundColor: 'white',
             filter: e => e.tagName !== 'BBN-CHART',
-            width: ele.clientWidth,
-            height: ele.clientHeight,
+            //width: ele.clientWidth,
+            //height: ele.clientHeight,
           };
-          /*
+          if (meth === 'blob') {
+            opt.type = 'png';
+          }
           if (width) {
             opt.width = width;
           }
           if (height) {
             opt.height = height;
-          }*/
+          }
 
           try {
             fn(ele, opt).then(img => {
-              bbn.fn.log("RESPONSE", img)
+              //bbn.fn.log("RESPONSE", img)
               ele.classList.remove('bbn-screenshot-element');
               resolve(img || false);
             }).catch(e => {

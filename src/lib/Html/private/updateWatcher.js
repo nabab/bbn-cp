@@ -28,6 +28,7 @@ export default function updateWatcher(cp, name) {
 
   // Split the property name into its nested parts.
   const bits = name.split(".");
+  const todo = [];
   // Iterate over each part of the property name.
   while (bits.length) {
     // Reconstruct the full property name from the current bits.
@@ -36,11 +37,18 @@ export default function updateWatcher(cp, name) {
     // bbn.fn.log("WATCHER ON " + fullName + " IN " + cp.$options.name);
     // Check if the watcher has a handler for this property.
     if (cp.$watcher[fullName]) {
-      cp.$watcher[fullName].watcherUpdate(false, level);
+      todo.push({
+        component: cp,
+        element: cp.$watcher[fullName],
+        level,
+        num: cp.lastUpdate
+      });
     }
 
     // Remove the last part of the property name for the next iteration.
     bits.pop();
     level++;
   }
+
+  queueUpdate(...todo);
 }

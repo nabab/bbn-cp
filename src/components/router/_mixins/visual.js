@@ -49,7 +49,8 @@ export default {
        * @data {Boolean} visual
        */
       visualList: [],
-      isOverThumb: false
+      isOverThumb: false,
+      visualItemWidth: 0
     }
   },
   computed: { 
@@ -258,6 +259,21 @@ export default {
     },
   },
   methods: {
+    toggleVisualShowAll() {
+      if (!this.visualShowAll) {
+        let i = 0;
+        let ele = this.getRef('visualListItems-' + i);
+        while (ele && !ele.offsetWidth) {
+          i++;
+          ele = this.getRef('visualListItems-' + i);
+        }
+        if (ele) {
+          this.visualItemWidth = ele.offsetWidth;
+        }
+      }
+
+      this.visualShowAll = !this.visualShowAll;
+    },
     /**
      * The views to show, in a specific different order, for the visual mode
      * @computed visualList

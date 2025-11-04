@@ -121,7 +121,6 @@ export default function mapDependencies(cp) {
       else {
         loopVars[node.id] = [...node.vars.names];
       }
-      bbn.fn.log("VARS", loopVars);
     }
     // Process condition-related attributes.
     if (node.condition) {

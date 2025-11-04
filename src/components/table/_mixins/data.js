@@ -10,6 +10,7 @@ export default {
        */
       _observerReceived: false,
       items: [],
+      lastVisibleShown: null
     }
   },
   computed: {
@@ -41,7 +42,6 @@ export default {
         return [];
       }
       // The final result
-      const cp = this;
       let data = this.filteredData.slice().map(a => {
         a.tr = null;
         a.visible = !!(!this.scrollable || !!(this.groupable && this.isGroupActive) || this.groupCols[0].cols.length || this.groupCols[2].cols.length);
@@ -149,12 +149,10 @@ export default {
       this.editedRow = false;
       this.editedIndex = false;
       this.visibleRows.splice(0);
-      if (this.scrollIntersection) {
-        this.items.forEach(row => this.scrollIntersection.unobserve(row.tr));
-      }
-
-      this.items.splice(0);
-      this.$forceUpdate();
+      this.items = [];
+      this.numRowsCreated = 0;
+      this.rowsShownFinished = !this.scrollable || this.groupable;
+      await bbn.cp.nextFrame();
       //bbn.fn.log('forceupdate4');
       await bbn.cp.mixins.list.methods.updateData.apply(this, [withoutOriginal]);
       if (this.currentData?.length && this.selection && this.currentSelected.length && !this.uid) {
@@ -168,11 +166,13 @@ export default {
       }
 
       await bbn.cp.nextFrame();
-      this.setItems();
       this.isTableDataUpdating = false;
-      if (!this.currentData?.length) {
-        this.rowsShownFinished = true;
-      }
+      this.$nextTick(() => {
+        this.setItems();
+        if (!this.currentData?.length) {
+          this.rowsShownFinished = true;
+        }
+      });
     }
   },
   watch: {

@@ -65,8 +65,9 @@ bbnData.prototype.dataUpdate = function(path) {
         const watcher = it.component.$watcher[bits.join('.')];
         todo.push({
           component: it.component,
-          fn: getFn(watcher, level, this.lastUpdate),
-          num
+          element: watcher,
+          level,
+          num: this.lastUpdate
         });
       }
       bits.pop();

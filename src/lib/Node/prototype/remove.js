@@ -143,10 +143,7 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
             node.component.bbnNode.element.parentNode.insertBefore(element, node.component.bbnNode.element);
           }
           else {
-            //throw new Error(bbn._("sdsdsdsd"));
-            //debugger;
             element.parentNode.removeChild(element);
-            bbn.fn.log("Removed", element);
           }
         }
       }

@@ -161,7 +161,6 @@ const cpDef = {
     this.componentClass.push('bbn-resize-emitter');
     if (bbnRouter.db) {
       bbnRouter.db.open('bbn').then(res => {
-        bbn.fn.log("DB OPENED", res);
         this.db = res;
       });
     }

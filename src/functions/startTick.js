@@ -1,7 +1,7 @@
-import bbn from '@bbn/bbn';
 import bbnAttr from '../lib/Attr.js';
 import initResults from '../lib/Html/private/initResults.js';
 import queueUpdate from './queueUpdate.js';
+import elements from '../components/router/_mixins/elements.js';
 
 const sorter = (a, b) => {
   if (!(a instanceof bbnAttr)) {
@@ -64,14 +64,6 @@ let numWatcher = 0;
 let numCpu  = 0;
 let numFn  = 0;
 let numDone  = 0;
-async function yieldToBrowser() {
-  if (self.scheduler?.yield) {
-    await scheduler.yield(); // cooperative yield
-  } else {
-    await new Promise(requestAnimationFrame);
-  }
-}
-
 async function treatQueue(num = 0, cps) {
   if (!cps) {
     cps = bbn.fn.createObject();
@@ -112,6 +104,7 @@ async function treatQueue(num = 0, cps) {
     let done;
     let fns;
     let unconditioned = [];
+    let elementsDone = [];
     let forgotten = [];
     let chronoDiff = 0;
     const rnd = bbn.fn.randomString();
@@ -128,12 +121,25 @@ async function treatQueue(num = 0, cps) {
         let currentChrono = bbn.fn.getChrono(rnd) - chronoDiff;
         if (currentChrono > 50) {
           chronoDiff += currentChrono;
-          await yieldToBrowser();
+          await bbn.fn.yieldToBrowser();
           //await bbn.cp.nextFrame();
         }
       }
 
+
       const queueElement = queue.shift();
+      if (!bbn.cp.componentsIndex.has(queueElement.component?.$cid)) {
+        continue;
+      }
+
+      if (queueElement.element) {
+        if (elementsDone.includes(queueElement.element)) {
+          continue;
+        }
+
+        elementsDone.push(queueElement.element);
+      }
+
       const isAttr = queueElement.element instanceof bbnAttr;
       if (isAttr) {
         numAttr++;
@@ -174,6 +180,7 @@ async function treatQueue(num = 0, cps) {
         forgotten = [];
         done = new Map();
         lastElement = null;
+        elementsDone = [];
         fns = [];
       }
 
@@ -298,20 +305,20 @@ async function treatQueue(num = 0, cps) {
     }
 
     const duration = bbn.fn.stopChrono(rnd);
-    if ((duration > 1000) || (fullQueueLength > 1000)) {
+    if (duration > 1000) {//} || (fullQueueLength > 1000)) {
       bbn.fn.log(
         "TREATING QUEUE DURATION: " + duration 
         + " / NUMBER OF ELEMENTS IN QUEUE: " 
         + fullQueueLength + " / NUM TICKS: " + bbn.cp.numTicks
-        + "\n ATTRS: " + numAttr
-        + "\n COMPUTED: " + numCpu
-        + "\n WATCHERS: " + numWatcher
-        + "\n FUNCTIONS: " + numFn
-        + "\n REPEATS: " + numRepeat
-        + "\n DONE: " + numDone
-        + "\n NODE DESTROYED: " + numNodeDest
-        + "\n NODE OFF: " + numNodeOff
-        + "\n CP DESTROYED: " + numCpDest
+        + " | ATTRS: " + numAttr
+        + " | COMPUTED: " + numCpu
+        + " | WATCHERS: " + numWatcher
+        + " | FUNCTIONS: " + numFn
+        + " | REPEATS: " + numRepeat
+        + " | DONE: " + numDone
+        + " | NODE DESTROYED: " + numNodeDest
+        + " | NODE OFF: " + numNodeOff
+        + " | CP DESTROYED: " + numCpDest
       );
     }
   }

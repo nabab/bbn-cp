@@ -48,8 +48,8 @@
               :tabindex="visualShowAll ? 0 : -1">
             <div bbn-if="views.length > numVisuals"
                 :class="'bbn-bg-black bbn-white bbn-p bbn-radius bbn-sshadow' + (isMobile ? '' : ' bbn-container-ratio')"
-                style="order: 1;"
-                @click="visualShowAll = !visualShowAll">
+                :style="{order: 1, width: visualShowAll ? visualItemWidth + 'px' : undefined}"
+                @click="toggleVisualShowAll">
               <div class="bbn-100 bbn-middle bbn-flex">
                 <div :class="{'bbn-block': true, 'bbn-xxxl': !isMobile, 'bbn-xxl': isMobile}">
                   <i :class="'nf nf-md-' + (visualShowAll ? 'minus' : 'plus') + '_thick'"/>
@@ -57,8 +57,9 @@
               </div>
             </div>
             <div bbn-for="(a, i) in visualList"
+                 :ref="'visualListItems-' + i"
                 :key="a.uid"
-                :style="{order: i + 2}"
+                :style="{order: i + 2, width: visualShowAll ? visualItemWidth + 'px' : undefined}"
                 :class="'bbn-sshadow bbn-radius' + (isMobile ? '' : ' bbn-container-ratio')"
                 bbn-show="(visualShowAll || a.visible) && (a.idx !== selected)">
               <div class="bbn-overlay bbn-flex-height">
