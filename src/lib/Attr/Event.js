@@ -47,7 +47,6 @@ export default class bbnEventAttr extends bbnAttr
       this.cfg = cfg;
       this.handler = e => {
         initResults(cp);
-        bbn.cp.numTicks++;
         //bbn.fn.log("EVENT " + this.name)
         // Check for any specified modifiers and apply them.
         if (this.modifiers.length) {
