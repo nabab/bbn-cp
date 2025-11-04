@@ -101,8 +101,8 @@ async function treatQueue(num = 0, cps) {
 
     let lastElement;
     let lastNum;
-    let done;
-    let fns;
+    let done = new Map();
+    let fns = [];
     let unconditioned = [];
     let elementsDone = [];
     let forgotten = [];
