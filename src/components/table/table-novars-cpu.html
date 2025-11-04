@@ -321,7 +321,7 @@
                         <div bbn-elseif="isEdited(row.data, currentColumns[c.index], rowIndex)">
                           <div bbn-if="(editMode === 'inline')
                                 && (editable !== 'nobuttons')
-                                && (c.index === colButtons)">
+                                && (c.index === cols[colButtons]?.index)">
                             <bbn-button :label="_('Save')"
                                         :disabled="!isEditedValid"
                                         icon="nf nf-fa-save"
@@ -382,7 +382,7 @@
                               </span>
                             </bbn-context>
                           </template>
-                          <div bbn-elseif="colButtons === currentColumns[c.index].index">
+                          <div bbn-elseif="cols[colButtons]?.index === currentColumns[c.index].index">
                             <template bbn-for="(button, bi) in buttonSource(row.data, currentColumns[c.index], rowIndex)"
                                       :key="bi">
                               <component bbn-if="button.component"
