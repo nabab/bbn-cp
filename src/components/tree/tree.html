@@ -130,7 +130,7 @@
                           style="cursor: unset">
               <span @dblclick.stop="dblClickOnNode"
                     @click.stop="clickOnNode"
-                    @dragstart="startDrag"
+                    @dragstart.stop="startDrag"
                     @dragover="onDrag"
                     @dragleave="leaveDrag"
                     @drop="drop"
