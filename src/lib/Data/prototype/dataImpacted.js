@@ -27,7 +27,7 @@ bbnData.prototype.dataImpacted = function(path, numTicks, level = 0) {
     // If the current data object has a parent, recursively identify impacts in the parent's context.
     if (it.parent) {
       if (it.parent.lastUpdate < numTicks) {
-        it.parent.lastSubUpdate = bbn.cp.numTicks;
+        it.parent.lastSubUpdate = numTicks;
       }
 
       const impacted = it.parent.dataImpacted(it.path, numTicks, level + 1);
