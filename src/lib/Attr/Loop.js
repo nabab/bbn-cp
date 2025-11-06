@@ -125,10 +125,20 @@ export default class bbnLoopAttr extends bbnAttr
     }
 
     this.#isRunning = true;
+    let isInLoop = false;
+    if (!bbn.cp.isInLoop && bbnData.isPropagating) {
+      isInLoop = true;
+      bbn.cp.isInLoop = true;
+      bbn.cp.numTicks++;
+    }
+
     const cp = node.component;
 
     // Evaluate the loop expression and determine its type.
     let loopValue = this.attrGetValue();
+    if (!loopValue) {
+      loopValue = [];
+    }
 
     //bbn.fn.log(["LOOP VALUE", loopValue, this.value, this.node.component.$numBuild])
     const isNumber = bbn.fn.isNumber(loopValue);
@@ -371,6 +381,10 @@ export default class bbnLoopAttr extends bbnAttr
       }
     })
       */
+    if (isInLoop) {
+      bbn.cp.isInLoop = false;
+    }
+
     this.#isRunning = false;
   }
 }

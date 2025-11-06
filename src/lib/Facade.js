@@ -1,3 +1,4 @@
+import bbn from "@bbn/bbn";
 import bbnData from "./Data.js";
 // Class representing a data facade that interacts with a node's data and allows access to it through proxy methods.
 export default class bbnFacade {
@@ -111,6 +112,7 @@ export default class bbnFacade {
   set(key, value) {
     let node = this.__bbn_node;
     let firstData; // To store the first data object encountered while traversing parent nodes.
+    const todo = [];
     while (node) {
       // If this is the first node with data, store its data object.
       if (!firstData && node.hasData) {
@@ -121,7 +123,7 @@ export default class bbnFacade {
       if (node.hasData && (node.data.__bbn_keys.indexOf(key) > -1)) {
         node.data.__bbn_data[key] = value;
         if (node.data.__bbn_deps[key]) {
-          node.data.__bbn_deps[key].forEach(a => a.attrUpdate());
+          node.data.__bbn_deps[key].forEach(a => todo.push({component: node.component, element: a, num: bbn.cp.numTicks}));
         }
 
         break;
@@ -131,6 +133,7 @@ export default class bbnFacade {
       node = node.parent;
     }
 
+    bbn.cp.queueUpdate(...todo);
     // If a data object was found in the ancestors, update its value.
     if (firstData) {
       firstData[key] = value;

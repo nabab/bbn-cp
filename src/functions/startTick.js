@@ -182,6 +182,7 @@ async function treatQueue(num = 0, cps) {
         lastElement = null;
         elementsDone = [];
         fns = [];
+        lastNum = queueElement.num;
       }
 
       if (queueElement.element) {
@@ -335,7 +336,7 @@ async function treatQueue(num = 0, cps) {
  * Starts the ticking process for component updates.
  * Throws an error if the tick process is already running.
  */
-export default function startTick() {
+export default async function startTick() {
   // Check if the tick process is already initiated.
   if (bbn.cp.interval) {
     throw new Error(bbn._("The tick is already started"));
@@ -347,11 +348,16 @@ export default function startTick() {
   }
 
   bbn.cp.isRunning = true;
-  setTimeout(async () => {
-    await treatQueue();
-    bbn.cp.isRunning = false;
-    if (bbn.cp.queue.length || bbn.cp.nextQueue.length) {
-      bbn.cp.startTick();
-    }
+  return new Promise((resolve) => {
+    setTimeout(async () => {
+      await treatQueue();
+      bbn.cp.isRunning = false;
+      if (bbn.cp.queue.length || bbn.cp.nextQueue.length) {
+        await bbn.cp.startTick();
+      }
+      else {
+        resolve(true);
+      }
+  });
   }, 0);
 }

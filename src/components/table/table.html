@@ -339,10 +339,9 @@
                           <component bbn-elseif="(editMode === 'inline')
                                       && isValidField(currentColumns[c.index].field)
                                       && (currentColumns[c.index].editable !== false)"
-                                      bbn-bind="getEditableOptions(currentColumns[c.index])"
+                                      bbn-bind="getEditableOptions(currentColumns[c.index], row.data)"
                                       :is="getEditableComponent(currentColumns[c.index])"
                                       @click.stop
-                                      :source="row.data"
                                       bbn-model="row.data[currentColumns[c.index].field]"
                                       style="width: 100%"/>
                           <!--<bbn-field bbn-elseif="(editMode === 'inline')

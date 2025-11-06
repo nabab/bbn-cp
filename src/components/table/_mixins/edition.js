@@ -39,9 +39,9 @@ export default {
      * @param {Object} col
      * @returns {Object}
      */
-    getEditableOptions(col) {
+    getEditableOptions(col, data) {
       let res = col.options ? (
-        bbn.fn.isFunction(col.options) ? col.options(this.source, col) : col.options
+        bbn.fn.isFunction(col.options) ? col.options(data, col) : col.options
       ) : {};
       if (!res.name && col.field) {
         res.name = col.field;
@@ -80,7 +80,7 @@ export default {
           source: col.source
         });
       } else if (col.editor) {
-        res.source = this.source;
+        res.source = data;
       }
 
       return res;

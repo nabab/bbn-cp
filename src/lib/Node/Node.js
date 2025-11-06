@@ -118,7 +118,7 @@ export default class bbnNode
           return true;
         },
         get: (obj, prop) => {
-          bbnData.addSequence(cp, prop);
+          //bbnData.addSequence(cp, prop);
           return obj[prop];
         },
         deleteProperty: (obj, prop) => {

@@ -7,6 +7,7 @@ const propagationData = [];
 const propagationCp = [];
 let propagationCaller = null;
 
+bbnData.isPropagating = false;
 bbnData.propagate = function(cp, name) {
   let propagationFromHere = false;
 
@@ -46,7 +47,10 @@ bbnData.propagate = function(cp, name) {
         if (!propagation.length) {
           if (!propagationFromHere) {
             propagationFromHere = true;
-            bbn.cp.numTicks++;
+            bbnData.isPropagating = true;
+            if (!bbn.cp.isInLoop) {
+              bbn.cp.numTicks++;
+            }
           }
         }
 
@@ -69,6 +73,7 @@ bbnData.propagate = function(cp, name) {
 
   bbn.cp.queueUpdate(...todo);
   if (propagationFromHere) {
+    bbnData.isPropagating = false;
     propagation.splice(0);
     propagationData.splice(0);
     propagationCp.splice(0);

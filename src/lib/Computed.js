@@ -57,14 +57,6 @@ export default class bbnComputed {
     this.#component = cp;
     // Check if name is a string.
     bbn.fn.checkType(name, String);
-    if (cp.$isPropNative(name)) {
-      if (cp.tagName === 'BBN-ANON') {
-        bbn.fn.log(cp);
-      }
-
-      throw new Error(`The computed ${name} is already defined in the HTML prototype of the component ${cp.tagName}`);
-    }
-
     this.#name = name;
     // Check if getter is a function.
     bbn.fn.checkType(getter, Function);
