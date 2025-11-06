@@ -82,6 +82,47 @@ export default {
     visualStyle() {
       const res = {};
       if (this.isVisual) {
+        const isSide = ['left', 'right'].includes(this.visualOrientation);
+        let gridTemplateRows = 'repeat(' + this.numVisualRows + ', 1fr)';
+        let gridTemplateColumns = 'repeat(' + this.numVisualCols + ', 1fr)';
+        if (isSide) {
+          gridTemplateColumns = 'repeat(1, 1fr)';
+        }
+        else {
+          gridTemplateRows = 'repeat(' + (this.isMobile && (this.numVisualReals > this.numVisualCols) ? 2 : 1) + ', 1fr)';
+        }
+        Object.assign(res, {
+          display: 'grid',
+          gridColumnGap: '0.5rem',
+          gridRowGap: '0.5rem',
+          gridTemplateRows,
+          gridTemplateColumns,
+          padding: '0 0.5rem 0.5rem',
+          height: '100%',
+
+        });
+      }
+  
+        if (!this.visualShowAll) {
+          res.height = '100%';
+          if (['left', 'right'].includes(this.visualOrientation)) {
+            res.gridTemplateColumns = 'repeat(1, 1fr)';
+          }
+          else {
+            res.gridTemplateRows = 'repeat(' + (this.isMobile && (this.numVisualReals > this.numVisualCols) ? 2 : 1) + ', 1fr)';
+          }
+        }
+      return res;
+    },
+
+    /**
+     * The grid style for showing the router in visual mode
+     * @computed visualStyle
+     * @return {Object} 
+     */
+    visualFullStyle() {
+      const res = {};
+      if (this.isVisual) {
         Object.assign(res, {
           display: 'grid',
           gridColumnGap: '0.5rem',
@@ -90,16 +131,6 @@ export default {
           gridTemplateColumns: 'repeat(' + this.numVisualCols + ', 1fr)',
           padding: '0 0.5rem 0.5rem'
         });
-  
-        if (!this.visualShowAll) {
-          res.height = '100%';
-          if (['left', 'right'].includes(this.visualOrientation)) {
-            res.gridTemplateColumns = 'repeat(1, 1fr)';
-          }
-          else {
-            res.gridTemplateRows = this.isMobile && (this.numVisualReals > this.numVisualCols) ? 'repeat(2, 1fr)' : 'repeat(1, 1fr)';
-          }
-        }
       }
       
       return res;
@@ -257,6 +288,19 @@ export default {
 
       return 0;
     },
+    shortVisualList() {
+      return bbn.fn.order(
+        this.views.filter(a => !a.pane && !a.selected),
+        'last',
+        'desc'
+      ).slice(0, this.numVisuals);
+    },
+    fullVisualList() {
+      return bbn.fn.multiorder(
+        this.views.filter(a => !a.pane),
+        { selected: 'desc', fixed: 'desc', pinned: 'desc', last: 'desc', idx: 'asc' }
+      );
+    }
   },
   methods: {
     toggleVisualShowAll() {
