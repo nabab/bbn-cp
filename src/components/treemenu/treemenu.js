@@ -86,6 +86,9 @@ const cpDef = {
        */
       storageName: {
         type: String
+      },
+      uid: {
+        type: String
       }
     },
     data(){

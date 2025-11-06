@@ -229,9 +229,6 @@ export default class bbnLoopAttr extends bbnAttr
         key = bbnData.hash(loopData);
       }
 
-      if (key === undefined) {
-        debugger;
-      }
       const hash = oHash + key;
       this.list.push(hash);
       const currentNode = cp.$retrieveNode(node.id, hash);

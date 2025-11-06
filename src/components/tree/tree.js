@@ -529,7 +529,7 @@ const cpDef = {
        */
       async reset(){
         this.isLoaded = false;
-        this.$set(this, 'currentData', []);
+        this.currentData = [];
         await this.$forceUpdate();
         await this.updateData();
       },
