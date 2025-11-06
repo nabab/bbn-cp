@@ -120,6 +120,9 @@ export default class bbnComputed {
    * @param {boolean} [force=false] - Whether to force the update.
    */
   computedUpdate(force = false) {
+    if (this.name === 'tiersTxtVal') {
+      bbn.fn.log("FORCE UPDATE TIERS");
+    }
     // If the component is destroyed, return.
     if (this.#component.$isDestroyed) {
       return;
@@ -128,6 +131,9 @@ export default class bbnComputed {
     // If not forced and the computed property has been updated more recently than the component, return.
     if (!force && this.lastUpdate && (this.lastRequest <= this.lastUpdate)) {
       return;
+    }
+    if (this.name === 'tiersTxtVal') {
+      bbn.fn.log("FORCE UPDATE TIERS2");
     }
 
     let forceUpdate = false;
@@ -290,7 +296,7 @@ export default class bbnComputed {
           }
         }
         // Add the attribute to the data dependencies if not already present.
-        else if (!a.data.deps.__bbnRoot.includes(this)) {
+        if (!a.data.deps.__bbnRoot.includes(this)) {
           a.data.deps.__bbnRoot.push(this);
         }
 
@@ -337,8 +343,8 @@ export default class bbnComputed {
         /*
         else if (bbn.cp.queue.includes(_t)) {
           let idx = bbn.cp.queue.indexOf(_t);
-          bbn.cp.queue.splice(idx, 1);
-          _t.computedUpdate(true);
+            bbn.cp.queue.splice(idx, 1);
+            _t.computedUpdate(true);
         }*/
 
 
