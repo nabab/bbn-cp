@@ -290,7 +290,7 @@ export default class bbnComputed {
           }
         }
         // Add the attribute to the data dependencies if not already present.
-        if (!a.data.deps.__bbnRoot.includes(this)) {
+        else if (!a.data.deps.__bbnRoot.includes(this)) {
           a.data.deps.__bbnRoot.push(this);
         }
 

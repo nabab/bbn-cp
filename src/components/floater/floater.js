@@ -619,8 +619,8 @@ const cpDef = {
         this.ready = true;
         this.$nextTick(() => {
           this.onResize();
-          this.$nextTick(() => {
-            this.isResized = true;
+          this.$forceUpdate().then(() => {
+            this.$nextTick(() => this.isResized = true);
             this.updateButtonsInContainer();
             this.$emit('resized', this);
             const scroll = this.closest('bbn-scroll');
@@ -854,7 +854,7 @@ const cpDef = {
     },
     onResize() {
       if (this.ready) {
-        if (this.isResized) {
+        if (this.isResized && this.$isMounted) {
           this.keepCool(() => {
             bbn.cp.mixins.resizer.methods.onResize.apply(this);
             this._setMinMax();
