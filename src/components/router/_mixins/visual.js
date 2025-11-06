@@ -98,20 +98,16 @@ export default {
           gridTemplateRows,
           gridTemplateColumns,
           padding: '0 0.5rem 0.5rem',
-          height: '100%',
-
         });
+        if (['left', 'right'].includes(this.visualOrientation)) {
+          res.height = '100%';
+          res.gridTemplateColumns = 'repeat(1, 1fr)';
+        }
+        else {
+          res.gridTemplateRows = 'repeat(' + (this.isMobile && (this.numVisualReals > this.numVisualCols) ? 2 : 1) + ', 1fr)';
+        }
       }
   
-        if (!this.visualShowAll) {
-          res.height = '100%';
-          if (['left', 'right'].includes(this.visualOrientation)) {
-            res.gridTemplateColumns = 'repeat(1, 1fr)';
-          }
-          else {
-            res.gridTemplateRows = 'repeat(' + (this.isMobile && (this.numVisualReals > this.numVisualCols) ? 2 : 1) + ', 1fr)';
-          }
-        }
       return res;
     },
 
