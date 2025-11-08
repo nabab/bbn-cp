@@ -219,7 +219,10 @@ export default class bbnLoopAttr extends bbnAttr
 
       const loopData = {[this.item]: loopValue[j], [defIndex]: j};
       let key;
-      if (node.attr?.key?.exp) {
+      if (!isArray) {
+        key = j;
+      }
+      else if (node.attr?.key?.exp) {
         key = node.attr.key.attrExec(loopData).val;
       }
       else if (loopValue[j]?.__bbnData) {

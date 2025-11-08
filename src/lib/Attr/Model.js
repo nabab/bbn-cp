@@ -101,7 +101,6 @@ export default class bbnModelAttr extends bbnAttr
               }
             }
             else {
-              bbn.fn.log(last, this, eventValue, oldValue, cp);
               throw new Error("Invalid model variable 5: " + m.exp);
             }
           }
@@ -129,8 +128,6 @@ export default class bbnModelAttr extends bbnAttr
                 }
               }
               else {
-                bbn.fn.log(last, this, eventValue, oldValue, cp);
-                bbn.fn.log(last.data.getLastRequestedProp());
                 throw new Error("Invalid model variable: " + m.exp);
               }
             }

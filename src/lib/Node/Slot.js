@@ -115,6 +115,7 @@ export default class bbnSlotNode extends bbnNode
             }
 
             if (ele.parentNode) {
+              //ele.bbnNode.nodeMove(item.bbnNode._region.start, true);
               ele.parentNode.insertBefore(item, ele);
             }
             else {

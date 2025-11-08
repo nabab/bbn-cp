@@ -16,7 +16,7 @@ export default class bbnFacade {
     // If data is provided, assign it and set the keys from the data object.
     if (data && (data.constructor?.name !== bbnFacade)) {
       this.__bbn_data = data;
-      this.__bbn_keys = Object.keys(data);
+      this.__bbn_keys = Object.keys(data).filter(k => k.indexOf('__bbn_') !== 0);
     }
     else {
       // If no data, initialize an empty keys array.
@@ -35,9 +35,8 @@ export default class bbnFacade {
         target.set(key, value);
         return true;
       },
-      add(target, key, value) {
-        target.set(key, value);
-        return true;
+      has(target, key) {
+        return target.has(key);
       }
     });
   }
