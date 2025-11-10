@@ -7,6 +7,19 @@ const getFn = function(watcher, lev, lastUpdate) {
   };
 };
 
+const getAllParents = function(dataObj, parents = []) {
+  const refs = dataObj?.refs || [];
+  refs.forEach(r => {
+    if (r.parent) {
+      if (!parents.includes(r.parent)) {
+        parents.push(r.parent);
+        getAllParents(r.parent, parents);
+      }
+    }
+  });
+
+  return parents;
+};
 /**
  * Update all the components linked to the data object
  * @param {Array} path
@@ -29,12 +42,10 @@ bbnData.prototype.dataUpdate = function(path) {
   let num = bbn.cp.numTicks + 1;
   const deps = [];
   this.lastUpdate = num;
-  let root = this.root;
-  while (root?.parent) {
-    root.parent.lastSubUpdate = num;
-    root = root.parent.refs[root.parent.refs.length-1];
-  }
-
+  const parents = getAllParents(this);
+  parents.forEach(p => {
+    p.lastSubUpdate = num;
+  });
 
   if (path) {
     deps.push(...(this.deps[path] || []));
@@ -56,7 +67,6 @@ bbnData.prototype.dataUpdate = function(path) {
     }
   });
   bbnData.propagate(toPropagate);
-
   impacted.forEach(it => {
     const bits = it.path.slice();
     let level = 0;
@@ -67,7 +77,7 @@ bbnData.prototype.dataUpdate = function(path) {
           component: it.component,
           element: watcher,
           level,
-          num: this.lastUpdate
+          num: bbn.cp.numTicks
         });
       }
       bits.pop();
