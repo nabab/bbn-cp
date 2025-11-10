@@ -158,8 +158,7 @@ export default class bbnModelAttr extends bbnAttr
       if (this.node.element?.bbn?.$props && (this.name in this.node.element.bbn.$props)) {
         setProp(this.node.element.bbn, this.name, value);
       }
-
-      if (this.node.element && !this.node.comment && !bbn.fn.isFocused(this.node.element) && (this.node.element[this.name] !== undefined)) {
+      else if (this.node.element && !this.node.comment && !bbn.fn.isFocused(this.node.element) && (this.node.element[this.name] !== undefined)) {
         if (value) {
           if (this.node.element[this.name] !== value) {
             this.node.element[this.name] = value;
