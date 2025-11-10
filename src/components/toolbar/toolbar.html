@@ -36,7 +36,7 @@
                     bbn-bind="s"
                     :key="'item' + i"
                     :ref="'item' + i"
-                    :disabled="!!s.disabled"/>
+                    :disabled="bbn.fn.isFunction(s.disabled) ? !!s.disabled() : !!s.disabled"/>
         <div bbn-elseif="!s.end"
             class="bbn-toolbar-separator"
             :key="'item' + i"/>
