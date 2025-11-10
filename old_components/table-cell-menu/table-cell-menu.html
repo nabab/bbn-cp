@@ -1,0 +1,14 @@
+<div :class="cellClass">
+    <!-- Checkboxes -->
+  <div bbn-if="col.isSelection" class="bbn-c bbn-w-100">
+    <bbn-checkbox bbn-if="d.selection"
+                  :checked="d.selected"
+                  :value="true"
+                  :novalue="false"
+                  :strict="true"
+                  @click.stop
+                  @beforechange="beforeSelect(i, ...arguments)"
+                  @change="v => checkSelection(i, v)"
+                  class="bbn-middle bbn-flex"/>
+  </div>
+</div>

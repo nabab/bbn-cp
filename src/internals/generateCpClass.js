@@ -72,18 +72,15 @@ export default function generateCpClass(publicClass, obj) {
       }
 
       if (name.indexOf('data-') === 0) {
-        bbn.fn.log(cp);
-        throw new Error(bbn._("The name of the property %s in the component %s cannot start with %s", name, cp.tagName, 'data-'));
+        throw new Error(bbn._("The name of the property %s in the component %s cannot start with %s", name, publicClass, 'data-'));
       }
 
       if (name.indexOf('aria-') === 0) {
-        bbn.fn.log(cp);
-        throw new Error(bbn._("The name of the property %s in the component %s cannot start with %s", name, cp.tagName, 'aria-'));
+        throw new Error(bbn._("The name of the property %s in the component %s cannot start with %s", name, publicClass, 'aria-'));
       }
 
       if (name in window[publicClass].prototype) {
-        bbn.fn.log(cp);
-        bbn.fn.warning(bbn._("The property name %s is already defined in the HTML prototype of the component %s", name, cp.tagName));
+        bbn.fn.warning(bbn._("The property name %s is already defined in the HTML prototype of the component %s", name, publicClass));
         //throw new Error(bbn._("The name of the property cannot be a native property: %s", name));
       }
 

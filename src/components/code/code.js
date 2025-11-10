@@ -139,9 +139,10 @@ const cpDef = {
     }
   },
   /**
-   * @mixin bbn.cp.mixins.basic - Basic mixin for common functionalities.
-   * @mixin bbn.cp.mixins.input - Input mixin for handling input related features.
-   * @mixin bbn.cp.mixins.events - Events mixin for event handling and emission.
+   * @mixin bbn.cp.mixins.basic
+   * @mixin bbn.cp.mixins.input
+   * @mixin bbn.cp.mixins.keepCool
+   * @mixin bbn.cp.mixins.events
    */
   mixins:
   [

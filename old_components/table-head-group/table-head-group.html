@@ -1,0 +1,31 @@
+<div :colspan="source.colspan"
+     scope="colgroup"
+     :class="['bbn-table-fixed-cell', 'bbn-header', 'bbn-no-border-top', {
+       'bbn-table-fixed-cell-left': groupIndex === 0,
+       'bbn-table-fixed-cell-left-last': (groupIndex === 0) && !table.titleGroupsCells(groupIndex)[index+1],
+       'bbn-table-fixed-cell-right': groupIndex === 2,
+       'bbn-table-cell-first': (groupIndex === 1) && (index === 0),
+     }]"
+     :title="bbn.fn.html2text(source.text)"
+     :style="{
+       zIndex: (source.left !== undefined) || (source.right !== undefined) ? 4 : 3,
+       top: '0px',
+       left: source.left !== undefined ? (source.left + 'px') : '',
+       right: source.right !== undefined ? (source.right + 'px') : '',
+       width: source.width + 'px'
+     }">
+  <component bbn-if="source.component"
+            :is="source.component"
+            :source="source"/>
+  <div class="bbn-100 bbn-table-title-group" bbn-else>
+    <div class="bbn-iblock"
+         :style="{
+           position: 'sticky',
+           left: 'calc(' + source.contentLeft + 'px + var(--sspace))'
+         }">
+      <div :class="[source.cls, 'bbn-ellipsis']"
+          :style="source.style"
+          bbn-html="source.text"/>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,172 @@
+<div :class="cellClass"
+     :style="cellStyle">
+  <!--component bbn-if="ready && index && !col.ready && i && table.currentColumns[i-1].ready"
+              :colspan="table.currentColumns.length - i"
+              :rowspan="table.items.length - 1"
+              is="td"/-->
+
+  <!-- VERY FIRST COLUMN WHEN THERE IS XSCROLL -->
+  <bbn-table-cell-expander bbn-if="table.currentColumns[0].isExpander && !table.isGroupActive"
+                            :source="source.data"
+                            :index="0"
+                            :first-cell="true"
+                            :row-index="index"
+                            :column="table.currentColumns[0]"
+                            :class="[cellClass, (table.currentColumns[0].fixed ? ' ' + cssRuleName + ' bbn-table-fixed-cell bbn-table-fixed-cell-left' : '')]"
+                            :ref="'td' + index"/>
+  <bbn-table-cell-selector bbn-elseif="table.currentColumns[0].isSelection"
+                          :column="table.currentColumns[0]"
+                          :first-cell="true"
+                          :selected="source.selected"
+                          :selection="source.selection"
+                          :source="source.data"
+                          :index="0"
+                          :row-index="index"
+                          :ref="'td' + index"/>
+
+  <bbn-table-cell-editor bbn-elseif="!table.currentColumns[0].isExpander && table.isEdited(source.data, table.currentColumns[0], index)"
+                        :tabindex="table.editable && table.isEditable(source.data, table.currentColumns[0], index) ? 0 : -1"
+                        :first-cell="true"
+                        @save="table.saveInline"
+                        @cancel="table.cancel"
+                        :column="table.currentColumns[0]"
+                        :source="source.data"
+                        :row-index="index"
+                        :index="0"
+                        :ref="'td' + index"
+                        @focusout="table.focusout(index, $event)"/>
+
+  <bbn-table-cell-buttons bbn-elseif="table.currentColumns[0].buttons"
+                        :source="source.data"
+                        :first-cell="true"
+                        :mode="table.buttonMode"
+                        :row-index="index"
+                        :column="table.currentColumns[0]"
+                        :index="0"
+                        :ref="'td' + index"/>
+  <!-- Group lines just have the cell with the expander and a single big cell -->
+  <bbn-table-cell bbn-elseif="!table.currentColumns[0].isExpander || !table.isGroupActive"
+                  :column="table.currentColumns[0]"
+                  :first-cell="true"
+                  :source="source.data"
+                  :style="'height: ' + (rowHeight ? rowHeight + 'px' : 'auto')"
+                  :row-index="index"
+                  :index="0"
+                  :ref="'td' + index"
+                  :tabindex="table.editable && table.isEditable(source.data, table.currentColumns[0], index) ? 0 : -1"/>
+
+  <!-- IF NOT READY AND INDEX IS NOT 0 -->
+  <component bbn-if="!ready || (table.hasScrollX && !table.lastColumnVisible)"
+             :colspan="table.currentColumns.length - 1"
+             class="not-ready"
+             is="td"/>
+  <template bbn-else>
+    <!-- FIRST FIXED COLUMNS -->
+    <template bbn-for="(col, i) in table.groupCols[0].cols"
+              bbn-if="i">
+      <bbn-table-cell-expander bbn-if="col.isExpander && !table.isGroupActive"
+                              :source="source.data"
+                              :index="0"
+                              :row-index="index"
+                              :column="table.currentColumns[0]"
+                              :class="[cellClass, (table.currentColumns[0].fixed ? ' ' + cssRuleName + ' bbn-table-fixed-cell bbn-table-fixed-cell-left' : '')]"
+                              :style="cellStyle"
+                              :ref="'td' + index"/>
+      <bbn-table-cell-selector bbn-elseif="col.isSelection"
+                              :column="col"
+                              :selected="source.selected"
+                              :selection="source.selection"
+                              :source="source.data"
+                              :index="i"
+                              :row-index="index"
+                              :ref="'td' + index"/>
+
+      <bbn-table-cell-editor bbn-elseif="!col.isExpander && table.isEdited(source.data, col, index)"
+                            :tabindex="table.editable && table.isEditable(source.data, col, index) ? 0 : -1"
+                            @save="table.saveInline"
+                            @cancel="table.cancel"
+                            :column="col"
+                            :source="source.data"
+                            :row-index="index"
+                            :index="i"
+                            :ref="'td' + index"
+                            @focusout="table.focusout(index, $event)"/>
+
+      <bbn-table-cell-buttons bbn-elseif="col.buttons"
+                            :source="source.data"
+                            :mode="table.buttonMode"
+                            :row-index="index"
+                            :column="col"
+                            :index="i"
+                            :ref="'td' + index"/>
+      <!-- Group lines just have the cell with the expander and a single big cell -->
+      <bbn-table-cell bbn-elseif="!col.isExpander || !table.isGroupActive"
+                      :column="col"
+                      :source="source.data"
+                      :row-index="index"
+                      :index="i"
+                      :ref="'td' + index"
+                      :tabindex="table.editable && table.isEditable(source.data, col, index) ? 0 : -1"/>
+    </template>
+    <!-- ALL VISIBLE CENTRAL COLUMNS -->
+    <!-- INVISIBLE COLUMNS BEFORE VISIBLE -->
+    <template bbn-for="(seq, idx) in sequences"
+              :key="seq.uid">
+      <template bbn-if="seq.visible">
+        <component bbn-for="groupCol in loopSequence(idx)"
+                   :key="groupCol?.uid"
+                   bbn-if="idx || groupCol.index || table.groupCols[0].cols.length"
+                   :is="getComponentType(groupCol.index)"
+                   :source="source.data"
+                   :index="groupCol.index"
+                   :class="getComponentClass(groupCol.index)"
+                   bbn-bind="getComponentOptions(groupCol.index)"
+                   :ref="'td' + groupCol.index"
+                    @save="table.saveInline"
+                    @cancel="table.cancel"
+                    @focusout="table.focusout(index, $event)"/>
+      </template>
+      <template bbn-else>
+        <td :colspan="(seq.end - seq.start + 1)">-</td>
+      </template>
+    </template>
+    <!-- LAST FIXED COLUMNS -->
+    <template bbn-for="(col, i) in table.groupCols[2].cols">
+      <bbn-table-cell-selector bbn-if="ready && col.isSelection"
+                              :column="col"
+                              :selected="source.selected"
+                              :selection="source.selection"
+                              :source="source.data"
+                              :index="i + table.groupCols[0].cols.length + table.groupCols[1].cols.length"
+                              :row-index="index"
+                              :ref="'td' + index"/>
+
+      <bbn-table-cell-editor bbn-elseif="ready && !col.isExpander && table.isEdited(source.data, col, index)"
+                            :tabindex="table.editable && table.isEditable(source.data, col, index) ? 0 : -1"
+                            @save="table.saveInline"
+                            @cancel="table.cancel"
+                            :column="col"
+                            :source="source.data"
+                            :row-index="index"
+                            :index="i + table.groupCols[0].cols.length + table.groupCols[1].cols.length"
+                            :ref="'td' + index"
+                            @focusout="table.focusout(index, $event)"/>
+
+      <bbn-table-cell-buttons bbn-elseif="ready && col.buttons"
+                            :source="source.data"
+                            :mode="table.buttonMode"
+                            :row-index="index"
+                            :column="col"
+                            :index="i"
+                            :ref="'td' + index"/>
+      <!-- Group lines just have the cell with the expander and a single big cell -->
+      <bbn-table-cell bbn-elseif="ready && (!col.isExpander || !table.isGroupActive)"
+                      :column="col"
+                      :source="source.data"
+                      :row-index="index"
+                      :index="i"
+                      :ref="'td' + index"
+                      :tabindex="table.editable && table.isEditable(source.data, col, index) ? 0 : -1"/>
+    </template>
+  </template>
+</div>

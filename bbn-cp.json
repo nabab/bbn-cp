@@ -6,8 +6,8 @@
         "items": [
             {
                 "text": "appui",
-                "lastmod": 1753014245,
-                "url": "bbn-cp\/component\/appui\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/appui",
                 "props": [
                     {
                         "name": "root",
@@ -979,8 +979,8 @@
             },
             {
                 "text": "audio",
-                "lastmod": 1752460313,
-                "url": "bbn-cp\/component\/audio\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/audio",
                 "props": [
                     {
                         "type": "props",
@@ -1232,8 +1232,8 @@
             },
             {
                 "text": "autocomplete",
-                "lastmod": 1752461156,
-                "url": "bbn-cp\/component\/autocomplete\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/autocomplete",
                 "props": [
                     {
                         "type": "props",
@@ -1552,6 +1552,15 @@
                                 "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
                             },
                             {
+                                "type": "Number",
+                                "default": "1",
+                                "name": "searchMinLength",
+                                "description": "",
+                                "text": "searchMinLength",
+                                "desc": "",
+                                "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
+                            },
+                            {
                                 "type": "String",
                                 "default": "'startswith'",
                                 "name": "searchOperator",
@@ -1760,8 +1769,8 @@
             },
             {
                 "text": "big-search",
-                "lastmod": 1752462336,
-                "url": "bbn-cp\/component\/big-search\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/big-search",
                 "props": [
                     {
                         "type": "props",
@@ -2132,6 +2141,15 @@
                                 "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
                             },
                             {
+                                "type": "Number",
+                                "default": "1",
+                                "name": "searchMinLength",
+                                "description": "",
+                                "text": "searchMinLength",
+                                "desc": "",
+                                "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
+                            },
+                            {
                                 "type": "String",
                                 "default": "'startswith'",
                                 "name": "searchOperator",
@@ -2340,8 +2358,8 @@
             },
             {
                 "text": "block-list",
-                "lastmod": 1747693683,
-                "url": "bbn-cp\/component\/block-list\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/block-list",
                 "props": [
                     {
                         "type": "props",
@@ -2480,6 +2498,15 @@
                                 "text": "searchPlaceholder",
                                 "desc": "Sets the placeholder in the search field\n",
                                 "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                            },
+                            {
+                                "type": "Number",
+                                "default": "1",
+                                "name": "searchMinLength",
+                                "description": "",
+                                "text": "searchMinLength",
+                                "desc": "",
+                                "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                             },
                             {
                                 "type": "String",
@@ -2662,8 +2689,8 @@
             },
             {
                 "text": "breadcrumb",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/breadcrumb\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/breadcrumb",
                 "props": [
                     {
                         "type": "props",
@@ -2707,14 +2734,6 @@
                         "text": "maxTitleLength",
                         "desc": "The max length for a title\n",
                         "url": "bbn-vue\/component\/breadcrumb\/doc\/props#maxTitleLength"
-                    },
-                    {
-                        "type": "props",
-                        "name": "menu",
-                        "description": "",
-                        "text": "menu",
-                        "desc": "",
-                        "url": "bbn-vue\/component\/breadcrumb\/doc\/props#menu"
                     },
                     {
                         "type": "props",
@@ -2938,8 +2957,8 @@
             },
             {
                 "text": "browser",
-                "lastmod": 1752969840,
-                "url": "bbn-cp\/component\/browser\/overview",
+                "lastmod": 1755843375,
+                "url": "bbn-cp\/component\/browser",
                 "props": [
                     {
                         "type": "props",
@@ -3059,8 +3078,8 @@
             },
             {
                 "text": "button",
-                "lastmod": 1748510395,
-                "url": "bbn-cp\/component\/button\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/button",
                 "props": [
                     {
                         "type": "props",
@@ -3270,8 +3289,8 @@
             },
             {
                 "text": "calendar",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/calendar\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/calendar",
                 "props": [
                     {
                         "type": "props",
@@ -3938,6 +3957,15 @@
                                 "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
                             },
                             {
+                                "type": "Number",
+                                "default": "1",
+                                "name": "searchMinLength",
+                                "description": "",
+                                "text": "searchMinLength",
+                                "desc": "",
+                                "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
+                            },
+                            {
                                 "type": "String",
                                 "default": "'startswith'",
                                 "name": "searchOperator",
@@ -4131,8 +4159,8 @@
             },
             {
                 "text": "chart",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/chart\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/chart",
                 "props": [
                     {
                         "type": "props",
@@ -4953,8 +4981,8 @@
             },
             {
                 "text": "chat",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/chat\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/chat",
                 "props": [
                     {
                         "type": "props",
@@ -5641,8 +5669,8 @@
             },
             {
                 "text": "checkbox",
-                "lastmod": 1742463048,
-                "url": "bbn-cp\/component\/checkbox\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/checkbox",
                 "props": [
                     {
                         "type": "props",
@@ -5887,8 +5915,8 @@
             },
             {
                 "text": "clipboard",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/clipboard\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/clipboard",
                 "props": [
                     {
                         "type": "props",
@@ -6023,14 +6051,6 @@
                                 "name": "add"
                             }
                         ],
-                        "fires": [
-                            {
-                                "name": "setStorage"
-                            },
-                            {
-                                "name": "unsetStorage"
-                            }
-                        ],
                         "type": "methods",
                         "text": "add",
                         "desc": "",
@@ -6042,11 +6062,6 @@
                         "emits": [
                             {
                                 "name": "remove"
-                            }
-                        ],
-                        "fires": [
-                            {
-                                "name": "unsetStorage"
                             }
                         ],
                         "type": "methods",
@@ -6144,14 +6159,6 @@
                     {
                         "name": "created",
                         "description": "",
-                        "fires": [
-                            {
-                                "name": "getStorage"
-                            },
-                            {
-                                "name": "unsetStorage"
-                            }
-                        ],
                         "type": "methods",
                         "text": "created",
                         "desc": "",
@@ -6240,8 +6247,8 @@
             },
             {
                 "text": "cms-block",
-                "lastmod": 1752462375,
-                "url": "bbn-cp\/component\/cms-block\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/cms-block",
                 "props": [
                     {
                         "type": "props",
@@ -6471,8 +6478,8 @@
             },
             {
                 "text": "code",
-                "lastmod": 1752418611,
-                "url": "bbn-cp\/component\/code\/overview",
+                "lastmod": 1762627306,
+                "url": "bbn-cp\/component\/code",
                 "props": [],
                 "methods": [],
                 "mixins": [
@@ -6590,6 +6597,11 @@
                         "methods": []
                     },
                     {
+                        "name": "keepCool",
+                        "props": [],
+                        "methods": []
+                    },
+                    {
                         "name": "events",
                         "props": [],
                         "methods": []
@@ -6598,8 +6610,8 @@
             },
             {
                 "text": "colorpicker",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/colorpicker\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/colorpicker",
                 "props": [
                     {
                         "type": "props",
@@ -6975,8 +6987,8 @@
             },
             {
                 "text": "combo",
-                "lastmod": 1752461188,
-                "url": "bbn-cp\/component\/combo\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/combo",
                 "props": [
                     {
                         "type": "props",
@@ -7291,6 +7303,15 @@
                                 "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
                             },
                             {
+                                "type": "Number",
+                                "default": "1",
+                                "name": "searchMinLength",
+                                "description": "",
+                                "text": "searchMinLength",
+                                "desc": "",
+                                "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
+                            },
+                            {
                                 "type": "String",
                                 "default": "'startswith'",
                                 "name": "searchOperator",
@@ -7499,8 +7520,8 @@
             },
             {
                 "text": "container",
-                "lastmod": 1753012637,
-                "url": "bbn-cp\/component\/container\/overview",
+                "lastmod": 1762626887,
+                "url": "bbn-cp\/component\/container",
                 "props": [
                     {
                         "type": "Object|Function",
@@ -8075,15 +8096,6 @@
                         "url": "bbn-cp\/mixins\/view\/props\/invisible"
                     },
                     {
-                        "type": "Number",
-                        "default": "43200000",
-                        "name": "screenshotDelay",
-                        "description": "Time between 2 automatic screenshot in visual mode, in milliseconds\n",
-                        "text": "screenshotDelay",
-                        "desc": "Time between 2 automatic screenshot in visual mode, in milliseconds\n",
-                        "url": "bbn-cp\/mixins\/screenshot\/props\/screenshotDelay"
-                    },
-                    {
                         "type": "Boolean",
                         "default": "false",
                         "name": "cached",
@@ -8540,8 +8552,8 @@
             },
             {
                 "text": "context",
-                "lastmod": 1752461208,
-                "url": "bbn-cp\/component\/context\/overview",
+                "lastmod": 1755843375,
+                "url": "bbn-cp\/component\/context",
                 "props": [
                     {
                         "type": "String",
@@ -8585,6 +8597,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -8972,8 +8993,8 @@
             },
             {
                 "text": "countdown",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/countdown\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/countdown",
                 "props": [
                     {
                         "type": "props",
@@ -9163,8 +9184,8 @@
             },
             {
                 "text": "cursor",
-                "lastmod": 1752461252,
-                "url": "bbn-cp\/component\/cursor\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/cursor",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -9318,8 +9339,8 @@
             },
             {
                 "text": "dashboard",
-                "lastmod": 1752748716,
-                "url": "bbn-cp\/component\/dashboard\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/dashboard",
                 "props": [
                     {
                         "type": "props",
@@ -10243,8 +10264,8 @@
             },
             {
                 "text": "datepicker",
-                "lastmod": 1752461268,
-                "url": "bbn-cp\/component\/datepicker\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/datepicker",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -10624,8 +10645,8 @@
             },
             {
                 "text": "datetimepicker",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/datetimepicker\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/datetimepicker",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -11037,9 +11058,84 @@
                 "mixins": []
             },
             {
+                "text": "debugger",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/debugger",
+                "props": [],
+                "methods": [
+                    {
+                        "name": "getPopup",
+                        "description": "Opens the closest object popup.\n",
+                        "return": [
+                            {
+                                "type": "Object"
+                            }
+                        ],
+                        "text": "getPopup",
+                        "desc": "Opens the closest object popup.\n",
+                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
+                    },
+                    {
+                        "name": "confirm",
+                        "description": "Opens a confirmation from the closest popup\n",
+                        "text": "confirm",
+                        "desc": "Opens a confirmation from the closest popup\n",
+                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
+                    },
+                    {
+                        "name": "alert",
+                        "description": "Opens an alert from the closest popup\n",
+                        "text": "alert",
+                        "desc": "Opens an alert from the closest popup\n",
+                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
+                    },
+                    {
+                        "name": "post",
+                        "description": "Executes bbn.fn.post\n",
+                        "see": [
+                            {
+                                "name": "{@link"
+                            }
+                        ],
+                        "todo": [
+                            "Stupid idea, it should be removed."
+                        ],
+                        "return": [
+                            {
+                                "type": "Promise"
+                            }
+                        ],
+                        "text": "post",
+                        "desc": "Executes bbn.fn.post\n",
+                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
+                    },
+                    {
+                        "name": "postOut",
+                        "description": "Executes bbn.fn.postOut\n",
+                        "see": [
+                            {
+                                "name": "{@link"
+                            }
+                        ],
+                        "todo": [
+                            "Stupid idea, it should be removed."
+                        ],
+                        "return": [
+                            {
+                                "type": "void"
+                            }
+                        ],
+                        "text": "postOut",
+                        "desc": "Executes bbn.fn.postOut\n",
+                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
+                    }
+                ],
+                "mixins": []
+            },
+            {
                 "text": "dropdown",
-                "lastmod": 1752676381,
-                "url": "bbn-cp\/component\/dropdown\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/dropdown",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -11118,6 +11214,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -11429,8 +11534,8 @@
             },
             {
                 "text": "editable",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/editable\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/editable",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -11765,7 +11870,7 @@
             {
                 "text": "editable-content",
                 "lastmod": 1742463048,
-                "url": "bbn-cp\/component\/editable-content\/overview",
+                "url": "bbn-cp\/component\/editable-content",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -11943,8 +12048,8 @@
             },
             {
                 "text": "emoji",
-                "lastmod": 1752461311,
-                "url": "bbn-cp\/component\/emoji\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/emoji",
                 "props": [],
                 "methods": [
                     {
@@ -12068,8 +12173,8 @@
             },
             {
                 "text": "field",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/field\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/field",
                 "props": [
                     {
                         "type": "props",
@@ -12169,8 +12274,8 @@
             },
             {
                 "text": "file",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/file\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/file",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -12424,8 +12529,8 @@
             },
             {
                 "text": "filter",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/filter\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/filter",
                 "props": [
                     {
                         "type": "props",
@@ -12785,8 +12890,8 @@
             },
             {
                 "text": "finder",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/finder\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/finder",
                 "props": [
                     {
                         "type": "props",
@@ -13291,8 +13396,8 @@
             },
             {
                 "text": "fisheye",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/fisheye\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/fisheye",
                 "props": [
                     {
                         "type": "String",
@@ -13336,6 +13441,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -13763,8 +13877,8 @@
             },
             {
                 "text": "flag",
-                "lastmod": 1752461325,
-                "url": "bbn-cp\/component\/flag\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/flag",
                 "props": [],
                 "methods": [
                     {
@@ -13838,8 +13952,8 @@
             },
             {
                 "text": "floater",
-                "lastmod": 1752676381,
-                "url": "bbn-cp\/component\/floater\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/floater",
                 "props": [
                     {
                         "type": "String",
@@ -13883,6 +13997,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -14637,8 +14760,8 @@
             },
             {
                 "text": "form",
-                "lastmod": 1752462412,
-                "url": "bbn-cp\/component\/form\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/form",
                 "props": [
                     {
                         "type": "props",
@@ -15188,8 +15311,8 @@
             },
             {
                 "text": "frame",
-                "lastmod": 1752462190,
-                "url": "bbn-cp\/component\/frame\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/frame",
                 "props": [
                     {
                         "default": "''",
@@ -15300,8 +15423,8 @@
             },
             {
                 "text": "gallery",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/gallery\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/gallery",
                 "props": [
                     {
                         "type": "String",
@@ -15345,6 +15468,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -15927,8 +16059,8 @@
             },
             {
                 "text": "grid-configuration",
-                "lastmod": 1752462435,
-                "url": "bbn-cp\/component\/grid-configuration\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/grid-configuration",
                 "props": [],
                 "methods": [
                     {
@@ -16002,8 +16134,8 @@
             },
             {
                 "text": "icon",
-                "lastmod": 1752462172,
-                "url": "bbn-cp\/component\/icon\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/icon",
                 "props": [],
                 "methods": [
                     {
@@ -16078,7 +16210,7 @@
             {
                 "text": "icon-svg",
                 "lastmod": 1742463023,
-                "url": "bbn-cp\/component\/icon-svg\/overview",
+                "url": "bbn-cp\/component\/icon-svg",
                 "props": [],
                 "methods": [
                     {
@@ -16152,8 +16284,8 @@
             },
             {
                 "text": "iconpicker",
-                "lastmod": 1752462157,
-                "url": "bbn-cp\/component\/iconpicker\/overview",
+                "lastmod": 1756915243,
+                "url": "bbn-cp\/component\/iconpicker",
                 "props": [],
                 "methods": [
                     {
@@ -16228,7 +16360,7 @@
             {
                 "text": "image-editor",
                 "lastmod": 1742463023,
-                "url": "bbn-cp\/component\/image-editor\/overview",
+                "url": "bbn-cp\/component\/image-editor",
                 "props": [
                     {
                         "type": "props",
@@ -16319,8 +16451,8 @@
             },
             {
                 "text": "initial",
-                "lastmod": 1752462141,
-                "url": "bbn-cp\/component\/initial\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/initial",
                 "props": [
                     {
                         "type": "props",
@@ -16538,7 +16670,7 @@
             {
                 "text": "inline-editor",
                 "lastmod": 1742463023,
-                "url": "bbn-cp\/component\/inline-editor\/overview",
+                "url": "bbn-cp\/component\/inline-editor",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -16656,8 +16788,8 @@
             },
             {
                 "text": "input",
-                "lastmod": 1752462119,
-                "url": "bbn-cp\/component\/input\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/input",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -16695,10 +16827,10 @@
                         "url": "bbn-cp\/mixins\/input\/props\/ellipsis"
                     },
                     {
-                        "type": "props",
                         "default": "false",
                         "name": "loading",
                         "description": "Specifies whether a loading icon isshown inside the input field.\n",
+                        "type": "props",
                         "text": "loading",
                         "desc": "Specifies whether a loading icon isshown inside the input field.\n",
                         "url": "bbn-vue\/component\/input\/doc\/props#loading"
@@ -16918,8 +17050,8 @@
             },
             {
                 "text": "json-editor",
-                "lastmod": 1752462466,
-                "url": "bbn-cp\/component\/json-editor\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/json-editor",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -17070,7 +17202,7 @@
             {
                 "text": "kanban",
                 "lastmod": 1742463048,
-                "url": "bbn-cp\/component\/kanban\/overview",
+                "url": "bbn-cp\/component\/kanban",
                 "props": [
                     {
                         "type": "String",
@@ -17114,6 +17246,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -17561,8 +17702,8 @@
             },
             {
                 "text": "kanban-element",
-                "lastmod": 1752878226,
-                "url": "bbn-cp\/component\/kanban-element\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/kanban-element",
                 "props": [
                     {
                         "type": "String",
@@ -17606,6 +17747,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -18058,8 +18208,8 @@
             },
             {
                 "text": "key",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/key\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/key",
                 "props": [
                     {
                         "type": "props",
@@ -18142,8 +18292,8 @@
             },
             {
                 "text": "keyboard",
-                "lastmod": 1752462102,
-                "url": "bbn-cp\/component\/keyboard\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/keyboard",
                 "props": [],
                 "methods": [
                     {
@@ -18217,8 +18367,8 @@
             },
             {
                 "text": "keyvalue",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/keyvalue\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/keyvalue",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -18344,8 +18494,8 @@
             },
             {
                 "text": "list",
-                "lastmod": 1752502176,
-                "url": "bbn-cp\/component\/list\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/list",
                 "props": [
                     {
                         "type": "String",
@@ -18389,6 +18539,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -18923,8 +19082,8 @@
             },
             {
                 "text": "list-input",
-                "lastmod": 1752462063,
-                "url": "bbn-cp\/component\/list-input\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/list-input",
                 "props": [
                     {
                         "type": "String",
@@ -18968,6 +19127,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -19263,8 +19431,8 @@
             },
             {
                 "text": "loadbar",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/loadbar\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/loadbar",
                 "props": [
                     {
                         "type": "props",
@@ -19404,8 +19572,8 @@
             },
             {
                 "text": "loader",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/loader\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/loader",
                 "props": [
                     {
                         "type": "props",
@@ -19519,8 +19687,8 @@
             },
             {
                 "text": "loadicon",
-                "lastmod": 1752462023,
-                "url": "bbn-cp\/component\/loadicon\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/loadicon",
                 "props": [
                     {
                         "type": "props",
@@ -19604,8 +19772,8 @@
             },
             {
                 "text": "login",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/login\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/login",
                 "props": [
                     {
                         "type": "HTMLElement",
@@ -19977,8 +20145,8 @@
             },
             {
                 "text": "map",
-                "lastmod": 1752461977,
-                "url": "bbn-cp\/component\/map\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/map",
                 "props": [],
                 "methods": [
                     {
@@ -20052,8 +20220,8 @@
             },
             {
                 "text": "markdown",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/markdown\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/markdown",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -20171,8 +20339,8 @@
             },
             {
                 "text": "masked",
-                "lastmod": 1752461998,
-                "url": "bbn-cp\/component\/masked\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/masked",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -20902,8 +21070,8 @@
             },
             {
                 "text": "masonry",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/masonry\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/masonry",
                 "props": [
                     {
                         "type": "String",
@@ -20947,6 +21115,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -21254,8 +21431,8 @@
             },
             {
                 "text": "menu",
-                "lastmod": 1752461967,
-                "url": "bbn-cp\/component\/menu\/overview",
+                "lastmod": 1755844434,
+                "url": "bbn-cp\/component\/menu",
                 "props": [
                     {
                         "type": "String",
@@ -21301,6 +21478,15 @@
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
                     },
                     {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
+                    },
+                    {
                         "type": "String",
                         "default": "'startswith'",
                         "name": "searchOperator",
@@ -21310,28 +21496,28 @@
                         "url": "bbn-cp\/mixins\/list\/props\/searchOperator"
                     },
                     {
-                        "name": "{}",
+                        "name": "orientation",
                         "description": "",
                         "type": "props",
-                        "text": "{}",
+                        "text": "orientation",
                         "desc": "",
-                        "url": "bbn-vue\/component\/menu\/doc\/props#{}"
+                        "url": "bbn-vue\/component\/menu\/doc\/props#orientation"
                     },
                     {
-                        "name": "{}",
+                        "name": "direction",
                         "description": "",
                         "type": "props",
-                        "text": "{}",
+                        "text": "direction",
                         "desc": "",
-                        "url": "bbn-vue\/component\/menu\/doc\/props#{}"
+                        "url": "bbn-vue\/component\/menu\/doc\/props#direction"
                     },
                     {
-                        "name": "{}",
+                        "name": "opened",
                         "description": "",
                         "type": "props",
-                        "text": "{}",
+                        "text": "opened",
                         "desc": "",
-                        "url": "bbn-vue\/component\/menu\/doc\/props#{}"
+                        "url": "bbn-vue\/component\/menu\/doc\/props#opened"
                     },
                     {
                         "type": "props",
@@ -21343,13 +21529,49 @@
                         "url": "bbn-vue\/component\/menu\/doc\/props#selectedIndex"
                     },
                     {
+                        "type": "props",
+                        "default": "'label'",
+                        "name": "sourceText",
+                        "description": "The name of the property to be used as text.\n",
+                        "text": "sourceText",
+                        "desc": "The name of the property to be used as text.\n",
+                        "url": "bbn-vue\/component\/menu\/doc\/props#sourceText"
+                    },
+                    {
+                        "type": "props",
                         "default": "'text'",
                         "name": "sourceValue",
-                        "description": "",
-                        "type": "props",
+                        "description": "* The name of the property to be used as value.\n",
                         "text": "sourceValue",
-                        "desc": "",
+                        "desc": "* The name of the property to be used as value.\n",
                         "url": "bbn-vue\/component\/menu\/doc\/props#sourceValue"
+                    },
+                    {
+                        "type": "props",
+                        "default": "'icon'",
+                        "name": "sourceIcon",
+                        "description": "The name of the property to be used as icon.\n",
+                        "text": "sourceIcon",
+                        "desc": "The name of the property to be used as icon.\n",
+                        "url": "bbn-vue\/component\/menu\/doc\/props#sourceIcon"
+                    },
+                    {
+                        "type": "props",
+                        "default": "'action'",
+                        "name": "sourceAction",
+                        "description": "The name of the property to be used as action to execute when selected.\n",
+                        "text": "sourceAction",
+                        "desc": "The name of the property to be used as action to execute when selected.\n",
+                        "url": "bbn-vue\/component\/menu\/doc\/props#sourceAction"
+                    },
+                    {
+                        "type": "props",
+                        "default": "'action'",
+                        "name": "sourceAction",
+                        "description": "The name of the property to be used as action to execute when selected.\n",
+                        "text": "sourceAction",
+                        "desc": "The name of the property to be used as action to execute when selected.\n",
+                        "url": "bbn-vue\/component\/menu\/doc\/props#sourceAction"
                     }
                 ],
                 "methods": [
@@ -21583,8 +21805,8 @@
             },
             {
                 "text": "mini-search",
-                "lastmod": 1752462521,
-                "url": "bbn-cp\/component\/mini-search\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/mini-search",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -21663,6 +21885,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -22117,7 +22348,7 @@
             {
                 "text": "multi-input",
                 "lastmod": 1742463048,
-                "url": "bbn-cp\/component\/multi-input\/overview",
+                "url": "bbn-cp\/component\/multi-input",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -22336,15 +22567,15 @@
             {
                 "text": "multiinput",
                 "lastmod": 1744650480,
-                "url": "bbn-cp\/component\/multiinput\/overview",
+                "url": "bbn-cp\/component\/multiinput",
                 "props": [],
                 "methods": [],
                 "mixins": []
             },
             {
                 "text": "multipart",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/multipart\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/multipart",
                 "props": [
                     {
                         "type": "props",
@@ -22665,8 +22896,8 @@
             },
             {
                 "text": "multiselect",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/multiselect\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/multiselect",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -22745,6 +22976,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -23135,8 +23375,8 @@
             },
             {
                 "text": "notification",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/notification\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/notification",
                 "props": [
                     {
                         "type": "props",
@@ -23508,8 +23748,8 @@
             },
             {
                 "text": "numeric",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/numeric\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/numeric",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -23847,8 +24087,8 @@
             },
             {
                 "text": "pager",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/pager\/overview",
+                "lastmod": 1756915807,
+                "url": "bbn-cp\/component\/pager",
                 "props": [
                     {
                         "type": "props",
@@ -24027,8 +24267,8 @@
             },
             {
                 "text": "pane",
-                "lastmod": 1752461946,
-                "url": "bbn-cp\/component\/pane\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/pane",
                 "props": [
                     {
                         "type": "props",
@@ -24202,8 +24442,8 @@
             },
             {
                 "text": "panelbar",
-                "lastmod": 1752461930,
-                "url": "bbn-cp\/component\/panelbar\/overview",
+                "lastmod": 1755844434,
+                "url": "bbn-cp\/component\/panelbar",
                 "props": [
                     {
                         "type": "props",
@@ -24430,8 +24670,8 @@
             },
             {
                 "text": "password",
-                "lastmod": 1752461919,
-                "url": "bbn-cp\/component\/password\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/password",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -24700,8 +24940,8 @@
             },
             {
                 "text": "phone",
-                "lastmod": 1752502176,
-                "url": "bbn-cp\/component\/phone\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/phone",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -24906,8 +25146,8 @@
             },
             {
                 "text": "popup",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/popup\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/popup",
                 "props": [
                     {
                         "type": "props",
@@ -25270,8 +25510,8 @@
             },
             {
                 "text": "progressbar",
-                "lastmod": 1752461905,
-                "url": "bbn-cp\/component\/progressbar\/overview",
+                "lastmod": 1755844276,
+                "url": "bbn-cp\/component\/progressbar",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -25554,8 +25794,8 @@
             },
             {
                 "text": "radio",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/radio\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/radio",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -25767,8 +26007,8 @@
             },
             {
                 "text": "radiobuttons",
-                "lastmod": 1752704085,
-                "url": "bbn-cp\/component\/radiobuttons\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/radiobuttons",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -25932,8 +26172,8 @@
             },
             {
                 "text": "range",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/range\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/range",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -26136,9 +26376,156 @@
                 "mixins": []
             },
             {
+                "text": "rating",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/rating",
+                "props": [
+                    {
+                        "type": "(String|Number)",
+                        "name": "size",
+                        "description": "The size of the input.\n",
+                        "text": "size",
+                        "desc": "The size of the input.\n",
+                        "url": "bbn-cp\/mixins\/input\/props\/size"
+                    },
+                    {
+                        "type": "Boolean",
+                        "default": "false",
+                        "name": "autosize",
+                        "description": "Set it to true if you want to auto-resize the input's width based on its value (in characters).\n",
+                        "text": "autosize",
+                        "desc": "Set it to true if you want to auto-resize the input's width based on its value (in characters).\n",
+                        "url": "bbn-cp\/mixins\/input\/props\/autosize"
+                    },
+                    {
+                        "type": "Boolean",
+                        "default": "false",
+                        "name": "focused",
+                        "description": "If true the element will focus on insert\n",
+                        "text": "focused",
+                        "desc": "If true the element will focus on insert\n",
+                        "url": "bbn-cp\/mixins\/input\/props\/focused"
+                    },
+                    {
+                        "type": "Boolean",
+                        "default": "false",
+                        "name": "ellipsis",
+                        "description": "",
+                        "text": "ellipsis",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/input\/props\/ellipsis"
+                    },
+                    {
+                        "type": "props",
+                        "default": "'nf nf-fa-star'",
+                        "name": "icon",
+                        "description": "The icon to use for the rating\n",
+                        "text": "icon",
+                        "desc": "The icon to use for the rating\n",
+                        "url": "bbn-vue\/component\/rating\/doc\/props#icon"
+                    },
+                    {
+                        "type": "props",
+                        "default": "5",
+                        "name": "score",
+                        "description": "The maximum score of the rating\n",
+                        "text": "score",
+                        "desc": "The maximum score of the rating\n",
+                        "url": "bbn-vue\/component\/rating\/doc\/props#score"
+                    },
+                    {
+                        "type": "props",
+                        "default": "'gold'",
+                        "name": "color",
+                        "description": "The color of the selected icons\n",
+                        "text": "color",
+                        "desc": "The color of the selected icons\n",
+                        "url": "bbn-vue\/component\/rating\/doc\/props#color"
+                    },
+                    {
+                        "type": "props",
+                        "default": "'var(--grey)'",
+                        "name": "ucolor",
+                        "description": "The color of the unselected icons\n",
+                        "text": "ucolor",
+                        "desc": "The color of the unselected icons\n",
+                        "url": "bbn-vue\/component\/rating\/doc\/props#ucolor"
+                    }
+                ],
+                "methods": [
+                    {
+                        "name": "getPopup",
+                        "description": "Opens the closest object popup.\n",
+                        "return": [
+                            {
+                                "type": "Object"
+                            }
+                        ],
+                        "text": "getPopup",
+                        "desc": "Opens the closest object popup.\n",
+                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
+                    },
+                    {
+                        "name": "confirm",
+                        "description": "Opens a confirmation from the closest popup\n",
+                        "text": "confirm",
+                        "desc": "Opens a confirmation from the closest popup\n",
+                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
+                    },
+                    {
+                        "name": "alert",
+                        "description": "Opens an alert from the closest popup\n",
+                        "text": "alert",
+                        "desc": "Opens an alert from the closest popup\n",
+                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
+                    },
+                    {
+                        "name": "post",
+                        "description": "Executes bbn.fn.post\n",
+                        "see": [
+                            {
+                                "name": "{@link"
+                            }
+                        ],
+                        "todo": [
+                            "Stupid idea, it should be removed."
+                        ],
+                        "return": [
+                            {
+                                "type": "Promise"
+                            }
+                        ],
+                        "text": "post",
+                        "desc": "Executes bbn.fn.post\n",
+                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
+                    },
+                    {
+                        "name": "postOut",
+                        "description": "Executes bbn.fn.postOut\n",
+                        "see": [
+                            {
+                                "name": "{@link"
+                            }
+                        ],
+                        "todo": [
+                            "Stupid idea, it should be removed."
+                        ],
+                        "return": [
+                            {
+                                "type": "void"
+                            }
+                        ],
+                        "text": "postOut",
+                        "desc": "Executes bbn.fn.postOut\n",
+                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
+                    }
+                ],
+                "mixins": []
+            },
+            {
                 "text": "router",
-                "lastmod": 1753012772,
-                "url": "bbn-cp\/component\/router\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/router",
                 "props": [
                     {
                         "type": "Boolean",
@@ -26306,15 +26693,6 @@
                     {
                         "type": "Boolean",
                         "default": "false",
-                        "name": "breadcrumb",
-                        "description": "Set it to true if you want to show the breadcrumb instead of the tabs.\n",
-                        "text": "breadcrumb",
-                        "desc": "Set it to true if you want to show the breadcrumb instead of the tabs.\n",
-                        "url": "bbn-cp\/mixins\/breadcrumb\/props\/breadcrumb"
-                    },
-                    {
-                        "type": "Boolean",
-                        "default": "false",
                         "name": "master",
                         "description": "Set it to true if you want to set this nav as a master.\n",
                         "text": "master",
@@ -26329,15 +26707,6 @@
                         "text": "confirmLeave",
                         "desc": "The confirm message when you close an unsaved container.\n",
                         "url": "bbn-cp\/mixins\/toMove\/props\/confirmLeave"
-                    },
-                    {
-                        "type": "Boolean",
-                        "default": "false",
-                        "name": "visual",
-                        "description": "Set it to true if you want to see the visual navigation bar\n",
-                        "text": "visual",
-                        "desc": "Set it to true if you want to see the visual navigation bar\n",
-                        "url": "bbn-cp\/mixins\/visual\/props\/visual"
                     },
                     {
                         "type": "Number",
@@ -27596,18 +27965,6 @@
                         "url": "bbn-cp\/mixins\/toMove\/methods\/reload"
                     },
                     {
-                        "name": "updateVisualStyleContainer",
-                        "description": "",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "updateVisualStyleContainer",
-                        "desc": "",
-                        "url": "bbn-cp\/mixins\/visual\/methods\/updateVisualStyleContainer"
-                    },
-                    {
                         "name": "onEscape",
                         "description": "",
                         "param": [
@@ -27693,8 +28050,8 @@
             },
             {
                 "text": "router-config",
-                "lastmod": 1752462542,
-                "url": "bbn-cp\/component\/router-config\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/router-config",
                 "props": [],
                 "methods": [
                     {
@@ -27768,8 +28125,8 @@
             },
             {
                 "text": "router-group",
-                "lastmod": 1752462554,
-                "url": "bbn-cp\/component\/router-group\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/router-group",
                 "props": [
                     {
                         "type": "props",
@@ -27862,8 +28219,8 @@
             },
             {
                 "text": "rte",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/rte\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/rte",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -28143,16 +28500,16 @@
             },
             {
                 "text": "screenshot",
-                "lastmod": 1745331391,
-                "url": "bbn-cp\/component\/screenshot\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/screenshot",
                 "props": [],
                 "methods": [],
                 "mixins": []
             },
             {
                 "text": "scroll",
-                "lastmod": 1753102660,
-                "url": "bbn-cp\/component\/scroll\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/scroll",
                 "props": [
                     {
                         "type": "props",
@@ -28164,7 +28521,6 @@
                             "Handles actions after scroll is finished.\n",
                             "Handles the resize of the scroll.",
                             "Initializes the size of the scroll container.",
-                            "Creates a delay to set the scroll as ready.\n",
                             "Called when component is mounted."
                         ],
                         "component": [
@@ -28539,9 +28895,6 @@
                             },
                             {
                                 "name": "initSize"
-                            },
-                            {
-                                "name": "preResize"
                             }
                         ],
                         "param": [
@@ -28954,7 +29307,6 @@
                             "Handles actions after scroll is finished.\n",
                             "Handles the resize of the scroll.",
                             "Initializes the size of the scroll container.",
-                            "Creates a delay to set the scroll as ready.\n",
                             "Called when component is mounted."
                         ],
                         "url": "bbn-vue\/component\/scroll\/doc\/props#duration"
@@ -29179,7 +29531,6 @@
                             "Handles actions after scroll is finished.\n",
                             "Handles the resize of the scroll.",
                             "Initializes the size of the scroll container.",
-                            "Creates a delay to set the scroll as ready.\n",
                             "Called when component is mounted."
                         ],
                         "component": [
@@ -29876,9 +30227,6 @@
                             },
                             {
                                 "name": "initSize"
-                            },
-                            {
-                                "name": "preResize"
                             }
                         ],
                         "emits": [
@@ -29972,7 +30320,6 @@
                             "Handles actions after scroll is finished.\n",
                             "Handles the resize of the scroll.",
                             "Initializes the size of the scroll container.",
-                            "Creates a delay to set the scroll as ready.\n",
                             "Called when component is mounted."
                         ],
                         "url": "bbn-vue\/component\/scroll\/doc\/methods#isVisibleInScroll"
@@ -30276,30 +30623,14 @@
                         "text": "initSize",
                         "desc": "",
                         "url": "bbn-vue\/component\/scroll\/doc\/methods#initSize"
-                    },
-                    {
-                        "name": "waitReady",
-                        "description": "Creates a delay to set the scroll as ready\n",
-                        "fires": [
-                            {
-                                "name": "keepCool"
-                            },
-                            {
-                                "name": "onResize"
-                            }
-                        ],
-                        "type": "methods",
-                        "text": "waitReady",
-                        "desc": "Creates a delay to set the scroll as ready\n",
-                        "url": "bbn-vue\/component\/scroll\/doc\/methods#waitReady"
                     }
                 ],
                 "mixins": []
             },
             {
                 "text": "scrollbar",
-                "lastmod": 1752461886,
-                "url": "bbn-cp\/component\/scrollbar\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/scrollbar",
                 "props": [
                     {
                         "type": "props",
@@ -30704,8 +31035,8 @@
             },
             {
                 "text": "search",
-                "lastmod": 1752461830,
-                "url": "bbn-cp\/component\/search\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/search",
                 "props": [
                     {
                         "type": "String",
@@ -30749,6 +31080,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -31176,8 +31516,8 @@
             },
             {
                 "text": "slider",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/slider\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/slider",
                 "props": [
                     {
                         "type": "props",
@@ -31326,8 +31666,8 @@
             },
             {
                 "text": "slider-menu",
-                "lastmod": 1752964813,
-                "url": "bbn-cp\/component\/slider-menu\/overview",
+                "lastmod": 1755843375,
+                "url": "bbn-cp\/component\/slider-menu",
                 "props": [
                     {
                         "type": "String",
@@ -31371,6 +31711,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -31709,8 +32058,8 @@
             },
             {
                 "text": "slideshow",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/slideshow\/overview",
+                "lastmod": 1756990876,
+                "url": "bbn-cp\/component\/slideshow",
                 "props": [
                     {
                         "type": "props",
@@ -32135,8 +32484,8 @@
             },
             {
                 "text": "splashscreen",
-                "lastmod": 1752461846,
-                "url": "bbn-cp\/component\/splashscreen\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/splashscreen",
                 "props": [
                     {
                         "type": "String",
@@ -32180,6 +32529,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -32501,8 +32859,8 @@
             },
             {
                 "text": "split-tabs",
-                "lastmod": 1752462639,
-                "url": "bbn-cp\/component\/split-tabs\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/split-tabs",
                 "props": [
                     {
                         "type": "props",
@@ -32657,8 +33015,8 @@
             },
             {
                 "text": "splitter",
-                "lastmod": 1752460130,
-                "url": "bbn-cp\/component\/splitter\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/splitter",
                 "props": [
                     {
                         "type": "props",
@@ -33000,8 +33358,8 @@
             },
             {
                 "text": "stack",
-                "lastmod": 1752461813,
-                "url": "bbn-cp\/component\/stack\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/stack",
                 "props": [
                     {
                         "type": "String",
@@ -33045,6 +33403,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -33229,8 +33596,8 @@
             },
             {
                 "text": "stream-search",
-                "lastmod": 1744691737,
-                "url": "bbn-cp\/component\/stream-search\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/stream-search",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -33309,6 +33676,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -33762,8 +34138,8 @@
             },
             {
                 "text": "switch",
-                "lastmod": 1752461799,
-                "url": "bbn-cp\/component\/switch\/overview",
+                "lastmod": 1762614534,
+                "url": "bbn-cp\/component\/switch",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -34039,8 +34415,8 @@
             },
             {
                 "text": "table",
-                "lastmod": 1752537423,
-                "url": "bbn-cp\/component\/table\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/table",
                 "props": [
                     {
                         "type": "String",
@@ -34134,6 +34510,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -34556,1663 +34941,14 @@
                         "text": "observerClear",
                         "desc": "The called method on the switching to false of the \"observer Dirty\" property value\n",
                         "url": "bbn-cp\/mixins\/observer\/methods\/observerClear"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-cell",
-                "lastmod": 1752461665,
-                "url": "bbn-cp\/component\/table-cell\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-cell-aggregate",
-                "lastmod": 1752978485,
-                "url": "bbn-cp\/component\/table-cell-aggregate\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-cell-buttons",
-                "lastmod": 1752978494,
-                "url": "bbn-cp\/component\/table-cell-buttons\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-cell-editor",
-                "lastmod": 1752461737,
-                "url": "bbn-cp\/component\/table-cell-editor\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    },
-                    {
-                        "name": "getEditableOptions",
-                        "description": "Returns the object of properties to bind with the editable component.\n",
-                        "param": [
-                            {
-                                "type": "Object",
-                                "name": "col"
-                            },
-                            {
-                                "type": "Object",
-                                "name": "data"
-                            }
-                        ],
-                        "returns": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "type": "methods",
-                        "text": "getEditableOptions",
-                        "desc": "Returns the object of properties to bind with the editable component.\n",
-                        "url": "bbn-vue\/component\/table-cell-editor\/doc\/methods#getEditableOptions"
-                    },
-                    {
-                        "name": "getEditableComponent",
-                        "description": "If no editor is given to the table returns the correct component to edit the field basing on the column type.\n\n",
-                        "param": [
-                            {
-                                "type": "Object",
-                                "name": "col"
-                            },
-                            {
-                                "type": "Object",
-                                "name": "data"
-                            }
-                        ],
-                        "return": [
-                            {
-                                "type": "String"
-                            }
-                        ],
-                        "type": "methods",
-                        "text": "getEditableComponent",
-                        "desc": "If no editor is given to the table returns the correct component to edit the field basing on the column type.\n\n",
-                        "url": "bbn-vue\/component\/table-cell-editor\/doc\/methods#getEditableComponent"
-                    },
-                    {
-                        "name": "isDirty",
-                        "description": "Return true if the given row is changed from originalData.\n",
-                        "param": [
-                            {
-                                "type": "Object",
-                                "name": "row"
-                            },
-                            {
-                                "type": "Object",
-                                "name": "col"
-                            },
-                            {
-                                "type": "Number",
-                                "name": "idx"
-                            }
-                        ],
-                        "type": "methods",
-                        "text": "isDirty",
-                        "desc": "Return true if the given row is changed from originalData.\n",
-                        "url": "bbn-vue\/component\/table-cell-editor\/doc\/methods#isDirty"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-cell-expander",
-                "lastmod": 1752461724,
-                "url": "bbn-cp\/component\/table-cell-expander\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-cell-menu",
-                "lastmod": 1752978501,
-                "url": "bbn-cp\/component\/table-cell-menu\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-cell-selector",
-                "lastmod": 1752461680,
-                "url": "bbn-cp\/component\/table-cell-selector\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-dots",
-                "lastmod": 1752461634,
-                "url": "bbn-cp\/component\/table-dots\/overview",
-                "props": [],
-                "methods": [],
-                "mixins": []
-            },
-            {
-                "text": "table-head-group",
-                "lastmod": 1752461611,
-                "url": "bbn-cp\/component\/table-head-group\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-head-title",
-                "lastmod": 1752461594,
-                "url": "bbn-cp\/component\/table-head-title\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-row",
-                "lastmod": 1752704085,
-                "url": "bbn-cp\/component\/table-row\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-row-aggregate",
-                "lastmod": 1752461572,
-                "url": "bbn-cp\/component\/table-row-aggregate\/overview",
-                "props": [
-                    {
-                        "type": "String",
-                        "name": "url",
-                        "description": "If defined, the form created for the edit of the table will have this URL as action.\n",
-                        "text": "url",
-                        "desc": "If defined, the form created for the edit of the table will have this URL as action.\n",
-                        "url": "bbn-cp\/mixins\/editableList\/props\/url"
-                    },
-                    {
-                        "type": "String|Object",
-                        "name": "editor",
-                        "description": "Defines the editor to use when a item is in edit mode.\n",
-                        "text": "editor",
-                        "desc": "Defines the editor to use when a item is in edit mode.\n",
-                        "url": "bbn-cp\/mixins\/editableList\/props\/editor"
-                    },
-                    {
-                        "type": "Object",
-                        "name": "editorOptions",
-                        "description": "Defines the editor options when editor defined.\n",
-                        "text": "editorOptions",
-                        "desc": "Defines the editor options when editor defined.\n",
-                        "url": "bbn-cp\/mixins\/editableList\/props\/editorOptions"
-                    },
-                    {
-                        "type": "Boolean|String|Function",
-                        "name": "editable",
-                        "description": "Set to true allows to edit inline the fields if no buttons are defined for the table.\n",
-                        "text": "editable",
-                        "desc": "Set to true allows to edit inline the fields if no buttons are defined for the table.\n",
-                        "url": "bbn-cp\/mixins\/editableList\/props\/editable"
-                    },
-                    {
-                        "type": "Boolean",
-                        "default": "false",
-                        "name": "autoSave",
-                        "description": "Auto saves the row when edit-mode is 'inline'\n",
-                        "text": "autoSave",
-                        "desc": "Auto saves the row when edit-mode is 'inline'\n",
-                        "url": "bbn-cp\/mixins\/editableList\/props\/autoSave"
-                    },
-                    {
-                        "type": "Boolean",
-                        "default": "false",
-                        "name": "autoReset",
-                        "description": "Automatically resets the original values \u200b\u200bwhen edit-mode is 'inline'\n",
-                        "text": "autoReset",
-                        "desc": "Automatically resets the original values \u200b\u200bwhen edit-mode is 'inline'\n",
-                        "url": "bbn-cp\/mixins\/editableList\/props\/autoReset"
-                    },
-                    {
-                        "type": "String",
-                        "name": "uid",
-                        "description": "The uid of the list.\n",
-                        "text": "uid",
-                        "desc": "The uid of the list.\n",
-                        "url": "bbn-cp\/mixins\/list\/props\/uid"
-                    },
-                    {
-                        "type": "String",
-                        "default": "'free'",
-                        "name": "mode",
-                        "description": "The mode of the component.\nPossible values: 'free', 'options', 'selection'.\n",
-                        "text": "mode",
-                        "desc": "The mode of the component.\nPossible values: 'free', 'options', 'selection'.\n",
-                        "url": "bbn-cp\/mixins\/list\/props\/mode"
-                    },
-                    {
-                        "type": "String|Object",
-                        "name": "noDataComponent",
-                        "description": "A component to show if items is empty\n",
-                        "text": "noDataComponent",
-                        "desc": "A component to show if items is empty\n",
-                        "url": "bbn-cp\/mixins\/list\/props\/noDataComponent"
-                    },
-                    {
-                        "type": "Boolean",
-                        "default": "false",
-                        "name": "search",
-                        "description": "Enables the search mode\n",
-                        "text": "search",
-                        "desc": "Enables the search mode\n",
-                        "url": "bbn-cp\/mixins\/list\/props\/search"
-                    },
-                    {
-                        "type": "String",
-                        "default": "\"Search\"",
-                        "name": "searchPlaceholder",
-                        "description": "Sets the placeholder in the search field\n",
-                        "text": "searchPlaceholder",
-                        "desc": "Sets the placeholder in the search field\n",
-                        "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
-                    },
-                    {
-                        "type": "String",
-                        "default": "'startswith'",
-                        "name": "searchOperator",
-                        "description": "The operator used by filterString filter\n",
-                        "text": "searchOperator",
-                        "desc": "The operator used by filterString filter\n",
-                        "url": "bbn-cp\/mixins\/list\/props\/searchOperator"
-                    }
-                ],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    },
-                    {
-                        "name": "setResizeMeasures",
-                        "description": "Sets the value of lastKnownHeight and lastKnownWidth basing on the current dimensions of width and height.\n",
-                        "returns": [
-                            {
-                                "type": "Boolean"
-                            }
-                        ],
-                        "text": "setResizeMeasures",
-                        "desc": "Sets the value of lastKnownHeight and lastKnownWidth basing on the current dimensions of width and height.\n",
-                        "url": "bbn-cp\/mixins\/resizer\/methods\/setResizeMeasures"
-                    },
-                    {
-                        "name": "isModified",
-                        "description": "Returns true if the row corresponding to the given index has changed respect to originalData.\n",
-                        "param": [
-                            {
-                                "type": "Number",
-                                "name": "idx"
-                            }
-                        ],
-                        "returns": [
-                            {
-                                "type": "Boolean"
-                            }
-                        ],
-                        "text": "isModified",
-                        "desc": "Returns true if the row corresponding to the given index has changed respect to originalData.\n",
-                        "url": "bbn-cp\/mixins\/editableList\/methods\/isModified"
-                    },
-                    {
-                        "name": "insert",
-                        "description": "Adds the given data to the object tmpRow and opens the popup with the form to insert the row.\n",
-                        "param": [
-                            {
-                                "type": "Object",
-                                "name": "data"
-                            },
-                            {
-                                "type": "Object",
-                                "name": "options"
-                            },
-                            {
-                                "type": "Number",
-                                "name": "index"
-                            }
-                        ],
-                        "fires": [
-                            {
-                                "name": "_addTmp"
-                            },
-                            {
-                                "name": "edit"
-                            }
-                        ],
-                        "text": "insert",
-                        "desc": "Adds the given data to the object tmpRow and opens the popup with the form to insert the row.\n",
-                        "url": "bbn-cp\/mixins\/editableList\/methods\/insert"
-                    },
-                    {
-                        "name": "copy",
-                        "description": "Adds the given data to the object tmpRow and opens the popup with the form to copy the row.\n",
-                        "param": [
-                            {
-                                "type": "Object",
-                                "name": "data"
-                            },
-                            {
-                                "type": "Object",
-                                "name": "options"
-                            },
-                            {
-                                "type": "Number",
-                                "name": "index"
-                            }
-                        ],
-                        "fires": [
-                            {
-                                "name": "_addTmp"
-                            },
-                            {
-                                "name": "edit"
-                            }
-                        ],
-                        "text": "copy",
-                        "desc": "Adds the given data to the object tmpRow and opens the popup with the form to copy the row.\n",
-                        "url": "bbn-cp\/mixins\/editableList\/methods\/copy"
-                    },
-                    {
-                        "name": "edit",
-                        "description": "Opens the popup containing the form to edit the row.\n",
-                        "param": [
-                            {
-                                "type": "Object",
-                                "name": "row"
-                            },
-                            {
-                                "type": "String|Object",
-                                "name": "winOptions"
-                            },
-                            {
-                                "type": "Number",
-                                "name": "index"
-                            }
-                        ],
-                        "fires": [
-                            {
-                                "name": "_addTmp"
-                            }
-                        ],
-                        "text": "edit",
-                        "desc": "Opens the popup containing the form to edit the row.\n",
-                        "url": "bbn-cp\/mixins\/editableList\/methods\/edit"
-                    },
-                    {
-                        "name": "cancel",
-                        "description": "Cancels the changes made on the row data.\n",
-                        "fires": [
-                            {
-                                "name": "_removeTmp"
-                            }
-                        ],
-                        "text": "cancel",
-                        "desc": "Cancels the changes made on the row data.\n",
-                        "url": "bbn-cp\/mixins\/editableList\/methods\/cancel"
-                    },
-                    {
-                        "name": "saveRow",
-                        "description": "Insert or update a row in originalData.\n",
-                        "text": "saveRow",
-                        "desc": "Insert or update a row in originalData.\n",
-                        "url": "bbn-cp\/mixins\/editableList\/methods\/saveRow"
-                    },
-                    {
-                        "name": "saveInline",
-                        "description": "If the prop url of the table is defined makes a post to the url to update or insert the row, else fires the method saveRow to insert or update the row in originalData.\n",
-                        "fires": [
-                            {
-                                "name": "saveRow"
-                            }
-                        ],
-                        "text": "saveInline",
-                        "desc": "If the prop url of the table is defined makes a post to the url to update or insert the row, else fires the method saveRow to insert or update the row in originalData.\n",
-                        "url": "bbn-cp\/mixins\/editableList\/methods\/saveInline"
-                    },
-                    {
-                        "name": "successEdit",
-                        "description": "After the post in case of edit of the row, update the row in originalData.\n",
-                        "param": [
-                            {
-                                "type": "Object",
-                                "name": "d"
-                            }
-                        ],
-                        "fires": [
-                            {
-                                "name": "saveRow"
-                            }
-                        ],
-                        "returns": [
-                            {
-                                "type": "Boolean"
-                            }
-                        ],
-                        "text": "successEdit",
-                        "desc": "After the post in case of edit of the row, update the row in originalData.\n",
-                        "url": "bbn-cp\/mixins\/editableList\/methods\/successEdit"
-                    },
-                    {
-                        "name": "select",
-                        "description": "",
-                        "text": "select",
-                        "desc": "",
-                        "url": "bbn-cp\/mixins\/list\/methods\/select"
-                    },
-                    {
-                        "name": "onSetFilter",
-                        "description": "Pushes the given filter in the currentFilters of the list.\n",
-                        "param": [
-                            {
-                                "type": "Object",
-                                "name": "filter"
-                            }
-                        ],
-                        "text": "onSetFilter",
-                        "desc": "Pushes the given filter in the currentFilters of the list.\n",
-                        "url": "bbn-cp\/mixins\/list\/methods\/onSetFilter"
-                    },
-                    {
-                        "name": "onUnsetFilter",
-                        "description": "Fires the method removeFilter to remove a group of conditions from currentFilters.\n",
-                        "param": [
-                            {
-                                "type": "Object",
-                                "name": "filter"
-                            }
-                        ],
-                        "fires": [
-                            {
-                                "name": "removeFilter"
-                            }
-                        ],
-                        "text": "onUnsetFilter",
-                        "desc": "Fires the method removeFilter to remove a group of conditions from currentFilters.\n",
-                        "url": "bbn-cp\/mixins\/list\/methods\/onUnsetFilter"
-                    },
-                    {
-                        "name": "removeFilter",
-                        "description": "Removes a group of conditions from currentFilters.\n",
-                        "param": [
-                            {
-                                "type": "Object",
-                                "name": "condition"
-                            }
-                        ],
-                        "fires": [
-                            {
-                                "name": "getPopup"
-                            }
-                        ],
-                        "text": "removeFilter",
-                        "desc": "Removes a group of conditions from currentFilters.\n",
-                        "url": "bbn-cp\/mixins\/list\/methods\/removeFilter"
-                    },
-                    {
-                        "name": "unsetFilter",
-                        "description": "Unsets the current filter.\n",
-                        "text": "unsetFilter",
-                        "desc": "Unsets the current filter.\n",
-                        "url": "bbn-cp\/mixins\/list\/methods\/unsetFilter"
-                    },
-                    {
-                        "name": "unsetCurrentFilter",
-                        "description": "Unsets the current filter.\n",
-                        "text": "unsetCurrentFilter",
-                        "desc": "Unsets the current filter.\n",
-                        "url": "bbn-cp\/mixins\/list\/methods\/unsetCurrentFilter"
-                    },
-                    {
-                        "name": "realDelete",
-                        "description": "Deletes all the current data from the view.\n",
-                        "param": [
-                            {
-                                "type": "Number",
-                                "name": "index"
-                            }
-                        ],
-                        "text": "realDelete",
-                        "desc": "Deletes all the current data from the view.\n",
-                        "url": "bbn-cp\/mixins\/list\/methods\/realDelete"
-                    },
-                    {
-                        "name": "realDelete",
-                        "description": "Deletes the row defined by param index.\n",
-                        "param": [
-                            {
-                                "type": "Number",
-                                "name": "index"
-                            }
-                        ],
-                        "text": "realDelete",
-                        "desc": "Deletes the row defined by param index.\n",
-                        "url": "bbn-cp\/mixins\/list\/methods\/realDelete"
-                    },
-                    {
-                        "name": "add",
-                        "description": "Add the given row to currentData\n",
-                        "param": [
-                            {
-                                "type": "Object",
-                                "name": "data"
-                            }
-                        ],
-                        "todo": [
-                            []
-                        ],
-                        "text": "add",
-                        "desc": "Add the given row to currentData\n",
-                        "url": "bbn-cp\/mixins\/list\/methods\/add"
-                    },
-                    {
-                        "name": "delete",
-                        "description": "Fires the method realDelete to delete the row.\n",
-                        "param": [
-                            {
-                                "type": "Number",
-                                "name": "index"
-                            },
-                            {
-                                "type": "String",
-                                "name": "confirm"
-                            }
-                        ],
-                        "fires": [
-                            {
-                                "name": "realDelete"
-                            }
-                        ],
-                        "text": "delete",
-                        "desc": "Fires the method realDelete to delete the row.\n",
-                        "url": "bbn-cp\/mixins\/list\/methods\/delete"
-                    },
-                    {
-                        "name": "reload",
-                        "description": "Fires the metod updateData to refresh the current data set.\n",
-                        "fires": [
-                            {
-                                "name": "updateData"
-                            }
-                        ],
-                        "text": "reload",
-                        "desc": "Fires the metod updateData to refresh the current data set.\n",
-                        "url": "bbn-cp\/mixins\/list\/methods\/reload"
-                    },
-                    {
-                        "name": "remove",
-                        "description": "Removes the row defined by the where param from currentData\n",
-                        "param": [
-                            {
-                                "type": "Object",
-                                "name": "where"
-                            }
-                        ],
-                        "text": "remove",
-                        "desc": "Removes the row defined by the where param from currentData\n",
-                        "url": "bbn-cp\/mixins\/list\/methods\/remove"
-                    },
-                    {
-                        "name": "observerClear",
-                        "description": "The called method on the switching to false of the \"observer Dirty\" property value\n",
-                        "param": [
-                            {
-                                "type": "Object",
-                                "name": "obs"
-                            }
-                        ],
-                        "fires": [
-                            {
-                                "name": "observationTower.observerClear"
-                            }
-                        ],
-                        "text": "observerClear",
-                        "desc": "The called method on the switching to false of the \"observer Dirty\" property value\n",
-                        "url": "bbn-cp\/mixins\/observer\/methods\/observerClear"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-row-expansion",
-                "lastmod": 1752461520,
-                "url": "bbn-cp\/component\/table-row-expansion\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-row-footer",
-                "lastmod": 1752461558,
-                "url": "bbn-cp\/component\/table-row-footer\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-row-full",
-                "lastmod": 1752461486,
-                "url": "bbn-cp\/component\/table-row-full\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
-                    }
-                ],
-                "mixins": []
-            },
-            {
-                "text": "table-row-group",
-                "lastmod": 1752461453,
-                "url": "bbn-cp\/component\/table-row-group\/overview",
-                "props": [],
-                "methods": [
-                    {
-                        "name": "getPopup",
-                        "description": "Opens the closest object popup.\n",
-                        "return": [
-                            {
-                                "type": "Object"
-                            }
-                        ],
-                        "text": "getPopup",
-                        "desc": "Opens the closest object popup.\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/getPopup"
-                    },
-                    {
-                        "name": "confirm",
-                        "description": "Opens a confirmation from the closest popup\n",
-                        "text": "confirm",
-                        "desc": "Opens a confirmation from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/confirm"
-                    },
-                    {
-                        "name": "alert",
-                        "description": "Opens an alert from the closest popup\n",
-                        "text": "alert",
-                        "desc": "Opens an alert from the closest popup\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/alert"
-                    },
-                    {
-                        "name": "post",
-                        "description": "Executes bbn.fn.post\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "Promise"
-                            }
-                        ],
-                        "text": "post",
-                        "desc": "Executes bbn.fn.post\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/post"
-                    },
-                    {
-                        "name": "postOut",
-                        "description": "Executes bbn.fn.postOut\n",
-                        "see": [
-                            {
-                                "name": "{@link"
-                            }
-                        ],
-                        "todo": [
-                            "Stupid idea, it should be removed."
-                        ],
-                        "return": [
-                            {
-                                "type": "void"
-                            }
-                        ],
-                        "text": "postOut",
-                        "desc": "Executes bbn.fn.postOut\n",
-                        "url": "bbn-cp\/mixins\/basic\/methods\/postOut"
                     }
                 ],
                 "mixins": []
             },
             {
                 "text": "tabs",
-                "lastmod": 1752461400,
-                "url": "bbn-cp\/component\/tabs\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/tabs",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -36412,16 +35148,16 @@
             },
             {
                 "text": "terminal",
-                "lastmod": 1752461388,
-                "url": "bbn-cp\/component\/terminal\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/terminal",
                 "props": [],
                 "methods": [],
                 "mixins": []
             },
             {
                 "text": "textarea",
-                "lastmod": 1752461374,
-                "url": "bbn-cp\/component\/textarea\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/textarea",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -36597,8 +35333,8 @@
             },
             {
                 "text": "timepicker",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/timepicker\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/timepicker",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -36894,8 +35630,8 @@
             },
             {
                 "text": "timer",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/timer\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/timer",
                 "props": [
                     {
                         "type": "props",
@@ -37103,8 +35839,8 @@
             },
             {
                 "text": "timewheel",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/timewheel\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/timewheel",
                 "props": [
                     {
                         "type": "String",
@@ -37148,6 +35884,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -37587,8 +36332,8 @@
             },
             {
                 "text": "toolbar",
-                "lastmod": 1752461356,
-                "url": "bbn-cp\/component\/toolbar\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/toolbar",
                 "props": [
                     {
                         "type": "props",
@@ -37716,8 +36461,8 @@
             },
             {
                 "text": "tooltip",
-                "lastmod": 1752461127,
-                "url": "bbn-cp\/component\/tooltip\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/tooltip",
                 "props": [
                     {
                         "type": "props",
@@ -37914,8 +36659,8 @@
             },
             {
                 "text": "tracks",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/tracks\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/tracks",
                 "props": [
                     {
                         "type": "String",
@@ -37959,6 +36704,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -38626,8 +37380,8 @@
             },
             {
                 "text": "tree",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/tree\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/tree",
                 "props": [
                     {
                         "type": "String",
@@ -38671,6 +37425,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -39482,8 +38245,8 @@
             },
             {
                 "text": "tree-input",
-                "lastmod": 1752462588,
-                "url": "bbn-cp\/component\/tree-input\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/tree-input",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -39626,8 +38389,8 @@
             },
             {
                 "text": "treedown",
-                "lastmod": 1752461104,
-                "url": "bbn-cp\/component\/treedown\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/treedown",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -39706,6 +38469,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -40112,8 +38884,8 @@
             },
             {
                 "text": "treemenu",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/treemenu\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/treemenu",
                 "props": [
                     {
                         "type": "props",
@@ -40404,8 +39176,8 @@
             },
             {
                 "text": "upload",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/upload\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/upload",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -41249,8 +40021,8 @@
             },
             {
                 "text": "values",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/values\/overview",
+                "lastmod": 1762450059,
+                "url": "bbn-cp\/component\/values",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -41417,8 +40189,8 @@
             },
             {
                 "text": "video",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/video\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/video",
                 "props": [
                     {
                         "type": "props",
@@ -41639,8 +40411,8 @@
             },
             {
                 "text": "vlist",
-                "lastmod": 1752461077,
-                "url": "bbn-cp\/component\/vlist\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/vlist",
                 "props": [
                     {
                         "type": "props",
@@ -41785,8 +40557,8 @@
             },
             {
                 "text": "wheel",
-                "lastmod": 1752461014,
-                "url": "bbn-cp\/component\/wheel\/overview",
+                "lastmod": 1754016670,
+                "url": "bbn-cp\/component\/wheel",
                 "props": [
                     {
                         "type": "(String|Number)",
@@ -41865,6 +40637,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",
@@ -42324,8 +41105,8 @@
             },
             {
                 "text": "widget",
-                "lastmod": 1752978607,
-                "url": "bbn-cp\/component\/widget\/overview",
+                "lastmod": 1755844434,
+                "url": "bbn-cp\/component\/widget",
                 "props": [
                     {
                         "type": "props",
@@ -42871,8 +41652,8 @@
             },
             {
                 "text": "window",
-                "lastmod": 1752460311,
-                "url": "bbn-cp\/component\/window\/overview",
+                "lastmod": 1755844434,
+                "url": "bbn-cp\/component\/window",
                 "props": [
                     {
                         "type": "props",
@@ -43263,11 +42044,6 @@
                 "desc": "Retrieves a component in the document based on its id."
             },
             {
-                "text": "hash",
-                "url": "bbn-cp\/function\/hash",
-                "desc": "Returns a unique identifier from any type of value (hashes only simple objects and arrays)"
-            },
-            {
                 "text": "immunizeValue",
                 "url": "bbn-cp\/function\/immunizeValue",
                 "desc": null
@@ -43280,7 +42056,7 @@
             {
                 "text": "isComponent",
                 "url": "bbn-cp\/function\/isComponent",
-                "desc": "Returns true if the given argument is component, under the form of a bbnSchema object, an HTML element or directly a component"
+                "desc": "Returns true if the given argument is component, under the form of a bbnNode object, an HTML element or directly a component"
             },
             {
                 "text": "isTag",
@@ -43874,6 +42650,12 @@
                 "text": "input"
             },
             {
+                "name": "keepCool",
+                "props": [],
+                "methods": [],
+                "text": "keepCool"
+            },
+            {
                 "name": "keynav",
                 "props": [],
                 "methods": [],
@@ -43924,6 +42706,15 @@
                         "text": "searchPlaceholder",
                         "desc": "Sets the placeholder in the search field\n",
                         "url": "bbn-cp\/mixins\/list\/props\/searchPlaceholder"
+                    },
+                    {
+                        "type": "Number",
+                        "default": "1",
+                        "name": "searchMinLength",
+                        "description": "",
+                        "text": "searchMinLength",
+                        "desc": "",
+                        "url": "bbn-cp\/mixins\/list\/props\/searchMinLength"
                     },
                     {
                         "type": "String",

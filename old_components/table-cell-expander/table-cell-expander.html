@@ -1,0 +1,8 @@
+<div :class="[{'bbn-table-cell-expander-opened': isExpanded}, cellClass]"
+     :rowspan="expanderRowspan">
+  <div @click="toggleExpanded"
+       class="bbn-table-cell-expander-container bbn-lg bbn-p bbn-unselectable bbn-c">
+    <i class="nf nf-oct-triangle_right bbn-unselectable bbn-table-cell-expander-icon"
+       tabindex="0"/>
+  </div>
+</div>

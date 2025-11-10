@@ -1,0 +1,53 @@
+<div :class="[cellClass, {
+      'bbn-header': isAggregated,
+    }]"
+    :style="cellStyle">
+  <!-- Group lines just have the cell with the expander and a single big cell -->
+  <bbn-table-cell-expander :source="source.data"
+                           :index="0"
+                           :row-index="index"
+                           :column="table.currentColumns[0]"
+                           :class="[cellClass, (table.currentColumns[0].fixed ? ' ' + cssRuleName + ' bbn-table-fixed-cell bbn-table-fixed-cell-left' : '')]"
+                           :style="cellStyle"/>
+  <!-- WHEN THERE ARE FIXED COLUMNS THE GROUP CELL SHOULD BE IN THE FIXED PART -->
+  <bbn-table-cell bbn-if="table.lastFixedIndex > -1"
+                  :source="source.data"
+                  :index="group"
+                  :row-index="index"
+                  :column="table.cols[group]"
+                  :class="[cellClass, table.currentColumns[1].fixed ? 'bbn-table-fixed-cell bbn-table-cell-left' : '']"
+                  :colspan="table.lastFixedIndex > 0 ? table.lastFixedIndex + 1 : undefined"
+                  :style="{
+                    left: table.currentColumns[1].left !== undefined ? table.currentColumns[1].left + 'px' : 'auto',
+                    width: 'auto',
+                    borderRight: '0px',
+                    overflow: 'unset'
+                  }"
+                  :component="table.cols[group].component"
+                  :class="[cellClass, {'bbn-spadding': !table.cols[group].component}]">
+    <slot/>
+  </bbn-table-cell>
+  <bbn-table-cell bbn-if="table.lastFixedIndex > -1"
+                  :source="source.data"
+                  :index="group"
+                  :row-index="index"
+                  :column="table.currentColumns[0]"
+                  :class="cellClass"
+                  :colspan="table.currentColumns.length - (table.lastFixedIndex+1)"
+                  :style="{
+                    width: 'auto',
+                    borderRight: '0px',
+                    overflow: 'unset'
+                  }"/>
+  <bbn-table-cell bbn-else
+                  :source="source.data"
+                  :index="group"
+                  :row-index="index"
+                  :column="table.cols[group]"
+                  :colspan="table.currentColumns.length - 1"
+                  :component="table.cols[group].component"
+                  style="border-left: 0px"
+                  :class="cellClass">
+    <slot/>
+  </bbn-table-cell>
+</div>

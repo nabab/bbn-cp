@@ -121,22 +121,6 @@ import bbnCpStack from "./components/stack/stack.js";
 import bbnCpStreamSearch from "./components/stream-search/stream-search.js";
 import bbnCpSwitch from "./components/switch/switch.js";
 import bbnCpTable from "./components/table/table.js";
-import bbnCpTableCell from "./components/table-cell/table-cell.js";
-import bbnCpTableCellAggregate from "./components/table-cell-aggregate/table-cell-aggregate.js";
-import bbnCpTableCellButtons from "./components/table-cell-buttons/table-cell-buttons.js";
-import bbnCpTableCellEditor from "./components/table-cell-editor/table-cell-editor.js";
-import bbnCpTableCellExpander from "./components/table-cell-expander/table-cell-expander.js";
-import bbnCpTableCellMenu from "./components/table-cell-menu/table-cell-menu.js";
-import bbnCpTableCellSelector from "./components/table-cell-selector/table-cell-selector.js";
-import bbnCpTableHeadTitle from "./components/table-head-title/table-head-title.js";
-import bbnCpTableHeadGroup from "./components/table-head-group/table-head-group.js";
-import bbnCpTableDots from "./components/table-dots/table-dots.js";
-import bbnCpTableRow from "./components/table-row/table-row.js";
-import bbnCpTableRowAggregate from "./components/table-row-aggregate/table-row-aggregate.js";
-import bbnCpTableRowExpansion from "./components/table-row-expansion/table-row-expansion.js";
-import bbnCpTableRowFooter from "./components/table-row-footer/table-row-footer.js";
-import bbnCpTableRowFull from "./components/table-row-full/table-row-full.js";
-import bbnCpTableRowGroup from "./components/table-row-group/table-row-group.js";
 import bbnCpTabs from "./components/tabs/tabs.js";
 import bbnCpTextarea from "./components/textarea/textarea.js";
 import bbnCpTimepicker from "./components/timepicker/timepicker.js";
@@ -241,22 +225,6 @@ bbn.cp.toDefine = [
   bbnCpStreamSearch,
   bbnCpSwitch,
   bbnCpTable,
-  bbnCpTableCell,
-  bbnCpTableCellAggregate,
-  bbnCpTableCellButtons,  
-  bbnCpTableCellEditor,
-  bbnCpTableCellExpander,
-  bbnCpTableCellMenu,
-  bbnCpTableCellSelector,
-  bbnCpTableHeadTitle,
-  bbnCpTableHeadGroup,
-  bbnCpTableDots,
-  bbnCpTableRow,
-  bbnCpTableRowAggregate,
-  bbnCpTableRowExpansion,
-  bbnCpTableRowFooter,
-  bbnCpTableRowFull,
-  bbnCpTableRowGroup,
   bbnCpTabs,
   bbnCpTextarea,
   bbnCpTimepicker,

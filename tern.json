@@ -36,11 +36,6 @@
                 "!url": "https:\/\/bbn.io\/bbn-cp\/function\/getComponent",
                 "!doc": "Retrieves a component in the document based on its id."
             },
-            "hash": {
-                "!type": "fn() -> mixed",
-                "!url": "https:\/\/bbn.io\/bbn-cp\/function\/hash",
-                "!doc": "Returns a unique identifier from any type of value (hashes only simple objects and arrays)"
-            },
             "immunizeValue": {
                 "!type": "fn() -> mixed",
                 "!url": "https:\/\/bbn.io\/bbn-cp\/function\/immunizeValue",
@@ -54,7 +49,7 @@
             "isComponent": {
                 "!type": "fn() -> mixed",
                 "!url": "https:\/\/bbn.io\/bbn-cp\/function\/isComponent",
-                "!doc": "Returns true if the given argument is component, under the form of a bbnSchema object, an HTML element or directly a component"
+                "!doc": "Returns true if the given argument is component, under the form of a bbnNode object, an HTML element or directly a component"
             },
             "isTag": {
                 "!type": "fn() -> mixed",
