@@ -1,7 +1,5 @@
 import bbnData from "../Data.js";
-import propagateDependencyChanges from "../../Html/private/propagateDependencyChanges.js";
 import queueUpdate from "../../../functions/queueUpdate.js";
-import initResults from "../../Html/private/initResults.js";
 
 const getFn = function(watcher, lev, lastUpdate) {
   return () => {
@@ -9,6 +7,19 @@ const getFn = function(watcher, lev, lastUpdate) {
   };
 };
 
+const getAllParents = function(dataObj, parents = []) {
+  const refs = dataObj?.refs || [];
+  refs.forEach(r => {
+    if (r.parent) {
+      if (!parents.includes(r.parent)) {
+        parents.push(r.parent);
+        getAllParents(r.parent, parents);
+      }
+    }
+  });
+
+  return parents;
+};
 /**
  * Update all the components linked to the data object
  * @param {Array} path
@@ -28,15 +39,13 @@ bbnData.prototype.dataUpdate = function(path) {
   const propagation = [];
   const toPropagate = [];
   const impacted = this.dataImpacted(path, this.lastUpdate);
-  let num = bbn.cp.numTicks;
+  let num = bbn.cp.numTicks + 1;
   const deps = [];
   this.lastUpdate = num;
-  let root = this.root;
-  while (root?.parent) {
-    root.parent.lastSubUpdate = num;
-    root = root.parent.refs[root.parent.refs.length-1];
-  }
-
+  const parents = getAllParents(this);
+  parents.forEach(p => {
+    p.lastSubUpdate = num;
+  });
 
   if (path) {
     deps.push(...(this.deps[path] || []));
@@ -57,8 +66,7 @@ bbnData.prototype.dataUpdate = function(path) {
       }
     }
   });
-  bbnData.propagateDependencyChanges(toPropagate);
-
+  bbnData.propagate(toPropagate);
   impacted.forEach(it => {
     const bits = it.path.slice();
     let level = 0;
@@ -67,8 +75,9 @@ bbnData.prototype.dataUpdate = function(path) {
         const watcher = it.component.$watcher[bits.join('.')];
         todo.push({
           component: it.component,
-          fn: getFn(watcher, level, this.lastUpdate),
-          num
+          element: watcher,
+          level,
+          num: bbn.cp.numTicks
         });
       }
       bits.pop();

@@ -69,13 +69,22 @@ export default {
           idx = this.views.length;
         }
 
-        const props = bbn.fn.extendOut({idx}, cp.bbnSchema.props);
+        const props = bbn.fn.extendOut({idx}, cp.bbnNode.props);
         this.add(props, idx);
       }
 
       cp.isRegistered = true;
       if (!cp.routerUid) {
         cp.routerUid = this.views[idx].uid;
+      }
+
+      if (this.db) {
+        this.db.select('containers', ['manual', 'image'], {url: this.views[idx].url}).then(thumb => {
+          this.thumbnails[cp.routerUid] = bbn.cp.immunizeValue(thumb);
+        });
+      }
+      else {
+        bbn.fn.warning("KKKKKKKKK")
       }
 
       this.numRegistered++;

@@ -164,13 +164,13 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
 
     /** @var {String} name The attribute's real name */
     let tmp = a.indexOf(':') === 0 ? a.substr(1) : a;
-    const name = tmp.indexOf('bbn-') === 0 ? tmp : (!isSVG && (tmp.indexOf('-') > -1) ? bbn.fn.camelize(tmp) : tmp);
+    const name = (tmp.indexOf('bbn-') === 0) || (tmp.indexOf('data-') === 0) ? tmp : (!isSVG && (tmp.indexOf('-') > -1) ? bbn.fn.camelize(tmp) : tmp);
     if (res.attr[name] !== undefined) {
       bbn.fn.warning(bbn._("The attribute %s can't be defined more than once (check %s)", name, componentName));
       return;
     }
     // create the attribute object
-    if (!['bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else', 'bbn-forget', 'bbn-model', 'bbn-bind', 'bbn-slot'].includes(a)) {
+    if (!['bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else', 'bbn-forget', 'bbn-model', 'bbn-bind', 'bbn-slot', 'bbn-var-names', 'bbn-var-values'].includes(a)) {
       res.attr[name] = bbn.fn.createObject({
         id: idx + '-' + name
       });
@@ -184,6 +184,8 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
     // Special attributes
     else if (a.indexOf('bbn-') === 0) {
       switch (a) {
+        case 'bbn-var-names':
+          break;
         case 'bbn-for':
           if (attr['bbn-elseif'] || attr['bbn-else']) {
             throw new Error(bbn._("bbn-for can't be used with bbn-else-if or bbn-else (check %s)", componentName));
@@ -328,6 +330,18 @@ export default function analyzeElement(ele, inlineTemplates, idx, componentName,
             running: false,
             num: 0,
             type:  null
+          });
+          break;
+        case 'bbn-var-values':
+          const idx = attr.indexOf('bbn-var-names');
+          if (idx === -1) {
+            throw new Error(bbn._("bbn-var-values must be used with bbn-var-names (check %s)", componentName));
+          }
+          let names = ele.getAttribute('bbn-var-names').trim().split(",");
+          res.vars = bbn.fn.createObject({
+            id: res.id + '-vars',
+            exp: value,
+            names: names.map(n => n.trim())
           });
           break;
         default:

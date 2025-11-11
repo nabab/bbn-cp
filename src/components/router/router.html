@@ -11,7 +11,7 @@
                 :collapsible="collapsible"
                 :full-size="scrollContent"
                 bbn-forget="!splittable"
-                :class="isVisual && !visualShowAll ? 'bbn-flex-fill' : ''"
+                :class="isVisual ? 'bbn-flex-fill' : ''"
                 ref="topSplitter">
     <bbn-pane :scrollable="false"
               bbn-forget="!splittable"
@@ -32,35 +32,26 @@
               flexDirection: flexDirectionStyle
             }">
         <!-- VISUAL MODE -->
-        <bbn-scroll class="bbn-router-scroller"
-                    axis="y"
-                    :scrollable="visualShowAll"
-                    :style="{
-                      overflow: 'auto',
-                      height: visualShowAll || ['left', 'right'].includes(visualOrientation) ? '100%' : 'auto',
-                      width: visualShowAll || !['left', 'right'].includes(visualOrientation) ? '100%' : 'auto',
-                    }"
-                    bbn-if="isVisual">
-          <div class="bbn-w-100 bbn-router-visual"
+        <div class="bbn-router-visual"
               :style="visualStyle"
-              bbn-if="visualList.length > 1"
+            bbn-if="isVisual && shortVisualList.length"
               ref="visualRouter"
-              :tabindex="visualShowAll ? 0 : -1">
+            tabindex="-1">
             <div bbn-if="views.length > numVisuals"
                 :class="'bbn-bg-black bbn-white bbn-p bbn-radius bbn-sshadow' + (isMobile ? '' : ' bbn-container-ratio')"
-                style="order: 1;"
-                @click="visualShowAll = !visualShowAll">
+              :style="{order: 1}"
+              @click="visualShowAll = true">
               <div class="bbn-100 bbn-middle bbn-flex">
                 <div :class="{'bbn-block': true, 'bbn-xxxl': !isMobile, 'bbn-xxl': isMobile}">
-                  <i :class="'nf nf-md-' + (visualShowAll ? 'minus' : 'plus') + '_thick'"/>
-                </div>
+                <i class="nf nf-md-plus_thick"/>
               </div>
             </div>
-            <div bbn-for="(a, i) in visualList"
+          </div>
+          <div bbn-for="(a, i) in shortVisualList"
+                 :ref="'visualListItems-' + i"
                 :key="a.uid"
-                :style="{order: i + 2}"
-                :class="'bbn-sshadow bbn-radius' + (isMobile ? '' : ' bbn-container-ratio')"
-                bbn-show="(visualShowAll || a.visible) && (a.idx !== selected)">
+              :style="{order: i + 2}"
+                :class="'bbn-sshadow bbn-radius' + (isMobile ? '' : ' bbn-container-ratio')">
               <div class="bbn-overlay bbn-flex-height">
                 <!-- Thumbnail image -->
                 <div :class="['bbn-transition-bcolor', 'bbn-b', 'bbn-xspadding', {
@@ -68,29 +59,29 @@
                       'bbn-flex-fill': isMobile && (selected !== a.idx)
                     }]"
                     :style="{
-                      backgroundColor: views[a.idx]?.bcolor || bcolor,
-                      color: views[a.idx]?.fcolor || fcolor
+                      backgroundColor: a.bcolor || bcolor,
+                      color: a.fcolor || fcolor
                     }">
-                  <div :class="{'bbn-flex-fill': !isMobile || views[a.idx]?.selected, 'bbn-vmiddle': true}">
-                    <bbn-icon bbn-if="views[a.idx]?.icon"
+                  <div :class="{'bbn-flex-fill': !isMobile || a.selected, 'bbn-vmiddle': true}">
+                    <bbn-icon bbn-if="a.icon"
                               class="bbn-right-sspace bbn-lg"
-                              :content="views[a.idx]?.icon"/>
-                    <span bbn-text="views[a.idx]?.label || ''"
+                              :content="a.icon"/>
+                    <span bbn-text="a.label || ''"
                           :class="['bbn-p', {
-                            'bbn-router-visual-title': isMobile && !views[a.idx]?.selected,
-                            'bbn-ellipsis': isMobile && views[a.idx]?.selected,
-                            'bbn-right-padding': isMobile && views[a.idx]?.selected,
+                            'bbn-router-visual-title': isMobile && !a.selected,
+                            'bbn-ellipsis': isMobile && a.selected,
+                            'bbn-right-padding': isMobile && a.selected,
                           }]"
                           style="overflow: hidden"
                           :tabindex="isMobile ? -1 : null"
                           @click="getContainer(a.idx).show()"/>
                   </div>
                 </div>
-                <div :class="['bbn-flex-fill', {'bbn-middle': !views[a.idx]?.thumbnail}]">
-                  <img :src="views[a.idx]?.thumbnail"
+                <div :class="['bbn-flex-fill', {'bbn-middle': !thumbnails[a.uid]}]">
+                  <img :src="thumbnails[a.uid].image"
                       style="width: 100%; max-height: 100%; height: auto"
                       class="bbn-router-thumbnail"
-                      bbn-if="views[a.idx]?.thumbnail">
+                      bbn-if="thumbnails[a.uid]">
                   <div bbn-else
                       class="bbn-block">
                     <i class="nf nf-md-camera_off_outline bbn-xxxxl"/>
@@ -105,7 +96,7 @@
                     <transition name="fade">
                       <div class="bbn-bottom-left bbn-w-100"
                           bbn-show="isOverThumb === a.uid"
-                          bbn-if="!views[a.idx]?.fixed && (selected !== a.idx)">
+                          bbn-if="!a.fixed && (selected !== a.idx)">
                         <!-- Semi-transparent dark layer these buttons are not used -->
                         <div class="bbn-overlay bbn-bg-black"
                             style="opacity: 0.6; color: transparent"/>
@@ -145,7 +136,6 @@
               </div>
             </div>
           </div>
-        </bbn-scroll>
         <!-- START OF BREADCRUMB -->
         <div bbn-if="isNav && breadcrumbMaster"
             ref="breadcrumb"
@@ -256,11 +246,12 @@
         <!-- START OF CONTENT -->
         <div :class="['bbn-flex-fill', {
           'bbn-router-visual-container': isVisual,
-          'bbn-right-spadding': isVisual && !visualShowAll && ['left', 'top', 'bottom'].includes(visualOrientation),
-          'bbn-left-spadding': isVisual && !visualShowAll && ['left', 'right', 'top', 'bottom'].includes(visualOrientation),
-          'bbn-bottom-spadding': isVisual && !visualShowAll && ['right', 'top', 'left', 'bottom'].includes(visualOrientation),
+          'bbn-right-spadding': isVisual && ['left', 'top', 'bottom'].includes(visualOrientation),
+          'bbn-left-spadding': isVisual && ['left', 'right', 'top', 'bottom'].includes(visualOrientation),
+          'bbn-bottom-spadding': isVisual && ['right', 'top', 'left', 'bottom'].includes(visualOrientation),
         }]"
-             bbn-forget="!scrollContent">
+             bbn-forget="!scrollContent"
+             bbn-if="db && ready">
           <slot :filter="filterIsContainer"/>
           <bbn-container bbn-for="a in views"
                           bbn-if="!a.real"
@@ -272,6 +263,120 @@
         </div>
         <!-- END OF CONTENT -->
       </div>
+      <bbn-scroll class="bbn-overlay bbn-background"
+                  axis="y"
+                  :scrollable="true"
+                  :style="{
+                    overflow: 'auto',
+                    zIndex: 1000
+                  }"
+                  bbn-if="isVisual && visualShowAll">
+        <div class="bbn-w-100 bbn-router-visual"
+            :style="visualFullStyle"
+            bbn-if="fullVisualList.length"
+            ref="visualRouter"
+            tabindex="0">
+          <div :class="'bbn-bg-black bbn-white bbn-p bbn-radius bbn-sshadow' + (isMobile ? '' : ' bbn-container-ratio')"
+              :style="{order: 1}"
+              @click="visualShowAll = false">
+            <div class="bbn-100 bbn-middle bbn-flex">
+              <div :class="{'bbn-block': true, 'bbn-xxxl': !isMobile, 'bbn-xxl': isMobile}">
+                <i class="nf nf-md-minus_thick"/>
+              </div>
+            </div>
+          </div>
+          <div bbn-for="(a, i) in fullVisualList"
+                :ref="'visualListItems-' + i"
+              :key="a.uid"
+              :style="{order: i + 2}"
+              :class="'bbn-sshadow bbn-radius' + (isMobile ? '' : ' bbn-container-ratio')"
+              bbn-if="(visualShowAll || a.visible) && (a.idx !== selected)">
+            <div class="bbn-overlay bbn-flex-height">
+              <!-- Thumbnail image -->
+              <div :class="['bbn-transition-bcolor', 'bbn-b', 'bbn-xspadding', {
+                    'bbn-flex-width': !isMobile || (selected === a.idx),
+                    'bbn-flex-fill': isMobile && (selected !== a.idx)
+                  }]"
+                  :style="{
+                    backgroundColor: a.bcolor || bcolor,
+                    color: a.fcolor || fcolor
+                  }">
+                <div :class="{'bbn-flex-fill': !isMobile || a.selected, 'bbn-vmiddle': true}">
+                  <bbn-icon bbn-if="a.icon"
+                            class="bbn-right-sspace bbn-lg"
+                            :content="a.icon"/>
+                  <span bbn-text="a.label || ''"
+                        :class="['bbn-p', {
+                          'bbn-router-visual-title': isMobile && !a.selected,
+                          'bbn-ellipsis': isMobile && a.selected,
+                          'bbn-right-padding': isMobile && a.selected,
+                        }]"
+                        style="overflow: hidden"
+                        :tabindex="isMobile ? -1 : null"
+                        @click="getContainer(a.idx).show()"/>
+                </div>
+              </div>
+              <div :class="['bbn-flex-fill', {'bbn-middle': !thumbnails[a.uid]}]">
+                <img :src="thumbnails[a.uid].image"
+                    style="width: 100%; max-height: 100%; height: auto"
+                    class="bbn-router-thumbnail"
+                    bbn-if="thumbnails[a.uid]">
+                <div bbn-else
+                    class="bbn-block">
+                  <i class="nf nf-md-camera_off_outline bbn-xxxxl"/>
+                </div>
+                <!-- When in visual mode this is the interaction layer -->
+                <div bbn-if="!isMobile"
+                    class="bbn-overlay"
+                    @click="getContainer(a.idx).show()"
+                    @mouseenter="isOverThumb = a.uid"
+                    @mouseleave="isOverThumb = false"
+                    style="z-index: 1">
+                  <transition name="fade">
+                    <div class="bbn-bottom-left bbn-w-100"
+                        bbn-show="isOverThumb === a.uid"
+                        bbn-if="!a.fixed && (selected !== a.idx)">
+                      <!-- Semi-transparent dark layer these buttons are not used -->
+                      <div class="bbn-overlay bbn-bg-black"
+                          style="opacity: 0.6; color: transparent"/>
+                      <!-- These buttons are the real ones (white) -->
+                      <div class="bbn-w-100 bbn-white">
+                        <!--div class="bbn-w-50 bbn-spadding">
+                          &nbsp;
+                          <bbn-context class="bbn-spadding bbn-iblock bbn-p"
+                                      tag="span"
+                                      :source="showMenu">
+                            <i class="nf nf-fa-bars"
+                              @click.stop="pin"/>
+                          </bbn-context>
+                        </div-->
+                        <div class="bbn-w-100 bbn-r bbn-vspadding">
+                          <span bbn-if="!bbn.fn.getField(views, 'pinned', {uid: a.uid})"
+                                @click.stop="getContainer(a.idx).pin()"
+                                class="bbn-right-xsmargin bbn-p">
+                            <i class="nf nf-oct-pin"/>
+                          </span>
+                          <span class="bbn-right-xsmargin bbn-p"
+                                @click.stop="getContainer(a.idx).close()"
+                                bbn-if="!bbn.fn.getField(views, 'pinned', {uid: a.uid})">
+                            <i class="nf nf-md-close_thick"/>
+                          </span>
+                          <span class="bbn-right-xsmargin bbn-p"
+                                @click.stop="getContainer(a.idx).unpin()"
+                                bbn-else>
+                            <i class="nf nf-md-pin_off"/>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </transition>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </bbn-scroll>
     </bbn-pane>
     <!-- START FOR SPLITTABLE MODE -->
     <bbn-pane bbn-if="!single && splittable && currentPanes.length && ready"

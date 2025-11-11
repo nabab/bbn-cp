@@ -104,6 +104,10 @@ export default class bbnLoopAttr extends bbnAttr
     this.attrSet(true);
   }
 
+  reset() {
+    this.node.nodeClean(true);
+  }
+
   attrUpdate(init, from) {
     if (this.isRunning) {
       return;
@@ -121,10 +125,20 @@ export default class bbnLoopAttr extends bbnAttr
     }
 
     this.#isRunning = true;
+    let isInLoop = false;
+    if (!bbn.cp.isInLoop && bbnData.isPropagating) {
+      isInLoop = true;
+      bbn.cp.isInLoop = true;
+      bbn.cp.numTicks++;
+    }
+
     const cp = node.component;
 
     // Evaluate the loop expression and determine its type.
     let loopValue = this.attrGetValue();
+    if (!loopValue) {
+      loopValue = [];
+    }
 
     //bbn.fn.log(["LOOP VALUE", loopValue, this.value, this.node.component.$numBuild])
     const isNumber = bbn.fn.isNumber(loopValue);
@@ -145,16 +159,51 @@ export default class bbnLoopAttr extends bbnAttr
 
     const breakFn = node.attr['bbn-break'] ? node.component[node.attr['bbn-break'].exp] : false;
     //bbn.fn.log(["IN LOOP " + node.id, root, node, node.hash, cp.$retrieveNode(node.id, node.hash), cp.$retrieveNode(node.id, node.hash)?.element]);
-    if (!root) {
-      root = node.nodeBuild(null, true);
-    }
-
     const isArray = bbn.fn.isArray(loopValue);
+    const numItems = isArray ? loopValue.length : Object.keys(loopValue).length;
     // Construct a unique hash for each iteration based on loop values.
     const oHash = node.hash ? node.hash + '-' : '';
     const elements = [];
     const lst = [];
     const oldList = this.list.splice(0);
+    if (!root) {
+      root = node.nodeBuild(null, true);
+    }
+    else if (!numItems && oldList.length) {
+      const indexes = Object.keys(cp.$nodes).filter(idx => !idx.indexOf(node.id + '-'));
+      const nodes = cp.$nodes;
+      while (indexes.length) {
+        const idx = indexes.shift();
+        const obj = nodes[idx];
+        const hash = node.hash;
+        if (hash) {
+          for (let n in obj) {
+            if ((n === hash) || !n.indexOf(hash + '-')) {
+              obj[n].off = true;
+              delete obj[n];
+            }
+          }
+        }
+        else if (obj instanceof bbnNode) {
+          nodes[idx].off = true;
+          delete nodes[idx];
+        }
+        else {
+          for (let n in obj) {
+            obj[n].off = true;
+            delete obj[n];
+          }
+        }
+      }
+
+      const r = document.createRange();
+      r.setStartAfter(node._region.start);
+      r.setEndBefore(node._region.end);
+      r.deleteContents();
+      root = node.nodeBuild(null, true);
+      oldList.splice(0);
+    }
+
     let num = 0;
     let prevElement = null;
     bbn.cp.loopLevel++;
@@ -170,14 +219,17 @@ export default class bbnLoopAttr extends bbnAttr
 
       const loopData = {[this.item]: loopValue[j], [defIndex]: j};
       let key;
-      if (node.attr?.key?.exp) {
+      if (!isArray) {
+        key = j;
+      }
+      else if (node.attr?.key?.exp) {
         key = node.attr.key.attrExec(loopData).val;
       }
       else if (loopValue[j]?.__bbnData) {
         key = loopValue[j].__bbnData.uid;
       }
       else {
-        key = bbn.cp.hash(loopData);
+        key = bbnData.hash(loopData);
       }
 
       const hash = oHash + key;
@@ -195,8 +247,8 @@ export default class bbnLoopAttr extends bbnAttr
         if (currentNode.data[defIndex] !== j) {
           currentNode.data[defIndex] = j;
           if (prevElement) {
-            currentNode.nodeMove(prevElement.bbnSchema._region.end, true);
-            bbn.fn.move(oldList, oldList.indexOf(currentNode.hash), j);
+            currentNode.nodeMove(prevElement.bbnNode._region.end, true);
+            bbn.fn.move(oldList, oldList.indexOf(currentNode.hash), j in oldList ? j : oldList.length -1);
           }
           else {
             currentNode.nodeMove(root, true);
@@ -213,7 +265,7 @@ export default class bbnLoopAttr extends bbnAttr
         const newNode = currentNode || generateNode(cloneNode(cp, node.id), cp, node.parent, node, hash, hash, loopData);
         if (prevElement) {
           if (oldList.includes(prevElement.bbnHash)) {
-            oldList.splice(oldList.indexOf(prevElement.bbnHash), 0, hash);
+            oldList.splice(oldList.indexOf(prevElement.bbnHash) + 1, 0, hash);
           }
           else {
             oldList.splice(j, 0, hash);
@@ -223,7 +275,7 @@ export default class bbnLoopAttr extends bbnAttr
           oldList.unshift(hash);
         }
 
-        ele = newNode.nodeInit(prevElement ? prevElement.bbnSchema._region.end : root);
+        ele = newNode.nodeInit(prevElement ? prevElement.bbnNode._region.end : root);
         newNode.loopNode = this;
       }
 
@@ -267,10 +319,10 @@ export default class bbnLoopAttr extends bbnAttr
             const source = nodeByValue.get(step.value);
             const target = step.before ? nodeByValue.get(step.before) : null;
             if (target) {
-              source.bbnSchema.nodeMove(target.bbnSchema._region.start);
+              source.bbnNode.nodeMove(target.bbnNode._region.start);
             }
             else {
-              source.bbnSchema.nodeMove(root.bbnSchema._region.end);
+              source.bbnNode.nodeMove(root.bbnNode._region.end);
             }
           });
           //bbn.fn.log(JSON.stringify(copy), '-------------');
@@ -310,7 +362,7 @@ export default class bbnLoopAttr extends bbnAttr
     /*
     bbn.fn.each(elements, (e, i) => {
       let next = e.nextSibling;
-      if ((e instanceof Comment) && !e.bbnSchema.isCommented) {
+      if ((e instanceof Comment) && !e.bbnNode.isCommented) {
         while (next && !next.bbnId.indexOf(e.bbnId + '-') && !next.bbnHash.indexOf(e.bbnHash) && (next.parentNode === e.parentNode)) {
           let oldNext = next;
           next = next.nextSibling;
@@ -326,6 +378,10 @@ export default class bbnLoopAttr extends bbnAttr
       }
     })
       */
+    if (isInLoop) {
+      bbn.cp.isInLoop = false;
+    }
+
     this.#isRunning = false;
   }
 }

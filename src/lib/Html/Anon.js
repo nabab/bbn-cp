@@ -67,7 +67,7 @@ export default class bbnAnonHtml extends HTMLElement
   }
 
   get $node() {
-    return this.bbnSchema;
+    return this.bbnNode;
   }
 
   get $cls() {
@@ -393,7 +393,7 @@ export default class bbnAnonHtml extends HTMLElement
       components: bbn.fn.createObject(),
       get propsData() {
         if (this.$el) {
-          return this.$el.bbnSchema?.props || {};
+          return this.$el.bbnNode?.props || {};
         }
 
         return {};
@@ -405,7 +405,7 @@ export default class bbnAnonHtml extends HTMLElement
       configurable: false
     });
 
-    //bbn.fn.log("ANON!!! ",this.$el.bbnSchema.props?.is);
+    //bbn.fn.log("ANON!!! ",this.$el.bbnNode.props?.is);
     if (!this.$el.bbnTpl) {
       this.$el.bbnTpl = bbnAnonHtml.bbnTpl;
       const tpl = this.$el.innerHTML.trim();

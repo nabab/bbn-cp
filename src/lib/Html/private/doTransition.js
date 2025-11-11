@@ -19,7 +19,7 @@ export default function doTransition(ele, type) {
 
   return new Promise((resolve, reject) => {
     requestAnimationFrame(() => {
-      const transition = ele?.bbnSchema?.transition;
+      const transition = ele?.bbnNode?.transition;
       if (!transition || !ele?.classList) {
         return resolve(true);
       }

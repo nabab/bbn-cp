@@ -246,11 +246,12 @@ export default {
             key: "screenshot_dl",
             icon: "nf nf-md-arrow_expand_all",
             action: () => {
-              this.takeScreenshot(container.currentIndex, null, null, 'blob').then(canvas => {
-                if (canvas) {
+              this.takeScreenshot(container.currentIndex, null, null, 'blob').then(blob => {
+                if (blob) {
+                  //bbn.fn.log(blob);
                   bbn.fn.downloadContent(
                     bbn.fn.replaceAll('/', '-', container.getFullCurrentURL() + '_' + bbn.fn.dateSQL(undefined, true) + '.png'),
-                    canvas
+                    blob
                   )
                 }
               });
@@ -261,6 +262,7 @@ export default {
             icon: "nf nf-md-image_multiple",
             action: () => {
               this.takeScreenshot(container.currentIndex, 400, null, 'blob').then(blob => {
+                //bbn.fn.log(blob)
                 if (blob) {
                   bbn.fn.copy(blob).then(() => {
                     appui.success();

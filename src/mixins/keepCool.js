@@ -1,5 +1,31 @@
 import bbnData from '../lib/Data.js';
 
+const run = (fn, timer, resolve, reject) => {
+  timer.to = false;
+  let out;
+  try {
+    out = fn(); // can be sync or async
+  } catch (err) {
+    // even on error, mark finish time
+    timer.time = Date.now();
+    timer.promise = false;
+    reject(err);
+    return;
+  }
+
+  Promise.resolve(out)
+    .then(res => {
+      timer.time = Date.now(); // set when fn FINISHES
+      timer.promise = false;
+      resolve(res);
+    })
+    .catch(err => {
+      timer.time = Date.now(); // also on failure
+      timer.promise = false;
+      reject(err);
+    });
+};
+
 const keepCool =  {
   data(){
     return {
@@ -19,55 +45,50 @@ const keepCool =  {
   },
   methods: {
     /**
-     * It will prevent the same action to be executed too many times in a row
-     * On the first go the timer will be defined and the action will be executed
-     * On the second go the promise will be created and returned
-     * On the consecutive goes the promise will be returned
-     * Once the promise is executed (after timeout) the promise will be recreated
-     * @method keepCool
-     * @param {Function} fn 
-     * @param {Number} idx 
-     * @param {Number} timeout 
-     * @memberof keepCoolComponent
+     * Prevents the same action from running too frequently.
+     * - If last finish was > timeout ago: run immediately.
+     * - If last finish was X < timeout ago: schedule in (timeout - X).
+     * - If already running or scheduled: return the existing promise.
      */
-    keepCool(fn, idx, timeout){
-      if ( !idx ){
+    keepCool(fn, idx, timeout) {
+      if (!idx) {
         idx = 'default';
       }
-      let t = (new Date()).getTime();
-      let delay = timeout || this.coolInterval;
-      // First go of the serie: nothing exists
-      if ( !this.coolTimers[idx] ){
+      if (!this.coolTimers) {
+        this.coolTimers = {};
+      }
+      if (!this.coolTimers[idx]) {
         this.coolTimers[idx] = {
-          time: 0,
-          promise: false
+          time: 0,        // last FINISH time
+          promise: false, // current pending/scheduled promise (if any)
+          to: false       // timer id (if scheduled)
         };
       }
-      // If there is a promise it has not yet been executed
-      if ( this.coolTimers[idx].promise ){
+
+      const now = Date.now();
+      const delay = typeof timeout === 'number' ? timeout : this.coolInterval;
+
+      // If there's already a pending/scheduled run, return its promise
+      if (this.coolTimers[idx].promise) {
         return this.coolTimers[idx].promise;
       }
 
-      // Timeout passed, function will have to be executed immediately
-      let diff = delay + this.coolTimers[idx].time - t;
-      if ( (diff > 0) && (diff <= delay) ){
-        delay = diff;
-        this.coolTimers[idx].time = t + delay;
-      }
-      else{
-        delay = 0;
-        this.coolTimers[idx].time = t;
-      }
-      this.coolTimers[idx].promise = new Promise(resolve => {
-        setTimeout(() => {
-          let r = fn();
-          this.coolTimers[idx].time = (new Date()).getTime();
-          resolve(r);
-          this.coolTimers[idx].promise = false;
-        }, delay);
+      // Time remaining until we can run again, based on FINISH time
+      const wait = Math.max(0, (this.coolTimers[idx].time + delay) - now);
+
+      // Schedule or run immediately, and return the shared promise
+      //bbn.fn.log("Executing keepCoolExec with delay " + delay + " for idx " + idx + ' on ' + this.$options.name);
+      // Create one shared promise for this run (scheduled or immediate)
+      this.coolTimers[idx].promise = new Promise((resolve, reject) => {
+        if (delay && delay > 0) {
+          this.coolTimers[idx].to = setTimeout(() => run(fn, this.coolTimers[idx], resolve, reject), delay);
+        } else {
+          run(fn, this.coolTimers[idx], resolve, reject);
+        }
       });
+
       return this.coolTimers[idx].promise;
-    }
+    },
   }
 };
 

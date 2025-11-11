@@ -12,23 +12,15 @@ export default function queueUpdate(...items) {
       item.num = bbn.cp.numTicks;
     }
 
-    if (item.element) {
-      if (item.component.$isDestroyed) {
-        continue;
-      }
-
-      if (item.element) {
-        item.element.setLastRequest();
-      }
-
-      const idx = bbn.fn.search(bbn.cp.queue, a => a.element === item.element);
-      if (idx === -1) {
-        bbn.cp.queue.push(item);
-      }
+    if (item.component.$isDestroyed) {
+      continue;
     }
-    else {
-      bbn.cp.queue.push(item);
+
+    if (item.element?.setLastRequest) {
+      item.element.setLastRequest();
     }
+
+    bbn.cp.queue.push(item);
   }
 
   bbn.cp.startTick();

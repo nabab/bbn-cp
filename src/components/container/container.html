@@ -30,8 +30,8 @@
               'bbn-flex-fill': isMobile && !currentSelected
             }]"
             :style="{
-              backgroundColor: bcolor || router?.bcolor,
-              color: fcolor || router?.fcolor
+              backgroundColor: currentBcolor || router?.bcolor,
+              color: currentFcolor || router?.fcolor
             }">
           <div :class="{'bbn-flex-fill': !isMobile || currentSelected, 'bbn-vmiddle': true}">
             <bbn-context bbn-if="isVisible"

@@ -1,4 +1,3 @@
-import propagateDependencyChanges from "./Html/private/propagateDependencyChanges.js";
 import updateWatcher from "./Html/private/updateWatcher.js";
 import bbnData from "./Data.js";
 
@@ -58,14 +57,6 @@ export default class bbnComputed {
     this.#component = cp;
     // Check if name is a string.
     bbn.fn.checkType(name, String);
-    if (cp.$isPropNative(name)) {
-      if (cp.tagName === 'BBN-ANON') {
-        bbn.fn.log(cp);
-      }
-
-      throw new Error(`The computed ${name} is already defined in the HTML prototype of the component ${cp.tagName}`);
-    }
-
     this.#name = name;
     // Check if getter is a function.
     bbn.fn.checkType(getter, Function);
@@ -129,6 +120,9 @@ export default class bbnComputed {
    * @param {boolean} [force=false] - Whether to force the update.
    */
   computedUpdate(force = false) {
+    if (this.name === 'tiersTxtVal') {
+      bbn.fn.log("FORCE UPDATE TIERS");
+    }
     // If the component is destroyed, return.
     if (this.#component.$isDestroyed) {
       return;
@@ -137,6 +131,9 @@ export default class bbnComputed {
     // If not forced and the computed property has been updated more recently than the component, return.
     if (!force && this.lastUpdate && (this.lastRequest <= this.lastUpdate)) {
       return;
+    }
+    if (this.name === 'tiersTxtVal') {
+      bbn.fn.log("FORCE UPDATE TIERS2");
     }
 
     let forceUpdate = false;
@@ -346,8 +343,8 @@ export default class bbnComputed {
         /*
         else if (bbn.cp.queue.includes(_t)) {
           let idx = bbn.cp.queue.indexOf(_t);
-          bbn.cp.queue.splice(idx, 1);
-          _t.computedUpdate(true);
+            bbn.cp.queue.splice(idx, 1);
+            _t.computedUpdate(true);
         }*/
 
 
@@ -408,7 +405,7 @@ export default class bbnComputed {
       this.#val = value;
 
       // Update the computed property's watcher and propagate any dependency changes
-      bbnData.propagateDependencyChanges(this.#component, this.#name);
+      bbnData.propagate(this.#component, this.#name);
       updateWatcher(this.#component, this.#name);
 
     }

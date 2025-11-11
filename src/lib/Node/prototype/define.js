@@ -16,6 +16,7 @@ import bbnForgetAttr from "../../Attr/Forget.js";
 import bbnLoopAttr from "../../Attr/Loop.js";
 import bbnOnceAttr from "../../Attr/Once.js";
 import bbnSlotAttr from "../../Attr/Slot.js";
+import bbnVarsAttr from "../../Attr/Vars.js";
 import bbnPreAttr from "../../Attr/Pre.js";
 import bbnTransitionAttr from "../../Attr/Transition.js";
 import bbnBindAttr from "../../Attr/Bind.js";
@@ -26,6 +27,7 @@ const allowed = [
   'loop',
   'loopIndex',
   'loopItem',
+  'vars',
   'conditionId',
   'condition',
   'forget',
@@ -50,7 +52,7 @@ bbnNode.prototype.nodeDefine = function(node, data) {
   Object.defineProperty(this, 'parent', {
     writable: false,
     configurable: false,
-    value: parentId ? (parentId === '0' ? cp.$internal : parent.bbnSchema) : null
+    value: parentId ? (parentId === '0' ? cp.$internal : parent.bbnNode) : null
   });
   */
 
@@ -136,7 +138,7 @@ bbnNode.prototype.nodeDefine = function(node, data) {
           });
         }
       }
-      else if (['condition', 'forget', 'loop', 'once', 'pre', 'transition', 'text', 'bind', 'slot'].includes(a)) {
+      else if (['condition', 'forget', 'loop', 'once', 'pre', 'transition', 'text', 'bind', 'vars', 'slot'].includes(a)) {
         let v;
         switch (a) {
           case 'condition':
@@ -147,6 +149,9 @@ bbnNode.prototype.nodeDefine = function(node, data) {
             break;
           case 'loop':
             v = new bbnLoopAttr(node[a], this)
+            break;
+          case 'vars':
+            v = new bbnVarsAttr(node[a], this);
             break;
           case 'slot':
             v = new bbnSlotAttr(node[a], this)

@@ -50,8 +50,8 @@
       border-style: var(--default-border-style);
       border-collapse: collapse;
       &.bbn-table-fixed-cell{
-        position: sticky;
-        position: -webkit-sticky;
+        position: sticky !important;
+        position: -webkit-sticky !important;
         z-index: 1;
         &.bbn-table-fixed-cell-left:not(.bbn-table-fixed-cell-left-last), &.bbn-table-fixed-cell-right{
           border-right: 0px;
@@ -72,12 +72,18 @@
       &:first-of-type {
         border-left: 0px;
       }
+      > .bbn-table-cell-expander-container {
+        transition: all 0.3s ease;
+      }
+      &.bbn-table-cell-expander-opened > .bbn-table-cell-expander-container {
+        transform: rotate(90deg);
+      }
     }
     > tbody > tr > td {
       background-color: var(--default-background);
     }
     > tbody > tr {
-      min-height: 1.5rem;
+      height: 1.5rem;
       border: 0;
       &:hover{
         > td {
@@ -106,6 +112,35 @@
         &.bbn-table-fixed-cell {
           z-index: 3;
         }
+        &.bbn-table-dirty {
+          position: relative;
+        }
+        &.bbn-table-dirty:before {
+          position: absolute;
+          z-index: 5;
+          content:"\a0";
+          display:inline-block;
+          border-style:solid;
+          border-width: 3px;
+          height: 0px;
+          width: 0px;
+          top: 0px;
+          left: 0px;
+          border-color:red transparent transparent red;
+        }
+        > .bbn-table-dirty{
+          width:0px;
+          height:0px;
+          border-style:solid;
+          border-width: 3px;
+          border-color:red transparent transparent red;
+          padding:0;
+        }
+        > .bbn-table-dirty:before{
+          content:"\a0";
+          display:inline-block;
+          width:0;
+        }
         overflow: hidden;
         box-sizing: border-box;
         border-top: 0px;
@@ -121,20 +156,6 @@
               color: red;
               outline: 0;
             }
-          }
-          .bbn-table-dirty{
-            width:0px;
-            height:0px;
-            border-style:solid;
-            border-width: 3px;
-            border-color:red transparent transparent red;
-            padding:0;
-          }
-          .bbn-table-dirty:before{
-            content:"\a0";
-            display:inline-block;
-            width:0;
-            float: left;
           }
         }
         &.bbn-buttons-flex{

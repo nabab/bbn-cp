@@ -1,7 +1,7 @@
-import bbn from '@bbn/bbn';
 import bbnAttr from '../lib/Attr.js';
 import initResults from '../lib/Html/private/initResults.js';
 import queueUpdate from './queueUpdate.js';
+import elements from '../components/router/_mixins/elements.js';
 
 const sorter = (a, b) => {
   if (!(a instanceof bbnAttr)) {
@@ -54,14 +54,37 @@ const sorter = (a, b) => {
   return atA < atB ? -1 : 1;
 };
 
+let fullQueueLength = 0;
+let numAttr = 0;
+let numRepeat = 0;
+let numNodeDest = 0;
+let numNodeOff = 0;
+let numCpDest = 0;
+let numWatcher = 0;
+let numCpu  = 0;
+let numFn  = 0;
+let numDone  = 0;
 async function treatQueue(num = 0, cps) {
   if (!cps) {
     cps = bbn.fn.createObject();
   }
   let isDebug = true;
+  if (!num) {
+    fullQueueLength = 0;
+    numAttr = 0;
+    numRepeat = 0;
+    numNodeDest = 0;
+    numNodeOff = 0;
+    numCpDest = 0;
+    numWatcher = 0;
+    numCpu  = 0;
+    numFn  = 0;
+    numDone  = 0;
+  }
+  fullQueueLength += bbn.cp.queue.length;
   let queueLength = bbn.cp.queue.length;
   if (queueLength) {
-    if (queueLength > 100000) {
+    if (fullQueueLength > 100000) {
       if (!isDebug) {
         isDebug = bbn.cp.numTicks;
         bbn.fn.log("SETTING DEBUG MODE", bbn.cp.queue);
@@ -78,10 +101,12 @@ async function treatQueue(num = 0, cps) {
 
     let lastElement;
     let lastNum;
-    let done;
-    let fns;
+    let done = new Map();
+    let fns = [];
     let unconditioned = [];
+    let elementsDone = [];
     let forgotten = [];
+    let chronoDiff = 0;
     const rnd = bbn.fn.randomString();
     bbn.fn.startChrono(rnd);
     queueLength = queue.length;
@@ -92,22 +117,59 @@ async function treatQueue(num = 0, cps) {
           throw new Error("Too many ticks");
         }
       }
+      if (queue.length % 20 === 0) {
+        let currentChrono = bbn.fn.getChrono(rnd) - chronoDiff;
+        if (currentChrono > 50) {
+          chronoDiff += currentChrono;
+          await bbn.fn.yieldToBrowser();
+          //await bbn.cp.nextFrame();
+        }
+      }
+
+
       const queueElement = queue.shift();
-      if (queueElement.off) {
+      if (!bbn.cp.componentsIndex.has(queueElement.component?.$cid)) {
+        continue;
+      }
+
+      if (queueElement.element) {
+        if (elementsDone.includes(queueElement.element)) {
+          continue;
+        }
+
+        elementsDone.push(queueElement.element);
+      }
+
+      const isAttr = queueElement.element instanceof bbnAttr;
+      if (isAttr) {
+        numAttr++;
+      }
+      if (isAttr && queueElement.element.node.off) {
+        numNodeOff++;
         //bbn.fn.log("ELEMENT IS DESTROYED");
         continue;
       }
-      const isAttr = queueElement.element instanceof bbnAttr;
       const isComputed = queueElement.element?.constructor?.name === 'bbnComputed';
       const isWatcher = queueElement.element?.constructor?.name === 'bbnWatcher';
+      if (isComputed) {
+        numCpu++;
+      }
+      else if (isWatcher) {
+        numWatcher++;
+      }
+      else if (!isAttr) {
+        numFn++;
+      }
       //bbn.fn.log("TREATING QUEUE: ", queueElement, queueElement.element?.name);
       const cp = queueElement.component;
       if (isAttr && queueElement.element.node.isDestroyed) {
+        numNodeDest++;
         //bbn.fn.log("ATTR IS DESTROYED: " + queueElement.element.id);
         continue;
       }
 
       if (cp?.$isDestroyed) {
+        numCpDest++;
         //bbn.fn.log("CP IS DESTROYED IsAttr ? " + isAttr + " isDestroyed ? " + (isAttr ? queueElement.element.node.isDestroyed : false));
         continue;
       }
@@ -118,11 +180,14 @@ async function treatQueue(num = 0, cps) {
         forgotten = [];
         done = new Map();
         lastElement = null;
+        elementsDone = [];
         fns = [];
+        lastNum = queueElement.num;
       }
 
       if (queueElement.element) {
         if (done.get(queueElement.element) >= queueElement.num) {
+          numDone++;
           continue;
           
         }
@@ -143,6 +208,7 @@ async function treatQueue(num = 0, cps) {
 
       if (isComputed) {
         if (lastElement?.element === queueElement.element) {
+          numRepeat++;
           //bbn.fn.log("LAST IS DONE");
           continue;
         }
@@ -229,7 +295,8 @@ async function treatQueue(num = 0, cps) {
       lastElement = queueElement;
     }
 
-    if (oneDone) {
+    if (oneDone && bbn.cp.queue.length) {
+      //await bbn.cp.nextFrame();
       //bbn.fn.log(["TREATING QUEUE: " + bbn.cp.queue.length + ' (' + num + ')', bbn.cp.queue]);
       queueLength += await treatQueue(num + 1);
     }
@@ -239,17 +306,29 @@ async function treatQueue(num = 0, cps) {
     }
 
     const duration = bbn.fn.stopChrono(rnd);
-    if (duration > 1000) {
-      bbn.fn.log("TREATING QUEUE DURATION: " + duration + " / NUMBER OF ELEMENTS IN QUEUE: " + queueLength + " / NUM TICKS: " + bbn.cp.numTicks);
+    if (duration > 1000) {//} || (fullQueueLength > 1000)) {
+      bbn.fn.log(
+        "TREATING QUEUE DURATION: " + duration 
+        + " / NUMBER OF ELEMENTS IN QUEUE: " 
+        + fullQueueLength + " / NUM TICKS: " + bbn.cp.numTicks
+        + " | ATTRS: " + numAttr
+        + " | COMPUTED: " + numCpu
+        + " | WATCHERS: " + numWatcher
+        + " | FUNCTIONS: " + numFn
+        + " | REPEATS: " + numRepeat
+        + " | DONE: " + numDone
+        + " | NODE DESTROYED: " + numNodeDest
+        + " | NODE OFF: " + numNodeOff
+        + " | CP DESTROYED: " + numCpDest
+      );
     }
   }
 
   if (!num && bbn.cp.nextQueue.length) {
-    queueLength += bbn.cp.nextQueue.length;
     queueUpdate(...bbn.cp.nextQueue.splice(0));
   }
 
-  //bbn.fn.log("FINISHED FN (" + num + ") WITH " +bbn.cp.queue.length);
+  ///bbn.fn.log("FINISHED FN (" + num + ") WITH " +bbn.cp.queue.length);
   return queueLength;
 
 }
@@ -257,7 +336,7 @@ async function treatQueue(num = 0, cps) {
  * Starts the ticking process for component updates.
  * Throws an error if the tick process is already running.
  */
-export default function startTick() {
+export default async function startTick() {
   // Check if the tick process is already initiated.
   if (bbn.cp.interval) {
     throw new Error(bbn._("The tick is already started"));
@@ -269,13 +348,16 @@ export default function startTick() {
   }
 
   bbn.cp.isRunning = true;
-  setTimeout(async () => {
-    requestAnimationFrame(async () => {
+  return new Promise((resolve) => {
+    setTimeout(async () => {
       await treatQueue();
       bbn.cp.isRunning = false;
       if (bbn.cp.queue.length || bbn.cp.nextQueue.length) {
-        bbn.cp.startTick();
+        await bbn.cp.startTick();
       }
-    });
+      else {
+        resolve(true);
+      }
+  });
   }, 0);
 }

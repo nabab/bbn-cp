@@ -1322,8 +1322,8 @@ const list = {
   },
   created() {
     if (!this.component && !this.template && this.$slots.default.length) {
-      if (this.$slots.default[0].bbnSchema.pre) {
-        this.currentTemplate = this.$slots.default[0].bbnSchema.pre.content;
+      if (this.$slots.default[0].bbnNode.pre) {
+        this.currentTemplate = this.$slots.default[0].bbnNode.pre.content;
       }
     }
 

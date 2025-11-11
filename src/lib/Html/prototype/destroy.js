@@ -8,12 +8,26 @@ bbnProtoHtml.$destroy = function() {
     return;
   }
 
-  Object.defineProperty(this, '$isDestroying', {
-    value: true,
-    writable: false,
-    configurable: false
-  });
+  this.$isDestroying = true;
 
+  const node = this.bbnNode;
+  /*
+  for (let i = bbn.cp.queue.length - 1; i >= 0; i--) {
+    if (bbn.cp.queue[i].component === this) {
+      bbn.cp.queue.splice(i, 1);
+    }
+  }
+  for (let i = 0; i < node.attributes.length; i++) {
+    if (node.attributes[i].constructor.name === 'bbnEventAttr') {
+      this.removeEventListener(node.attributes[i].name, node.attributes[i].handler, node.attributes[i].cfg);
+    }
+
+    if (node.attributes[i].constructor.name === 'bbnModelAttr') {
+      const eventName = node.attributes[i].modifiers.includes('lazy') ? 'change' : 'input';
+      this.removeEventListener(eventName, node.attributes[i].handler);
+    }
+  }
+    */
   this.bbnComponent.$components.remove(this);
   unregisterChild(this);
   this.bbnConnected = false;
@@ -66,24 +80,7 @@ bbnProtoHtml.$destroy = function() {
     this.$internal.nodeClean(true);
   }
 
-  const hasDestroyEvent = this.bbnSchema.events?.['hook:destroyed'];
-  const node = this.bbnSchema;
-  for (let i = bbn.cp.queue.length - 1; i >= 0; i--) {
-    if (bbn.cp.queue[i].component === this) {
-      bbn.cp.queue.splice(i, 1);
-    }
-  }
-
-  for (let i = 0; i < node.attributes.length; i++) {
-    if (node.attributes[i].constructor.name === 'bbnEventAttr') {
-      this.removeEventListener(node.attributes[i].name, node.attributes[i].handler, node.attributes[i].cfg);
-    }
-
-    if (node.attributes[i].constructor.name === 'bbnModelAttr') {
-      const eventName = node.attributes[i].modifiers.includes('lazy') ? 'change' : 'input';
-      this.removeEventListener(eventName, node.attributes[i].handler);
-    }
-  }
+  const hasDestroyEvent = this.bbnNode.events?.['hook:destroyed'];
 
   if (node && (node.element === this)) {
     node.element = null;
@@ -93,7 +90,7 @@ bbnProtoHtml.$destroy = function() {
   onHook(this, 'destroyed');
   if (hasDestroyEvent) {
     const destroyed = new Event('hook:destroyed');
-    this.bbnSchema.events['hook:destroyed'].handler.bind(this.bbnComponent)(destroyed);
+    this.bbnNode.events['hook:destroyed'].handler.bind(this.bbnComponent)(destroyed);
   }
   Object.defineProperty(this, '$isDestroyed', {
     value: true,
@@ -102,10 +99,4 @@ bbnProtoHtml.$destroy = function() {
   });
 
   removeComponent(this.bbnCid);
-  if (this.parentNode) {
-    this.parentNode.removeChild(this);
-  }
-  else {
-    this.remove();
-  }
 }

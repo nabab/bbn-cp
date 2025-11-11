@@ -366,7 +366,8 @@ const cpDef = {
      * @method adjustFromContainer
      * @param {HTMLElement} container
      */
-    adjustFromContainer(container){
+    adjustFromContainer(container) {
+      this.keepCool(() => {
       if (this.shouldBother && !this.dragging) {
         let prop = this.isVertical ? 'scrollTop' : 'scrollLeft';
         let ok = false;
@@ -394,6 +395,7 @@ const cpDef = {
         });
         this.overContent();
       }
+      }, 'adjustFromContainer', 25);
     },
     /**
      * @method adjustFromBar
@@ -554,15 +556,15 @@ const cpDef = {
      */
     overContent(){
       this.keepCool(() => {
-        clearTimeout(this.moveTimeout);
-        if ( !this.show ){
-          this.show = true;
+      clearTimeout(this.moveTimeout);
+      if ( !this.show ){
+        this.show = true;
+      }
+      this.moveTimeout = setTimeout(() => {
+        if (!this.isOverSlider) {
+          this.hideSlider();
         }
-        this.moveTimeout = setTimeout(() => {
-          if (!this.isOverSlider) {
-            this.hideSlider();
-          }
-        }, 500);
+      }, 500);
       }, 'overContent', 250)
     },
     /**

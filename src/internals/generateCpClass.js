@@ -66,11 +66,28 @@ export default function generateCpClass(publicClass, obj) {
 
   // Define getters for each prop on the prototype.
   if (obj.props) {
-    for (let n in obj.props) {
-      Object.defineProperty(window[publicClass].prototype, n, {
+    for (let name in obj.props) {
+      if (!/[A-Z]/.test(name)) {
+        name = bbn.fn.camelize(name);
+      }
+
+      if (name.indexOf('data-') === 0) {
+        throw new Error(bbn._("The name of the property %s in the component %s cannot start with %s", name, publicClass, 'data-'));
+      }
+
+      if (name.indexOf('aria-') === 0) {
+        throw new Error(bbn._("The name of the property %s in the component %s cannot start with %s", name, publicClass, 'aria-'));
+      }
+
+      if (name in window[publicClass].prototype) {
+        bbn.fn.warning(bbn._("The property name %s is already defined in the HTML prototype of the component %s", name, publicClass));
+        //throw new Error(bbn._("The name of the property cannot be a native property: %s", name));
+      }
+
+      Object.defineProperty(window[publicClass].prototype, name, {
         get() {
-          bbnData.addSequence(this, n);
-          return this.$props[n];
+          bbnData.addSequence(this, name);
+          return this.$props[name];
         }
       });
     }

@@ -28,12 +28,12 @@ const expToFn = (cp, loopVars, a, node, type) => {
     if (type === 'event') {
       stFn += '  const $_bbnData = {';
       bbn.fn.each(args, arg => {
-        stFn += `    ${arg}: bbn.cp.hash(${arg}),\n`;
+        stFn += `    ${arg}: bbnData.hash(${arg}),\n`;
       });
       stFn += `  };\n`;
       stFn += `  ${a.exp}\n`;
       bbn.fn.each(args, arg => {
-        stFn += `  if ($_bbnData['${arg}'] !== bbn.cp.hash(${arg})) {\n`;
+        stFn += `  if ($_bbnData['${arg}'] !== bbnData.hash(${arg})) {\n`;
         if (loopVars[arg]) {
         }
         else if (Object.hasOwn(cp, arg)) {
@@ -74,12 +74,24 @@ const expToFn = (cp, loopVars, a, node, type) => {
  * @param {HTMLElement} cp - The component instance to process.
  */
 export default function mapDependencies(cp) {
-  const elemSrc = cp.constructor === bbnAnonHtml ? cp.$el : cp.$el.constructor;
+  const elemSrc = cp.constructor === bbnAnonHtml ? cp : cp.constructor;
   // Avoid remapping if already done for the component.
   if (elemSrc.bbnMapped) {
     return;
   }
 
+  if (elemSrc.bbnMapping === undefined) {
+    Object.defineProperty(elemSrc, 'bbnMapping', {
+      value: true,
+      writable: true,
+      configurable: false
+    });
+  }
+  else {
+    return;
+  }
+ 
+  
   // Object to store loop variables for each node.
   const loopVars = {};
 
@@ -89,13 +101,25 @@ export default function mapDependencies(cp) {
     if (node.loop) {
       expToFn(cp, loopVars, node.loop, node);
       loopVars[node.id] = [
-        ...node.loop.item ? [node.loop.item] : [],
-        ...node.loop.index ? [node.loop.index] : []
+        ...(node.loop.item ? [node.loop.item] : []),
+        ...(node.loop.index ? [node.loop.index] : [])
       ];
 
       expToFn(cp, loopVars, node.loopItem, node);
       if (node.loopIndex) {
         expToFn(cp, loopVars, node.loopIndex, node);
+      }
+      if (node.attr.key) {
+        expToFn(cp, loopVars, node.attr.key, node);
+      }
+    }
+    if (node.vars) {
+      expToFn(cp, loopVars, node.vars, node);
+      if (loopVars[node.id]) {
+        loopVars[node.id].push(...node.vars.names);
+      }
+      else {
+        loopVars[node.id] = [...node.vars.names];
       }
     }
     // Process condition-related attributes.
@@ -112,11 +136,12 @@ export default function mapDependencies(cp) {
     }
 
     if (node.attr) {
-      bbn.fn.iterate(node.attr, a => {
-        if (a.exp) {
+      for (const n in node.attr) {
+        const a = node.attr[n];
+        if (a.exp && (!node.loop || (n !== 'key'))) {
           expToFn(cp, loopVars, a, node);
         }
-      });
+      }
     }
     else if (node.text?.exp) {
       node.text.exp = '`' + node.text.exp + '`';
@@ -154,6 +179,11 @@ export default function mapDependencies(cp) {
 
   Object.defineProperty(elemSrc, 'bbnMapped', {
     value: true,
+    writable: false,
+    configurable: false
+  });
+  Object.defineProperty(elemSrc, 'bbnMapping', {
+    value: false,
     writable: false,
     configurable: false
   });

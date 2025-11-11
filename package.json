@@ -1,6 +1,6 @@
 {
   "name": "@bbn/bbn-cp",
-  "version": "1.0.165",
+  "version": "1.0.164",
   "description": "A web component library with a VueJS API",
   "main": "dist/bbn-cp.js",
   "files": [
@@ -75,6 +75,7 @@
     "@lezer/highlight": "^1.2.2",
     "@lezer/lr": "^1.4.2",
     "@uiw/codemirror-extensions-color": "^4.25.2",
+    "@zumer/snapdom": "^2.0.0-dev.1",
     "acorn": "^8.15.0",
     "apexcharts": "^5.3.5",
     "codemirror-languageserver": "^1.18.1",

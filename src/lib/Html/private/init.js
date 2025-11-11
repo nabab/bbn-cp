@@ -24,7 +24,7 @@ export default function init(cp) {
 
   Object.defineProperty(cp.$options, 'propsData', {
     get() {
-      return _t.bbnSchema?.props || {};
+      return _t.bbnNode?.props || {};
     }
   });
 
@@ -134,6 +134,14 @@ export default function init(cp) {
    */
   Object.defineProperty(cp, '$numBuild', {
     value: 0,
+    writable: true,
+    configurable: true
+  });
+  /**
+   * Counts the number of times the component has been repainted through the method updateComponent
+   */
+  Object.defineProperty(cp, '$numTicks', {
+    value: bbn.cp.numTicks,
     writable: true,
     configurable: true
   });

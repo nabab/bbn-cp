@@ -337,7 +337,7 @@ export default {
      * @returns {String}
      */
     getTr(i) {
-      return this.getRef('row'+i);
+      return this.items[i]?.tr;
     },
     /**
      * Returns true if the given row has td.
@@ -375,7 +375,7 @@ export default {
       return true;
     },
     loseViewport(ele, data) {
-      if ((ele instanceof Comment) && !ele.bbnSchema.isCommented) {
+      if ((ele instanceof Comment) && !ele.bbnNode.isCommented) {
         const tmp = Array.from(ele.parentNode.childNodes).filter(a => a.tagName && !a.bbnId.indexOf(ele.bbnId + '-') && !a.bbnHash.indexOf(ele.bbnHash));
         if (tmp.length) {
           ele = tmp[0];

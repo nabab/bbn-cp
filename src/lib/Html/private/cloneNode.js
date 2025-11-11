@@ -1,5 +1,5 @@
 
-const allowed = ['id', 'args', 'attr', 'bind', 'condition', 'conditionId', 'dependencies', 'directives', 'events', 'exp', 'fn', 'forget', 'hash', 'loopIndex', 'loopItem', 'model', 'pre', 'tag', 'text', 'transition'];
+const allowed = ['id', 'args', 'attr', 'bind', 'condition', 'conditionId', 'dependencies', 'directives', 'events', 'exp', 'fn', 'forget', 'hash', 'loopIndex', 'loopItem', 'model', 'pre', 'tag', 'text', 'transition', 'vars'];
 export default function cloneNode(cp, id)
 {
   const element = cp.$currentMap[id];

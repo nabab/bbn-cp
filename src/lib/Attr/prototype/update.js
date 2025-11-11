@@ -1,5 +1,5 @@
 import bbnAttr from "../Attr.js";
-import setDataAttribute from "../private/setNoValueAttribute.js";
+import setDataAttribute from "../private/setDataAttribute.js";
 import setNoValueAttribute from "../private/setNoValueAttribute.js";
 import setSVGAttribute from "../private/setSVGAttribute.js";
 import setTransitionAttribute from "../private/setTransitionAttribute.js";
@@ -17,6 +17,9 @@ import setUndefinedAttribute from "../private/setUndefinedAttribute.js";
  */
 bbnAttr.prototype.attrUpdate = function(init) {
   if (this.name && this.node.element) {
+    if (this.node.loop) {
+      return;
+    }
     const name = this.name;
     const jsName = bbn.cp.badCaseAttributes[this.name] || this.name;
 
@@ -33,7 +36,7 @@ bbnAttr.prototype.attrUpdate = function(init) {
       }
       */
       if (node.constructor.name === 'bbnInternalNode') {
-        node = this.node.component.$el?.bbnSchema;
+        node = this.node.component.$el?.bbnNode;
         if (Object.hasOwn(node?.attr || {}, name) || Object.hasOwn(node?.bind?.value || {}, name)) {
           //return;
         }

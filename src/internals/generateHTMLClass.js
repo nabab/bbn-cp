@@ -30,7 +30,7 @@ export default function generateHtmlClass(name, extendedTag) {
       }
 
       get $node() {
-      return this.bbnSchema;
+      return this.bbnNode;
       }
 
       get $cls() {

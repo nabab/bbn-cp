@@ -1,7 +1,7 @@
 import bbnData from "../Data.js";
 
 bbnData.addSequence = function(component, name, data = null) {
-  if (!this.watchStarted) {
+  if (!this.watchStarted || bbn.env.isEnumerating) {
     return;
   }
 

@@ -9,6 +9,8 @@ export default {
        * @data {Boolean} [false] _observerReceived
        */
       _observerReceived: false,
+      items: [],
+      lastVisibleShown: null
     }
   },
   computed: {
@@ -20,39 +22,70 @@ export default {
      * @fires isExpanded
      * @returns {Array}
      */
-    items() {
-      if (!this.cols.length) {
+  },
+  methods: {
+    isRowVisible(row, index) {
+      if (this.isGroupActive) {
+        
+      }
+    },
+    /**
+     * Refresh the current data set.
+     *
+     * @method updateData
+     * @param withoutOriginal
+     * @fires _removeTmp
+     * @fires init
+     */
+    setItems() {
+      if (!this.cols.length || !this.currentData?.length) {
         return [];
       }
       // The final result
-      const cp = this;
-      let data = this.filteredData.slice();
+      let data = this.filteredData.slice().map(a => {
+        a.tr = null;
+        a.visible = !!(!this.scrollable || !!(this.groupable && this.isGroupActive) || this.groupCols[0].cols.length || this.groupCols[2].cols.length);
+        a.sequences = this.setSequences();
+        return a;
+      });
       let isGroup = this.groupable && (this.group !== false) && this.cols[this.group] && this.cols[this.group].field;
       let end = this.pageable ? this.currentLimit : this.currentData.length;
       let i = 0;
       // Aggregated
       // Paging locally
       // Grouping (and sorting) locally
-      let pos;
       if (
         isGroup &&
-        ((this.isAjax && this.serverGrouping) || (!this.isAjax && this.localGrouping)) &&
-        ((pos = bbn.fn.search(this.currentOrder, {
-          field: this.cols[this.group].field
-        })) !== 0)
+        ((this.isAjax && !this.serverGrouping) || (!this.isAjax && this.localGrouping))
       ) {
-        // First ordering the data
-        let orders = [{
-          field: this.cols[this.group].field,
-          dir: (pos > 0 ? this.currentOrder[pos].dir : 'asc')
-        }];
-        if (this.sortable && this.currentOrder.length) {
-          orders = orders.concat(JSON.parse(JSON.stringify(this.currentOrder)))
+        let pos;
+        if ((pos = bbn.fn.search(this.currentOrder, {
+          field: this.cols[this.group].field
+        })) !== 0) {
+          // First ordering the data
+          let orders = [{
+            field: this.cols[this.group].field,
+            dir: (pos > 0 ? this.currentOrder[pos].dir : 'asc')
+          }];
+          if (this.sortable && this.currentOrder.length) {
+            orders = orders.concat(JSON.parse(JSON.stringify(this.currentOrder)))
+          }
+          data = bbn.fn.multiorder(data, orders.map(item => {
+            item.field = 'data.' + item.field;
+            return item;
+          }));
         }
-        data = bbn.fn.multiorder(data, orders.map(item => {
-          item.field = 'data.' + item.field;
-          return item;
-        }));
+        let group = this.cols[this.group].field;
+        let groupIndex = -1;
+        let currentGroup;
+        data.map(a => {
+          if (a.data[group] !== currentGroup) {
+            currentGroup = a.data[group];
+            groupIndex++;
+          }
+
+          a.groupIndex = groupIndex;
+        });
       }
       // Sorting locally
       else if (this.sortable && this.currentOrder.length && (!this.serverSorting || !this.isAjax)) {
@@ -97,14 +130,7 @@ export default {
         data = data.slice(i, end);
       }
 
-      return data;
-    },
-  },
-  methods: {
-    isRowVisible(row, index) {
-      if (this.isGroupActive) {
-        
-      }
+      this.items = data;
     },
     /**
      * Refresh the current data set.
@@ -114,31 +140,38 @@ export default {
      * @fires _removeTmp
      * @fires init
      */
-    updateData(withoutOriginal) {
+    async updateData(withoutOriginal) {
       /** Mini reset?? */
+
       this.isTableDataUpdating = true;
       this.allRowsChecked = false;
       this.currentExpanded = [];
       this.editedRow = false;
       this.editedIndex = false;
-      if (this.isAjax) {
-        this.currentData = [];
-      }
-      this.$forceUpdate();
+      this.visibleRows.splice(0);
+      this.items = [];
+      this.numRowsCreated = 0;
+      this.rowsShownFinished = !this.scrollable || this.groupable;
+      await bbn.cp.nextFrame();
       //bbn.fn.log('forceupdate4');
-      return bbn.cp.mixins.list.methods.updateData.apply(this, [withoutOriginal]).then(() => {
-        if (this.currentData?.length && this.selection && this.currentSelected.length && !this.uid) {
-          this.currentSelected = [];
-        }
+      await bbn.cp.mixins.list.methods.updateData.apply(this, [withoutOriginal]);
+      if (this.currentData?.length && this.selection && this.currentSelected.length && !this.uid) {
+        this.currentSelected = [];
+      }
 
-        if (this.editable && this.currentData) {
-          this.originalData = JSON.parse(JSON.stringify(this.currentData.map(a => {
-            return a.data;
-          })));
-        }
+      if (this.editable && this.currentData) {
+        this.originalData = JSON.parse(JSON.stringify(this.currentData.map(a => {
+          return a.data;
+        })));
+      }
 
-        this.visibleRows = [];
-        this.isTableDataUpdating = false;
+      await bbn.cp.nextFrame();
+      this.isTableDataUpdating = false;
+      this.$nextTick(() => {
+        this.setItems();
+        if (!this.currentData?.length) {
+          this.rowsShownFinished = true;
+        }
       });
     }
   },
@@ -166,11 +199,12 @@ export default {
       this.currentExpanded = [];
       this.init();
     },
+    /*
     items(val){
       if (this.expanded && !this.currentExpanded.length) {
         this.currentExpanded = val.map(a => a.index);
       }
-    }
+    }*/
   }
 }
 

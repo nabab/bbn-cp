@@ -127,6 +127,7 @@ export default {
       this.initReady = true;
       if (with_data) {
         this.$once('dataloaded', () => {
+          this.ready = true;
           this.initStarted = false;
           this.$emit('init', this);
           this.resizeWidth();
@@ -137,6 +138,7 @@ export default {
       }
       else {
         this.$nextTick(() => {
+          this.ready = true;
           if (this.initStarted) {
             this.initStarted = false;
           }

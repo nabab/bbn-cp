@@ -7,7 +7,7 @@ export default class bbnOptions {
   // Define a getter for propsData.
   get propsData() {
     if (this.cp.$el) {
-      return this.cp.$el.bbnSchema?.props || {};
+      return this.cp.$el.bbnNode?.props || {};
     }
 
     return {};

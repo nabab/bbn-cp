@@ -35,7 +35,7 @@
       <node inline-template
             bbn-for="(it, i) in filteredData"
             :source="it"
-            :key="uid ? it.data[uid] : (it.key ? it.key : 'node-' + level + '-' + i)"
+            :key="uid ? it.data[uid] || it[uid] : (it.key ? it.key : 'node-' + level + '-' + i)"
             :idx="it.index"
             :component="it.component || component"
             :selectable="isSelectable(it)"
@@ -130,7 +130,7 @@
                           style="cursor: unset">
               <span @dblclick.stop="dblClickOnNode"
                     @click.stop="clickOnNode"
-                    @dragstart="startDrag"
+                    @dragstart.stop="startDrag"
                     @dragover="onDrag"
                     @dragleave="leaveDrag"
                     @drop="drop"

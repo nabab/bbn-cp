@@ -13,7 +13,7 @@ export default function setDataAttribute(node, name, v, jsName) {
 
   const ele = node.element;
   if (!node.comment && ele) {
-    ele.setAttribute(name, v);
+    ele.dataset[bbn.fn.camelize(bbn.fn.substr(name, 5))] = v;
   }
 
   return true;

@@ -32,12 +32,12 @@ export default class bbnBindAttr extends bbnAttr
       if (this.result.value) {
         for (let n in this.result.value) {
           if (n === 'style') {
-            const styleNode = (node.constructor.name === 'bbnInternalNode') && !node.component.$isRoot ? node.element.bbnSchema : node;
+            const styleNode = (node.constructor.name === 'bbnInternalNode') && !node.component.$isRoot ? node.element.bbnNode : node;
             styleNode.styles[this.uid] = this.result.value[n];
             styleNode.nodeSetStyle();
           }
           else if (n === 'class') {
-            const classNode = (node.constructor.name === 'bbnInternalNode') && !node.component.$isRoot ? node.element.bbnSchema : node;
+            const classNode = (node.constructor.name === 'bbnInternalNode') && !node.component.$isRoot ? node.element.bbnNode : node;
             classNode.classes[this.uid] = this.result.value[n];
             classNode.nodeSetStyle();
           }

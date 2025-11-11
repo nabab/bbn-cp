@@ -6,7 +6,6 @@ import createApp from "./functions/createApp.js";
 import define from "./functions/define.js";
 import fetchComponent from "./functions/fetchComponent.js";
 import getComponent from "./functions/getComponent.js";
-import hash from "./functions/hash.js";
 import immunizeValue from "./functions/immunizeValue.js";
 import initDefaults from "./functions/initDefaults.js";
 import isComponent from "./functions/isComponent.js";
@@ -199,22 +198,7 @@ const cpObj = bbn.fn.createObject({
   tagAliases: {
     'bbn-button': 'button',
     'bbn-form': 'form',
-    'bbn-frame': 'iframe',
-    'bbn-table-row': 'tr',
-    'bbn-table-row-aggregate': 'tr',
-    'bbn-table-row-expansion': 'tr',
-    'bbn-table-row-footer': 'tr',
-    'bbn-table-row-full': 'tr',
-    'bbn-table-row-group': 'tr',
-    'bbn-table-head-title': 'th',
-    'bbn-table-head-group': 'th',
-    'bbn-table-cell': 'td',
-    'bbn-table-cell-aggregate': 'td',
-    'bbn-table-cell-buttons': 'td',
-    'bbn-table-cell-editor': 'td',
-    'bbn-table-cell-expander': 'td',
-    'bbn-table-cell-menu': 'td',
-    'bbn-table-cell-selector': 'td',
+    'bbn-frame': 'iframe'
   },
   knownPrefixes: [],
   queue: [],
@@ -225,6 +209,7 @@ const cpObj = bbn.fn.createObject({
   forbidden: ['bbn-forget', 'bbn-for', 'bbn-if', 'bbn-elseif', 'bbn-else'],
   /** @var {Object} components All the components in the DOM are referenced in this object through their CID */
   componentsIndex: new Map(),
+  nextFrame: () => new Promise(requestAnimationFrame),
   addPrefix,
   addUrlAsPrefix,
   attributeChangedCallback,
@@ -232,7 +217,6 @@ const cpObj = bbn.fn.createObject({
   define,
   fetchComponent,
   getComponent,
-  hash,
   immunizeValue,
   initDefaults,
   isComponent,

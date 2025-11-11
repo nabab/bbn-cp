@@ -1,5 +1,5 @@
 /**
- * Returns true if the given argument is component, under the form of a bbnSchema object, an HTML element or directly a component
+ * Returns true if the given argument is component, under the form of a bbnNode object, an HTML element or directly a component
  * @param {Object} node 
  * @returns 
  */

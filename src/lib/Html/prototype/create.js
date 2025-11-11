@@ -17,7 +17,7 @@ bbnProtoHtml.$create = function (obj, target, before) {
     node: generateNode({
       tag: 'bbn-anon',
       id: newId
-    }, this, parentNode, target.bbnSchema.root, target.bbnSchema.rootHash, target.bbnSchema.hash)
+    }, this, parentNode, target.bbnNode.root, target.bbnNode.rootHash, target.bbnNode.hash)
   };
 
   // Its content is its template
@@ -56,7 +56,7 @@ bbnProtoHtml.$create = function (obj, target, before) {
       bbnTpl: cpTpl,
       bbnSlots: slots,
       bbnMap: cpMap,
-      get bbnSchema() {
+      get bbnNode() {
         if (this.$isDestroyed) {
           o.node = null;
         }

@@ -7,6 +7,7 @@ import bbnData from "../Data.js";
 export default class bbnNode
 {
   #comment = false;
+  #off = false;
   #realElement = null;
   numBuild = 0;
   oldElement = null;
@@ -117,7 +118,7 @@ export default class bbnNode
           return true;
         },
         get: (obj, prop) => {
-          bbnData.addSequence(cp, prop);
+          //bbnData.addSequence(cp, prop);
           return obj[prop];
         },
         deleteProperty: (obj, prop) => {
@@ -156,6 +157,15 @@ export default class bbnNode
       configurable: false,
       value: parent
     });
+
+    Object.defineProperty(this, 'children', {
+      writable: false,
+      configurable: false,
+      value: []
+    });
+    if (parent) {
+      parent.children.push(this);
+    }
 
     Object.defineProperty(this, 'deps', {
       writable: false,
@@ -301,6 +311,9 @@ export default class bbnNode
   }
 
   nodeSwitch(v) {
+    if (v && (this.tag === 'apst-adherent')) {
+      debugger;
+    }
     if (this.#comment !== !!v) {
       if (this.directives && v) {
         for (let n in this.directives) {
@@ -356,6 +369,16 @@ export default class bbnNode
     }
 
     return null;
+  }
+
+  get off() {
+    return this.#off;
+  }
+
+  set off(v) {
+    if (!this.#off && v) {
+      this.#off = true;
+    }
   }
 }
 

@@ -40,7 +40,7 @@ export default class bbnForgetAttr extends bbnAttr
               const idx = node.parentElement.bbnSlots[node.attr?.slot?.value || 'default'].indexOf(node.element);
               if (idx > -1) {
                 node.parentElement.bbnSlots[node.attr?.slot?.value || 'default'].splice(idx, 0, node.element.childNodes[0]);
-                node.element.childNodes[0].bbnSchema.nodeRemove(node.element.childNodes[0].bbnSchema.element);
+                node.element.childNodes[0].bbnNode.nodeRemove(node.element.childNodes[0].bbnNode.element);
               }
             }
             else if (node.element.previousSibling) {
@@ -84,22 +84,22 @@ export default class bbnForgetAttr extends bbnAttr
               }
               childDone = true;
               if (isComponent) {
-                const idx = node.element.bbnSlots[it.bbnSchema?.attr?.slot?.value || 'default'].indexOf(it);
+                const idx = node.element.bbnSlots[it.bbnNode?.attr?.slot?.value || 'default'].indexOf(it);
                 if (idx === -1) {
                   const search = {id: it.bbnId};
                   if (it.bbnHash) {
                     search.bbnHash = it.bbnHash;
                   }
-                  let idx2 = bbn.fn.search(node.element.bbnSlots[it.bbnSchema?.attr?.slot?.value || 'default'], search);
+                  let idx2 = bbn.fn.search(node.element.bbnSlots[it.bbnNode?.attr?.slot?.value || 'default'], search);
                   if (idx2 > -1) {
-                    node.element.bbnSlots[it.bbnSchema?.attr?.slot?.value || 'default'].splice(idx2, 1, it);
+                    node.element.bbnSlots[it.bbnNode?.attr?.slot?.value || 'default'].splice(idx2, 1, it);
                   }
                   else {
-                    node.element.bbnSlots[it.bbnSchema?.attr?.slot?.value || 'default'].push(it);
+                    node.element.bbnSlots[it.bbnNode?.attr?.slot?.value || 'default'].push(it);
                   }
                 }
-                if (node.element.$slotElements[it.bbnSchema?.attr?.slot?.value || 'default']) {
-                  node.element.$slotElements[it.bbnSchema?.attr?.slot?.value || 'default'].bbnSchema.nodeInit();
+                if (node.element.$slotElements[it.bbnNode?.attr?.slot?.value || 'default']) {
+                  node.element.$slotElements[it.bbnNode?.attr?.slot?.value || 'default'].bbnNode.nodeInit();
                 }
 
                 if (it.parentNode === parent) {

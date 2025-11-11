@@ -46,7 +46,6 @@ const cpDef = {
    * @mixin bbn.cp.mixins.resizer
    * @mixin bbn.cp.mixins.observer
    * @mixin view
-   * @mixin screenshot
    * @mixin menu
    * @mixin toChange
    * @mixin core

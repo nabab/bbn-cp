@@ -103,7 +103,7 @@ const cpDef = {
       updateSlot(){
         if (this.$slots.default) {
           for (let node of this.$slots.default) {
-            if (node.classList && (node.bbnSchema?.tag === 'div') && !node.childNodes.length) {
+            if (node.classList && (node.bbnNode?.tag === 'div') && !node.childNodes.length) {
               node.classList.add('bbn-toolbar-separator');
             }
           }

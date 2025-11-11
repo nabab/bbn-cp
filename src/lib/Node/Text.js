@@ -27,7 +27,7 @@ export default class bbnTextNode extends bbnNode
     });
   
     const node = this;
-    Object.defineProperty(this.element, 'bbnSchema', {
+    Object.defineProperty(this.element, 'bbnNode', {
       get() {
         return node;
       }
@@ -50,5 +50,34 @@ export default class bbnTextNode extends bbnNode
     }
   
     this.nodeInsert(this.element, after);
+  }
+
+  nodeClean() {
+    const ele = this.element;
+    const id = this.id;
+    const hash = this.hash;
+    const nodes = this.component.$nodes;
+    if (!ele) {
+      throw new Error("Text node clean: no element found");
+    }
+
+    if (nodes[id]) {
+      if (hash) {
+        if (nodes[id][hash]) {
+          delete nodes[id][hash];
+        }
+        else {
+          throw new Error("Text node clean: hash not found");
+        }
+      }
+      else {
+        delete nodes[id];
+      }
+    }
+    else {
+      throw new Error("Text node clean: id not found");
+    }
+
+    ele.remove();
   }
 }

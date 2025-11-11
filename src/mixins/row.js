@@ -29,21 +29,21 @@ export default {
         if (this.table.selection) {
           const i = this.table.uid ? this.source.data[this.table.uid] : this.source.index;
           return this.table.currentSelected.includes(i);
-      }
+        }
 
-      return false;
-    },
+        return false;
+      },
       set(v) {
         if (this.table.selection) {
           const i = this.table.uid ? this.source.data[this.table.uid] : this.source.index;
-        if (v) {
+          if (v) {
             if (!this.table.currentSelected.includes(i)) {
               this.table.currentSelected.push(i);
+            }
           }
-        }
-        else {
+          else {
             const idx = this.table.currentSelected.indexOf(i);
-          if (idx > -1) {
+            if (idx > -1) {
               this.table.currentSelected.splice(idx, 1);
             }
           }
@@ -80,7 +80,7 @@ export default {
     },
   },
   methods: {
-    intersectionEnter() {
+    intersectionEnterRow() {
       clearTimeout(this.intersectionTimeout);
       this.intersectionTimeout = setTimeout(() => {
         this.table.visibleRows.push(this);
@@ -95,7 +95,7 @@ export default {
       }, 250);
 
     },
-    intersectionExit() {
+    intersectionExitRow() {
       clearTimeout(this.intersectionTimeout);
       const idx = this.table.visibleRows.indexOf(this);
       if (idx > -1) {

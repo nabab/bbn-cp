@@ -1,6 +1,11 @@
+import bbn from "@bbn/bbn";
 import bbnNode from "../Node.js";
 
 const checkOwnDeps = node => {
+  if (!node.attributes || !node.attributes.length) {
+    return;
+  }
+
   bbn.fn.each(node.attributes, a => {
     bbn.fn.each(a.ownDeps, o => {
       if (o.data) {
@@ -32,8 +37,16 @@ const checkOwnDeps = node => {
 };
 
 const removeRegion = node => {
-  const r = document.createRange();
   if (node._region?.start?.isConnected) {
+    if ((node instanceof bbnTextNode) || ((node.element?.previousSibling === node._region.start) && (node.element?.nextSibling === node._region.end ))) {
+      node._region.start.remove();
+      node._region.end.remove();
+      delete node._region;
+      return;
+    }
+
+    //bbn.fn.log(["Removing region ", (node.realTag || node.tag || node)]);
+    const r = document.createRange();
     r.setStartAfter(node._region.start);
     r.setEndBefore(node._region.end);
     r.deleteContents();
@@ -41,98 +54,66 @@ const removeRegion = node => {
     node._region.end.remove();
   }
 
-  delete node._region;
+  if (node._region) {
+    delete node._region;
+  }
 };
 
-bbnNode.prototype.nodeClean = function(full) {
-  const cp = this.component;
-  const id = this.id;
-  const hash = this.hash;
-  const nodes = cp.$nodes;
-  const indexes = Object.keys(nodes).filter(idx => !idx.indexOf(id + '-') || (full && (idx === id)));
+bbnNode.prototype.nodeClean = function(full, noPortals) {
+  if (this.tag === 'apst-adherent') {
+    debugger;
+  }
+  //bbn.fn.log((full ? 'FULL ' : '') + "CLEANING NODE " + this.realTag + ' - ' + this.id + (this.hash ? (' / ' + this.hash) : ''));
   let res = 0;
-  if (this.element?.querySelector) {
+  if (!noPortals && this.element?.querySelector) {
+    noPortals = true;
     const portals = this.element.querySelectorAll('.bbn-portal-active');
     if (portals.length) {
       portals.forEach(p => {
         const parent = p.parentNode;
-        p.bbnSchema.directives['bbn-portal'].attrGetValue();
-        p.bbnSchema.directives['bbn-portal'].value = null;
-        p.bbnSchema.directives['bbn-portal'].oldValue = parent;
-        p.bbnSchema.directives['bbn-portal'].lastValue = parent;
+        p.bbnNode.directives['bbn-portal'].attrGetValue();
+        p.bbnNode.directives['bbn-portal'].value = null;
+        p.bbnNode.directives['bbn-portal'].oldValue = parent;
+        p.bbnNode.directives['bbn-portal'].lastValue = parent;
         bbn.cp.directives['bbn-portal'].update(p, {value: null, oldValue: parent});
       });
     }
   }
 
-  if (indexes.length) {
-    indexes.sort((a, b) => {
-      a = a.split('-').map(v => parseInt(v));
-      b = b.split('-').map(v => parseInt(v));
-      for (let i = 0; i < a.length; i++) {
-        if (!Object.hasOwn(b, i)) {
-          return -1;
+  while (this.children.length) {
+    const child = this.children.shift();
+    if (!child.off) {
+      checkOwnDeps(child);
+      const obj = child.component.$nodes[child.id];
+      if (obj) {
+        if (obj instanceof bbnNode) {
+          delete child.component.$nodes[child.id];
         }
-
-        if (a[i] !== b[i]) {
-          return a[i] < b[i] ? 1 : -1;
+        else if (obj[child.hash]) {
+          delete child.component.$nodes[child.id][child.hash];
         }
-      }
-
-      if (Object.hasOwn(b, a.length)) {
-        return 1;
-      }
-
-      return 0;
-    });
-
-    while (indexes.length) {
-      const idx = indexes.shift();
-      const obj = nodes[idx];
-      if (hash) {
-        for (let n in obj) {
-          if ((n === hash) || !n.indexOf(hash + '-')) {
-            checkOwnDeps(obj[n]);
-            if (obj[n].element) {
-              obj[n].nodeRemove(obj[n].element, true);
-              res++;
-            }
-
-            removeRegion(obj[n]);
-            delete obj[n];
-          }
+        else {
+          bbn.fn.log("NOTHING TO DELETE");
         }
       }
-      else if (obj instanceof bbnNode) {
-        checkOwnDeps(obj);
-        if (obj.element) {
-          obj.nodeRemove(obj.element, true);
-          res++;
-        }
-
-        removeRegion(obj);
-        delete nodes[idx];
+      if (child.children.length) {
+        child.nodeClean(true, noPortals);
       }
-      else {
-        for (let n in obj) {
-          checkOwnDeps(obj[n]);
-          if (obj[n].element) {
-            obj[n].nodeRemove(obj[n].element, true);
-            res++;
-          }
-
-          removeRegion(obj[n]);
-          delete obj[n];
-        }
+      else if (child.element) {
+        child.nodeRemove(child.element);
       }
+
+      removeRegion(child);
+      child.off = true;
+      res++;
     }
   }
 
-  bbn.cp.queue.filter(e => e.component === cp).forEach(e => {
-    if (e.element?.id && (!e.element.id.indexOf(id + '-'))) {
-      e.off = true;
-    }
-  });
+  if (full && this.element) {
+    checkOwnDeps(this);
+    this.nodeRemove(this.element);
+    res++;
+  }
 
   return res;
 };

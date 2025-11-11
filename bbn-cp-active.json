@@ -1,0 +1,484 @@
+{
+    "components": {
+        "appui": {
+            "active": true,
+            "state": "prod"
+        },
+        "audio": {
+            "active": true,
+            "state": "prod"
+        },
+        "autocomplete": {
+            "active": true,
+            "state": "prod"
+        },
+        "big-search": {
+            "active": true,
+            "state": "prod"
+        },
+        "block-list": {
+            "active": true,
+            "state": "prod"
+        },
+        "breadcrumb": {
+            "active": true,
+            "state": "prod"
+        },
+        "browser": {
+            "active": true,
+            "state": "prod"
+        },
+        "button": {
+            "active": true,
+            "state": "prod"
+        },
+        "calendar": {
+            "active": true,
+            "state": "prod"
+        },
+        "chart": {
+            "active": true,
+            "state": "prod"
+        },
+        "chat": {
+            "active": true,
+            "state": "prod"
+        },
+        "checkbox": {
+            "active": true,
+            "state": "prod"
+        },
+        "clipboard": {
+            "active": true,
+            "state": "prod"
+        },
+        "cms-block": {
+            "active": true,
+            "state": "prod"
+        },
+        "code": {
+            "active": true,
+            "state": "prod"
+        },
+        "colorpicker": {
+            "active": true,
+            "state": "prod"
+        },
+        "combo": {
+            "active": true,
+            "state": "prod"
+        },
+        "container": {
+            "active": true,
+            "state": "prod"
+        },
+        "context": {
+            "active": true,
+            "state": "prod"
+        },
+        "countdown": {
+            "active": true,
+            "state": "prod"
+        },
+        "cursor": {
+            "active": true,
+            "state": "prod"
+        },
+        "dashboard": {
+            "active": true,
+            "state": "prod"
+        },
+        "datepicker": {
+            "active": true,
+            "state": "prod"
+        },
+        "datetimepicker": {
+            "active": true,
+            "state": "prod"
+        },
+        "debugger": {
+            "active": true,
+            "state": "prod"
+        },
+        "dropdown": {
+            "active": true,
+            "state": "prod"
+        },
+        "editable": {
+            "active": true,
+            "state": "prod"
+        },
+        "editable-content": {
+            "active": true,
+            "state": "prod"
+        },
+        "emoji": {
+            "active": true,
+            "state": "prod"
+        },
+        "field": {
+            "active": true,
+            "state": "prod"
+        },
+        "file": {
+            "active": true,
+            "state": "prod"
+        },
+        "filter": {
+            "active": true,
+            "state": "prod"
+        },
+        "finder": {
+            "active": true,
+            "state": "prod"
+        },
+        "fisheye": {
+            "active": true,
+            "state": "prod"
+        },
+        "flag": {
+            "active": true,
+            "state": "prod"
+        },
+        "floater": {
+            "active": true,
+            "state": "prod"
+        },
+        "form": {
+            "active": true,
+            "state": "prod"
+        },
+        "frame": {
+            "active": true,
+            "state": "prod"
+        },
+        "gallery": {
+            "active": true,
+            "state": "prod"
+        },
+        "grid-configuration": {
+            "active": true,
+            "state": "prod"
+        },
+        "icon": {
+            "active": true,
+            "state": "prod"
+        },
+        "icon-svg": {
+            "active": true,
+            "state": "prod"
+        },
+        "iconpicker": {
+            "active": true,
+            "state": "prod"
+        },
+        "image-editor": {
+            "active": true,
+            "state": "prod"
+        },
+        "initial": {
+            "active": true,
+            "state": "prod"
+        },
+        "inline-editor": {
+            "active": true,
+            "state": "prod"
+        },
+        "input": {
+            "active": true,
+            "state": "prod"
+        },
+        "json-editor": {
+            "active": true,
+            "state": "prod"
+        },
+        "kanban": {
+            "active": true,
+            "state": "prod"
+        },
+        "kanban-element": {
+            "active": true,
+            "state": "prod"
+        },
+        "key": {
+            "active": true,
+            "state": "prod"
+        },
+        "keyboard": {
+            "active": true,
+            "state": "prod"
+        },
+        "keyvalue": {
+            "active": true,
+            "state": "prod"
+        },
+        "list": {
+            "active": true,
+            "state": "prod"
+        },
+        "list-input": {
+            "active": true,
+            "state": "prod"
+        },
+        "loadbar": {
+            "active": true,
+            "state": "prod"
+        },
+        "loader": {
+            "active": true,
+            "state": "prod"
+        },
+        "loadicon": {
+            "active": true,
+            "state": "prod"
+        },
+        "login": {
+            "active": true,
+            "state": "prod"
+        },
+        "map": {
+            "active": true,
+            "state": "prod"
+        },
+        "markdown": {
+            "active": true,
+            "state": "prod"
+        },
+        "masked": {
+            "active": true,
+            "state": "prod"
+        },
+        "masonry": {
+            "active": true,
+            "state": "prod"
+        },
+        "menu": {
+            "active": true,
+            "state": "prod"
+        },
+        "mini-search": {
+            "active": true,
+            "state": "prod"
+        },
+        "multi-input": {
+            "active": true,
+            "state": "prod"
+        },
+        "multiinput": {
+            "active": true,
+            "state": "prod"
+        },
+        "multipart": {
+            "active": true,
+            "state": "prod"
+        },
+        "multiselect": {
+            "active": true,
+            "state": "prod"
+        },
+        "notification": {
+            "active": true,
+            "state": "prod"
+        },
+        "numeric": {
+            "active": true,
+            "state": "prod"
+        },
+        "pager": {
+            "active": true,
+            "state": "prod"
+        },
+        "pane": {
+            "active": true,
+            "state": "prod"
+        },
+        "panelbar": {
+            "active": true,
+            "state": "prod"
+        },
+        "password": {
+            "active": true,
+            "state": "prod"
+        },
+        "phone": {
+            "active": true,
+            "state": "prod"
+        },
+        "popup": {
+            "active": true,
+            "state": "prod"
+        },
+        "progressbar": {
+            "active": true,
+            "state": "prod"
+        },
+        "radio": {
+            "active": true,
+            "state": "prod"
+        },
+        "radiobuttons": {
+            "active": true,
+            "state": "prod"
+        },
+        "range": {
+            "active": true,
+            "state": "prod"
+        },
+        "rating": {
+            "active": true,
+            "state": "prod"
+        },
+        "router": {
+            "active": true,
+            "state": "prod"
+        },
+        "router-config": {
+            "active": true,
+            "state": "prod"
+        },
+        "router-group": {
+            "active": true,
+            "state": "prod"
+        },
+        "rte": {
+            "active": true,
+            "state": "prod"
+        },
+        "screenshot": {
+            "active": true,
+            "state": "prod"
+        },
+        "scroll": {
+            "active": true,
+            "state": "prod"
+        },
+        "scrollbar": {
+            "active": true,
+            "state": "prod"
+        },
+        "search": {
+            "active": true,
+            "state": "prod"
+        },
+        "slider": {
+            "active": true,
+            "state": "prod"
+        },
+        "slider-menu": {
+            "active": true,
+            "state": "prod"
+        },
+        "slideshow": {
+            "active": true,
+            "state": "prod"
+        },
+        "splashscreen": {
+            "active": true,
+            "state": "prod"
+        },
+        "split-tabs": {
+            "active": true,
+            "state": "prod"
+        },
+        "splitter": {
+            "active": true,
+            "state": "prod"
+        },
+        "stack": {
+            "active": true,
+            "state": "prod"
+        },
+        "stream-search": {
+            "active": true,
+            "state": "prod"
+        },
+        "switch": {
+            "active": true,
+            "state": "prod"
+        },
+        "table": {
+            "active": true,
+            "state": "prod"
+        },
+        "tabs": {
+            "active": true,
+            "state": "prod"
+        },
+        "terminal": {
+            "active": true,
+            "state": "prod"
+        },
+        "textarea": {
+            "active": true,
+            "state": "prod"
+        },
+        "timepicker": {
+            "active": true,
+            "state": "prod"
+        },
+        "timer": {
+            "active": true,
+            "state": "prod"
+        },
+        "timewheel": {
+            "active": true,
+            "state": "prod"
+        },
+        "toolbar": {
+            "active": true,
+            "state": "prod"
+        },
+        "tooltip": {
+            "active": true,
+            "state": "prod"
+        },
+        "tracks": {
+            "active": true,
+            "state": "prod"
+        },
+        "tree": {
+            "active": true,
+            "state": "prod"
+        },
+        "tree-input": {
+            "active": true,
+            "state": "prod"
+        },
+        "treedown": {
+            "active": true,
+            "state": "prod"
+        },
+        "treemenu": {
+            "active": true,
+            "state": "prod"
+        },
+        "upload": {
+            "active": true,
+            "state": "prod"
+        },
+        "values": {
+            "active": true,
+            "state": "prod"
+        },
+        "video": {
+            "active": true,
+            "state": "prod"
+        },
+        "vlist": {
+            "active": true,
+            "state": "prod"
+        },
+        "wheel": {
+            "active": true,
+            "state": "prod"
+        },
+        "widget": {
+            "active": true,
+            "state": "prod"
+        },
+        "window": {
+            "active": true,
+            "state": "prod"
+        }
+    }
+}

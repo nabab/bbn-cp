@@ -2,8 +2,6 @@
  * Takes care of the data reactivity for non primitive values.
  */
 import bbnAttr from "../Attr/Attr.js";
-import bbnComputed from "../Computed.js";
-import initResults from "../Html/private/initResults.js";
 
 export default class bbnData/* extends EventTarget*/ {
 
@@ -29,87 +27,8 @@ export default class bbnData/* extends EventTarget*/ {
 
   static toUpdate = [];
 
-  static propagation = [];
-  static propagationData = [];
-  static propagationCp = [];
-
-  static propagateDependencyChanges = function(cp, name) {
-    let propagationFromHere = false;
-  
-    let arr = cp;
-    if (arguments.length === 2) {
-      arr = [{cp, name}];
-    }
-  
-    let num = bbn.cp.numTicks;
-    const todo = [];
-    bbn.fn.each(arr, a => {
-      let cp = a.cp;
-      let name = a.name;
-      if (!cp || !name) {
-        throw new Error("Invalid arguments for propagateDependencyChanges");
-      }
-  
-      if (cp.$deps[name]) {
-        // The key for updating
-        const dataObj = bbnData.getObject(cp[name]);
-        if (dataObj) {
-          if (bbnData.propagationData.includes(dataObj.uid)) {
-            return;
-          }
-  
-          bbnData.propagationData.push(dataObj.uid);
-        }
-  
-        //bbn.fn.log("PROPAGATING DEPENDENCY CHANGES FOR " + name + " IN " + cp.$options.name + " " + cp.$cid);
-        for (let i = 0; i < cp.$deps[name].length; i++) {
-          const a = cp.$deps[name][i];
-          if (bbnData.propagation.includes(a)) {
-            continue;
-          }
-  
-          const acp = a.component || a.node.component || cp;
-          if (!bbnData.propagation.length) {
-            if (!propagationFromHere) {
-              bbn.cp.numTicks++;
-              propagationFromHere = true;
-            }
-          }
-  
-          bbnData.propagation.push(a);
-          if (!bbnData.propagationCp.includes(acp)) {
-            initResults(acp);
-            bbnData.propagationCp.push(acp);
-          }
-  
-          //bbn.fn.log("PROPAGATION STARTED ON " + name, a);
-          if (a instanceof bbnAttr || a instanceof bbnComputed) {
-            todo.push({component: acp, element: a, num});
-          }
-          else {
-            bbn.fn.log("UNKNOWN DEPENDENCY", a);
-          }
-        }
-      }
-    });
-  
-    bbn.cp.queueUpdate(...todo);
-    if (propagationFromHere) {
-      bbnData.propagation.splice(0);
-      bbnData.propagationData.splice(0);
-      bbnData.propagationCp.splice(0);
-    }
-    else if (!bbnData.propagation.length && bbnData.propagationData.length) {
-      bbnData.propagationData.splice(0);
-      bbnData.propagationCp.splice(0);
-    }
-  
-  };
-
   #uid;
-
   #lastRequestedProp;
-
   path;
 
   /**

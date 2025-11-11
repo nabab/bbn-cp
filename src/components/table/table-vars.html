@@ -1,0 +1,614 @@
+<div :class="[{
+    'bbn-overlay': scrollable,
+    'bbn-block': !scrollable
+  },
+  componentClass,
+  'bbn-border'
+]">
+  <div :class="{
+    'bbn-overlay': scrollable,
+    'bbn-flex-height': scrollable,
+    'bbn-block': !scrollable
+  }"
+       :style="scrollable && groupCols.length ? {} : {
+         width: totalWidth
+       }"
+       bbn-if="cols.length">
+    <!-- Toolbar -->
+    <div bbn-if="hasToolbar"
+         class="bbn-table-toolbar bbn-header bbn-no-border"
+         ref="toolbar">
+      <bbn-toolbar bbn-if="toolbarButtons.length || (search && !bbn.fn.isString(toolbar) && !bbn.fn.isObject(toolbar))"
+                   :source="toolbarButtons"
+                   :slot-before="toolbarSlotBefore"
+                   class="bbn-spadding bbn-no-border-left bbn-no-border-right bbn-no-border-top">
+        <slot name="toolbar"></slot>
+        <div slot="right"
+             bbn-if="search"
+             class="bbn-hsmargin">
+          <bbn-input :nullable="true"
+                      button-right="nf nf-fa-search"
+                      class="bbn-wide"
+                      :placeholder="searchPlaceholder || _('Search in data')"
+                      bbn-model="searchValue"/>
+        </div>
+      </bbn-toolbar>
+      <div bbn-elseif="typeof toolbar === 'function'"
+           bbn-html="toolbar()"/>
+      <component bbn-elseif="toolbar"
+                 :is="toolbar"/>
+    </div>
+    <!-- Main container -->
+    <div :class="['bbn-w-100', 'bbn-table-container', {'bbn-flex-fill': scrollable}]"
+         ref="main">
+      <!--<div bbn-if="initStarted || isLoading"-->
+      <div bbn-if="initStarted || isResizing"
+           :class="[
+            'bbn-middle',
+            'bbn-background-internal',
+            'bbn-text',
+            'bbn-padding',
+            {
+              'bbn-overlay': !!scrollable,
+              'bbn-w-100': !scrollable
+            }]"
+           style="z-index: 5">
+        <bbn-loadicon class="bbn-vmiddle"
+                      :size="24"/>
+        <span class="bbn-xl bbn-b bbn-left-sspace"
+              bbn-text="_('Loading') + '...'"/>
+      </div>
+      <bbn-scroll bbn-elseif="currentColumns.length"
+                  :scrollable="scrollable"
+                  :autoresize="false"
+                  :class="{'bbn-w-100': !scrollable, 'bbn-overlay': scrollable}"
+                  ref="scroll"
+                  :disabled="!scrollable"
+                  :offset-y="scrollOffsetY"
+                  :offset-x="scrollOffsetX"
+                  @resize="resizeWidth"
+                  @hook:mounted="onScrollMounted"
+                  @hook:beforedestroy="onScrollBeforeDestroy">
+        <!-- Table -->
+        <table :style="{width: totalWidth}"
+               ref="table"
+               bbn-if="scrollIsMounted"
+               aria-describedby="table"
+               :class="['bbn-table-' + cssRuleName, 'bbn-table-table']">
+          <!-- Colgroups -->
+          <colgroup bbn-for="(groupCol, groupIndex) in groupCols"
+                    bbn-if="groupCol.cols.length">
+            <col bbn-for="(col, colIndex) in groupCol.cols"
+                bbn-show="!col.invisible"
+                :style="{width: col.realWidth ? col.realWidth + 'px' : 'auto'}"
+                :key="groupIndex + '-'+ colIndex">
+          </colgroup>
+          <!-- Thead -->
+          <thead :class="{
+                  'bbn-top-left': !titles,
+                  'bbn-invisible': !titles
+                }"
+                ref="thead">
+            <!-- Group titles -->
+            <tr bbn-if="titles && titleGroups" class="bbn-table-tr-groups-titles">
+              <template bbn-for="(groupCol, groupIndex) in groupCols">
+                <component is="th"
+                           bbn-if="!!groupCol.cols.length"
+                           bbn-for="(col, colIndex) in titleGroupsCells(groupIndex)"
+                           :colspan="col.colspan"
+                           scope="colgroup"
+                           :class="['bbn-table-fixed-cell', 'bbn-header', 'bbn-no-border-top', {
+                              'bbn-table-fixed-cell-left': groupIndex === 0,
+                              'bbn-table-fixed-cell-left-last': (groupIndex === 0) && !titleGroupsCells(groupIndex)[colIndex+1],
+                              'bbn-table-fixed-cell-right': groupIndex === 2,
+                              'bbn-table-cell-first': (groupIndex === 1) && (colIndex === 0),
+                           }]"
+                           :title="bbn.fn.html2text(col.text)"
+                           :style="{
+                              zIndex: (col.left !== undefined) || (col.right !== undefined) ? 4 : 3,
+                              top: '0px',
+                              left: col.left !== undefined ? (col.left + 'px') : '',
+                              right: col.right !== undefined ? (col.right + 'px') : '',
+                              width: col.width + 'px'
+                           }">
+                  <component bbn-if="col.component"
+                            :is="col.component"
+                            :source="col"/>
+                  <div class="bbn-100 bbn-table-title-group" bbn-else>
+                    <div class="bbn-iblock"
+                        :style="{
+                          position: 'sticky',
+                          left: 'calc(' + col.contentLeft + 'px + var(--sspace))'
+                        }">
+                      <div :class="[col.cls, 'bbn-ellipsis']"
+                          :style="col.style"
+                          bbn-html="col.text"/>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </tr>
+            <!-- Titles -->
+            <tr class="bbn-table-tr-titles">
+              <template bbn-for="(groupCol, groupIndex) in groupCols">
+                <component is="th"
+                           bbn-for="(col, colIndex) in groupCol.cols"
+                          :key="(col.field || colIndex) + '|' + (col.label || colIndex)"
+                          :ref="'title-' + groupIndex + '-' + colIndex"
+                          :data-index="col.index"
+                          :data-group-index="groupIndex"
+                          :data-visible=""
+                          bbn-show="!col.invisible"
+                          :class="[
+                            'bbn-table-fixed-cell', 'bbn-header', 'bbn-no-border-top', 'bbn-c', 'bbn-ellipsis',
+                            titleClass ? (bbn.fn.isFunction(titleClass) ? titleClass(col) : titleClass) : '',
+                            col.titleCls || '',
+                            {
+                              'bbn-table-fixed-cell-left': groupIndex === 0,
+                              'bbn-table-fixed-cell-left-last': (groupIndex === 0) && !groupCol.cols[colIndex+1],
+                              'bbn-table-fixed-cell-right': groupIndex === 2,
+                              'bbn-table-cell-first': (groupIndex === 1)
+                                && groupCols?.[0]?.cols?.length
+                                && (colIndex === 0)
+                            }
+                          ]"
+                          :title="bbn.fn.html2text(col.flabel || col.label || col.field || ' ')"
+                          @hook:create="onTitleCellCreated"
+                          @hook:destroy="onTitleCellDestroyed">
+                  <a :name="'anchor-' + col.index"/>
+                  <template bbn-if="titles">
+                    <div bbn-if="col.isSelection" :title="_('Check all')">
+                      <bbn-checkbox bbn-model="allRowsChecked"/>
+                    </div>
+                    <div bbn-elseif="col.isExpander" :title="_('Expand all')">
+                      <!-- @todo an icon for expanding all/none -->
+                    </div>
+                    <component bbn-elseif="col.tcomponent"
+                              :is="col.tcomponent"
+                              :source="col"/>
+                    <span class="bbn-p"
+                          bbn-elseif="sortable && (col.sortable !== false) && !col.buttons && col.field"
+                          @click="sort(col)">
+                      <span bbn-if="col.encoded"
+                            bbn-text="col.label || col.field || ' '"/>
+                      <span bbn-else
+                            bbn-html="col.label || col.field || ' '"/>
+                    </span>
+                    <span bbn-else>
+                      <span bbn-if="col.encoded"
+                            bbn-text="col.label || col.field || ' '"/>
+                      <span bbn-else
+                            bbn-html="col.label || col.field || ' '"/>
+                    </span>
+                    <i bbn-if="sortable && (col.sortable !== false) && !col.buttons && col.field"
+                      :class="['bbn-xs bbn-p bbn-bottom-left bbn-left-xsmargin', {
+                        'bbn-table-sortable-icon bbn-p bbn-bottom-left': true,
+                        'nf nf-md-sort_ascending': isSorted(col)?.dir === 'ASC',
+                        'nf nf-md-sort_descending': isSorted(col)?.dir === 'DESC',
+                        'nf nf-md-sort_reverse_variant': (col.sortable !== false) && !isSorted(col),
+                    }]"
+                      :title="_('Sort this column')"
+                      @click="sort(col)"/>
+                    <i :class="['nf nf-md-filter_variant bbn-p bbn-xs bbn-right-xsmargin bbn-bottom-right', {
+                        'bbn-red': hasFilter(col),
+                      }]"
+                      bbn-if="showFilterOnColumn(col)"
+                      :title="_('Filter this column')"
+                      @click="showFilter(col, $event)"/>
+                  </template>
+                </component>
+              </template>
+            </tr>
+          </thead>
+          <!-- Tbody -->
+          <tbody ref="tbody"
+                 :class="{
+                   'bbn-overlay': ((!filteredData.length && !tmpRow) || isLoading || isTableDataUpdating) && !!scrollable
+                 }"
+                 bbn-if="scrollIsMounted && currentRows && ready && !isLoading && !isTableDataUpdating">
+            <!-- Inline insertion -->
+            <tr bbn-if="tmpRow">
+            </tr>
+            <!-- No data -->
+            <tr bbn-if="!isLoading && !filteredData.length"
+                :class="{
+                  'bbn-overlay': !!scrollable,
+                  'bbn-middle': !!scrollable
+                }"
+                :style="{
+                  paddingTop: $refs.thead && !!scrollable ? theadHeight + 'px' : 0,
+                  maxWidth: !!scrollable ? $el.clientWidth + 'px' : '',
+                  left: !!scrollable && getRef('scroll') ? getRef('scroll').currentX + 'px' : '',
+                  height: 'auto'
+                }">
+              <td :colspan="currentColumns ? currentColumns.length : 1">
+                <div class="bbn-spadding bbn-background-internal bbn-c"
+                     bbn-html="noData || ' '"/>
+              </td>
+            </tr>
+            <!-- Rows -->
+            <template bbn-for="(row, rowIndex) in items"
+                      bbn-var-names="currentRow"
+                      bbn-var-values="[bbn.fn.getRow(currentRows, {index: rowIndex})]"
+                      :key="row.uid || row.index">
+              <!-- Group rows = start of a new group -->
+              <component is="tr"
+                         bbn-if="isGroupActive && (!rowIndex || (items[rowIndex-1].data[cols[group].field] !== row.data[cols[group].field]))"
+                        :data-index="rowIndex"
+                        :data-group="row.data[isGroupActive]"
+                        :class="rowClass(row, rowIndex)"
+                        ref="groupRows">
+                <component is="td"
+                           :class="cellClass(currentColumns[0], row)"
+                           :rowspan="expanderRowspan(row.data, rowIndex)">
+                  <div @click="toggleExpanded(rowIndex)"
+                       class="bbn-table-cell-expander-container bbn-lg bbn-p bbn-unselectable bbn-c">
+                    <i class="nf nf-oct-triangle_right bbn-unselectable bbn-table-cell-expander-icon"
+                      tabindex="0"/>
+                  </div>
+                </component>
+                <component is="td"
+                           bbn-if="groupCols[0].cols.length > 1"
+                           :class="cellClass(null, row)"
+                           :colspan="groupCols[0].cols.length - 1">
+                </component>
+                <component is="td"
+                           :class="cellClass(cols[group], row)"
+                           :colspan="groupCols[1].cols.length">
+                  <component bbn-if="cols[group].component"
+                            :is="cols[group].component"
+                            bbn-bind="getColOptions(row.data, cols[group], rowIndex)"
+                            :source="cols[group].mapper ? cols[group].mapper(row.data) : row.data"/>
+                  <div bbn-else
+                       bbn-html="renderDefault(row.data, cols[group], rowIndex)"/>
+                </component>
+                <component is="td"
+                           bbn-if="groupCols[2].cols.length"
+                           class="cellClass(groupCols[2].cols[0], row)"
+                           :colspan="groupCols[2].cols.length">
+                </component>
+              </component>
+              <component is="tr"
+                        :class="rowClass(row, rowIndex)"
+                        bbn-if="!groupable || !isGroupActive || isExpanded(row.data, row.index)"
+                        :data-group="isGroupActive ? row.data[isGroupActive] : ''"
+                        :style="rowStyle(row)"
+                        :data-index="rowIndex"
+                        @hook:create="onRowCreated"
+                        @hook:destroy="onRowDestroyed">
+                <component bbn-if="!currentRow?.visible"
+                           is="td"
+                           :class="['bbn-spadding', cellClass(null, row)]"
+                           :style="averageRowHeight ? {height: averageRowHeight + 'px'} : {}"
+                           :colspan="currentColumns.length"> 
+                </component>
+                <template bbn-else>
+                  <template bbn-for="seq in currentRow.sequences || []"
+                            :key="seq.uid">
+                    <template bbn-if="seq.visible">
+                      <component bbn-for="c in seq.items"
+                                :key="c.uid"
+                                bbn-var-names="column"
+                                bbn-var-values="[currentColumns[c.index]]"
+                                bbn-if="!isGroupActive || !column.isExpander"
+                                is="td"
+                                :class="cellClass(column, row)"
+                                :ref="'td-' + rowIndex + '-' + c.index"
+                                @save="saveInline"
+                                @cancel="cancel"
+                                :rowspan="!isGroupActive && column.isExpander && isExpanded(row.data, row.index) ? 2 : 1"
+                                :tabindex="editable && (column.editable !== false) ? 0 : -1"
+                                @click="clickCell(column, c.index, rowIndex)"
+                                @doubleclick="dbClickCell(column, row.data, rowIndex)"
+                                @focusout="focusout(rowIndex, $event)"
+                                @focusin="focusin(rowIndex, $event, c.index)">
+  
+                        <span class="bbn-table-dirty bbn-top-left"
+                              bbn-if="isDirty(column, rowIndex)"/>
+                        <div bbn-if="!isGroupActive && column.isExpander"
+                             @click="toggleExpanded(rowIndex)"
+                             class="bbn-table-cell-expander-container bbn-lg bbn-p bbn-unselectable bbn-c">
+                          <i class="nf nf-oct-triangle_right bbn-unselectable bbn-table-cell-expander-icon"
+                            tabindex="0"/>
+                        </div>
+                        <div bbn-elseif="column.isSelection && isSelectable(row)"
+                            class="bbn-c bbn-w-100">
+                          <bbn-checkbox :checked="currentSelected.includes(uid ? row.data[uid] : row.index)"
+                                        :value="true"
+                                        :novalue="false"
+                                        :strict="true"
+                                        @click.stop
+                                        @beforechange="(ev, state) => beforeSelect(rowIndex, ev, !state)"
+                                        @change="v => checkSelection(rowIndex, v)"
+                                        class="bbn-middle bbn-flex"/>
+                        </div>
+                        <div bbn-elseif="isEdited(row.data, column, rowIndex)">
+                          <div bbn-if="(editMode === 'inline')
+                                && (editable !== 'nobuttons')
+                                && (c.index === cols[colButtons]?.index)">
+                            <bbn-button :label="_('Save')"
+                                        :disabled="!isEditedValid"
+                                        icon="nf nf-fa-save"
+                                        :notext="true"
+                                        @focusin.stop
+                                        @click.prevent.stop="$emit('save')"
+                                        style="margin: 0 .1rem"/>
+                            <bbn-button :label="_('Cancel')"
+                                        icon="nf nf-md-close_thick"
+                                        :notext="true"
+                                        @focusin.stop
+                                        @click.prevent.stop="$emit('cancel')"
+                                        style="margin: 0 0.1rem"/>
+                          </div>
+                          <component bbn-elseif="(editMode === 'inline')
+                                      && isValidField(column.field)
+                                      && (column.editable !== false)"
+                                      bbn-bind="getEditableOptions(column)"
+                                      :is="getEditableComponent(column)"
+                                      @click.stop
+                                      :source="row.data"
+                                      bbn-model="row.data[column.field]"
+                                      style="width: 100%"/>
+                          <!--<bbn-field bbn-elseif="(editMode === 'inline')
+                                          && isValidField(column.field)
+                                          && (column.editable !== false)"
+                                      bbn-bind="column"
+                                      mode="write"
+                                      @click.stop
+                                      bbn-model="editedRow[column.field]"
+                                      style="width: 100%"/>-->
+                          <bbn-field bbn-elseif="isValidField(column.field)
+                                      && !column.render
+                                      && !column.buttons"
+                                    bbn-bind="column"
+                                    @click.stop
+                                    :value="row.data[column.field]"
+                                    :data="row.data"/>
+                          <div bbn-elseif="!column.buttons && column.render"
+                                bbn-html="column.render(row.data, column, rowIndex)"/>
+                          <div bbn-elseif="!column.buttons"
+                                bbn-html="renderDefault(row.data, column, rowIndex)"/>
+                          <div bbn-else> </div>
+                        </div>
+                        <template bbn-elseif="column.buttons">
+                          <template bbn-if="buttonMode === 'dropdown'">
+                            <bbn-dropdown :source="buttonSource(row.data, column, rowIndex)"
+                                          :placeholder="column.label.trim() === '' ? _('Action') : column.label"
+                                          @select="_execCommand"/>
+                          </template>
+                          <template bbn-elseif="buttonMode === 'menu'">
+                            <bbn-context :source="buttonSource(row.data, column, rowIndex)"
+                                         :portal="$el"
+                                          @select="(it, idx, dataIndex, ev, floater) => onButtonsMenuSelect(it, row.data, currentColumns[c.index], rowIndex, ev, floater)">
+                              <span class="bbn-iblock bbn-lg">
+                                <bbn-icon :content="buttonIcon"
+                                          ref="menuIcon">
+                              </span>
+                            </bbn-context>
+                          </template>
+                          <div bbn-elseif="cols[colButtons]?.index === column.index">
+                            <template bbn-for="(button, bi) in buttonSource(row.data, column, rowIndex)"
+                                      :key="bi">
+                              <component bbn-if="button.component"
+                                        :is="button.component"
+                                        bbn-bind="button.options || {source: row.data}"
+                                        style="margin: 0 .1rem"/>
+                              <bbn-button bbn-else
+                                          :key="bi"
+                                          bbn-bind="button"
+                                          @focusin.prevent.stop
+                                          @focusout.prevent.stop
+                                          @click.prevent.stop="_execCommand(button, row.data, currentColumns[c.index], rowIndex, $event)"
+                                          style="margin: 0 .1rem"/>
+                            </template>
+                          </div>
+                          <template bbn-else>
+                            <bbn-button bbn-for="(button, bi) in (Array.isArray(column.buttons) ? column.buttons : column.buttons(row.data, column, rowIndex))"
+                                        :key="bi"
+                                        bbn-bind="button"
+                                        @focusin.prevent.stop
+                                        @focusout.prevent.stop
+                                        @click.prevent.stop="_execCommand(button, row.data, column, rowIndex, $event)"
+                                        style="margin: 0 .1rem"/>
+                          </template>
+                        </template>
+                        <!--slot bbn-elseif="$hasSlots('c')"/-->
+                        <component bbn-elseif="column.component"
+                                  :is="column.component"
+                                  bbn-bind="getColOptions(row.data, column, rowIndex)"
+                                  :source="column.mapper ? column.mapper(row.data) : row.data"/>
+
+                        <div bbn-else
+                             bbn-html="renderDefault(row.data, column, rowIndex)"/>
+                        <table-dots bbn-if="column.dots"
+                                    :source="{
+                                          column: column,
+                                          index: index,
+                                          dataIndex: row.index,
+                                          data: row.data,
+                                          itemIndex: rowIndex
+                                        }"/>
+  
+                                
+                      </component>
+                    </template>
+                    <template bbn-else>
+                      <component is="td" :colspan="(seq.end - seq.start + 1)"> </component>
+                    </template>
+                  </template>
+                </template>
+              </component>
+              <template bbn-if="currentRow?.visible">
+                <component is="tr"
+                            bbn-if="expander && !isGroupActive && isExpanded(row.data, row.index)"
+                            :class="rowClass(row, rowIndex)"
+                            ref="expansionRows">
+                  <component is="td"
+                            bbn-if="groupCols[0].cols.length > 1"
+                            class="cellClass(currentColumns[0], row)"
+                            :colspan="groupCols[0].cols.length - 1">
+                  </component>
+                  <component is="td"
+                            class="bbn-border-left bbn-border-bottom"
+                            :colspan="bbn.fn.count(groupCols[1].cols, d => !d.isExpander && (d.realWidth > 0))"
+                            :style="{
+                              width: 'auto',
+                              borderRight: '0px',
+                              overflow: 'unset'
+                            }">
+                    <div class="bbn-block">
+                      <component bbn-if="typeof(expander) !== 'function'"
+                                :is="expander"
+                                class="bbn-spadding"
+                                :source="row.data" />
+                      <component bbn-elseif="(typeof(expander(row)) === 'object')"
+                                :is="expander(row)"
+                                :source="row.data"/>
+                      <div bbn-else
+                            bbn-html="expander(row.data, rowIndex)"/>
+                    </div>
+                  </component>
+                  <component is="td"
+                            bbn-if="groupCols[2].cols.length"
+                            class="cellClass(currentColumns[0], row)"
+                            :colspan="groupCols[2].cols.length">
+                  </component>
+                </component>
+                <component is="tr"
+                          bbn-elseif="row.aggregated || row.groupAggregated"
+                                        :source="row"
+                                        :class="{'bbn-alt': rowIndex % 2}"
+                                        :index="rowIndex"
+                                        ref="aggregateRows">
+                  <component is="td"
+                             bbn-for="col in currentColumns"
+                            :class="cellClass(col, row)">
+                    <span bbn-if="col.isAggregatedTitle"
+                          :class="row.aggregated ? 'bbn-b' : ''"
+                          bbn-text="aggregateExp[row.name]"/>
+                    <div bbn-elseif="col.aggregate"
+                        bbn-html="renderDefault(row.data, col, rowIndex)"/>
+                    <span bbn-else> </span>
+                  </component>
+                </component>
+                <component is="tr"
+                          bbn-elseif="row.footer && groupFooter && groupable"
+                                      :source="row"
+                                      :class="{'bbn-alt': rowIndex % 2}"
+                                      :index="rowIndex"
+                                      ref="footerRows">
+                  <component is="td"
+                            bbn-if="groupCols[0].cols.length"
+                            class="cellClass(currentColumns[0], row)"
+                            :colspan="groupCols[0].cols.length">
+                  </component>
+                  <component is="td"
+                            :class="cellClass(col, row)"
+                            :colspan="groupCols[1].cols.length"
+                            :style="{
+                              width: 'auto',
+                              borderRight: '0px',
+                              overflow: 'unset'
+                            }">
+                    <div bbn-if="typeof groupFooter === 'function'"
+                          bbn-html="groupFooter(row.data)"/>
+                    <component bbn-elseif="groupFooter"
+                                :is="groupFooter"
+                                :source="row.data"/>
+                    <div bbn-elseif="row.footer"
+                         bbn-html="row.footer"/>
+                  </component>
+                  <component is="td"
+                            bbn-if="groupCols[2].cols.length"
+                            class="cellClass(currentColumns[0], row)"
+                            :colspan="groupCols[2].cols.length">
+                  </component>
+                </component>
+              </template>
+            </template>
+          </tbody>
+        </table>
+      </bbn-scroll>
+    </div>
+    <!-- Footer -->
+    <bbn-pager class="bbn-table-footer bbn-no-border-right bbn-no-border-left bbn-no-border-bottom"
+               bbn-if="hasPager"
+               :item-name="itemName"
+               ref="pager"
+               :limit="currentLimit"
+               :page-name="pageName"
+               :buttons="footerButtons"/>
+    <component bbn-elseif="(typeof footer === 'string') || (typeof footer === 'object')"
+               :is="footer"
+               class="bbn-table-footer bbn-no-border-right bbn-no-border-left bbn-no-border-bottom"/>
+    <div bbn-elseif="(typeof footer === 'function') && footer()"
+         bbn-html="footer()"
+         class="bbn-table-footer bbn-no-border-right bbn-no-border-left bbn-no-border-bottom"/>
+    <!-- Loading -->
+    <div bbn-if="isLoading || isTableDataUpdating || !rowsShownFinished"
+        class="bbn-overlay bbn-background-internal bbn-middle">
+      <div class="bbn-spadding bbn-c">
+        <div bbn-if="loader"
+              class="bbn-vmiddle">
+          <bbn-loadicon class="bbn-vmiddle"
+                        :size="24"/>
+          <span class="bbn-xl bbn-b bbn-left-sspace"
+                bbn-text="currentLoaderText"/>
+        </div>
+      </div>
+    </div>
+    <template bbn-elseif="currentMessage">
+      <div class="bbn-overlay bbn-background bbn-modal"/>
+      <div class="bbn-overlay bbn-middle">
+        <div class="bbn-spadding bbn-background-internal bbn-c">
+          <div bbn-if="loader"
+                class="bbn-vmiddle">
+            <div class="bbn-padding"
+                bbn-html="currentMessage"/>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+  <bbn-floater bbn-if="currentFilter"
+               class="bbn-table-floating-filter bbn-widget"
+               :element="filterElement"
+               @close="currentFilter = false"
+               :auto-hide="true"
+               :scrollable="true"
+               :left="floatingFilterX"
+               :top="floatingFilterY">
+    <bbn-filter bbn-bind="getFilterOptions()"
+                @set="onSetFilter"
+                @unset="unsetCurrentFilter"
+                class="bbn-w-100"/>
+    <div bbn-if="multifilter"
+         class="bbn-table-filter-link bbn-p bbn-b bbn-i bbn-w-100 bbn-bottom-padding bbn-left-padding bbn-right-padding bbn-r"
+         @click="openMultiFilter">
+      <i class="zmdi zmdi-filter-list"/>
+      <span bbn-text="_('Open the full filter')"/>
+    </div>
+  </bbn-floater>
+  <bbn-popup ref="popup" bbn-if="inTable === false"/>
+  <bbn-floater bbn-if="focusedElement && (editMode === 'inline') && editedRow"
+               class="bbn-widget"
+               :element="focusedElement"
+               :scrollable="true"
+               tabindex="-1"
+               :left="focusedElementX"
+               :top="focusedElementY">
+    <bbn-button :label="_('Save')"
+                :disabled="!isEditedValid"
+                icon="nf nf-fa-save"
+                :notext="true"
+                @click.prevent.stop="saveInline"
+                style="margin: 0 .1rem"
+                tabindex="-1"/>
+    <bbn-button :label="_('Cancel')"
+                icon="nf nf-md-close_thick"
+                :notext="true"
+                @click.prevent.stop="cancel"
+                style="margin: 0 .1rem"
+                tabindex="-1"/>
+  </bbn-floater>
+</div>

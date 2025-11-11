@@ -16,7 +16,7 @@ export default class bbnHtml extends HTMLElement
   }
 
   get $node() {
-    return this.bbnSchema;
+    return this.bbnNode;
   }
 
   get $cls() {

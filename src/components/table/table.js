@@ -17,6 +17,7 @@
 
 import aggregation from './_mixins/aggregation.js';
 import buttons from './_mixins/buttons.js';
+import cell from './_mixins/cell.js';
 import columns from './_mixins/columns.js';
 import config from './_mixins/config.js';
 import data from './_mixins/data.js';
@@ -28,6 +29,7 @@ import filter from './_mixins/filter.js';
 import group from './_mixins/group.js';
 import init from './_mixins/init.js';
 import picker from './_mixins/picker.js';
+import row from './_mixins/row.js';
 import selection from './_mixins/selection.js';
 import size from './_mixins/size.js';
 import sort from './_mixins/sort.js';
@@ -58,6 +60,7 @@ const cpDef = {
     bbn.cp.mixins.data,
     aggregation,
     buttons,
+    cell,
     columns,
     config,
     data,
@@ -69,6 +72,7 @@ const cpDef = {
     group,
     init,
     picker,
+    row,
     selection,
     size,
     sort,
@@ -419,7 +423,7 @@ const cpDef = {
     if (this.$slots.default) {
       //bbn.fn.log("SLOTS TABLE CREATED", this.$slots, this.$el.bbnSlots);
       for (let node of this.$slots.default) {
-        if (node.bbnSchema?.tag === 'tr') {
+        if (node.bbnNode?.tag === 'tr') {
           this.hasTrSlot = true;
           break;
         }
@@ -455,18 +459,10 @@ const cpDef = {
     if (floater) {
       if (floater.ready) {
         this.init();
-        this.$once('dataloaded', () => {
-          this.ready = true;
-          floater.onResize();
-        });
       }
       else {
         floater.$on('ready', () => {
           this.init();
-          this.$once('dataloaded', () => {
-            this.ready = true;
-            floater.onResize();
-          });
         });
       }
       if (this.isAutobind) {
@@ -474,9 +470,6 @@ const cpDef = {
       }
     }
     else {
-      this.$once('dataloaded', () => {
-        this.ready = true;
-      });
       this.init(!!this.isAutobind);
     }
 

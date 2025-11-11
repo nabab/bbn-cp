@@ -1,3 +1,5 @@
+import bbn from "@bbn/bbn";
+
 export default {
   props: {
     /**
@@ -126,19 +128,11 @@ export default {
         return;
       }
 
-      const now = bbn.fn.timestamp();
-      if (this.lastColumnRebuild && (this.lastSentColumnVisible !== this.lastColumnVisible)) {
-        this.lastSentColumnVisible = this.lastColumnVisible;
-        this.columnRebuildTimeout = setTimeout(() => {
-          this.updateShownCols();
-        }, this.columnRebuildDelay);
-        return;
-      }
-
-      this.columnRebuildTimeout = setTimeout(() => {
+      const fn = () => {
         this.isUpdatingShownCols = true;
         if (!this.hasScrollX || this.groupable) {
           const shownCols = this.groupCols[1].cols.map((a, i) => i);
+
           this.lastColumnVisible = this.shownCols[this.shownCols.length - 1];
           if (!this.groupCols[0].cols.length) {
             shownCols.shift();
@@ -158,10 +152,7 @@ export default {
 
 
         const cols = [];
-        let first = this.firstColumnVisible;
-        if (!first && !this.groupCols[1].cols.length) {
-          first = 1;
-        }
+        let first = this.firstColumnVisible || 0;
         const last = this.lastColumnVisible;
         if (last > first) {
           for (let i = first; i <= last; i++) {
@@ -169,23 +160,45 @@ export default {
           }
         }
 
-        this.shownCols = cols;
         this.lastColumnRebuild = bbn.fn.timestamp();
         this.$nextTick(() => {
           if (this.columnRebuildCancel) {
             this.columnRebuildCancel = false;
           }
           else {
-            bbn.fn.each(this.visibleRows, r => {
-              if (r.$namespaces.updateSequences === 'method') {
-                r.updateSequences();
+        //bbn.fn.log("UPDATING " + this.visibleRows.length + '/' + this.visibleRows.filter(tr => !!bbn.fn.getRow(this.currentRows, a => a.tr === tr).visible).length + " SEQUENCES FOR VISIBLE ROW FROM " + this.firstColumnVisible + " TO " + this.lastColumnVisible, this.rowsShownFinished);
+            for (let tr of this.visibleRows) {
+              const index = parseInt(tr.dataset.index);
+              const row = this.items[index];
+              if (row.visible || !this.rowsShownFinished) {
+                this.updateSequences(row);
               }
-            });
+
+              if (this.columnRebuildCancel) {
+                this.columnRebuildCancel = false;
+                break;
+              }
+            }
+            if (this.columnRebuildCancel) {
+              this.columnRebuildCancel = false;
+            }
+            else {
+              this.shownCols = cols;
+            }
             //bbn.fn.log(['updateShownCols', this.firstColumnVisible, this.lastColumnVisible, cols]);
           }
           this.isUpdatingShownCols = false;
         })
-      });
+      };
+
+      if (this.rowsShownFinished) {
+        this.columnRebuildTimeout = setTimeout(() => {
+          fn();
+        }, 250);
+      }
+      else {
+        fn();
+      }
     },
     updateScrollCurrentY() {
       if (this.$refs.scroll?.$refs) {
@@ -207,8 +220,10 @@ export default {
     },
     onScrollMounted() {
       this.setScrollIntersection();
-      this.scrollIsMounted = true;
-      this.$emit('scroll-mounted');
+      this.$nextTick(() => {
+        this.scrollIsMounted = true;
+        this.$emit('scroll-mounted');
+      });
     },
     onScrollBeforeDestroy() {
       bbn.fn.log("ON SCROLL BEFORE DESTROY");
@@ -227,48 +242,53 @@ export default {
           if (!this.checkVisibility()) {
             return;
           }
-          const cols = this.groupCols[1].cols;
+          const cols = this.currentColumns;
           if ((this.scrollCurrentX === null) && hasScrollX) {
             this.scrollCurrentX = this.$refs.scroll.currentX;
           }
 
           const currentScrollX = hasScrollX ? this.$refs.scroll.$refs.scrollContent.scrollLeft : 0;
           const isLeft = currentScrollX < this.scrollCurrentX;
+          //bbn.fn.log(['SCROLL INTERSECTION', currentScrollX, this.scrollCurrentX, isLeft]);
 
           let isFirst = this.firstColumnVisible === null;
           let firstVisible = null;
           let lastVisible = null;
+          let hasCells = false;
+          let firstColumnVisible = this.firstColumnVisible;
+          let lastColumnVisible = this.lastColumnVisible;
 
           entries.forEach(entry => {
-            const isInit = entry.target.visible === null;
             // Going in
             if (entry.intersectionRatio > 0) {
               // Row
               if (scrollable && entry.target instanceof HTMLTableRowElement) {
-                entry.target.intersectionEnter();
+                this.intersectionEnterRow(entry.target);
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
-                entry.target.visible = true;
-                if (entry.target.groupIndex === 1) {
-                  // Init
+                hasCells = true;
+                const isInit = entry.target.dataset.visible === 'undefined';
+                const index = parseInt(entry.target.dataset.index);
+                entry.target.dataset.visible = 1;
+                if (entry.target.dataset.groupIndex == 1) {
                   if (isInit) {
                     if (firstVisible === null) {
-                      firstVisible = entry.target.index;
+                      firstVisible = index;
                     }
                     else {
-                      lastVisible = entry.target.index;
+                      lastVisible = index;
                     }
                   }
                   // Going left
                   else if (isLeft) {
-                    if ((firstVisible === null) || (entry.target.index < firstVisible)) {
-                      firstVisible = entry.target.index;
+                    if ((firstVisible === null) || (index < firstVisible)) {
+                      firstVisible = index;
                     }
                   }
                   // Going right
-                  else if ((lastVisible === null) || (entry.target.index > lastVisible)) {
-                    lastVisible = entry.target.index;
+                  else if ((lastVisible === null) || (index > lastVisible)) {
+                    lastVisible = index;
                   }
                 }
               }
@@ -277,77 +297,72 @@ export default {
             else {
               // Row
               if (scrollable && entry.target instanceof HTMLTableRowElement) {
-                entry.target.intersectionExit();
+                this.intersectionExitRow(entry.target);
               }
               // Title cells (columns)
               else if (hasScrollX && entry.target instanceof HTMLTableCellElement) {
-                entry.target.visible = false;
+                entry.target.dataset.visible = 0;
               }
             }
           });
 
-          const max = this.groupCols[1].cols.length - 1;
-          let pvW = 0;
-          let isDiff;
-          if (isFirst) {
-            isDiff = (this.firstColumnVisible !== firstVisible) || (this.lastColumnVisible !== lastVisible);
-            this.groupCols[1].cols.slice(firstVisible, lastVisible + 1).forEach(c => pvW += c.realWidth);
-            this.intersectionWidth = this.lastKnownWidth;
-            this.firstColumnVisible = firstVisible;
-            this.lastColumnVisible = lastVisible;
-          }
-          else if (lastVisible !== null) {
-            for (let i = lastVisible; i >= 0; i--) {
-              pvW += cols[i].realWidth;
-              if (!i || (pvW >= this.intersectionWidth)) {
-                if (i < 10) {
-                  i = 0;
-                }
-                isDiff = (this.firstColumnVisible !== i) || (this.lastColumnVisible !== this.groupCols[1].cols[lastVisible] ? lastVisible : this.groupCols[1].cols.length - 1);
-                this.firstColumnVisible = i;
-                this.lastColumnVisible = this.groupCols[1].cols[lastVisible] ? lastVisible : this.groupCols[1].cols.length - 1;
-                break;
-              }
-            }
-          }
-          else if (firstVisible !== null) {
-            for (let i = firstVisible; i <= max; i++) {
-              pvW += cols[i].realWidth;
-              if ((i === max) || (pvW >= this.intersectionWidth)) {
-                if (i > max - 10) {
-                  i = max;
-                }
-                isDiff = (this.firstColumnVisible !== firstVisible) || (this.lastColumnVisible !== i);
-                this.firstColumnVisible = firstVisible > 0 ? firstVisible : 0;
-                this.lastColumnVisible = i;
-                break;
-              }
-            }
-          }
 
-          if (isDiff) {
-            this.updateShownCols();
-          }
-          
-          //bbn.fn.log("INTERSECTION", this.firstColumnVisible, this.lastColumnVisible, isLeft);
-          this.scrollCurrentX = currentScrollX;
-        }, {
-          root: this.$refs.scroll.$refs.scrollContent,
-          delay: 100,
-          threshold: 0.0,
-        });
-        this.rowSizeObserver = new ResizeObserver(entries => {
-          for (const e of entries) {
-            if (e.target.ready && (!e.target.rowHeight || (e.target.rowHeight < e.contentRect.height))) {
-              const ele = e.target;
-              const h = e.contentRect.height;
-              if (ele?.ready && (!ele.rowHeight || (ele.rowHeight < h))) {
-                ele.rowHeight = h;
-                //bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
-              }
-              //bbn.fn.log("ROW " + e.target.index + " SET TO " + e.target.rowHeight);
+          if (hasCells) {
+            const max = this.currentColumns.length - this.groupCols[2].cols.length - 1;
+            let pvW = 0;
+            let isDiff;
+            if (isFirst) {
+              isDiff = (firstColumnVisible !== firstVisible) || (lastColumnVisible !== lastVisible);
+              this.currentColumns.slice(firstVisible, lastVisible + 1).forEach(c => pvW += parseInt(c.realWidth));
+              this.intersectionWidth = this.lastKnownWidth;
+              firstColumnVisible = firstVisible;
+              lastColumnVisible = lastVisible;
             }
+            else if (lastVisible !== null) {
+              for (let i = lastVisible; i >= 0; i--) {
+                pvW += parseInt(cols[i].realWidth);
+                if (!i || (pvW >= this.intersectionWidth)) {
+                  if (i < 10) {
+                    i = this.groupCols[0].cols.length;
+                  }
+                  isDiff = (firstColumnVisible !== i) || (lastColumnVisible !== this.currentColumns[lastVisible] ? lastVisible : this.currentColumns.length - 1);
+                  firstColumnVisible = i;
+                  lastColumnVisible = this.currentColumns[lastVisible] ? lastVisible : this.currentColumns.length - 1;
+                  break;
+                }
+              }
+            }
+            else if (firstVisible !== null) {
+              for (let i = firstVisible; i <= max; i++) {
+                pvW += parseInt(cols[i].realWidth);
+                if ((i === max) || (pvW >= this.intersectionWidth)) {
+                  if (i > max - 10) {
+                    i = max;
+                  }
+                  isDiff = (firstColumnVisible !== firstVisible) || (lastColumnVisible !== i);
+                  firstColumnVisible = firstVisible > 0 ? firstVisible : 0;
+                  lastColumnVisible = i;
+                  break;
+                }
+              }
+            }
+
+            //bbn.fn.log('SCROLL INTER: ' + this.firstColumnVisible + ' - ' + this.lastColumnVisible + ' - ' + pvW);
+            if (isDiff) {
+              if (!this.lastColumnVisible || (firstColumnVisible < this.firstColumnVisible) || (lastColumnVisible > this.lastColumnVisible)) {
+                this.firstColumnVisible = firstColumnVisible;
+                this.lastColumnVisible = lastColumnVisible;
+                this.updateShownCols();
+              }
+            }
+            
+            //bbn.fn.log("INTERSECTION", this.firstColumnVisible, this.lastColumnVisible, isLeft);
+            this.scrollCurrentX = currentScrollX;
           }
+        }, {
+          root: this.$refs.scroll,
+          threshold: 0.001,
+          rootMargin: '0px'//this.$refs.scroll.$refs.scrollContent.offsetHeight + 'px ' + this.$refs.scroll.$refs.scrollContent.offsetWidth + 'px'
         });
       }
     },
@@ -466,7 +481,6 @@ export default {
           if (a.maxWidth) {
             maxWidth = this.getDimensionWidth(a.maxWidth)
           }
-          a.index = i;
           if (a.invisible) {
             a.realWidth = 0;
           }
@@ -580,8 +594,13 @@ export default {
         groupCols[firstGroup].visible++;
       }
 
+      let i = 0;
       bbn.fn.each(groupCols, a => {
         a.sum = bbn.fn.sum(a.cols, 'realWidth');
+        bbn.fn.each(a.cols, b => {
+          b.index = i;
+          i++;
+        });
       });
       this.cols = cols;
       this.groupCols = groupCols;

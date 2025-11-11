@@ -71,7 +71,7 @@ bbnAttr.prototype.attrExecAltError = function(data, subExec = false) {
           }
 
           if (!isInData && (arg in cp.$namespaces) && (cp.$namespaces[arg] !== 'method')) {
-            def += `    ${arg}: bbn.cp.hash(${arg}),\n`;
+            def += `    ${arg}: bbnData.hash(${arg}),\n`;
           }
         });
         if (def) {
@@ -96,7 +96,7 @@ bbnAttr.prototype.attrExecAltError = function(data, subExec = false) {
           }
 
           if (!isInData && (arg in cp.$namespaces) && (cp.$namespaces[arg] !== 'method')) {
-            stFn += `  if ($_bbnData['${arg}'] !== bbn.cp.hash(${arg})) {\n`;
+            stFn += `  if ($_bbnData['${arg}'] !== bbnData.hash(${arg})) {\n`;
             stFn += `    this['${arg}'] = ${arg};\n`;
             stFn += `  }\n`;
           }
