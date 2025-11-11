@@ -202,7 +202,6 @@ const editableList = {
      * @fires _addTmp
      */
     edit(row, winOptions, index) {
-      bbn.fn.log(["EDIT FROM MIXIN", row, winOptions, index]);
       if (!this.editable) {
         throw new Error(bbn._("The component is not editable, you cannot use the edit function"));
       }

@@ -19,8 +19,7 @@ export default class bbnIsAttr extends bbnAttr
   }
 
   attrUpdate() {
-    if (this.isChanged) {
-      if (this.realTag === 'bbn-anon') {
+    if (this.isChanged && (this.realTag === 'bbn-anon')) {
         if (bbn.fn.isObject(this.attrGetValue())) {
           Object.defineProperty(this.node, 'cfg', {
             value: bbn.cp.normalizeComponent(this.attrGetValue()),
@@ -29,11 +28,6 @@ export default class bbnIsAttr extends bbnAttr
           });
         }
       }
-      else if (!this.node.comment && !this.node.isCreating) {
-        this.node.nodeRemove(this.node.element);
-        this.node.nodeInit();
-      }
-    }
 
     /*
     if (this.isChanged && !this.node.isCreating && this.node.element) {
