@@ -135,11 +135,18 @@ export default {
       //bbn.fn.warning("ROUTING " + url + ' / CURRENT: ' + this.router.currentURL + ' / FULL: ' + this.router.getFullCurrentURL() + ' / FINAL: ' + finalURL);
       this.isLoading = true;
       this.router.$emit('update', this.router.views);
-      const row = await this.router.db.select('routercache', ['response'], {url: (this.router.postBaseUrl ? this.router.fullBaseURL : '') + '|' + finalURL});
+      let testURL = finalURL;
+      let row;
+      while (!row?.response && testURL) {
+        bbn.fn.log("TESTING URL " + testURL);
+        row = await this.router.db.select('routercache', ['response'], {url: (this.router.postBaseUrl ? this.router.fullBaseURL : '') + '|' + testURL});
+        if (!row?.response) {
+          testURL = testURL.substring(0, testURL.lastIndexOf('/'));
+        }
+      }
       let d;
       if (row?.response) {
         d = JSON.parse(row.response);
-
         this.isLoaded = true;
         this.isLoading = false;
       }
@@ -183,10 +190,10 @@ export default {
   
             d.label = label;
           }
-          if (d.hash) {
+          if (d.hash && d.url && d.content && d.script) {
             const json = JSON.stringify(d);
             await this.router.db.insert('routercache', {
-              url: (this.router.postBaseUrl ? this.router.fullBaseURL + '|' : '') + finalURL,
+              url: (this.router.postBaseUrl ? this.router.fullBaseURL + '|' : '') + d.url,
               response: json,
               hash: d.hash,
               date: Date.now(),
