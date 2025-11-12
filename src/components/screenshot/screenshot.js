@@ -16,8 +16,19 @@ const cpDef = {
   statics() {
     return {htmlToImage, snapdom};
   },
+  props: {
+    messages: {
+      type: Boolean,
+      default: false
+    }
+  },
   methods: {
     async capture(ele, width, height, meth = 'png') {
+      if (!bbn.env.isFocused) {
+        return;
+      }
+
+      await bbn.fn.yieldToBrowser();
       let fn;
       switch (meth) {
         case 'jpeg':
@@ -32,6 +43,8 @@ const cpDef = {
         default:
           fn = snapdom.toPng;
       }
+
+      const idMdg = this.messages ? appui.info(bbn._('Preparing screenshot...')) : null;
 
       return new Promise((resolve) => {
         ele.classList.add('bbn-screenshot-element');
@@ -58,16 +71,25 @@ const cpDef = {
               //bbn.fn.log("RESPONSE", img)
               ele.classList.remove('bbn-screenshot-element');
               resolve(img || false);
+              if (idMdg) {
+                appui.closeNotification(idMdg);
+              }
             }).catch(e => {
               bbn.fn.log("There has been an error2", e);
               ele.classList.remove('bbn-screenshot-element');
               resolve(false);
+              if (idMdg) {
+                appui.closeNotification(idMdg);
+              }
             })
           }
           catch (e) {
             bbn.fn.log("There has been an error", e);
             ele.classList.remove('bbn-screenshot-element');
             resolve(false);
+            if (idMdg) {
+              appui.closeNotification(idMdg);
+            }
           }
         }, 100)
       });

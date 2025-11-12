@@ -85,6 +85,7 @@ export default {
   },
   data() {
     return {
+      oldUrl: '',
       /**
        * IndexedDb connection (Used by containers)
        * @return {Object} 
@@ -388,6 +389,9 @@ export default {
     * @returns {void}
     */
     async route(url, force) {
+      if (this.router === this) {
+        this.oldUrl = this.currentURL;
+      }
       //bbn.fn.warning("ROUTING " + url + ' / CURRENT: ' + this.currentURL);
       if (!bbn.fn.isString(url)) {
         throw new Error(bbn._('The component bbn-container must have a valid URL defined (URL is not a string)'));

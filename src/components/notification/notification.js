@@ -229,16 +229,18 @@ const cpDef = {
        * @method add
        * @param {Object} o
        */
-      add(o) {
-        o = this._sanitize(o);
+      add(obj, type, timeout) {
+        const o = this._sanitize(obj, type, timeout);
         let idx = bbn.fn.search(this.items, {
           content: o.content,
           type: o.type,
           icon: o.icon,
         });
+        let id = o.id;
         if (idx > -1) {
           this.items[idx].num++;
           if (idx !== (this.items.length - 1)) {
+            id = this.items[idx].id;
             this.items.push(...this.items.splice(idx, 1));
           }
         }
@@ -257,7 +259,7 @@ const cpDef = {
           }, 250)
         }
 
-
+        return id;
       },
       /**
        * @method close
@@ -286,8 +288,7 @@ const cpDef = {
         if ( !timeout ){
           timeout = this.delay;
         }
-        o = this._sanitize(o, 'success', timeout);
-        this.add(o);
+        return this.add(o, 'success', timeout);
       },
       /**
        * @method error
@@ -297,8 +298,7 @@ const cpDef = {
        * @fires add
        */
       error(o, timeout){
-        o = this._sanitize(o, 'error', timeout);
-        this.add(o);
+        return this.add(o, 'error', timeout);
       },
       /**
        * @method warning
@@ -308,8 +308,7 @@ const cpDef = {
        * @fires add
        */
       warning(o, timeout){
-        o = this._sanitize(o, 'warning', timeout);
-        this.add(o);
+        return this.add(o, 'warning', timeout);
       },
       /**
        * @method show
@@ -320,8 +319,7 @@ const cpDef = {
        * @fires add
        */
       show(o, type, timeout){
-        o = this._sanitize(o, type, timeout);
-        this.add(o);
+        return this.add(o, type, timeout);
       },
       /**
        * @method info
@@ -331,8 +329,7 @@ const cpDef = {
        * @fires add
        */
       info(o, timeout){
-        o = this._sanitize(o, 'info', timeout);
-        this.add(o);
+        return this.add(o, 'info', timeout);
       },
     }
   };

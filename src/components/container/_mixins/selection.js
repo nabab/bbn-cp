@@ -152,7 +152,7 @@ export default {
       }
       else {
         this.router.$emit("load", url);
-        let dataObj = this.router.postBaseUrl ? { _bbn_baseURL: this.router.fullBaseURL } : {};
+        let dataObj = this.router.postBaseUrl ? { _bbn_referer: this.router.router.oldUrl, _bbn_baseURL: this.router.fullBaseURL } : {};
         let response;
         try {
           response = await bbn.fn.post(finalURL, dataObj);

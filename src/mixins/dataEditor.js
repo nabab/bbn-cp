@@ -18,6 +18,7 @@ const dataEditor = {
         gt: bbn._('Is greater than'),
         lte: bbn._('Is less than or equal to'),
         lt: bbn._('Is inferior to'),
+        between: bbn._('Is between'),
       },
       date: {
         eq: bbn._('Is equal to'),
@@ -26,6 +27,7 @@ const dataEditor = {
         gt: bbn._('Is after'),
         lte: bbn._('Is prior to or equal to'),
         lt: bbn._('Is older than'),
+        between: bbn._('Is between'),
       },
       enum: {
         eq: bbn._('Is equal to'),

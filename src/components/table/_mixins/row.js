@@ -240,10 +240,6 @@ export default {
         hash: lastSequence,
         sequences: seq
       };
-
-      this.$nextTick(() => {
-        row.height = row.tr.offsetHeight;
-      });
     },
     setSequences(row) {
       const sequences = [];

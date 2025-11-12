@@ -688,6 +688,17 @@ const cpDef = {
       bbn.fn.log("NOTIFICATION: " + type, obj);
     },
     /**
+     * Summary: Closes a notification by id.
+     * @method closeNotification
+     * @param {String} id Notification unique id
+     */
+    closeNotification(id) {
+      let notification = this.getRegistered("notification");
+      if (notification) {
+        return notification.close(id);
+      }
+    },
+    /**
      * Summary: Shortcut to show error notification.
      * @method error
      * @param {Object} obj
