@@ -623,19 +623,34 @@ const cpDef = {
         if (this.scrollInitial && (this.scrollInitial.touched === true)) {
           // Removing the finishing delay in case it was pre-recorded
           clearTimeout(this.scrollTimeout);
+          this.isScrolling = false;
           return;
         }
+
         // Not acting for events sent by scrollTo (scrollbars will write in nextLevel)
-        if (this.hasScrollX && this.$refs.xScroller && bbn.fn.isNumber(this.$refs.xScroller.nextLevel) && (Math.abs(this.currentX-this.$refs.xScroller.nextLevel) < 2)) {
+        if (this.hasScrollX
+          && this.$refs.xScroller
+          && bbn.fn.isNumber(this.$refs.xScroller.nextLevel)
+          && (Math.abs(this.currentX-this.$refs.xScroller.nextLevel) < 2)
+        ) {
+          this.isScrolling = false;
           return;
         }
+
         // Not acting for events sent by scrollTo (scrollbars will write in nextLevel)
-        if (this.hasScrollY && this.$refs.yScroller && bbn.fn.isNumber(this.$refs.yScroller.nextLevel) && (Math.abs(this.currentY-this.$refs.yScroller.nextLevel) < 2)) {
+        if (this.hasScrollY
+          && this.$refs.yScroller
+          && bbn.fn.isNumber(this.$refs.yScroller.nextLevel)
+          && (Math.abs(this.currentY-this.$refs.yScroller.nextLevel) < 2)
+        ) {
+          this.isScrolling = false;
           return;
         }
+
         if (!this.scrollInitial) {
           this.scrollInitial = {x: this.currentX, y: this.currentY};
         }
+
         this.setScrollDelay();
       }
       if (this.scrollable && e) {

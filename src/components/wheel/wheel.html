@@ -13,7 +13,7 @@
       <div class="bbn-middle bbn-wheel-item">
         <span>&nbsp;</span>
       </div>
-      <div bbn-if="filteredData.length"
+      <div bbn-if="filteredData?.length"
            :class="['bbn-middle', 'bbn-wheel-item', {'bbn-primary': !isNull(value)}]"
            ref="bar">
         <span>&nbsp;</span>
@@ -29,7 +29,8 @@
         <span>&nbsp;</span>
       </div>
     </div>
-    <bbn-scroll :full-page="true"
+    <bbn-scroll bbn-if="filteredData?.length"
+                :full-page="true"
                 ref="scroll"
                 axis="y"
                 @ready="onScrollReady"
@@ -39,16 +40,14 @@
                 :after-scroll-delay="100"
                 :invisible="true"
                 class="bbn-rel">
-      <template bbn-if="filteredData?.length">
-        <div class="bbn-middle bbn-wheel-item"
-              ref="top0">
-          <span>&nbsp;</span>
-        </div>
-        <div class="bbn-middle bbn-wheel-item"
-              ref="top1">
-          <span>&nbsp;</span>
-        </div>
-      </template>
+      <div class="bbn-middle bbn-wheel-item"
+            ref="top0">
+        <span>&nbsp;</span>
+      </div>
+      <div class="bbn-middle bbn-wheel-item"
+            ref="top1">
+        <span>&nbsp;</span>
+      </div>
       <div bbn-for="(o, i) in filteredData"
           :class="['bbn-middle', 'bbn-wheel-item', {
             'bbn-p': o.data[sourceValue] !== value,
@@ -59,16 +58,14 @@
         <bbn-wheel-itemspan :text="o.data[sourceText]"
                             :index="o.index"/>
       </div>
-      <template bbn-if="filteredData?.length">
-        <div class="bbn-middle bbn-wheel-item"
-             ref="bottom0">
-          <span>&nbsp;</span>
-        </div>
-        <div class="bbn-middle bbn-wheel-item"
-             ref="bottom1">
-          <span>&nbsp;</span>
-        </div>
-      </template>
+      <div class="bbn-middle bbn-wheel-item"
+            ref="bottom0">
+        <span>&nbsp;</span>
+      </div>
+      <div class="bbn-middle bbn-wheel-item"
+            ref="bottom1">
+        <span>&nbsp;</span>
+      </div>
     </bbn-scroll>
   </div>
   <bbn-button icon="nf nf-fa-chevron_down"
