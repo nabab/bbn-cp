@@ -78,11 +78,18 @@ export default {
      */
     getFilterOptions() {
       if (this.currentFilter) {
-        let o = this.editorGetComponentOptions(this.currentFilter);
-        if (o.field) {
-          o.conditions = this.getColFilters(this.currentFilter);
+        let opr;
+        let conditions;
+        if (this.currentFilter.field) {
+          conditions = this.getColFilters(this.currentFilter);
+          if (conditions.length && conditions[0].operator) {
+            opr = conditions[0].operator;
+          }
         }
-        if (o.conditions.length) {
+        bbn.fn.log("getFilterOptions", this.currentFilter);
+        let o = this.editorGetComponentOptions(this.currentFilter, opr);
+        if (conditions?.length && o) {
+          o.conditions = conditions;
           o.value = o.conditions[0].value;
           o.operator = o.conditions[0].operator;
           this.editedFilter = o.conditions[0];

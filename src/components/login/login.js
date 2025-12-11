@@ -274,6 +274,11 @@ const cpDef = {
             this.alert(bbn._('An email has been sent to %s', this.currentFormData.email), false);
           }
         }
+        else if (d.saltError) {
+          this.alert(bbn._('The login session has expired, the page will be reloaded so you can log in again.'), false, () => {}, () => {
+            window.document.location.href = window.document.location.href;
+          });
+        }
         else {
           this.alert(d.errorMessage, false);
         }

@@ -80,7 +80,7 @@ const dataEditor = {
      * @memberof dataEditorComponent
      * @returns {Object}
      */
-    editorGetComponentOptions(col){
+    editorGetComponentOptions(col, operator){
       let o = {
         type: 'string',
         component: 'bbn-input',
@@ -113,15 +113,22 @@ const dataEditor = {
               break;
             case 'date':
               o.type = 'date';
-              o.component = 'bbn-datepicker';
+              o.component = operator === 'between' ? 'bbn-daterangepicker' : 'bbn-datepicker';
               break;
             case 'time':
-              o.type = 'date';
-              o.component = 'bbn-timepicker';
+              o.type = 'time';
+              o.component = operator === 'between' ? 'bbn-timerangepicker' : 'bbn-timepicker';
               break;
             case 'datetime':
               o.type = 'date';
-              o.component = 'bbn-datetimepicker';
+              if (operator === 'between') {
+                o.component = 'bbn-daterangepicker';
+                o.componentOptions.time = true;
+              }
+              else {
+                o.component = 'bbn-datepicker';
+              }
+              
               break;
           }
         }

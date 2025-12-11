@@ -23,14 +23,16 @@
   <bbn-button icon="nf nf-fa-calendar"
               @click="showCalendar"
               :disabled="isDisabled || readonly"
+              ref="button1"
               class="bbn-datetimepicker-calendar bbn-no-vborder bbn-no-border-right"
               tabindex="-1"/>
   <bbn-button icon="nf nf-fa-clock_o"
               @click="showTime"
+              ref="button2"
               :disabled="isDisabled || readonly"
               class="bbn-datetimepicker-clock bbn-button-right bbn-no-vborder"/>
   <bbn-floater bbn-if="isCalendarOpened && !isDisabled && !readonly"
-               :element="$el"
+               :element="$refs.button1"
                :auto-hide="1000"
                ref="calendarFloater"
                @close="isCalendarOpened = false">
@@ -49,7 +51,7 @@
                   :element-width="false"/>
   </bbn-floater>
   <bbn-floater bbn-if="isTimeOpened && !isDisabled && !readonly"
-               :element="$el"
+               :element="$refs.button2"
                ref="timeFloater"
                @close="isTimeOpened = false"
                max-width="15rem"

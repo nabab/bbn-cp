@@ -3,13 +3,25 @@
      tabindex="-1">
   <div bbn-if="readonly || disabled"
        bbn-html="compiled"/>
-  <textarea bbn-else
-            :value="value"
-            :tabindex="currentTabIndex"
-            :name="name"
+  <template bbn-else>
+    <input type="hidden"
+           :required="required"
+           :name="name"
+           :disabled="isDisabled"
+           ref="input"
+           :value="value"/>
+    <div bbn-if="toolbar"
+         class="bbn-w-100 bbn-radius-top"
+         ref="toolbar"
+         style="overflow: hidden"/>
+    <div :class="['bbn-w-100', {'bbn-radius-bottom': !!toolbar, 'bbn-radius': !toolbar}]"
+         style="overflow: hidden">
+      <div :value="value"
             :tabindex="currentTabIndex"
             ref="element"
             :placeholder="placeholder"
             :disabled="isDisabled"
             :required="required"/>
+    </div>
+  </template>
 </div>

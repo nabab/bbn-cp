@@ -65,9 +65,6 @@ bbnNode.prototype.nodeRemove = function(ele, noTransition) {
   if (ele.bbnIsStart || ele.bbnIsEnd) {
     return;
   }
-  if (ele.tag === 'apst-adherent') {
-    debugger;
-  }
   /*
   if (ele.bbnDirectives && (ele.bbnNode?.directives?.['bbn-portal']?.value === ele.parentNode)) {
     const parent = ele.parentNode;

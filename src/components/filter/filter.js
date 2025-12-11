@@ -195,7 +195,7 @@ const cpDef = {
          * The current operator.
          * @data currentOperator
          */
-        currentOperator: this.operator !== undefined ? this.value : null
+        currentOperator: this.operator !== undefined ? this.operator : null
       };
     },
     computed: {
@@ -301,7 +301,7 @@ const cpDef = {
         if ( cd && cd.field ){
           const f = bbn.fn.getRow(this.fields, {field: cd.field});
           if (f){
-            let type = this.editorGetComponentOptions(f).type;
+            let type = this.editorGetComponentOptions(f, cd.operator).type;
             st += '<strong>' +
               (f.flabel ? f.flabel : (f.label ? f.label : cd.field)) +
               '</strong> ' +
@@ -408,8 +408,7 @@ const cpDef = {
       /**
        * @component bbn-filter-form
        */
-      'bbn-filter-form': {
-        name: 'bbn-filter-form',
+      'form': {
         /**
          * @mixin bbn.cp.mixins.dataEditor
          * @memberof bbn-filter-form
@@ -695,6 +694,27 @@ const cpDef = {
           unset(){
             this._unset();
             this.$parent.$emit('unset')
+          },
+          async updateComponent() {
+            let fieldObj = bbn.fn.getRow(this.fields, {field: this.currentField});
+
+            let o = this.editorGetComponentOptions(fieldObj, this.currentOperator);
+            if (!fieldObj || (o.type !== this.currentType) || (o.component !== this.currentComponent) || (JSON.stringify(o.componentOptions) !== JSON.stringify(this.currentComponentOptions))) {
+              if (o.type !== this.currentType) {
+                this.currentType = '';
+              }
+              this.currentComponent = false;
+              this.currentComponentOptions = {};
+              await bbn.cp.nextFrame();
+              if (fieldObj && o) {
+                await bbn.cp.nextFrame();
+                this.$nextTick(() => {
+                  this.currentType = o.type;
+                  this.currentComponent = o.component;
+                  this.currentComponentOptions = o.componentOptions;
+                });
+              }
+            }
           }
         },
         /**
@@ -708,7 +728,7 @@ const cpDef = {
           if ( this.field && bbn.fn.isArray(this.fields) && this.fields.length && !this.component ){
             let fieldObj = bbn.fn.getRow(this.fields, {field: this.field});
             if ( fieldObj ){
-              let o = this.editorGetComponentOptions(fieldObj);
+              let o = this.editorGetComponentOptions(fieldObj, this.currentOperator || this.operator);
               if ( o ){
                 if ( o.type !== this.currentType ){
                   this.currentType = o.type;
@@ -738,21 +758,11 @@ const cpDef = {
            * @fires editorGetComponentOptions
            * @memberof bbn-filter-form
            */
-          currentField(newVal){
-            let fieldObj = bbn.fn.getRow(this.fields, {field: newVal});
-            if ( fieldObj ){
-              let o = this.editorGetComponentOptions(fieldObj);
-              if ( o ){
-                this.currentType = o.type;
-                this.currentComponent = o.component;
-                this.currentComponentOptions = o.componentOptions;
-              }
-            }
-            else {
-              this.currentType = '';
-              this.currentComponent = false;
-              this.currentComponentOptions = {};
-            }
+          currentField(){
+            this.updateComponent();
+          },
+          currentOperator() {
+            this.updateComponent();
           }
         }
       }

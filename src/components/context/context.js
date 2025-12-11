@@ -110,6 +110,14 @@ const cpDef = {
         default: false
       },
       /**
+       * If set to true the floater will be opened automatically when the component is mounted.
+       * @prop {Boolean} [true] visible
+       */
+      visible: {
+        type: Boolean,
+        default: false
+      },
+      /**
        * The name of the property to be used as action to execute when selected.
        * @prop {String} sourceAction
        * @memberof listComponent
@@ -127,6 +135,10 @@ const cpDef = {
       },
       zIndex: {
         type: Number
+      },
+      modal: {
+        type: Boolean,
+        default: false
       }
     },
     data(){
@@ -135,7 +147,7 @@ const cpDef = {
          * True if the floating element of the menu is opened.
          * @data {Boolean} [false] showFloater
          */
-        showFloater: false,
+        showFloater: this.visible,
         /**
          * @data {Boolean} [false] docEvent
          */
@@ -147,14 +159,26 @@ const cpDef = {
         currentMinWidth: this.minWidth || 0,
         currentMaxWidth: this.maxWidth || bbn.env.width,
         currentMinHeight: this.minHeight || 0,
-        currentMaxHeight: this.maxHeight || bbn.env.height
+        currentMaxHeight: this.maxHeight || bbn.env.height,
+        isOpenedByEvent: null
       };
+    },
+    computed: {
+      currentAttachment() {
+        if (this.attach) {
+          return this.attach;
+        }
+
+        if (!this.isOpenedByEvent) {
+          return this.$el;
+        }
+      }
     },
     methods: {
       touchstart(e) {
         bbn.fn.log("TOUCH START", e);
       },
-      touchmovet(e) {
+      touchmove(e) {
         bbn.fn.log("TOUCH MOVe", e);
       },
       touchend(e) {
@@ -205,28 +229,46 @@ const cpDef = {
               e.stopPropagation();
             }
             if (!this.showFloater && !this.attach) {
-              if (e.pageX > bbn.env.width / 2) {
-                this.currentLeft = null;
-                this.currentRight = bbn.env.width - e.pageX + 5;
+              if (e.pageX || e.pageY) {
+                this.isOpenedByEvent = true;
+                if (e.pageX > bbn.env.width / 2) {
+                  this.currentLeft = null;
+                  this.currentRight = bbn.env.width - e.pageX + 5;
+                }
+                else {
+                  this.currentLeft = e.pageX - 5;
+                  this.currentRight = null;
+                }
+  
+                if (e.pageY > bbn.env.height / 2) {
+                  this.currentTop = null;
+                  this.currentBottom = bbn.env.height - e.pageY + 5;
+                }
+                else {
+                  this.currentTop = e.pageY - 5;
+                  this.currentBottom = null;
+                }
               }
               else {
-                this.currentLeft = e.pageX - 5;
+                this.isOpenedByEvent = false;
+                /*
+                const ppos = this.$position();
+                this.currentLeft = ppos.left;
+                this.currentTop = ppos.top + ppos.height;
                 this.currentRight = null;
-              }
-
-              if (e.pageY > bbn.env.height / 2) {
-                this.currentTop = null;
-                this.currentBottom = bbn.env.height - e.pageY + 5;
-              }
-              else {
-                this.currentTop = e.pageY - 5;
-                this.currentBottom = null;
+                this.currentBottom = null;*/
               }
             }
 
-            this.toggle();
+            this.$nextTick(this.toggle);
           }
         }
+      },
+      open() {
+        this.showFloater = true;
+      },
+      close() {
+        this.showFloater = false;
       },
       /**
        * @method clickOut
@@ -290,6 +332,9 @@ const cpDef = {
       }
     },
     watch: {
+      visible(v) {
+        this.showFloater = v;
+      },
       source(v, ov) {
         if (this.showFloater && !this.disabled) {
           this.updateData();
@@ -302,11 +347,13 @@ const cpDef = {
       },
       showFloater(v){
         if (v) {
+          this.$emit('open');
           document.addEventListener('click', this.clickOut, true)
           this.docEvent = true;
         }
         else {
-          document.removeEventListener('click', this.clickout)
+          this.$emit('close');
+          document.removeEventListener('click', this.clickOut)
           this.docEvent = false;
         }
       }

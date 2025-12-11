@@ -19,5 +19,6 @@
   "An email has been sent to %s": "Un'email è stata inviata a %s",
   "Your password has been changed": "La tua password è stata cambiata",
   "Passwords must match!": "Le password devono coincidere!",
-  "E-mail address": "Indirizzo e-mail"
+  "E-mail address": "Indirizzo e-mail",
+  "The login session has expired, the page will be reloaded so you can log in again.": "La sessione di accesso è scaduta, la pagina verrà ricaricata per poter accedere nuovamente."
 }

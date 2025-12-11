@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     isSelectable(row) {
-      return this.selection && (!bbn.fn.isFunction(this.selection) || this.selection(row));
+      return this.selection && ((typeof this.selection !== 'function') || this.selection(row));
     },
     checkAll() {
       this.currentMessage = bbn._("Selecting all rows...");

@@ -618,8 +618,8 @@ const cpDef = {
       if (!this.ready) {
         this.ready = true;
         this.$nextTick(() => {
-          this.onResize();
           this.$forceUpdate().then(() => {
+            this.onResize();
             this.$nextTick(() => this.isResized = true);
             this.updateButtonsInContainer();
             this.$emit('resized', this);

@@ -11,7 +11,11 @@ export default class bbnModelAttr extends bbnAttr
   #handlerElement = null;
   setHandler() {
     if (this.node.element && (this.#handlerElement !== this.node.element)) {
-      const eventName = this.modifiers.includes('lazy') ? 'change' : 'input';
+      let eventName = this.modifiers.includes('lazy') ? 'change' : 'input';
+      if (!['value', '_default_'].includes(this.name)) {
+        eventName += ':' + this.name;
+      }
+
       if (this.node.element instanceof Comment) {
         if (this.#handlerElement) {
           this.#handlerElement.removeEventListener(eventName, this.handler);

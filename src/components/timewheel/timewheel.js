@@ -50,10 +50,18 @@ const cpDef = {
       default(){
         return ['cancel', 'submit']
       }
+    },
+    hourStart: {
+      type: Number,
+      default: 0
+    },
+    hourEnd: {
+      type: Number,
+      default: 23
     }
   },
   data(){
-    let d = this.value && this.value.length  ? dayjs(this.value, this.format) : dayjs();
+    let d = this.value && this.value.length  ? bbn.dt(this.value, this.format) : bbn.dt();
     return {
       /**
        * The array used to make the minutes and the seconds.
@@ -188,10 +196,10 @@ const cpDef = {
         && !bbn.fn.isNull(this.minute)
         && (!this.showSecond || !bbn.fn.isNull(this.second) )
       ){
-        let d = dayjs().hour(this.hour).minute(this.minute);
+        let d = bbn.dt().hour(this.hour).minute(this.minute);
 
         if (this.showSecond) {
-          d = dayjs(d).second(this.second);
+          d = d.second(this.second);
         }
 
         bbn.fn.log('getTime', d.format(this.format));
@@ -318,7 +326,7 @@ const cpDef = {
     value(newVal){
       if (this.ready) {
         if (newVal && (newVal !== this.getTime())) {
-          let d = dayjs(newVal, this.format);
+          let d = bbn.dt(newVal, this.format);
           this.hour = d.hour();
           this.minute = d.minute();
           if (this.showSecond) {

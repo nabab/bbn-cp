@@ -925,7 +925,7 @@ const cpDef = {
           cfg.xaxis.type = 'datetime';
           if ( bbn.fn.isString(this.xDate) ){
             cfg.xaxis.labels.formatter = (value, timestamp, index) => {
-              return dayjs(timestamp).format(this.xDate);
+              return bbn.dt(timestamp).format(this.xDate);
             }
           }
         }

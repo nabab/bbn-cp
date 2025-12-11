@@ -8,11 +8,13 @@ bbn-calendar {
     min-height: unset;
     .bbn-calendar-header-title {
       font-size: 1rem;
+      min-width: 2rem;
+      min-height: 2rem;
     }
     .bbn-calendar-arrow {
-      &.hidden {
-        visibility: hidden;
-      }
+      width: 1.5rem;
+      text-align: center;
+      vertical-align: middle;
     }
   }
   /* .bbn-calendar-container-labels {
@@ -36,9 +38,10 @@ bbn-calendar {
       background-color: var(--header-background);
       color: var(--header-text);
     }
-    .bbn-calendar-item-box {
-      position: relative;
+    .bbn-calendar-item-box, .bbn-calendar-labels {
+      display: grid;
       border-radius: 0;
+      align-content: center;
       .bbn-calendar-item {
         font-size: 1rem;
         //opacity: .5;

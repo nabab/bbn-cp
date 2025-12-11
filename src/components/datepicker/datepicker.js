@@ -129,6 +129,14 @@ const cpDef = {
         type: String,
         default: 'right',
         validator: pos => ['right', 'left'].includes(pos)
+      },
+      /**
+       * The number of months to in day mode calendar
+       * 
+       * @prop {Number} [1] numMonth
+       */
+      numMonth: {
+        type: Number,
       }
     },
     data(){
@@ -272,7 +280,7 @@ const cpDef = {
        * @fires setValue
        */
       setDate(val, calendar, format){
-        this.setValue(dayjs(val.toString(), format).isValid() ? dayjs(val.toString(), format).format(this.getValueFormat(val.toString())) : '');
+        this.setValue(bbn.dt(val.toString(), format).isValid ? bbn.dt(val.toString(), format).format(this.getValueFormat(val.toString())) : '');
       },
       /**
        * Sets the value.
@@ -286,7 +294,7 @@ const cpDef = {
        */
       setValue(val){
         let format = !!val ? this.getValueFormat(val.toString()) : false,
-            value = format ? (dayjs(val.toString(), format).isValid() ? dayjs(val.toString(), format).format(format) : '') : '';
+            value = format ? (bbn.dt(val.toString(), format).isValid ? bbn.dt(val.toString(), format).format(format) : '') : '';
         if ( value ){
           if ( this.min && (value < this.min) ){
             value = this.min;
@@ -345,8 +353,8 @@ const cpDef = {
             maskInput = mask.inputValue,
             maskVal = mask.raw(maskInput),
             r = new RegExp(this.currentPattern),
-            dj = maskVal &&  r.test(maskInput) ? dayjs(maskInput, this.currentFormat) : false,
-            value = dj && dj.isValid() ? dj.format(this.getValueFormat(maskInput)) : '';
+            dj = maskVal &&  r.test(maskInput) ? bbn.dt(maskInput, this.currentFormat) : false,
+            value = dj && dj.isValid ? dj.format(this.getValueFormat(maskInput)) : '';
         if ((maskVal !== this.oldInputValue)
           && (!maskVal || value)
         ) {
@@ -399,8 +407,8 @@ const cpDef = {
       setInputValue(newVal){
         if ( newVal ){
           let mask = this.getRef('element'),
-              mom = dayjs(newVal.toString(), this.getValueFormat(newVal.toString()));
-          this.inputValue = newVal && mask && mom.isValid() ?
+              mom = bbn.dt(newVal, this.getValueFormat(newVal.toString()));
+          this.inputValue = newVal && mask && mom.isValid ?
             mask.raw(mom.format(this.currentFormat).toString()) :
             '';
         }
@@ -423,14 +431,6 @@ const cpDef = {
         this.$nextTick(() => {
           this.$set(this.getRef('element'), 'inputValue', '');
         })
-      }
-    },
-    /**
-     * @event beforeCreate
-     */
-    beforeCreate(){
-      if ( bbn.env && bbn.env.lang && (bbn.env.lang !== dayjs.locale()) ){
-        dayjs.locale(bbn.env.lang);
       }
     },
     /**

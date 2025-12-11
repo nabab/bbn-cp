@@ -9,7 +9,69 @@
  * @author BBN Solutions
  */
 
-import tui from 'tui-image-editor';
+import FilerobotImageEditor from 'filerobot-image-editor';
+const { TABS, TOOLS } = FilerobotImageEditor;
+const config = {
+  onSave: (editedImageObject, designState) =>
+    console.log('saved', editedImageObject, designState),
+  annotationsCommon: {
+    fill: '#ff0000',
+  },
+  Text: { text: 'Filerobot...' },
+  Rotate: { angle: 90, componentType: 'slider' },
+  translations: {
+    profile: 'Profile',
+    coverPhoto: 'Cover photo',
+    facebook: 'Facebook',
+    socialMedia: 'Social Media',
+    fbProfileSize: '180x180px',
+    fbCoverPhotoSize: '820x312px',
+  },
+  Crop: {
+    presetsItems: [
+      {
+        titleKey: 'classicTv',
+        descriptionKey: '4:3',
+        ratio: 4 / 3,
+        // icon: CropClassicTv, // optional, CropClassicTv is a React Function component. Possible (React Function component, string or HTML Element)
+      },
+      {
+        titleKey: 'cinemascope',
+        descriptionKey: '21:9',
+        ratio: 21 / 9,
+        // icon: CropCinemaScope, // optional, CropCinemaScope is a React Function component.  Possible (React Function component, string or HTML Element)
+      },
+    ],
+    presetsFolders: [
+      {
+        titleKey: 'socialMedia', // will be translated into Social Media as backend contains this translation key
+        // icon: Social, // optional, Social is a React Function component. Possible (React Function component, string or HTML Element)
+        groups: [
+          {
+            titleKey: 'facebook',
+            items: [
+              {
+                titleKey: 'profile',
+                width: 180,
+                height: 180,
+                descriptionKey: 'fbProfileSize',
+              },
+              {
+                titleKey: 'coverPhoto',
+                width: 820,
+                height: 312,
+                descriptionKey: 'fbCoverPhotoSize',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  tabsIds: [TABS.ADJUST, TABS.ANNOTATE, TABS.WATERMARK], // or ['Adjust', 'Annotate', 'Watermark']
+  defaultTabId: TABS.ANNOTATE, // or 'Annotate'
+  defaultToolId: TOOLS.TEXT, // or 'Text'
+};
 //Markdown editor use simpleMDe
 const cpDef = {
   /**
@@ -40,16 +102,19 @@ const cpDef = {
   watch: {
   },
   mounted(){
-    this.widget = new tui.ImageEditor(this.$refs.element, {
-      includeUI: {
-        locale: 'fr',
-        initMenu: 'filter',
-        menuBarPosition: 'bottom',
+    this.widget = bbn.cp.immunizeValue(new FilerobotImageEditor(
+      this.getRef('element'),
+      bbn.fn.extend({}, config, {
+        source: this.source,
+      })
+    ));
+
+    this.widget.render({
+      onClose: (closingReason) => {
+        console.log('Closing reason', closingReason);
+        this.widget.terminate();
       },
-      cssMaxWidth: 700,
-      cssMaxHeight: 500,
     });
-    this.widget.loadImageFromURL(this.source, this.name);
 
     this.ready = true;
   },

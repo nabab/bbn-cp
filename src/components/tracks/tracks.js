@@ -174,28 +174,28 @@ const cpDef = {
      * @returns {Number}
      */
     currentStartUnix(){
-      return dayjs(this.currentStartDatetime).unix();
+      return bbn.dt(this.currentStartDatetime).unix();
     },
     /**
      * @computed currentEndUnix
      * @returns {Number}
      */
     currentEndUnix(){
-      return dayjs(this.currentEndDatetime).unix();
+      return bbn.dt(this.currentEndDatetime).unix();
     },
     /**
      * @computed currentStartTitle
      * @returns {String}
      */
     currentStartTitle(){
-      return dayjs(this.currentStartDatetime).format('DD/MM/YYYY HH:mm:ss');
+      return bbn.dt(this.currentStartDatetime).format('DD/MM/YYYY HH:mm:ss');
     },
     /**
      * @computed currentEndTitle
      * @returns {String}
      */
     currentEndTitle(){
-      return dayjs(this.currentEndDatetime).format('DD/MM/YYYY HH:mm:ss');
+      return bbn.dt(this.currentEndDatetime).format('DD/MM/YYYY HH:mm:ss');
     },
     /**
      * @computed cols
@@ -204,13 +204,13 @@ const cpDef = {
     cols(){
       let cols = [];
       if (!!this.currentEndDatetime && !!this.currentStartDatetime) {
-        let numCols = dayjs(this.currentEndDatetime).diff(this.currentStartDatetime, 'second') / this.step;
-        let c = dayjs(this.currentStartDatetime);
+        let numCols = bbn.dt(this.currentEndDatetime).diff(this.currentStartDatetime, 'second') / this.step;
+        let c = bbn.dt(this.currentStartDatetime);
         for (let i = 0; i < numCols; i++) {
           cols.push({
-            start: dayjs(c).add(i * this.step, 'second').format('YYYY-MM-DD HH:mm:ss'),
-            end: dayjs(c).add((i + 1) * this.step, 'second').format('YYYY-MM-DD HH:mm:ss'),
-            label: dayjs(c).add(i * this.step, 'second').format('HH:mm')
+            start: bbn.dt(c).add(i * this.step, 'second').format('YYYY-MM-DD HH:mm:ss'),
+            end: bbn.dt(c).add((i + 1) * this.step, 'second').format('YYYY-MM-DD HH:mm:ss'),
+            label: bbn.dt(c).add(i * this.step, 'second').format('HH:mm')
           });
         }
       }
@@ -277,14 +277,14 @@ const cpDef = {
      * @returns {String}
      */
     getStartDatetime(){
-      return this.startDatetime || dayjs().subtract(2, 'day').format('YYYY-MM-DD HH:mm:ss');
+      return this.startDatetime || bbn.dt().subtract(2, 'day').format('YYYY-MM-DD HH:mm:ss');
     },
     /**
      * @method getEndtDatetime
      * @returns {String}
      */
     getEndDatetime(){
-      return this.endDatetime || dayjs().format('YYYY-MM-DD HH:mm:ss');
+      return this.endDatetime || bbn.dt().format('YYYY-MM-DD HH:mm:ss');
     },
     /**
      * @method getcurrentFilters
@@ -370,8 +370,8 @@ const cpDef = {
       if (this.currentData.length) {
         bbn.fn.each(this.currentData, (item, index) => {
           let color = this.currentColors[index % this.currentColors.length];
-          let startUnix = dayjs(item.data.start).unix();
-          let endUnix = dayjs(item.data.end).unix();
+          let startUnix = bbn.dt(item.data.start).unix();
+          let endUnix = bbn.dt(item.data.end).unix();
           this.$set(item, 'start', startUnix);
           this.$set(item, 'end', endUnix);
           this.$set(item, 'bgColor', color.background);
@@ -585,10 +585,10 @@ const cpDef = {
           return !!this.main.editable;
         },
         currentStart(){
-          return dayjs.unix(this.source.start).format('DD/MM/YYYY HH:mm:ss');
+          return bbn.dt(this.source.start*1000).format('DD/MM/YYYY HH:mm:ss');
         },
         currentEnd(){
-          return dayjs.unix(this.source.end).format('DD/MM/YYYY HH:mm:ss');
+          return bbn.dt(this.source.end*1000).format('DD/MM/YYYY HH:mm:ss');
         },
         currentBgColor(){
           return !!this.isResizing ?
@@ -652,8 +652,8 @@ const cpDef = {
           this.source.width = ((!!this.source.rightLocked ? this.main.currentEndUnix : this.source.end) - (!!this.source.leftLocked ? this.main.currentStartUnix : this.source.start)) / this.main.secPerPx;
           this.main.updateItemMax(this.source.index - 1);
           this.main.updateItemMax(this.source.index + 1);
-          this.source.data.start = dayjs.unix(this.source.start).format('YYYY-MM-DD HH:mm:ss');
-          this.source.data.end = dayjs.unix(this.source.end).format('YYYY-MM-DD HH:mm:ss');
+          this.source.data.start = bbn.dt(this.source.start*1000).format('YYYY-MM-DD HH:mm:ss');
+          this.source.data.end = bbn.dt(this.source.end*1000).format('YYYY-MM-DD HH:mm:ss');
         },
         onResizeEnd(event){
           if (!this.isEditable) {
@@ -815,7 +815,7 @@ const cpDef = {
       },
       methods: {
         validation(){
-          if (dayjs(this.source.end).unix() < dayjs(this.source.start).unix()) {
+          if (bbn.dt(this.source.end).unix() < bbn.dt(this.source.start).unix()) {
             this.alert(bbn._('The end date must be more recent than the start date'));
             return false;
           }

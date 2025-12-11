@@ -1,10 +1,10 @@
-<div :class="componentClass"
+<div :class="[componentClass]"
      tabindex="-1">
   <bbn-button icon="nf nf-fa-chevron_up"
               class="bbn-no-radius bbn-no-border"
               :disabled="upButtonDisabled"
               @click="goUp"/>
-  <div class="bbn-wheel-container bbn-rel bbn-border-top bbn-border-bottom"
+  <div class="bbn-wheel-container bbn-rel bbn-flex-fill bbn-border-top bbn-border-bottom"
        ref="container">
     <div class="bbn-overlay">
       <div class="bbn-middle bbn-wheel-item">

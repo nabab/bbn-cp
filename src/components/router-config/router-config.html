@@ -1,13 +1,14 @@
-<div :class="[componentClass, 'bbn-background-internal', 'bbn-block', {'bbn-mobile': isMobile}]">
+<div :class="[componentClass, 'bbn-background-internal', 'bbn-overlay', {'bbn-mobile': isMobile}]"
+     style="max-width: min(100%, 1200px); max-height: min(100%, 800px); width: 80vw; height: 60vh">
   <bbn-router mode="tabs"
               :url-navigation="false"
               :autoload="false"
               :visual="false"
               :configuration="false"
               :menu="false"
-              class="bbn-w-100"
               :storage="false"
-              :scroll-content="true">
+              :scroll-content="true"
+              class="bbn-overlay">
     <bbn-container :label="_('Mode')"
                    url="nav"
                    :scrollable="false"
@@ -202,7 +203,7 @@
     </bbn-container>
     <bbn-container :label="_('Pages')"
                    url="pages"
-                   :scrollable="false"
+                   :scrollable="true"
                    :fixed="true">
       <div class="bbn-w-100 bbn-padding">
         <container bbn-for="v in router.views"
@@ -304,13 +305,56 @@
     </bbn-container>
     <bbn-container :label="_('Backups')"
                    url="backups"
-                   :scrollable="false"
+                   :scrollable="true"
                    :fixed="true">
       <div class="bbn-w-100 bbn-padding">
         <div class="bbn-w-100 bbn-light bbn-lg bbn-vspadding"
-             bbn-text="_('Here you will soon be able to save your current router configuration. i.e. all your current tabs')"/>
+             bbn-text="_('Here you can save your current router configuration. i.e. all your current tabs')"/>
         <div class="bbn-w-100 bbn-light bbn-lg bbn-vspadding"
-             bbn-text="_('That will not only allow you to backup a complex configuration but also to switch between tabs configurations')"/>
+             bbn-text="_('That allows you to backup a complex configuration but also to switch easily between different configurations')"/>
+        <div class="bbn-w-100 bbn-light bbn-lg bbn-vspadding"
+             bbn-text="_('You can also export and import configuration files in order to apply a configuration on another browser or system')"/>
+        <hr class="bbn-hr"/>
+        <div class="bbn-w-100 bbn-vspadding">
+          <bbn-button class="bbn-m"
+                      @click="createBackup"
+                      icon="nf nf-fa-save"
+                      :label="_('Create a backup now')"/>
+          <bbn-button class="bbn-m"
+                      @click="importBackup"
+                      icon="nf nf-fa-file_import"
+                      :label="_('Import a backup file')"/>
+        </div>
+        <div class="bbn-w-100 bbn-vspadding">
+          <div bbn-if="!backups.length"
+              bbn-text="_('No backups available yet.')"/>
+          <ul class="bbn-ul"
+              bbn-else>
+            <li bbn-for="(backup, idx) in backups"
+                :key="backup.key"
+                class="bbn-bottom-space bbn-flex-width bbn-vcentered bbn-no-pointer-events">
+              <div class="bbn-flex-fill bbn-ellipsis">
+                <span class="bbn-bold"
+                      bbn-text="bbn.dt(backup.date).fdate(false, true)"/>
+                <span bbn-text="' - ' + backup.num + ' ' + _('tabs')"/>
+              </div>
+              <div>
+                <bbn-button icon="nf nf-fa-undo"
+                            :label="_('Restore')"
+                            :notext="true"
+                            @click="restoreBackup(backup)"/>
+                <bbn-button icon="nf nf-fa-download"
+                            :label="_('Export')"
+                            :notext="true"
+                            @click="exportBackup(backup)"/>
+                <bbn-button icon="nf nf-fa-trash"
+                            :label="_('Delete')"
+                            :notext="true"
+                            @click="deleteBackup(backup, idx)"/>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </bbn-container>
   </bbn-router>

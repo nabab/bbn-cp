@@ -10,7 +10,6 @@
 /** @todo try this way
 
  const timestamp = 1519482900000;
- const formatted = dayjs(timestamp).format('L');
 
  console.log(formatted);*/
 
@@ -256,7 +255,7 @@ const cpDef = {
         if (bbn.fn.isString(tmp)) {
           tmp = bbn.fn.date(tmp);
         }
-        this.realTarget = new dayjs(tmp);
+        this.realTarget = bbn.dt(tmp);
         this.time = this.realTarget.unix();
         let timeout = bbnCountdown.VALUES[this.precisionIdx].timeout;
         this.update();
@@ -272,7 +271,7 @@ const cpDef = {
      */
     update(){
       if ( this.check() ){
-        let d = new dayjs();
+        let d = bbn.dt();
         let secs = this.time - d.unix();
         if ( secs <= 0 ){
           if (this.isValid) {
@@ -283,15 +282,20 @@ const cpDef = {
           }
         }
         else if (secs) {
-          let diff = dayjs.duration(secs, 'seconds');
+          let diff = d.duration(secs, 'seconds');
           let diffs = {};
           bbn.fn.each(bbnCountdown.VALUES, (a, i) => {
-            diffs[a.name] = diff['as' + a.name[0].toUpperCase() + bbn.fn.substr(a.name, 1) + 's']();
+            const fn = 'as' + a.name[0].toUpperCase() + bbn.fn.substr(a.name, 1) + 's';
+            if (!bbn.fn.isFunction(diff[fn])) {
+              return;
+            }
+
+            diffs[a.name] = diff[fn]();
             if ((i >= this.scaleIdx) && (i <= this.precisionIdx)) {
               let round = Math.floor(diffs[a.name]);
               diffs[a.name] = round;
               if (i < this.precisionIdx) {
-                diff = diff.subtract(dayjs.duration(round, a.name + 's'));
+                diff = diff.subtract(round, a.name + 's');
               }
             }
           });

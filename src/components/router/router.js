@@ -49,6 +49,23 @@ const cpDef = {
         });
       }
 
+      if (!bbn.db._structures?.bbn?.backups) {
+        bbn.db.add('bbn', 'backups', {
+          keys: {
+            PRIMARY: {
+              columns: ['key'],
+              unique: true
+            }
+          },
+          fields: {
+            key: {},
+            content: {},
+            date: {}
+          },
+          num: 4
+        });
+      }
+
       if (!bbn.db._structures?.bbn?.containers) {
         bbn.db.add('bbn', 'containers', {
           keys: {
@@ -179,12 +196,13 @@ const cpDef = {
       this.breadcrumbInit();
       this.visualInit();
       this.navigationCreated();
-      this.$nextTick(() =>{
+      setTimeout(() => {
         this.ready = true;
-        this.$forceUpdate().then(() => {
-          this.$nextTick(() => this.init());
-        });
-      });
+        this.$forceUpdate();
+        setTimeout(() => {
+          this.init();
+        }, 250)
+      }, 500)
     });
     //bbn.fn.log("END OF MOUNT")
   },

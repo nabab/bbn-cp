@@ -1,10 +1,10 @@
-<span :class="['bbn-iblock', componentClass, {'bbn-checked': state, 'bbn-disabled': isDisabled, 'bbn-readonly': readonly}]"
+<span :class="['bbn-iblock', componentClass, {'bbn-checked': state, 'bbn-readonly': readonly}]"
       tabindex="-1">
   <input type="checkbox"
          :id="$el.id || uid"
          :name="name"
          :value="value"
-         class="bbn-checkbox"
+         :class="['bbn-checkbox', {'bbn-disabled': isDisabled}]"
          :required="required"
          :disabled="isDisabled"
          :readonly="readonly ? 'readonly' : ''"

@@ -80,11 +80,10 @@ export default {
 
       if (this.db) {
         this.db.select('containers', ['manual', 'image'], {url: this.views[idx].url}).then(thumb => {
-          this.thumbnails[cp.routerUid] = bbn.cp.immunizeValue(thumb);
+          if (thumb?.image) {
+            this.thumbnails[cp.routerUid] = bbn.cp.immunizeValue(thumb);
+          }
         });
-      }
-      else {
-        bbn.fn.warning("KKKKKKKKK")
       }
 
       this.numRegistered++;

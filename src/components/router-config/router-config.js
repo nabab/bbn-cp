@@ -5,17 +5,43 @@
  * @author BBN Solutions
  */
 const cpDef = {
-    /**
-     * @mixin bbn.cp.mixins.basic
-     * @mixin bbn.cp.mixins.localStorage
-     */
-    mixins: 
-    [
-      bbn.cp.mixins.basic,
-      bbn.cp.mixins.localStorage,
-    ],
-    statics() {
-      const img = `<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+  /**
+   * @mixin bbn.cp.mixins.basic
+   * @mixin bbn.cp.mixins.localStorage
+   */
+  mixins: 
+  [
+    bbn.cp.mixins.basic,
+    bbn.cp.mixins.localStorage,
+  ],
+  statics() {
+    // IndexedDb access for storing thumbnails in visual mode
+    let db = false;
+    bbn.fn.warning("LAUNCHING ROUTER CONFIG STATICS");
+    bbn.fn.log(bbn.db, bbn.db?.ok);
+    if (bbn.db && bbn.db.ok) {
+      db = bbn.db;
+      if (true || !db._structures?.bbn?.backups) {
+        bbn.fn.warning("ADDING BACKUPS STRUCTURE");
+        db.add('bbn', 'backups', {
+          keys: {
+            PRIMARY: {
+              columns: ['key'],
+              unique: true
+            }
+          },
+          fields: {
+            key: {},
+            content: {},
+            date: {},
+            num: {}
+          },
+          num: 7
+        });
+      }
+    }
+
+    const img = `<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
   viewBox="0 0 58 58" style="enable-background:new 0 0 58 58;" xml:space="preserve">
 <g>
  <path d="M57,6H1C0.448,6,0,6.447,0,7v44c0,0.553,0.448,1,1,1h56c0.552,0,1-0.447,1-1V7C58,6.447,57.552,6,57,6z M56,50H2V8h54V50z"
@@ -61,7 +87,7 @@ const cpDef = {
 </svg>
 
 `;
-      return {img};
+      return {img, db};
     },
     props: {
       router: {
@@ -101,7 +127,8 @@ const cpDef = {
         tabsSelected: 2,
         breadcrumbActive: false,
         visualShowAll: false,
-        currentModeSelected: null
+        currentModeSelected: null,
+        backups: []
       };
     },
     computed: {
@@ -193,7 +220,7 @@ const cpDef = {
 
         return tmp;
       },
-      db() {
+      routerDb() {
         return this.router?.db
       },
       mode: {
@@ -238,6 +265,81 @@ const cpDef = {
         if (this[mode]) {
           this.mode = mode;
         }
+      },
+      createBackup() {
+        const current = bbn.fn.clone(this.router.views).map(a => {
+          delete a.uid;
+          delete a.content;
+          delete a.script;
+          delete a.style;
+          if (a.load) {
+            a.loaded = false;
+          }
+          return a;
+        });
+        const key = 'backup-' + bbn.fn.timestamp();
+        const d = {
+          key,
+          content: JSON.stringify(current),
+          num: current.length,
+          date: bbn.dt().datetime()
+        };
+        this.backups.push(d);
+        this.db.insert('backups', d);
+      },
+      restoreBackup(backup) {
+        if (backup && backup.content) {
+          const views = JSON.parse(backup.content);
+          this.closest('bbn-popup').confirm(bbn._("Do you wish to replace your current router configuration with the selected backup? If not it will add all the missing tabs to your current configuration?"),
+          () => {
+            for (let i = this.router.views.length - 1; i >= 0; i--) {
+              const row = bbn.fn.getRow(views, {url: this.router.views[i].url});
+              if (!row && !this.router.views[i].fixed) {
+                this.router.removeItem(i);
+              }
+            }
+            bbn.fn.each(views, v => {
+              if (!bbn.fn.getRow(this.router.views, {url: v.url})){
+                this.router.add(v);
+              }
+            })
+          },
+          () => {
+            bbn.fn.each(views, v => {
+              if (!bbn.fn.getRow(this.router.views, {url: v.url})){
+                this.router.add(v);
+              }
+            })
+          });
+        }
+      },
+      importBackup() {
+        bbn.fn.getFileContent('application/json', content => {
+          bbn.fn.log("IMPORT CONTENT", content);
+          this.restoreBackup({content});
+        })
+      },
+      exportBackup(backup) {
+        bbn.fn.downloadContent(backup.key + '.json', JSON.stringify(JSON.parse(backup.content), null, 2), 'application/json');
+      },
+      deleteBackup(backup) {
+        this.db.delete('backups', {key: backup.key}).then(() => {
+          const idx = bbn.fn.search(this.backups, {key: backup.key});
+          if (this.backups[idx]) {
+            this.backups.splice(idx, 1);
+          }
+          appui.success(bbn._("Backup deleted"));
+        });
+      }
+    },
+    beforeCreate() {
+      if (this.constructor.db) {
+        this.constructor.db.open('bbn').then(res => {
+          this.db = res;
+          this.db.selectAll('backups').then(backups => {
+            this.backups = backups;
+          });
+        });
       }
     },
     mounted() {
@@ -256,7 +358,7 @@ const cpDef = {
         data() {
           return {
             thumbnail: false,
-            db: this.bbnComponent.db,
+            db: this.bbnComponent.routerDb,
             router: this.bbnComponent.router
           }
         },
@@ -292,7 +394,7 @@ const cpDef = {
             const idx = bbn.fn.search(this.router.views, {url: data.url});
             if (this.router.views[idx]) {
               this.router.views[idx].screenshot = !this.router.views[idx].screenshot;
-              this.router.db.update('containers', {screenshot: this.router.views[idx].screenshot}, {url: data.url});
+              this.db.update('containers', {screenshot: this.router.views[idx].screenshot}, {url: data.url});
             }
           },
           edit(data) {
@@ -314,7 +416,7 @@ const cpDef = {
           }
         },
         mounted() {
-          this.router.db.selectOne('containers', 'image', {url: this.source.url}).then(res => {
+          this.db.selectOne('containers', 'image', {url: this.source.url}).then(res => {
             if (res) {
               this.thumbnail = res;
             }

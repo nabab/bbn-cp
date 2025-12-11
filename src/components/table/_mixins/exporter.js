@@ -89,7 +89,11 @@ export default {
      */
     getExcelPostData(currentView) {
       let cols = bbn.fn.filter(bbn.fn.extend(true, [], this.cols), c => {
-        return (this.shownFields.includes(c.field) && ((c.export === undefined) || !c.export.excluded)) || (c.export && !c.export.excluded);
+        return (c.field
+            && !c.buttons
+            && this.shownFields.includes(c.field)
+            && ((c.export === undefined) || !c.export.excluded))
+          || (c.export && !c.export.excluded);
       }),
         data = {
           excel: {

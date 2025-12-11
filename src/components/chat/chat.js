@@ -1219,7 +1219,7 @@ const cpDef = {
          * @return {String}
          */
         getTime(t){
-          return dayjs.unix(t).format('HH:mm');
+          return bbn.dt(t).format('HH:mm');
         },
         /**
          * Formats the given timestamp
@@ -1229,7 +1229,7 @@ const cpDef = {
          * @return {String}
          */
         getDate(d){
-          return dayjs.unix(d).format('DD MMMM YYYY');
+          return bbn.dt(d).format('DD MMMM YYYY');
         },
         /**
          * Checks if the given timestamp is equal at today
@@ -1239,7 +1239,7 @@ const cpDef = {
          * @return {Boolean}
          */
         isToday(d){
-          return dayjs().format('DD/MM/YYYY') === dayjs.unix(d).format('DD/MM/YYYY');
+          return bbn.dt().format('DD/MM/YYYY') === bbn.dt(d).format('DD/MM/YYYY');
         },
         /**
          * Load more old messages

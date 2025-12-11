@@ -60,9 +60,6 @@ const removeRegion = node => {
 };
 
 bbnNode.prototype.nodeClean = function(full, noPortals) {
-  if (this.tag === 'apst-adherent') {
-    debugger;
-  }
   //bbn.fn.log((full ? 'FULL ' : '') + "CLEANING NODE " + this.realTag + ' - ' + this.id + (this.hash ? (' / ' + this.hash) : ''));
   let res = 0;
   if (!noPortals && this.element?.querySelector) {

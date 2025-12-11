@@ -196,7 +196,7 @@ const cpDef = {
         if ( !format ){
           format = !!val ? this.getValueFormat(val.toString()) : false;
         }
-        let value = !!format && !!val ? (dayjs(val.toString(), format).isValid() ? dayjs(val.toString(), format).format(format) : '') : '';
+        let value = !!format && !!val ? (bbn.dt(val, format).isValid ? bbn.dt(val, format).format(format) : '') : '';
         if ( value ){
           if ( value && this.min && (value < this.min) ){
             value = this.min;
@@ -237,8 +237,8 @@ const cpDef = {
             maskInput = mask.inputValue,
             maskVal = mask.raw(maskInput),
             r = new RegExp(this.currentPattern),
-            dj = maskVal &&  r.test(maskInput) ? dayjs(maskInput, this.currentFormat) : false,
-            value = dj && dj.isValid() ? dj.format(this.getValueFormat(maskInput)) : '';
+            dj = maskVal &&  r.test(maskInput) ? bbn.dt(maskInput, this.currentFormat) : false,
+            value = dj && dj.isValid ? dj.format(this.getValueFormat(maskInput)) : '';
         if ((maskVal !== this.oldInputValue)
           && (!maskVal || value)
         ) {
@@ -265,8 +265,8 @@ const cpDef = {
       setInputValue(newVal){
         if ( newVal ){
           let mask = this.getRef('element'),
-              mom = dayjs(newVal.toString(), this.getValueFormat(newVal.toString()));
-          this.inputValue = newVal && mask && mom.isValid() ?
+              mom = bbn.dt(newVal, this.getValueFormat(newVal.toString()));
+          this.inputValue = newVal && mask && mom.isValid ?
             mask.raw(mom.format(this.currentFormat)) :
             '';
         }
@@ -284,15 +284,6 @@ const cpDef = {
         this.$nextTick(() => {
           this.$set(this.getRef('element'), 'inputValue', '');
         })
-      }
-    },
-    /**
-     * Defines the locale set basing on the lang of the environment (bbn.env.lang).
-     * @event beforeCreate
-     */
-    beforeCreate(){
-      if ( bbn.env && bbn.env.lang && (bbn.env.lang !== dayjs.locale()) ){
-        dayjs.locale(bbn.env.lang);
       }
     },
     /**

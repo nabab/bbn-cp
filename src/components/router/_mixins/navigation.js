@@ -957,13 +957,11 @@ export default {
         }
 
         this.views[idx].last = bbn.fn.timestamp();
+        if (this.isVisual) {
+          this.$nextTick(this.updateVisualList)
+        }
       }
 
-      if (this.isVisual) {
-        setTimeout(() => {
-          this.updateVisualList();
-        }, 50)
-      }
 
       //this.move(idx, this.views.length - 1);
 

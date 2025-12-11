@@ -29,10 +29,7 @@ export default function normalizeComponent(cfg, clsName) {
     watch: bbn.fn.createObject(),
     components: bbn.fn.createObject(),
     componentNames: bbn.fn.createObject(),
-    model: bbn.fn.createObject({
-      prop: "value",
-      event: "input"
-    }),
+    model: bbn.fn.createObject(),
     extension: null,
     statics: [],
     __bbnComponent: true // Internal flag to mark as a bbn component.
@@ -205,10 +202,13 @@ export default function normalizeComponent(cfg, clsName) {
         // Validate model configuration.
         if (cfg.model) {
           bbn.fn.checkType(cfg.model, 'object', bbn._("Model configuration must be objects, check %s", cn));
-          if (!['input', 'change'].includes(cfg.model.event) || !bbn.fn.isString(cfg.model.prop)) {
-            throw new Error(bbn._("The model configuration must have an event (input or change) and a prop (check %s)", cfg.model, cn));
+          if (bbn.fn.numProperties(cfg.model)) {
+            bbn.fn.checkType(cfg.model?.prop, 'string', bbn._("Model configuration should have a prop, check %s", cn));
+            res.model = {
+              prop: cfg.model.prop,
+              event: cfg.model.event || 'input'
+            };
           }
-          res.model = cfg.model;
         }
         break;
 

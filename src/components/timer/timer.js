@@ -10,7 +10,6 @@
 /** @todo try this way
 
  const timestamp = 1519482900000;
- const formatted = dayjs(timestamp).format('L');
 
  console.log(formatted);*/
 
@@ -361,7 +360,7 @@
             }
           }
           else if (secs) {
-            let diff = dayjs.duration(secs, 'seconds');
+            let diff = bbn.dt().duration(secs, 'seconds');
             let diffs = {};
             bbn.fn.each(bbnTimer.VALUES, (a, i) => {
               diffs[a.name] = diff['as' + a.name[0].toUpperCase() + bbn.fn.substr(a.name, 1) + 's']();
@@ -369,7 +368,7 @@
                 let round = Math.floor(diffs[a.name]);
                 diffs[a.name] = round;
                 if (i < this.precisionIdx) {
-                  diff = diff.subtract(dayjs.duration(round, a.name + 's'));
+                  diff = diff.subtract(round, a.name + 's');
                 }
               }
             });

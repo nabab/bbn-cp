@@ -129,7 +129,7 @@ export default class bbnLoopAttr extends bbnAttr
     if (!bbn.cp.isInLoop && bbnData.isPropagating) {
       isInLoop = true;
       bbn.cp.isInLoop = true;
-      bbn.cp.numTicks++;
+      //bbn.cp.numTicks++;
     }
 
     const cp = node.component;

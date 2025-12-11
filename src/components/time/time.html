@@ -1,0 +1,100 @@
+<div :class="['bbn-iblock', componentClass]">
+  <div class="bbn-flex-width bbn-border-right">
+    <div class="bbn-grid bbn-border-left bbn-border-bottom"
+         tabindex="0"
+         @keydown.prevent.stop="onKeydown"
+         :style="{gridTemplateColumns: 'repeat(' + gridHours + ', 1fr)'}">
+      <div class="bbn-grid-full bbn-header bbn-c bbn-b bbn-xspadding bbn-no-border-left"
+           bbn-text="_('Hours')"/>
+      <div bbn-for="i in sourceHours"
+           :class="[
+              'bbn-spadding',
+              'bbn-container-ratio',
+              'bbn-reactive',
+              {'bbn-state-hover': keyHour === i,
+              'bbn-state-selected': currentHour === i},
+            ]"
+           @click.stop="onClick('H', i)"
+           :key="i">
+        <span bbn-text="i.toString().padStart(2, '0')"/>
+      </div>
+    </div>
+    <div class="bbn-grid bbn-border-left bbn-border-bottom"
+         tabindex="0"
+         @keydown.prevent.stop="onKeydown"
+         :style="{gridTemplateColumns: 'repeat(' + gridMinutes + ', 1fr)'}">
+      <div class="bbn-grid-full bbn-header bbn-c bbn-b bbn-no-border-left">
+        <div class="bbn-flex-width">
+          <div class="bbn-flex-fill bbn-c bbn-xspadding" bbn-text="showAllMinutes ? _('Minutes') : _('Min.')"/>
+          <div class="bbn-r"
+               style="min-width: 2.1rem">
+            <bbn-button :notext="true"
+                        icon="nf nf-md-magnify_plus_outline"
+                        :title="currentMode === 'full' ? _('Show fewer minutes') : _('Show all minutes')"
+                        @click.stop="currentMode = (currentMode === 'full') ? 'short' : 'full'"
+                        :class="[
+                          'bbn-h-100',
+                          'bbn-m',
+                          'bbn-noradius-top-left',
+                          'bbn-noradius-top-right',
+                          'bbn-noradius-bottom-left',
+                          'bbn-noradius-bottom-right',
+                          {'bbn-state-active': showAllMinutes},
+                        ]"/>
+          </div>
+        </div>
+      </div>
+      <div bbn-for="i in sourceMinutes"
+           :class="[
+              'bbn-spadding',
+              'bbn-container-ratio',
+              'bbn-reactive',
+              {'bbn-state-hover': keyMinute === i,
+              'bbn-state-selected': currentMinute === i},
+            ]"
+           @click.stop="onClick('i', i)"
+           :key="i">
+        <span bbn-text="i.toString().padStart(2, '0')"/>
+      </div>
+    </div>
+    <div class="bbn-grid bbn-border-left bbn-border-bottom"
+         bbn-if="seconds"
+         tabindex="0"
+         @keydown.prevent.stop="onKeydown"
+         :style="{gridTemplateColumns: 'repeat(' + gridSeconds + ', 1fr)'}">
+      <div class="bbn-grid-full bbn-header bbn-c bbn-b bbn-no-border-left">
+        <div class="bbn-flex-width">
+          <div class="bbn-flex-fill bbn-c bbn-xspadding" bbn-text="showAllSeconds ? _('Seconds') : _('Sec.')"/>
+          <div class="bbn-r"
+               style="min-width: 2.1rem">
+            <bbn-button :notext="true"
+                        icon="nf nf-md-magnify_plus_outline"
+                        :title="showAllSeconds ? _('Show fewer seconds') : _('Show all seconds')"
+                        @click="showAllSeconds = !showAllSeconds"
+                        :class="[
+                          'bbn-h-100',
+                          'bbn-m',
+                          'bbn-noradius-top-left',
+                          'bbn-noradius-top-right',
+                          'bbn-noradius-bottom-left',
+                          'bbn-noradius-bottom-right',
+                          {'bbn-state-active': showAllSeconds}
+                        ]"/>
+          </div>
+        </div>
+      </div>
+      <div bbn-for="i in sourceSeconds"
+           :class="[
+              'bbn-spadding',
+              'bbn-container-ratio',
+              'bbn-reactive',
+              {'bbn-state-hover': keySecond === i,
+              'bbn-state-selected': currentSecond === i},
+            ]"
+           @click.stop="onClick('s', i)"
+           :key="i">
+        <span bbn-text="i.toString().padStart(2, '0')"/>
+      </div>
+    </div>
+  </div>
+</div>

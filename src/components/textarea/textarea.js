@@ -125,9 +125,10 @@ const cpDef = {
       }
     },
     created() {
+      /*
       if ((this.$node.model.value || this.$node.model._default_).value !== this.value) {
         this.currentValue = (this.$node.model.value || this.$node.model._default_).value;
-      }
+      }*/
     },
     /**
      * Sets the prop ready to true.

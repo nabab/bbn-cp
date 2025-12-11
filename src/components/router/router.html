@@ -1,5 +1,5 @@
 <div :class="[componentClass, {
-             'bbn-invisible': !ready,
+             'bbn-invisible': !ready || !isInit,
              'bbn-overlay': scrollContent,
              'bbn-flex-width': isVisual && !visualShowAll && ['left', 'right'].includes(visualOrientation),
              'bbn-flex-height': isVisual && !visualShowAll && !['left', 'right'].includes(visualOrientation),
@@ -419,7 +419,7 @@
 
     </bbn-pane>
   </bbn-splitter>
-  <bbn-screenshot bbn-if="!parent && configuration"
+  <bbn-screenshot bbn-if="isVisual && ready && !parent && configuration"
                   ref="screenshot"
                   :messages="true"/>
 </div>

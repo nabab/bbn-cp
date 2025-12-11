@@ -27,6 +27,9 @@ export default function addUrlAsPrefix(prefix, url, mixins) {
       if (bbn.fn.isString(d.data)) {
         tmp = (new Function('return ' + d.data + ';'))();
       }
+      else if (d.data) {
+        tmp = d.data;
+      }
     }
     catch (e) {
       throw new Error(e);

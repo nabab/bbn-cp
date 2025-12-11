@@ -9,12 +9,11 @@
  *
  * @created 10/02/2017
  */
-import * as htmlToImage from 'html-to-image';
-import { snapdom } from '@zumer/snapdom';
+import { snapdom, preCache } from '@zumer/snapdom';
 
 const cpDef = {
   statics() {
-    return {htmlToImage, snapdom};
+    return {snapdom};
   },
   props: {
     messages: {
@@ -24,7 +23,7 @@ const cpDef = {
   },
   methods: {
     async capture(ele, width, height, meth = 'png') {
-      if (!bbn.env.isFocused) {
+      if (document.hidden) {
         return;
       }
 
@@ -68,7 +67,6 @@ const cpDef = {
 
           try {
             fn(ele, opt).then(img => {
-              //bbn.fn.log("RESPONSE", img)
               ele.classList.remove('bbn-screenshot-element');
               resolve(img || false);
               if (idMdg) {
@@ -94,6 +92,9 @@ const cpDef = {
         }, 100)
       });
     },
+  },
+  mounted() {
+
   }
 };
 
@@ -109,7 +110,8 @@ if (bbn.env.lang) {
     }
     
   }
-  catch (err) {}
+  catch (err) {
+  }
 }
 
 export default {

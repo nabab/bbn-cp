@@ -8,6 +8,10 @@ export default {
       type: Number,
       default: 3600000
     },
+    screenshotExpiration: {
+      type: Number,
+      default: 3600000*7*24 // 7 days
+    }
   },
   data() {
     return {
@@ -34,35 +38,33 @@ export default {
     }
   },
   methods: {
-    setScreenshot(idx) {
+    async setScreenshot(idx) {
       const ct = this.getContainer(idx);
-      return new Promise(resolve => {
-        if (ct?.isTabSelected && !this._screenshotInterval[this.views[idx].uid] && this.isVisual && this.db && this.views[idx].loaded) {
-          let url = ct.getFullURL();
-          try {
-            this.db.select('containers', ['manual', 'time'], {url: url}).then(row => {
-              if (!row || (!row.manual && ((bbn.fn.timestamp() - (row.time || 0)) >= this.currentScreenshotDelay))) {
-                setTimeout(() => {
-                  if (ct.isVisible) {
-                    this.saveScreenshot(idx, 400);
-                  }
-                }, 1000)
-              }
-              resolve(true);
-            });
-            // Checking if we have a screenshot of less than an hour
-          } catch (e) {
-            appui.error(e.message);
-            throw e;
-          }
-  
-          this._screenshotInterval[this.views[idx].uid] = setInterval(() => {
-            this.saveScreenshot(idx, 400);
-          }, this.currentScreenshotDelay);
-        }
-      })
-    },
+      if (!ct) {
+        return;
+      }
+      if (!this._screenshotInterval[this.views[idx].uid]) {
+        this._screenshotInterval[this.views[idx].uid] = setInterval(() => {
+          this.saveScreenshot(idx, 400);
+        }, this.currentScreenshotDelay);
+      }
 
+      if (!this.thumbnails[ct.currentView.uid] && ct?.isTabSelected && this.isVisual && this.db && this.views[idx].loaded) {
+        let url = ct.getFullURL();
+        try {
+          const row = await this.db.select('containers', ['manual', 'time'], {url});
+          bbn.fn.log("CHECKING SCREENSHOT FOR ", url, row);
+          if (ct.isVisible && (!row || (!row.manual && ((bbn.fn.timestamp() - (row.time || 0)) >= this.screenshotExpiration)))) {
+            await bbn.fn.yieldToBrowser();
+            bbn.fn.log("SAVING SCREENSHOT FOR ", url);
+            await this.saveScreenshot(idx, 400);
+          }
+        } catch (e) {
+          bbn.fn.log(e);
+          appui.error(e.message);
+        }
+      }
+    },
 
     unsetScreenshot(idx) {
       if (this._screenshotInterval[this.views[idx].uid]) {
@@ -74,24 +76,28 @@ export default {
     saveScreenshot(idx, width, height, force = false) {
       const ct = this.getContainer(idx);
       if (ct?.isTabSelected && this.db && ct.checkVisibility()) {
-        this.takeScreenshot(idx, width, height).then(img => {
-          if (!img) {
-            return;
-          }
-
-          if (img instanceof Image) {
-            img = img.src;
-          }
-
-          ct.thumbnail = img;
-          // This is in fact an insert/update
-          const url = ct.getFullURL();
-          if (url) {
-            this.db.insert('containers', {
-              url,
-              image: img,
-              time: bbn.fn.timestamp(),
-              manual: force ? 1 : 0
+        this.db.select('containers', ['manual', 'time'], {url: ct.currentURL}).then(row => {
+          if (force || !row || (!row.manual && ((bbn.fn.timestamp() - (row.time || 0)) >= this.screenshotExpiration))) {
+            this.takeScreenshot(idx, width, height).then(img => {
+              if (!img) {
+                return;
+              }
+    
+              if (img instanceof Image) {
+                img = img.src;
+              }
+    
+              this.thumbnails[ct.currentView.uid] = {image: img};
+              // This is in fact an insert/update
+              const url = ct.getFullURL();
+              if (url) {
+                this.db.insert('containers', {
+                  url,
+                  image: img,
+                  time: bbn.fn.timestamp(),
+                  manual: force ? 1 : 0
+                });
+              }
             });
           }
         });
@@ -111,7 +117,7 @@ export default {
             && this.screenshoter
             && ct.isTabSelected
             && ct.checkVisibility()
-            && bbn.fn.isActiveInterface(600)
+            //&& bbn.fn.isActiveInterface(600)
             && !this.visualShowAll
         ) {
           this.screenshoter.capture(ct.getRef('canvasSource'), width, height, meth).then(img => {
@@ -130,7 +136,7 @@ export default {
         let url = ct.getFullURL();
         this.db.select('containers', ['manual', 'image'], {url}).then(res => {
           if (res && (!res.manual || force)) {
-            ct.thumbnail = res.image;
+            this.thumbnails[ct.currentView.uid] = res;
           }
         });
       }

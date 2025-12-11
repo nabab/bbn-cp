@@ -1,4 +1,4 @@
-import {bbn, axios, dayjs} from "@bbn/bbn";
+import {bbn, Temporal} from "@bbn/bbn";
 import bbnData from "./lib/Data.js";
 import bbnNode from "./lib/Node.js";
 import bbnOptions from "./lib/Options.js";
@@ -40,8 +40,6 @@ import "./cp.js";
 customElements.define('bbn-anon', bbnAnonHtml);
 
 Object.assign(window, {
-  axios,
-  dayjs,
   bbn,
   bbnOptions,
   bbnHtml,
@@ -80,10 +78,13 @@ Object.assign(window, {
   bbnWatcher
 });
 
+if (!window.Temporal) {
+  window.Temporal = Temporal;
+}
+
 export {
-  axios,
-  dayjs,
   bbn,
+  Temporal,
   bbnOptions,
   bbnHtml,
   bbnData,

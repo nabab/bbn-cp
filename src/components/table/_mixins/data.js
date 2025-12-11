@@ -44,7 +44,7 @@ export default {
       // The final result
       let data = this.filteredData.slice().map(a => {
         a.tr = null;
-        a.visible = !!(!this.scrollable || !!(this.groupable && this.isGroupActive) || this.groupCols[0].cols.length || this.groupCols[2].cols.length);
+        a.visible = !!(!this.scrollable || (this.groupable && this.isGroupActive));
         a.sequences = this.setSequences();
         return a;
       });

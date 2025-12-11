@@ -1,4 +1,4 @@
-import {bbn, axios, dayjs} from "@bbn/bbn";
+import bbn from "@bbn/bbn";
 import bbnData from "./lib/Data.js";
 import bbnNode from "./lib/Node.js";
 import bbnComponentNode from "./lib/Node/Component.js";
@@ -58,6 +58,7 @@ import bbnCpCountdown from "./components/countdown/countdown.js";
 import bbnCpCursor from "./components/cursor/cursor.js";
 import bbnCpDashboard from "./components/dashboard/dashboard.js";
 import bbnCpDatepicker from "./components/datepicker/datepicker.js";
+import bbnCpDaterangepicker from "./components/daterangepicker/daterangepicker.js";
 import bbnCpDatetimepicker from "./components/datetimepicker/datetimepicker.js";
 import bbnCpDropdown from "./components/dropdown/dropdown.js";
 import bbnCpEditable from "./components/editable/editable.js";
@@ -123,6 +124,7 @@ import bbnCpSwitch from "./components/switch/switch.js";
 import bbnCpTable from "./components/table/table.js";
 import bbnCpTabs from "./components/tabs/tabs.js";
 import bbnCpTextarea from "./components/textarea/textarea.js";
+import bbnCpTime from "./components/timer/timer.js";
 import bbnCpTimepicker from "./components/timepicker/timepicker.js";
 import bbnCpTimer from "./components/timer/timer.js";
 import bbnCpTimewheel from "./components/timewheel/timewheel.js";
@@ -162,6 +164,7 @@ bbn.cp.toDefine = [
   bbnCpCursor,
   bbnCpDashboard,
   bbnCpDatepicker,
+  bbnCpDaterangepicker,
   bbnCpDatetimepicker,
   bbnCpDropdown,
   bbnCpEditable,
@@ -227,6 +230,7 @@ bbn.cp.toDefine = [
   bbnCpTable,
   bbnCpTabs,
   bbnCpTextarea,
+  bbnCpTime,
   bbnCpTimepicker,
   bbnCpTimer,
   bbnCpTimewheel,
@@ -247,8 +251,6 @@ bbn.cp.toDefine = [
 ];
 
 Object.assign(window, {
-  axios,
-  dayjs,
   bbn,
   bbnOptions,
   bbnHtml,
@@ -289,8 +291,6 @@ Object.assign(window, {
 });
 
 export {
-  axios,
-  dayjs,
   bbn,
   bbnOptions,
   bbnHtml,

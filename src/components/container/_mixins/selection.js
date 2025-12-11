@@ -138,7 +138,7 @@ export default {
       let testURL = finalURL;
       let row;
       while (!row?.response && testURL) {
-        bbn.fn.log("TESTING URL " + testURL);
+        //bbn.fn.log("TESTING URL " + testURL);
         row = await this.router.db.select('routercache', ['response'], {url: (this.router.postBaseUrl ? this.router.fullBaseURL : '') + '|' + testURL});
         if (!row?.response) {
           testURL = testURL.substring(0, testURL.lastIndexOf('/'));
@@ -447,7 +447,7 @@ export default {
         if (this.visual) {
           setTimeout(() => {
             this.router.setScreenshot(this.currentIndex);
-          }, 1000);
+          }, 5000);
         }
       }
     },

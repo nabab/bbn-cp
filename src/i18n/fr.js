@@ -22,6 +22,7 @@
     "Is false": "Est faux",
     "Is null": "Est nul",
     "Is not null": "N\u2019est pas nul",
+    "Is between": "Est entre",
     "Yes": "Oui",
     "No": "No",
     "Choose": "Choisir",

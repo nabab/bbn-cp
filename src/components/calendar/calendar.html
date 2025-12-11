@@ -4,126 +4,326 @@
        class="bbn-overlay bbn-middle bbn-xl bbn-white bbn-modal bbn-abs"
        bbn-text="_('Loading')"
        style="z-index: 1"/>
-  <div :class="['bbn-widget', 'bbn-flex-height', {'bbn-overlay': type === 'weeks'}]">
-    <div class="bbn-calendar-header bbn-header bbn-xspadding bbn-no-border-left bbn-no-border-right bbn-no-border-top">
-      <component bbn-if="headerComponent"
-                 :is="headerComponent"/>
-      <div bbn-else
-           class="bbn-flex-width bbn-vmiddle">
-        <template bbn-if="arrows && arrowsButtons">
-          <bbn-button bbn-if="currentCfg.stepSkip"
-                      icon="nf nf-fa-angle_double_left"
-                      @click="prev(true)"
-                      :title="_('Previous') + ' ' + currentCfg.stepSkipText"
-                      :notext="true"
-                      :class="['bbn-calendar-arrow', 'bbn-right-xsspace', {'hidden': isPrevSkipDisabled}]"/>
-          <bbn-button :class="['bbn-calendar-arrow', {'hidden': isPrevDisabled}]"
-                      icon="nf nf-fa-angle_left"
-                      @click="prev(false)"
-                      :title="_('Previous') + ' ' + currentCfg.stepText"
-                      :notext="true"/>
-        </template>
-        <template bbn-elseif="arrows && !arrowsButtons">
-          <i bbn-if="currentCfg.stepSkip"
-             :class="['bbn-calendar-arrow', 'nf nf-fa-angle_double_left', 'bbn-p', 'bbn-hsmargin', {'hidden': isPrevSkipDisabled}]"
-             @click="prev(true)"
-             :title="_('Previous') + ' ' + currentCfg.stepSkipText"/>
-          <i :class="['bbn-calendar-arrow', 'nf nf-fa-angle_left', 'bbn-p', 'bbn-hsmargin', {'hidden': !!isPrevDisabled}]"
-             @click="prev(false)"
-             :title="_('Previous') + ' ' + currentCfg.stepText"/>
-        </template>
-        <div class="bbn-flex-fill bbn-middle bbn-calendar-header-title">
-          <span @click="!!titleAction ? titleAction(_self) : false"
-                :class="{'bbn-p': !!titleAction}">
-            <i bbn-if="titleIcon"
-               :class="[titleIcon, 'bbn-hsmargin', 'bbn-large']"/>
-            <strong bbn-text="currentTitle"/>
-          </span>
-        </div>
-        <template bbn-if="arrows && arrowsButtons">
-          <bbn-button :class="['bbn-calendar-arrow', {'hidden': isNextDisabled}]"
-                      icon="nf nf-fa-angle_right"
-                      @click="next(false)"
-                      :title="_('Next') + ' ' + currentCfg.stepText"
-                      :notext="true"/>
-          <bbn-button bbn-if="currentCfg.stepSkip"
-                      icon="nf nf-fa-angle_double_right"
-                      @click="next(true)"
-                      :title="_('Next') + ' ' + currentCfg.stepSkipText"
-                      :notext="true"
-                      :class="['bbn-calendar-arrow', 'bbn-left-xsspace', {'hidden': isNextSkipDisabled}]"/>
-        </template>
-        <template bbn-elseif="arrows && !arrowsButtons">
-          <i :class="['bbn-calendar-arrow', 'nf nf-fa-angle_right', 'bbn-p', 'bbn-hsmargin', {'hidden': isNextDisabled}]"
-             @click="next(false)"
-             :title="_('Next') + ' ' + currentCfg.stepText"/>
-          <i bbn-if="currentCfg.stepSkip"
-             bbn-show="!isNextDisabled"
-             :class="['bbn-calendar-arrow', 'nf nf-fa-angle_double_right', 'bbn-p', 'bbn-hsmargin', {'hidden': isNextSkipDisabled}]"
-             @click="next(true)"
-             :title="_('Next') + ' ' + currentCfg.stepSkipText"/>
-        </template>
+  <div :class="['bbn-widget', {'bbn-overlay': type === 'weeks', 'bbn-flex-height': !time, 'bbn-flex-width': !!time}]">
+    <div :style="{height: (wheelHeight || 10) + 'px', borderWidth: '0.5rem !important'}"
+         bbn-if="(timeMode === 'wheel') && (mode === 'range') && time"
+         class="bbn-border-right bbn-flex-column bbn-no-border-top bbn-no-border-bottom bbn-no-border-left">
+      <div class="bbn-flex-width bbn-h-100">
+        <bbn-wheel :source="hours"
+                  bbn-model="hour"
+                  class="bbn-flex-height"
+                  ref="hour"/>
+        <bbn-wheel bbn-if="showMinute"
+                  :source="minsec"
+                  bbn-model="minute"
+                  class="bbn-flex-height"
+                  ref="minute"/>
+        <bbn-wheel bbn-if="showSecond"
+                  :source="minsec"
+                  bbn-model="second"
+                  class="bbn-flex-height"
+                  ref="second"/>
       </div>
     </div>
-    <div class="bbn-flex-fill bbn-spadding"
-         style="display: flex;">
-      <div class="bbn-calendar-container bbn-w-100"
-           :style="gridStyle">
-        <div bbn-if="labels && currentLabels?.length"
-            class="bbn-calendar-labels"
-            bbn-for="(l, i) in currentLabels"
-            bbn-html="l"
-            ref="label"/>
-        <template bbn-for="item in items"
-                  :key="item.key">
-          <div bbn-if="!item.hidden"
-              :class="['bbn-calendar-item-box', 'bbn-border', {
-                'bbn-p': selection && !item.disabled,
-                'bbn-spadding': !itemDetails && itemPadding,
-                'bbn-tertiary': item.highlight && !(selection && (item.value === currentValue)),
-                'bbn-background-effect-tertiary': item.isCurrent && item.inRange && (item.value !== currentValue),
-                'bbn-background-effect-primary': item.inRange && (item.value === currentValue),
-                'bbn-state-hover': selection && item.over && !item.disabled,
-                'bbn-background-effect-hover': selection && item.over && !item.disabled && item.inRange,
-                'bbn-primary': selection && (item.value === currentValue),
-                'bbn-secondary': item.colored && !item.hidden && !item.extra,
-                'bbn-background-effect-secondary': item.colored && !item.hidden && !item.extra && item.inRange && (item.value !== currentValue),
-                'bbn-alt-background-effect': !item.hidden && item.inRange && !item.isCurrent,
-                'bbn-active-background': !item.hidden && item.inRange && !item.isCurrent && (item.value !== currentValue) && !item.colored && (!item.over || (item.over && item.disabled)),
-                'bbn-disabled': item.disabled,
-                'bbn-alt-background-internal': extraItems && item.extra
-              }]"
-              @mouseover="item.over = true"
-              @mouseleave="item.over = false"
-              @click="!item.disabled ? select(item.value) : false"
-              :title="typeof itemTitle === 'function' ? itemTitle(item) : itemTitle">
-            <div bbn-if="item.events && item.events.length && itemDetails"
-                class="bbn-flex-height"
-                style="position: relative">
-              <div :class="['bbn-r', 'bbn-unselectable', 'bbn-calendar-item', {
-                'bbn-secondary-text': item.colored && !item.hidden && !item.extra,
-                'bbn-tertiary-text': item.isCurrent && (!item.inRange || (item.inRange && item.over))
-              }]"
-                  style="margin-right: .2rem">
-                <span bbn-text="item.text"/>
+    <div class="bbn-flex-height bbn-flex-fill"
+         bbn-forget="!time"
+         ref="calendar">
+      <div class="bbn-calendar-header bbn-header">
+        <component bbn-if="headerComponent"
+                  :is="headerComponent"/>
+        <div bbn-else
+            class="bbn-flex-width bbn-vmiddle bbn-vxspadding bbn-hxxspadding">
+          <template bbn-if="arrows">
+            <component :is="arrowsButtons ? 'bbn-button' : 'i'"
+                      :class="['bbn-calendar-arrow', {
+                        'bbn-invisible': isPrevSkipDisabled,
+                        'nf nf-fa-angle_double_left': !arrowsButtons,
+                        'bbn-p': !isPrevSkipDisabled
+                      }]"
+                      :icon="arrowsButtons ? 'nf nf-fa-angle_double_left' : null"
+                      :title="_('Previous') + ' ' + currentCfg.stepSkipText"
+                      @click="prev(true)"
+                      :notext="arrowsButtons"
+                      bbn-if="currentCfg.stepSkip"/>
+            <component :is="arrowsButtons ? 'bbn-button' : 'i'"
+                      :class="['bbn-calendar-arrow', {
+                        'bbn-p': !isPrevDisabled,
+                        'bbn-invisible': isPrevDisabled,
+                        'nf nf-fa-angle_left': !arrowsButtons
+                      }]"
+                      :icon="arrowsButtons ? 'nf nf-fa-angle_left' : null"
+                      @click="prev(false)"
+                      :title="_('Previous') + ' ' + currentCfg.stepText"
+                      :notext="arrowsButtons"/>
+          </template>
+          
+          <div bbn-if="type !== 'days'"
+              class="bbn-flex-fill bbn-middle bbn-calendar-header-title">
+            <span @click="!!titleAction ? titleAction(_self) : false"
+                  :class="{'bbn-p': !!titleAction}">
+              <i bbn-if="titleIcon"
+                :class="[titleIcon, 'bbn-hsmargin', 'bbn-large']"/>
+              <strong bbn-text="bbn.fn.correctCase(currentTitle)"/>
+            </span>
+          </div>
+  
+          <!-- ONE OR MORE MONTHS -->
+          <template bbn-else>
+            <div :class="{
+              'bbn-flex-fill': true,
+              'bbn-lborder-left': !!i
+            }"
+                 bbn-for="(month, i) in items"
+                 :key="month.month + '-' + month.year">
+            <!-- ICON SPACINGS -->
+              <div class="bbn-flex-width bbn-vmiddle">
+                <template bbn-if="arrows && i">
+                  <i bbn-if="currentCfg.stepSkip"
+                    class="bbn-calendar-arrow"/>
+                  <i class="bbn-calendar-arrow"/>
+                </template>
+                <!-- MONTH TITLE -->
+                <div class="bbn-flex-fill bbn-middle bbn-calendar-header-title">
+                  <span @click="!!titleAction ? titleAction(_self, month) : false"
+                        :class="{'bbn-p': !!titleAction}">
+                    <i bbn-if="titleIcon"
+                      :class="[titleIcon, 'bbn-hxsmargin', 'bbn-large']"/>
+                    <strong bbn-text="bbn.fn.correctCase(bbn.dt(month.weeks[1].days[0].value).format(currentCfg.titleFormat))"/>
+                  </span>
+                </div>
+                <!-- ICON SPACINGS -->
+                <template bbn-if="arrows && (i < items.length - 1)">
+                  <i bbn-if="currentCfg.stepSkip"
+                    class="bbn-calendar-arrow"/>
+                  <i class="bbn-calendar-arrow"/>
+                </template>
               </div>
-              <component bbn-if="itemComponent"
-                        :is="itemComponent"
-                        :source="item"
-                        :selected="currentValue"
-                        class="bbn-flex-fill"/>
             </div>
-            <template bbn-else>
-              <i bbn-if="item.events && item.events.length && eventIcon"
-                :class="[eventIcon, 'bbn-unselectable', 'bbn-calendar-item-icon']"/>
-              <div :class="['bbn-100', 'bbn-middle', 'bbn-unselectable', 'bbn-calendar-item', {'bbn-tertiary-text': item.colored && !item.extra}]">
-                <span bbn-text="item.text"/>
+          </template>
+  
+          <template bbn-if="arrows">
+            <component :is="arrowsButtons ? 'bbn-button' : 'i'"
+                        :icon="arrowsButtons ? 'nf nf-fa-angle_right' : null"
+                      :class="['bbn-calendar-arrow', {
+                        'bbn-invisible': isNextDisabled,
+                        'bbn-p': !isNextDisabled,
+                        'nf nf-fa-angle_right': !arrowsButtons
+                      }]"
+                        @click="next(false)"
+                        :title="_('Next') + ' ' + currentCfg.stepText"
+                        :notext="arrowsButtons"/>
+            <component bbn-if="currentCfg.stepSkip"
+                        :is="arrowsButtons ? 'bbn-button' : 'i'"
+                        :icon="arrowsButtons ? 'nf nf-fa-angle_double_right' : null"
+                        @click="next(true)"
+                        :title="_('Next') + ' ' + currentCfg.stepSkipText"
+                        :notext="arrowsButtons"
+                        :class="['bbn-calendar-arrow', {
+                          'bbn-invisible': isNextSkipDisabled,
+                          'bbn-p': !isNextSkipDisabled,
+                          'nf nf-fa-angle_double_right': !arrowsButtons
+                        }]"/>
+          </template>
+        </div>
+      </div>
+      <div class="bbn-flex-fill bbn-middle"
+          bbn-if="ready"
+          style="display: flex;">
+        <div class="bbn-calendar-container bbn-100"
+            :style="gridStyle"
+            bbn-if="type !== 'days'">
+          <div bbn-if="labels && currentLabels?.length"
+              class="bbn-calendar-labels"
+              bbn-for="(l, i) in currentLabels"
+              bbn-html="l"
+              ref="label"/>
+          <template bbn-for="item in items"
+                    :key="item.key">
+            <div bbn-if="!item.hidden"
+                :class="['bbn-calendar-item-box', 'bbn-border', 'bbn-middle', {
+                  'bbn-p': selection && !item.disabled,
+                  'bbn-spadding': !itemDetails && (itemPadding === true),
+                  'bbn-tertiary': item.highlight && !(selection && (item.value === currentValue)),
+                  'bbn-background-effect-tertiary': item.isCurrent && item.inRange && (item.value !== currentValue),
+                  'bbn-background-effect-primary': item.inRange && (item.value === currentValue),
+                  'bbn-state-hover': selection && item.over && !item.disabled,
+                  'bbn-background-effect-hover': selection && item.over && !item.disabled && item.inRange,
+                  'bbn-primary': selection && (item.value === currentValue),
+                  'bbn-secondary': item.colored && !item.hidden && !item.extra,
+                  'bbn-background-effect-secondary': item.colored && !item.hidden && !item.extra && item.inRange && (item.value !== currentValue),
+                  'bbn-alt-background-effect': !item.hidden && item.inRange && !item.isCurrent,
+                  'bbn-active-background': !item.hidden && item.inRange && !item.isCurrent && (item.value !== currentValue) && !item.colored && (!item.over || (item.over && item.disabled)),
+                  'bbn-disabled': item.disabled,
+                  'bbn-alt-background-internal': extraItems && item.extra
+                }]"
+                :style="bbn.fn.extend({}, bbn.fn.isNumber(itemPadding) ? {'padding': itemPadding + 'px'} : {}, bbn.fn.isString(itemPadding) ? {'padding': itemPadding} : {})"
+                @mouseover="item.over = true"
+                @mouseleave="item.over = false"
+                @click="!item.disabled ? select(item.value) : false"
+                :title="typeof itemTitle === 'function' ? itemTitle(item) : itemTitle">
+              <div bbn-if="item.events && item.events.length && itemDetails"
+                  class="bbn-flex-height"
+                  style="position: relative">
+                <div :class="['bbn-r', 'bbn-unselectable', 'bbn-calendar-item', {
+                  'bbn-secondary-text': item.colored && !item.hidden && !item.extra,
+                  'bbn-tertiary-text': item.isCurrent && (!item.inRange || (item.inRange && item.over))
+                }]"
+                    style="margin-right: .2rem">
+                  <span bbn-text="item.text"/>
+                </div>
+                <component bbn-if="itemComponent"
+                          :is="itemComponent"
+                          :source="item"
+                          :selected="currentValue"
+                          class="bbn-flex-fill"/>
               </div>
+              <template bbn-else>
+                <i bbn-if="item.events && item.events.length && eventIcon"
+                  :class="[eventIcon, 'bbn-unselectable', 'bbn-calendar-item-icon']"/>
+                <div :class="['bbn-100', 'bbn-middle', 'bbn-unselectable', 'bbn-calendar-item', {'bbn-tertiary-text': item.colored && !item.extra}]">
+                  <span bbn-text="item.text"/>
+                </div>
+              </template>
+            </div>
+            <div bbn-else
+                class="bbn-calendar-item-box bbn-o bbn-alt-background"/>
+          </template>
+        </div>
+        <template bbn-else>
+          <div bbn-for="month in items"
+              :class="['bbn-calendar-container', 'bbn-100', {
+                'bbn-border-left': items?.length > 1,
+                'bbn-border-right': items?.length > 1
+              }]"
+              :key="month.month + '-' + month.year"
+              :style="gridStyle">
+            <div bbn-if="labels && currentLabels?.length"
+                class="bbn-calendar-labels"
+                bbn-for="(weekSeq, i) in weekSequence"
+                bbn-html="currentLabels[weekSeq]"
+                ref="label"/>
+            <template bbn-for="week in month.weeks"
+                      :key="week.week + '-' + month.year">
+              <template bbn-for="(item, i) in week.days"
+                        :key="item.value">
+                <div bbn-if="!item.hidden"
+                    :class="{
+                      'bbn-middle': true,
+                      'bbn-calendar-item-box': true,
+                      'bbn-border': true,
+                      'bbn-p': selection && !item.disabled,
+                      'bbn-spadding': !itemDetails && (itemPadding === true),
+                      'bbn-tertiary': item.highlight && !(selection && (item.value === currentValue)),
+                      'bbn-background-effect-tertiary': item.isCurrent && item.inRange && (item.value !== currentValue),
+                      'bbn-background-effect-primary': item.inRange && (item.value === currentValue),
+                      'bbn-state-hover': isInTmpRange(item.value) || !!(selection && item.over && !item.disabled) || (mode === 'range' && isInRange(item.value)),
+                      'bbn-background-effect-hover': selection && item.over && !item.disabled && item.inRange,
+                      'bbn-primary': selection && ((item.value === currentValue) || isInRange(item.value)),
+                      'bbn-secondary': item.colored && !item.hidden && !item.extra,
+                      'bbn-background-effect-secondary': item.colored && !item.hidden && !item.extra && item.inRange && (item.value !== currentValue),
+                      'bbn-alt-background-effect': !item.hidden && item.inRange && !item.isCurrent,
+                      'bbn-active-background': !item.hidden && item.inRange && !item.isCurrent && (item.value !== currentValue) && !item.colored && (!item.over || (item.over && item.disabled)),
+                      'bbn-disabled': item.disabled,
+                      'bbn-alt-background-internal': extraItems && item.extra
+                    }"
+                    :style="bbn.fn.extend({}, bbn.fn.isNumber(itemPadding) ? {'padding': itemPadding + 'px'} : {}, bbn.fn.isString(itemPadding) ? {'padding': itemPadding} : {})"
+                    @mouseenter="mouseenterItem(item, $event)"
+                    @mouseleave="mouseleaveItem(item, $event)"
+                    :data-value="item.value"
+                    @click="!item.disabled ? select(item.value, false, $event) : false"
+                    :title="typeof itemTitle === 'function' ? itemTitle(item) : itemTitle">
+                  <div bbn-if="item.events && item.events.length && itemDetails"
+                      class="bbn-flex-height"
+                      style="position: relative">
+                    <div :class="['bbn-r', 'bbn-unselectable', 'bbn-calendar-item', {
+                      'bbn-secondary-text': item.colored && !item.hidden && !item.extra,
+                      'bbn-tertiary-text': item.isCurrent && (!item.inRange || (item.inRange && item.over))
+                    }]"
+                        style="margin-right: .2rem">
+                      <span bbn-text="item.text"/>
+                    </div>
+                    <component bbn-if="itemComponent"
+                              :is="itemComponent"
+                              :source="item"
+                              :selected="currentValue"
+                              class="bbn-flex-fill"/>
+                  </div>
+                  <template bbn-else>
+                    <i bbn-if="item.events && item.events.length && eventIcon"
+                      :class="[eventIcon, 'bbn-unselectable', 'bbn-calendar-item-icon']"/>
+                    <div :class="[
+                                  'bbn-100',
+                                  'bbn-unselectable',
+                                  'bbn-calendar-item',
+                                  {
+                                    'bbn-tertiary-text': item.colored && !item.extra,
+                                    'bbn-padding': !item.events && (timeMode === 'day'),
+                                    'bbn-middle': item.events || (timeMode !== 'day')
+                                  }]">
+                      <bbn-context tag="div"
+                                   class="bbn-bottom-right bbn-xxsmargin bbn-s"
+                                  bbn-if="!item.events 
+                                  && (timeMode === 'day')
+                                  && (
+                                      (startDate?.isValid
+                                      && (startDate.format('Y-m-d') === bbn.dt(item.value, currentCfg.valueFormat).format('Y-m-d'))
+                                      ) || (endDate?.isValid
+                                      && (endDate.format('Y-m-d') === bbn.dt(item.value, currentCfg.valueFormat).format('Y-m-d'))
+                                      ) || (rangeSelected[0]
+                                      && (bbn.dt(rangeSelected[0], currentCfg.valueFormat).format('Y-m-d') === bbn.dt(item.value, currentCfg.valueFormat).format('Y-m-d'))
+                                      )
+                                    )"
+                                    :visible="[lastDate ? lastDate.format('Y-m-d') : null, rangeSelected[0] ? bbn.dt(rangeSelected[0], currentCfg.valueFormat).format('Y-m-d') : null].includes(bbn.dt(item.value, currentCfg.valueFormat).format('Y-m-d'))"
+                                    :component="$options.components.time"
+                                    :component-options="{
+                                      date: item.value,
+                                      value: bbn.dt(item.value, currentCfg.valueFormat).format('H:i' + (showSecond ? ':s' : '')),
+                                    }"
+                                    @close="onTimeClose"
+                                    :component-events="{
+                                      change: onTimeChange
+                                    }">
+                        <span bbn-text="startDate ? (startDate.format('Y-m-d') === bbn.dt(item.value, currentCfg.valueFormat).startOf('day').format('Y-m-d') ? startDate.format('H:i') : endDate.format('H:i')) : bbn.dt(rangeSelected[0], currentCfg.valueFormat).format('H:i')"/>
+                      </bbn-context>
+                      <span bbn-text="item.text"/>
+                    </div>
+                  </template>
+                </div>
+                <div bbn-else
+                    :data-value="item.value"
+                    class="bbn-calendar-item-box bbn-o bbn-alt-background"/>
+              </template>
             </template>
           </div>
-          <div bbn-else
-               class="bbn-calendar-item-box bbn-o bbn-alt-background"/>
         </template>
+      </div>
+      <div bbn-if="selection && status"
+          class="bbn-calendar-header bbn-header bbn-xspadding bbn-no-border-left bbn-no-border-right bbn-no-border-top">
+        <div bbn-if="status === true"
+            class="bbn-c bbn-vmiddle bbn-w-100 bbn-hspadding"
+            bbn-text="statusText"/>
+        <component bbn-else
+                  :is="status"/>
+      </div>
+    </div>
+    <div :style="{height: (wheelHeight || 10) + 'px', borderWidth: '0.5rem !important'}"
+         bbn-if="(timeMode === 'wheel') && time"
+         class="bbn-border-left bbn-flex-column bbn-no-border-top bbn-no-border-bottom bbn-no-border-right  ">
+      <div class="bbn-flex-width bbn-h-100">
+        <bbn-wheel :source="hours"
+                  bbn-model="hour"
+                  class="bbn-flex-height"
+                  ref="hour"/>
+        <bbn-wheel bbn-if="showMinute"
+                  :source="minsec"
+                  bbn-model="minute"
+                  class="bbn-flex-height"
+                  ref="minute"/>
+        <bbn-wheel bbn-if="showSecond"
+                  :source="minsec"
+                  bbn-model="second"
+                  class="bbn-flex-height"
+                  ref="second"/>
       </div>
     </div>
   </div>

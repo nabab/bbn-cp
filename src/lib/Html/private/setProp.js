@@ -20,7 +20,7 @@ export default function setProp(cp, name, value) {
   const cfg = cp.$cfg.props[name];
 
   // Check if the property is a standard one or starts with 'bbn'. If not, issue a warning.
-  if (!cp.$el.constructor.bbnFn.acceptedAttributes.includes(name) && (name.indexOf('bbn') !== 0)) {
+  if (!(cp instanceof bbnAnonHtml) && !cp.$el.constructor.bbnFn.acceptedAttributes.includes(name) && (name.indexOf('bbn') !== 0)) {
     bbn.fn.warning(bbn._("The attribute %s in %s is not a property", name, cp.$options.name));
     return;
   }

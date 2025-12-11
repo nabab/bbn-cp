@@ -22,7 +22,8 @@
             'bbn-vmiddle': (orientation === 'horizontai'),
             'bbn-hmiddle': (orientation === 'vertical'),
           }]">
-      <div bbn-for="(s, i) in source">
+      <div bbn-for="(s, i) in source"
+           :key="s.uid || i">
         <div bbn-if="!s.end && s.component">
           <component :is="s.component"
                      bbn-bind="s.options"/>
@@ -30,16 +31,14 @@
         <div bbn-elseif="!s.end && (s.content !== undefined)"
              class="bbn-block bbn-xspadding"
              bbn-html="s.content"
-             :key="'item' + i"
              :ref="'item' + i"/>
         <bbn-button bbn-elseif="!s.end && ((s.url || s.action || s.items) && (s.label || s.icon))"
                     bbn-bind="s"
-                    :key="'item' + i"
+                    :key="'item' + (s.uid || i)"
                     :ref="'item' + i"
                     :disabled="bbn.fn.isFunction(s.disabled) ? !!s.disabled() : !!s.disabled"/>
         <div bbn-elseif="!s.end"
-            class="bbn-toolbar-separator"
-            :key="'item' + i"/>
+            class="bbn-toolbar-separator">
         <bbn-floater bbn-if="s.items && $refs['item' + i]"
                     :source="items"
                     :element="'item' + i"/>
@@ -52,23 +51,19 @@
             'bbn-vmiddle': (orientation === 'horizontai'),
             'bbn-hmiddle': (orientation === 'vertical'),
           }]">
-      <div bbn-for="(s, i) in source">
+      <div bbn-for="(s, i) in source"
+           :key="s.uid || i">
         <div bbn-if="s.end && s.component">
           <component :is="s.component"
-                      bbn-bind="s.options"
-                      :key="'item' + i"/>
+                      bbn-bind="s.options"/>
         </div>
         <div bbn-elseif="s.end && (s.content !== undefined)"
             class="bbn-block bbn-xspadding"
-            bbn-html="s.content"
-            :key="'item' + i"/>
+            bbn-html="s.content"/>
         <bbn-button bbn-elseif="s.end && ((s.url || s.action) && (s.text || s.icon))"
-                    bbn-bind="s"
-                    :key="'item' + i"/>
+                    bbn-bind="s"/>
         <div bbn-elseif="s.end"
-            class="bbn-toolbar-separator"
-            :key="'item' + i"
-        >|</div>
+            class="bbn-toolbar-separator">|</div>
         <bbn-floater bbn-if="s.items && $refs['item' + i]"
                     :source="items"
                     :element="'item' + i"/>

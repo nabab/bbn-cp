@@ -241,15 +241,15 @@ const cpDef = {
        * @fires setValue
       */
       setDate(val){
-        val = dayjs(val, 'YYYY-MM-DD').isValid() ? dayjs(val, 'YYYY-MM-DD') : '';
+        val = bbn.dt(val, 'YYYY-MM-DD').isValid ? bbn.dt(val, 'YYYY-MM-DD') : '';
         if ( this.value && val ){
-          let mom = dayjs(this.value.toString(), this.getValueFormat(this.value.toString()));
-          val = dayjs(dayjs(val, 'YYYY-MM-DD').hour(mom.hour())).minute(mom.minute());
+          let mom = bbn.dt(this.value, this.getValueFormat(this.value.toString()));
+          val = bbn.dt(bbn.dt(val, 'YYYY-MM-DD').hour(mom.hour())).minute(mom.minute());
           if ( this.showSecond ){
-            val = dayjs(val).second(mom.second());
+            val = bbn.dt(val).second(mom.second());
           }
         }
-        this.setValue(val ? dayjs(val).format(this.getValueFormat(dayjs(val).format(this.currentValueFormat))) : '');
+        this.setValue(val ? bbn.dt(val).format(this.getValueFormat(bbn.dt(val).format(this.currentValueFormat))) : '');
       },
       /**
        * Sets the value format from 'HH:mm' to 'HH:mm:ss'.
@@ -260,13 +260,13 @@ const cpDef = {
        * @fires setValue
       */
       setTime(val){
-        //val = dayjs(val, 'HH:mm' + (this.showSecond ? ':ss' : ''));
-        val = dayjs(val, this.currentValueFormat);
+        //val = bbn.dt(val, 'HH:mm' + (this.showSecond ? ':ss' : ''));
+        val = bbn.dt(val, this.currentValueFormat);
         if ( this.value ){
-          let mom = dayjs(this.value.toString(), this.getValueFormat(this.value.toString()));
-          val = dayjs(dayjs(dayjs(val).date(mom.date())).month(mom.month())).year(mom.year());
+          let mom = bbn.dt(this.value.toString(), this.getValueFormat(this.value.toString()));
+          val = bbn.dt(bbn.dt(bbn.dt(val).date(mom.date())).month(mom.month())).year(mom.year());
         }
-        this.setValue(dayjs(val).format(this.getValueFormat(dayjs(val).format(this.currentValueFormat))));
+        this.setValue(bbn.dt(val).format(this.getValueFormat(bbn.dt(val).format(this.currentValueFormat))));
       },
       /**
        * Sets the value.
@@ -283,7 +283,7 @@ const cpDef = {
         if ( !format ){
           format = !!val ? this.getValueFormat(val.toString()) : false;
         }
-        let value = !!format && !!val ? (dayjs(val.toString(), format).isValid() ? dayjs(val.toString(), format).format(format) : '') : '';
+        let value = !!format && !!val ? (bbn.dt(val.toString(), format).isValid ? bbn.dt(val.toString(), format).format(format) : '') : '';
         if ( value ){
           if ( this.min && (value < this.min) ){
             value = this.min;
@@ -343,8 +343,8 @@ const cpDef = {
             maskInput = mask.inputValue,
             maskVal= mask.raw(maskInput),
             r = new RegExp(this.currentPattern),
-            dj = maskVal &&  r.test(maskInput) ? dayjs(maskInput, this.currentFormat) : false,
-            value = dj && dj.isValid() ? dj.format(this.getValueFormat(maskInput)) : '';
+            dj = maskVal &&  r.test(maskInput) ? bbn.dt(maskInput, this.currentFormat) : false,
+            value = dj && dj.isValid ? dj.format(this.getValueFormat(maskInput)) : '';
         if ((maskVal !== this.oldInputValue)
           && (!maskVal || value)
         ) {
@@ -386,8 +386,8 @@ const cpDef = {
       setInputValue(newVal){
         if ( newVal ){
           let mask = this.getRef('element'),
-              mom = dayjs(newVal.toString(), this.getValueFormat(newVal.toString()));
-          this.inputValue = newVal && mask && mom.isValid() ?
+              mom = bbn.dt(newVal, this.getValueFormat(newVal.toString()));
+          this.inputValue = newVal && mask && mom.isValid ?
             mask.raw(mom.format(this.currentFormat)) :
             '';
         }
@@ -409,14 +409,6 @@ const cpDef = {
         this.$nextTick(() => {
           this.$set(this.getRef('element'), 'inputValue', '');
         })
-      }
-    },
-    /**
-     * @event beforeCreate
-     */
-    beforeCreate(){
-      if ( bbn.env && bbn.env.lang && (bbn.env.lang !== dayjs.locale()) ){
-        dayjs.locale(bbn.env.lang);
       }
     },
     /**

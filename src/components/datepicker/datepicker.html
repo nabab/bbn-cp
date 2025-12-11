@@ -5,6 +5,7 @@
               @click="isOpened = !isOpened"
               :disabled="isDisabled || readonly"
               tabindex="-1"
+              ref="button"
               class="bbn-button-left bbn-no-vborder"/>
   <bbn-masked ref="element"
               :disabled="isDisabled"
@@ -31,19 +32,23 @@
               @click="isOpened = !isOpened"
               :disabled="isDisabled || readonly"
               tabindex="-1"
+              ref="button"
               class="bbn-button-right bbn-no-vborder"/>
   <bbn-floater bbn-if="isOpened && !isDisabled && !readonly"
-               :element="$el"
+               :element="$refs.button"
                ref="floater"
                :auto-hide="1000"
                @close="isOpened = false"
-               :element-width="false">
+               :element-width="false"
+               :scrollable="false">
     <bbn-calendar :arrows-buttons="false"
                   @selected="setDate"
                   :value="value ? value.toString() : ''"
+                  :num-month="numMonth"
                   :selection="true"
                   :auto-selection="true"
                   :type="type"
+                  labels="letter"
                   ref="calendar"
                   :date="value ? value.toString() : ''"
                   :min="min"

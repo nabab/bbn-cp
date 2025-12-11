@@ -83,8 +83,9 @@ async function treatQueue(num = 0, cps) {
   }
   fullQueueLength += bbn.cp.queue.length;
   let queueLength = bbn.cp.queue.length;
+  const maxQueueLength = 1000000;
   if (queueLength) {
-    if (fullQueueLength > 100000) {
+    if (fullQueueLength > maxQueueLength) {
       if (!isDebug) {
         isDebug = bbn.cp.numTicks;
         bbn.fn.log("SETTING DEBUG MODE", bbn.cp.queue);
@@ -96,6 +97,7 @@ async function treatQueue(num = 0, cps) {
     }
 
     let queue = bbn.cp.queue.splice(0);
+    bbn.cp.elementsQueue.splice(0);
     // Process each component in the queue.
     let oneDone = false;
 
@@ -114,6 +116,7 @@ async function treatQueue(num = 0, cps) {
     while (queue.length) {
       if (isDebug) {
         if (bbn.cp.numTicks - isDebug > 1000) {
+          debugger;
           throw new Error("Too many ticks");
         }
       }
@@ -358,6 +361,6 @@ export default async function startTick() {
       else {
         resolve(true);
       }
+    }, 0);
   });
-  }, 0);
 }

@@ -96,7 +96,7 @@
           <bbn-scroll bbn-elseif="ready && isLoaded"
                       ref="scroll"
                       @ready="init"
-                      :scrollable="scrollable && router?.scrollContent"
+                      :scrollable="currentScrollable && router?.scrollContent"
                       axis="y"
                       :class="{
                         'bbn-overlay': router?.scrollContent,

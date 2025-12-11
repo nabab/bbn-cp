@@ -1138,33 +1138,26 @@ const cpDef = {
       this.app = this.$refs.app;
     }
     this.ready = true;
-    setTimeout(
-      () => {
-        setTimeout(() => {
-          if (navigator?.serviceWorker?.controller) {
-            navigator.serviceWorker.addEventListener("message", (event) => {
-              if (event.data?.data) {
-                this.receive(event.data);
-              }
-            });
-            this.poll();
-          }
-          this._postMessage({ type: "initCompleted" });
-          this.registerChannel("appui", true);
-          if (this.plugins["appui-chat"]) {
-            this.registerChannel("appui-chat");
-          }
-          if (this.plugins["appui-notification"]) {
-            this.registerChannel("appui-notification");
-            this.browserNotificationURL = this.plugins["appui-notification"];
-            this.browserNotificationSW = true;
-          }
-        }, 1000);
-        this.onResize();
-        this.opacity = 1;
-      },
-      this.app?.header ? 250 : 50
-    );
+    if (navigator?.serviceWorker?.controller) {
+      navigator.serviceWorker.addEventListener("message", (event) => {
+        if (event.data?.data) {
+          this.receive(event.data);
+        }
+      });
+      this.poll();
+    }
+    this._postMessage({ type: "initCompleted" });
+    this.registerChannel("appui", true);
+    if (this.plugins["appui-chat"]) {
+      this.registerChannel("appui-chat");
+    }
+    if (this.plugins["appui-notification"]) {
+      this.registerChannel("appui-notification");
+      this.browserNotificationURL = this.plugins["appui-notification"];
+      this.browserNotificationSW = true;
+    }
+    this.onResize();
+    this.opacity = 1;
   },
   /**
    * Summary: Cleanup event listeners before destruction.

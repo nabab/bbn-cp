@@ -478,11 +478,13 @@ export default {
             this.getPopup({
               label: false,
               resizable: true,
-              scrollable: true,
+              scrollable: false,
+              maxWidth: "min(100%, 1200px)",
+              maxHeight: "min(100%, 800px)",
+              width: "80vw",
+              height: "60vh",
               closable: true,
               component: 'bbn-router-config',
-              width: 800,
-              height: 600,
               componentOptions: {
                 router: this,
                 visual: !this.parent

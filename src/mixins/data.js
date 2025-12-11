@@ -20,32 +20,35 @@ const data = {
         //debugger;
       }
 
-      let v = this.getProp(data, cfg.field) || '';
+      let v = this.getProp(data, cfg.field);
+      if (v === undefined) {
+        v = '';
+      }
       if ( cfg.icon ){
         return '<i class="' + cfg.icon + '"> </i>'
       }
       else if ( cfg.type ){
         switch ( cfg.type ){
           case "datetime":
-            if ( window.dayjs && cfg.format ){
-              return v ? (new window.dayjs(v)).format(cfg.format) : '-';
+            if ( cfg.format ){
+              return v ? bbn.dt(v).format(cfg.format) : '-';
             }
             else{
               return bbn.fn.fdatetime(v, '-');
             }
           case "date":
-            if ( window.dayjs && cfg.format ){
-              return v ? (new window.dayjs(v)).format(cfg.format) : '-';
+            if ( cfg.format ){
+              return v ? bbn.dt(v).format(cfg.format) : '-';
             }
             else{
               return bbn.fn.fdate(v, '-');
             }
           case "time":
-            if ( cfg.format && window.dayjs ){
-              return v ? (new window.dayjs(v)).format(cfg.format) : '-';
+            if (cfg.format){
+              return v ? bbn.dt(v).format(cfg.format) : '-';
             }
             else{
-              return v ? bbn.fn.ftime(v) : '-';
+              return v ? bbn.dt(v).ftime() : '-';
             }
           case "email":
             return v ? '<a href="mailto:' + v + '">' + v + '</a>' : '-';

@@ -74,17 +74,19 @@ bbnProtoHtml.$connected = function () {
   });
 
   // just after definition to know what is the default model prop
-  const modelCfg = bbn.cp.statics[this.$node.tag === 'component' ? this.$node.realTag : this.$node.tag]?.cfg?.model || (this.$options.name === 'bbn-anon' ? {prop: 'value'} : null);
-  if (Object.hasOwn(this.$node.model || {}, '_default_') && modelCfg) {
+  if (Object.hasOwn(this.$node.model || {}, '_default_')) {
+    const cpName = this.$node.tag === 'component' ? this.$node.realTag : this.$node.tag;
+    const modelCfg = bbn.cp.statics[cpName]?.cfg?.model || (this.$options.name === 'bbn-anon' ? {prop: 'value', event: 'input'} : null);
+    const name = modelCfg?.prop || 'value';
     Object.defineProperty(this.$node.model._default_, 'name', {
-      value: modelCfg.prop,
+      value: name,
       configurable: false,
       writable: false
     });
-    this.$node.model[modelCfg.prop] = this.$node.model._default_;
+    this.$node.model[name] = this.$node.model._default_;
     delete this.$node.model._default_;
     delete this.$node.props._default_;
-    this.$node.props[modelCfg.prop] = this.$node.model[modelCfg.prop].value;
+    this.$node.props[name] = this.$node.model[name].value;
   }
 
   init(this);
@@ -152,17 +154,17 @@ bbnProtoHtml.$connected = function () {
   }
 
   // just after definition to know what is the default model prop
-  if (this.$el.bbnNode.model?._default_ && this.$cfg?.model) {
-    const modelCfg = this.$cfg.model;
+  if (this.$el.bbnNode.model?._default_) {
+    const modelName = this.$cfg.model?.prop || 'value';
     Object.defineProperty(this.$el.bbnNode.model._default_, 'name', {
-      value: modelCfg.prop,
+      value: modelName,
       configurable: false,
       writable: false
     });
-    this.$el.bbnNode.model[modelCfg.prop] = this.$el.bbnNode.model._default_;
+    this.$el.bbnNode.model[modelName] = this.$el.bbnNode.model._default_;
     delete this.$el.bbnNode.model._default_;
     delete this.$el.bbnNode.props._default_;
-    this.$el.bbnNode.props[modelCfg.prop] = this.$el.bbnNode.model[modelCfg.prop].value;
+    this.$el.bbnNode.props[modelName] = this.$el.bbnNode.model[modelName].value;
   }
 
 

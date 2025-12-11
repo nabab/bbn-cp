@@ -16,6 +16,14 @@ export default function queueUpdate(...items) {
       continue;
     }
 
+    if (item.element) {
+      if (bbn.cp.elementsQueue.includes(item.element)) {
+        continue;
+      }
+
+      bbn.cp.elementsQueue.push(item.element);
+    }
+
     if (item.element?.setLastRequest) {
       item.element.setLastRequest();
     }

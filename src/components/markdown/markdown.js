@@ -8,10 +8,9 @@
  *
  * @author BBN Solutions
  */
-
-import 'easymde/dist/easymde.min.css';
-import EasyMDE from 'easymde';
+import 'tiny-markdown-editor/dist/tiny-mde.min.css';
 import {marked} from 'marked';
+import TinyMDE from 'tiny-markdown-editor';
 //Markdown editor use simpleMDe
 const cpDef = {
   /**
@@ -26,7 +25,8 @@ const cpDef = {
     bbn.cp.mixins.events
   ],
   statics() {
-    const toolbar = [
+    const toolbar = [];
+    /*
       {
         name: "bold",
         className: "nf nf-fa-bold",
@@ -136,7 +136,7 @@ const cpDef = {
         className: "nf nf-fa-question-circle",
         title: bbn._("Markdown Guide")
       },
-    ];
+    ];*/
     return {
       toolbar,
       insertTexts: {
@@ -163,7 +163,7 @@ const cpDef = {
     },
     //@todo not used
     toolBar: {
-      type: Array
+      type: [Boolean, Array]
     },
     //@todo not used
     hideIcons: {
@@ -212,6 +212,7 @@ const cpDef = {
   methods: {
     load() {
       if (!this.widget) {
+        /*
         this.widget = new EasyMDE(bbn.fn.extend({
             element: this.$refs.element,
             value: this.value,
@@ -219,12 +220,23 @@ const cpDef = {
         ));
         this.widget.codemirror.on("change", () => {
           this.emitInput(this.widget.value());
+        });*/
+        this.widget = new TinyMDE.Editor({
+          element: this.$refs.element,
+          content: this.value,
+        });
+        var commandBar = new TinyMDE.CommandBar({
+          element: this.$refs.toolbar,
+          editor: this.widget,
+        });
+        this.widget.addEventListener("change", () => {
+          bbn.fn.log("CHANGE EVENT FIRED", this.widget.getContent());
+          this.emitInput(this.widget.getContent());
         });
       }
     },
     unload() {
       if (this.widget) {
-        this.widget.toTextArea();
         this.widget = null;
       }
     }
@@ -279,4 +291,4 @@ const def = {
   lang: cpLang
 };
 
-export {def as default, EasyMDE, marked};
+export {def as default, TinyMDE, marked};

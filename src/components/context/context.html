@@ -6,7 +6,7 @@
       @keydown.space.enter="clickItem">
   <slot></slot>
   <bbn-floater bbn-if="showFloater && !disabled && component"
-              :element="attach || null"
+              :element="currentAttachment"
               :element-width="attachWidth"
               bbn-portal="portal"
               :source="source"
@@ -27,10 +27,12 @@
               :auto-hide="true"
               :z-index="zIndex"
               :mode="mode"
+              :modal="modal"
               @close="$emit('close'); showFloater = false;"
               @open="$emit('open')"
               :component="component"
               :component-options="componentOptions"
+              :component-events="componentEvents"
               :position="position"
               :render="render"
               :source-icon="sourceIcon"
@@ -41,7 +43,7 @@
           name="content"></slot>
   </bbn-floater>
   <bbn-floater bbn-elseif="showFloater && !disabled"
-              :element="attach || null"
+              :element="currentAttachment"
               :element-width="attachWidth"
               bbn-portal="portal"
               :source="source"
@@ -64,6 +66,7 @@
               :content="content"
               :auto-hide="true"
               :mode="mode"
+              :modal="modal"
               @close="$emit('close'); showFloater = false;"
               @open="$emit('open')"
               :item-component="itemComponent"

@@ -336,7 +336,7 @@ export default {
      */
     currentScrollable: {
       get() {
-        return this.currentView?.scrollable || true;
+        return 'scrollable' in this.currentView ? this.currentView.scrollable : true;
       },
       set(v) {
         if ( this.currentView ){
@@ -521,6 +521,11 @@ export default {
       set(v) {
         if (this.currentView && (this.currentView.selected !== v)) {
           this.currentView.selected = v;
+          setTimeout(() => {
+            if (this.isLoaded) {
+              this.router.setScreenshot(this.currentIndex);
+            }
+          }, 2000);
         }
       }
     },
@@ -927,8 +932,8 @@ export default {
       this.isLoaded = v;
     },
     isLoaded(v) {
-      if (v) {
-        this.currentView.loaded = true;
+      if (this.currentView.loaded !== v) {
+        this.currentView.loaded = v;
       }
     },
     loading(v) {

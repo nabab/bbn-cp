@@ -152,8 +152,6 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
     }
   }
 
-  setNodeRegion(this, after);
-
   // Assign a unique ID and schema to the element for tracking and management
   Object.defineProperties(this.element, {
     'bbnId': { value: this.id, writable: false, configurable: false },
@@ -176,6 +174,8 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
       'bbnIndex': { value: this.loopIndex, writable: false, configurable: false }
     });
   }
+
+  setNodeRegion(this, after);
 
   if (!this.comment && this.directives) {
     Object.defineProperty(this.element, 'bbnDirectives', {
