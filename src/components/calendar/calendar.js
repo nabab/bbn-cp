@@ -726,22 +726,22 @@ const cpDef = {
       return false;
     },
     isInTmpRange(value) {
-      if (this.rangeSelected.length) {
+      if (this.rangeSelected.length && this.firstSelectedDate) {
         const r = this.rangeSelected.slice().sort();
-
-        if (this.maxRange) {
-          if (bbn.dt(r[0]).diff(value, this.type, true) > this.maxRange) {
-            return false;
-          }
-        }
-        if (this.minRange) {
-          if (bbn.dt(r[0]).diff(value, this.type, true) < this.minRange) {
-            return false;
-          }
+        const fd = bbn.dt(bbn.dt(this.firstSelectedDate, this.currentCfg.valueFormat).format('YYYY-MM-DD'));
+        const d1 = bbn.dt(bbn.dt(r[0], this.currentCfg.valueFormat).format('YYYY-MM-DD'));
+        const vd = bbn.dt(bbn.dt(value, this.currentCfg.valueFormat).format('YYYY-MM-DD'));
+        if ((this.maxRange
+            && (fd.diff(vd, this.type, true) >= this.maxRange))
+          || (this.minRange
+            && (fd.diff(vd, this.type, true) <= this.minRange))
+        ) {
+          return false;
         }
 
         if (r.length === 2) {
-          return value >= r[0] && value <= r[1];
+          const d2 = bbn.dt(bbn.dt(r[1], this.currentCfg.valueFormat).format('YYYY-MM-DD'));
+          return vd.isAfterOrSame(d1) && vd.isBeforeOrSame(d2);
         }
       }
 
@@ -754,6 +754,11 @@ const cpDef = {
       if (this.selection && !item.disabled) {
         if ((this.mode === 'range') && this.rangeSelected.length) {
           this.rangeSelected.push(item.value);
+          if ((this.rangeSelected >= 2)
+            && !this.isInTmpRange(item.value)
+          ) {
+            this.rangeSelected.splice(this.rangeSelected.indexOf(item.value), 1);
+          }
         }
 
         item.over = true;
@@ -765,8 +770,10 @@ const cpDef = {
         return;
       }
       if (this.selection && !item.disabled) {
-        if ((this.mode === 'range') && (this.rangeSelected.length === 2)) {
-          this.rangeSelected.pop();
+        if ((this.mode === 'range')
+          && (this.rangeSelected.length === 2)
+        ) {
+          this.rangeSelected.splice(this.rangeSelected.indexOf(item.value), 1);
         }
 
         item.over = false;
@@ -1157,6 +1164,16 @@ const cpDef = {
               return;
             }
 
+            const fd = bbn.dt(bbn.dt(this.firstSelectedDate, this.currentCfg.valueFormat).format('YYYY-MM-DD'));
+            const dv = bbn.dt(dt.format('YYYY-MM-DD'), 'YYYY-MM-DD');
+            if ((this.maxRange
+                && (fd.diff(dv, this.type, true) >= this.maxRange))
+              || (this.minRange
+                && (fd.diff(dv, this.type, true) <= this.minRange))
+            ) {
+              return;
+            }
+
             this.rangeSelected.push(val);
             if (!this.isInTmpRange(val)) {
               this.rangeSelected.splice(0, 1);
@@ -1306,7 +1323,10 @@ const cpDef = {
     rangeSelected() {
       bbn.fn.log("Tmp range selected", this.rangeSelected);
       if (this.rangeSelected.length === 1) {
-        this.firstSelectedDate = this.rangeSelected[0];
+        this.firstSelectedDate = bbn.dt(bbn.dt(this.rangeSelected[0], this.currentCfg.valueFormat).format('YYYY-MM-DD')).format(this.currentCfg.valueFormat);
+      }
+      else if (!this.rangeSelected.length) {
+        this.firstSelectedDate = null;
       }
     }
   },
