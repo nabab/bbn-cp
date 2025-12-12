@@ -584,6 +584,20 @@ export default {
         }
       }
     },
+    /**
+     * The HTTP status code if any.
+     * @prop {Number|null} [null] currentStatus
+     */
+    currentStatus: {
+      get() {
+        return this.currentView?.status || null;
+      },
+      set(v) {
+        if ( this.currentView ){
+          this.currentView.status = v;
+        }
+      }
+    },
 
     currentPaneId: {
       get() {

@@ -166,6 +166,7 @@ export default {
           this.isLoading = false;
         }
   
+        this.currentStatus = response?.status || null;
         if (response?.status === 200) {
           d = response.data;
           if (!d || !bbn.fn.isObject(d)) {

@@ -168,6 +168,7 @@ export default {
         pinned: false,
         url: null,
         current: null,
+        status: null,
         real: false,
         cfg: {},
         events: {},

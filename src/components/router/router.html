@@ -52,7 +52,10 @@
                 :key="a.uid"
               :style="{order: i + 2}"
                 :class="'bbn-sshadow bbn-radius' + (isMobile ? '' : ' bbn-container-ratio')">
-              <div class="bbn-overlay bbn-flex-height">
+              <div class="bbn-overlay bbn-flex-height"
+                      @click="getContainer(a.idx).show()"
+                      @mouseenter="isOverThumb = a.uid"
+                      @mouseleave="isOverThumb = false">
                 <!-- Thumbnail image -->
                 <div :class="['bbn-transition-bcolor', 'bbn-b', 'bbn-xspadding', {
                       'bbn-flex-width': !isMobile || (selected === a.idx),
@@ -78,20 +81,23 @@
                   </div>
                 </div>
                 <div :class="['bbn-flex-fill', {'bbn-middle': !thumbnails[a.uid]}]">
+                  <div bbn-if="a.status && (a.status !== 200)"
+                       class="bbn-overlay bbn-xxl bbn-rstate-error bbn-middle bbn-b"
+                       :title="_('Error %s', a.status)">
+                    <div class="bbn-block"
+                         bbn-text="a.status"/>
+                  </div>
                   <img :src="thumbnails[a.uid].image"
                       style="width: 100%; max-height: 100%; height: auto"
                       class="bbn-router-thumbnail"
-                      bbn-if="thumbnails[a.uid]">
+                      bbn-elseif="thumbnails[a.uid]">
                   <div bbn-else
-                      class="bbn-block">
+                       class="bbn-block">
                     <i class="nf nf-md-camera_off_outline bbn-xxxxl"/>
                   </div>
                   <!-- When in visual mode this is the interaction layer -->
                   <div bbn-if="!isMobile"
                       class="bbn-overlay"
-                      @click="getContainer(a.idx).show()"
-                      @mouseenter="isOverThumb = a.uid"
-                      @mouseleave="isOverThumb = false"
                       style="z-index: 1">
                     <transition name="fade">
                       <div class="bbn-bottom-left bbn-w-100"
@@ -317,10 +323,16 @@
                 </div>
               </div>
               <div :class="['bbn-flex-fill', {'bbn-middle': !thumbnails[a.uid]}]">
+                <div bbn-if="a.status && (a.status !== 200)"
+                      class="bbn-overlay bbn-xxl bbn-rstate-error bbn-middle bbn-b"
+                      :title="_('Error %s', a.status)">
+                  <div class="bbn-block"
+                        bbn-text="a.status"/>
+                </div>
                 <img :src="thumbnails[a.uid].image"
                     style="width: 100%; max-height: 100%; height: auto"
                     class="bbn-router-thumbnail"
-                    bbn-if="thumbnails[a.uid]">
+                    bbn-elseif="thumbnails[a.uid]">
                 <div bbn-else
                     class="bbn-block">
                   <i class="nf nf-md-camera_off_outline bbn-xxxxl"/>

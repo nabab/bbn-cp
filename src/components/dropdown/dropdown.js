@@ -50,23 +50,6 @@ const cpDef = {
       fontSize: bbn.fn.getCssVar("--text-size") || '1rem',
     };
   },
-  /**
-   * The current icon.
-   *
-   * @computed currentIcon
-   * @return {String}
-  */
-  beforeMount() {
-    if (this.hasStorage) {
-      let v = this.getStorage();
-      if (v && (v !== this.value)) {
-        this.emitInput(v);
-      }
-    }
-  },
-  mounted() {
-    this.fontSize = window.getComputedStyle(this).fontSize;
-  },
   methods: {
     onClear() {
       this.emitInput(this.isNullable ? null : '');
@@ -158,7 +141,7 @@ const cpDef = {
    */
   beforeCreate() {
     this.$on('dataloaded', () => {
-      if ((this.value !== undefined) && !this.currentText.length) {
+      if ((this.value !== undefined) && !this.currentText.length && this.currentData) {
         let row = bbn.fn.getRow(this.currentData, a => {
           return a.data[this.sourceValue] === this.value;
         });
@@ -173,6 +156,23 @@ const cpDef = {
         }
       }
     })
+  },
+  /**
+   * The current icon.
+   *
+   * @computed currentIcon
+   * @return {String}
+  */
+  beforeMount() {
+    if (this.hasStorage) {
+      let v = this.getStorage();
+      if (v && (v !== this.value)) {
+        this.emitInput(v);
+      }
+    }
+  },
+  mounted() {
+    this.fontSize = window.getComputedStyle(this).fontSize;
   },
   watch: {
     startingTmpValue(v) {
