@@ -207,6 +207,7 @@ const cpDef = {
       registeredFunctions: this.searchFunctions.slice(),
       requestedText: '',
       isStarted: false,
+      isRunning: false,
       isResetting: false,
       searchUid: bbn.fn.randomString(20) + '-' + bbn.fn.timestamp(),
       itv: false,
@@ -436,21 +437,21 @@ const cpDef = {
       bbn.fn.log(err);
       this.$emit('error', err)
       this.stopSearch();
-      if (!this.queue.length) {
+      if (!this.isStarted && !this.queue.length) {
         this.showSearching = false;
       }
     },
     onAbort() {
       bbn.fn.log('on abort stream');
       this.stopSearch();
-      if (!this.queue.length) {
+      if (!this.isStarted && !this.queue.length) {
         this.showSearching = false;
       }
     },
     onFinish() {
       bbn.fn.log('on finish stream');
       this.isStarted = false
-      if (!this.queue.length) {
+      if (!this.isStarted && !this.queue.length) {
         this.showSearching = false;
       }
     },
@@ -487,6 +488,7 @@ const cpDef = {
         this.itv = setInterval(() => {
           if (!this.isRunning && this.queue.length) {
             this.isRunning = true;
+            this.showSearching = true;
             const currentData = bbn.fn.clone(this.currentData);
             bbn.fn.each(this.queue.splice(0), d => {
               const idx = bbn.fn.search(currentData, {hash: d.hash});

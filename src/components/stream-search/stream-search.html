@@ -10,7 +10,7 @@
                 autocomplete="off"
                 bbn-model="filterString"
                 bbn-focused.selected
-                :loading="showSearching"
+                :loading="showSearching || isStarted || isRunning || !!itv || !!queue.length"
                 loading-position="left"
                 button-right="nf nf-fa-search"/>
   </div>
