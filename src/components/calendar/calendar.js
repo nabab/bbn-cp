@@ -377,7 +377,7 @@ const cpDef = {
   },
   data() {
     const cfg = this.getCfg();
-    let mom = bbn.dt();
+    let mom = this.date ? bbn.dt(this.date) : bbn.dt();
     const currentMin = this.getDateObject(this.min, cfg);
     const currentMax = this.getDateObject(this.max, cfg);
     if (this.mode === 'range') {
