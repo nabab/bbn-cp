@@ -203,7 +203,7 @@ const cpDef = {
               }
               else {
                 this.unfilter();
-                this.enptyData();
+                this.emptyData();
               }
             }
             this.emitInput(v);

@@ -88,6 +88,8 @@ const cpDef = {
         if (!this.getRef('input')?.isFocused) {
           this.inputIsVisible = false;
         }
+
+        this.$emit('blur', e);
       });
     },
     /**
