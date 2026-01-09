@@ -231,7 +231,12 @@
                       :key="row.uid || row.index">
               <!-- Group rows = start of a new group -->
               <component is="tr"
-                         bbn-if="isGroupActive && (!rowIndex || (items[rowIndex-1].data[cols[group].field] !== row.data[cols[group].field]))"
+                         bbn-if="isGroupActive
+                          && (!rowIndex
+                            || (items[rowIndex-1]?.data
+                              && cols[group]?.field
+                              && row?.data?.[cols[group].field]
+                              && (items[rowIndex-1].data[cols[group].field] !== row.data[cols[group].field])))"
                         :data-index="rowIndex"
                         :data-group="row.data[isGroupActive]"
                         :class="rowClass(row, rowIndex)"
