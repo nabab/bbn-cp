@@ -500,7 +500,7 @@ const cpDef = {
      */
     mounted(){
       if (this.maskedMounted) {
-        this.setInputValue(this.value);
+        this.setInputValue(bbn.fn.isNumber(this.value) ? this.value.toString() : this.value);
       }
 
       this.ready = true;
