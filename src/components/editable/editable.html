@@ -9,7 +9,7 @@
             :is="component"
             bbn-model="currentValue"
             :tabindex="currentTabIndex"
-            bbn-bind="componentOptions"/>
+            bbn-bind="componentOptions || {}"/>
   <component bbn-elseif="isEditing && componentObject"
             tabindex="-1"
             :is="componentObject"

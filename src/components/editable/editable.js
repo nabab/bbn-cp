@@ -646,6 +646,12 @@ const cpDef = {
             }
           },
           computed: {
+            componentOptions() {
+              return cp.componentOptions || {};
+            },
+            component() {
+              return cp.component || null;
+            },
             currentText() {
               if (!cp.isEditing && cp.component && cp.componentOptions?.source) {
                 if (!cp.currentValue) {
@@ -1086,7 +1092,9 @@ const cpDef = {
         if (v && (this.constructor.currentEdited !== this)) {
           if (this.constructor.currentEdited) {
             this.constructor.currentEdited.isEditing = false;
+            this.constructor.currentEdited.componentObject = this.constructor.currentEdited.getComponentObject(this.constructor.currentEdited.type);
           }
+
           this.constructor.currentEdited = this;
         }
 
