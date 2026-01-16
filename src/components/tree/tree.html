@@ -32,197 +32,198 @@
         }"
         ref="list">
       <!-- Tree node component -->
-      <node inline-template
-            bbn-for="(it, i) in filteredData"
-            :source="it"
-            :key="uid ? it.data[uid] || it[uid] : (it.key ? it.key : 'node-' + level + '-' + i)"
-            :idx="it.index"
-            :component="it.component || component"
-            :selectable="isSelectable(it)"
-            :multiple="it.multiple !== undefined ? it.multiple : multiple"
-            :level="level"
-            :selection="it.selection !== undefined ? it.selection : selection"
-            :flat="flat"
-            ref="node"
-            :quick-filter="quickFilter"
-            :sortable="it.sortable !== undefined ? it.sortable : sortable"
-            :uid="uid"
-            @selectmenu="clickMenuItem"
-            @nodeclick="onNodeClick"
-            @drop="onNodeDrop"
-            :tree-state="uid !== undefined ? _getTreeState(it.data[uid]) : undefined">
-        <li :class="['bbn-tree-node', 'bbn-vxxspadding', 'bbn-unselectable', {
-                      'bbn-p': selectable
-                    }]"
-            bbn-show="isVisible"
-            bbn-droppable="droppable"
-            :title="source.tooltip || textFromText">
-          <!-- Sortable interface is set at the top -->
-          <span bbn-if="sortable && (source.num === 1)"
-                :class="['bbn-w-100', 'bbn-tree-order-top', {
-                  'bbn-tree-order': tree.dragging && (tree.dragging.parent === parent) && !quickFilter
-                }]"
-                :style="{
-                  visibility: !!tree.dragging
-                    && !!tree.overNode
-                    && (tree.dragging.parent === tree.overNode.parent)
-                    && (tree.overNode.source.num === 1)
-                    && (tree.dragging.source.num > 1) ? 'visible' : 'hidden'
-                }"
-                ref="orderTop"
-                @dragover="onDrag"
-                @dragleave="leaveDrag"
-                @drop="drop"
-                @dragend="endDrag"
-                bbn-droppable:data="{node: _self}"/>
-          <!-- The node starts here -->
-          <span :class="[
-                  'bbn-tree-node-block', 
-                  getCls(source, tree) || '', 
-                  {
-                    'bbn-state-active': (isActive && !isSelected) || (tree.drag && tree.dragging && (tree.dragging === _self)),
-                    'bbn-state-selected': isSelected,
-                    'bbn-tree-node-block-no-component': !!component,
-                    'bbn-left-spadding': !parent.hasExpander && !!level
-                  }
-                ]"
-                ref="nodeBlock">
-            <!-- The expander -->
-            <span bbn-if="parent.hasExpander"
-                  :class="['bbn-tree-node-block-expander', {'bbn-p': numChildren}]"
-                  ref="expander"
-                  @click="if ( !flat && numChildren && (level >= tree.minExpandLevel) ){
-                    isExpanded = !isExpanded;
+      <template bbn-for="(it, i) in filteredData">
+        <node inline-template
+              :source="it"
+              :key="uid ? it.data[uid] || it[uid] : (it.key ? it.key : 'node-' + level + '-' + i)"
+              :idx="it.index"
+              :component="it.component || component"
+              :selectable="isSelectable(it)"
+              :multiple="it.multiple !== undefined ? it.multiple : multiple"
+              :level="level"
+              :selection="it.selection !== undefined ? it.selection : selection"
+              :flat="flat"
+              ref="node"
+              :quick-filter="quickFilter"
+              :sortable="it.sortable !== undefined ? it.sortable : sortable"
+              :uid="uid"
+              @selectmenu="clickMenuItem"
+              @nodeclick="onNodeClick"
+              @drop="onNodeDrop"
+              :tree-state="uid !== undefined ? _getTreeState(it.data[uid]) : undefined">
+          <li :class="['bbn-tree-node', 'bbn-vxxspadding', 'bbn-unselectable', {
+                        'bbn-p': selectable
+                      }]"
+              bbn-show="isVisible"
+              bbn-droppable="droppable"
+              :title="source.tooltip || textFromText">
+            <!-- Sortable interface is set at the top -->
+            <span bbn-if="sortable && (source.num === 1)"
+                  :class="['bbn-w-100', 'bbn-tree-order-top', {
+                    'bbn-tree-order': tree.dragging && (tree.dragging.parent === parent) && !quickFilter
+                  }]"
+                  :style="{
+                    visibility: !!tree.dragging
+                      && !!tree.overNode
+                      && (tree.dragging.parent === tree.overNode.parent)
+                      && (tree.overNode.source.num === 1)
+                      && (tree.dragging.source.num > 1) ? 'visible' : 'hidden'
                   }"
-                  @mouseover="if ( !flat && tree.drag && tree.dragging && numChildren && (level >= tree.minExpandLevel) ){
-                    isExpanded = true;
-                  }">
-              <!-- If there are no children we leave the white space -->
-              <span :class="['bbn-tree-caret', {'bbn-tree-caret-down': isExpanded}]"
-                    :style="{visibility: flat || !numChildren || (level < tree.minExpandLevel) ? 'hidden' : 'visible'}">
-                <i class="nf nf-fa-caret_right"/>
-                </span>
-            </span>
-
-            <!-- The checkobox if selection -->
-            <span bbn-if="tree.uid && (tree.selection || !!selection)">
-              <bbn-checkbox :value="data[tree.uid]"
-                            :checked="isChecked(data[tree.uid])"
-                            ref="selector"
-                            @change="checkNode"
-                            :disabled="isDisabled()"/>
-            </span>
-
-            <!-- The component if given -->
-            <component bbn-if="!!component"
-                        :is="component"
-                        :source="data"/>
-
-            <!-- Or the default context -->
-            <bbn-context bbn-else
-                          :context="true"
-                          :source-action="false"
-                          :source="getMenu"
-                          @select="clickMenuItem"
-                          @open="isActive = true"
-                          @close="isActive = false"
-                          ref="context"
-                          style="cursor: unset">
-              <span @dblclick.stop="dblClickOnNode"
-                    @click.stop="clickOnNode"
-                    @dragstart.stop="startDrag"
-                    @dragover="onDrag"
-                    @dragleave="leaveDrag"
-                    @drop="drop"
-                    @dragend="endDrag"
-                    @mouseup.left="onMouseUp"
-                    ref="clicker"
-                    class="bbn-node-clicker"
-                    tabindex="0"
-                    bbn-draggable.container.data.mode="tree.drag ? {
-                      mode: 'clone',
-                      container: tree.getRef('helperContainer'),
-                      data: {node: _self}
-                    } : false"
-                    bbn-droppable:data="tree.selfDrop ? {node: _self} : false">
-                <!-- The item component if given -->
-                <component bbn-if="tree.itemComponent"
-                            :is="tree.itemComponent"
-                            :source="source"/>
-                <!-- Or the default template -->
-                <template bbn-else>
-                  <span bbn-if="tree.icons"
-                        class="bbn-tree-node-block-icon bbn-right-xsmargin">
-                    <!-- If icon is specifically false we leave the white space -->
-                    <span bbn-if="source.icon === false"></span>
-                    <!-- or if it's an image -->
-                    <img bbn-elseif="source.icon && (source.icon.indexOf('data:image') === 0)"
-                          :src="source.icon"
-                          alt="">
-                    <!-- or if it's a class icon -->
-                    <i bbn-elseif="source.icon"
-                      :class="source.icon"
-                      :style="iconStyle"/>
-                  <!-- default icon -->
-                  <i bbn-else
-                        :class="getIcon()"
-                        :style="iconStyle"
-                    ></i>
+                  ref="orderTop"
+                  @dragover="onDrag"
+                  @dragleave="leaveDrag"
+                  @drop="drop"
+                  @dragend="endDrag"
+                  bbn-droppable:data="{node: _self}"/>
+            <!-- The node starts here -->
+            <span :class="[
+                    'bbn-tree-node-block', 
+                    getCls(source, tree) || '', 
+                    {
+                      'bbn-state-active': (isActive && !isSelected) || (tree.drag && tree.dragging && (tree.dragging === _self)),
+                      'bbn-state-selected': isSelected,
+                      'bbn-tree-node-block-no-component': !!component,
+                      'bbn-left-spadding': !parent.hasExpander && !!level
+                    }
+                  ]"
+                  ref="nodeBlock">
+              <!-- The expander -->
+              <span bbn-if="parent.hasExpander"
+                    :class="['bbn-tree-node-block-expander', {'bbn-p': numChildren}]"
+                    ref="expander"
+                    @click="if ( !flat && numChildren && (level >= tree.minExpandLevel) ){
+                      isExpanded = !isExpanded;
+                    }"
+                    @mouseover="if ( !flat && tree.drag && tree.dragging && numChildren && (level >= tree.minExpandLevel) ){
+                      isExpanded = true;
+                    }">
+                <!-- If there are no children we leave the white space -->
+                <span :class="['bbn-tree-caret', {'bbn-tree-caret-down': isExpanded}]"
+                      :style="{visibility: flat || !numChildren || (level < tree.minExpandLevel) ? 'hidden' : 'visible'}">
+                  <i class="nf nf-fa-caret_right"/>
                   </span>
-                  <!-- The node's text -->
-                  <span class="bbn-tree-node-block-title">
-                    <span bbn-html="source.text"></span>
-                  </span>
-                </template>
               </span>
-            </bbn-context>
-          </span>
 
-          <!-- If it has children another tree -->
-          <bbn-tree bbn-if="numChildren"
-                    ref="tree"
-                    :key="'tree-' + level + '-' + idx"
-                    class="bbn-text"
-                    :component="component"
-                    :source="tree.isAjax && !tree.hybrid ? tree.source : (data[tree.sourceItems] ? data[tree.sourceItems] : [])"
-                    :level="level + 1"
-                    :object="tree.object ? !tree.hybrid : false"
-                    :autobind="false"
-                    :filterable="isFilterable"
-                    :flat="flat"
-                    :filters="tree.filters"
-                    :selection="source.selection !== undefined ? source.selection : tree.selection"
-                    :cls="source.cls !== undefined ? source.cls : tree.cls"
-                    :quick-filter="quickFilter"
-                    :sortable="source.sortable !== undefined ? source.sortable : tree.sortable"
-                    :multiple="source.multiple !== undefined ? source.multiple : tree.multiple"
-                    :uid="uid"
-                    :state="treeState"
-                    :opened="isExpanded"
-                    :source-text="tree.sourceText"
-                    :source-value="tree.sourceValue"
-                    :scrollable="tree.scrollable"/>
+              <!-- The checkobox if selection -->
+              <span bbn-if="tree.uid && (tree.selection || !!selection)">
+                <bbn-checkbox :value="data[tree.uid]"
+                              :checked="isChecked(data[tree.uid])"
+                              ref="selector"
+                              @change="checkNode"
+                              :disabled="isDisabled()"/>
+              </span>
 
-          <!-- Sortable interface is set at the bottom -->
-          <span bbn-if="sortable"
-                :class="['bbn-w-100', 'bbn-tree-order-bottom', {
-                  'bbn-tree-order': tree.dragging && (tree.dragging.parent === parent) && !quickFilter
-                }]"
-                :style="{
-                  visibility: !!tree.dragging
-                    && !!tree.overNode
-                    && (tree.dragging.parent === tree.overNode.parent)
-                    && (tree.overNode !== tree.dragging) ? 'visible' : 'hidden'
-                }"
-                ref="orderBottom"
-                @dragover="onDrag"
-                @dragleave="leaveDrag"
-                @drop="drop"
-                @dragend="endDrag"
-                bbn-droppable:data="{node: _self}"
-          ></span>
-        </li>
-      </node>
+              <!-- The component if given -->
+              <component bbn-if="!!component"
+                          :is="component"
+                          :source="data"/>
+
+              <!-- Or the default context -->
+              <bbn-context bbn-else
+                            :context="true"
+                            :source-action="false"
+                            :source="getMenu"
+                            @select="clickMenuItem"
+                            @open="isActive = true"
+                            @close="isActive = false"
+                            ref="context"
+                            style="cursor: unset">
+                <span @dblclick.stop="dblClickOnNode"
+                      @click.stop="clickOnNode"
+                      @dragstart.stop="startDrag"
+                      @dragover="onDrag"
+                      @dragleave="leaveDrag"
+                      @drop="drop"
+                      @dragend="endDrag"
+                      @mouseup.left="onMouseUp"
+                      ref="clicker"
+                      class="bbn-node-clicker"
+                      tabindex="0"
+                      bbn-draggable.container.data.mode="tree.drag ? {
+                        mode: 'clone',
+                        container: tree.getRef('helperContainer'),
+                        data: {node: _self}
+                      } : false"
+                      bbn-droppable:data="tree.selfDrop ? {node: _self} : false">
+                  <!-- The item component if given -->
+                  <component bbn-if="tree.itemComponent"
+                              :is="tree.itemComponent"
+                              :source="source"/>
+                  <!-- Or the default template -->
+                  <template bbn-else>
+                    <span bbn-if="tree.icons"
+                          class="bbn-tree-node-block-icon bbn-right-xsmargin">
+                      <!-- If icon is specifically false we leave the white space -->
+                      <span bbn-if="source.icon === false"></span>
+                      <!-- or if it's an image -->
+                      <img bbn-elseif="source.icon && (source.icon.indexOf('data:image') === 0)"
+                            :src="source.icon"
+                            alt="">
+                      <!-- or if it's a class icon -->
+                      <i bbn-elseif="source.icon"
+                        :class="source.icon"
+                        :style="iconStyle"/>
+                    <!-- default icon -->
+                    <i bbn-else
+                          :class="getIcon()"
+                          :style="iconStyle"
+                      ></i>
+                    </span>
+                    <!-- The node's text -->
+                    <span class="bbn-tree-node-block-title">
+                      <span bbn-html="source.text"></span>
+                    </span>
+                  </template>
+                </span>
+              </bbn-context>
+            </span>
+
+            <!-- If it has children another tree -->
+            <bbn-tree bbn-if="numChildren"
+                      ref="tree"
+                      :key="'tree-' + level + '-' + idx"
+                      class="bbn-text"
+                      :component="component"
+                      :source="tree.isAjax && !tree.hybrid ? tree.source : (data[tree.sourceItems] ? data[tree.sourceItems] : [])"
+                      :level="level + 1"
+                      :object="tree.object ? !tree.hybrid : false"
+                      :autobind="false"
+                      :filterable="isFilterable"
+                      :flat="flat"
+                      :filters="tree.filters"
+                      :selection="source.selection !== undefined ? source.selection : tree.selection"
+                      :cls="source.cls !== undefined ? source.cls : tree.cls"
+                      :quick-filter="quickFilter"
+                      :sortable="source.sortable !== undefined ? source.sortable : tree.sortable"
+                      :multiple="source.multiple !== undefined ? source.multiple : tree.multiple"
+                      :uid="uid"
+                      :state="treeState"
+                      :opened="isExpanded"
+                      :source-text="tree.sourceText"
+                      :source-value="tree.sourceValue"
+                      :scrollable="tree.scrollable"/>
+
+            <!-- Sortable interface is set at the bottom -->
+            <span bbn-if="sortable"
+                  :class="['bbn-w-100', 'bbn-tree-order-bottom', {
+                    'bbn-tree-order': tree.dragging && (tree.dragging.parent === parent) && !quickFilter
+                  }]"
+                  :style="{
+                    visibility: !!tree.dragging
+                      && !!tree.overNode
+                      && (tree.dragging.parent === tree.overNode.parent)
+                      && (tree.overNode !== tree.dragging) ? 'visible' : 'hidden'
+                  }"
+                  ref="orderBottom"
+                  @dragover="onDrag"
+                  @dragleave="leaveDrag"
+                  @drop="drop"
+                  @dragend="endDrag"
+                  bbn-droppable:data="{node: _self}"
+            ></span>
+          </li>
+        </node>
+      </template>
       <slot/>
     </ul>
   </bbn-scroll>
