@@ -141,7 +141,7 @@ const cpDef = {
    */
   beforeCreate() {
     this.$on('dataloaded', () => {
-      if ((this.value !== undefined) && !this.currentText.length && this.currentData) {
+      if ((this.value !== undefined) && !this.currentText?.length && this.currentData) {
         let row = bbn.fn.getRow(this.currentData, a => {
           return a.data[this.sourceValue] === this.value;
         });
