@@ -408,48 +408,68 @@ const cpDef = {
        * @emits change
       */
       inputChanged(){
-        let mask = this.getRef('element'),
-            maskInput = mask.inputValue,
-            maskVal = mask.raw(maskInput),
-            r = new RegExp(this.currentPattern),
-            dj = maskVal &&  r.test(maskInput) ? bbn.dt(maskInput, this.currentFormat) : false,
-            value = dj && dj.isValid ? dj.format(this.getValueFormat(maskInput)) : '';
-        if ((maskVal !== this.oldInputValue)
-          && (!maskVal || value)
-        ) {
-          if (value && this.min && (value < this.min)) {
-            const ev = new CustomEvent('min', {cancelable: true});
-            this.$emit('min', ev, value, this.min, this);
-            if (ev.defaultPrevented) {
-              return;
+        const mask = this.getRef('element'),
+              maskInput = mask.inputValue,
+              maskVal = mask.raw(maskInput),
+              r = new RegExp(this.currentPattern);
+        if (maskVal && r.test(maskInput)) {
+          const value = bbn.fn.map([
+            maskInput.substr(0, maskInput.length / 2 - 1),
+            maskInput.substr(maskInput.length / 2 + 2),
+          ], (v, i) => {
+            const dt = bbn.dt(v, this.currentFormat);
+            if (dt.isValid) {
+              return dt.format(
+                this.getValueFormat(
+                  maskInput.substr(
+                    !i ? 0 : maskInput.length / 2,
+                    !i ? maskInput.length / 2  : maskInput.length)
+                )
+              );
             }
 
-            value = this.min;
-          }
-
-          if (value && this.max && (value > this.max)) {
-            const ev = new CustomEvent('max', {cancelable: true});
-            this.$emit('max', ev, value, this.max, this);
-            if (ev.defaultPrevented) {
-              return;
-            }
-
-            value = this.max;
-          }
-
-          if (this.disableDates
-            && ((bbn.fn.isFunction(this.disableDates) && this.disableDates(value))
-              || (bbn.fn.isArray(this.disableDates) && this.disableDates.includes(value)))
+            return false;
+          });
+          bbn.fn.log(["INPUT CHANGED", maskVal, maskInput, value]);
+          if ((maskVal !== this.oldInputValue)
+            && (!maskVal || (value.length && !value.includes(false)))
           ) {
-            this.setValue(false);
-          }
-          else {
-            this.setValue(value);
-            this.$nextTick(() => {
-              if (this.value !== value) {
-                this.$emit('change', value);
+            if (value[0] && this.min && (value[0] < this.min)) {
+              const ev = new CustomEvent('min', {cancelable: true});
+              this.$emit('min', ev, value[0], this.min, this);
+              if (ev.defaultPrevented) {
+                return;
               }
-            });
+
+              value[0] = this.min;
+            }
+
+            if (value[1] && this.max && (value[1] > this.max)) {
+              const ev = new CustomEvent('max', {cancelable: true});
+              this.$emit('max', ev, value[1], this.max, this);
+              if (ev.defaultPrevented) {
+                return;
+              }
+
+              value[1] = this.max;
+            }
+
+            if (this.disableDates
+              && ((bbn.fn.isFunction(this.disableDates)
+                  && this.disableDates(value))
+                || (bbn.fn.isArray(this.disableDates)
+                  && this.disableDates.includes(value)))
+            ) {
+              this.setValue(false);
+            }
+            else {
+              this.setValue(value);
+              this.$nextTick(() => {
+                if (!bbn.fn.isSame(this.value, value)) {
+                  this.$emit('change', value);
+                }
+              });
+            }
           }
         }
       },
