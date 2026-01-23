@@ -39,7 +39,11 @@ export default function addUrlAsPrefix(prefix, url, mixins) {
       components: []
     });
 
-    if (tmp.components) {
+    if (!tmp) {
+      bbn.fn.warning("Component definition not found at " + furl);
+      return res;
+    }
+    else if (tmp.components) {
       bbn.fn.each(tmp.components, obj => {
         let definition;
         try {

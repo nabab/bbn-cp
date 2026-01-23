@@ -1363,18 +1363,24 @@ const list = {
       deep: true,
       handler() {
         if (this.ready) {
-          this.currentFilter = false;
-          if (this.pageable && this.currentStart) {
-            this.currentStart = 0;
-          }
+          const currentState = JSON.stringify(this.currentFilters);
+          setTimeout(() => {
+            const newState = JSON.stringify(this.currentFilters);
+            if (currentState === newState) {
+              this.currentFilter = false;
+              if (this.pageable && this.currentStart) {
+                this.currentStart = 0;
+              }
 
-          if (this.autobind) {
-            this.updateData();
-          }
+              if (this.autobind) {
+                this.updateData();
+              }
 
-          if (bbn.fn.isFunction(this.setConfig)) {
-            this.setConfig(true);
-          }
+              if (bbn.fn.isFunction(this.setConfig)) {
+                this.setConfig(true);
+              }
+            }
+          }, 200);
         }
       }
     },
