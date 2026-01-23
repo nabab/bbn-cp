@@ -45,9 +45,9 @@
   },
   data() {
     const dt = this.value ? this.value.split(':') : null;
-    const currentHour = dt ? dt[0] || null : null;
-    const currentMinute = dt ? dt[1] || 0 : 0;
-    const currentSecond = dt ? dt[2] || 0 : 0;
+    const currentHour = dt && dt[0] ? parseInt(dt[0]) : null;
+    const currentMinute = dt && dt[1] ? parseInt(dt[1]) : 0;
+    const currentSecond = dt && dt[2] ? parseInt(dt[2]) : 0;
     const currentMode = 'auto' === this.mode ? (this.seconds ? 'full' : (currentMinute % 5 ? 'full' : 'short')) : this.mode;
     return {
       keyHour: null,
@@ -87,10 +87,14 @@
   },
   methods: {
     isValid() {
-      return !!((this.currentHour !== null) && (this.currentMinute !== null) && (this.currentSecond !== null));
+      return !!((this.currentHour !== null)
+        && (this.currentMinute !== null)
+        && (this.currentSecond !== null));
     },
     isFullyClicked() {
-      return !!((this.clickedHour) && (this.clickedMinute) && (this.clickedSecond || !this.seconds));
+      return !!((this.clickedHour)
+        && (this.clickedMinute)
+        && (this.clickedSecond || !this.seconds));
     },
     getValue() {
       if (this.isValid()) {

@@ -385,6 +385,13 @@ const cpDef = {
             this.isOpened = false;
           }
         }
+        else if (!vals) {
+          this.$props.start = '';
+          this.$props.end = '';
+          this.$emit('input:start', '');
+          this.$emit('input:end', '');
+          this.emitInput([]);
+        }
       },
       /**
        * Updates the calendar.
@@ -473,6 +480,9 @@ const cpDef = {
               });
             }
           }
+        }
+        else if (!maskVal) {
+          this.setValue(false);
         }
       },
       /**

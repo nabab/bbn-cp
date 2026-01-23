@@ -264,8 +264,7 @@
                                    class="bbn-bottom-right bbn-xxsmargin bbn-s"
                                   bbn-if="!item.events
                                   && (timeMode === 'day')
-                                  && (
-                                      (startDate?.isValid
+                                  && ((startDate?.isValid
                                       && (startDate.format('Y-m-d') === bbn.dt(item.value, currentCfg.valueFormat).format('Y-m-d'))
                                       ) || (endDate?.isValid
                                       && (endDate.format('Y-m-d') === bbn.dt(item.value, currentCfg.valueFormat).format('Y-m-d'))
@@ -277,7 +276,7 @@
                                     :component="$options.components.time"
                                     :component-options="{
                                       date: item.value,
-                                      value: bbn.dt(item.value, currentCfg.valueFormat).format('H:i' + (showSecond ? ':s' : '')),
+                                      value: getItemTimeValue(item),
                                     }"
                                     @close="onTimeClose"
                                     :component-events="{

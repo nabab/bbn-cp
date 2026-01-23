@@ -1287,6 +1287,35 @@ const cpDef = {
         this.setLabels(this.currentLabelsDates);
         resolve();
       });
+    },
+    getItemTimeValue(item) {
+      let dt = bbn.dt(item.value, this.currentCfg.valueFormat);
+      if (this.startDate
+        && this.startDate.isSame(dt, 'd')
+      ) {
+        dt = this.startDate;
+      }
+      else if (this.endDate
+        && this.endDate.isSame(dt, 'd')
+      ) {
+        dt = this.endDate;
+      }
+
+      if (this.start
+        && this.startDate
+        && this.end
+        && this.endDate
+        && !this.value?.length
+      ) {
+        const h = this.startDate.hour();
+        const m = this.startDate.minute();
+        const s = this.startDate.second();
+        dt = dt.hour(!h && !m && !s ? 23 : h);
+        dt = dt.minute(!h && !m && !s ? 59 : m);
+        dt = dt.second(!h && !m && !s ? 59 : s);
+      }
+
+      return dt.format('H:i:s')
     }
   },
   /**
@@ -1347,7 +1376,7 @@ const cpDef = {
         this.firstSelectedDate = bbn.dt(bbn.dt(this.rangeSelected[0], this.currentCfg.valueFormat).format('YYYY-MM-DD')).format(this.currentCfg.valueFormat);
       }
       else if (!this.rangeSelected.length) {
-        this.firstSelectedDate = null;
+        //this.firstSelectedDate = null;
       }
     }
   },
@@ -1355,13 +1384,16 @@ const cpDef = {
     time: {
       mixins: [bbn.cp.mixins.basic, bbn.cp.mixins.input],
       template: `
-      <bbn-form >
-        <bbn-time second="$origin.showSecond"
-                  bbn-model="value"
-                  :hour-start="$origin.hourStart"
-                  :hour-end="$origin.hourEnd"
-                  @input="onChange"/>
-      </bbn-form>
+        <bbn-form :buttons="['submit']"
+                  @submit="onSubmit"
+                  :prefilled="true">
+          <bbn-time second="$origin.showSecond"
+                    bbn-model="value"
+                    :hour-start="$origin.hourStart"
+                    :hour-end="$origin.hourEnd"
+                    @input="onChange"
+                    ref="time"/>
+        </bbn-form>
       `,
       props: {
         value: {
@@ -1374,6 +1406,15 @@ const cpDef = {
         }
       },
       methods: {
+        onSubmit(ev){
+          const value = this.getRef('time').getValue();
+          if (!value) {
+            ev.preventDefault();
+            return;
+          }
+
+          this.onChange(value);
+        },
         onChange(v) {
           this.$emit('change', v, this.date, this.$origin);
         },
