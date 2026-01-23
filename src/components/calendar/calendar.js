@@ -1309,7 +1309,18 @@ const cpDef = {
      * @watch value
      */
     value(newVal, oldVal){
-      if ( newVal !== oldVal ){
+      if (!bbn.fn.isSame(newVal, oldVal)) {
+        if (this.mode === 'range') {
+          if (!newVal.length) {
+            this.rangeSelected.splice(0);
+          }
+          else {
+            this.rangeSelected.splice(0, ...newVal);
+          }
+
+          return;
+        }
+
         this.currentValue = newVal;
       }
     },

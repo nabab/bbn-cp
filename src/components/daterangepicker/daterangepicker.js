@@ -334,8 +334,10 @@ const cpDef = {
         const dstart = bbn.dt(start, format);
         const dend = bbn.dt(end, format);
         if (dstart.isValid && dend.isValid) {
-          this.$emit('input:start', vals[0]);
-          this.$emit('input:end', vals[1]);
+          this.$props.start = start;
+          this.$props.end = end;
+          this.$emit('input:start', start);
+          this.$emit('input:end', end);
           this.setValue(vals);
         }
       },
@@ -568,6 +570,14 @@ const cpDef = {
        */
       value(newVal){
         this.setInputValue(newVal);
+        if (newVal?.length) {
+          this.setDate(newVal, this.getRef('calendar'), this.getValueFormat(newVal));
+        }
+        else {
+          this.$emit('input:start', '');
+          this.$emit('input:end', '');
+          this.setValue(newVal);
+        }
       }
     }
   };
