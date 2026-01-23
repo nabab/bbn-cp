@@ -534,7 +534,9 @@ const cpDef = {
       }
     },
     weekSequence() {
-      if (this.type === 'days') {
+      if ((this.type === 'days')
+        || (this.type === 'weeks')
+      ) {
         const arr = [];
         for (let i = 0; i < 7; i++) {
           arr.push((i + this.firstWeekDay) % 7);
@@ -786,6 +788,7 @@ const cpDef = {
       this.gridStyle = result.gridStyle;
       this.firstDayVisible = result.firstDayVisible;
       this.lastDayVisible = result.lastDayVisible;
+      this.currentLabelsDates = result.currentLabelsDates;
     },
 
     _makeWeeks() {
@@ -1259,7 +1262,14 @@ const cpDef = {
     setLabels(d){
       if ( bbn.fn.isArray(d) && d.length ){
         this.currentLabels = d.map(l => {
-          return l[this.getLabelsFormat()];
+          switch (this.getLabelsFormat()) {
+            case 'narrow':
+              return bbn.fn.substr(l.ddd, 0, 1);
+            case 'short':
+              return l.ddd;
+            case 'long':
+              return l.dddd;
+          }
         });
       }
       else {
@@ -1345,13 +1355,13 @@ const cpDef = {
     time: {
       mixins: [bbn.cp.mixins.basic, bbn.cp.mixins.input],
       template: `
-      <div class="bbn-iblock">
+      <bbn-form >
         <bbn-time second="$origin.showSecond"
                   bbn-model="value"
                   :hour-start="$origin.hourStart"
                   :hour-end="$origin.hourEnd"
                   @input="onChange"/>
-      </div>
+      </bbn-form>
       `,
       props: {
         value: {

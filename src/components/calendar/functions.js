@@ -255,9 +255,16 @@ function buildDaysView(ctx) {
     });
   }
 
+  const currentLabelsDates = Array.from(
+    { length: 7 },
+    function(_, i) {
+      return ctx.currentDate.setWeekday(i);
+    }
+  );
+
   const gridStyle = `grid-template-columns: repeat(7, minmax(2rem, 1fr)); grid-template-rows: minmax(2rem, max-content) repeat(${maxWeeks}, minmax(2rem, 1fr))`;
 
-  return { months, gridStyle, firstDayVisible, lastDayVisible, maxWeeks };
+  return { months, gridStyle, firstDayVisible, lastDayVisible, maxWeeks, currentLabelsDates };
 }
 
 /**
@@ -284,7 +291,7 @@ function buildWeeksView(ctx) {
   const currentLabelsDates = Array.from(
     { length: 7 },
     function(_, i) {
-      return ctx.currentDate.setWeekday((i + ctx.firstWeekDay) % 7);
+      return ctx.currentDate.setWeekday(i);
     }
   );
 
