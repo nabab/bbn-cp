@@ -475,7 +475,7 @@ const cpDef = {
       forms: [],
       buttonsContainer: false,
       numButtonsInContainer: 0,
-      currentPosition: this.position || 'bottom',
+      currentPosition: this.position || 'bottom'
     };
   },
   computed: {
@@ -1116,7 +1116,6 @@ const cpDef = {
         this.currentTop = Math.ceil(r.y.res + offset);
       }
       //bbn.fn.log(["PARENT COOR", parentCoor, coor, r, ok, this.lastKnownWidth, this.lastKnownHeight])
-
     },
     /**
      * @method addClose
@@ -1180,7 +1179,12 @@ const cpDef = {
     },
     onFloaterEnter() {
       //bbn.fn.log("ON FLOATER ENTER")
-      this.isOver = true;
+      if (this.isResized
+        && this.ready
+        && !this.isResizing
+      ) {
+        this.isOver = true;
+      }
     },
     /**
      * Closes the floater by hiding it.
@@ -1427,7 +1431,11 @@ const cpDef = {
      */
     isOver(v) {
       this.$emit(v ? 'over' : 'out');
-      if (this.autoHide && this.isResized && this.ready && !this.isResizing) {
+      if (this.autoHide
+        && this.isResized
+        && this.ready
+        && !this.isResizing
+      ) {
         if (v && this.mouseLeaveTimeout) {
           clearTimeout(this.mouseLeaveTimeout);
         }
