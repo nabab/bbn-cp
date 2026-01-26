@@ -168,7 +168,7 @@ export default {
       await bbn.cp.nextFrame();
       this.isTableDataUpdating = false;
       this.setItems();
-      if (!this.currentData?.length) {
+      if (!this.filteredData?.length) {
         this.rowsShownFinished = true;
       }
     }
