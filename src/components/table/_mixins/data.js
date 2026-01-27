@@ -167,10 +167,12 @@ export default {
 
       await bbn.cp.nextFrame();
       this.isTableDataUpdating = false;
-      this.setItems();
-      if (!this.filteredData?.length) {
-        this.rowsShownFinished = true;
-      }
+      this.$nextTick(() => {
+        this.setItems();
+        if (!this.filteredData?.length) {
+          this.rowsShownFinished = true;
+        }
+      });
     }
   },
   watch: {
