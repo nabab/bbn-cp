@@ -32,11 +32,12 @@ const cpDef = {
           },
           fields: {
             key: {},
+            title: {},
             content: {},
             date: {},
             num: {}
           },
-          num: 7
+          num: 8
         });
       }
     }
@@ -280,12 +281,22 @@ const cpDef = {
         const key = 'backup-' + bbn.fn.timestamp();
         const d = {
           key,
+          title: bbn._("Backup created on ") + bbn.dt().fdate(false, true),
           content: JSON.stringify(current),
           num: current.length,
           date: bbn.dt().datetime()
         };
         this.backups.push(d);
         this.db.insert('backups', d);
+      },
+      renameBackup(backup) {
+        this.closest('bbn-popup').prompt(bbn._("Please enter the new title for the backup"), backup.title, (title) => {
+          if (title && (title !== backup.title)) {
+            this.db.update('backups', {title}, {key: backup.key}).then(() => {
+              backup.title = title;
+            });
+          }
+        });
       },
       restoreBackup(backup) {
         if (backup && backup.content) {

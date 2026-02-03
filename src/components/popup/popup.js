@@ -493,7 +493,7 @@ const cpDef = {
      * @fires open
      */
     confirm() {
-      bbn.fn.log(['confirm', arguments]);
+      //bbn.fn.log(['confirm', arguments]);
       let onYes = false;
       let onNo = false;
       let yesText = bbn._('Yes');
@@ -584,7 +584,134 @@ const cpDef = {
           maximizable: false,
           scrollable: true
         });
-        bbn.fn.log(cfg);
+
+        this.open(cfg);
+      }
+    },
+    prompt() {
+      let onYes = false;
+      let onNo = false;
+      let yesText = bbn._('Confirm');
+      let noText = bbn._('Cancel');
+      let o = {};
+      let options = {};
+      let has_msg = false;
+      let msg = '';
+      let has_yes = false;
+      let has_value = false;
+      let value = '';
+      let has_width = false;
+      let i;
+      for (i = 0; i < arguments.length; i++) {
+        if (!has_msg && (typeof (arguments[i]) === 'string')) {
+          msg = arguments[i];
+          has_msg = 1;
+        }
+        else if (bbn.fn.isDimension(arguments[i]) || (arguments[i] === 'auto')) {
+          if (has_width) {
+            o.height = arguments[i];
+          }
+          else {
+            o.width = arguments[i];
+            has_width = 1;
+          }
+        }
+        else if ((typeof arguments[i] === 'string')) {
+          if (!has_value) {
+            value = arguments[i];
+            has_value = 1;
+          }
+          else if (!has_yes) {
+            yesText = arguments[i];
+            has_yes = 1;
+          }
+          else {
+            noText = arguments[i];
+          }
+        }
+        else if (bbn.fn.isFunction(arguments[i])) {
+          if (onYes) {
+            onNo = arguments[i];
+          }
+          else {
+            onYes = arguments[i];
+          }
+        }
+        else if (bbn.cp.isComponent(arguments[i])) {
+          o.opener = arguments[i];
+        }
+        else if (arguments[i] && (typeof(arguments[i]) === 'object')) {
+          options = arguments[i];
+        }
+      }
+
+      if (onYes && has_msg) {
+        const label = msg;
+        delete o.content;
+        if (!o.component) {
+          o.component = {
+            template: `
+<div class="bbn-lpadding bbn-c">
+  ${label}<br><br>
+  <bbn-input ref="input"
+             class="bbn-wide"
+             bbn-model="value"/>
+</div>
+`,
+            data() {
+              return {value};
+            },
+            methods: {
+              selectText() {
+                this.getRef('input').selectText();
+              },
+            },
+            watch: {
+              value(v) {
+                this.$emit('input', this.value)
+              }
+            },
+            mounted() {
+              setTimeout(() => {
+                this.selectText();
+              }, 500);
+            }
+          };
+        }
+
+        if (!o.label) {
+          o.label = false;
+        }
+
+        o.buttons = [{
+          label: noText,
+          icon: 'nf nf-fa-times_circle',
+          focused: true,
+          action: ($ev, btn) => {
+            const floater = btn.closest('bbn-floater');
+            bbn.fn.log("ON NO", floater);
+            if (onNo) {
+              onNo($ev, floater);
+            }
+
+            floater.close(true);
+          }
+        }, {
+          label: yesText,
+          cls: 'bbn-primary',
+          icon: 'nf nf-fa-check_circle',
+          action: ($ev, btn) => {
+            const floater = btn.closest('bbn-floater');
+            onYes(floater.getRef('component').value);
+            floater.close(true);
+          }
+        }];
+
+        const cfg = bbn.fn.extend({}, o, options, {
+          resizable: false,
+          maximizable: false,
+          scrollable: false
+        });
 
         this.open(cfg);
       }

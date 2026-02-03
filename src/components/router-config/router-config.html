@@ -334,11 +334,18 @@
                 :key="backup.key"
                 class="bbn-bottom-space bbn-flex-width bbn-vcentered bbn-no-pointer-events">
               <div class="bbn-flex-fill bbn-ellipsis">
-                <span class="bbn-bold"
+                <span bbn-if="backup.title"
+                      class="bbn-bold bbn-right-smargin"
+                      bbn-text="backup.title"/>
+                <span :class="backup.title ? '' : 'bbn-bold'"
                       bbn-text="bbn.dt(backup.date).fdate(false, true)"/>
                 <span bbn-text="' - ' + backup.num + ' ' + _('tabs')"/>
               </div>
               <div>
+                <bbn-button icon="nf nf-fa-edit"
+                            :label="_('Rename')"
+                            :notext="true"
+                            @click="renameBackup(backup)"/>
                 <bbn-button icon="nf nf-fa-undo"
                             :label="_('Restore')"
                             :notext="true"
