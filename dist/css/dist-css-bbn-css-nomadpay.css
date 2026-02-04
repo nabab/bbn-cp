@@ -292,8 +292,13 @@ a {
 table {
   font-size: inherit;
 }
-td {
+td,
+th {
   vertical-align: top;
+  border-color: var(--default-border);
+  border-width: var(--default-border-width);
+  border-style: var(--default-border-style);
+  border-collapse: collapse;
 }
 input,
 select,
