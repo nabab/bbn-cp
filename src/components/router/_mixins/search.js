@@ -121,6 +121,10 @@ export default {
       }
       let r = bbn.fn.search(this.views, "url", url);
       if (r === -1) {
+        r = bbn.fn.search(this.views, "current", url);
+      }
+
+      if (r === -1) {
         bbn.fn.each(this.views, (tab, index) => {
           if (url.indexOf(tab.url + '/') === 0) {
             r = index;
@@ -128,6 +132,20 @@ export default {
           }
         });
       }
+
+      if (r === -1) {
+        const bits = url.split('/');
+        while (bits.length > 1) {
+          bits.pop();
+          const testUrl = bits.join('/');
+          let tmp = bbn.fn.search(this.views, "url", testUrl);
+          if ((tmp > -1) && (!this.views[tmp].loaded || this.views[tmp].loading)) {
+            r = tmp;
+            break;
+          }
+        }
+      }
+
       return r > -1 ? r : false;
     },
 

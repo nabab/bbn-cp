@@ -57,7 +57,7 @@ export default {
       }
 
       let idx = this.search(cp.url);
-      if (idx === false) {
+      if (!cp.currentView) {
         if (fake) {
           throw new Error(bbn._('Impossible to find the view for URL %s', cp.url));
         }
@@ -75,11 +75,11 @@ export default {
 
       cp.isRegistered = true;
       if (!cp.routerUid) {
-        cp.routerUid = this.views[idx].uid;
+        cp.routerUid = cp.currentView.uid;
       }
 
       if (this.db) {
-        this.db.select('containers', ['manual', 'image'], {url: this.views[idx].url}).then(thumb => {
+        this.db.select('containers', ['manual', 'image'], {url: cp.currentView.url}).then(thumb => {
           if (thumb?.image) {
             this.thumbnails[cp.routerUid] = bbn.cp.immunizeValue(thumb);
           }
