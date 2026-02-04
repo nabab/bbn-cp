@@ -31,5 +31,10 @@
     "Rename": "Rinominare",
     "Restore": "Ripristinare",
     "Export": "Esportare",
-    "Delete": "Cancellare"
+    "Delete": "Cancellare",
+    "Backup created on %s": "Backup creato il %s",
+    "Please enter the new title for the backup": "Inserisci il nuovo titolo per il backup",
+    "Do you wish to replace your current router configuration with the selected backup? If not it will add all the missing tabs to your current configuration": "Vuoi sostituire la configurazione attuale del router con il backup selezionato? In caso contrario, verranno aggiunte alla configurazione corrente tutte le schede mancanti",
+    "Are you sure you want to delete this backup?": "Sei sicuro di voler eliminare questo backup?",
+    "Please enter a title for this backup": "Inserisci un titolo per questo backup"
 }

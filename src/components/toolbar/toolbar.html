@@ -29,7 +29,7 @@
                      bbn-bind="s.options"/>
         </div>
         <div bbn-elseif="!s.end && (s.content !== undefined)"
-             class="bbn-block bbn-xspadding"
+             :class="'bbn-block bbn-xspadding ' + (s.cls || '')"
              bbn-html="s.content"
              :ref="'item' + i"/>
         <bbn-button bbn-elseif="!s.end && ((s.url || s.action || s.items) && (s.label || s.icon))"

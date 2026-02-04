@@ -267,27 +267,30 @@ const cpDef = {
           this.mode = mode;
         }
       },
-      createBackup() {
-        const current = bbn.fn.clone(this.router.views).map(a => {
-          delete a.uid;
-          delete a.content;
-          delete a.script;
-          delete a.style;
-          if (a.load) {
-            a.loaded = false;
-          }
-          return a;
+      createBackup(cfg) {
+        const title = bbn._("Backup created on %s", bbn.dt().fdate(false, true));
+        this.closest('bbn-popup').prompt(bbn._("Please enter a title for this backup"), title, (title) => {
+          const current = cfg || bbn.fn.clone(this.router.views).map(a => {
+            delete a.uid;
+            delete a.content;
+            delete a.script;
+            delete a.style;
+            if (a.load) {
+              a.loaded = false;
+            }
+            return a;
+          });
+          const key = 'backup-' + bbn.fn.timestamp();
+          const d = {
+            key,
+            title,
+            content: JSON.stringify(current),
+            num: current.length,
+            date: bbn.dt().datetime()
+          };
+          this.backups.push(d);
+          this.db.insert('backups', d);
         });
-        const key = 'backup-' + bbn.fn.timestamp();
-        const d = {
-          key,
-          title: bbn._("Backup created on ") + bbn.dt().fdate(false, true),
-          content: JSON.stringify(current),
-          num: current.length,
-          date: bbn.dt().datetime()
-        };
-        this.backups.push(d);
-        this.db.insert('backups', d);
       },
       renameBackup(backup) {
         this.closest('bbn-popup').prompt(bbn._("Please enter the new title for the backup"), backup.title, (title) => {
@@ -301,7 +304,7 @@ const cpDef = {
       restoreBackup(backup) {
         if (backup && backup.content) {
           const views = JSON.parse(backup.content);
-          this.closest('bbn-popup').confirm(bbn._("Do you wish to replace your current router configuration with the selected backup? If not it will add all the missing tabs to your current configuration?"),
+          this.closest('bbn-popup').confirm(bbn._("Do you wish to replace your current router configuration with the selected backup? If not it will add all the missing tabs to your current configuration"),
           () => {
             for (let i = this.router.views.length - 1; i >= 0; i--) {
               const row = bbn.fn.getRow(views, {url: this.router.views[i].url});
@@ -326,20 +329,23 @@ const cpDef = {
       },
       importBackup() {
         bbn.fn.getFileContent('application/json', content => {
-          bbn.fn.log("IMPORT CONTENT", content);
-          this.restoreBackup({content});
+          const views = JSON.parse(content);
+          bbn.fn.log("IMPORT CONTENT", views);
+          this.createBackup(views);
         })
       },
       exportBackup(backup) {
-        bbn.fn.downloadContent(backup.key + '.json', JSON.stringify(JSON.parse(backup.content), null, 2), 'application/json');
+        bbn.fn.downloadContent(backup.title.replaceAll('/', '-') + '.json', JSON.stringify(JSON.parse(backup.content), null, 2), 'application/json');
       },
       deleteBackup(backup) {
-        this.db.delete('backups', {key: backup.key}).then(() => {
-          const idx = bbn.fn.search(this.backups, {key: backup.key});
-          if (this.backups[idx]) {
-            this.backups.splice(idx, 1);
-          }
-          appui.success(bbn._("Backup deleted"));
+        this.closest('bbn-popup').confirm(bbn._("Are you sure you want to delete this backup?"), () => {
+          this.db.delete('backups', {key: backup.key}).then(() => {
+            const idx = bbn.fn.search(this.backups, {key: backup.key});
+            if (this.backups[idx]) {
+              this.backups.splice(idx, 1);
+            }
+            appui.success(bbn._("Backup deleted"));
+          });
         });
       }
     },
