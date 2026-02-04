@@ -942,6 +942,11 @@ export default {
     selected(idx) {
       //bbn.fn.warning("SELECTED: " + idx);
       if ((idx !== false) && !this.views[idx]) {
+        if (!this.views.length) {
+          this.selected = false;
+          return;
+        }
+
         throw new Error("The view with index " + idx + " doesn't exist");
       }
 
