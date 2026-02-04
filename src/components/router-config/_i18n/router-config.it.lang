@@ -19,4 +19,17 @@
     "Top": "In alto",
     "Bottom": "In basso",
     "You cannot have more then one mode disabled": "Non puoi avere più di una modalità disabilitata"
+    "Here you can save your current router configuration. i.e. all your current tabs": "Qui puoi salvare la configurazione attuale del router, cioè tutte le schede attualmente aperte",
+    "That allows you to backup a complex configuration but also to switch easily between different configurations": "Questo ti permette di salvare configurazioni complesse ma anche di passare facilmente da una configurazione all'altra",
+    "You can also export and import configuration files in order to apply a configuration on another browser or system": "Puoi anche esportare e importare file di configurazione per applicare una configurazione su un altro browser o sistema",
+    "Panes": "Pannelli",
+    "Pages": "Pagine",
+    "Backups": "Salvataggi",
+    "Create a backup now": "Salva adesso",
+    "Import a backup file": "Importare un file di salvataggio",
+    "No backups available yet": "Nessun salvataggio per ora",
+    "Rename": "Rinominare",
+    "Restore": "Ripristinare",
+    "Export": "Esportare",
+    "Delete": "Cancellare"
 }

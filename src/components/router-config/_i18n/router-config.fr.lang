@@ -21,5 +21,15 @@
     "You cannot have more then one mode disabled": "Vous ne pouvez pas avoir plus d'un mode désactivé",
     "Here you can save your current router configuration. i.e. all your current tabs": "Sur cette page vous pouvez sauvegarder la configuration courante du routeur, c'est-à-dire toutes les pages ouvertes",
     "That allows you to backup a complex configuration but also to switch easily between different configurations": "Cela vous permet de sauvegarder des configurations complexes mais aussi de basculer facilement d'une configuration à une autre",
-    "You can also export and import configuration files in order to apply a configuration on another browser or system": "Vous pouvez aussi exporter et importer des fichiers de configuration afin d'appliquer une configuration dans un navigateur ou un système différent"
+    "You can also export and import configuration files in order to apply a configuration on another browser or system": "Vous pouvez aussi exporter et importer des fichiers de configuration afin d'appliquer une configuration dans un navigateur ou un système différent",
+    "Panes": "Panneaux",
+    "Pages": "Pages",
+    "Backups": "Sauvegardes",
+    "Create a backup now": "Sauvegarde maintenant",
+    "Import a backup file": "Importer un fichier de sauvegarde",
+    "No backups available yet": "Aucune sauvegarde pour le moment",
+    "Rename": "Renommer",
+    "Restore": "Restaurer",
+    "Export": "Exporter",
+    "Delete": "Supprimer"
 }
