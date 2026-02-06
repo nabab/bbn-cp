@@ -260,13 +260,16 @@ const cpDef = {
        * @fires setValue
       */
       setTime(val){
-        //val = bbn.dt(val, 'HH:mm' + (this.showSecond ? ':ss' : ''));
         val = bbn.dt(val, this.currentValueFormat);
-        if ( this.value ){
-          let mom = bbn.dt(this.value.toString(), this.getValueFormat(this.value.toString()));
-          val = bbn.dt(bbn.dt(bbn.dt(val).date(mom.date())).month(mom.month())).year(mom.year());
+        if (this.value) {
+          const mom = bbn.dt(
+            this.value.toString(),
+            this.getValueFormat(this.value.toString())
+          );
+          val = val.day(mom.day()).month(mom.month()).year(mom.year());
         }
-        this.setValue(bbn.dt(val).format(this.getValueFormat(bbn.dt(val).format(this.currentValueFormat))));
+
+        this.setValue(val.format(this.getValueFormat(val.format(this.currentValueFormat))));
       },
       /**
        * Sets the value.

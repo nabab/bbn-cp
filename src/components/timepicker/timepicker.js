@@ -193,32 +193,41 @@ const cpDef = {
        * @emits input
       */
       setValue(val, format){
-        if ( !format ){
+        if (!format) {
           format = !!val ? this.getValueFormat(val.toString()) : false;
         }
-        let value = !!format && !!val ? (bbn.dt(val, format).isValid ? bbn.dt(val, format).format(format) : '') : '';
-        if ( value ){
-          if ( value && this.min && (value < this.min) ){
+
+        let value = !!format && !!val ?
+          (bbn.dt(val, format).isValid ?
+            bbn.dt(val, format).format(format) :
+            '') :
+          '';
+        if (value) {
+          if (value && this.min && (value < this.min)) {
             value = this.min;
           }
-          if ( value && this.max && (value > this.max) ){
+
+          if (value && this.max && (value > this.max)) {
             value = this.max;
           }
         }
-        else if ( this.nullable ){
+        else if (this.nullable) {
           value = null;
         }
-        if ( value !== this.value ){
+
+        if (value !== this.value) {
           this.emitInput(value);
           this.$emit('change', value);
         }
         else {
           this.setInputValue(value);
         }
-        if ( !value ){
+
+        if (!value) {
           this.inputValue = '';
           this.oldInputValue = '';
         }
+
         this.isOpened = false;
       },
       /**
