@@ -159,7 +159,6 @@ const cpDef = {
     // Default mode/language of the editor
     mode: {
       type: String,
-      default: 'php' 
     },
     // Default theme of the editor
     theme: {
@@ -311,18 +310,15 @@ const cpDef = {
 
       const cm = this.constructor.cm;
 
-      if (!this.mode || !this.currentTheme) {
-        throw new Error("You must provide a language and a theme");
-      }
-      if (!cm.languageExtensions[this.mode] && !['js', 'less', 'purephp'].includes(this.mode)) {
+      if (this.mode && !cm.languageExtensions[this.mode] && !['js', 'less', 'purephp'].includes(this.mode)) {
         throw new Error("Unknown language");
       }
       if (!cm.theme[this.currentTheme]) {
         throw new Error("Unknown theme");
       }
+
       const state = cm.state;
       const cpt = state.Compartment;
-
       // Configuring compartments for dynamic editor options such as wrap, tabSize, etc.
       this.compartments.wrap = new cpt;
       extensions.push(this.compartments.wrap.of(this.wrap ? cm.view.EditorView.lineWrapping : []));
@@ -337,14 +333,17 @@ const cpDef = {
       this.compartments.readonly = new cpt;
       extensions.push(this.compartments.readonly.of(state.EditorState.readOnly.of(this.disabled || this.readonly)));
 
-      const idx = this.constructor.modeCode[this.mode] ? this.constructor.modeCode[this.mode] : this.mode;
-      if (!cm.languageExtensions[idx]) {
-        throw new Error("Language not recognized");
+      if (this.mode) {
+        const idx = this.constructor.modeCode[this.mode] ? this.constructor.modeCode[this.mode] : this.mode;
+        if (!cm.languageExtensions[idx]) {
+          throw new Error("Language not recognized");
+        }
+
+        // Adding language and theme specific extensions
+        this.compartments.language = new cpt;
+        extensions.push(this.compartments.language.of(cm.languageExtensions[idx]));
       }
 
-      // Adding language and theme specific extensions
-      this.compartments.language = new cpt;
-      extensions.push(this.compartments.language.of(cm.languageExtensions[idx]));
       extensions.push(bbnCode.cm.view.EditorView.updateListener.of((update) => {
         if (update.docChanged) {
           clearTimeout(this.inputTimeout);
@@ -534,6 +533,18 @@ const cpDef = {
         });
       }
 
+    },
+    goToBottom() {
+      this.widget.dispatch({
+        selection: { anchor: this.widget.state.doc.length },
+        scrollIntoView: true
+      })
+    },
+    goToTop() {
+      this.widget.dispatch({
+        selection: { anchor: 0 },
+        scrollIntoView: true
+      })
     },
   },
   mounted() {

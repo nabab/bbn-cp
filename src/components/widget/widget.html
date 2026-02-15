@@ -24,12 +24,12 @@
       <!-- TITLE -->
       <div :class="['bbn-widget-title', 'bbn-flex-fill', 'bbn-hpadding', 'bbn-secondary-text-alt', {'bbn-middle': !!icon}]">
         <i bbn-if="icon" :class="[icon, 'bbn-right-sspace']"/>
-        <h3 :style="dashboard && dashboard.sortable ? 'cursor: move' : ''"
+        <h3 :style="dashboard?.sortable ? 'cursor: move' : ''"
+            bbn-if="$el?.parentElement"
             :class="['bbn-no-margin', {'bbn-iblock': !!icon}]"
             bbn-html="label"
             @dragstart="$emit('sortstart', $event)"
             @dragend="$emit('dragend', $event)"
-            bbn-if="ready"
             bbn-draggable.helper.container.data="!!sortable ? {
               helper: $el,
               container: $el.parentElement,

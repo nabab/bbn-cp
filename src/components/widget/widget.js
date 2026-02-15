@@ -613,8 +613,10 @@ const cpDef = {
      * @fires load
      */
     mounted(){
-      this.load().then(() => {
-        this.ready = true;
+      this.$nextTick(() => {
+        this.load().then(() => {
+          this.ready = true;
+        });
       });
     },
     /**

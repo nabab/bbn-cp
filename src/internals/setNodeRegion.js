@@ -24,7 +24,7 @@ export default function setNodeRegion(node, after) {
     }
     const cp = node.component || node.parent?.component;
     let p;
-    if (after?.isConnected) {
+    if (after?.isConnected && after.bbnNode._region.start.isConnected && after.bbnNode._region.end.isConnected) {
       p = after.parentNode;
       if (after.bbnNode) {
         after = after.bbnNode._region.start;
