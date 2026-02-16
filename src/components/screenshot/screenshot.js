@@ -50,6 +50,7 @@ const cpDef = {
         setTimeout(() => {
           const opt = {
             iconFonts: ['.nf'],
+            fast: false,
             backgroundColor: 'white',
             filter: e => e.tagName !== 'BBN-CHART',
             //width: ele.clientWidth,
