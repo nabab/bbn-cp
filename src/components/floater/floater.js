@@ -620,9 +620,15 @@ const cpDef = {
         this.$nextTick(() => {
           this.$forceUpdate().then(() => {
             this.onResize();
-            this.$nextTick(() => this.isResized = true);
-            this.updateButtonsInContainer();
-            this.$emit('resized', this);
+            setTimeout(() => {
+              this.$nextTick(() => {
+                this.isResized = true
+                this.updateButtonsInContainer();
+                this.$nextTick(() => {
+                  this.$emit('resized', this);
+                })
+              });
+            }, this.latency);
             const scroll = this.closest('bbn-scroll');
             if (scroll) {
               const onScroll = () => {
