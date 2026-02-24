@@ -23,16 +23,22 @@ export default function addUrlAsPrefix(prefix, url, mixins) {
     // Request
     const d = await bbn.fn.ajax(furl, 'text');
     let tmp;
-    try {
-      if (bbn.fn.isString(d.data)) {
-        tmp = (new Function('return ' + d.data + ';'))();
-      }
-      else if (d.data) {
-        tmp = d.data;
-      }
+    if (!d) {
+      throw new Error("No data received from " + furl);
+
     }
-    catch (e) {
-      throw new Error(e);
+    else {
+      try {
+        if (bbn.fn.isString(d.data)) {
+          tmp = (new Function('return ' + d.data + ';'))();
+        }
+        else if (d.data) {
+          tmp = d.data;
+        }
+      }
+      catch (e) {
+        throw new Error(e);
+      }
     }
 
     const res = bbn.fn.createObject({

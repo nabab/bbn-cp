@@ -11,28 +11,28 @@ import bbnAnonHtml from "../lib/Html/Anon.js";
 const expToFn = (cp, loopVars, a, node, type) => {
   if (a.exp) {
     const args = [];
-    bbn.fn.each(Object.keys(cp.$namespaces), arg => {
+    Object.keys(cp.$namespaces).forEach(arg => {
       const matcher = (arg.indexOf('$') === 0 ? '' : '\\b') + bbn.fn.escapeRegExp(arg) + '\\b';
       const rgxp = new RegExp('^' + matcher + '|[^.]+' + matcher);
       if (a.exp.match(rgxp)) {
         args.push(arg);
       }
     });
-    bbn.fn.iterate(loopVars, (v, k) => {
+    for (let k in loopVars) {
       if (node.id.indexOf(k) === 0) {
-        args.push(...v);
+        args.push(...loopVars[k]);
       }
-    });
+    }
 
     let stFn = '  \'use strict\';\n';
     if (type === 'event') {
       stFn += '  const $_bbnData = {';
-      bbn.fn.each(args, arg => {
+      args.forEach(arg => {
         stFn += `    ${arg}: bbnData.hash(${arg}),\n`;
       });
       stFn += `  };\n`;
       stFn += `  ${a.exp}\n`;
-      bbn.fn.each(args, arg => {
+      args.forEach(arg => {
         stFn += `  if ($_bbnData['${arg}'] !== bbnData.hash(${arg})) {\n`;
         if (loopVars[arg]) {
         }
