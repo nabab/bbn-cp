@@ -413,7 +413,7 @@ const cpDef = {
       getInputValue(value){
         let ret = '',
             idxValue = 0;
-        value = (value === undefined ? (!!this.value ? this.value : '') : value).toString();
+        value = (value === undefined ? (!!this.value ? this.value : '') : (bbn.fn.isNull(value) ? '' : value)).toString();
         bbn.fn.each([...this.mask], (c, i) => {
           if (!this.escapePos.includes(i)
             && !this.bannedPosRaw.includes(i)
@@ -874,7 +874,7 @@ const cpDef = {
        */
       raw(value){
         let ret = '';
-        value = (value !== undefined ? value : (this.getRef('element').value || '')).toString()
+        value = (value !== undefined ? (bbn.fn.isNull(value) ? '' : value) : (this.getRef('element').value || '')).toString()
         if (value) {
           bbn.fn.each([...value], (c, i) => {
             if (!this.bannedPos.includes(i)
