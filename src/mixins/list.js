@@ -1016,12 +1016,12 @@ const list = {
         return o;
       });
     },
-    async updateData(preventLoad) {
+    async updateData(preventLoad = false, clearCurrentData = true) {
       if (this.beforeUpdate() !== false) {
         this._dataPromise = new Promise(resolve => {
           let prom;
           let loadingRequestID;
-          if (this.currentData?.length) {
+          if (clearCurrentData && this.currentData?.length) {
             this.currentData = [];
           }
 
@@ -1030,7 +1030,7 @@ const list = {
               bbn.fn.abort(this.loadingRequestID);
               setTimeout(() => {
                 this.loadingRequestID = false;
-                this.updateData().then(() => {
+                this.updateData(preventLoad, clearCurrentData).then(() => {
                   resolve();
                 })
               }, 50);

@@ -112,7 +112,11 @@ const cpDef = {
       /**
        * @data {Boolean} [false] collapsed
        */
-      collapsed: false
+      collapsed: false,
+      /**
+       * @data {Boolean} [false] loadingHidden
+       */
+      isLoadingHidden: false
     }
   },
   computed: {
@@ -199,6 +203,15 @@ const cpDef = {
           item.$set(item, 'collapsed', true);
         });
       }
+    },
+    updateDataBackground(){
+      this.isLoadingHidden = true;
+      this.updateData(false, false).then(() => {
+        this.isLoadingHidden = false;
+      });
+    },
+    getItemKey(item){
+      return item.key + '-' + bbn.fn.md5(JSON.stringify(item.data));
     }
   },
   /**

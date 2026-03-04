@@ -65,7 +65,7 @@
         style="width: 100%">
       <div class="bbn-rel"
            style="width: 100%; height: 100%">
-        <bbn-loader bbn-if="isLoading"
+        <bbn-loader bbn-if="isLoading && !isLoadingHidden"
                     class="bbn-kanban-element-loader bbn-margin bbn-background"/>
         <component bbn-else
                    :is="scrollable ? 'bbn-scroll' : 'div'"
@@ -84,12 +84,12 @@
                       'bbn-bottom-space': !!items[itemIdx+1]
                     }
                   ]"
-                  :key="itemIdx">
+                  :key="getItemKey(item)">
                 <component :is="component"
                            :source="item.data"
                            :index="item.index"
                            bbn-bind="componentOptions"
-                           :key="!!uid && item.data && (item.data[uid] !== undefined) ? item.data[uid] : itemIdx"
+                           :key="!!uid && item.data && (item.data[uid] !== undefined) ? item.data[uid] : item.key"
                            @hook:mounted="componentRegister"
                            @hook:beforedestroy="componentUnregister"/>
               </div>
