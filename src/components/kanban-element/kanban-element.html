@@ -89,7 +89,9 @@
                            :source="item.data"
                            :index="item.index"
                            bbn-bind="componentOptions"
-                           :key="!!uid && item.data && (item.data[uid] !== undefined) ? item.data[uid] : itemIdx"/>
+                           :key="!!uid && item.data && (item.data[uid] !== undefined) ? item.data[uid] : itemIdx"
+                           @hook:mounted="componentRegister"
+                           @hook:beforedestroy="componentUnregister"/>
               </div>
             </template>
             <div bbn-elseif="isLoaded && !!noData"

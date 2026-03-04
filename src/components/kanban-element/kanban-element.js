@@ -6,12 +6,14 @@ const cpDef = {
    * @mixin bbn.cp.mixins.list
    * @mixin bbn.cp.mixins.keepCool
    * @mixin bbn.cp.mixins.resizer
+   * @mixin bbn.cp.mixins.componentInside
    */
   mixins: [
     bbn.cp.mixins.basic,
     bbn.cp.mixins.list,
     bbn.cp.mixins.keepCool,
-    bbn.cp.mixins.resizer
+    bbn.cp.mixins.resizer,
+    bbn.cp.mixins.componentInside
   ],
   props: {
     /**
@@ -271,6 +273,7 @@ const cpDef = {
 import cpHtml from './kanban-element.html';
 import cpStyle from './kanban-element.less';
 import cpLang from './_i18n/index.js';
+import bbn from '@bbn/bbn';
 
 export default {
   name: 'bbn-kanban-element',
