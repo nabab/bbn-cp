@@ -206,7 +206,7 @@ const cpDef = {
     },
     updateDataBackground(){
       this.isLoadingHidden = true;
-      this.updateData(false, false).then(() => {
+      return this.updateData(false, false).then(() => {
         this.isLoadingHidden = false;
       });
     },
