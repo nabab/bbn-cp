@@ -47,7 +47,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@bbn/bbn": "^2.0.11",
+    "@bbn/bbn": "^2.0",
     "@bbn/bbn-css": "^1.0.167",
     "@bbn/codemirror-lang-bbn-cp": "^1.0.0",
     "@codemirror/autocomplete": "^6.19.1",
