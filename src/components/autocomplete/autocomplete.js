@@ -194,7 +194,7 @@ const cpDef = {
         this.resetDropdown();
         return;
       }
-      else if (bbn.var.keys.upDown.includes(e.keyCode)) {
+      else if (bbn.var.keys.upDown.includes(e.key)) {
         this.keynav(e);
       }
       this.$emit('keydown', e);

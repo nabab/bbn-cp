@@ -317,7 +317,7 @@ const cpDef = {
         this.isOpened = false;
         this.filterString = '';
       }
-      else if (bbn.var.keys.upDown.includes(e.keyCode)) {
+      else if (bbn.var.keys.upDown.includes(e.key)) {
         this.keynav(e);
       }
     },

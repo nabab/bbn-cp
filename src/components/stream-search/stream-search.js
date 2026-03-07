@@ -369,7 +369,7 @@ const cpDef = {
         this.isOpened = false;
         this.filterString = '';
       }
-      else if (!e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey && bbn.var.keys.upDown.includes(e.keyCode)) {
+      else if (!e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey && bbn.var.keys.upDown.includes(e.key)) {
         let list = this.getRef('list');
         if (list && bbn.fn.isNumber(list.overIdx)) {
           list.keynav(e);

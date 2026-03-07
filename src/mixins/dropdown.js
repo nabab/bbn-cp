@@ -459,7 +459,7 @@ const dropdown = {
         return true;
       }
       else if (this.isOpened) {
-        if (bbn.var.keys.confirm.includes(e.which)) {
+        if (bbn.var.keys.confirm.includes(e.key)) {
           e.preventDefault();
         }
         else if ((e.key === ' ') && !this.isSearching) {

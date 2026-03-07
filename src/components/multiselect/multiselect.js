@@ -257,7 +257,7 @@ const cpDef = {
             list.select(list.overIdx);
           }
         }
-        else if (bbn.var.keys.upDown.indexOf(e.keyCode) > -1) {
+        else if (bbn.var.keys.upDown.indexOf(e.key) > -1) {
           this.keynav(e);
         }
       },

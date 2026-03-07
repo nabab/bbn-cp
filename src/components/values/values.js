@@ -132,7 +132,7 @@ const cpDef = {
         e.preventDefault();
         this.isOpened = false;
       }
-      else if (bbn.var.keys.upDown.includes(e.keyCode)) {
+      else if (bbn.var.keys.upDown.includes(e.key)) {
         e.preventDefault();
         if (!this.isOpened) {
           this.isOpened = true;

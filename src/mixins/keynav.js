@@ -25,7 +25,7 @@ const keynav = {
      *
      */
     keynav(e){
-      if (this.filteredData.length && bbn.var.keys.upDown.includes(e.keyCode)) {
+      if (this.filteredData.length && bbn.var.keys.upDown.includes(e.key)) {
         if (e.preventDefault) {
           e.preventDefault();
         }

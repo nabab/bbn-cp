@@ -477,7 +477,7 @@ const cpDef = {
           this.beautify();
         }
         // Trigger autocomplete on '.' press
-        else if (!['Escape', 'Space', 'Enter', 'Return'].includes(event.key) && !ignoredKeys.includes(event.which)) {
+        else if (!['Escape', 'Space', 'Enter', 'Return'].includes(event.key) && !ignoredKeys.includes(event.key)) {
           bbn.fn.log("STARTING COMPLETIONS")
           this.constructor.cm.autocomplete.startCompletion(this.widget);
         }

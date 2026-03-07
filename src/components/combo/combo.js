@@ -150,7 +150,7 @@ const cpDef = {
         if (e.key === 'Escape') {
           this.resetDropdown();
         }
-        else if (bbn.var.keys.upDown.includes(e.keyCode)) {
+        else if (bbn.var.keys.upDown.includes(e.key)) {
           this.keynav(e);
         }
         else if ( !this.isDisabled || !this.readonly ){

@@ -71,11 +71,11 @@ const cpDef = {
         e.preventDefault();
         this.resetDropdown();
       }
-      else if (bbn.var.keys.dels.includes(e.which) && !this.filterString) {
+      else if (bbn.var.keys.dels.includes(e.key) && !this.filterString) {
         e.preventDefault();
         this.resetDropdown();
       }
-      else if (bbn.var.keys.upDown.includes(e.keyCode)) {
+      else if (bbn.var.keys.upDown.includes(e.key)) {
         e.stopPropagation();
         e.preventDefault();
         this.keynav(e);

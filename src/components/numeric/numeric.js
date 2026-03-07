@@ -10,6 +10,7 @@
  *
  * @created 10/02/2017
  */
+const acceptedKeys = ([]).concat(bbn.var.keys.numbers, bbn.var.keys.upDown, bbn.var.keys.leftRight, bbn.var.keys.dels, bbn.var.keys.confirm, bbn.var.keys.numsigns);
 const cpDef = {
     /**
      * @mixin bbn.cp.mixins.basic
@@ -214,12 +215,10 @@ const cpDef = {
        * @emit input
        */
       _keydown(e){
-        
-        const keys = ([]).concat(bbn.var.keys.numbers, bbn.var.keys.upDown, bbn.var.keys.leftRight, bbn.var.keys.dels, bbn.var.keys.confirm, bbn.var.keys.numsigns);
         if (
           (bbn.fn.isNumber(this.min) && (this.min >= 0) && (e.keyCode === 189)) ||
           (!this.decimals && !this.unit && ((e.keyCode === 110) || (e.keyCode === 190))) ||
-          (!keys.includes(e.keyCode) && (e.keyCode !== 17))
+          (!acceptedKeys.includes(e.key) && !e.ctrlKey && !e.altKey && !e.metaKey)
         ){
           e.preventDefault();
           return;

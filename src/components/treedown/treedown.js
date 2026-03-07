@@ -278,7 +278,7 @@ const cpDef = {
         }
         else if (
           this.isOpened && (
-            bbn.var.keys.confirm.includes(e.which) || (
+            bbn.var.keys.confirm.includes(e.key) || (
               !this.autocomplete && (e.key === ' ')
             )
           )
@@ -317,10 +317,10 @@ const cpDef = {
         if ( this.commonKeydown(e) ){
           return;
         }
-        else if ((e.key === 'Escape') || bbn.var.keys.dels.includes(e.which)) {
+        else if ((e.key === 'Escape') || bbn.var.keys.dels.includes(e.key)) {
           this.resetDropdown();
         }
-        else if (bbn.var.keys.upDown.includes(e.keyCode)) {
+        else if (bbn.var.keys.upDown.includes(e.key)) {
           this.keynav(e);
         }
         else if (e.key === ' ') {
@@ -345,7 +345,7 @@ const cpDef = {
         else if (e.key === 'Escape') {
           this.resetDropdown();
         }
-        else if (bbn.var.keys.upDown.includes(e.keyCode)) {
+        else if (bbn.var.keys.upDown.includes(e.key)) {
           this.keynav(e);
         }
       },
