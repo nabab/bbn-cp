@@ -319,13 +319,27 @@ const cpDef = {
           case 'change':
             if (!this.currentFormData.pass1.length
               || !this.currentFormData.pass2.length
-              || (this.currentFormData.pass1 !== this.currentFormData.pass2)) {
-                this.alert(bbn._('Passwords must match!'), false);
-                return false;
-              }
-          default:
-            return true;
+              || (this.currentFormData.pass1 !== this.currentFormData.pass2)
+            ) {
+              this.alert(bbn._('Passwords must match!'), false);
+              return false;
+            }
+
+            break;
+          case 'login':
+            if (!this.currentFormData.user.length || !this.currentFormData.pass.length) {
+              setTimeout(() => {
+                if (this.currentFormData.user.length && this.currentFormData.pass.length) {
+                  this.getRef('form').submit();
+                }
+              }, 200);
+              return false;
+            }
+
+            break;
         }
+
+        return true;
       },
       /**
        * @method reload
@@ -334,6 +348,9 @@ const cpDef = {
         window.location.reload();
       }
     },
+    beforeMount(){
+      this.resetForm();
+    },
     /**
      * @event mounted
      * @fires resetForm
@@ -341,7 +358,6 @@ const cpDef = {
      * @fires alert
      */
     mounted(){
-      this.resetForm();
       this.$nextTick(() => {
         setTimeout(() => {
           if (this.$el && this.$el.style) {
