@@ -147,6 +147,7 @@ const cpDef = {
                 case 'color':
                   this.renderedComponent = 'bbn-colorpicker';
                   break;
+                case "numeric":
                 case "number":
                   this.renderedComponent = 'bbn-numeric';
                   break;
