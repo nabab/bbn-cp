@@ -762,6 +762,7 @@ const cpDef = {
     },
     receive(message) {
       this.$emit("received", message);
+      bbn.fn.log("received", message);
       if (message.type !== undefined) {
         switch (message.type) {
           case "message":
