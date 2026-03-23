@@ -1,6 +1,7 @@
 import bbnNode from "../Node.js";
 import onHook from "../../Html/private/onHook.js";
 import isComponent from "../../../functions/isComponent.js";
+import queueUpdate from "../../../functions/queueUpdate.js";
 
 const removeElement = function(res, ele, node) {
   if (res) {
@@ -32,15 +33,17 @@ const removeElement = function(res, ele, node) {
         ele.dispatchEvent(destroy);
       }
 
+
       if (!node.isComponent && ele.tagName && node.attributes?.length) {
-        for (let i = 0; i < node.attributes.length; i++) {
-          if (node.attributes[i].constructor.name === 'bbnEventAttr') {
-            ele.removeEventListener(node.attributes[i].name, node.attributes[i].handler, node.attributes[i].cfg);
+        if (node.model) {
+          for (let n in node.model) {
+            const eventName = node.model[n].modifiers.includes('lazy') ? 'change' : 'input';
+            ele.removeEventListener(eventName, node.model[n].handler);
           }
-    
-          if (node.attributes[i].constructor.name === 'bbnModelAttr') {
-            const eventName = node.attributes[i].modifiers.includes('lazy') ? 'change' : 'input';
-            ele.removeEventListener(eventName, node.attributes[i].handler);
+        }
+        if (node.events) {
+          for (let n in node.events) {
+            ele.removeEventListener(n, node.events[n].handler, node.events[n].cfg);
           }
         }
       }

@@ -92,6 +92,7 @@ const serviceWorker = {
      * @param {Object} data
      */
     messageFromChannel(data) {
+      bbn.fn.log("messageFromChannel", data);
       if (this.serviceWorkerActive) {
         data = this._decodeMessageData(data);
         if (data.function){
