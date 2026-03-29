@@ -492,11 +492,18 @@ const cpDef = {
       */
       // Emit keydown event
     },
-    scrollBottom() {
+    scrollToBottom() {
       // Scroll to the bottom of the editor
       let sc = this.find('div.cm-scroller');
       if (sc) {
         sc.scrollTop = sc.scrollHeight;
+      }
+    },
+    scrollToTop() {
+      // Scroll to the top of the editor
+      let sc = this.find('div.cm-scroller');
+      if (sc) {
+        sc.scrollTop = 0;
       }
     },
     foldAll() {
