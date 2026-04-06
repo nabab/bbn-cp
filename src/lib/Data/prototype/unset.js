@@ -34,7 +34,6 @@ bbnData.prototype.unset = function(noParent) {
       }
     }
   }
-  this.children.forEach(it => it.unset());
 
   if (this.value) {
     delete this.targetData.__bbnData;

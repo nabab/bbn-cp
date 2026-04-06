@@ -52,8 +52,8 @@ export default function setUpHtmlClass(publicClass, obj) {
   window[publicClass].acceptedAttributes = acceptedAttr;
   let res;
   const iface = bbn.fn.isFunction(obj.iface) ? obj.iface() : obj.iface || {};
-  bbn.fn.each(obj.statics, f => {
-    res = f(iface);
+  bbn.fn.each(obj.statics, async f => {
+    res = await f(iface);
     if (res) {
       if (!bbn.fn.isObject(res)) {
         throw new Error(bbn._("If the static method returns it must be an object"));

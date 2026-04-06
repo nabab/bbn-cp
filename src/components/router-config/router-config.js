@@ -37,7 +37,7 @@ const cpDef = {
             date: {},
             num: {}
           },
-          num: 8
+          num: 10
         });
       }
     }

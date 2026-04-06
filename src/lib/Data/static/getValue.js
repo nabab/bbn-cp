@@ -12,6 +12,4 @@ bbnData.getValue = function(obj, original) {
   }
 
   throw new Error(bbn._("The argument is not a bbnData object"))
-
-  return obj;
 }

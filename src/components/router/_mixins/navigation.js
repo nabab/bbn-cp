@@ -2,6 +2,12 @@ import bbn from "@bbn/bbn";
 
 export default {
   props: {
+    routes: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
     defaultNavMode: {
       type: String,
       default: 'tabs'
@@ -454,28 +460,52 @@ export default {
             else {
               //bbn.fn.log(bbn._("SAME URL %s NO ROUTING", url));
             }
+            bbn.fn.log("NO ROUTING for URL " + url + " (current: " + this.currentURL + ")")
 
             return;
           }
-          else if (url && !st && this.autoload) {
-            //bbn.fn.log("ADDING NEW VIEW IN " + this.baseURL, url);
-            //bbn.fn.log("NUM VIEWS 1: " + this.views.length)
-            return await this.add({
-              url,
-              label: bbn._('Loading'),
-              load: true,
-              loading: false,
-              real: false,
-              pane: false,
-              scrollable: !this.single,
-              current: url,
-              error: false,
-              loaded: false,
-              invisible: false,
-              last: bbn.fn.timestamp(),
-              selected: true
-            });
-            //bbn.fn.log("NUM VIEWS 2: " + this.views.length)
+          else if (url && !st) {
+            for (let n in this.routes) {
+              let found = false;
+              if (n.endsWith( '*') && url.indexOf(n.slice(0, -1)) === 0) {
+                found = true;
+              }
+              else if (url === n) {
+                found = true;
+              }
+
+              if (found) {
+                const res = typeof this.routes[n] === 'function' ? this.routes[n](url) : this.routes[n];
+                if (res) {
+                  const r = await this.add(res);
+                  this.$nextTick(() => this.activate(url));
+                  bbn.fn.log("ACTIVATED ROUTE " + url + " WITH RESULT", res, r);
+                  return r;
+                }
+              }
+            }
+
+            if (this.autoload) {
+              //bbn.fn.log("ADDING NEW VIEW IN " + this.baseURL, url);
+              //bbn.fn.log("NUM VIEWS 1: " + this.views.length)
+              return await this.add({
+                url,
+                label: bbn._('Loading'),
+                load: true,
+                loading: false,
+                real: false,
+                pane: false,
+                scrollable: !this.single,
+                current: url,
+                error: false,
+                loaded: false,
+                invisible: false,
+                last: bbn.fn.timestamp(),
+                selected: true
+              });
+              //bbn.fn.log("NUM VIEWS 2: " + this.views.length)
+
+            }
           }
           else {
             if (st === false) {

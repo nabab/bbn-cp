@@ -69,25 +69,6 @@ bbnData.proxy = function(component, path, targetObj) {
         const newVal = t.treatValue(value, component, key, targetObj);
         target[key] = newVal;
         const dataObj = t.getObject(newVal);
-        /*
-        bbn.fn.log([
-          "SET",
-          "DATAOBJ",
-          dataObj,
-          "TARGET",
-          t.getObject(target),
-          "SAME",
-          targetObj === t.getObject(target),
-          "TARGETOBJ",
-          targetObj,
-          key,
-          newVal,
-          oldValue,
-          target,
-          '------'
-        ]);
-        */
-
         if (dataObj) {
           dataObj.dataUpdate();
         }

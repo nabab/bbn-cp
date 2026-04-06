@@ -26,12 +26,10 @@ const getAllParents = function(dataObj, parents = []) {
  */
 bbnData.prototype.dataUpdate = function(path) {
   if (!this.value || this.root.component?.$isDestroying || this.root.component?.$isDestroyed) {
-    //bbn.fn.log(["EEEEE", this]);
     return;
   }
 
   if (!this.refs.length) {
-    //bbn.fn.log(["UNSET " + (path || 'NO PATH') + ": " + JSON.stringify(this.targetData), this]);
     this.unset();
     return;
   }

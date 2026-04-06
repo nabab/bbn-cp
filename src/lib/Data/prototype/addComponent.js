@@ -78,19 +78,6 @@ bbnData.prototype.addComponent = function(component, path, parent) {
     path = path.toString();
   }
 
-  /*
-  const fpath = [[path]];
-  if (parent) {
-    let done = 0;
-    bbn.fn.each(parent.refs, a => {
-      if (a.component === component) {
-        if ()
-        fpath.push(a.path);
-      }
-    })
-  }
-  */
-
   if (!this.refs.filter(
     b => (b.component === component) && (b.path === path)
   ).length

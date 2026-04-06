@@ -5,7 +5,6 @@ import bbnData from "../Data.js";
  * @param {HTMLElement} component 
  */
 bbnData.prototype.removeComponent = function(component, path) {
-  //bbn.fn.log(`REMOVING ${path} FROM ${component.$options.name}`)
   if (!(component instanceof HTMLElement)) {
     throw new Error("bbnData hasComponent must be called with a bbn component");
   }
@@ -23,9 +22,6 @@ bbnData.prototype.removeComponent = function(component, path) {
     if (idx === -1) {
       // Normal if it happens: replaced elements are removed before replacing
       return;
-      //bbn.fn.warning(`The component ${component.$options.name} with path ${path} is not in the list of references`);
-      //debugger;
-      //throw new Error(`The component ${component.$options.name} with path ${path} is not in the list of references`);
     }
     else {
       if (this.refs[idx].root) {
@@ -45,12 +41,7 @@ bbnData.prototype.removeComponent = function(component, path) {
     this.unset();
   }
   else {
-    const search = {component};
-    let idx;
-    while ((idx = bbn.fn.search(this.refs, search)) > -1) {
-      this.refs.splice(idx, 1);
-    }
-
+    this.refs = this.refs.filter(b => b.component !== component);
     if (!this.refs.length)  {
       this.unset();
     }

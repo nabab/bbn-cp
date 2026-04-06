@@ -84,6 +84,17 @@ const cpDef = {
       default: false,
     },
     /**
+     * Routes for the router.
+     * @prop routes
+     * @type Object
+     */
+    routes: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+    /**
      * Summary: Configuration options object.
      * @prop options
      * @type Object

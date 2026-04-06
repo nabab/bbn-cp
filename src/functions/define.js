@@ -1,8 +1,6 @@
-import bbnData from "../lib/Data.js";
 import stringToTemplate from "../internals/stringToTemplate.js";
 import setUpHtmlClass from "../internals/setUpHtmlClass.js";
 import generateHtmlClass from "../internals/generateHtmlClass.js";
-import retrieveModels from "../internals/retrieveModels.js";
 import retrieveSlots from "../internals/retrieveSlots.js";
 import bbn from "@bbn/bbn";
 
