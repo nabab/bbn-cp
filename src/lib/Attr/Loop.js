@@ -149,7 +149,7 @@ export default class bbnLoopAttr extends bbnAttr
 
     let root = node.element;
     if (root && !root.parentNode) {
-      let num = await node.nodeClean();
+      let num = node.nodeClean();
       bbn.fn.log(["LOOP ROOT PROBLEM", num]);
       node.nodeRemove(root);
       root = null;
@@ -296,7 +296,7 @@ export default class bbnLoopAttr extends bbnAttr
           copy.splice(i, 1);
           const itemRemoved = retrieveNode(cp, node.id, a);
           if (itemRemoved) {
-            await itemRemoved.nodeClean(true);
+            itemRemoved.nodeClean(true);
           }
         }
       });
@@ -353,7 +353,7 @@ export default class bbnLoopAttr extends bbnAttr
           }
         }
 
-        await a.nodeClean(true);
+        a.nodeClean(true);
       }
     }
 

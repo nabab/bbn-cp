@@ -11,7 +11,7 @@ import bbn from "@bbn/bbn";
 * @param {string|array} tplSt - The template as a string or an array from stringToTemplate.
  * @param {string} [css] - Optional CSS string for the component.
 */
-export default function define(name, obj, tplSt, css) {
+export default async function define(name, obj, tplSt, css) {
   // Prevent redefinition if the component is already known.
   if (bbn.cp.known.includes(name)) {
     return;
@@ -89,7 +89,7 @@ export default function define(name, obj, tplSt, css) {
   // Initialize subcomponents if defined.
   if (cpCfg.components) {
     for (let n in cpCfg.components) {
-      bbn.cp.define(cpCfg.componentNames[n], cpCfg.components[n], cpCfg.components[n].template || '');
+      await bbn.cp.define(cpCfg.componentNames[n], cpCfg.components[n], cpCfg.components[n].template || '');
       //cpProto.$options.components[n] = cpCfg.components[n];
     }
   }
@@ -97,7 +97,7 @@ export default function define(name, obj, tplSt, css) {
   // Generating the code for the private class based on the component config
   //const privateClassCode = makePrivateClass(privateName, cpCfg);
   //bbn.fn.log('setUpHtmlClass', publicName);
-  setUpHtmlClass(publicName, cpCfg);
+  await setUpHtmlClass(publicName, cpCfg);
   // Register the component and add it to the known components list.
   if (bbn.cp.unknown[name]) {
     delete bbn.cp.unknown[name];

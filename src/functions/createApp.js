@@ -108,7 +108,7 @@ export default async function createApp(ele, obj) {
   // Initialize subcomponents if defined.
   if (cpCfg.components) {
     for (let n in cpCfg.components) {
-      bbn.cp.define(cpCfg.componentNames[n], cpCfg.components[n], cpCfg.components[n].template);
+      await bbn.cp.define(cpCfg.componentNames[n], cpCfg.components[n], cpCfg.components[n].template);
     }
   }
 
@@ -149,7 +149,7 @@ export default async function createApp(ele, obj) {
         bbn.fn.translate(lang);
       }
 
-      bbn.cp.define(r.name, r.definition, r.template || '', r.style || '');
+      await bbn.cp.define(r.name, r.definition, r.template || '', r.style || '');
     }
   }
   // Replace the placeholder with the new component.

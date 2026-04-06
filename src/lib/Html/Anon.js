@@ -380,7 +380,7 @@ export default class bbnAnonHtml extends HTMLElement
           cfg.components[n].template = tpl;
         }
         //bbn.fn.log("DEFINING COMPONENT", n, cfg.components[n], cfg.components[n].template);
-        bbn.cp.define(cfg.componentNames[n], cfg.components[n], tpl);
+        await bbn.cp.define(cfg.componentNames[n], cfg.components[n], tpl);
       }
     }
 

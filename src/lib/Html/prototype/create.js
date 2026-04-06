@@ -10,7 +10,7 @@ import retrieveSlots from "../../../internals/retrieveSlots.js";
  * @param {HTMLElement} before Optional element after which it will be inserted
  * @returns 
  */
-bbnProtoHtml.$create = function (obj, target, before) {
+bbnProtoHtml.$create = async function (obj, target, before) {
   const parentNode = this.$nodes[target.bbnId.split('-').slice(0, -1).join('-')];
   const newId = target.bbnId + '-' + bbn.fn.randomString(5).toLowerCase();
   const o = {
@@ -35,7 +35,7 @@ bbnProtoHtml.$create = function (obj, target, before) {
   // Initialize subcomponents if defined.
   if (cpCfg.components) {
     for (let n in cpCfg.components) {
-      bbn.cp.define(cpCfg.componentNames[n], cpCfg.components[n], cpCfg.components[n].template);
+      await bbn.cp.define(cpCfg.componentNames[n], cpCfg.components[n], cpCfg.components[n].template);
     }
   }
 

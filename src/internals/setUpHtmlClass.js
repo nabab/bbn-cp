@@ -19,7 +19,7 @@ const possibleAttributes = [
   'style',
   'key'
 ];
-export default function setUpHtmlClass(publicClass, obj) {
+export default async function setUpHtmlClass(publicClass, obj) {
   // Define accepted attributes for the component.
   const acceptedAttr = possibleAttributes
     .concat(possibleAttributes.map(a => ':' + a))

@@ -43,7 +43,7 @@ export default async function fetchComponent(tag) {
   const res = await handler(tag);
 
   // Process fetched component definitions
-  res.components.forEach(comp => {
+  res.components.forEach(async comp => {
     if (!comp.definition || !comp.name) {
       throw new Error(bbn._("Incomplete definition for component '%s'", comp.name || 'unknown'));
     }
@@ -67,7 +67,7 @@ export default async function fetchComponent(tag) {
     });
 
     // Define component
-    definedComponents[comp.name] = bbn.cp.define(comp.name, comp.definition, comp.template, comp.css);
+    definedComponents[comp.name] = await bbn.cp.define(comp.name, comp.definition, comp.template, comp.css);
   });
 
   return definedComponents;
