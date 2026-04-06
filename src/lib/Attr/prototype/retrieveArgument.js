@@ -48,7 +48,7 @@ bbnAttr.prototype.retrieveArgument = function(a, hash, dataArr) {
   }
 
   // Check if the component has a property or method with the given argument name.
-  if (cp.$has(a)) {
+  if (a in cp.$namespaces) {
     // Return the property or method from the component.
     done = true;
     // Check if the argument corresponds to a function in the component.

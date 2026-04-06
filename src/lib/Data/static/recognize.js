@@ -156,7 +156,7 @@ const mutateObject = function(newObj, oldObj, component, path, parent) {
         }
       }
       else {
-        oldObj[n] = component.$treatValue(newObj[n], n, oldObj.__bbnData);
+        oldObj[n] = bbnData.treatValue(newObj[n], component, n, oldObj.__bbnData);
         changed = true;
       }
     }
@@ -232,7 +232,7 @@ bbnData.recognize = function(v, oldData, component, path) {
         else {
           // Remove the old data object from the component.
           isChanged = oldDataObject.removeComponent(component, path);
-          v = component.$treatValue(v, path);
+          v = bbnData.treatValue(v, component, path);
         }
       }
       // Case where the result is already treated (by another property and/or another component)
@@ -250,7 +250,7 @@ bbnData.recognize = function(v, oldData, component, path) {
       }
       else {
         // Treat the value and get the data object.
-        v = component.$treatValue(v, path);
+        v = bbnData.treatValue(v, component, path);
         isChanged = true;
       }
     }

@@ -32,9 +32,11 @@ bbnData.prototype.removeComponent = function(component, path) {
         this.unset();
       }
       else {
-        this.refs.splice(idx, 1);
-        if (!this.refs.length) {
+        if (!idx) {
           this.unset();
+        }
+        else {
+          this.refs.splice(idx, 1);
         }
       }
     }

@@ -27,9 +27,6 @@ const basic = {
       isTablet: bbn.fn.isTabletDevice(),
       _currentPopup: null
     };
-    if (this.$options.name && bbn.cp.defaults[this.$options.name.slice(4)]) {
-      bbn.fn.extend(o, bbn.cp.defaults[this.$options.name.slice(4)]);
-    }
     return o;
   },
   computed: {

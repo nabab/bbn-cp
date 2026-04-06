@@ -18,7 +18,7 @@ export default function realSetProp(cp, name, value) {
 
   // Get data objects associated with the original and new values.
   const oldObj = bbnData.getObject(original);
-  value = cp.$treatValue(value, name);
+  value = bbnData.treatValue(value, cp, name);
   const newObj = bbnData.getObject(value);
 
   // If the original value is a data object.

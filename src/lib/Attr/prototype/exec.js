@@ -42,11 +42,6 @@ bbnAttr.prototype.attrExec = function(data) {
     return;
   }
 
-  if ((this.name === 'key') && this.node.loop && !data) {
-    debugger;
-    return;
-  }
-
   const newData = data ? [data] : [];
   if (this.node.data) {
     newData.push(this.node.data);

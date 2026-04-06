@@ -37,12 +37,14 @@ bbnNode.prototype.nodeSetClass = function() {
     }
 
     const toRemove = [];
+    // Hold the old classes that are not in the new list to remove them after. 
     bbn.fn.each(this.oldClasses, cls => {
       if (!final.includes(cls)) {
         toRemove.push(cls);
       }
     });
 
+    // Update the oldClasses list with the new classes for the next comparison. 
     this.oldClasses.splice(0, this.oldClasses.length, ...final.slice());
 
     Array.from(ele.classList).forEach(cls => {

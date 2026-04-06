@@ -8,8 +8,8 @@ bbnData.prototype.unset = function(noParent) {
   //bbn.fn.log("UNSET: " + JSON.stringify(this.targetData), this, this.deps.map(d => d.constructor.name));
   const id = this.id;
 
-  if (this.root?.$dataInstances) {
-    this.root.$dataInstances.delete(this);
+  if (this.root?.component?.$dataInstances) {
+    this.root.component.$dataInstances.delete(this);
   }
 
   // Unsetting the children
@@ -35,19 +35,6 @@ bbnData.prototype.unset = function(noParent) {
     }
   }
   this.children.forEach(it => it.unset());
-  /*
-
-  if (!noParent && root.parent) {
-    let dataObj = this;
-    while (dataObj.parent) {
-      dataObj = dataObj.parent;
-      bbn.fn.iterate(Object.keys(dataObj.components), cid => {
-        bbn.cp.getComponent(cid).bbn.$tick();
-      });
-      dataObj.root.$tick();
-    }
-  }
-  */
 
   if (this.value) {
     delete this.targetData.__bbnData;

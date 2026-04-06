@@ -45,10 +45,6 @@ export default function generateHtmlClass(name, extendedTag) {
         return bbnProtoHtml.disconnectedCallback.call(this, [this]);
       }
 
-      attributeChangedCallback(name, oldValue, newValue) {
-        return bbnProtoHtml.attributeChangedCallback.call(this, [this, name, oldValue, newValue]);
-      }
-
       _(...args) {
         return bbnProtoHtml._.apply(this, args);
       }
@@ -73,32 +69,16 @@ export default function generateHtmlClass(name, extendedTag) {
         return bbnProtoHtml.findAll.apply(this, args);
       }
 
-      findAllByKey(...args) {
-        return bbnProtoHtml.findAllByKey.apply(this, args);
-      }
-
       extend(...args) {
         return bbnProtoHtml.extend.apply(this, args);
       }
 
-      getComponents(...args) {
-        return bbnProtoHtml.getComponents.apply(this, args);
-      }
-
-      $getName(...args) {
-        return bbnProtoHtml.$getName.apply(this, args);
-      }
-      
       async $connected(...args) {
         return await bbnProtoHtml.$connected.apply(this, args);;
       }
 
       $create(...args) {
         return bbnProtoHtml.$create.apply(this, args);
-      }
-
-      $delete(...args) {
-        return bbnProtoHtml.$delete.apply(this, args);
       }
 
       $destroy(...args) {
@@ -111,14 +91,6 @@ export default function generateHtmlClass(name, extendedTag) {
         
       $forceUpdate(...args) {
         return bbnProtoHtml.$forceUpdate.apply(this, args);
-      }
-        
-      $get(...args) {
-        return bbnProtoHtml.$get.apply(this, args);
-      }
-        
-      $has(...args) {
-        return bbnProtoHtml.$has.apply(this, args);
       }
         
       $hasSlots(...args) {
@@ -156,18 +128,6 @@ export default function generateHtmlClass(name, extendedTag) {
       $position(...args) {
         return bbnProtoHtml.$position.apply(this, args);
       }
-        
-      $retrieveComponent(...args) {
-        return bbnProtoHtml.$retrieveComponent.apply(this, args);
-      }
-        
-      $retrieveElement(...args) {
-        return bbnProtoHtml.$retrieveElement.apply(this, args);
-      }
-        
-      $retrieveNode(...args) {
-        return bbnProtoHtml.$retrieveNode.apply(this, args);
-      }
 
       $retrieveSlotItems(...args) {
         return bbnProtoHtml.$retrieveSlotItems.apply(this, args);
@@ -177,25 +137,8 @@ export default function generateHtmlClass(name, extendedTag) {
         return bbnProtoHtml.$set.apply(this, args);
       }
         
-      $tick(...args) {
-        return bbnProtoHtml.$tick.apply(this, args);
-      }
-        
-      $treatValue(...args) {
-        return bbnProtoHtml.$treatValue.apply(this, args);
-      }
-        
       $watch(...args) {
         return bbnProtoHtml.$watch.apply(this, args);
-      }
-
-      get $rootPath() {
-        let st = this.bbnId;
-        if (this.$origin) {
-          st = this.$origin.$rootPath + '/' + st;
-        }
-
-        return st;
       }
 
     };
@@ -262,7 +205,6 @@ export default function generateHtmlClass(name, extendedTag) {
     #bbnSlots;
     #bbnCid;
     #bbnUid;
-    #bbnTmpSlots;
     #isConnected = false;
     #isInit = false;
     #isDataSet = false;
@@ -343,15 +285,6 @@ export default function generateHtmlClass(name, extendedTag) {
       }
     };
 
-    get $bbnTmpSlots() {
-      return this.#bbnTmpSlots;
-    };
-    set $bbnTmpSlots(v) {
-      if (!this.#bbnTmpSlots) {
-        this.#bbnTmpSlots = v;
-      }
-    };
-
     get $isInit() {
       return this.#isInit;
     };
@@ -424,15 +357,6 @@ export default function generateHtmlClass(name, extendedTag) {
     set $isMounted(v) {
       if (v && !this.#isMounted) {
         this.#isMounted = v;
-      }
-    };
-
-    get $tagUsed() {
-      return this.#tagUsed;
-    };
-    set $tagUsed(v) {
-      if (!this.#tagUsed) {
-        this.#tagUsed = v;
       }
     };
 

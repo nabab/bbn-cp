@@ -17,12 +17,12 @@ export default function isTag(tag, ele) {
   bbn.fn.checkType(ele, [HTMLElement, SVGElement], bbn._("Elements must be HTML or SVG elements"));
 
   // Check if the element's tagName matches the provided tag (case-insensitive).
-  if (ele.tagName.toLowerCase() === tag) {
+  if (ele.tagName.toLowerCase() === tag.toLowerCase()) {
     return true;
   }
 
 // Alternatively, check if the element's 'is' attribute matches the provided tag.
-  if (ele.getAttribute("is") === tag) {
+  if (ele.getAttribute("is") && ele.getAttribute("is").toLowerCase() === tag.toLowerCase()) {
     return true;
   }
 

@@ -2,8 +2,7 @@ import bbnAttr from "./Attr.js";
 import cloneNode from "../Html/private/cloneNode.js";
 import generateNode from "../Html/private/generateNode.js";
 import bbnData from "../Data.js";
-import setNodeRegion from "../../internals/setNodeRegion.js";
-import data from "../../mixins/data.js";
+import retrieveNode from "../Html/private/retrieveNode.js";
 
 // LIS indices on `pos` (strictly increasing)
 const lisIndices = arr => {
@@ -158,7 +157,7 @@ export default class bbnLoopAttr extends bbnAttr
     }
 
     const breakFn = node.attr['bbn-break'] ? node.component[node.attr['bbn-break'].exp] : false;
-    //bbn.fn.log(["IN LOOP " + node.id, root, node, node.hash, cp.$retrieveNode(node.id, node.hash), cp.$retrieveNode(node.id, node.hash)?.element]);
+    //bbn.fn.log(["IN LOOP " + node.id, root, node, node.hash, retrieveNode(cp, node.id, node.hash), cp.$retrieveNode(node.id, node.hash)?.element]);
     const isArray = bbn.fn.isArray(loopValue);
     const numItems = isArray ? loopValue.length : Object.keys(loopValue).length;
     // Construct a unique hash for each iteration based on loop values.
@@ -234,7 +233,7 @@ export default class bbnLoopAttr extends bbnAttr
 
       const hash = oHash + key;
       this.list.push(hash);
-      const currentNode = cp.$retrieveNode(node.id, hash);
+      const currentNode = retrieveNode(cp, node.id, hash);
       let ele = currentNode?.element;
       if (ele && !ele.isConnected) {
         //bbn.fn.log(["ELEMENT NOT IN DOM", node.id, ele, hash]);
@@ -295,7 +294,7 @@ export default class bbnLoopAttr extends bbnAttr
       bbn.fn.forir(oldList, (a, i) => {
         if (this.list.indexOf(a) === -1) {
           copy.splice(i, 1);
-          const itemRemoved = cp.$retrieveNode(node.id, a);
+          const itemRemoved = retrieveNode(cp, node.id, a);
           if (itemRemoved) {
             itemRemoved.nodeClean(true);
           }
@@ -313,7 +312,7 @@ export default class bbnLoopAttr extends bbnAttr
       if (JSON.stringify(copy) !== JSON.stringify(this.list)) {
         const moves = [...getSortingMovesAnchored(copy, this.list)];
         if (moves.length) {
-          const nodeByValue = new Map(this.list.map(v => [v, cp.$retrieveElement(node.id, v)]));
+          const nodeByValue = new Map(this.list.map(v => [v, cp.$nodes[node.id][v].element));
           bbn.fn.log('********', moves.length, JSON.stringify(oldList, null, 2), JSON.stringify(copy, null, 2), JSON.stringify(this.list, null,2), JSON.stringify(moves, null, 2), '----------');
           moves.forEach(step => {
             const source = nodeByValue.get(step.value);

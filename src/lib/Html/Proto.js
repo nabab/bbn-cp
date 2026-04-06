@@ -1,73 +1,6 @@
 import disconnected from './private/disconnected.js';
 import createCid from "../../internals/createCid.js";
-import tryMount from "./private/tryMount.js";
-import init from './private/init.js';
-
-class subcomponents
-{
-  #components;
-
-  constructor(cp) {
-    Object.defineProperty(this, 'cp', {
-      value: cp,
-      writable: false,
-      configurable: false
-    });
-    this.#components = [];
-  }
-
-  add(ele) {
-    if (!this.#components.includes(ele)) {
-      this.#components.push(ele);
-      tryMount(this.cp);
-    }
-  }
-
-  remove(ele) {
-    let idx = this.#components.indexOf(ele);
-    if (idx > -1) {
-      this.#components.splice(idx, 1);
-      tryMount(this.cp);
-    }
-  }
-
-  removeAll() {
-    this.#components.splice(0, this.#components.length);
-  }
-
-  has(ele) {
-    return this.#components.includes(ele);
-  }
-
-  clean() {
-    let i = 0;
-    while (this.#components[i]) {
-      if (!this.#components[i].$isDestroyed) {
-        this.#components.splice(i, 1);
-      }
-      else {
-        i++;
-      }
-    }
-  }
-
-  find(fn) {
-    return bbn.fn.getRow(this.#components, fn);
-  }
-
-  get isOk() {
-    return !this.#components.filter(a => !a.$isDestroyed && (!a.bbn || !a.$isMounted)).length;
-  }
-
-  get queue() {
-    return this.#components.filter(a => !a.bbn || !a.$isMounted)
-  }
-
-  get length() {
-    return this.#components.length;
-  }
-
-}
+import bbnRegistered from "../Registered.js";
 
 const connect = cp => {
   if (!cp.$isInit && cp.bbnId && !cp.bbn) {
@@ -102,9 +35,6 @@ const bbnProtoHtml = {
 
     this.bbnCid = createCid();
     this.bbnTmpSlots = bbn.fn.createObject();
-    const tag = this.constructor.bbnTag;
-    this.$tagUsed = [];
-
     this.$props = bbn.fn.createObject();
     this.$propsCfg = bbn.fn.createObject();
     this.$namespaces = bbn.fn.createObject();
@@ -113,7 +43,7 @@ const bbnProtoHtml = {
     this.$children = [];
     this.$dataCfg = bbn.fn.createObject();
     this.$refsElements = bbn.fn.createObject();
-    this.$components = new subcomponents(this),
+    this.$components = new bbnRegistered(this),
     /**
      * Object referencing all the elements with ref prop
      * Indexed by name, value being the bbnComponentObject if it's a component a HTMLElement otherwise
@@ -153,10 +83,6 @@ const bbnProtoHtml = {
 
   disconnectedCallback() {
     return disconnected(this);
-  },
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    return bbn.cp.attributeChangedCallback(this, name, oldValue, newValue);
   },
 
   $hasSlots(name = 'default') {
@@ -201,7 +127,11 @@ const bbnProtoHtml = {
   * @return {Function}
   */
   closest(selector, checkEle) {
-    let ele = checkEle ? this.$el : this.$el.parentNode;
+    if (!selector || (selector === '*')) {
+      return this.bbnPortal || this.$parent || this.parentNode || null;
+    }
+
+    let ele = checkEle ? this : this.parentNode;
     let letters = selector.split('');
     if (!['.', '#', '[', ':'].filter(c => letters.includes(c)).length) {
       selector += ',*[is=' + selector + ']';
@@ -227,8 +157,13 @@ const bbnProtoHtml = {
     let res = [];
     let ele = this.closest(selector, checkEle);
     while (ele) {
-      res.push(ele);
-      ele = ele.closest(selector);
+      if (res.includes(ele)) {
+        break;
+      }
+      else {
+        res.push(ele);
+        ele = ele.closest(selector);
+      }
     }
 
     return res;
@@ -284,47 +219,6 @@ const bbnProtoHtml = {
 
     return Array.from(this.$el.querySelectorAll(selector));
   },
-
-  findAllByKey(key, selector) {
-    const arr = this.findAll(selector);
-    return arr.filter(a => a.bbnSchema?.props?.key === key);
-  },
-
-
-  /**
-  * Fires the function bbn.cp.getComponents.
-  * @method getComponents
-  * @param {Array} ar 
-  * @param {Boolean} only_children 
-  * @return {Function}
-  */
-  getComponents(ar, only_children) {
-    if (only_children) {
-      return Array.from(this.childNodes).filter(a => !!a._bbn);
-    }
-    else {
-      return this.querySelectAll('*').filter(a => !!a._bbn);
-    }
-  },
-
-
-  /**
-   * Returns a component name based on the name of the given component and a path.
-   * @method $getName
-   * @memberof bbn.cp
-   */
-  $getName() {
-    return this.$options.name;
-  },
-
-  get $rootPath() {
-    let st = this.bbnId;
-    if (this.$origin) {
-      st = this.$origin.$rootPath + '/' + st;
-    }
-
-    return st;
-  }
 }
 
 export default bbnProtoHtml;

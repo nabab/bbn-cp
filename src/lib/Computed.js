@@ -198,7 +198,8 @@ export default class bbnComputed {
           }
 
           // Treat the value and get the data object.
-          v = this.#component.$treatValue(v, this.#name);
+
+          v = bbnData.treatValue(v, this.#component, this.#name);
           this.#data = bbnData.getObject(v);
           hasChanged = true;
         }
@@ -271,6 +272,11 @@ export default class bbnComputed {
     }
 
     let prev = false;
+    for (const dep of [...this.#component.$dataDeps]) {
+      if (!dep.refs.length) {
+        this.#component.$dataDeps.delete(dep);
+      }
+    }
     for (let i = 0; i < deps.length; i++) {
       const a = deps[i];
       if (a.data?.constructor?.name === 'bbnData') {

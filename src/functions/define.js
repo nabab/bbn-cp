@@ -1,6 +1,6 @@
 import bbnData from "../lib/Data.js";
 import stringToTemplate from "../internals/stringToTemplate.js";
-import generateCpClass from "../internals/generateCpClass.js";
+import setUpHtmlClass from "../internals/setUpHtmlClass.js";
 import generateHtmlClass from "../internals/generateHtmlClass.js";
 import retrieveModels from "../internals/retrieveModels.js";
 import retrieveSlots from "../internals/retrieveSlots.js";
@@ -66,7 +66,6 @@ export default function define(name, obj, tplSt, css) {
     cls: publicName + 'HTML',
     fn: publicName + 'Cp',
     cfg: cpCfg,
-    models: retrieveModels(cpTpl),
     slots: retrieveSlots(cpTpl),
     tag: cpCfg.tag,
   }));
@@ -99,15 +98,14 @@ export default function define(name, obj, tplSt, css) {
   
   // Generating the code for the private class based on the component config
   //const privateClassCode = makePrivateClass(privateName, cpCfg);
-  //bbn.fn.log('generateCpClass', publicName);
-  generateCpClass(publicName, cpCfg);
+  //bbn.fn.log('setUpHtmlClass', publicName);
+  setUpHtmlClass(publicName, cpCfg);
   // Register the component and add it to the known components list.
-  bbn.cp.known.push(name);
-  const idx = bbn.cp.unknown.indexOf(name);
-  if (idx > -1) {
-    //bbn.cp.unknown.splice(idx, 1);
+  if (bbn.cp.unknown[name]) {
+    delete bbn.cp.unknown[name];
   }
 
+  bbn.cp.known.push(name);
   const ev = new CustomEvent('bbn-loaded-' + name);
   document.dispatchEvent(ev);
   //bbn.fn.log("fnCode", fnCode);

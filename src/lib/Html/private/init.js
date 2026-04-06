@@ -45,14 +45,6 @@ export default function init(cp) {
   });
 
 
-  // Setting $eval with the retrived/generated function
-  Object.defineProperty(cp, '$oldValues', {
-    value: bbn.fn.createObject(),
-    writable: false,
-    configurable: false
-  });
-
-
   Object.defineProperty(cp, '$watcher', {
     value: bbn.fn.createObject(),
     writable: false
@@ -151,21 +143,17 @@ export default function init(cp) {
   //cp.$cls = cp.constructor;
 
   // $parent will always remain the same, it should only be null for root
-  Object.defineProperty(cp, '$_currentParent', {
-    configurable: true,
-    writable: true,
-    value: null
-  });
+  let _currentParent = null;
 
   // $parent will always remain the same, it should only be null for root
   Object.defineProperty(cp, '$parent', {
     get() {
       const ele = this.closest('.bbn-component');
-      if (ele !== this.$_currentParent) {
-        if (this.$_currentParent) {
-          let idx = this.$_currentParent.$children.indexOf(this);
+      if (ele !== _currentParent) {
+        if (_currentParent) {
+          let idx = _currentParent.$children.indexOf(this);
           if (idx > -1) {
-            this.$_currentParent.$children.splice(idx, 1);
+            _currentParent.$children.splice(idx, 1);
           }
         }
 
@@ -173,10 +161,10 @@ export default function init(cp) {
           ele.$children.push(this);
         }
 
-        this.$_currentParent = ele;
+        _currentParent = ele;
       }
 
-      return this.$_currentParent;
+      return _currentParent;
     }
   });
   // Forcing update
@@ -202,50 +190,11 @@ export default function init(cp) {
     configurable: false
   });
 
-  Object.defineProperty(cp, '$connectors', {
-    value: [],
-    writable: false,
-    configurable: false
-  });
-
-  /**
-   * The directives on the root element of the template
-   */
-  Object.defineProperty(cp, '$directives', {
-    value: bbn.fn.createObject(),
-    writable: false,
-    configurable: false
-  });
   
-  Object.defineProperty(cp, '$queue', {
-    value: cp.$root === cp ? [] : cp.$root.$queue,
-    writable: false,
-    configurable: false
-  });
-  /*
-  Object.defineProperty(cp, '$queue', {
-    value: [],
-    writable: false,
-    configurable: false
-  });
-  */
-
   Object.defineProperty(cp, '$currentMap', {
     get() {
       return cp.bbnMap || cp.$cls.bbnMap;
     }
-  });
-  Object.defineProperty(cp, '$schema', {
-    configurable: false,
-    writable: false,
-    value: []
-  });
-  /**
-   * The latest timestamp of the last update launch
-   */
-  Object.defineProperty(cp, '$lastLaunch', {
-    value: 0,
-    writable: true
   });
 
   addComponent(cp);
@@ -286,15 +235,11 @@ export default function init(cp) {
   addNamespace(cp, '$off', 'method');
   addNamespace(cp, '$on', 'method');
   addNamespace(cp, '$once', 'method');
-  addNamespace(cp, '$retrieveComponent', 'method');
-  addNamespace(cp, '$retrieveElement', 'method');
   addNamespace(cp, 'ancestors', 'method');
   addNamespace(cp, 'closest', 'method');
   addNamespace(cp, 'extend', 'method');
   addNamespace(cp, 'find', 'method');
   addNamespace(cp, 'findAll', 'method');
-  addNamespace(cp, '$getName', 'method');
-  addNamespace(cp, 'getComponents', 'method');
   addNamespace(cp, 'getRef', 'method');
   bbn.fn.each(Object.keys(bbnProtoHtml), a => {
     if (!cp.$namespaces[a]) {

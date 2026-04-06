@@ -167,11 +167,6 @@ export default class bbnNode
       parent.children.push(this);
     }
 
-    Object.defineProperty(this, 'deps', {
-      writable: false,
-      value: []
-    });
-
     Object.defineProperty(this, 'hasData', {
       value: !!data,
       writable: false
@@ -242,30 +237,7 @@ export default class bbnNode
   }
 
   get uid() {
-    return this.component.$rootPath + '_' + (this.hash ? this.hash + '-' : '') + this.id;
-  }
-
-  get beforeElement() {
-    let p = this.prev;
-    while (p) {
-      if (p.element?.isConnected) {
-        let ele = p.element;
-        while (true) {
-          if (ele.nextSibling && ele.nextSibling.bbnId.indexOf(p.element.id + '-') === 0) {
-            ele = ele.nextSibling;
-          }
-          else {
-            break;
-          }
-        }
-
-        return ele;
-      }
-
-      p = p.prev;
-    }
-
-    return null;
+    return this.component.$cid + '_' + (this.hash ? this.hash + '-' : '') + this.id;
   }
 
   #getNextOrPrev(next) {

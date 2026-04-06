@@ -1,5 +1,4 @@
 import bbnData from "../Data.js";
-import "./retrieve.js";
 
 /**
  * Returns the bbnData object from a value

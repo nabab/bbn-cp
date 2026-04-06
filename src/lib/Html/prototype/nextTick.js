@@ -18,5 +18,5 @@ bbnProtoHtml.$nextTick = async function(fn){
     },
     hash: f.hash,
   });
-  bbn.cp.startTick();
+  bbn.cp.run();
 }

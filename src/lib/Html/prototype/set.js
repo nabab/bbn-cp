@@ -17,7 +17,7 @@ bbnProtoHtml.$set = function (obj, prop, value, writable = true, configurable = 
     //  It already exists
     if (obj.$namespaces[prop]) {
       // New treated value
-      const dataObj = obj.$treatValue(value, prop);
+      const dataObj = bbnData.treatValue(value, obj, prop);
       // The value is different
       if (value !== obj[prop]) {
         // It's a prop

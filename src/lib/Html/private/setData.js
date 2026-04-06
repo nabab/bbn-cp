@@ -26,7 +26,7 @@ export default function setData(cp, name, v) {
       oldDataObj.removeComponent(cp, name);
     }
     
-    v = cp.$treatValue(v, name);
+    v = bbnData.treatValue(v, cp, name);
     cp.$dataCfg[name].value = v;
     bbnData.propagate(cp, name);
     updateWatcher(cp, name);

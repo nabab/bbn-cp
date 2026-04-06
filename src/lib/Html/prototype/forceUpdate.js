@@ -2,7 +2,7 @@ import bbnProtoHtml from "../../Html/Proto.js";
 import initResults from "../private/initResults.js";
 
 bbnProtoHtml.$forceUpdate = async function (fn) {
-  await bbn.cp.startTick();
+  await bbn.cp.run();
   await bbn.cp.nextFrame();
   /*
   for (let n in this.$namespaces) {

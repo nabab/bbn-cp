@@ -1045,7 +1045,7 @@ const cpDef = {
           }
         }
         else {
-          const containerSize = this.$parent.$getName() === 'bbn-popup' ? this['lastKnownCt' + a.camel] : bbn.env[a.size];
+          const containerSize = this.$parent.$options.name === 'bbn-popup' ? this['lastKnownCt' + a.camel] : bbn.env[a.size];
           if ((coor[a.posStart] !== null) || (coor[a.posEnd] !== null)) {
             a.res = coor[a.posStart] !== null ? coor[a.posStart] : containerSize - coor[a.posEnd] - size;
           }

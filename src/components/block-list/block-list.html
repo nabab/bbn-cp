@@ -2,12 +2,12 @@
   <div class="bbn-hidden" ref="slot">
     <slot></slot>
   </div>
-  <div :class="$getName() + '-content'"
+  <div :class="$options.name + '-content'"
     :style="'grid-template-columns: repeat(' + rowCount + ',' + 100/rowCount + '%);'">
     <div bbn-for="(li, idx) in filteredData"
          bbn-if="isAjax || !pageable || ((idx >= start) && (idx < start + currentLimit))"
          :key="li.key"
-         :class="[$getName() + '-items']">
+         :class="[$options.name + '-items']">
       <component bbn-if="currentComponent"
                  :is="currentComponent"
                  bbn-bind="componentOptions"

@@ -1,4 +1,5 @@
 import bbnAttr from "./Attr.js";
+import retrieveNode from "../Html/private/retrieveNode.js";
 
 /**
  * Takes care of the data reactivity for non primitive values.
@@ -28,11 +29,11 @@ export default class bbnConditionAttr extends bbnAttr
     }
 
     const allIfs = this.node.parent.items.filter(a => (a.conditionId === node.conditionId));
-    const isOrigin = allIfs.filter(a => cp.$retrieveNode(a.id, node.hash)?.condition?.isConditionUpdating).length === 0;
+    const isOrigin = allIfs.filter(a => retrieveNode(cp, a.id, node.hash)?.condition?.isConditionUpdating).length === 0;
     if (isOrigin) {
       this.#isConditionUpdating = true;
       for (let i = 0; i < allIfs.length; i++) {
-        const n = cp.$retrieveNode(allIfs[i].id, node.hash);
+        const n = retrieveNode(cp, allIfs[i].id, node.hash);
         if (n?.condition) {
           n.condition.setLastRequest();
         }
@@ -71,7 +72,7 @@ export default class bbnConditionAttr extends bbnAttr
           }
         }
         else {
-          const otherCondNode = cp.$retrieveElement(ai.id, node.hash)?.bbnNode;
+          const otherCondNode = retrieveNode(cp, ai.id, node.hash);
           if (otherCondNode?.condition) {
             if (isTrue || (otherCondNode.condition.type === 'else')) {
               if (otherCondNode.condition.value !== !isTrue) {

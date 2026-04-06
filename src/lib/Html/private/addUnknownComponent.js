@@ -9,9 +9,9 @@ export default function addUnknownComponent(cp, name) {
   bbn.fn.checkType(cp, HTMLElement, "No component in addUnknownComponent");
   bbn.fn.checkType(name, String, "Incorrect name in addUnknownComponent");
   // Check if the component name contains a hyphen, is not already known, and is not already listed as unknown.
-  if ((name !== 'bbn-anon') && (name.indexOf('-') > 0) && !bbn.cp.known.includes(name) && !bbn.cp.unknown.includes(name)) {
+  if ((name !== 'bbn-anon') && (name.indexOf('-') > 0) && !bbn.cp.known.includes(name) && !bbn.cp.unknown[name]) {
     // Add the component name to the list of unknown components at the root level of the component tree.
-    bbn.cp.unknown.push(name);
+    bbn.cp.unknown[name] = true;
     //bbn.fn.log("ADD " + name);
     return true; // Indicate that the name was successfully added.
   }

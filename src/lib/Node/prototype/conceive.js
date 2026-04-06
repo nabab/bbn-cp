@@ -1,5 +1,6 @@
 import bbnNode from "../Node.js";
 import generateNode from "../../Html/private/generateNode.js";
+import retrieveNode from "../../Html/private/retrieveNode.js";
 
 bbnNode.prototype.nodeConceive = function() {
   if (this.items?.length && (!this.comment || (!this.loop && (!this.condition || this.condition.value)))) {
@@ -14,7 +15,7 @@ bbnNode.prototype.nodeConceive = function() {
         hash += (hash ? '-' : '') + item.id + '-loop';
       }
 
-      let node = this.component.$retrieveNode(item.id, hash);
+      let node = retrieveNode(this.component, item.id, hash);
       if (!node) {
         node = generateNode(item, this.component, this, this.root, this.rootHash, hash, this.data);
       }

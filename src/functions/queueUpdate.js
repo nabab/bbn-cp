@@ -31,5 +31,5 @@ export default function queueUpdate(...items) {
     bbn.cp.queue.push(item);
   }
 
-  bbn.cp.startTick();
+  bbn.cp.run();
 }

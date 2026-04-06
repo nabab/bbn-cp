@@ -16,7 +16,7 @@ export default function setUpData(cp, name, value) {
 
     // The data will remain the same if not simple Obj/Array
     cp.$dataCfg[name] = bbn.fn.createObject({
-      value: cp.$treatValue(value, name),
+      value: bbnData.treatValue(value, cp, name),
     });
     const def = {
       get() {
