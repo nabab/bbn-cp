@@ -8,7 +8,7 @@ export default class bbnDirectiveAttr extends bbnAttr
 
   inserted = false;
 
-  attrUpdate(init) {
+  async attrUpdate(init) {
     if ((!this.inserted || this.inserted?.todo) && !this.node.comment) {
       this.attrGetValue();
       // Check if the "inserted" function exists on this directive

@@ -6,18 +6,18 @@ import bbnStyleAttr from "./Style.js";
  */
 export default class bbnShowAttr extends bbnAttr
 {
-  attrSet() {
+  async attrSet() {
     this.node.props[this.name] = this.attrGetValue();
   }
 
-  attrUpdate(init) {
+  async attrUpdate(init) {
     const node = (this.node.constructor.name === 'bbnInternalNode') && !this.node.component.$isRoot ? this.node.element.bbnNode : this.node;
     if (node.comment) {
       return;
     }
     
     if (!init) {
-      this.attrSet();
+      await this.attrSet();
     }
 
     if (init || (this.exp && (this.isLate || this.isChanged))) {

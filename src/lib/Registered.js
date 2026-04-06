@@ -12,14 +12,14 @@ export default class bbnRegistered {
     this.#components = [];
   }
 
-  add(ele) {
+  async add(ele) {
     if (!this.#components.includes(ele)) {
       this.#components.push(ele);
       tryMount(this.cp);
     }
   }
 
-  remove(ele) {
+  async remove(ele) {
     let idx = this.#components.indexOf(ele);
     if (idx > -1) {
       this.#components.splice(idx, 1);

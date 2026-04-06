@@ -5,7 +5,7 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnIsAttr extends bbnAttr
 {
-  attrSet(init) {
+  async attrSet(init) {
     if (init) {
       this.attrGetValue();
       if (bbn.fn.isObject(this.value)) {
@@ -18,7 +18,7 @@ export default class bbnIsAttr extends bbnAttr
     }
   }
 
-  attrUpdate() {
+  async attrUpdate() {
     if (this.isChanged && (this.realTag === 'bbn-anon')) {
         if (bbn.fn.isObject(this.attrGetValue())) {
           Object.defineProperty(this.node, 'cfg', {
@@ -31,7 +31,7 @@ export default class bbnIsAttr extends bbnAttr
 
     /*
     if (this.isChanged && !this.node.isCreating && this.node.element) {
-      this.node.nodeInit();
+      await this.node.nodeInit();
     }*/
   }
 

@@ -5,10 +5,10 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnPreAttr extends bbnAttr
 {
-  attrSet() {
+  async attrSet() {
   }
 
-  attrUpdate() {
+  async attrUpdate() {
   }
 
   attrSetResult() {

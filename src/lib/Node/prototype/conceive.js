@@ -2,7 +2,7 @@ import bbnNode from "../Node.js";
 import generateNode from "../../Html/private/generateNode.js";
 import retrieveNode from "../../Html/private/retrieveNode.js";
 
-bbnNode.prototype.nodeConceive = function() {
+bbnNode.prototype.nodeConceive = async function() {
   if (this.items?.length && (!this.comment || (!this.loop && (!this.condition || this.condition.value)))) {
     if ((this.id === '0-0-1-1-0-0-0') && (this.component.$options.name === 'bbn-router')) {
       debugger;
@@ -20,7 +20,7 @@ bbnNode.prototype.nodeConceive = function() {
         node = generateNode(item, this.component, this, this.root, this.rootHash, hash, this.data);
       }
       if (!node.element && !node.isCreating) {
-        node.nodeInit();
+        await node.nodeInit();
       }
     }
   }

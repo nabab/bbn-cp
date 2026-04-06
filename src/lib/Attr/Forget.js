@@ -5,16 +5,16 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnForgetAttr extends bbnAttr
 {
-  attrSet(init) {
+  async attrSet(init) {
     if (init) {
       this.attrSetResult();
       if (!this.node.condition || this.node.condition.value) {
-        this.node.nodeSwitch(this.value);
+        await this.node.nodeSwitch(this.value);
       }
     }
   }
 
-  attrUpdate(init) {
+  async attrUpdate(init) {
 
     const node = this.node;
 
@@ -53,21 +53,21 @@ export default class bbnForgetAttr extends bbnAttr
         }
         // Case where it was a condition which has just been set to true, the children must be conceived.
         else if (node.comment && node.condition) {
-          node.nodeConceive();
+          await node.nodeConceive();
         }
 
         if (!node.comment) {
-          node.nodeSwitch(true);
+          await node.nodeSwitch(true);
         }
       }
       else {
         //bbn.fn.log(["FORGET false", node.component.$options.name, this, parent, node.element, node.comment, node.isCommented])
 
         if (node.comment) {
-          node.nodeSwitch(false);
+          await node.nodeSwitch(false);
         }
         if (!node.element) {
-          node.nodeInit();
+          await node.nodeInit();
         }
 
         if (!node.comment) {
@@ -99,7 +99,7 @@ export default class bbnForgetAttr extends bbnAttr
                   }
                 }
                 if (node.element.$slotElements[it.bbnNode?.attr?.slot?.value || 'default']) {
-                  node.element.$slotElements[it.bbnNode?.attr?.slot?.value || 'default'].bbnNode.nodeInit();
+                  await node.element.$slotElements[it.bbnNode?.attr?.slot?.value || 'default'].bbnNode.nodeInit();
                 }
 
                 if (it.parentNode === parent) {
@@ -120,7 +120,7 @@ export default class bbnForgetAttr extends bbnAttr
           }
 
           if (!childDone && node.condition) {
-            node.nodeConceive();
+            await node.nodeConceive();
           }
         }
       }

@@ -100,7 +100,7 @@ export default class bbnTransitionAttr extends bbnAttr
             return resolve(false);
           }
   
-          requestAnimationFrame(() => {
+          requestAnimationFrame(async () => {
             transition.running = false;
             transition.num = 0;
 

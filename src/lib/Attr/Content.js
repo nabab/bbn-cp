@@ -5,7 +5,7 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnContentAttr extends bbnAttr
 {
-  attrUpdate() {
+  async attrUpdate() {
     this.node.element.nodeValue = this.attrGetValue();
   }
 }

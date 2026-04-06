@@ -1,5 +1,3 @@
-import tryMount from "./tryMount.js";
-
 /**
  * Register the given child of the component into the $children array
  */

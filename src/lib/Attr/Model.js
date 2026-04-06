@@ -30,7 +30,7 @@ export default class bbnModelAttr extends bbnAttr
       this.#handlerElement.addEventListener(eventName, this.handler);
     }
   }
-  attrSet() {
+  async attrSet() {
     if (!this.handler) {
       const node = this.node;
       const cp = node.component;
@@ -147,7 +147,7 @@ export default class bbnModelAttr extends bbnAttr
       this.setHandler();
     }
   }
-  attrUpdate(init) {
+  async attrUpdate(init) {
     if (!this.name || !this.node.parentElement || (!init && this.node.isOut)) {
       return;
     }

@@ -6,7 +6,7 @@ import setNodeRegion from "../../internals/setNodeRegion.js";
  */
 export default class bbnTextNode extends bbnNode
 {
-  nodeBuild(after) {
+  async nodeBuild(after) {
     if (!this.text) {
       throw new Error("A text node must be text! (Magritte)")
     }

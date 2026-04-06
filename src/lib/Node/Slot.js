@@ -16,7 +16,7 @@ export default class bbnSlotNode extends bbnNode
     return this.#name
   }
 
-  nodeInit(after) {
+  async nodeInit(after) {
     const old = this.element;
     if (this.isCreating) {
       bbn.fn.log(["ALREADY CREATING", this.element, this]);
@@ -67,17 +67,17 @@ export default class bbnSlotNode extends bbnNode
             this.#tag = 'bbn-anon';
             this.props[item.slot.slotValue] = this.bind.attrGetValue();
             if (this.comment) {
-              const done = this.nodeSwitch(false);
+              const done = await this.nodeSwitch(false);
               if (done) {
                 this.isCreating = false;
                 return done;
               }
             }
 
-            ele = this.element || this.nodeBuild(null, true);
+            ele = this.element || await this.nodeBuild(null, true);
             if (ele?.bbn && !ele.$isInit) {
               if (ele.isConnected) {
-                ele.bbn.$connected();
+                await ele.bbn.$connected();
               }
               else {
                 ele.bbnConnected = true;
@@ -92,7 +92,7 @@ export default class bbnSlotNode extends bbnNode
         }
       }
       else {
-        ele = this.element || this.nodeBuild(null, true);
+        ele = this.element || await this.nodeBuild(null, true);
 
         this.component.$slotElements[name] = ele;
         //bbn.fn.log(["SLOT PARENT", ele, this.parentElement, ele.parentNode, this.component.$options.name, this.component.$slots[name]]);
@@ -140,9 +140,9 @@ export default class bbnSlotNode extends bbnNode
     this.isCreating = false;
 
     if (!ele) {
-      ele = this.nodeSwitch(true);
+      ele = await this.nodeSwitch(true);
       if (!ele) {
-        ele = this.nodeBuild(after, true);
+        ele = await this.nodeBuild(after, true);
       }
       else if (this.numBuild) {
         let num = this.nodeClean();

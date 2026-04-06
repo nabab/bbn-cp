@@ -30,7 +30,7 @@ import tryMount from "../private/tryMount.js";
  * @returns {undefined}
  */
 
-bbnProtoHtml.$connected = function () {
+bbnProtoHtml.$connected = async function () {
   if (this.$isDestroyed) {
     throw new Error(bbn._("The component is already destroyed"));
   }
@@ -120,7 +120,7 @@ bbnProtoHtml.$connected = function () {
 
 
   // Sending beforeCreate event
-  onHook(this, 'beforeCreate');
+  await onHook(this, 'beforeCreate');
   if (this.$node.events?.['hook:beforecreate'] || this.$node.events?.['hook:beforecreate']) {
     const beforeCreate = new Event('hook:beforecreate');
     this.$el.dispatchEvent(beforeCreate);
@@ -141,7 +141,7 @@ bbnProtoHtml.$connected = function () {
       this.$internal = generateNode(this.$tpl['0'], this, null, this.$node.root, this.$node.rootHash);
     }
 
-    onHook(this, 'created');
+    await onHook(this, 'created');
     if (this.$node.events?.['hook:created'] || this.$node.events?.['hook:created']) {
       const created = new Event('hook:created');
       this.$el.dispatchEvent(created);
@@ -170,7 +170,7 @@ bbnProtoHtml.$connected = function () {
 
   // Sets the current template schema and creates the DOM
   if (this.$internal) {
-    this.$internal.nodeInit();
+    await this.$internal.nodeInit();
     for (let n in this.$internal.events) {
       this.addEventListener(n, this.$internal.events[n].handler);
     }
@@ -186,7 +186,7 @@ bbnProtoHtml.$connected = function () {
   });
 
   // Sending beforeMount event
-  onHook(this, 'beforeMount');                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+  await onHook(this, 'beforeMount');                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
   if (this.$node.events?.['hook:beforemount'] || this.$events?.['hook:beforemount']) {
     const beforeMount = new Event('hook:beforemount');
     this.$el.dispatchEvent(beforeMount);

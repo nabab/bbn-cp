@@ -1,6 +1,6 @@
 import bbnNode from "../Node.js";
 
-bbnNode.prototype.nodeInit = function(after, noChild = false) {
+bbnNode.prototype.nodeInit = async function(after, noChild = false) {
   const old = this.element;
   if (this.isCreating) {
     bbn.fn.log(["ALREADY CREATING", this.element, this]);
@@ -17,7 +17,7 @@ bbnNode.prototype.nodeInit = function(after, noChild = false) {
       return old;
     }
 
-    const isLaunched = this.nodeSwitch(this.comment);
+    const isLaunched = await this.nodeSwitch(this.comment);
     if (isLaunched) {
       return isLaunched;
     }
@@ -37,7 +37,7 @@ bbnNode.prototype.nodeInit = function(after, noChild = false) {
   });
   */
   if (!this.loop) {
-    this.nodeBuild(after, noChild);
+    await this.nodeBuild(after, noChild);
     if (this.isComponent && this.element) {
       if (!this.element.bbn) {
         this.element.bbnConnected = true;
@@ -47,7 +47,7 @@ bbnNode.prototype.nodeInit = function(after, noChild = false) {
           throw new Error(bbn._("The element is not connected in component %s", this.$options.name));
         }
 
-        this.element.$connected();
+        await this.element.$connected();
       }
     }
 

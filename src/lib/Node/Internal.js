@@ -10,20 +10,20 @@ export default class bbnInternalNode extends bbnNode
     return this.component?.bbnNode?._region || {};
   }
 
-  nodeInit(after) {
-    return bbnNode.prototype.nodeInit.call(this, [after]);
+  async nodeInit(after) {
+    return await bbnNode.prototype.nodeInit.call(this, [after]);
   }
-  nodeBuild() {
+  async nodeBuild() {
     this.element = this.component.$el;
     this.isBuilding = true;
     if (!this.comment) {
       for (let i = 0; i < this.attributes.length; i++) {
-        this.attributes[i].attrSet();
-        this.attributes[i].attrUpdate(true);
+        await this.attributes[i].attrSet();
+        await this.attributes[i].attrUpdate(true);
       }
     }
 
-    this.nodeConceive();
+    await this.nodeConceive();
     this.isBuilding = false;
     this.numBuild++;
   }

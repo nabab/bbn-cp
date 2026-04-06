@@ -343,7 +343,7 @@ export default class bbnAnonHtml extends HTMLElement
   });
 
 
-  $connected() {
+  async $connected() {
     this.#options = {
       name: this.tagName.toLowerCase(),
       _componentTag: this.tagName.toLowerCase(),
@@ -419,7 +419,7 @@ export default class bbnAnonHtml extends HTMLElement
     }
 
     //bbn.fn.log("CONNCTRED CALLED IN ANON", this.$el);
-    bbnProtoHtml.$connected.apply(this);
+    return await bbnProtoHtml.$connected.apply(this);
   }
 
   get source() {

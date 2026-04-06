@@ -5,7 +5,7 @@ import stringToTemplate from "../../../internals/stringToTemplate.js";
 import announceComponent from "../../Html/private/announceComponent.js";
 import setNodeRegion from "../../../internals/setNodeRegion.js";
 
-bbnNode.prototype.nodeBuild = function(after, noChild = false) {
+bbnNode.prototype.nodeBuild = async function(after, noChild = false) {
   if (!this.isValid) {
     return;
   }
@@ -70,7 +70,7 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
       customElements.define(...args);
       // Fetch component definitions if the component is unknown
       //bbn.fn.log("FETCHING COMPONENTS", tag);
-      bbn.cp.fetchComponent(tag);
+      await bbn.cp.fetchComponent(tag);
       /*
       if (!components?.[realTag] && !bbn.cp.known.includes(realTag)) {
         bbn.fn.log(components);
@@ -189,7 +189,7 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
   if (!this.comment) {
     for (let i = 0; i < this.attributes.length; i++) {
       if (!['bbnDirectiveAttr', 'bbnConditionAttr', 'bbnForgetAttr'].includes(this.attributes[i].constructor?.name)) {
-        this.attributes[i].attrUpdate(true);
+        await this.attributes[i].attrUpdate(true);
       }
     }
     if (this.transition && !this.transition.running) {
@@ -205,14 +205,14 @@ bbnNode.prototype.nodeBuild = function(after, noChild = false) {
     if (!this.comment) {
       for (let i = 0; i < this.attributes.length; i++) {
         if (this.attributes[i].constructor?.name === 'bbnDirectiveAttr') {
-          this.attributes[i].attrUpdate(true);
+          await this.attributes[i].attrUpdate(true);
         }
       }
     }
 
 
     if (!noChild) {
-      this.nodeConceive();
+      await this.nodeConceive();
     }
 
     if (this.isBuilding) {

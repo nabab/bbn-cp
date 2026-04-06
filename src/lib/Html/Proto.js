@@ -2,11 +2,11 @@ import disconnected from './private/disconnected.js';
 import createCid from "../../internals/createCid.js";
 import bbnRegistered from "../Registered.js";
 
-const connect = cp => {
+const connect = async cp => {
   if (!cp.$isInit && cp.bbnId && !cp.bbn) {
     cp.bbn = cp;
     if (cp.bbnConnected) {
-      cp.$connected();
+      await cp.$connected();
     }
   }
 };

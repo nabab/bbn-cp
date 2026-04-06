@@ -239,7 +239,7 @@ async function treatQueue(num = 0, cps) {
         }
 
 
-        attr.attrUpdate();
+        await attr.attrUpdate();
         //bbn.fn.log(queueElement.node.component.$cid + ' ' + queueElement.id + '     ' + bbn.fn.shorten(bbn.fn.removeExtraSpaces(queueElement.exp), 50) + ' (' + bbn.fn.cast(queueElement.value) + ')');
         const attrValue = attr.attrGetValue();
         if (attr.constructor.name === 'bbnConditionAttr') {

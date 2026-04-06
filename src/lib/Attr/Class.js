@@ -6,7 +6,7 @@ import bbnInternalNode from "../Node/Internal.js";
  */
 export default class bbnClassAttr extends bbnAttr
 {
-  attrUpdate(init) {
+  async attrUpdate(init) {
     if (this.onUpdate) {
       this.onUpdate(this);
     }

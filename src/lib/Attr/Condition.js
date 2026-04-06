@@ -19,7 +19,7 @@ export default class bbnConditionAttr extends bbnAttr
     }
   }
 
-  attrSet() {
+  async attrSet() {
     //bbn.fn.log("SETTING CONDITION IN " + this.node.component.$options.name + " - " + this.id);
     const node = this.node;
     const cp = node.component;
@@ -87,15 +87,15 @@ export default class bbnConditionAttr extends bbnAttr
               isTrue = true;
               if (otherCondNode.isCommented) {
                 if (node.forget) {
-                  otherCondNode.forget.attrUpdate();
+                  await otherCondNode.forget.attrUpdate();
                 }
                 else {
-                  otherCondNode.nodeSwitch(false);
+                  await otherCondNode.nodeSwitch(false);
                 }
               }
             }
             else if (!otherCondNode.isCommented) {
-              otherCondNode.nodeSwitch(true);
+              await otherCondNode.nodeSwitch(true);
               let num = otherCondNode.nodeClean();
             }
           }
@@ -108,16 +108,16 @@ export default class bbnConditionAttr extends bbnAttr
 
     if (conditionValue && node.isCommented) {
       if (node.forget) {
-        node.forget.attrUpdate();
+        await node.forget.attrUpdate();
       }
       else {
-        node.nodeSwitch(false);
+        await node.nodeSwitch(false);
       }
     }
     else if (!conditionValue && !node.isCommented) {
-      node.nodeSwitch(true);
+      await node.nodeSwitch(true);
       if (node.transition) {
-        requestAnimationFrame(() => {
+        requestAnimationFrame(async () => {
           if (!node.transition.running) {
             node.nodeClean();
           }
@@ -133,14 +133,14 @@ export default class bbnConditionAttr extends bbnAttr
     }
   }
 
-  attrUpdate(init) {
+  async attrUpdate(init) {
     const node = this.node;
     if (!init) {
       if (node.isOut) {
         return;
       }
       
-      this.attrSet();
+      await this.attrSet();
 
       /*
       bbn.fn.log([
@@ -172,14 +172,14 @@ export default class bbnConditionAttr extends bbnAttr
           //bbn.fn.log(["FORGET CONDITION", num]);
         }
         else if ((node.tag === 'template') && !node.element) {
-          node.nodeInit();
+          await node.nodeInit();
         }
       }
     }
     else {
       const isComment = !this.attrGetValue(init);
       if (!isComment && this.node.forget) {
-        node.forget.attrUpdate();
+        await node.forget.attrUpdate();
       }
     }
   }

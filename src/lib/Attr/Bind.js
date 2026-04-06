@@ -11,7 +11,7 @@ import setUndefinedAttribute from "./private/setUndefinedAttribute.js";
  */
 export default class bbnBindAttr extends bbnAttr
 {
-  attrSet(init) {
+  async attrSet(init) {
     if (this.attrFn) {
       this.attrGetValue();
     }
@@ -24,7 +24,7 @@ export default class bbnBindAttr extends bbnAttr
   }
 
 
-  attrUpdate(init) {
+  async attrUpdate(init) {
     if ((this.attrGetState() !== 'OK') || init) {
       const node = this.node;
       //bbn.fn.log("CHANGE ON BIND")

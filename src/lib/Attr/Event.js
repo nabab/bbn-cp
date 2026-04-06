@@ -26,7 +26,7 @@ export default class bbnEventAttr extends bbnAttr
       this.node.element.addEventListener(this.name, this.handler, this.cfg);
     }
   }
-  attrSet() {
+  async attrSet() {
     if (!this.handler) {
       // Configuration object for the event listener.
       let cfg = {};
@@ -119,7 +119,7 @@ export default class bbnEventAttr extends bbnAttr
     }
   }
 
-  attrUpdate(init) {
+  async attrUpdate(init) {
     if (!init) {
       //bbn.fn.log("UPDATE ATTR EVENT " + this.name)
     }

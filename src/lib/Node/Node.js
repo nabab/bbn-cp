@@ -282,7 +282,7 @@ export default class bbnNode
     return null;
   }
 
-  nodeSwitch(v) {
+  async nodeSwitch(v) {
     if (v && (this.tag === 'apst-adherent')) {
       debugger;
     }
@@ -303,7 +303,7 @@ export default class bbnNode
 
       this.#comment = !!v;
       if (this.numBuild) {
-        return this.nodeInit(this.next?._region?.start);
+        return await this.nodeInit(this.next?._region?.start);
       }
     }
 

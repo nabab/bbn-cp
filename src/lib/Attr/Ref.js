@@ -5,7 +5,7 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnRefAttr extends bbnAttr
 {
-  attrUpdate(init) {
+  async attrUpdate(init) {
     if (!init) {
       //bbn.fn.log("UPDATE ATTR REF " + this.name)
     }

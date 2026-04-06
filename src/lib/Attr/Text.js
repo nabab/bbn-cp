@@ -5,9 +5,9 @@ import bbnAttr from "./Attr.js";
  */
 export default class bbnTextAttr extends bbnAttr
 {
-  attrUpdate(init) {
+  async attrUpdate(init) {
     if (!init) {
-      this.attrSet();
+      await this.attrSet();
     }
   
     const node = this.node;

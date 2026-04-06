@@ -95,19 +95,19 @@ export default class bbnLoopAttr extends bbnAttr
     });
   }
 
-  attrSet(init) {
-    this.attrUpdate(init);
+  async attrSet(init) {
+    await this.attrUpdate(init);
   }
 
-  init() {
-    this.attrSet(true);
+  async init() {
+    await this.attrSet(true);
   }
 
-  reset() {
-    this.node.nodeClean(true);
+  async reset() {
+    await this.node.nodeClean(true);
   }
 
-  attrUpdate(init, from) {
+  async attrUpdate(init, from) {
     if (this.isRunning) {
       return;
     }
@@ -149,7 +149,7 @@ export default class bbnLoopAttr extends bbnAttr
 
     let root = node.element;
     if (root && !root.parentNode) {
-      let num = node.nodeClean();
+      let num = await node.nodeClean();
       bbn.fn.log(["LOOP ROOT PROBLEM", num]);
       node.nodeRemove(root);
       root = null;
@@ -166,7 +166,7 @@ export default class bbnLoopAttr extends bbnAttr
     const lst = [];
     const oldList = this.list.splice(0);
     if (!root) {
-      root = node.nodeBuild(null, true);
+      root = await node.nodeBuild(null, true);
     }
     else if (!numItems && oldList.length) {
       const indexes = Object.keys(cp.$nodes).filter(idx => !idx.indexOf(node.id + '-'));
@@ -199,7 +199,7 @@ export default class bbnLoopAttr extends bbnAttr
       r.setStartAfter(node._region.start);
       r.setEndBefore(node._region.end);
       r.deleteContents();
-      root = node.nodeBuild(null, true);
+      root = await node.nodeBuild(null, true);
       oldList.splice(0);
     }
 
@@ -274,7 +274,7 @@ export default class bbnLoopAttr extends bbnAttr
           oldList.unshift(hash);
         }
 
-        ele = newNode.nodeInit(prevElement ? prevElement.bbnNode._region.end : root);
+        ele = await newNode.nodeInit(prevElement ? prevElement.bbnNode._region.end : root);
         newNode.loopNode = this;
       }
 
@@ -291,12 +291,12 @@ export default class bbnLoopAttr extends bbnAttr
 
     if (oldList.length) {
       let copy = oldList.slice();
-      bbn.fn.forir(oldList, (a, i) => {
+      bbn.fn.forir(oldList, async (a, i) => {
         if (this.list.indexOf(a) === -1) {
           copy.splice(i, 1);
           const itemRemoved = retrieveNode(cp, node.id, a);
           if (itemRemoved) {
-            itemRemoved.nodeClean(true);
+            await itemRemoved.nodeClean(true);
           }
         }
       });
@@ -353,7 +353,7 @@ export default class bbnLoopAttr extends bbnAttr
           }
         }
 
-        a.nodeClean(true);
+        await a.nodeClean(true);
       }
     }
 

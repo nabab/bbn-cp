@@ -1,5 +1,3 @@
-import onHook from "./onHook.js";
-
 /**
  * Shuts everything down
  * @returns 

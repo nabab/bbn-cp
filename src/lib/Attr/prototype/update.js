@@ -15,7 +15,7 @@ import setUndefinedAttribute from "../private/setUndefinedAttribute.js";
  * @param {boolean} init - Indicates whether this is the initial call (e.g., during initialization).
  * @returns {Promise<void>} - Resolves when the attribute has been updated.
  */
-bbnAttr.prototype.attrUpdate = function(init) {
+bbnAttr.prototype.attrUpdate = async function(init) {
   if (this.name && this.node.element) {
     if (this.node.loop) {
       return;

@@ -113,24 +113,24 @@ bbnNode.prototype.nodeInsert = function(ele, after) {
   else if (replace && this.oldElement) {
     //bbn.fn.log("REPLACE", this.oldElement, this.element)
     if (this.oldElement.childNodes.length && !this.comment) {
-      Array.from(this.element.childNodes).forEach(c => {
-        this.element.appendChild(c);
+      Array.from(ele.childNodes).forEach(c => {
+        ele.appendChild(c);
       });
       //bbn.fn.log(["APPEND CHILDREN", this.tag, ele])
     }
 
     //bbn.fn.log("REMOVE " + (bbn.fn.isComment(this.oldElement) ? 'COMMENT' : (this.tag || 'TEXT')) + ' AND REPLACE WITH '+ (bbn.fn.isComment(this.element) ? 'COMMENT' : (this.tag || 'TEXT')));
-    this._region.end.parentNode.insertBefore(this.element, this._region.end);
+    this._region.end.parentNode.insertBefore(ele, this._region.end);
     this.nodeRemove(this.oldElement);
     this.oldElement = null;
   }
   else if (after) {
-    after.after(this._region.start, this.element, this._region.end);
+    after.after(this._region.start, ele, this._region.end);
   }
   // First time is done in a linear direction
   // @mirko test it!
   else {
     //bbn.fn.log(["INSERTING", this.tag || 'TEXT', "AFTER", after, "IN", parent]);
-    this._region.end.parentNode.insertBefore(this.element, this._region.end);
+    this._region.end.parentNode.insertBefore(ele, this._region.end);
   }
 };
