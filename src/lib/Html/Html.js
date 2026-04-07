@@ -64,8 +64,8 @@ export default class bbnHtml extends HTMLElement
     return await bbnProtoHtml.$connected.apply(this, args);;
   }
 
-  $create(...args) {
-    return bbnProtoHtml.$create.apply(this, args);
+  async $create(...args) {
+    return await bbnProtoHtml.$create.apply(this, args);
   }
 
   $destroy(...args) {

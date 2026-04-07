@@ -444,8 +444,8 @@ export default class bbnAnonHtml extends HTMLElement
     });
   }
 
-  $create(...args) {
-    return bbnProtoHtml.$create.apply(this, args);
+  async $create(...args) {
+    return await bbnProtoHtml.$create.apply(this, args);
   }
 
   $destroy(...args) {

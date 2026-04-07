@@ -345,7 +345,7 @@ const input = {
       }
       return true;
     },
-    setInvalid(message, elem, setOnFocus){
+    async setInvalid(message, elem, setOnFocus){
       this.$emit('error', message);
 
       if (message?.length
@@ -471,7 +471,7 @@ const input = {
           document.head.appendChild(style);
         }
 
-        this.$create(cfg, this.$el)
+        await this.$create(cfg, this.$el)
       }
 
       const ev = () => {
