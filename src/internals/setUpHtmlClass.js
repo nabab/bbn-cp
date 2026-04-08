@@ -52,22 +52,24 @@ export default async function setUpHtmlClass(publicClass, obj) {
   window[publicClass].acceptedAttributes = acceptedAttr;
   let res;
   const iface = bbn.fn.isFunction(obj.iface) ? obj.iface() : obj.iface || {};
-  bbn.fn.each(obj.statics, async f => {
-    res = await f(iface);
-    if (res) {
-      if (!bbn.fn.isObject(res)) {
-        throw new Error(bbn._("If the static method returns it must be an object"));
+  for (let n in obj.statics) {
+    if (bbn.fn.isFunction(obj.statics[n])) {
+      res = await obj.statics[n](iface);
+      if (res) {
+        if (!bbn.fn.isObject(res)) {
+          throw new Error(bbn._("If the static method returns it must be an object"));
+        }
+        bbn.fn.iterate(res, (v, n) => {
+          if (window[publicClass][n] === undefined) {
+            window[publicClass][n] = bbn.cp.immunizeValue(v);
+          }
+          else {
+            throw new Error(bbn._("The static method cannot override an existing property"));
+          }
+        });
       }
-      bbn.fn.iterate(res, (v, n) => {
-        if (window[publicClass][n] === undefined) {
-          window[publicClass][n] = bbn.cp.immunizeValue(v);
-        }
-        else {
-          throw new Error(bbn._("The static method cannot override an existing property"));
-        }
-      });
     }
-  });
+  }
 
   // Define $methods property on the prototype.
   Object.defineProperty(window[publicClass].prototype, '$methods', {

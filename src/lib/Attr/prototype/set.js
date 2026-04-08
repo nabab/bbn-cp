@@ -1,6 +1,6 @@
 import bbnAttr from "../Attr.js";
 
-bbnAttr.prototype.attrSet = function(init) {
+bbnAttr.prototype.attrSet = async function(init) {
   const node = this.node;
   if (node.loop) {
     return;

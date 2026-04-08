@@ -150,7 +150,7 @@ export default class bbnLoopAttr extends bbnAttr
 
     let root = node.element;
     if (root && !root.parentNode) {
-      let num = await node.nodeClean();
+      let num = node.nodeClean();
       bbn.fn.log(["LOOP ROOT PROBLEM", num]);
       node.nodeRemove(root);
       root = null;
@@ -275,7 +275,6 @@ export default class bbnLoopAttr extends bbnAttr
           oldList.unshift(hash);
         }
 
-        bbn.fn.log(prevElement ? 'prev' : 'root');
         ele = await newNode.nodeInit(prevElement ? prevElement.bbnNode._region.end : root);
         newNode.loopNode = this;
       }
@@ -293,7 +292,7 @@ export default class bbnLoopAttr extends bbnAttr
 
     if (oldList.length) {
       let copy = oldList.slice();
-      bbn.fn.forir(oldList, async (a, i) => {
+      bbn.fn.forir(oldList, (a, i) => {
         if (this.list.indexOf(a) === -1) {
           copy.splice(i, 1);
           const itemRemoved = retrieveNode(cp, node.id, a);

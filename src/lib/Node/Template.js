@@ -15,7 +15,7 @@ export default class bbnTemplateNode extends bbnNode
     }
     else {
       this.isCreating = true;
-      this.nodeSetAll();
+      await this.nodeSetAll();
       //bbn.fn.log(["INIT TEMPLATE " + this.id, this.comment, this.isCommented, ele, bbn.fn.isComment(ele)]);
       if (!ele || (this.comment !== bbn.fn.isComment(ele))) {
         ele = await this.nodeBuild(after, true);

@@ -9,7 +9,7 @@ bbnNode.prototype.nodeInit = async function(after, noChild = false) {
   }
 
   this.isCreating = true;
-  this.nodeSetAll();
+  await this.nodeSetAll();
   if (old && (old.bbnNode === this)) {
     //this.update();
     if (this.comment && (this.comment === bbn.fn.isComment(old))) {

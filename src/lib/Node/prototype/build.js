@@ -122,7 +122,6 @@ bbnNode.prototype.nodeBuild = async function(after, noChild = false) {
       const clone = cp.$currentMap[this.id].templateElement.tagName.toLowerCase() === realTag;
       this.element = clone ? cp.$currentMap[this.id].templateElement.cloneNode() : document.createElement(...constructorArgs);
       this.isBuilding = true;
-
       if (isDiff) {
         // Set the 'is' attribute for custom elements
         this.element.setAttribute('is', tag);

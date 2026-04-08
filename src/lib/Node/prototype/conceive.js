@@ -4,9 +4,6 @@ import retrieveNode from "../../Html/private/retrieveNode.js";
 
 bbnNode.prototype.nodeConceive = async function() {
   if (this.items?.length && (!this.comment || (!this.loop && (!this.condition || this.condition.value)))) {
-    if ((this.id === '0-0-1-1-0-0-0') && (this.component.$options.name === 'bbn-router')) {
-      debugger;
-    }
 
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i];
