@@ -87,7 +87,6 @@ export default class bbnLoopAttr extends bbnAttr
   }
   constructor(def, node, name) {
     super(def, node, name);
-    this.node.nodeSwitch(true);
     Object.defineProperty(this, 'list', {
       value: [],
       writable: false,
@@ -111,6 +110,8 @@ export default class bbnLoopAttr extends bbnAttr
     if (this.isRunning) {
       return;
     }
+
+    await this.node.nodeSwitch(true);
     //bbn.fn.log("UPDATE ATTR LOOP " + this.exp, this.node.tag, this.isChanged, this.attrGetValue(true));
     const node = this.node;
     /*
@@ -149,7 +150,7 @@ export default class bbnLoopAttr extends bbnAttr
 
     let root = node.element;
     if (root && !root.parentNode) {
-      let num = node.nodeClean();
+      let num = await node.nodeClean();
       bbn.fn.log(["LOOP ROOT PROBLEM", num]);
       node.nodeRemove(root);
       root = null;
@@ -274,6 +275,7 @@ export default class bbnLoopAttr extends bbnAttr
           oldList.unshift(hash);
         }
 
+        bbn.fn.log(prevElement ? 'prev' : 'root');
         ele = await newNode.nodeInit(prevElement ? prevElement.bbnNode._region.end : root);
         newNode.loopNode = this;
       }

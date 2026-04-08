@@ -5,7 +5,7 @@ import bbnInternalNode from "../Node/Internal.js";
  */
 export default class bbnStyleAttr extends bbnAttr
 {
-  attrUpdate(init) {
+  async attrUpdate(init) {
     if (!this.node.element || this.node.comment) {
       return;
     }
